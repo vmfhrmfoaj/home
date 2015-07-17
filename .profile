@@ -1,1 +1,1 @@
-export PATH=$HOME/Bin:$PATH
+export PATH=$HOME/Bin:/usr/texbin/:$PATH
