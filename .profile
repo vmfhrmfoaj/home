@@ -1,2 +1,2 @@
-export ANDROID_HOME=$HOME/Android\ SDK
-export PATH=$HOME/Bin:/usr/texbin:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH
+export ANDROID_SDK_ROOT=$HOME/Android\ SDK
+export PATH=$HOME/Bin:/usr/texbin:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools:$PATH
