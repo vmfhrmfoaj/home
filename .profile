@@ -11,6 +11,7 @@ export PATH=$HOME/.cask/bin:$PATH
 
 # latex
 export PATH=/Library/TeX/texbin:$PATH
+export GS_FONTPATH=/System/Library/Fonts/:/Library/Fonts/:$HOME/Library/Fonts/
 
 # user
 export PATH=$HOME/Bin:$PATH
