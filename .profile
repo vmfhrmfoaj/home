@@ -1,5 +1,5 @@
 # android
-export ANDROID_SDK_ROOT=$HOME/Android\ SDK
+export ANDROID_SDK_ROOT=$HOME/Android_SDK
 export PATH=$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools:$PATH
 
 # cocoapod
