@@ -28,7 +28,7 @@ values."
      (clojure :variables clojure-enable-fancify-symbols t)
      emacs-lisp
      git
-     ;; markdown
+     markdown
      ;; org
      ;; (shell :variables
      ;;        shell-default-height 30
@@ -252,7 +252,6 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
   ;; Settings for the frame
-  (evil-global-set-key 'normal (kbd "M-`") #'other-frame)
   (add-hook 'after-make-frame-functions
             (lambda (&rest _)
               (interactive)
@@ -296,7 +295,7 @@ you should place your code here."
                                     (cons 'width  w)
                                     (cons 'height h))))
 
-  ;; Settings for `EmacsLisp'
+  ;; Settings for `emacs-lisp-mode'
   (dash-enable-font-lock)
   (font-lock-add-keywords
    'emacs-lisp-mode
@@ -308,8 +307,9 @@ you should place your code here."
       1 '(:inherit font-lock-warning-face))
      (" \\(\\?.\\)"
       1 '(:inherit font-lock-string-face))))
+  (add-hook 'emacs-lisp-mode-hook #'spacemacs/toggle-aggressive-indent)
 
-  ;; Settings for `Magit'
+  ;; Settings for `magit-mode'
   (setq magit-diff-refine-hunk t)
   (eval-after-load 'magit
     '(progn
@@ -318,10 +318,8 @@ you should place your code here."
        ;;  This option is experimental feature
        ;;  It's available v2.9 and upper.
        ;;  See, http://www.spinics.net/lists/git/msg278919.html
-       (add-to-list 'magit-diff-section-arguments "--compaction-heuristic")))
-
-  ;; Settgins for `version-control'
-  (setq git-gutter+-diff-options magit-diff-section-arguments)
+       (add-to-list 'magit-diff-section-arguments "--compaction-heuristic")
+       (setq git-gutter+-diff-options magit-diff-section-arguments)))
 
   ;; Settings for `Clojure'
   (setq cider-mode-line "⒞"
@@ -329,9 +327,12 @@ you should place your code here."
         cider-font-lock-dynamically nil
         cider-repl-use-pretty-printing t
         cljr-expectations-test-declaration "[expectations :refer :all]")
-  (-update-var->> minor-mode-alist
-                  (--map-when (eq 'clj-refactor-mode (car it))
-                              (-replace-at 1 "ⓡ" it)))
+  (add-hook 'clojure-mode-hook #'spacemacs/toggle-aggressive-indent)
+  ;;  change the symbol of `clj-refactor' in the mode-line
+  (eval-after-load 'clj-refactor
+    '(-update-var->> minor-mode-alist
+                     (--map-when (eq 'clj-refactor-mode (car it))
+                                 (-replace-at 1 "ⓡ" it))))
   (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
     (font-lock-add-keywords
      mode
@@ -343,17 +344,29 @@ you should place your code here."
         1 '(:inherit font-lock-keyword-face))
        ("\\_<\\(try\\+\\)\\_>"
         1 '(:inherit font-lock-keyword-face)))))
+
+  ;; Settings for `latex'
+  (add-hook 'latex-mode-hook #'latex-preview)
+  (eval-after-load 'doc-view
+    '(progn
+       (-update-var->> doc-view-ghostscript-options
+                       (--remove (string-match-p "-sDEVICE=.*" it))
+                       (append '("-sDEVICE=pngalpha")))
+       (setq-default doc-view-pdf->png-converter-function
+                     #'doc-view-pdf->png-converter-ghostscript-wrapper)))
+
   )
 
+
+;; NOTE:
+;;  Custom functions
 (defmacro -update-var->> (&rest thread)
   `(setq ,(first thread) (->> ,@thread)))
 
 (defun pixel->frame-unit (pixel)
   (round (/ pixel (/ (float (frame-pixel-width)) (frame-width)))))
-
 (defun frame-unit->pixel (frame-unit)
   (round (* frame-unit (/ (float (frame-pixel-width)) (frame-width)))))
-
 (defun custom-display-pixel-width ()
   (->> (--filter (-when-let (frames (-> (assoc 'frames it) cdr))
                    (--some? (eq (selected-frame) it) frames))
@@ -362,3 +375,64 @@ you should place your code here."
        (assoc 'geometry)
        (cdr)
        (nth 2)))
+
+(defun correct-foregound-color (png)
+  (let ((fg-color (face-attribute 'default :foreground))
+        (bg-color (face-attribute 'default :background)))
+    (unless (equal (color-values "white")
+                   (color-values bg-color))
+      ;; XXX: brew install graphicsmagick
+      (shell-command-to-string (concat "gm convert "
+                                       png " "
+                                       "-fill '" fg-color "' "
+                                       "-opaque black "
+                                       png)))))
+(defun doc-view-pdf->png-converter-ghostscript-wrapper (pdf png page callback)
+  (let ((cb (lexical-let ((callback callback)
+                          (png      png))
+              (lambda ()
+                (if (file-exists-p png)
+                    (correct-foregound-color png)
+                  (--map (correct-foregound-color it)
+                         (-> png
+                             file-name-directory
+                             (directory-files t ".+\\.png")))
+                  (unless (bound-and-true-p doc-view-refresh-once)
+                    (setq-local doc-view-refresh-once t)
+                    (run-at-time "1 secs" nil
+                                 #'doc-view-revert-buffer nil t)))
+                (funcall callback)))))
+    (doc-view-pdf->png-converter-ghostscript pdf
+                                             png
+                                             page
+                                             cb)))
+
+(defun latex-build-tex (&optional file)
+  (interactive)
+  (let ((file (or file buffer-file-name)))
+    (when (and (file-exists-p file)
+               (= 0 (call-process "pdflatex" nil nil nil file)))
+      (concat (file-name-sans-extension file) ".pdf"))))
+(defun latex-preview (&rest _)
+  (-when-let (pdf (latex-build-tex))
+    (save-window-excursion
+      (if (->> (frame-parameters)
+               (assoc 'fullscreen)
+               cdr)
+          (find-file-other-window pdf)
+        (find-file-other-frame pdf))))
+  (add-hook 'after-save-hook
+            (lambda (&rest _)
+              (message "Build & Reload PDF file")
+              ;; TODO:
+              ;; execute asynchronously
+              (-when-let (pdf (latex-build-tex))
+                (-when-let (buf (->> (frame-list)
+                                     (--mapcat (window-list it))
+                                     (--map (window-buffer it))
+                                     (--filter (string-equal pdf (buffer-file-name it)))
+                                     (-first-item)))
+                  (save-window-excursion
+                    (set-buffer buf)
+                    (doc-view-revert-buffer nil t)))))
+            nil t))
