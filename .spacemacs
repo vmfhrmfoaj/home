@@ -24,17 +24,15 @@ values."
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      auto-completion
-     ;; better-defaults
+     better-defaults
      (clojure :variables clojure-enable-fancify-symbols t)
      emacs-lisp
      git
+     html
+     java
+     javascript
      markdown
-     ;; org
-     ;; (shell :variables
-     ;;        shell-default-height 30
-     ;;        shell-default-position 'bottom)
-     ;; spell-checking
-     ;; syntax-checking
+     org
      version-control
      )
    ;; List of additional packages that will be installed without being
@@ -111,7 +109,7 @@ values."
                                :size 14
                                :weight normal
                                :width normal
-                               :powerline-scale 1.0)
+                               :powerline-scale 1.1)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
@@ -241,6 +239,8 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
+  ;; Settings for spacemacs
+  (setq exec-path-from-shell-check-startup-files nil)
   )
 
 (defun dotspacemacs/user-config ()
@@ -283,11 +283,12 @@ you should place your code here."
                  (* (frame-char-height))
                  (- (display-pixel-height))))
          (T (max 0 (1- (/ T 2))))
-         (l (floor (/ (custom-display-pixel-width) 2.8)))
+         (l (/ (custom-display-pixel-width) 2.0))
+         (l (floor (- l (/ (frame-unit->pixel w) 2.8))))
          (l (if (< 0 (- (custom-display-pixel-width)
                         (+ l (frame-unit->pixel w))))
                 l
-              (- (custom-display-pixel-width) (frame-unit->pixel w)))))
+              (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w))))))
     (add-to-list 'default-frame-alist (cons 'width  w))
     (add-to-list 'default-frame-alist (cons 'height h))
     (setq initial-frame-alist (list (cons 'top    T)
@@ -321,8 +322,8 @@ you should place your code here."
        (add-to-list 'magit-diff-section-arguments "--compaction-heuristic")
        (setq git-gutter+-diff-options magit-diff-section-arguments)))
 
-  ;; Settings for `Clojure'
-  (setq cider-mode-line "⒞"
+  ;; Settings for `clojure-mode'
+  (setq cider-mode-line ""
         cider-dynamic-indentation nil
         cider-font-lock-dynamically nil
         cider-repl-use-pretty-printing t
@@ -330,9 +331,7 @@ you should place your code here."
   (add-hook 'clojure-mode-hook #'spacemacs/toggle-aggressive-indent)
   ;;  change the symbol of `clj-refactor' in the mode-line
   (eval-after-load 'clj-refactor
-    '(-update-var->> minor-mode-alist
-                     (--map-when (eq 'clj-refactor-mode (car it))
-                                 (-replace-at 1 "ⓡ" it))))
+    '(diminish 'clj-refactor-mode))
   (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
     (font-lock-add-keywords
      mode
@@ -345,7 +344,7 @@ you should place your code here."
        ("\\_<\\(try\\+\\)\\_>"
         1 '(:inherit font-lock-keyword-face)))))
 
-  ;; Settings for `latex'
+  ;; Settings for `latex-mode'
   (add-hook 'latex-mode-hook #'latex-preview)
   (eval-after-load 'doc-view
     '(progn
@@ -355,6 +354,9 @@ you should place your code here."
        (setq-default doc-view-pdf->png-converter-function
                      #'doc-view-pdf->png-converter-ghostscript-wrapper)))
 
+  ;; Settings for `eclim-mode'
+  (setq eclim-eclipse-dirs '("/Applications/Eclipse.app/Contents/Eclipse")
+        eclim-executable "/Applications/Eclipse.app/Contents/Eclipse/eclim")
   )
 
 
