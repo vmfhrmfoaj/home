@@ -25,12 +25,13 @@ values."
      ;; ----------------------------------------------------------------
      auto-completion
      better-defaults
-     (clojure :variables clojure-enable-fancify-symbols t)
+     clojure
      emacs-lisp
      git
      html
      java
      javascript
+     latex
      markdown
      org
      version-control
@@ -105,8 +106,8 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font '("MonacoB2"
-                               :size 14
+   dotspacemacs-default-font `("MonacoB2"
+                               :size ,(if (< 1440 (display-pixel-height)) 15 14)
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -240,8 +241,7 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
   ;; Settings for spacemacs
-  (setq exec-path-from-shell-check-startup-files nil)
-  )
+  (setq exec-path-from-shell-check-startup-files nil))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -278,11 +278,7 @@ you should place your code here."
 
   ;; Settings for pos/size of initial frame
   (let* ((w 110)
-         (h (/ (display-pixel-height) (frame-char-height)))
-         (T (->> h
-                 (* (frame-char-height))
-                 (- (display-pixel-height))))
-         (T (max 0 (1- (/ T 2))))
+         (h (1- (/ (display-pixel-height) (frame-char-height))))
          (l (/ (custom-display-pixel-width) 2.0))
          (l (floor (- l (/ (frame-unit->pixel w) 2.8))))
          (l (if (< 0 (- (custom-display-pixel-width)
@@ -291,12 +287,24 @@ you should place your code here."
               (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w))))))
     (add-to-list 'default-frame-alist (cons 'width  w))
     (add-to-list 'default-frame-alist (cons 'height h))
-    (setq initial-frame-alist (list (cons 'top    T)
+    (setq initial-frame-alist (list (cons 'top    0)
                                     (cons 'left   l)
                                     (cons 'width  w)
                                     (cons 'height h))))
 
-  ;; Settings for `emacs-lisp-mode'
+  ;; Settings for `magit'
+  (setq magit-diff-refine-hunk t)
+  (eval-after-load 'magit
+    '(progn
+       (add-to-list 'magit-diff-section-arguments "--ignore-space-change")
+       ;; Additional options that not included Magit
+       ;;  This option is experimental feature
+       ;;  It's available v2.9 and upper.
+       ;;  See, http://www.spinics.net/lists/git/msg278919.html
+       (add-to-list 'magit-diff-section-arguments "--compaction-heuristic")
+       (setq git-gutter+-diff-options magit-diff-section-arguments)))
+
+  ;; Settings for `emacs-lisp'
   (dash-enable-font-lock)
   (font-lock-add-keywords
    'emacs-lisp-mode
@@ -310,29 +318,29 @@ you should place your code here."
       1 '(:inherit font-lock-string-face))))
   (add-hook 'emacs-lisp-mode-hook #'spacemacs/toggle-aggressive-indent)
 
-  ;; Settings for `magit-mode'
-  (setq magit-diff-refine-hunk t)
-  (eval-after-load 'magit
-    '(progn
-       (add-to-list 'magit-diff-section-arguments "--ignore-space-change")
-       ;; Additional options that not included Magit
-       ;;  This option is experimental feature
-       ;;  It's available v2.9 and upper.
-       ;;  See, http://www.spinics.net/lists/git/msg278919.html
-       (add-to-list 'magit-diff-section-arguments "--compaction-heuristic")
-       (setq git-gutter+-diff-options magit-diff-section-arguments)))
+  ;; Settings for `smartparens'
+  (advice-add #'sp-forward-symbol :before #'wrap-sp-forward-symbol)
+  (advice-add #'sp-backward-symbol :after #'wrap-sp-backward-symbol)
+  (advice-add #'sp-forward-sexp :after #'wrap-sp-forward-sexp)
+  (advice-add #'sp-backward-sexp :after #'wrap-sp-backward-sexp)
 
-  ;; Settings for `clojure-mode'
+  ;; Settings for `java'
+  (setq eclim-eclipse-dirs '("/Applications/Eclipse.app/Contents/Eclipse")
+        eclim-executable "/Applications/Eclipse.app/Contents/Eclipse/eclim")
+
+  ;; Settings for `clojure'
+  (require 'smartparens-clojure)
   (setq cider-mode-line ""
         cider-dynamic-indentation nil
         cider-font-lock-dynamically nil
         cider-repl-use-pretty-printing t
         cljr-expectations-test-declaration "[expectations :refer :all]")
   (add-hook 'clojure-mode-hook #'spacemacs/toggle-aggressive-indent)
-  ;;  change the symbol of `clj-refactor' in the mode-line
+  (add-hook 'cider-repl-mode-hook #'spacemacs/toggle-aggressive-indent)
+  (evil-define-key 'normal cider-repl-mode-map (kbd "RET") #'cider-repl-return)
   (eval-after-load 'clj-refactor
     '(diminish 'clj-refactor-mode))
-  (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
+  (dolist (mode clojure-modes)
     (font-lock-add-keywords
      mode
      '(("[?0-9a-zA-Z]\\(!+\\)"
@@ -344,8 +352,8 @@ you should place your code here."
        ("\\_<\\(try\\+\\)\\_>"
         1 '(:inherit font-lock-keyword-face)))))
 
-  ;; Settings for `latex-mode'
-  (add-hook 'latex-mode-hook #'latex-preview)
+  ;; Settings for `latex'
+  (add-hook 'LaTeX-mode-hook #'latex-preview)
   (eval-after-load 'doc-view
     '(progn
        (-update-var->> doc-view-ghostscript-options
@@ -354,14 +362,23 @@ you should place your code here."
        (setq-default doc-view-pdf->png-converter-function
                      #'doc-view-pdf->png-converter-ghostscript-wrapper)))
 
-  ;; Settings for `eclim-mode'
-  (setq eclim-eclipse-dirs '("/Applications/Eclipse.app/Contents/Eclipse")
-        eclim-executable "/Applications/Eclipse.app/Contents/Eclipse/eclim")
-  )
+  ;; Settings for `org'
+  (font-lock-add-keywords
+   'org-mode
+   '(("^\\s-*\\(-\\) "
+      1 (compose-region (match-beginning 1) (match-end 1) ?∙))) t)
+  (setq org-directory (concat (getenv "HOME")
+                              "/Library/Mobile\ Documents"
+                              "/com\~apple\~CloudDocs/Org")
+        org-hide-emphasis-markers t
+        org-pretty-entities t
+        org-src-fontify-natively t
+        org-startup-indented t
+        org-bullets-bullet-list '("■" "□" "◙" "◘" "●" "○" "◌")))
 
+
+;; Help functions for user-config
 
-;; NOTE:
-;;  Custom functions
 (defmacro -update-var->> (&rest thread)
   `(setq ,(first thread) (->> ,@thread)))
 
@@ -438,3 +455,40 @@ you should place your code here."
                     (set-buffer buf)
                     (doc-view-revert-buffer nil t)))))
             nil t))
+
+(defvar clojure-modes '(clojure-mode cider-repl-mode emacs-lisp-mode))
+(defun wrap-sp-forward-symbol (&optional arg)
+  (save-match-data
+    (when (and (numberp arg)
+               (> arg 0)
+               (apply #'derived-mode-p clojure-modes)
+               (-some->> (buffer-substring-no-properties (point) (line-end-position))
+                         (string-match (concat "^\\s-*" sp-clojure-prefix "[^({\\[]"))))
+      (goto-char (+ (point) (match-end 0))))))
+(defun wrap-sp-backward-symbol (&optional arg)
+  (save-match-data
+    (when (and (numberp arg)
+               (> arg 0)
+               (apply #'derived-mode-p clojure-modes)
+               (-some->> (buffer-substring-no-properties (line-beginning-position) (point))
+                         (string-match (concat sp-clojure-prefix "\\s-*$"))))
+      (beginning-of-line)
+      (goto-char (+ (point) (match-beginning 0))))))
+(defun wrap-sp-forward-sexp (&optional arg)
+  (save-match-data
+    (when (and (numberp arg)
+               (> arg 0)
+               (apply #'derived-mode-p clojure-modes)
+               (-some->> (char-after)
+                         (char-to-string)
+                         (string-match "\\s(")))
+      (forward-sexp))))
+(defun wrap-sp-backward-sexp (&optional arg)
+  (save-match-data
+    (when (and (numberp arg)
+               (> arg 0)
+               (apply #'derived-mode-p clojure-modes)
+               (-some->> (buffer-substring-no-properties (line-beginning-position) (point))
+                         (string-match (concat sp-clojure-prefix "\\s-*$"))))
+      (beginning-of-line)
+      (goto-char (+ (point) (match-beginning 0))))))
