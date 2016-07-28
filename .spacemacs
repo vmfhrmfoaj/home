@@ -91,7 +91,7 @@ values."
    ;; `dotspacemacs-startup-lists' doesn't include `recents'. (default 5)
    dotspacemacs-startup-recent-list-size 5
    ;; Default major mode of the scratch buffer (default `text-mode')
-   dotspacemacs-scratch-mode 'text-mode
+   dotspacemacs-scratch-mode 'inferior-emacs-lisp-mode
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
@@ -240,7 +240,6 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
-  ;; Settings for spacemacs
   (setq exec-path-from-shell-check-startup-files nil))
 
 (defun dotspacemacs/user-config ()
@@ -292,6 +291,9 @@ you should place your code here."
                                     (cons 'width  w)
                                     (cons 'height h))))
 
+  ;; Settings for scratch buffer
+  (add-hook 'inferior-emacs-lisp-mode-hook #'spacemacs/toggle-smartparens-on)
+
   ;; Settings for `magit'
   (setq magit-diff-refine-hunk t)
   (eval-after-load 'magit
@@ -306,6 +308,7 @@ you should place your code here."
 
   ;; Settings for `emacs-lisp'
   (dash-enable-font-lock)
+  (add-hook 'emacs-lisp-mode-hook #'spacemacs/toggle-aggressive-indent-on)
   (font-lock-add-keywords
    'emacs-lisp-mode
    '(("(\\(lexical-let\\*?\\)"
@@ -315,8 +318,9 @@ you should place your code here."
      ("(\\(assert\\)"
       1 '(:inherit font-lock-warning-face))
      (" \\(\\?.\\)"
-      1 '(:inherit font-lock-string-face))))
-  (add-hook 'emacs-lisp-mode-hook #'spacemacs/toggle-aggressive-indent)
+      1 '(:inherit font-lock-string-face))
+     ("\\(:[-+*/?0-9A-Za-z]+\\)"
+      1 '(:inherit font-lock-constant-face))))
 
   ;; Settings for `smartparens'
   (advice-add #'sp-forward-symbol :before #'wrap-sp-forward-symbol)
@@ -335,8 +339,8 @@ you should place your code here."
         cider-font-lock-dynamically nil
         cider-repl-use-pretty-printing t
         cljr-expectations-test-declaration "[expectations :refer :all]")
-  (add-hook 'clojure-mode-hook #'spacemacs/toggle-aggressive-indent)
-  (add-hook 'cider-repl-mode-hook #'spacemacs/toggle-aggressive-indent)
+  (add-hook 'clojure-mode-hook #'spacemacs/toggle-aggressive-indent-on)
+  (add-hook 'cider-repl-mode-hook #'spacemacs/toggle-aggressive-indent-on)
   (evil-define-key 'normal cider-repl-mode-map (kbd "RET") #'cider-repl-return)
   (eval-after-load 'clj-refactor
     '(diminish 'clj-refactor-mode))
