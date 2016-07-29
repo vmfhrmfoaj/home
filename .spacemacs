@@ -341,6 +341,8 @@ you should place your code here."
         cljr-expectations-test-declaration "[expectations :refer :all]")
   (add-hook 'clojure-mode-hook #'spacemacs/toggle-aggressive-indent-on)
   (add-hook 'cider-repl-mode-hook #'spacemacs/toggle-aggressive-indent-on)
+  (add-hook 'cider-repl-mode-hook #'spacemacs/toggle-smartparens-on)
+  (evil-define-key 'insert cider-repl-mode-map (kbd "RET") #'evil-ret-and-indent)
   (evil-define-key 'normal cider-repl-mode-map (kbd "RET") #'cider-repl-return)
   (eval-after-load 'clj-refactor
     '(diminish 'clj-refactor-mode))
