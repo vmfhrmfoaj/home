@@ -95,19 +95,13 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark
-                         spacemacs-light
-                         solarized-light
-                         solarized-dark
-                         leuven
-                         monokai
-                         zenburn)
+   dotspacemacs-themes '(spacemacs-light)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font `("MonacoB2"
-                               :size ,(if (< 1440 (display-pixel-height)) 15 14)
+   dotspacemacs-default-font `("MonacoB"
+                               :size ,(if (<= 1440 (display-pixel-height)) 15 14)
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -250,11 +244,14 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
+  ;; Include the env var from `.profile'
+  (include-shell-var-in "~/.profile")
+
   ;; Settings for the frame
   (add-hook 'after-make-frame-functions
             (lambda (&rest _)
               (interactive)
-              (load-theme 'spacemacs-dark 'no-confirm)))
+              (load-theme (first dotspacemacs-themes) 'no-confirm)))
 
   ;; Settings for macOS
   (when (eq system-type 'darwin)
@@ -294,6 +291,19 @@ you should place your code here."
   ;; Settings for scratch buffer
   (add-hook 'inferior-emacs-lisp-mode-hook #'spacemacs/toggle-smartparens-on)
 
+  ;; Settings for minibuf
+  (add-hook 'window-configuration-change-hook
+            (lambda (&rest _)
+              (ignore-errors
+                (setq max-mini-window-height
+                      (-some-> (window-list)
+                               (-some->> (-map #'window-height)
+                                         (-sort #'<))
+                               (first)
+                               (float)
+                               (/ (frame-height))
+                               (* (get-default 'max-mini-window-height)))))))
+
   ;; Settings for `magit'
   (setq magit-diff-refine-hunk t)
   (eval-after-load 'magit
@@ -305,13 +315,15 @@ you should place your code here."
        ;;  See, http://www.spinics.net/lists/git/msg278919.html
        (add-to-list 'magit-diff-section-arguments "--compaction-heuristic")
        (setq git-gutter+-diff-options magit-diff-section-arguments)))
+  (remove-hook 'magit-mode-hook #'turn-on-magit-gitflow)
 
   ;; Settings for `emacs-lisp'
-  (dash-enable-font-lock)
   (add-hook 'emacs-lisp-mode-hook #'spacemacs/toggle-aggressive-indent-on)
   (font-lock-add-keywords
    'emacs-lisp-mode
-   '(("(\\(lexical-let\\*?\\)"
+   '(("\\s(\\(\\(?:-as\\|-some\\)?->>?\\|and\\|or\\)\\_>"
+      1 '(:inherit default) nil)
+     ("(\\(lexical-let\\*?\\)"
       1 '(:inherit font-lock-keyword-face))
      ("\\(?:\\s-+\\|\\s(\\)\\<\\(nil\\|t\\)\\>"
       1 '(:inherit font-lock-constant-face))
@@ -334,7 +346,8 @@ you should place your code here."
 
   ;; Settings for `clojure'
   (require 'smartparens-clojure)
-  (setq cider-mode-line ""
+  (setq clojure-indent-style :align-arguments
+        cider-mode-line ""
         cider-dynamic-indentation nil
         cider-font-lock-dynamically nil
         cider-repl-use-pretty-printing t
@@ -349,7 +362,14 @@ you should place your code here."
   (dolist (mode clojure-modes)
     (font-lock-add-keywords
      mode
-     '(("[?0-9a-zA-Z]\\(!+\\)"
+     '(("\\s(\\(?:[^ \t\n]+?/\\)?\\(default[^ \t\n]*?\\)[ \t\n]+\\([^ \t\n]+?\\)"
+        (1 '(:inherit default))
+        (2 '(:inherit default)))
+       ("\\s(\\(\\(?:as\\|some\\)?->>?\\|and\\|or\\)\\_>"
+        1 '(:inherit default))
+       ("^\\s-*\\s(def-\\s-+\\([^ \t\n]+\\)"
+        1 '(:inherit font-lock-variable-name-face) nil)
+       ("\\s([^ \t\n]+\\(!+\\)"
         1 '(:inherit font-lock-warning-face :slant italic :weight normal))
        ("\\(#js\\)\\s-+\\s("
         1 '(:inherit font-lock-builtin-face))
@@ -387,6 +407,11 @@ you should place your code here."
 
 (defmacro -update-var->> (&rest thread)
   `(setq ,(first thread) (->> ,@thread)))
+
+(defun get-default (var)
+  (first (or (get var 'standard-value)
+             (get var 'saved-value)
+             (get var 'customized-value))))
 
 (defun pixel->frame-unit (pixel)
   (round (/ pixel (/ (float (frame-pixel-width)) (frame-width)))))
@@ -427,10 +452,7 @@ you should place your code here."
                     (run-at-time "1 secs" nil
                                  #'doc-view-revert-buffer nil t)))
                 (funcall callback)))))
-    (doc-view-pdf->png-converter-ghostscript pdf
-                                             png
-                                             page
-                                             cb)))
+    (doc-view-pdf->png-converter-ghostscript pdf png page cb)))
 
 (defun latex-build-tex (&optional file)
   (interactive)
@@ -498,3 +520,28 @@ you should place your code here."
                          (string-match (concat sp-clojure-prefix "\\s-*$"))))
       (beginning-of-line)
       (goto-char (+ (point) (match-beginning 0))))))
+
+(defun resolve-sh-var (str)
+  (while (string-match (concat "\\$\\([_a-zA-Z0-9]+\\|[({].+[})]\\)") str)
+    (let* ((var (match-string 1 str))
+           (res (save-match-data
+                  (->> var
+                       (concat "echo $")
+                       (shell-command-to-string)
+                       (s-trim)))))
+      (setq str (replace-match res t nil str))))
+  str)
+(defun include-shell-var-in (file)
+  (when (file-exists-p file)
+    (let* ((regx "export\\s-+\\([^=]+\\)=\"?\\(.+?\\)\"?$")
+           (exports (->> (with-temp-buffer
+                           (insert-file-contents file)
+                           (split-string (buffer-string) "\n" t))
+                         (--filter (not (string-match-p "^#" it)))
+                         (--filter (string-match-p regx it))
+                         (--map (replace-regexp-in-string "\\\\" "" it)))))
+      (dolist (it exports)
+        (string-match regx it)
+        (let ((key   (match-string-no-properties 1 it))
+              (value (match-string-no-properties 2 it)))
+          (setenv key (resolve-sh-var value)))))))
