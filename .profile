@@ -17,5 +17,8 @@ export GS_FONTPATH=/System/Library/Fonts/:/Library/Fonts/:$HOME/Library/Fonts/
 export PERLBREW_ROOT=$HOME/.perlbrew
 source $PERLBREW_ROOT/etc/bashrc
 
+# lein
+export JVM_OPTS="-Xmx$(if [ `uname -a | grep -o iMac` ]; then echo '8g'; else echo '1g'; fi)"
+
 # user
 export PATH=$HOME/Bin:$PATH
