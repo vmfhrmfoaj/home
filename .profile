@@ -19,6 +19,7 @@ source $PERLBREW_ROOT/etc/bashrc
 
 # lein
 export JVM_OPTS="-Xmx$(if [ `uname -a | grep -o iMac` ]; then echo '8g'; else echo '1g'; fi)"
+export LEIN_JVM_OPTS=$JVM_OPTS
 
 # user
 export PATH=$HOME/Bin:$PATH
