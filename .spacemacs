@@ -247,7 +247,17 @@ you should place your code here."
   ;; Include the env var from `.profile'
   (include-shell-var-in "~/.profile")
 
-  ;; Settings for the frame
+  ;; Settings for the theme
+  (custom-set-faces
+   '(rainbow-delimiters-depth-1-face  ((t :foreground "#619acf")))
+   '(rainbow-delimiters-depth-2-face  ((t :foreground "#895a82")))
+   '(rainbow-delimiters-depth-3-face  ((t :foreground "#56aa8f")))
+   '(rainbow-delimiters-depth-4-face  ((t :foreground "#85c04a")))
+   '(rainbow-delimiters-depth-5-face  ((t :foreground "#c0aa4a")))
+   '(rainbow-delimiters-depth-6-face  ((t :foreground "#3a81c3")))
+   '(rainbow-delimiters-depth-7-face  ((t :foreground "#986e91")))
+   '(rainbow-delimiters-depth-8-face  ((t :foreground "#6cb49d")))
+   '(rainbow-delimiters-depth-9-face  ((t :foreground "#9f8c8c"))))
   (add-hook 'after-make-frame-functions
             (lambda (&rest _)
               (interactive)
