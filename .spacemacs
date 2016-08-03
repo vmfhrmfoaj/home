@@ -26,7 +26,9 @@ values."
      auto-completion
      better-defaults
      clojure
+     elixir
      emacs-lisp
+     erlang
      git
      html
      java
@@ -100,9 +102,9 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font `("MonacoB"
-                               :size ,(if (<= 1440 (display-pixel-height)) 15 14)
-                               :weight normal
+   dotspacemacs-default-font '("MonacoB2"
+                               :size 14
+                               :weight bold
                                :width normal
                                :powerline-scale 1.1)
    ;; The leader key
@@ -247,7 +249,7 @@ you should place your code here."
   ;; Include the env var from `.profile'
   (include-shell-var-in "~/.profile")
 
-  ;; Settings for the theme
+  ;; Settings for theme
   (custom-set-faces
    '(rainbow-delimiters-depth-1-face  ((t :foreground "#619acf")))
    '(rainbow-delimiters-depth-2-face  ((t :foreground "#895a82")))
@@ -261,7 +263,8 @@ you should place your code here."
   (add-hook 'after-make-frame-functions
             (lambda (&rest _)
               (interactive)
-              (load-theme (first dotspacemacs-themes) 'no-confirm)))
+              (spacemacs/load-theme (first dotspacemacs-themes))
+              (spacemacs//show-trailing-whitespace)))
 
   ;; Settings for macOS
   (when (eq system-type 'darwin)
@@ -387,6 +390,15 @@ you should place your code here."
         1 '(:inherit font-lock-keyword-face))
        ("\\_<\\(try\\+\\)\\_>"
         1 '(:inherit font-lock-keyword-face)))))
+
+  ;; Settings for `elixir'
+  (evil-define-key 'insert elixir-mode-map (kbd "TAB")
+    (lambda ()
+      (interactive)
+      (if (and (string-match-p "[^ \t\n]" (char-to-string (char-before)))
+               (string-match-p  "[ \t\n]" (char-to-string (char-after))))
+          (company-complete-common-or-cycle)
+        (indent-for-tab-command))))
 
   ;; Settings for `latex'
   (add-hook 'LaTeX-mode-hook #'latex-preview)
