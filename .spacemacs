@@ -364,7 +364,10 @@ you should place your code here."
         cider-dynamic-indentation nil
         cider-font-lock-dynamically nil
         cider-repl-use-pretty-printing t
-        cljr-expectations-test-declaration "[expectations :refer :all]")
+        cljr-expectations-test-declaration "[expectations :refer :all]"
+        ahs-include '((clojure-mode . "[^ \t\n]+?")
+                      (clojurescript-mode . "[^ \t\n]+?")
+                      (clojurec-mode . "[^ \t\n]+?")))
   (add-hook 'clojure-mode-hook #'spacemacs/toggle-aggressive-indent-on)
   (add-hook 'cider-repl-mode-hook #'spacemacs/toggle-aggressive-indent-on)
   (add-hook 'cider-repl-mode-hook #'spacemacs/toggle-smartparens-on)
