@@ -97,13 +97,14 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-light)
+   dotspacemacs-themes '(spacemacs-dark
+                         spacemacs-light)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font '("MonacoB"
-                               :size 14
+   dotspacemacs-default-font `("MonacoB2"
+                               :size ,(if (<= 1440 (display-pixel-height)) 15 14)
                                :weight bold
                                :width normal
                                :powerline-scale 1.1)
@@ -250,16 +251,30 @@ you should place your code here."
   (include-shell-var-in "~/.profile")
 
   ;; Settings for theme
-  (custom-set-faces
-   '(rainbow-delimiters-depth-1-face  ((t :foreground "#619acf")))
-   '(rainbow-delimiters-depth-2-face  ((t :foreground "#895a82")))
-   '(rainbow-delimiters-depth-3-face  ((t :foreground "#56aa8f")))
-   '(rainbow-delimiters-depth-4-face  ((t :foreground "#85c04a")))
-   '(rainbow-delimiters-depth-5-face  ((t :foreground "#c0aa4a")))
-   '(rainbow-delimiters-depth-6-face  ((t :foreground "#3a81c3")))
-   '(rainbow-delimiters-depth-7-face  ((t :foreground "#986e91")))
-   '(rainbow-delimiters-depth-8-face  ((t :foreground "#6cb49d")))
-   '(rainbow-delimiters-depth-9-face  ((t :foreground "#9f8c8c"))))
+  (ignore-errors
+    (custom-theme-set-faces
+     'spacemacs-dark
+     '(rainbow-delimiters-depth-1-face  ((t :foreground "#3f78ac")))
+     '(rainbow-delimiters-depth-2-face  ((t :foreground "#96589d")))
+     '(rainbow-delimiters-depth-3-face  ((t :foreground "#24775c")))
+     '(rainbow-delimiters-depth-4-face  ((t :foreground "#528d17")))
+     '(rainbow-delimiters-depth-5-face  ((t :foreground "#8d7717")))
+     '(rainbow-delimiters-depth-6-face  ((t :foreground "#376996")))
+     '(rainbow-delimiters-depth-7-face  ((t :foreground "#834d89")))
+     '(rainbow-delimiters-depth-8-face  ((t :foreground "#1f6851")))
+     '(rainbow-delimiters-depth-9-face  ((t :foreground "#7c918a")))))
+  (ignore-errors
+    (custom-theme-set-faces
+     'spacemacs-light
+     '(rainbow-delimiters-depth-1-face  ((t :foreground "#619acf")))
+     '(rainbow-delimiters-depth-2-face  ((t :foreground "#895a82")))
+     '(rainbow-delimiters-depth-3-face  ((t :foreground "#56aa8f")))
+     '(rainbow-delimiters-depth-4-face  ((t :foreground "#85c04a")))
+     '(rainbow-delimiters-depth-5-face  ((t :foreground "#c0aa4a")))
+     '(rainbow-delimiters-depth-6-face  ((t :foreground "#3a81c3")))
+     '(rainbow-delimiters-depth-7-face  ((t :foreground "#986e91")))
+     '(rainbow-delimiters-depth-8-face  ((t :foreground "#6cb49d")))
+     '(rainbow-delimiters-depth-9-face  ((t :foreground "#9f8c8c")))))
   (add-hook 'after-make-frame-functions
             (lambda (&rest _)
               (interactive)
@@ -376,7 +391,7 @@ you should place your code here."
   (eval-after-load 'clj-refactor
     '(diminish 'clj-refactor-mode))
   (dolist (mode clojure-modes)
-    (sp-local-pair mode "`" nil :actions :rem)
+    (add-to-list 'page-break-lines-modes mode)
     (font-lock-add-keywords
      mode
      '(("\\s(\\(?:[^ \t\n]+?/\\)?\\(default[^ \t\n]*?\\)[ \t\n]+\\([^ \t\n]+?\\)"
@@ -395,7 +410,7 @@ you should place your code here."
        ("\\_<\\(try\\+\\)\\_>"
         1 '(:inherit font-lock-keyword-face)))))
   (put 'def- 'clojure-doc-string-elt 2)
-  (put 'defmacro- 'clojure-doc-string-elt 2)
+  (put 'defmacro- 'clojure-doc-string-elt 2) 
 
   ;; Settings for `elixir'
   (evil-define-key 'insert elixir-mode-map (kbd "TAB")
