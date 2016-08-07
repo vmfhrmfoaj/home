@@ -102,7 +102,7 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font '("MonacoB2"
+   dotspacemacs-default-font '("MonacoB"
                                :size 14
                                :weight bold
                                :width normal
@@ -331,7 +331,7 @@ you should place your code here."
   (remove-hook 'magit-mode-hook #'turn-on-magit-gitflow)
 
   ;; Settings for `emacs-lisp'
-  (add-hook 'emacs-lisp-mode-hook #'spacemacs/toggle-aggressive-indent-on)
+  (add-hook 'emacs-lisp-mode-hook #'spacemacs/toggle-aggressive-indent-on 'append)
   (font-lock-add-keywords
    'emacs-lisp-mode
    '(("\\s(\\(\\(?:-as\\|-some\\)?->>?\\|and\\|or\\)\\_>"
@@ -376,6 +376,7 @@ you should place your code here."
   (eval-after-load 'clj-refactor
     '(diminish 'clj-refactor-mode))
   (dolist (mode clojure-modes)
+    (sp-local-pair mode "`" nil :actions :rem)
     (font-lock-add-keywords
      mode
      '(("\\s(\\(?:[^ \t\n]+?/\\)?\\(default[^ \t\n]*?\\)[ \t\n]+\\([^ \t\n]+?\\)"
@@ -393,6 +394,8 @@ you should place your code here."
         1 '(:inherit font-lock-keyword-face))
        ("\\_<\\(try\\+\\)\\_>"
         1 '(:inherit font-lock-keyword-face)))))
+  (put 'def- 'clojure-doc-string-elt 2)
+  (put 'defmacro- 'clojure-doc-string-elt 2)
 
   ;; Settings for `elixir'
   (evil-define-key 'insert elixir-mode-map (kbd "TAB")
