@@ -97,8 +97,8 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark
-                         spacemacs-light)
+   dotspacemacs-themes '(spacemacs-light
+                         spacemacs-dark)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
@@ -332,6 +332,9 @@ you should place your code here."
                                (/ (frame-height))
                                (* (get-default 'max-mini-window-height)))))))
 
+  ;; Settings for `helm'
+  (setq helm-truncate-lines t)
+
   ;; Settings for `magit'
   (setq magit-diff-refine-hunk t)
   (eval-after-load 'magit
@@ -394,7 +397,9 @@ you should place your code here."
     (add-to-list 'page-break-lines-modes mode)
     (font-lock-add-keywords
      mode
-     '(("\\s(\\(?:[^ \t\n]+?/\\)?\\(default[^ \t\n]*?\\)[ \t\n]+\\([^ \t\n]+?\\)"
+     '(("[^ \t\n]+?\\(/\\)[^ \t\n]"
+        1 '(:inherit shadow))
+       ("\\s(\\(?:[^ \t\n]+?/\\)?\\(default[^ \t\n]*?\\)[ \t\n]+\\([^ \t\n]+?\\)"
         (1 '(:inherit default))
         (2 '(:inherit default)))
        ("\\s(\\(\\(?:as\\|some\\)?->>?\\|and\\|or\\)\\_>"
