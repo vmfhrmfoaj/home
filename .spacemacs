@@ -391,6 +391,14 @@ you should place your code here."
   (add-hook 'cider-repl-mode-hook #'spacemacs/toggle-smartparens-on)
   (evil-define-key 'insert cider-repl-mode-map (kbd "RET") #'evil-ret-and-indent)
   (evil-define-key 'normal cider-repl-mode-map (kbd "RET") #'cider-repl-return)
+  (evil-define-key 'insert clojure-mode-map (kbd "/")
+    (lambda ()
+      (interactive)
+      (when (prog1 (->> (char-before)
+                        (char-to-string)
+                        (string-match-p "[^ \t\n]"))
+              (insert "/"))
+        (company-complete-common-or-cycle))))
   (eval-after-load 'clj-refactor
     '(diminish 'clj-refactor-mode))
   (dolist (mode clojure-modes)
@@ -415,7 +423,7 @@ you should place your code here."
        ("\\_<\\(try\\+\\)\\_>"
         1 '(:inherit font-lock-keyword-face)))))
   (put 'def- 'clojure-doc-string-elt 2)
-  (put 'defmacro- 'clojure-doc-string-elt 2) 
+  (put 'defmacro- 'clojure-doc-string-elt 2)
 
   ;; Settings for `elixir'
   (evil-define-key 'insert elixir-mode-map (kbd "TAB")
