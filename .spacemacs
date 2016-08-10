@@ -275,6 +275,9 @@ you should place your code here."
      '(rainbow-delimiters-depth-7-face  ((t :foreground "#986e91")))
      '(rainbow-delimiters-depth-8-face  ((t :foreground "#6cb49d")))
      '(rainbow-delimiters-depth-9-face  ((t :foreground "#9f8c8c")))))
+  (custom-set-faces
+   '(linum                              ((t :underline nil)))
+   '(linum-relative-current-face        ((t :underline nil))))
   (add-hook 'after-make-frame-functions
             (lambda (&rest _)
               (interactive)
@@ -332,6 +335,21 @@ you should place your code here."
                                (/ (frame-height))
                                (* (get-default 'max-mini-window-height)))))))
 
+  ;; Settings for `aggressive-indent'
+  (let ((agg-indent-defn (lambda (&rest _)
+                           (save-match-data
+                             (aggressive-indent-indent-defun)))))
+    (add-hook 'evil-insert-state-exit-hook agg-indent-defn)
+    (advice-add #'evil-paste-after :after agg-indent-defn)
+    (advice-add #'evil-join :after agg-indent-defn))
+
+  ;; Settings for `linum'
+  (add-hook 'find-file-hook
+            (lambda ()
+              (when (and buffer-file-name
+                         (< (buffer-size) (* 1024 50)))
+                (linum-relative-mode))))
+
   ;; Settings for `helm'
   (setq helm-truncate-lines t)
 
@@ -349,7 +367,6 @@ you should place your code here."
   (remove-hook 'magit-mode-hook #'turn-on-magit-gitflow)
 
   ;; Settings for `emacs-lisp'
-  (add-hook 'emacs-lisp-mode-hook #'spacemacs/toggle-aggressive-indent-on 'append)
   (font-lock-add-keywords
    'emacs-lisp-mode
    '(("\\s(\\(\\(?:-as\\|-some\\)?->>?\\|and\\|or\\)\\_>"
@@ -386,8 +403,6 @@ you should place your code here."
         ahs-include '((clojure-mode . "[^ \t\n]+?")
                       (clojurescript-mode . "[^ \t\n]+?")
                       (clojurec-mode . "[^ \t\n]+?")))
-  (add-hook 'clojure-mode-hook #'spacemacs/toggle-aggressive-indent-on 'append)
-  (add-hook 'cider-repl-mode-hook #'spacemacs/toggle-aggressive-indent-on 'append)
   (add-hook 'cider-repl-mode-hook #'spacemacs/toggle-smartparens-on)
   (evil-define-key 'insert cider-repl-mode-map (kbd "RET") #'evil-ret-and-indent)
   (evil-define-key 'normal cider-repl-mode-map (kbd "RET") #'cider-repl-return)
