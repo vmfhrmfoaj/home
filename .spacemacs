@@ -341,7 +341,8 @@ you should place your code here."
                              (aggressive-indent-indent-defun)))))
     (add-hook 'evil-insert-state-exit-hook agg-indent-defn)
     (advice-add #'evil-paste-after :after agg-indent-defn)
-    (advice-add #'evil-join :after agg-indent-defn))
+    (advice-add #'evil-join :after agg-indent-defn)
+    (advice-add #'evil-delete :after agg-indent-defn))
 
   ;; Settings for `linum'
   (add-hook 'find-file-hook
