@@ -36,6 +36,7 @@ values."
      latex
      markdown
      org
+     sql
      version-control
      )
    ;; List of additional packages that will be installed without being
