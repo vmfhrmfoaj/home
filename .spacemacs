@@ -104,11 +104,11 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font `("MonacoB2"
-                               :size ,(if (<= 1440 (display-pixel-height)) 15 14)
+   dotspacemacs-default-font `("Fantasque Sans Mono"
+                               :size 16
                                :weight bold
                                :width normal
-                               :powerline-scale 1.1)
+                               :powerline-scale 1.5)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
@@ -251,6 +251,9 @@ you should place your code here."
   ;; Include the env var from `.profile'
   (include-shell-var-in "~/.profile")
 
+  ;; Settings for font
+  (setq-default line-spacing 1)
+
   ;; Settings for theme
   (ignore-errors
     (custom-theme-set-faces
@@ -279,6 +282,7 @@ you should place your code here."
   (custom-set-faces
    '(linum                              ((t :underline nil)))
    '(linum-relative-current-face        ((t :underline nil)))
+   '(lazy-highlight                     ((t :underline t :weight bold)))
    '(markdown-line-break-face           ((t :underline (:color foreground-color :style wave)
                                             :inherit shadow)))
    '(markdown-header-face-1             ((t :height 1.0)))
@@ -301,6 +305,9 @@ you should place your code here."
               (spacemacs/load-theme (first dotspacemacs-themes))
               (spacemacs//show-trailing-whitespace)))
 
+  ;; Settings for frame
+  (add-hook 'after-make-frame-functions #'move-frame-to-right 'append)
+
   ;; Settings for macOS
   (when (eq system-type 'darwin)
     (setq ns-antialias-text t
@@ -315,7 +322,7 @@ you should place your code here."
   (evil-global-set-key 'normal (kbd "S-SPC") #'toggle-input-method)
   (set-language-environment "Korean")
   (prefer-coding-system 'utf-8)
-  (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
+  (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF-14"))
   (-update-var->> input-method-alist
                   (--map-when (string-equal "korean-hangul" (first it))
                               (-replace-at 3 "Hangul" it)))
@@ -353,16 +360,16 @@ you should place your code here."
                                (* (get-default 'max-mini-window-height)))))))
 
   ;; Settings for `ediff'
-  (add-hook 'ediff-before-setup-hook #'toggle-frame-maximized)
+  (add-hook 'ediff-before-setup-hook #'spacemacs/toggle-maximize-frame-on)
   (advice-add #'ediff-quit
               :after (lambda (&rest _)
-                       (when (eq 'maximized (frame-parameter nil 'fullscreen))
-                         (toggle-frame-maximized))))
+                       (spacemacs/toggle-maximize-frame-off)))
 
   ;; Settings for `aggressive-indent'
   (let ((agg-indent-defn (lambda (&rest _)
                            (save-match-data
-                             (aggressive-indent-indent-defun)))))
+                             (ignore-errors
+                               (aggressive-indent-indent-defun))))))
     (add-hook 'evil-insert-state-exit-hook agg-indent-defn)
     (advice-add #'evil-paste-after :after agg-indent-defn)
     (advice-add #'evil-join :after agg-indent-defn)
@@ -376,7 +383,8 @@ you should place your code here."
                 (linum-relative-mode))))
 
   ;; Settings for `helm'
-  (setq helm-truncate-lines t)
+  (setq helm-autoresize-max-height 20
+        helm-truncate-lines t)
 
   ;; Settings for `magit'
   (setq magit-diff-refine-hunk t)
@@ -649,3 +657,17 @@ you should place your code here."
         (let ((key   (match-string-no-properties 1 it))
               (value (match-string-no-properties 2 it)))
           (setenv key (resolve-sh-var value)))))))
+
+(defun get-frame-x (frame)
+  (cdr (assoc 'left (frame-parameters frame))))
+(defun get-frame-y (frame)
+  (cdr (assoc 'top (frame-parameters frame))))
+(defun get-frame-width (frame)
+  (frame-unit->pixel (cdr (assoc 'width (frame-parameters frame)))))
+(defun move-frame-to-right (frame)
+  (let* ((step (frame-unit->pixel 30))
+         (x (+ (get-frame-x (selected-frame)) step))
+         (x (if (< (display-pixel-width) (+ x (get-frame-width frame)))
+                (- (display-pixel-width) (get-frame-width frame))
+              x)))
+    (set-frame-position frame x (get-frame-y frame))))
