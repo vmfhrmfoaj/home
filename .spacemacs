@@ -278,7 +278,23 @@ you should place your code here."
      '(rainbow-delimiters-depth-9-face  ((t :foreground "#9f8c8c")))))
   (custom-set-faces
    '(linum                              ((t :underline nil)))
-   '(linum-relative-current-face        ((t :underline nil))))
+   '(linum-relative-current-face        ((t :underline nil)))
+   '(markdown-line-break-face           ((t :underline (:color foreground-color :style wave)
+                                            :inherit shadow)))
+   '(markdown-header-face-1             ((t :height 1.0)))
+   '(markdown-header-face-2             ((t :height 1.0)))
+   '(markdown-header-face-3             ((t :height 1.0)))
+   '(markdown-header-face-4             ((t :height 1.0)))
+   '(markdown-header-face-5             ((t :height 1.0)))
+   '(markdown-header-face-6             ((t :height 1.0)))
+   '(org-level-1                        ((t :height 1.0)))
+   '(org-level-2                        ((t :height 1.0)))
+   '(org-level-3                        ((t :height 1.0)))
+   '(org-level-4                        ((t :height 1.0)))
+   '(org-level-5                        ((t :height 1.0)))
+   '(org-level-6                        ((t :height 1.0)))
+   '(org-level-7                        ((t :height 1.0)))
+   '(org-level-8                        ((t :height 1.0))))
   (add-hook 'after-make-frame-functions
             (lambda (&rest _)
               (interactive)
@@ -335,6 +351,13 @@ you should place your code here."
                                (float)
                                (/ (frame-height))
                                (* (get-default 'max-mini-window-height)))))))
+
+  ;; Settings for `ediff'
+  (add-hook 'ediff-before-setup-hook #'toggle-frame-maximized)
+  (advice-add #'ediff-quit
+              :after (lambda (&rest _)
+                       (when (eq 'maximized (frame-parameter nil 'fullscreen))
+                         (toggle-frame-maximized))))
 
   ;; Settings for `aggressive-indent'
   (let ((agg-indent-defn (lambda (&rest _)
@@ -473,7 +496,15 @@ you should place your code here."
         org-pretty-entities t
         org-src-fontify-natively t
         org-startup-indented t
-        org-bullets-bullet-list '("■" "□" "◙" "◘" "●" "○" "◌")))
+        org-bullets-bullet-list '("■" "□" "◙" "◘" "●" "○" "◌"))
+
+  ;; Settings for `markdown'
+  (font-lock-add-keywords
+   'markdown-mode
+   '(("\\(<[^>]+>\\)"
+      1 '(:inherit shadow))))
+  (sp-local-pair 'markdown-mode "<" ">")
+  )
 
 
 ;; Help functions for user-config
