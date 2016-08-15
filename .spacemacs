@@ -366,14 +366,19 @@ you should place your code here."
                        (spacemacs/toggle-maximize-frame-off)))
 
   ;; Settings for `aggressive-indent'
-  (let ((agg-indent-defn (lambda (&rest _)
-                           (save-match-data
-                             (ignore-errors
-                               (aggressive-indent-indent-defun))))))
-    (add-hook 'evil-insert-state-exit-hook agg-indent-defn)
-    (advice-add #'evil-paste-after :after agg-indent-defn)
-    (advice-add #'evil-join :after agg-indent-defn)
-    (advice-add #'evil-delete :after agg-indent-defn))
+  (add-hook
+   'spacemacs-buffer//startup-hook
+   (when (require 'aggressive-indent nil 'noerr)
+     (let ((agg-indent-defn (lambda (&rest _)
+                              (unless (apply #'derived-mode-p
+                                             aggressive-indent-excluded-modes)
+                                (save-match-data
+                                  (ignore-errors
+                                    (aggressive-indent-indent-defun)))))))
+       (add-hook 'evil-insert-state-exit-hook agg-indent-defn)
+       (advice-add #'evil-paste-after :after agg-indent-defn)
+       (advice-add #'evil-join :after agg-indent-defn)
+       (advice-add #'evil-delete :after agg-indent-defn))))
 
   ;; Settings for `linum'
   (add-hook 'find-file-hook
