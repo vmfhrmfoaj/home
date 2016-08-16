@@ -13,7 +13,7 @@ values."
    dotspacemacs-distribution 'spacemacs
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
-   dotspacemacs-configuration-layer-path '()
+   dotspacemacs-configuration-layer-path '("~/.spacemacs-private")
    ;; List of configuration layers to load. If it is the symbol `all' instead
    ;; of a list then all discovered layers will be installed.
    dotspacemacs-configuration-layers
@@ -29,6 +29,7 @@ values."
      elixir
      emacs-lisp
      erlang
+     ;; focus
      git
      html
      java
@@ -104,11 +105,11 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font `("Fantasque Sans Mono"
-                               :size 16
-                               :weight bold
+   dotspacemacs-default-font `("MonacoB"
+                               :size 13
+                               :weight normal
                                :width normal
-                               :powerline-scale 1.5)
+                               :powerline-scale 1.1)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
@@ -251,54 +252,35 @@ you should place your code here."
   ;; Include the env var from `.profile'
   (include-shell-var-in "~/.profile")
 
-  ;; Settings for font
-  (setq-default line-spacing 1)
-
   ;; Settings for theme
-  (ignore-errors
-    (custom-theme-set-faces
-     'spacemacs-dark
-     '(rainbow-delimiters-depth-1-face  ((t :foreground "#3f78ac")))
-     '(rainbow-delimiters-depth-2-face  ((t :foreground "#96589d")))
-     '(rainbow-delimiters-depth-3-face  ((t :foreground "#24775c")))
-     '(rainbow-delimiters-depth-4-face  ((t :foreground "#528d17")))
-     '(rainbow-delimiters-depth-5-face  ((t :foreground "#8d7717")))
-     '(rainbow-delimiters-depth-6-face  ((t :foreground "#376996")))
-     '(rainbow-delimiters-depth-7-face  ((t :foreground "#834d89")))
-     '(rainbow-delimiters-depth-8-face  ((t :foreground "#1f6851")))
-     '(rainbow-delimiters-depth-9-face  ((t :foreground "#7c918a")))))
-  (ignore-errors
-    (custom-theme-set-faces
-     'spacemacs-light
-     '(rainbow-delimiters-depth-1-face  ((t :foreground "#619acf")))
-     '(rainbow-delimiters-depth-2-face  ((t :foreground "#895a82")))
-     '(rainbow-delimiters-depth-3-face  ((t :foreground "#56aa8f")))
-     '(rainbow-delimiters-depth-4-face  ((t :foreground "#85c04a")))
-     '(rainbow-delimiters-depth-5-face  ((t :foreground "#c0aa4a")))
-     '(rainbow-delimiters-depth-6-face  ((t :foreground "#3a81c3")))
-     '(rainbow-delimiters-depth-7-face  ((t :foreground "#986e91")))
-     '(rainbow-delimiters-depth-8-face  ((t :foreground "#6cb49d")))
-     '(rainbow-delimiters-depth-9-face  ((t :foreground "#9f8c8c")))))
+  (cl-case (first dotspacemacs-themes)
+    ('spacemacs-dark
+     (custom-set-faces
+      '(rainbow-delimiters-depth-1-face ((t :foreground "#3f78ac")))
+      '(rainbow-delimiters-depth-2-face ((t :foreground "#96589d")))
+      '(rainbow-delimiters-depth-3-face ((t :foreground "#24775c")))
+      '(rainbow-delimiters-depth-4-face ((t :foreground "#528d17")))
+      '(rainbow-delimiters-depth-5-face ((t :foreground "#8d7717")))
+      '(rainbow-delimiters-depth-6-face ((t :foreground "#376996")))
+      '(rainbow-delimiters-depth-7-face ((t :foreground "#834d89")))
+      '(rainbow-delimiters-depth-8-face ((t :foreground "#1f6851")))
+      '(rainbow-delimiters-depth-9-face ((t :foreground "#7c918a")))))
+    ('spacemacs-light
+     (custom-set-faces
+      '(rainbow-delimiters-depth-1-face ((t :foreground "#619acf")))
+      '(rainbow-delimiters-depth-2-face ((t :foreground "#895a82")))
+      '(rainbow-delimiters-depth-3-face ((t :foreground "#56aa8f")))
+      '(rainbow-delimiters-depth-4-face ((t :foreground "#85c04a")))
+      '(rainbow-delimiters-depth-5-face ((t :foreground "#c0aa4a")))
+      '(rainbow-delimiters-depth-6-face ((t :foreground "#3a81c3")))
+      '(rainbow-delimiters-depth-7-face ((t :foreground "#986e91")))
+      '(rainbow-delimiters-depth-8-face ((t :foreground "#6cb49d")))
+      '(rainbow-delimiters-depth-9-face ((t :foreground "#9f8c8c"))))))
   (custom-set-faces
-   '(linum                              ((t :underline nil)))
-   '(linum-relative-current-face        ((t :underline nil)))
-   '(lazy-highlight                     ((t :underline t :weight bold)))
-   '(markdown-line-break-face           ((t :underline (:color foreground-color :style wave)
-                                            :inherit shadow)))
-   '(markdown-header-face-1             ((t :height 1.0)))
-   '(markdown-header-face-2             ((t :height 1.0)))
-   '(markdown-header-face-3             ((t :height 1.0)))
-   '(markdown-header-face-4             ((t :height 1.0)))
-   '(markdown-header-face-5             ((t :height 1.0)))
-   '(markdown-header-face-6             ((t :height 1.0)))
-   '(org-level-1                        ((t :height 1.0)))
-   '(org-level-2                        ((t :height 1.0)))
-   '(org-level-3                        ((t :height 1.0)))
-   '(org-level-4                        ((t :height 1.0)))
-   '(org-level-5                        ((t :height 1.0)))
-   '(org-level-6                        ((t :height 1.0)))
-   '(org-level-7                        ((t :height 1.0)))
-   '(org-level-8                        ((t :height 1.0))))
+   '(linum                       ((t :underline nil)))
+   '(linum-relative-current-face ((t :underline nil)))
+   '(lazy-highlight              ((t :underline t)))
+   '(markdown-line-break-face    ((t :underline (:color foreground-color :style wave) :inherit shadow))))
   (add-hook 'after-make-frame-functions
             (lambda (&rest _)
               (interactive)
@@ -322,13 +304,13 @@ you should place your code here."
   (evil-global-set-key 'normal (kbd "S-SPC") #'toggle-input-method)
   (set-language-environment "Korean")
   (prefer-coding-system 'utf-8)
-  (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF-14"))
+  (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
   (-update-var->> input-method-alist
                   (--map-when (string-equal "korean-hangul" (first it))
                               (-replace-at 3 "Hangul" it)))
 
   ;; Settings for pos/size of initial frame
-  (let* ((w 110)
+  (let* ((w 120)
          (h (1- (/ (display-pixel-height) (frame-char-height))))
          (l (/ (custom-display-pixel-width) 2.0))
          (l (floor (- l (/ (frame-unit->pixel w) 2.8))))
@@ -380,12 +362,15 @@ you should place your code here."
        (advice-add #'evil-join :after agg-indent-defn)
        (advice-add #'evil-delete :after agg-indent-defn))))
 
-  ;; Settings for `linum'
-  (add-hook 'find-file-hook
+  ;; Settings for `focus'
+  (setq text-scale-mode-step 1.15)
+  (add-hook 'evil-insert-state-entry-hook
             (lambda ()
-              (when (and buffer-file-name
-                         (< (buffer-size) (* 1024 50)))
-                (linum-relative-mode))))
+              (text-scale-increase 0)
+              (text-scale-increase 1)))
+  (add-hook 'evil-insert-state-exit-hook
+            (lambda ()
+              (text-scale-increase 0)))
 
   ;; Settings for `helm'
   (setq helm-autoresize-max-height 20
@@ -395,13 +380,11 @@ you should place your code here."
   (setq magit-diff-refine-hunk t)
   (eval-after-load 'magit
     '(progn
-       (add-to-list 'magit-diff-section-arguments "--ignore-space-change")
        ;; Additional options that not included Magit
        ;;  This option is experimental feature
        ;;  It's available v2.9 and upper.
        ;;  See, http://www.spinics.net/lists/git/msg278919.html
-       (add-to-list 'magit-diff-section-arguments "--compaction-heuristic")
-       (setq git-gutter+-diff-options magit-diff-section-arguments)))
+       (add-to-list 'magit-diff-section-arguments "--compaction-heuristic")))
   (remove-hook 'magit-mode-hook #'turn-on-magit-gitflow)
 
   ;; Settings for `emacs-lisp'
