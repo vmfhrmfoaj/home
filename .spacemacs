@@ -29,7 +29,7 @@ values."
      elixir
      emacs-lisp
      erlang
-     ;; focus
+     focus
      git
      html
      java

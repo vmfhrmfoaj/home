@@ -21,6 +21,7 @@
        :init
        (add-hook 'evil-insert-state-entry-hook (lambda () (focus-mode 1)))
        (add-hook 'evil-insert-state-exit-hook  (lambda () (focus-mode 0)))
+       :config
        (add-to-list 'focus-mode-to-thing '(tex-mode . page))
        (add-to-list 'focus-mode-to-thing '(org-mode . org))
        (put 'org 'bounds-of-thing-at-point
