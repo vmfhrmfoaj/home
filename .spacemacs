@@ -34,7 +34,9 @@ values."
      html
      java
      javascript
-     latex
+     (latex :variables
+            latex-build-command "LaTeX"
+            latex-enable-auto-fill nil)
      markdown
      org
      sql
@@ -646,16 +648,18 @@ you should place your code here."
               (value (match-string-no-properties 2 it)))
           (setenv key (resolve-sh-var value)))))))
 
-(defun get-frame-x (frame)
+(defun frame-x (frame)
   (cdr (assoc 'left (frame-parameters frame))))
-(defun get-frame-y (frame)
+(defun frame-y (frame)
   (cdr (assoc 'top (frame-parameters frame))))
-(defun get-frame-width (frame)
-  (frame-unit->pixel (cdr (assoc 'width (frame-parameters frame)))))
+(defun rightmost-frame ()
+  (-some->> (visible-frame-list)
+            (--sort (> (frame-x it) (frame-x other)))
+            (-first-item)))
 (defun move-frame-to-right (frame)
   (let* ((step (frame-unit->pixel 30))
-         (x (+ (get-frame-x (selected-frame)) step))
-         (x (if (< (display-pixel-width) (+ x (get-frame-width frame)))
-                (- (display-pixel-width) (get-frame-width frame))
+         (x (+ (frame-x (rightmost-frame)) step))
+         (x (if (< (custom-display-pixel-width) (+ x (frame-pixel-width frame)))
+                (- (custom-display-pixel-width) (frame-pixel-width frame) 1)
               x)))
-    (set-frame-position frame x (get-frame-y frame))))
+    (set-frame-position frame x (frame-y frame))))
