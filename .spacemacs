@@ -278,11 +278,12 @@ you should place your code here."
       '(rainbow-delimiters-depth-7-face ((t :foreground "#986e91")))
       '(rainbow-delimiters-depth-8-face ((t :foreground "#6cb49d")))
       '(rainbow-delimiters-depth-9-face ((t :foreground "#9f8c8c"))))))
-  (custom-set-faces
-   '(linum                       ((t :underline nil)))
-   '(linum-relative-current-face ((t :underline nil)))
-   '(lazy-highlight              ((t :underline t)))
-   '(markdown-line-break-face    ((t :underline (:color foreground-color :style wave) :inherit shadow))))
+  (let ((height (face-attribute 'default :height)))
+    (custom-set-faces
+     `(linum                       ((t :underline nil :height ,height)))
+     `(linum-relative-current-face ((t :underline nil :height ,height)))
+     '(lazy-highlight              ((t :underline t)))
+     '(markdown-line-break-face    ((t :underline (:color foreground-color :style wave) :inherit shadow)))))
   (add-hook 'after-make-frame-functions
             (lambda (&rest _)
               (interactive)
@@ -373,6 +374,13 @@ you should place your code here."
   (add-hook 'evil-insert-state-exit-hook
             (lambda ()
               (text-scale-increase 0)))
+
+  ;; Settings for `linum'
+  (add-hook 'find-file-hook
+            (lambda ()
+              (when (and buffer-file-name
+                         (< (buffer-size) (* 1024 50)))
+                (linum-relative-mode))))
 
   ;; Settings for `helm'
   (setq helm-autoresize-max-height 20
@@ -474,6 +482,7 @@ you should place your code here."
 
   ;; Settings for `latex'
   (add-hook 'LaTeX-mode-hook #'latex-preview)
+  (add-hook 'LaTeX-mode-hook #'page-break-lines-mode)
   (eval-after-load 'doc-view
     '(progn
        (-update-var->> doc-view-ghostscript-options
@@ -531,8 +540,7 @@ you should place your code here."
 (defun correct-foregound-color (png)
   (let ((fg-color (face-attribute 'default :foreground))
         (bg-color (face-attribute 'default :background)))
-    (unless (equal (color-values "white")
-                   (color-values bg-color))
+    (when (< 1500 (color-distance "white" bg-color))
       ;; XXX: brew install graphicsmagick
       (shell-command-to-string (concat "gm convert "
                                        png " "
