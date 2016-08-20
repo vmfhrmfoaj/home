@@ -29,7 +29,9 @@ values."
      elixir
      emacs-lisp
      erlang
-     focus
+     (focus :variables
+            focus-mode-to-new-thing '((clojure-mode    . list+)
+                                      (emacs-lisp-mode . list+)))
      git
      html
      java
@@ -107,9 +109,9 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font `("MonacoB"
+   dotspacemacs-default-font `("MonacoB2"
                                :size 13
-                               :weight normal
+                               :weight bold
                                :width normal
                                :powerline-scale 1.1)
    ;; The leader key
@@ -269,6 +271,11 @@ you should place your code here."
       '(rainbow-delimiters-depth-9-face ((t :foreground "#7c918a")))))
     ('spacemacs-light
      (custom-set-faces
+      '(font-lock-function-name-face    ((t :foreground nil
+                                            :background "#eff2fb"
+                                            :inherit font-lock-variable-name-face)))
+      '(font-lock-regexp-grouping-backslash ((t :background "#eaf4f1")))
+      '(font-lock-regexp-grouping-construct ((t :background "#eaf4f1")))
       '(rainbow-delimiters-depth-1-face ((t :foreground "#619acf")))
       '(rainbow-delimiters-depth-2-face ((t :foreground "#895a82")))
       '(rainbow-delimiters-depth-3-face ((t :foreground "#56aa8f")))
@@ -282,8 +289,9 @@ you should place your code here."
     (custom-set-faces
      `(linum                       ((t :underline nil :height ,height)))
      `(linum-relative-current-face ((t :underline nil :height ,height)))
-     '(lazy-highlight              ((t :underline t)))
-     '(markdown-line-break-face    ((t :underline (:color foreground-color :style wave) :inherit shadow)))))
+     '(lazy-highlight              ((t :underline t :weight bold)))
+     '(markdown-line-break-face    ((t :underline (:color foreground-color :style wave)
+                                       :inherit shadow)))))
   (add-hook 'after-make-frame-functions
             (lambda (&rest _)
               (interactive)
@@ -303,6 +311,13 @@ you should place your code here."
           mac-pass-command-to-system nil)
     (set-file-name-coding-system 'utf-8-hfs))
 
+  ;; Settings for key-bind
+  (evil-global-set-key 'insert (kbd "C-h") #'delete-backward-char)
+  ;; HHKB
+  (evil-global-set-key 'insert (kbd "<S-kp-divide>")   (kbd "\\"))
+  (evil-global-set-key 'insert (kbd "<S-kp-subtract>") (kbd "_"))
+  (evil-global-set-key 'insert (kbd "<S-kp-add>")      (kbd "="))
+
   ;; Settings for Hangul
   (evil-global-set-key 'normal (kbd "S-SPC") #'toggle-input-method)
   (set-language-environment "Korean")
@@ -313,8 +328,8 @@ you should place your code here."
                               (-replace-at 3 "Hangul" it)))
 
   ;; Settings for pos/size of initial frame
-  (let* ((w 120)
-         (h (1- (/ (display-pixel-height) (frame-char-height))))
+  (let* ((w (if (<= 1440 (display-pixel-height)) 120 110))
+         (h (1- (/ (custom-display-pixel-width) (frame-char-height))))
          (l (/ (custom-display-pixel-width) 2.0))
          (l (floor (- l (/ (frame-unit->pixel w) 2.8))))
          (l (if (< 0 (- (custom-display-pixel-width)
@@ -365,16 +380,6 @@ you should place your code here."
        (advice-add #'evil-join :after agg-indent-defn)
        (advice-add #'evil-delete :after agg-indent-defn))))
 
-  ;; Settings for `focus'
-  (setq text-scale-mode-step 1.15)
-  (add-hook 'evil-insert-state-entry-hook
-            (lambda ()
-              (text-scale-increase 0)
-              (text-scale-increase 1)))
-  (add-hook 'evil-insert-state-exit-hook
-            (lambda ()
-              (text-scale-increase 0)))
-
   ;; Settings for `linum'
   (add-hook 'find-file-hook
             (lambda ()
@@ -382,9 +387,29 @@ you should place your code here."
                          (< (buffer-size) (* 1024 50)))
                 (linum-relative-mode))))
 
+  ;; Settings for `company'
+  (eval-after-load 'company
+    '(progn
+       (define-key company-active-map [remap company-show-doc-buffer] #'company-show-doc-buffer)
+       (define-key company-active-map (kbd "C-h") nil)))
+
   ;; Settings for `helm'
+  (eval-after-load 'helm
+    '(define-key helm-map (kbd "C-h") #'delete-backward-char))
   (setq helm-autoresize-max-height 20
         helm-truncate-lines t)
+
+  ;; Settings for `minibuf'
+  (add-hook 'minibuffer-setup-hook
+            (lambda ()
+              (local-set-key (kbd "C-h")   #'backward-delete-char)
+              (local-set-key (kbd "S-SPC") #'toggle-input-method)))
+
+  ;; Settings for `ahs'
+  (setq ahs-include '((clojure-mode . "[^ \t\n]+?")
+                      (clojurescript-mode . "[^ \t\n]+?")
+                      (clojurec-mode . "[^ \t\n]+?")
+                      (emacs-lisp-mode . "[^ \t\n]+?")))
 
   ;; Settings for `magit'
   (setq magit-diff-refine-hunk t)
@@ -430,10 +455,7 @@ you should place your code here."
         cider-dynamic-indentation nil
         cider-font-lock-dynamically nil
         cider-repl-use-pretty-printing t
-        cljr-expectations-test-declaration "[expectations :refer :all]"
-        ahs-include '((clojure-mode . "[^ \t\n]+?")
-                      (clojurescript-mode . "[^ \t\n]+?")
-                      (clojurec-mode . "[^ \t\n]+?")))
+        cljr-expectations-test-declaration "[expectations :refer :all]")
   (add-hook 'cider-repl-mode-hook #'spacemacs/toggle-smartparens-on)
   (evil-define-key 'insert cider-repl-mode-map (kbd "RET") #'evil-ret-and-indent)
   (evil-define-key 'normal cider-repl-mode-map (kbd "RET") #'cider-repl-return)
@@ -483,13 +505,12 @@ you should place your code here."
   ;; Settings for `latex'
   (add-hook 'LaTeX-mode-hook #'latex-preview)
   (add-hook 'LaTeX-mode-hook #'page-break-lines-mode)
+  (add-hook 'LaTeX-mode-hook #'spacemacs/toggle-smartparens-on)
   (eval-after-load 'doc-view
     '(progn
        (-update-var->> doc-view-ghostscript-options
                        (--remove (string-match-p "-sDEVICE=.*" it))
-                       (append '("-sDEVICE=pngalpha")))
-       (setq-default doc-view-pdf->png-converter-function
-                     #'doc-view-pdf->png-converter-ghostscript-wrapper)))
+                       (append '("-sDEVICE=pngalpha")))))
 
   ;; Settings for `org'
   (font-lock-add-keywords
@@ -537,33 +558,6 @@ you should place your code here."
        (cdr)
        (nth 2)))
 
-(defun correct-foregound-color (png)
-  (let ((fg-color (face-attribute 'default :foreground))
-        (bg-color (face-attribute 'default :background)))
-    (when (< 1500 (color-distance "white" bg-color))
-      ;; XXX: brew install graphicsmagick
-      (shell-command-to-string (concat "gm convert "
-                                       png " "
-                                       "-fill '" fg-color "' "
-                                       "-opaque black "
-                                       png)))))
-(defun doc-view-pdf->png-converter-ghostscript-wrapper (pdf png page callback)
-  (let ((cb (lexical-let ((callback callback)
-                          (png      png))
-              (lambda ()
-                (if (file-exists-p png)
-                    (correct-foregound-color png)
-                  (--map (correct-foregound-color it)
-                         (-> png
-                             file-name-directory
-                             (directory-files t ".+\\.png")))
-                  (unless (bound-and-true-p doc-view-refresh-once)
-                    (setq-local doc-view-refresh-once t)
-                    (run-at-time "1 secs" nil
-                                 #'doc-view-revert-buffer nil t)))
-                (funcall callback)))))
-    (doc-view-pdf->png-converter-ghostscript pdf png page cb)))
-
 (defun latex-build-tex (&optional file)
   (interactive)
   (let ((file (or file buffer-file-name)))
@@ -575,7 +569,7 @@ you should place your code here."
     (save-window-excursion
       (if (->> (frame-parameters)
                (assoc 'fullscreen)
-               cdr)
+               (cdr))
           (find-file-other-window pdf)
         (find-file-other-frame pdf))))
   (add-hook 'after-save-hook

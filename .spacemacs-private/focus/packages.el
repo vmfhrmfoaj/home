@@ -22,8 +22,9 @@
        (add-hook 'evil-insert-state-entry-hook (lambda () (focus-mode 1)))
        (add-hook 'evil-insert-state-exit-hook  (lambda () (focus-mode 0)))
        :config
-       (add-to-list 'focus-mode-to-thing '(tex-mode . page))
+       (add-to-list 'focus-mode-to-thing '(tex-mode . tex-sentence))
        (add-to-list 'focus-mode-to-thing '(org-mode . org))
+       (setq focus-mode-to-thing (append focus-mode-to-new-thing focus-mode-to-thing))
        (put 'org 'bounds-of-thing-at-point
             (lambda ()
               (save-excursion
@@ -34,6 +35,34 @@
                                (outline-next-visible-heading 1)
                                (beginning-of-line)
                                (point))))
-                  (cons start end))))))))
+                  (cons start end)))))
+       (put 'tex-sentence 'bounds-of-thing-at-point
+            (lambda ()
+              (let* ((regx  (concat "^\\(?:[[:cntrl:]]\\)*$"))
+                     (start (save-excursion
+                              (backward-char)
+                              (re-search-backward regx nil t)
+                              (point)))
+                     (end   (save-excursion
+                              (forward-char)
+                              (re-search-forward regx nil t)
+                              (point))))
+                (cons start end))))
+       (if (require 'smartparens nil t)
+           (put 'list+ 'bounds-of-thing-at-point
+                (lambda ()
+                  (save-excursion
+                    (let ((start (progn
+                                   (ignore-errors
+                                     (when (sp-point-in-string)
+                                       (sp-backward-up-sexp))
+                                     (backward-up-list))
+                                   (point)))
+                          (end   (progn
+                                   (forward-list)
+                                   (point))))
+                      (cons start end)))))
+         (put 'list+ 'bounds-of-thing-at-point
+              (get 'list 'bounds-of-thing-at-point))))))
 
 ;;; packages.el ends here
