@@ -243,7 +243,30 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
-  (setq exec-path-from-shell-check-startup-files nil))
+  (setq exec-path-from-shell-check-startup-files nil)
+
+  ;; Settings for `avy'
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (when (require 'avy nil 'noerr)
+                (spacemacs/set-leader-keys "'" 'avy-pop-mark)))
+            'append)
+
+  ;; Settings for `aggressive'
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (when (require 'aggressive-indent nil 'noerr)
+                (let ((agg-indent-defn (lambda (&rest _)
+                                         (unless (apply #'derived-mode-p
+                                                        aggressive-indent-excluded-modes)
+                                           (save-match-data
+                                             (ignore-errors
+                                               (aggressive-indent-indent-defun)))))))
+                  (add-hook 'evil-insert-state-exit-hook agg-indent-defn)
+                  (advice-add #'evil-paste-after :after agg-indent-defn)
+                  (advice-add #'evil-join :after agg-indent-defn)
+                  (advice-add #'evil-delete :after agg-indent-defn))))
+            'append))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -255,6 +278,13 @@ you should place your code here."
 
   ;; Include the env var from `.profile'
   (include-shell-var-in "~/.profile")
+
+  ;; Key-bind settings
+  (evil-global-set-key 'insert (kbd "C-h") #'delete-backward-char)
+  ;; for HHKB
+  (global-set-key (kbd "<S-kp-divide>")   (kbd "\\"))
+  (global-set-key (kbd "<S-kp-subtract>") (kbd "_"))
+  (global-set-key (kbd "<S-kp-add>")      (kbd "="))
 
   ;; Settings for theme
   (cl-case (first dotspacemacs-themes)
@@ -319,13 +349,6 @@ you should place your code here."
           mac-pass-command-to-system nil)
     (set-file-name-coding-system 'utf-8-hfs))
 
-  ;; Settings for key-bind
-  (evil-global-set-key 'insert (kbd "C-h") #'delete-backward-char)
-  ;; HHKB
-  (evil-global-set-key 'insert (kbd "<S-kp-divide>")   (kbd "\\"))
-  (evil-global-set-key 'insert (kbd "<S-kp-subtract>") (kbd "_"))
-  (evil-global-set-key 'insert (kbd "<S-kp-add>")      (kbd "="))
-
   ;; Settings for Hangul
   (evil-global-set-key 'normal (kbd "S-SPC") #'toggle-input-method)
   (set-language-environment "Korean")
@@ -372,21 +395,6 @@ you should place your code here."
   (advice-add #'ediff-quit
               :after (lambda (&rest _)
                        (spacemacs/toggle-maximize-frame-off)))
-
-  ;; Settings for `aggressive-indent'
-  (add-hook
-   'spacemacs-buffer//startup-hook
-   (when (require 'aggressive-indent nil 'noerr)
-     (let ((agg-indent-defn (lambda (&rest _)
-                              (unless (apply #'derived-mode-p
-                                             aggressive-indent-excluded-modes)
-                                (save-match-data
-                                  (ignore-errors
-                                    (aggressive-indent-indent-defun)))))))
-       (add-hook 'evil-insert-state-exit-hook agg-indent-defn)
-       (advice-add #'evil-paste-after :after agg-indent-defn)
-       (advice-add #'evil-join :after agg-indent-defn)
-       (advice-add #'evil-delete :after agg-indent-defn))))
 
   ;; Settings for `linum'
   (add-hook 'find-file-hook
