@@ -291,7 +291,15 @@ you should place your code here."
      `(linum-relative-current-face ((t :underline nil :height ,height)))
      '(lazy-highlight              ((t :underline t :weight bold)))
      '(markdown-line-break-face    ((t :underline (:color foreground-color :style wave)
-                                       :inherit shadow)))))
+                                       :inherit shadow)))
+     '(org-level-1                 ((t :weight bold)))
+     '(org-level-2                 ((t :weight bold)))
+     '(org-level-3                 ((t :weight bold)))
+     '(org-level-4                 ((t :weight bold)))
+     '(org-level-5                 ((t :weight bold)))
+     '(org-level-6                 ((t :weight bold)))
+     '(org-level-7                 ((t :weight bold)))
+     '(org-level-8                 ((t :weight bold)))))
   (add-hook 'after-make-frame-functions
             (lambda (&rest _)
               (interactive)
@@ -506,6 +514,9 @@ you should place your code here."
   (add-hook 'LaTeX-mode-hook #'latex-preview)
   (add-hook 'LaTeX-mode-hook #'page-break-lines-mode)
   (add-hook 'LaTeX-mode-hook #'spacemacs/toggle-smartparens-on)
+  (add-hook 'doc-view-mode-hook
+            (lambda ()
+              (setq-local global-hl-line-mode nil)))
   (eval-after-load 'doc-view
     '(progn
        (-update-var->> doc-view-ghostscript-options
@@ -565,28 +576,29 @@ you should place your code here."
                (= 0 (call-process "pdflatex" nil nil nil file)))
       (concat (file-name-sans-extension file) ".pdf"))))
 (defun latex-preview (&rest _)
-  (-when-let (pdf (latex-build-tex))
-    (save-window-excursion
-      (if (->> (frame-parameters)
-               (assoc 'fullscreen)
-               (cdr))
-          (find-file-other-window pdf)
-        (find-file-other-frame pdf))))
-  (add-hook 'after-save-hook
-            (lambda (&rest _)
-              (message "Build & Reload PDF file")
-              ;; TODO:
-              ;; execute asynchronously
-              (-when-let (pdf (latex-build-tex))
-                (-when-let (buf (->> (frame-list)
-                                     (--mapcat (window-list it))
-                                     (--map (window-buffer it))
-                                     (--filter (string-equal pdf (buffer-file-name it)))
-                                     (-first-item)))
-                  (save-window-excursion
-                    (set-buffer buf)
-                    (doc-view-revert-buffer nil t)))))
-            nil t))
+  (unless (string-match-p "^timemachine:" (buffer-name))
+    (-when-let (pdf (latex-build-tex))
+      (save-window-excursion
+        (if (->> (frame-parameters)
+                 (assoc 'fullscreen)
+                 (cdr))
+            (find-file-other-window pdf)
+          (find-file-other-frame pdf))))
+    (add-hook 'after-save-hook
+              (lambda (&rest _)
+                (message "Build & Reload PDF file")
+                ;; TODO:
+                ;; execute asynchronously
+                (-when-let (pdf (latex-build-tex))
+                  (-when-let (buf (->> (frame-list)
+                                       (--mapcat (window-list it))
+                                       (--map (window-buffer it))
+                                       (--filter (string-equal pdf (buffer-file-name it)))
+                                       (-first-item)))
+                    (save-window-excursion
+                      (set-buffer buf)
+                      (doc-view-revert-buffer nil t)))))
+              nil t)))
 
 (defvar clojure-modes '(clojure-mode cider-repl-mode emacs-lisp-mode))
 (defun wrap-sp-forward-symbol (&optional arg)
