@@ -48,21 +48,20 @@
                               (re-search-forward regx nil t)
                               (point))))
                 (cons start end))))
-       (if (require 'smartparens nil t)
-           (put 'list+ 'bounds-of-thing-at-point
-                (lambda ()
-                  (save-excursion
-                    (let ((start (progn
-                                   (ignore-errors
-                                     (when (sp-point-in-string)
-                                       (sp-backward-up-sexp))
-                                     (backward-up-list))
-                                   (point)))
-                          (end   (progn
-                                   (forward-list)
-                                   (point))))
-                      (cons start end)))))
-         (put 'list+ 'bounds-of-thing-at-point
-              (get 'list 'bounds-of-thing-at-point))))))
+       (put 'list+ 'bounds-of-thing-at-point (get 'list 'bounds-of-thing-at-point))
+       (eval-after-load "smartparens"
+         '(put 'list+ 'bounds-of-thing-at-point
+               (lambda ()
+                 (save-excursion
+                   (let ((start (progn
+                                  (ignore-errors
+                                    (when (sp-point-in-string)
+                                      (sp-backward-up-sexp))
+                                    (backward-up-list))
+                                  (point)))
+                         (end   (progn
+                                  (forward-list)
+                                  (point))))
+                     (cons start end)))))))))
 
 ;;; packages.el ends here

@@ -31,7 +31,8 @@ values."
      erlang
      (focus :variables
             focus-mode-to-new-thing '((clojure-mode    . list+)
-                                      (emacs-lisp-mode . list+)))
+                                      (emacs-lisp-mode . list+)
+                                      (cider-repl-mode . list+)))
      git
      html
      java
@@ -281,7 +282,7 @@ you should place your code here."
 
   ;; Key-bind settings
   (evil-global-set-key 'insert (kbd "C-h") #'delete-backward-char)
-  ;; for HHKB
+  ;; - HHKB
   (global-set-key (kbd "<S-kp-divide>")   (kbd "\\"))
   (global-set-key (kbd "<S-kp-subtract>") (kbd "_"))
   (global-set-key (kbd "<S-kp-add>")      (kbd "="))
@@ -302,7 +303,7 @@ you should place your code here."
     ('spacemacs-light
      (custom-set-faces
       '(font-lock-function-name-face    ((t :foreground nil
-                                            :background "#eff2fb"
+                                            :background "#f3f2ef"
                                             :inherit font-lock-variable-name-face)))
       '(font-lock-regexp-grouping-backslash ((t :background "#eaf4f1")))
       '(font-lock-regexp-grouping-construct ((t :background "#eaf4f1")))
@@ -404,13 +405,11 @@ you should place your code here."
                 (linum-relative-mode))))
 
   ;; Settings for `company'
-  (eval-after-load 'company
-    '(progn
-       (define-key company-active-map [remap company-show-doc-buffer] #'company-show-doc-buffer)
-       (define-key company-active-map (kbd "C-h") nil)))
+  (eval-after-load "company"
+    '(define-key company-active-map (kbd "C-h") nil))
 
   ;; Settings for `helm'
-  (eval-after-load 'helm
+  (eval-after-load "helm"
     '(define-key helm-map (kbd "C-h") #'delete-backward-char))
   (setq helm-autoresize-max-height 20
         helm-truncate-lines t)
@@ -429,7 +428,7 @@ you should place your code here."
 
   ;; Settings for `magit'
   (setq magit-diff-refine-hunk t)
-  (eval-after-load 'magit
+  (eval-after-load "magit"
     '(progn
        ;; Additional options that not included Magit
        ;;  This option is experimental feature
@@ -483,7 +482,7 @@ you should place your code here."
                         (string-match-p "[^ \t\n]"))
               (insert "/"))
         (company-complete-common-or-cycle))))
-  (eval-after-load 'clj-refactor
+  (eval-after-load "clj-refactor"
     '(diminish 'clj-refactor-mode))
   (dolist (mode clojure-modes)
     (add-to-list 'page-break-lines-modes mode)
@@ -525,7 +524,7 @@ you should place your code here."
   (add-hook 'doc-view-mode-hook
             (lambda ()
               (setq-local global-hl-line-mode nil)))
-  (eval-after-load 'doc-view
+  (eval-after-load "doc-view"
     '(progn
        (-update-var->> doc-view-ghostscript-options
                        (--remove (string-match-p "-sDEVICE=.*" it))
@@ -536,6 +535,7 @@ you should place your code here."
    'org-mode
    '(("^\\s-*\\(-\\) "
       1 (compose-region (match-beginning 1) (match-end 1) ?∙))) t)
+  (add-hook 'org-mode-hook #'spacemacs/toggle-smartparens-on)
   (setq org-directory (concat (getenv "HOME")
                               "/Library/Mobile\ Documents"
                               "/com\~apple\~CloudDocs/Org")
