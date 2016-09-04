@@ -29,17 +29,19 @@ values."
      elixir
      emacs-lisp
      erlang
-     (focus :variables
-            focus-mode-to-new-thing '((clojure-mode    . list+)
-                                      (emacs-lisp-mode . list+)
-                                      (cider-repl-mode . list+)))
+     (focus
+      :variables
+      focus-mode-to-new-thing '((clojure-mode    . list+)
+                                (emacs-lisp-mode . list+)
+                                (cider-repl-mode . list+)))
      git
      html
      java
      javascript
-     (latex :variables
-            latex-build-command "LaTeX"
-            latex-enable-auto-fill nil)
+     (latex
+      :variables
+      latex-build-command "LaTeX"
+      latex-enable-auto-fill nil)
      markdown
      org
      sql
@@ -104,14 +106,13 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-light
-                         spacemacs-dark)
+   dotspacemacs-themes '(spacemacs-light)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font `("MonacoB2"
-                               :size 13
+   dotspacemacs-default-font '("Fira Code"
+                               :size 14
                                :weight bold
                                :width normal
                                :powerline-scale 1.1)
@@ -287,50 +288,44 @@ you should place your code here."
   (global-set-key (kbd "<S-kp-subtract>") (kbd "_"))
   (global-set-key (kbd "<S-kp-add>")      (kbd "="))
 
+  ;; Settings for font
+  (setq-default line-spacing 2)
+
   ;; Settings for theme
-  (cl-case (first dotspacemacs-themes)
-    ('spacemacs-dark
-     (custom-set-faces
-      '(rainbow-delimiters-depth-1-face ((t :foreground "#3f78ac")))
-      '(rainbow-delimiters-depth-2-face ((t :foreground "#96589d")))
-      '(rainbow-delimiters-depth-3-face ((t :foreground "#24775c")))
-      '(rainbow-delimiters-depth-4-face ((t :foreground "#528d17")))
-      '(rainbow-delimiters-depth-5-face ((t :foreground "#8d7717")))
-      '(rainbow-delimiters-depth-6-face ((t :foreground "#376996")))
-      '(rainbow-delimiters-depth-7-face ((t :foreground "#834d89")))
-      '(rainbow-delimiters-depth-8-face ((t :foreground "#1f6851")))
-      '(rainbow-delimiters-depth-9-face ((t :foreground "#7c918a")))))
-    ('spacemacs-light
-     (custom-set-faces
-      '(font-lock-function-name-face    ((t :foreground nil
-                                            :background "#f3f2ef"
-                                            :inherit font-lock-variable-name-face)))
-      '(font-lock-regexp-grouping-backslash ((t :background "#eaf4f1")))
-      '(font-lock-regexp-grouping-construct ((t :background "#eaf4f1")))
-      '(rainbow-delimiters-depth-1-face ((t :foreground "#619acf")))
-      '(rainbow-delimiters-depth-2-face ((t :foreground "#895a82")))
-      '(rainbow-delimiters-depth-3-face ((t :foreground "#56aa8f")))
-      '(rainbow-delimiters-depth-4-face ((t :foreground "#85c04a")))
-      '(rainbow-delimiters-depth-5-face ((t :foreground "#c0aa4a")))
-      '(rainbow-delimiters-depth-6-face ((t :foreground "#3a81c3")))
-      '(rainbow-delimiters-depth-7-face ((t :foreground "#986e91")))
-      '(rainbow-delimiters-depth-8-face ((t :foreground "#6cb49d")))
-      '(rainbow-delimiters-depth-9-face ((t :foreground "#9f8c8c"))))))
+  (custom-set-faces
+   )
   (let ((height (face-attribute 'default :height)))
     (custom-set-faces
-     `(linum                       ((t :underline nil :height ,height)))
-     `(linum-relative-current-face ((t :underline nil :height ,height)))
-     '(lazy-highlight              ((t :underline t :weight bold)))
-     '(markdown-line-break-face    ((t :underline (:color foreground-color :style wave)
-                                       :inherit shadow)))
-     '(org-level-1                 ((t :weight bold)))
-     '(org-level-2                 ((t :weight bold)))
-     '(org-level-3                 ((t :weight bold)))
-     '(org-level-4                 ((t :weight bold)))
-     '(org-level-5                 ((t :weight bold)))
-     '(org-level-6                 ((t :weight bold)))
-     '(org-level-7                 ((t :weight bold)))
-     '(org-level-8                 ((t :weight bold)))))
+     '(font-lock-function-name-face ((t :foreground nil
+                                        :background "#f3f2ef"
+                                        :inherit font-lock-variable-name-face)))
+     '(font-lock-regexp-grouping-backslash ((t :background "#eaf4f1")))
+     '(font-lock-regexp-grouping-construct ((t :background "#eaf4f1")))
+     '(lazy-highlight ((t :underline t
+                          :weight bold)))
+     '(markdown-line-break-face ((t :underline (:color foreground-color :style wave)
+                                    :inherit shadow)))
+     '(org-level-1 ((t :weight bold)))
+     '(org-level-2 ((t :weight bold)))
+     '(org-level-3 ((t :weight bold)))
+     '(org-level-4 ((t :weight bold)))
+     '(org-level-5 ((t :weight bold)))
+     '(org-level-6 ((t :weight bold)))
+     '(org-level-7 ((t :weight bold)))
+     '(org-level-8 ((t :weight bold)))
+     '(rainbow-delimiters-depth-1-face ((t :foreground "#619acf")))
+     '(rainbow-delimiters-depth-2-face ((t :foreground "#895a82")))
+     '(rainbow-delimiters-depth-3-face ((t :foreground "#56aa8f")))
+     '(rainbow-delimiters-depth-4-face ((t :foreground "#85c04a")))
+     '(rainbow-delimiters-depth-5-face ((t :foreground "#c0aa4a")))
+     '(rainbow-delimiters-depth-6-face ((t :foreground "#3a81c3")))
+     '(rainbow-delimiters-depth-7-face ((t :foreground "#986e91")))
+     '(rainbow-delimiters-depth-8-face ((t :foreground "#6cb49d")))
+     '(rainbow-delimiters-depth-9-face ((t :foreground "#9f8c8c")))
+     `(linum ((t :underline nil
+                 :height ,height)))
+     `(linum-relative-current-face ((t :underline nil
+                                       :height ,height)))))
   (add-hook 'after-make-frame-functions
             (lambda (&rest _)
               (interactive)
@@ -361,7 +356,7 @@ you should place your code here."
 
   ;; Settings for pos/size of initial frame
   (let* ((w (if (<= 1440 (display-pixel-height)) 120 110))
-         (h (1- (/ (custom-display-pixel-width) (frame-char-height))))
+         (h (1- (/ (display-pixel-height) (frame-char-height))))
          (l (/ (custom-display-pixel-width) 2.0))
          (l (floor (- l (/ (frame-unit->pixel w) 2.8))))
          (l (if (< 0 (- (custom-display-pixel-width)
@@ -398,10 +393,12 @@ you should place your code here."
                        (spacemacs/toggle-maximize-frame-off)))
 
   ;; Settings for `linum'
+  (defvar linum-disable-modes '(doc-view-mode))
   (add-hook 'find-file-hook
             (lambda ()
               (when (and buffer-file-name
-                         (< (buffer-size) (* 1024 50)))
+                         (< (buffer-size) (* 1024 50))
+                         (not (-contains-p linum-disable-modes major-mode)))
                 (linum-relative-mode))))
 
   ;; Settings for `company'
@@ -436,6 +433,7 @@ you should place your code here."
        ;;  See, http://www.spinics.net/lists/git/msg278919.html
        (add-to-list 'magit-diff-section-arguments "--compaction-heuristic")))
   (remove-hook 'magit-mode-hook #'turn-on-magit-gitflow)
+  (add-hook 'magit-revision-mode-hook (lambda () (setq-local line-spacing 0)))
 
   ;; Settings for `emacs-lisp'
   (font-lock-add-keywords
@@ -551,6 +549,11 @@ you should place your code here."
    '(("\\(<[^>]+>\\)"
       1 '(:inherit shadow))))
   (sp-local-pair 'markdown-mode "<" ">")
+
+  ;; Settings for `web-mode'
+  (setq-default web-mode-markup-indent-offset 2
+                web-mode-css-indent-offset 2
+                web-mode-code-indent-offset 2)
   )
 
 
@@ -685,3 +688,7 @@ you should place your code here."
                 (- (custom-display-pixel-width) (frame-pixel-width frame) 1)
               x)))
     (set-frame-position frame x (frame-y frame))))
+
+(defun jekyll-insert-time ()
+  (interactive)
+  (insert (format-time-string "%Y-%m-%d %H:%M:%S %z")))
