@@ -258,13 +258,16 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (add-hook 'emacs-startup-hook
             (lambda ()
               (when (require 'aggressive-indent nil 'noerr)
-                (let ((agg-indent-defn (lambda (&rest _)
-                                         (unless (apply #'derived-mode-p
-                                                        aggressive-indent-excluded-modes)
-                                           (save-match-data
-                                             (ignore-errors
-                                               (aggressive-indent-indent-defun)))))))
-                  (add-hook 'evil-insert-state-exit-hook agg-indent-defn)
+                (lexical-let
+                    ((agg-indent-defn (lambda (&rest _)
+                                        (unless (apply #'derived-mode-p
+                                                       aggressive-indent-excluded-modes)
+                                          (save-match-data
+                                            (ignore-errors
+                                              (aggressive-indent-indent-defun)))))))
+                  (add-hook 'find-file-hook
+                            (lambda ()
+                              (add-hook 'evil-normal-state-entry-hook agg-indent-defn nil t)))
                   (advice-add #'evil-paste-after :after agg-indent-defn)
                   (advice-add #'evil-join :after agg-indent-defn)
                   (advice-add #'evil-delete :after agg-indent-defn))))
@@ -289,11 +292,38 @@ you should place your code here."
   (global-set-key (kbd "<S-kp-add>")      (kbd "="))
 
   ;; Settings for font
-  (setq-default line-spacing 2)
+  (setq-default line-spacing 3)
+  ;; - https://github.com/annapawlicka/org-emacs/blob/master/org/config.org#fira-code
+  (let ((alist
+         `((33 .  ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
+           (35 .  ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
+           (36 .  ".\\(?:>\\)")
+           (37 .  ".\\(?:\\(?:%%\\)\\|%\\)")
+           (38 .  ".\\(?:\\(?:&&\\)\\|&\\)")
+           (42 .  ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*/>]\\)")
+           (43 .  ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
+           (45 .  ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
+           (47 .  ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[*/=>]\\)")
+           (48 .  ".\\(?:x[a-zA-Z]\\)")
+           (58 .  ".\\(?:::\\|[:=]\\)")
+           (59 .  ".\\(?:;;\\|;\\)")
+           (60 .  ,(concat ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\"
+                           "+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~/<=>|-]\\)"))
+           (61 .  ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
+           (62 .  ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
+           (63 .  ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
+           (91 .  ".\\(?:]\\)")
+           (92 .  ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
+           (94 .  ".\\(?:=\\)")
+           (119 . ".\\(?:ww\\)")
+           (123 . ".\\(?:-\\)")
+           (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
+           (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)"))))
+    (dolist (char-regexp alist)
+      (set-char-table-range composition-function-table (car char-regexp)
+                            `([,(cdr char-regexp) 0 font-shape-gstring]))))
 
   ;; Settings for theme
-  (custom-set-faces
-   )
   (let ((height (face-attribute 'default :height)))
     (custom-set-faces
      '(font-lock-function-name-face ((t :foreground nil
@@ -411,6 +441,10 @@ you should place your code here."
   (setq helm-autoresize-max-height 20
         helm-truncate-lines t)
 
+  ;; Settings for `projectile'
+  (eval-after-load "helm-projectile"
+    '(define-key helm-projectile-find-file-map (kbd "C-h") #'delete-backward-char))
+
   ;; Settings for `minibuf'
   (add-hook 'minibuffer-setup-hook
             (lambda ()
@@ -496,7 +530,7 @@ you should place your code here."
        ("^\\s-*\\s(def-\\s-+\\([^ \t\n]+\\)"
         1 '(:inherit font-lock-variable-name-face) nil)
        ("\\s([^ \t\n]+\\(!+\\)"
-        1 '(:inherit font-lock-warning-face :slant italic :weight normal))
+        1 '(:inherit font-lock-warning-face :slant italic))
        ("\\(#js\\)\\s-+\\s("
         1 '(:inherit font-lock-builtin-face))
        ("\\_<\\(\\.-?\\)[a-z][a-zA-Z0-9]*\\_>"
@@ -553,7 +587,8 @@ you should place your code here."
   ;; Settings for `web-mode'
   (setq-default web-mode-markup-indent-offset 2
                 web-mode-css-indent-offset 2
-                web-mode-code-indent-offset 2)
+                web-mode-code-indent-offset 2
+                css-indent-offset 2)
   )
 
 
