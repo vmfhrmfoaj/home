@@ -18,8 +18,4 @@ export PERLBREW_ROOT=$HOME/.perlbrew
 source $PERLBREW_ROOT/etc/bashrc
 
 # lein
-export JVM_OPTS="$(if [ `uname -a | grep -o iMac` ]; then echo '-Xms2g -Xmx8g'; fi)"
-export LEIN_JVM_OPTS=$JVM_OPTS
-
-# user
-export PATH=$HOME/Bin:$PATH
+export JVM_OPTS="$(if [ `uname -a | grep -o iMac` ]; then echo '-Xms1g -Xmx4g'; fi)"
