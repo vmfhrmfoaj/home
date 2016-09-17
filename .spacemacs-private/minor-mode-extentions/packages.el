@@ -72,6 +72,7 @@
 (defun minor-mode-extentions/post-init-linum-relative ()
   (use-package linum-relative
     :config
+    (add-hook 'prog-mode-hook (-partial #'linum-relative-mode 1))
     (let ((height (face-attribute 'default :height)))
       (custom-set-faces
        `(linum ((t :underline nil :height ,height)))

@@ -15,7 +15,7 @@
   '(
     cider
     clj-refactor
-    clojure
+    clojure-mode
     ))
 
 (defun clojure-ext/post-init-cider ()
@@ -24,7 +24,12 @@
     (setq cider-repl-use-pretty-printing t
           cider-mode-line
           '(:eval (with-current-buffer (ignore-errors (cider-current-connection))
-                    (format " CIDER<%s:%s>" (car nrepl-endpoint) (cadr nrepl-endpoint)))))
+                    (format " CIDER<%s%s>"
+                            (let ((host (car nrepl-endpoint)))
+                              (if (string-equal host "localhost")
+                                  ""
+                                (concat host ":")))
+                            (cadr nrepl-endpoint)))))
     (evil-define-key 'insert cider-repl-mode-map (kbd "RET") #'evil-ret-and-indent)
     (evil-define-key 'normal cider-repl-mode-map (kbd "RET") #'cider-repl-return)))
 
@@ -40,14 +45,17 @@
                  (concat "(alter-var-root #'refactor-nrepl.ns.rebuild/dependency-comparator" "\n"
                          "  (fn [f]"                                                         "\n"
                          "    (fn [d1 d2]"                                                   "\n"
-                         "      (let [regx #\"^(clojure|cljs)(\\.|\\s*\\[)\""                "\n"
+                         "      (let [clj-regx #\"^(clojure|cljs)(\\.|\\s*\\[)\""            "\n"
+                         "            expect-regx #\"^expectations\""                        "\n"
                          "            d1 (@#'refactor-nrepl.ns.rebuild/get-sort-name d1)"    "\n"
                          "            d2 (@#'refactor-nrepl.ns.rebuild/get-sort-name d2)]"   "\n"
-                         "        (cond (and (re-find regx d1)"                              "\n"
-                         "                   (re-find regx d2)) (.compareTo d1 d2)"          "\n"
-                         "                   (re-find regx d1) -1"                           "\n"
-                         "                   (re-find regx d2) 1"                            "\n"
-                         "                   :else (.compareTo d1 d2))"))))
+                         "        (cond (and (re-find clj-regx d1)"                          "\n"
+                         "                   (re-find clj-regx d2)) (.compareTo d1 d2)"      "\n"
+                         "                   (re-find clj-regx d1) -1"                       "\n"
+                         "                   (re-find clj-regx d2) 1"                        "\n"
+                         "                   (re-find expect-regx d1) -1"                    "\n"
+                         "                   (re-find expect-regx d2) 1"                     "\n"
+                         "                   :else (.compareTo d1 d2))))))"))))
     (eval-after-load "smartparens"
       '(advice-add #'cljr-slash :after
                    (lambda ()
@@ -58,8 +66,8 @@
                                      (string-match-p "[0-9A-Za-z]")))
                        (company-complete-common-or-cycle)))))))
 
-(defun clojure-ext/post-init-clojure ()
-  (use-package clojure
+(defun clojure-ext/post-init-clojure-mode ()
+  (use-package clojure-mode
     :config
     (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
       (font-lock-add-keywords
@@ -87,7 +95,6 @@
           1 '(:inherit font-lock-warning-face :slant italic))) t))
     (setq clojure-indent-style :align-arguments)
     (put 'def-      'clojure-doc-string-elt 2)
-    (put 'defmacro- 'clojure-doc-string-elt 2)
-    ))
+    (put 'defmacro- 'clojure-doc-string-elt 2)))
 
 ;;; packages.el ends here

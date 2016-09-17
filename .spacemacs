@@ -73,6 +73,7 @@ values."
    '(
      ;; See the `include-shell-var-in' function.
      exec-path-from-shell
+     rainbow-delimiters
      )
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
    ;; are declared in a layer which is not a member of
@@ -301,45 +302,43 @@ you should place your code here."
   (define-key key-translation-map (kbd "<S-kp-divide>")   (kbd "\\"))
   (define-key key-translation-map (kbd "<S-kp-subtract>") (kbd "_"))
   (define-key key-translation-map (kbd "<S-kp-add>")      (kbd "="))
+  (define-key isearch-mode-map (kbd "C-h") #'isearch-delete-char)
   (add-hook 'minibuffer-setup-hook
             (lambda ()
               (local-set-key (kbd "C-h")   #'backward-delete-char)
               (local-set-key (kbd "S-SPC") #'toggle-input-method)))
 
   ;; Setup the Fira Code.
-  (or (and (boundp 'mac-auto-operator-composition-mode)
-           (mac-auto-operator-composition-mode))
-      (let ((alist '((33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
-                     (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
-                     (36 . ".\\(?:>\\)")
-                     (37 . ".\\(?:\\(?:%%\\)\\|%\\)")
-                     (38 . ".\\(?:\\(?:&&\\)\\|&\\)")
-                     (42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*/>]\\)")
-                     (43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
-                     (45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
-                     (46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
-                     (47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[*/=>]\\)")
-                     (48 . ".\\(?:x[a-zA-Z]\\)")
-                     (58 . ".\\(?:::\\|[:=]\\)")
-                     (59 . ".\\(?:;;\\|;\\)")
-                     (60 . (concat ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|"
-                                   "\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\|"
-                                   "|>\\)\\|[*$+~/<=>|-]\\)"))
-                     (61 . (concat ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|"
-                                   "[<=>~]\\)"))
-                     (62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
-                     (63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
-                     (91 . ".\\(?:]\\)")
-                     (92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
-                     (94 . ".\\(?:=\\)")
-                     (119 . ".\\(?:ww\\)")
-                     (123 . ".\\(?:-\\)")
-                     (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
-                     (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)"))))
-        (dolist (range_&_regx alist)
-          (set-char-table-range composition-function-table (car range_&_regx)
-                                `([,(cdr range_&_regx) 0 font-shape-gstring])))
-        t))
+  (let ((alist '((33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
+                 (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
+                 (36 . ".\\(?:>\\)")
+                 (37 . ".\\(?:\\(?:%%\\)\\|%\\)")
+                 (38 . ".\\(?:\\(?:&&\\)\\|&\\)")
+                 (42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*/>]\\)")
+                 (43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
+                 (45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
+                 (46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
+                 (47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[*/=>]\\)")
+                 (48 . ".\\(?:x[a-zA-Z]\\)")
+                 (58 . ".\\(?:::\\|[:=]\\)")
+                 (59 . ".\\(?:;;\\|;\\)")
+                 (60 . (concat ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|"
+                               "\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\|"
+                               "|>\\)\\|[*$+~/<=>|-]\\)"))
+                 (61 . (concat ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|"
+                               "[<=>~]\\)"))
+                 (62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
+                 (63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
+                 (91 . ".\\(?:]\\)")
+                 (92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
+                 (94 . ".\\(?:=\\)")
+                 (119 . ".\\(?:ww\\)")
+                 (123 . ".\\(?:-\\)")
+                 (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
+                 (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)"))))
+    (dolist (range_&_regx alist)
+      (set-char-table-range composition-function-table (car range_&_regx)
+                            `([,(cdr range_&_regx) 0 font-shape-gstring]))))
 
   ;; Set the pos/size of the initial frame.
   (let* ((w 120)
@@ -361,16 +360,18 @@ you should place your code here."
 
   ;; Customize the theme.
   (custom-set-faces
-   '(lazy-highlight ((t (:weight bold))))
-   '(rainbow-delimiters-depth-1-face ((t (:foreground "#3f78ac"))))
-   '(rainbow-delimiters-depth-2-face ((t (:foreground "#96589d"))))
-   '(rainbow-delimiters-depth-3-face ((t (:foreground "#24775c"))))
-   '(rainbow-delimiters-depth-4-face ((t (:foreground "#528d17"))))
-   '(rainbow-delimiters-depth-5-face ((t (:foreground "#8d7717"))))
-   '(rainbow-delimiters-depth-6-face ((t (:foreground "#376996"))))
-   '(rainbow-delimiters-depth-7-face ((t (:foreground "#834d89"))))
-   '(rainbow-delimiters-depth-8-face ((t (:foreground "#1f6851"))))
-   '(rainbow-delimiters-depth-9-face ((t (:foreground "#7c918a")))))
+   '(shadow ((t (:foreground "gray50"))))
+   '(lazy-highlight ((t (:weight bold)))))
+  (add-hook 'prog-mode-hook
+            (lambda ()
+              (font-lock-add-keywords
+               nil
+               `((,(concat "\\(\\s(\\|\\s)\\|::?\\|;\\|\\$\\|'\\|`(\\|,\\|"
+                           "\\\\\\|@\\|#\\|\\.\\|~\\|\\^\\)")
+                  1 '(:inherit shadow))) t)))
+
+  (spacemacs/toggle-camel-case-motion-globally-on)
+  (spacemacs/toggle-smartparens-globally-on)
 
   ;; user-config end here
   )

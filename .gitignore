@@ -1,3 +1,6 @@
 /*
+!.profile
 !.gitignore
+!.spacemacs
 !.spacemacs-private/
+!.lein/
