@@ -14,6 +14,7 @@
 (defconst git-ext-packages
   '(
     magit
+    ;; with-editor
     ))
 
 (defun git-ext/post-init-magit ()
@@ -24,5 +25,13 @@
     (add-hook 'magit-revision-mode-hook
               (lambda ()
                 (setq-local line-spacing 0)))))
+
+;; NOTE
+;;  This setting need for the `railwaycat/emacsmacport'.
+;; (defun with-editor/post-init-with-editor ()
+;;   (use-package with-editor
+;;     :config
+;;     (setq with-editor-emacsclient-executable
+;;           "/usr/local/opt/emacs-mac/bin/emacsclient")))
 
 ;;; packages.el ends here
