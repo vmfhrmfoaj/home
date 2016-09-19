@@ -138,11 +138,11 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font '("Fira Code"
+   dotspacemacs-default-font '("MonacoB2"
                                :size 14
-                               :weight bold
+                               :weight normal
                                :width normal
-                               :powerline-scale 1.2)
+                               :powerline-scale 1.1)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
@@ -285,9 +285,11 @@ you should place your code here."
   ;; Include the ".profile" file for the GUI emacs.
   (include-shell-var-in "~/.profile")
 
+  ;; Setup the addtional font setting.
+  (setq-default line-spacing 0)
+
   ;; Setup language.
   (set-language-environment "Korean")
-  (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
   (-update->> input-method-alist
               (--map-when (string-equal "korean-hangul" (first it))
                           (-replace-at 3 "Hangul" it)))
@@ -308,46 +310,144 @@ you should place your code here."
               (local-set-key (kbd "C-h")   #'backward-delete-char)
               (local-set-key (kbd "S-SPC") #'toggle-input-method)))
 
-  ;; Setup the Fira Code.
-  (or (and (boundp 'mac-auto-operator-composition-mode)
-           (mac-auto-operator-composition-mode))
-      (let ((alist '((33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
-                     (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
-                     (36 . ".\\(?:>\\)")
-                     (37 . ".\\(?:\\(?:%%\\)\\|%\\)")
-                     (38 . ".\\(?:\\(?:&&\\)\\|&\\)")
-                     (42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*/>]\\)")
-                     (43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
-                     (45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
-                     (46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
-                     (47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[*/=>]\\)")
-                     (48 . ".\\(?:x[a-zA-Z]\\)")
-                     (58 . ".\\(?:::\\|[:=]\\)")
-                     (59 . ".\\(?:;;\\|;\\)")
-                     (60 . (concat ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|"
-                                   "\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\|"
-                                   "|>\\)\\|[*$+~/<=>|-]\\)"))
-                     (61 . (concat ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|"
-                                   "[<=>~]\\)"))
-                     (62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
-                     (63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
-                     (91 . ".\\(?:]\\)")
-                     (92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
-                     (94 . ".\\(?:=\\)")
-                     (119 . ".\\(?:ww\\)")
-                     (123 . ".\\(?:-\\)")
-                     (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
-                     (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)"))))
-        (dolist (range_&_regx alist)
-          (set-char-table-range composition-function-table (car range_&_regx)
-                                `([,(cdr range_&_regx) 0 font-shape-gstring])))
-        t))
+  ;; Setup FiraCode Symbol.
+  ;; - https://gist.github.com/mordocai/50783defab3c3d1650e068b4d1c91495
+  (add-hook 'after-make-frame-functions
+            (lambda (frame)
+              (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
+  (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
+  (defconst fira-code-font-lock-keywords-alist
+    (mapcar (lambda (regex-char-pair)
+              `(,(car regex-char-pair)
+                (0 (prog1 ()
+                     (compose-region (match-beginning 1)
+                                     (match-end 1)
+                                     ;; The first argument to concat is a string containing a literal tab
+                                     ,(concat "	" (list (decode-char 'ucs (cadr regex-char-pair)))))))))
+            '(("\\(www\\)"                   #Xe100)
+              ("[^/]\\(\\*\\*\\)[^/]"        #Xe101)
+              ("\\(\\*\\*\\*\\)"             #Xe102)
+              ("\\(\\*\\*/\\)"               #Xe103)
+              ("\\(\\*>\\)"                  #Xe104)
+              ("[^*]\\(\\*/\\)"              #Xe105)
+              ("\\(\\\\\\\\\\)"              #Xe106)
+              ("\\(\\\\\\\\\\\\\\)"          #Xe107)
+              ("\\({-\\)"                    #Xe108)
+              ("\\(\\[\\]\\)"                #Xe109)
+              ("\\(::\\)"                    #Xe10a)
+              ("\\(:::\\)"                   #Xe10b)
+              ("[^=]\\(:=\\)"                #Xe10c)
+              ("\\(!!\\)"                    #Xe10d)
+              ("\\(!=\\)"                    #Xe10e)
+              ("\\(!==\\)"                   #Xe10f)
+              ("\\(-}\\)"                    #Xe110)
+              ("\\(--\\)"                    #Xe111)
+              ("\\(---\\)"                   #Xe112)
+              ("\\(-->\\)"                   #Xe113)
+              ("[^-]\\(->\\)"                #Xe114)
+              ("\\(->>\\)"                   #Xe115)
+              ("\\(-<\\)"                    #Xe116)
+              ("\\(-<<\\)"                   #Xe117)
+              ("\\(-~\\)"                    #Xe118)
+              ("\\(#{\\)"                    #Xe119)
+              ("\\(#\\[\\)"                  #Xe11a)
+              ("\\(##\\)"                    #Xe11b)
+              ("\\(###\\)"                   #Xe11c)
+              ("\\(####\\)"                  #Xe11d)
+              ("\\(#(\\)"                    #Xe11e)
+              ("\\(#\\?\\)"                  #Xe11f)
+              ("\\(#_\\)"                    #Xe120)
+              ("\\(#_(\\)"                   #Xe121)
+              ("\\(\\.-\\)"                  #Xe122)
+              ("\\(\\.=\\)"                  #Xe123)
+              ("\\(\\.\\.\\)"                #Xe124)
+              ("\\(\\.\\.<\\)"               #Xe125)
+              ("\\(\\.\\.\\.\\)"             #Xe126)
+              ("\\(\\?=\\)"                  #Xe127)
+              ("\\(\\?\\?\\)"                #Xe128)
+              ("\\(;;\\)"                    #Xe129)
+              ("\\(/\\*\\)"                  #Xe12a)
+              ("\\(/\\*\\*\\)"               #Xe12b)
+              ("\\(/=\\)"                    #Xe12c)
+              ("\\(/==\\)"                   #Xe12d)
+              ("\\(/>\\)"                    #Xe12e)
+              ("\\(//\\)"                    #Xe12f)
+              ("\\(///\\)"                   #Xe130)
+              ("\\(&&\\)"                    #Xe131)
+              ("\\(||\\)"                    #Xe132)
+              ("\\(||=\\)"                   #Xe133)
+              ("[^|]\\(|=\\)"                #Xe134)
+              ("\\(|>\\)"                    #Xe135)
+              ("\\(\\^=\\)"                  #Xe136)
+              ("\\(\\$>\\)"                  #Xe137)
+              ("\\(\\+\\+\\)"                #Xe138)
+              ("\\(\\+\\+\\+\\)"             #Xe139)
+              ("\\(\\+>\\)"                  #Xe13a)
+              ("\\(=:=\\)"                   #Xe13b)
+              ("[^!/]\\(==\\)[^>]"           #Xe13c)
+              ("\\(===\\)"                   #Xe13d)
+              ("\\(==>\\)"                   #Xe13e)
+              ("[^=]\\(=>\\)"                #Xe13f)
+              ("\\(=>>\\)"                   #Xe140)
+              ("\\(<=\\)"                    #Xe141)
+              ("\\(=<<\\)"                   #Xe142)
+              ("\\(=/=\\)"                   #Xe143)
+              ("\\(>-\\)"                    #Xe144)
+              ("\\(>=\\)"                    #Xe145)
+              ("\\(>=>\\)"                   #Xe146)
+              ("[^-=]\\(>>\\)"               #Xe147)
+              ("\\(>>-\\)"                   #Xe148)
+              ("\\(>>=\\)"                   #Xe149)
+              ("\\(>>>\\)"                   #Xe14a)
+              ("\\(<\\*\\)"                  #Xe14b)
+              ("\\(<\\*>\\)"                 #Xe14c)
+              ("\\(<|\\)"                    #Xe14d)
+              ("\\(<|>\\)"                   #Xe14e)
+              ("\\(<\\$\\)"                  #Xe14f)
+              ("\\(<\\$>\\)"                 #Xe150)
+              ("\\(<!--\\)"                  #Xe151)
+              ("\\(<-\\)"                    #Xe152)
+              ("\\(<--\\)"                   #Xe153)
+              ("\\(<->\\)"                   #Xe154)
+              ("\\(<\\+\\)"                  #Xe155)
+              ("\\(<\\+>\\)"                 #Xe156)
+              ("\\(<=\\)"                    #Xe157)
+              ("\\(<==\\)"                   #Xe158)
+              ("\\(<=>\\)"                   #Xe159)
+              ("\\(<=<\\)"                   #Xe15a)
+              ("\\(<>\\)"                    #Xe15b)
+              ("[^-=]\\(<<\\)"               #Xe15c)
+              ("\\(<<-\\)"                   #Xe15d)
+              ("\\(<<=\\)"                   #Xe15e)
+              ("\\(<<<\\)"                   #Xe15f)
+              ("\\(<~\\)"                    #Xe160)
+              ("\\(<~~\\)"                   #Xe161)
+              ("\\(</\\)"                    #Xe162)
+              ("\\(</>\\)"                   #Xe163)
+              ("\\(~@\\)"                    #Xe164)
+              ("\\(~-\\)"                    #Xe165)
+              ("\\(~=\\)"                    #Xe166)
+              ("\\(~>\\)"                    #Xe167)
+              ("[^<]\\(~~\\)"                #Xe168)
+              ("\\(~~>\\)"                   #Xe169)
+              ("\\(%%\\)"                    #Xe16a)
+              ;;("\\(x\\)"                     #Xe16b)
+              ("[^:=]\\(:\\)[^:=]"           #Xe16c)
+              ("[^\\+<>]\\(\\+\\)[^\\+<>]"   #Xe16d)
+              ("[^\\*/<>]\\(\\*\\)[^\\*/<>]" #Xe16f))))
+  (defun add-fira-code-symbol-keywords ()
+    (font-lock-add-keywords nil fira-code-font-lock-keywords-alist))
+  (add-hook 'prog-mode-hook #'add-fira-code-symbol-keywords)
+
+  ;; Change the behavior of indent function for `prettify-symbols-mode'.
+  (advice-exclude-modes '(prettify-symbols-mode) #'indent-for-tab-command)
+  (advice-exclude-modes '(prettify-symbols-mode) #'indent-according-to-mode)
 
   ;; Set the pos/size of the initial frame.
-  (let* ((w 120)
+  (let* ((w 110)
          (h (1- (/ (display-pixel-height) (frame-char-height))))
          (l (/ (custom-display-pixel-width) 2.0))
-         (l (floor (- l (/ (frame-unit->pixel w) 2.8))))
+         (l (floor (- l (* (frame-unit->pixel w) 0.4))))
          (l (if (< 0 (- (custom-display-pixel-width)
                         (+ l (frame-unit->pixel w))))
                 l
@@ -363,8 +463,9 @@ you should place your code here."
 
   ;; Customize the theme.
   (custom-set-faces
-   '(shadow ((t (:foreground "gray55"))))
-   '(lazy-highlight ((t (:weight bold)))))
+   '(font-lock-variable-name-face ((t (:inherit bold))))
+   '(font-lock-type-face ((t (:inherit nil))))
+   '(shadow ((t (:foreground "gray55")))))
   (add-hook 'prog-mode-hook
             (lambda ()
               (font-lock-add-keywords
@@ -373,8 +474,14 @@ you should place your code here."
                            "\\\\\\|@\\|#\\|\\.\\|~\\|\\^\\)")
                   1 '(:inherit shadow))) t)))
 
+  ;; Turn on some packages globally.
   (spacemacs/toggle-camel-case-motion-globally-on)
   (spacemacs/toggle-smartparens-globally-on)
+  (global-prettify-symbols-mode)
+
+  ;; Set custom file
+  (setq custom-file "~/.spacemacs-custom.el")
+  (load custom-file)
 
   ;; user-config end here
   )
@@ -419,6 +526,22 @@ you should place your code here."
 
 (defmacro -update->> (&rest thread)
   `(setq ,(first thread) (->> ,@thread)))
+
+(defmacro with-exclude-modes (modes &rest body)
+  `(let ((mode-status (-map #'symbol-value ,modes)))
+     (prog2
+         (--map (funcall it 0) ,modes)
+         (progn
+           ,@body)
+       (--map (funcall (car it) (cdr it)) (-zip ,modes mode-status)))))
+(put 'with-exclude-modes 'lisp-indent-function 'defun)
+(defun advice-exclude-modes (modes f)
+  (advice-add f :around
+              (lexical-let ((modes modes))
+                (lambda (f &rest args)
+                  "Added by `advice-exclude-modes'."
+                  (with-exclude-modes modes
+                    (apply f args))))))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.

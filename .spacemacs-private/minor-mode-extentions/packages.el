@@ -16,6 +16,7 @@
     auto-highlight-symbol
     company
     evil
+    git-gutter-fringe+
     helm
     helm-projectile
     linum-relative
@@ -41,7 +42,7 @@
                 ("g S-<kp-subtract>" . evil-last-non-blank))
     :config
     (when (require 'aggressive-indent nil t)
-      (setq-default aggressive-skip-when-open-file t)
+      (setq aggressive-skip-when-open-file t)
       (let ((agg-indent (lambda (&rest _)
                           "aggressive-indent-indent-defun-for-evil-mode"
                           (unless (and aggressive-skip-when-open-file
@@ -57,6 +58,18 @@
                       evil-paste-after
                       evil-join))
           (advice-add fn :after agg-indent))))))
+
+(defun minor-mode-extentions/post-init-git-gutter-fringe+ ()
+  (use-package git-gutter-fringe+
+    :config
+    (let ((bitmap (-repeat (line-pixel-height)
+                           (apply #'concat (-repeat 7 "X")))))
+      (define-fringe-bitmap 'git-gutter-fr+-added
+        (apply #'fringe-helper-convert bitmap) nil nil nil)
+      (define-fringe-bitmap 'git-gutter-fr+-deleted
+        (apply #'fringe-helper-convert bitmap) nil nil nil)
+      (define-fringe-bitmap 'git-gutter-fr+-modified
+        (apply #'fringe-helper-convert bitmap) nil nil nil))))
 
 (defun minor-mode-extentions/post-init-helm ()
   (use-package helm
@@ -97,16 +110,19 @@
           (when (and (numberp arg)
                      (> arg 0)
                      (apply #'derived-mode-p wrap-sp-supported-modes)
-                     (-some->> (buffer-substring-no-properties (point) (line-end-position))
-                               (string-match (concat "^\\s-*" sp-clojure-prefix "[^({\\[]"))))
+                     (-some->> (buffer-substring (point) (line-end-position))
+                               (string-match (concat "^\\s-*"
+                                                     sp-clojure-prefix
+                                                     "[^({\\[]"))))
             (goto-char (+ (point) (match-end 0))))))
       (defun wrap-sp-backward-symbol (&optional arg)
         (save-match-data
           (when (and (numberp arg)
                      (> arg 0)
                      (apply #'derived-mode-p wrap-sp-supported-modes)
-                     (-some->> (buffer-substring-no-properties (line-beginning-position) (point))
-                               (string-match (concat sp-clojure-prefix "\\s-*$"))))
+                     (-some->> (buffer-substring (line-beginning-position) (point))
+                               (string-match (concat sp-clojure-prefix
+                                                     "\\s-*$"))))
             (beginning-of-line)
             (goto-char (+ (point) (match-beginning 0))))))
       (defun wrap-sp-forward-sexp (&optional arg)
@@ -123,7 +139,7 @@
           (when (and (numberp arg)
                      (> arg 0)
                      (apply #'derived-mode-p wrap-sp-supported-modes)
-                     (-some->> (buffer-substring-no-properties (line-beginning-position) (point))
+                     (-some->> (buffer-substring (line-beginning-position) (point))
                                (string-match (concat sp-clojure-prefix "\\s-*$"))))
             (beginning-of-line)
             (goto-char (+ (point) (match-beginning 0))))))
