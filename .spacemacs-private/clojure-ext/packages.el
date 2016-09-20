@@ -21,6 +21,9 @@
 (defun clojure-ext/post-init-cider ()
   (use-package cider
     :config
+    (set-face-attribute 'cider-fringe-good-face nil
+                        :foreground nil
+                        :inherit compilation-info-face)
     (setq cider-repl-use-pretty-printing t
           cider-mode-line
           '(:eval (with-current-buffer (ignore-errors (cider-current-connection))

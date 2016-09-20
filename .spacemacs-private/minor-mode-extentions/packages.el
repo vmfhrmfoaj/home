@@ -50,7 +50,14 @@
                                                    aggressive-indent-excluded-modes)))
                             (save-match-data
                               (ignore-errors
-                                (aggressive-indent-indent-defun))))
+                                (save-excursion
+                                  (let ((beg (progn
+                                               (sp-backward-up-sexp 2)
+                                               (point)))
+                                        (end (progn
+                                               (sp-forward-sexp)
+                                               (point))))
+                                    (aggressive-indent-indent-region-and-on beg end))))))
                           (setq-local aggressive-skip-when-open-file nil))))
         (add-hook 'evil-normal-state-entry-hook agg-indent)
         (dolist (fn '(evil-change
@@ -69,7 +76,10 @@
       (define-fringe-bitmap 'git-gutter-fr+-deleted
         (apply #'fringe-helper-convert bitmap) nil nil nil)
       (define-fringe-bitmap 'git-gutter-fr+-modified
-        (apply #'fringe-helper-convert bitmap) nil nil nil))))
+        (apply #'fringe-helper-convert bitmap) nil nil nil))
+    (set-face-attribute 'git-gutter-fr+-added    nil :inherit font-lock-string-face)
+    (set-face-attribute 'git-gutter-fr+-modified nil :inherit font-lock-function-name-face)
+    (set-face-attribute 'git-gutter-fr+-deleted  nil :inherit font-lock-type-face)))
 
 (defun minor-mode-extentions/post-init-helm ()
   (use-package helm

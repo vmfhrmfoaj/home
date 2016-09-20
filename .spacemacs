@@ -272,6 +272,10 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
+
+  ;; Set custom file
+  (setq custom-file "~/.spacemacs-custom.el")
+  (load custom-file)
   )
 
 (defun dotspacemacs/user-config ()
@@ -311,6 +315,8 @@ you should place your code here."
               (local-set-key (kbd "S-SPC") #'toggle-input-method)))
 
   ;; Setup FiraCode Symbol.
+  ;; NOTE
+  ;; Use customized "Fira Code Symbol" font for "MonacoB2" as the default font.
   ;; - https://gist.github.com/mordocai/50783defab3c3d1650e068b4d1c91495
   (add-hook 'after-make-frame-functions
             (lambda (frame)
@@ -325,6 +331,7 @@ you should place your code here."
                                      ;; The first argument to concat is a string containing a literal tab
                                      ,(concat "	" (list (decode-char 'ucs (cadr regex-char-pair)))))))))
             '(("\\(www\\)"                   #Xe100)
+              ;; **                          #Xe101
               ("[^/]\\(\\*\\*\\)[^/]"        #Xe101)
               ("\\(\\*\\*\\*\\)"             #Xe102)
               ("\\(\\*\\*/\\)"               #Xe103)
@@ -333,7 +340,7 @@ you should place your code here."
               ("\\(\\\\\\\\\\)"              #Xe106)
               ("\\(\\\\\\\\\\\\\\)"          #Xe107)
               ("\\({-\\)"                    #Xe108)
-              ("\\(\\[\\]\\)"                #Xe109)
+              ;; ("\\(\\[\\]\\)"                #Xe109)
               ("\\(::\\)"                    #Xe10a)
               ("\\(:::\\)"                   #Xe10b)
               ("[^=]\\(:=\\)"                #Xe10c)
@@ -360,13 +367,18 @@ you should place your code here."
               ("\\(#_(\\)"                   #Xe121)
               ("\\(\\.-\\)"                  #Xe122)
               ("\\(\\.=\\)"                  #Xe123)
+              ;; ..                          #Xe124
               ("\\(\\.\\.\\)"                #Xe124)
+              ;; ..<                         #Xe125
               ("\\(\\.\\.<\\)"               #Xe125)
+              ;; ...                         #Xe126
               ("\\(\\.\\.\\.\\)"             #Xe126)
               ("\\(\\?=\\)"                  #Xe127)
               ("\\(\\?\\?\\)"                #Xe128)
               ("\\(;;\\)"                    #Xe129)
+              ;; /*                          #Xe12a
               ("\\(/\\*\\)"                  #Xe12a)
+              ;; /**                         #Xe12b
               ("\\(/\\*\\*\\)"               #Xe12b)
               ("\\(/=\\)"                    #Xe12c)
               ("\\(/==\\)"                   #Xe12d)
@@ -380,7 +392,9 @@ you should place your code here."
               ("\\(|>\\)"                    #Xe135)
               ("\\(\\^=\\)"                  #Xe136)
               ("\\(\\$>\\)"                  #Xe137)
+              ;; ++                          #Xe138
               ("\\(\\+\\+\\)"                #Xe138)
+              ;; +++                         #Xe139
               ("\\(\\+\\+\\+\\)"             #Xe139)
               ("\\(\\+>\\)"                  #Xe13a)
               ("\\(=:=\\)"                   #Xe13b)
@@ -431,7 +445,6 @@ you should place your code here."
               ("[^<]\\(~~\\)"                #Xe168)
               ("\\(~~>\\)"                   #Xe169)
               ("\\(%%\\)"                    #Xe16a)
-              ;;("\\(x\\)"                     #Xe16b)
               ("[^:=]\\(:\\)[^:=]"           #Xe16c)
               ("[^\\+<>]\\(\\+\\)[^\\+<>]"   #Xe16d)
               ("[^\\*/<>]\\(\\*\\)[^\\*/<>]" #Xe16f))))
@@ -477,11 +490,8 @@ you should place your code here."
   ;; Turn on some packages globally.
   (spacemacs/toggle-camel-case-motion-globally-on)
   (spacemacs/toggle-smartparens-globally-on)
+  (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
   (global-prettify-symbols-mode)
-
-  ;; Set custom file
-  (setq custom-file "~/.spacemacs-custom.el")
-  (load custom-file)
 
   ;; user-config end here
   )
@@ -527,13 +537,19 @@ you should place your code here."
 (defmacro -update->> (&rest thread)
   `(setq ,(first thread) (->> ,@thread)))
 
+(defun enabled? (mode-status)
+  (cond ((symbolp mode-status) mode-status)
+        ((numberp mode-status) (not (zerop mode-status)))
+        (t nil)))
 (defmacro with-exclude-modes (modes &rest body)
   `(let ((mode-status (-map #'symbol-value ,modes)))
-     (prog2
-         (--map (funcall it 0) ,modes)
-         (progn
-           ,@body)
-       (--map (funcall (car it) (cdr it)) (-zip ,modes mode-status)))))
+     (if (--all? (not (enabled? it)) mode-status)
+         ,@body
+       (prog2
+           (--map (funcall it 0) ,modes)
+           (progn
+             ,@body)
+         (--map (funcall (car it) (cdr it)) (-zip ,modes mode-status))))))
 (put 'with-exclude-modes 'lisp-indent-function 'defun)
 (defun advice-exclude-modes (modes f)
   (advice-add f :around

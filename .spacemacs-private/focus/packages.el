@@ -58,13 +58,15 @@
               (save-excursion
                 (let ((start (progn
                                (ignore-errors
-                                 (when (sp-point-in-string)
-                                   (sp-backward-up-sexp))
+                                 (cond ((sp-point-in-string)
+                                        (sp-backward-up-sexp))
+                                       ((sp-point-in-comment)
+                                        (beginning-of-line)))
                                  (backward-up-list 2))
                                (point)))
-                      (end   (progn
-                               (forward-list)
-                               (point))))
+                      (end (progn
+                             (forward-list)
+                             (point))))
                   (cons start end))))))))
 
 ;;; packages.el ends here
