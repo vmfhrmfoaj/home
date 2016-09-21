@@ -33,8 +33,12 @@
 
 (defun minor-mode-extentions/post-init-company ()
   (use-package company
-    :bind (:map company-active-map
-                ("C-h" . nil))))
+    :config
+    ;; XXX
+    (advice-add #'company-pseudo-tooltip-show :override
+                (lambda (&rest _)
+                  (company-abort)
+                  (completion-at-point)))))
 
 (defun minor-mode-extentions/post-init-evil ()
   (use-package evil

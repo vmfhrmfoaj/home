@@ -59,7 +59,9 @@
                 (let ((start (progn
                                (ignore-errors
                                  (cond ((sp-point-in-string)
-                                        (sp-backward-up-sexp))
+                                        (save-match-data
+                                          (re-search-backward "[^\\]\""))
+                                        (forward-char))
                                        ((sp-point-in-comment)
                                         (beginning-of-line)))
                                  (backward-up-list 2))

@@ -24,7 +24,9 @@
     (set-face-attribute 'cider-fringe-good-face nil
                         :foreground nil
                         :inherit compilation-info-face)
-    (setq cider-repl-use-pretty-printing t
+    (setq cider-dynamic-indentation nil
+          cider-font-lock-dynamically nil
+          cider-repl-use-pretty-printing t
           cider-mode-line
           '(:eval (with-current-buffer (ignore-errors (cider-current-connection))
                     (format " CIDER<%s%s>"
@@ -78,7 +80,7 @@
        '(("\\s(\\(?:[^ \r\t\n]+?/\\)?\\(default[^ \r\t\n]*?\\)[ \t\n]+\\([^ \r\t\n]+?\\)"
           (1 '(:inherit default))
           (2 '(:inherit default)))
-         ("\\s(\\(\\(?:as\\|some\\)?->>?\\|and\\|or\\)\\_>"
+         ("\\s(\\(\\(?:as\\|cond\\|some\\)?->>?\\|and\\|or\\)\\_>"
           1 '(:inherit default))
          ("^\\s-*\\s(def-[ \r\n\t]\\([^ \r\t\n]+\\)"
           1 '(:inherit font-lock-variable-name-face) nil)

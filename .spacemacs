@@ -50,12 +50,14 @@ values."
      clojure-ext
      emacs-lisp-ext
      git-ext
+     html-ext
      java-ext
-     org-ext
      minor-mode-extentions
+     org-ext
      ;; ---------------------------------------------------------------
      ;; Private layers
      ;; ---------------------------------------------------------------
+     auto-dim-other-buffer
      (focus :variables
             focus-mode-to-new-thing '(
                                       (cider-repl-mode . list+)
@@ -314,7 +316,7 @@ you should place your code here."
               (local-set-key (kbd "C-h")   #'backward-delete-char)
               (local-set-key (kbd "S-SPC") #'toggle-input-method)))
 
-  ;; Setup FiraCode Symbol.
+  ;; Setup "Fira Code Symbol".
   ;; NOTE
   ;; Use customized "Fira Code Symbol" font for "MonacoB2" as the default font.
   ;; - https://gist.github.com/mordocai/50783defab3c3d1650e068b4d1c91495
@@ -356,12 +358,12 @@ you should place your code here."
               ("\\(-<\\)"                    #Xe116)
               ("\\(-<<\\)"                   #Xe117)
               ("\\(-~\\)"                    #Xe118)
-              ("\\(#{\\)"                    #Xe119)
-              ("\\(#\\[\\)"                  #Xe11a)
+              ;; ("\\(#{\\)"                    #Xe119)
+              ;; ("\\(#\\[\\)"                  #Xe11a)
               ("\\(##\\)"                    #Xe11b)
               ("\\(###\\)"                   #Xe11c)
               ("\\(####\\)"                  #Xe11d)
-              ("\\(#(\\)"                    #Xe11e)
+              ;; ("\\(#(\\)"                    #Xe11e)
               ("\\(#\\?\\)"                  #Xe11f)
               ("\\(#_\\)"                    #Xe120)
               ("\\(#_(\\)"                   #Xe121)
@@ -476,6 +478,7 @@ you should place your code here."
 
   ;; Customize the theme.
   (custom-set-faces
+   '(auto-dim-other-buffers-face ((t (:background "#212026" :foreground "gray50"))))
    '(font-lock-variable-name-face ((t (:inherit bold))))
    '(font-lock-type-face ((t (:inherit nil))))
    '(shadow ((t (:foreground "gray55")))))
@@ -492,6 +495,7 @@ you should place your code here."
   (spacemacs/toggle-smartparens-globally-on)
   (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
   (global-prettify-symbols-mode)
+  (auto-dim-other-buffers-mode)
 
   ;; user-config end here
   )
