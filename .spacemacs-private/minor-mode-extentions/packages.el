@@ -34,11 +34,13 @@
 (defun minor-mode-extentions/post-init-company ()
   (use-package company
     :config
-    ;; XXX
-    (advice-add #'company-pseudo-tooltip-show :override
-                (lambda (&rest _)
-                  (company-abort)
-                  (completion-at-point)))))
+    (setq company-idle-delay 1)
+    (add-hook 'company-completion-started-hook
+              (lambda (&rest _)
+                (company-abort)
+                (completion-at-point)
+                (when (fboundp 'adob--dim-buffer)
+                  (adob--dim-buffer nil))))))
 
 (defun minor-mode-extentions/post-init-evil ()
   (use-package evil

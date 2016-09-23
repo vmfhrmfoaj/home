@@ -302,6 +302,14 @@ you should place your code here."
   (set-file-name-coding-system 'utf-8-hfs)
   (prefer-coding-system 'utf-8)
 
+  ;; Mac
+  (when (eq system-type 'darwin)
+    (setq mac-command-modifier 'meta
+          mac-option-modifier 'meta
+          mac-pass-control-to-system nil
+          mac-pass-command-to-system nil)
+    (set-file-name-coding-system 'utf-8-hfs))
+
   ;; Setup the keys.
   (global-set-key (kbd "S-SPC") #'toggle-input-method)
   (global-set-key (kbd "<S-kp-divide>")   (kbd "\\"))
