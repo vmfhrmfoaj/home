@@ -312,12 +312,15 @@ you should place your code here."
 
   ;; Setup the keys.
   (global-set-key (kbd "S-SPC") #'toggle-input-method)
-  (global-set-key (kbd "<S-kp-divide>")   (kbd "\\"))
+  (global-set-key (kbd "<S-kp-divide>") (kbd "\\"))
   (global-set-key (kbd "<S-kp-subtract>") (kbd "_"))
-  (global-set-key (kbd "<S-kp-add>")      (kbd "="))
-  (define-key key-translation-map (kbd "<S-kp-divide>")   (kbd "\\"))
+  (global-set-key (kbd "<S-kp-add>") (kbd "="))
+  (define-key evil-read-key-map (kbd "<S-kp-divide>") (kbd "\\"))
+  (define-key evil-read-key-map (kbd "<S-kp-subtract>") (kbd "_"))
+  (define-key evil-read-key-map (kbd "<S-kp-add>") (kbd "="))
+  (define-key key-translation-map (kbd "<S-kp-divide>") (kbd "\\"))
   (define-key key-translation-map (kbd "<S-kp-subtract>") (kbd "_"))
-  (define-key key-translation-map (kbd "<S-kp-add>")      (kbd "="))
+  (define-key key-translation-map (kbd "<S-kp-add>") (kbd "="))
   (define-key isearch-mode-map (kbd "C-h") #'isearch-delete-char)
   (add-hook 'minibuffer-setup-hook
             (lambda ()
@@ -547,7 +550,7 @@ you should place your code here."
           (setenv key (resolve-sh-var value)))))))
 
 (defmacro -update->> (&rest thread)
-  `(setq ,(first thread) (->> ,@thread)))
+  `(setq ,(first thread) (-some->> ,@thread)))
 
 (defun enabled? (mode-status)
   (cond ((symbolp mode-status) mode-status)

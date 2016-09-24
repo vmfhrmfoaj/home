@@ -34,12 +34,13 @@
 (defun minor-mode-extentions/post-init-company ()
   (use-package company
     :config
-    (setq company-idle-delay 1)
+    (setq company-idle-delay 5)
     (add-hook 'company-completion-started-hook
               (lambda (&rest _)
                 (company-abort)
                 (completion-at-point)
-                (when (fboundp 'adob--dim-buffer)
+                (when (and (bound-and-true-p auto-dim-other-buffers-mode)
+                           (fboundp 'adob--dim-buffer))
                   (adob--dim-buffer nil))))))
 
 (defun minor-mode-extentions/post-init-evil ()
@@ -47,30 +48,28 @@
     :bind (:map evil-motion-state-map
                 ("g S-<kp-subtract>" . evil-last-non-blank))
     :config
-    (when (require 'aggressive-indent nil t)
-      (setq aggressive-skip-when-open-file t)
-      (let ((agg-indent (lambda (&rest _)
-                          "aggressive-indent-indent-defun-for-evil-mode"
-                          (unless (and aggressive-skip-when-open-file
-                                       (not (apply #'derived-mode-p
-                                                   aggressive-indent-excluded-modes)))
-                            (save-match-data
-                              (ignore-errors
-                                (save-excursion
-                                  (let ((beg (progn
-                                               (sp-backward-up-sexp 2)
-                                               (point)))
-                                        (end (progn
-                                               (sp-forward-sexp)
-                                               (point))))
-                                    (aggressive-indent-indent-region-and-on beg end))))))
-                          (setq-local aggressive-skip-when-open-file nil))))
-        (add-hook 'evil-normal-state-entry-hook agg-indent)
-        (dolist (fn '(evil-change
-                      evil-delete
-                      evil-paste-after
-                      evil-join))
-          (advice-add fn :after agg-indent))))))
+    (setq auto-indent-skip-when-open-file t)
+    (let ((auto-indent
+           (lambda (&rest _)
+             "auto-indent-for-evil-mode"
+             (unless auto-indent-skip-when-open-file)
+             (save-match-data
+               (ignore-errors
+                 (save-excursion
+                   (let ((beg (progn
+                                (sp-backward-up-sexp)
+                                (point)))
+                         (end (progn
+                                (sp-forward-sexp)
+                                (point))))
+                     (indent-region beg end)))))
+             (setq-local auto-indent-skip-when-open-file nil))))
+      (add-hook 'evil-normal-state-entry-hook auto-indent)
+      (dolist (fn '(evil-change
+                    evil-delete
+                    evil-paste-after
+                    evil-join))
+        (advice-add fn :after auto-indent)))))
 
 (defun minor-mode-extentions/post-init-git-gutter-fringe+ ()
   (use-package git-gutter-fringe+
