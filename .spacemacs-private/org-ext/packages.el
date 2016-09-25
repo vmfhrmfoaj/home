@@ -13,7 +13,8 @@
 
 (defconst org-ext-packages
   '(
-    org
+    (org :location built-in)
+    (org-agenda :location built-in)
     ))
 
 (defun org-ext/post-init-org ()
@@ -32,12 +33,10 @@
           ;; - http://orgmode.org/manual/Capture-templates.html#Capture-templates
           org-directory (concat (getenv "HOME") "/Desktop/Org")
           org-default-notes-file (concat org-directory "/todos/" (format-time-string "%Y") ".org")
-          org-agenda-files (-> org-default-notes-file
-                               (file-name-directory)
-                               (directory-files)
-                               (->> (-filter (-partial #'string-match-p "\\.org$"))
-                                    (--map (concat org-directory "/todos/" it))
-                                    (-filter #'file-exists-p)))
+          org-agenda-files (->> (shell-command-to-string (concat "find " org-directory "/ -type f -name \"*.org\""))
+                                (s-split "\n")
+                                (--map (s-replace "//" "/" it))
+                                (--remove (s-blank? it)))
           org-capture-templates
           `(("t" "Todo" entry
              (file+headline ,org-default-notes-file ,(format-time-string "%b"))
@@ -92,8 +91,7 @@
             ("j" "Journal" entry
              (file+datetree ,(concat org-directory "/journal.org")))
             ("J" "Journal with date" entry
-             (file+datetree+prompt ,(concat org-directory "/journal.org")))
-            ))
+             (file+datetree+prompt ,(concat org-directory "/journal.org")))))
     (font-lock-add-keywords
      'org-mode
      '(("^\\s-*\\(-\\) "
@@ -129,5 +127,15 @@
                        (--map (intern it))
                        (--filter (ignore-errors (symbol-value it)))
                        (--map (set it (-distinct (symbol-value it)))))))))
+
+(defun org-ext/post-init-org-agenda ()
+  (use-package org-agenda
+    :defer t
+    :config
+    (evilified-state-evilify-map org-agenda-mode-map
+      :mode org-agenda-mode
+      :bindings
+      (kbd "C-j") #'org-agenda-next-item
+      (kbd "C-k") #'org-agenda-previous-item)))
 
 ;;; packages.el ends here
