@@ -45,20 +45,55 @@
                       ":PROPERTIES:"                                "\n"
                       ":Effort: %^{Effort|1:00|3:00|6:00|1d|3d|6d}" "\n"
                       ":END:"                                       "\n"
-                      "SCHEDULED: %t DEADLINE: %^t"                 "\n\n"
+                      "SCHEDULED: %t DEADLINE: %^t"                 "\n"
+                      "\n"
                       "%?")
              :empty-lines 1
              :prepend t)
             ("n" "Note" entry
              (file+headline ,(concat org-directory "/notes/" (format-time-string "%Y") ".org")
                             ,(format-time-string "%b"))
-             "* %U %?"
+             ,(concat "* %^{Note}"   "\n"
+                      ":PROPERTIES:" "\n"
+                      ":Created: %U" "\n"
+                      ":END:"        "\n"
+                      "\n"
+                      "%?")
+             :empty-lines 1
+             :prepend t)
+            ("p" "Protocol" entry
+             (file+headline ,(concat org-directory "/notes/" (format-time-string "%Y") ".org")
+                            ,(format-time-string "%b"))
+             ,(concat "* %^{Note}"    "\n"
+                      ":PROPERTIES:"  "\n"
+                      ":Created: %U"  "\n"
+                      ":Source: %c"   "\n"
+                      ":END:"         "\n"
+                      "\n"
+                      "#+BEGIN_QUOTE" "\n"
+                      "%i"            "\n"
+                      "#+End_QUOTE"   "\n"
+                      "\n"
+                      "%?")
+             :empty-lines 1
+             :prepend t)
+            ("L" "Protocol Link" entry
+             (file+headline ,(concat org-directory "/notes/" (format-time-string "%Y") ".org")
+                            ,(format-time-string "%b"))
+             ,(concat "* %^{Note}"    "\n"
+                      ":PROPERTIES:"  "\n"
+                      ":Created: %U"  "\n"
+                      ":Link: %c"     "\n"
+                      ":END:"         "\n"
+                      "\n"
+                      "%?")
              :empty-lines 1
              :prepend t)
             ("j" "Journal" entry
              (file+datetree ,(concat org-directory "/journal.org")))
             ("J" "Journal with date" entry
-             (file+datetree+prompt ,(concat org-directory "/journal.org")))))
+             (file+datetree+prompt ,(concat org-directory "/journal.org")))
+            ))
     (font-lock-add-keywords
      'org-mode
      '(("^\\s-*\\(-\\) "
@@ -69,20 +104,9 @@
       (set-face-attribute (intern (concat "org-level-" (number-to-string i)))
                           nil
                           :weight 'bold))
-    (spacemacs/set-leader-keys
-      "aoc" nil
-      "aoct" #'org-capture-todo
-      "aocT" #'org-capture-todo-done
-      "aocn" #'org-capture-note
-      "aocj" #'org-capture-journal
-      "aocJ" #'org-capture-journal-with-prompt)
     (defun org-capture-todo ()
       (interactive)
       (org-capture nil "t"))
-    (defun org-capture-todo-done ()
-      (interactive)
-      ;; TODO
-      )
     (defun org-capture-note ()
       (interactive)
       (org-capture nil "n"))
@@ -92,11 +116,18 @@
     (defun org-capture-journal-with-prompt ()
       (interactive)
       (org-capture nil "J"))
+    (spacemacs/set-leader-keys
+      "aoc" nil
+      "aoct" #'org-capture-todo
+      "aocn" #'org-capture-note
+      "aocj" #'org-capture-journal
+      "aocJ" #'org-capture-journal-with-prompt)
     (advice-add #'org-capture :before
                 (lambda (&rest _)
                   "Remove a duplicates history."
                   (->> (all-completions "org-capture-template-prompt-history" obarray)
                        (--map (intern it))
+                       (--filter (ignore-errors (symbol-value it)))
                        (--map (set it (-distinct (symbol-value it)))))))))
 
 ;;; packages.el ends here

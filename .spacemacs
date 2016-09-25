@@ -288,6 +288,10 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
+  ;; User info
+  (setq user-full-name "Jinseop Kim"
+        user-mail-address "vmfhrmfoaj@yahoo.com")
+
   ;; Include the ".profile" file for the GUI emacs.
   (include-shell-var-in "~/.profile")
 

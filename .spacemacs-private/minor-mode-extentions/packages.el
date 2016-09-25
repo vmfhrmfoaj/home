@@ -52,17 +52,17 @@
     (let ((auto-indent
            (lambda (&rest _)
              "auto-indent-for-evil-mode"
-             (unless auto-indent-skip-when-open-file)
-             (save-match-data
-               (ignore-errors
-                 (save-excursion
-                   (let ((beg (progn
-                                (sp-backward-up-sexp)
-                                (point)))
-                         (end (progn
-                                (sp-forward-sexp)
-                                (point))))
-                     (indent-region beg end)))))
+             (unless auto-indent-skip-when-open-file
+               (save-match-data
+                 (ignore-errors
+                   (save-excursion
+                     (let ((beg (progn
+                                  (sp-backward-up-sexp)
+                                  (point)))
+                           (end (progn
+                                  (sp-forward-sexp)
+                                  (point))))
+                       (indent-region beg end))))))
              (setq-local auto-indent-skip-when-open-file nil))))
       (add-hook 'evil-normal-state-entry-hook auto-indent)
       (dolist (fn '(evil-change
