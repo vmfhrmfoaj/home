@@ -99,8 +99,7 @@
        ("\\(\\\\\\\\\\)\\s-*$"
         1 'shadow nil)) t)
     (dolist (i (number-sequence 1 org-n-level-faces))
-      (set-face-attribute (intern (concat "org-level-" (number-to-string i)))
-                          nil
+      (set-face-attribute (intern (concat "org-level-" (number-to-string i))) nil
                           :weight 'bold))
     (defun org-capture-todo ()
       (interactive)

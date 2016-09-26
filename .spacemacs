@@ -316,16 +316,19 @@ you should place your code here."
 
   ;; Setup the keys.
   (global-set-key (kbd "S-SPC") #'toggle-input-method)
-  (global-set-key (kbd "<S-kp-divide>") (kbd "\\"))
-  (global-set-key (kbd "<S-kp-subtract>") (kbd "_"))
-  (global-set-key (kbd "<S-kp-add>") (kbd "="))
-  (define-key evil-read-key-map (kbd "<S-kp-divide>") (kbd "\\"))
-  (define-key evil-read-key-map (kbd "<S-kp-subtract>") (kbd "_"))
-  (define-key evil-read-key-map (kbd "<S-kp-add>") (kbd "="))
-  (define-key key-translation-map (kbd "<S-kp-divide>") (kbd "\\"))
-  (define-key key-translation-map (kbd "<S-kp-subtract>") (kbd "_"))
-  (define-key key-translation-map (kbd "<S-kp-add>") (kbd "="))
+  (global-set-key (kbd "<S-kp-divide>") "\\")
+  (global-set-key (kbd "<S-kp-subtract>") "_")
+  (global-set-key (kbd "<S-kp-add>") "=")
+  (define-key evil-read-key-map (kbd "<S-kp-divide>") "\\")
+  (define-key evil-read-key-map (kbd "<S-kp-subtract>") "_")
+  (define-key evil-read-key-map (kbd "<S-kp-add>") "=")
+  (define-key key-translation-map (kbd "<S-kp-divide>") "\\")
+  (define-key key-translation-map (kbd "<S-kp-subtract>") "_")
+  (define-key key-translation-map (kbd "<S-kp-add>") "=")
   (define-key isearch-mode-map (kbd "C-h") #'isearch-delete-char)
+  (define-key isearch-mode-map (kbd "M-.") (gen-isearch-fn ".*?"))
+  (define-key isearch-mode-map (kbd "M-<") (gen-isearch-fn "\\_<"))
+  (define-key isearch-mode-map (kbd "M->") (gen-isearch-fn "\\_>"))
   (add-hook 'minibuffer-setup-hook
             (lambda ()
               (local-set-key (kbd "C-h")   #'backward-delete-char)
@@ -465,12 +468,16 @@ you should place your code here."
               ("[^:=]\\(:\\)[^:=]"           #Xe16c)
               ("[^\\+<>]\\(\\+\\)[^\\+<>]"   #Xe16d)
               ("[^\\*/<>]\\(\\*\\)[^\\*/<>]" #Xe16f))))
-  (defun add-fira-code-symbol-keywords ()
-    (font-lock-add-keywords nil fira-code-font-lock-keywords-alist))
-  (add-hook 'prog-mode-hook #'add-fira-code-symbol-keywords)
+  (add-hook 'prog-mode-hook
+            (-partial #'font-lock-add-keywords nil
+                      fira-code-font-lock-keywords-alist))
+  (add-hook 'org-mode-hook
+            (-partial #'font-lock-add-keywords nil
+                      (-drop-last 1 fira-code-font-lock-keywords-alist)))
 
   ;; Change the behavior of indent function for `prettify-symbols-mode'.
   (advice-exclude-modes '(prettify-symbols-mode) #'indent-for-tab-command)
+  (advice-exclude-modes '(prettify-symbols-mode) #'indent-region)
   (advice-exclude-modes '(prettify-symbols-mode) #'indent-according-to-mode)
 
   ;; Set the pos/size of the initial frame.
@@ -577,6 +584,18 @@ you should place your code here."
                   "Added by `advice-exclude-modes'."
                   (with-exclude-modes modes
                     (apply f args))))))
+
+(defun gen-isearch-fn (regx &optional display-str)
+  (lexical-let ((regx regx)
+                (display-str (or display-str regx)))
+    (lambda ()
+      (interactive)
+      (setq isearch-string  (concat isearch-string regx)
+            isearch-message (concat isearch-message
+                                    (mapconcat 'isearch-text-char-description
+                                               display-str ""))
+            isearch-yank-flag t)
+      (isearch-search-and-update))))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.

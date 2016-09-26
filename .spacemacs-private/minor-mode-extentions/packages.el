@@ -33,15 +33,18 @@
 
 (defun minor-mode-extentions/post-init-company ()
   (use-package company
+    :bind (:map company-active-map
+                ("C-h" . nil)
+                ("C-s" . completion-at-point))
     :config
-    (setq company-idle-delay 5)
-    (add-hook 'company-completion-started-hook
-              (lambda (&rest _)
-                (company-abort)
-                (completion-at-point)
-                (when (and (bound-and-true-p auto-dim-other-buffers-mode)
-                           (fboundp 'adob--dim-buffer))
-                  (adob--dim-buffer nil))))))
+    (setq company-idle-delay 0
+          tab-always-indent t)
+    (advice-add #'company-call-frontends :after
+                (lambda (cmd)
+                  (cond ((eq 'show cmd)
+                         (prettify-symbols-mode 0))
+                        ((eq 'hide cmd)
+                         (prettify-symbols-mode 1)))))))
 
 (defun minor-mode-extentions/post-init-evil ()
   (use-package evil
