@@ -97,7 +97,7 @@
      '(("^\\s-*\\(-\\) "
         1 (compose-region (match-beginning 1) (match-end 1) ?∙))
        ("\\(\\\\\\\\\\)\\s-*$"
-        1 'shadow nil)) t)
+        1 'shadow nil)))
     (dolist (i (number-sequence 1 org-n-level-faces))
       (set-face-attribute (intern (concat "org-level-" (number-to-string i))) nil
                           :weight 'bold))

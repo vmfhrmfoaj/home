@@ -34,7 +34,8 @@
                               (if (string-equal host "localhost")
                                   ""
                                 (concat host ":")))
-                            (cadr nrepl-endpoint)))))
+                            (cadr nrepl-endpoint))))
+          cider-cljs-lein-repl (caadr cider--cljs-repl-types))
     (evil-define-key 'insert cider-repl-mode-map (kbd "RET") #'evil-ret-and-indent)
     (evil-define-key 'normal cider-repl-mode-map (kbd "RET") #'cider-repl-return)))
 

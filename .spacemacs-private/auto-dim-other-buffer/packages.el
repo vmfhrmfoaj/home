@@ -40,8 +40,8 @@
     :commands adob--after-change-major-mode-hook
     :config
     (eval-after-load "diminish" '(diminish 'auto-dim-other-buffers-mode))
-    (advice-add #'adob--after-change-major-mode-hook
-                :override (lambda (&rest args)
-                            nil))))
+    (advice-add #'adob--after-change-major-mode-hook :override
+                (lambda (&rest args)
+                  nil))))
 
 ;;; packages.el ends here

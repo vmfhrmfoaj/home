@@ -37,42 +37,28 @@
                 ("C-h" . nil)
                 ("C-s" . completion-at-point))
     :config
-    (setq company-idle-delay 0
-          tab-always-indent t)
+    (setq company-idle-delay 0.15
+          company-tooltip-exclude-modes '(prettify-symbols-mode)
+          company-tooltip-exclude-mode-status nil)
     (advice-add #'company-call-frontends :after
                 (lambda (cmd)
-                  (cond ((eq 'show cmd)
-                         (prettify-symbols-mode 0))
-                        ((eq 'hide cmd)
-                         (prettify-symbols-mode 1)))))))
+                  (cond
+                   ((eq 'show cmd)
+                    (setq-local company-tooltip-exclude-mode-status
+                                (-map #'symbol-value company-tooltip-exclude-modes))
+                    (disable-modes company-tooltip-exclude-modes))
+                   ((eq 'hide cmd)
+                    (resotre-modes company-tooltip-exclude-modes
+                                   company-tooltip-exclude-mode-status)))))))
 
 (defun minor-mode-extentions/post-init-evil ()
-  (use-package evil
-    :bind (:map evil-motion-state-map
-                ("g S-<kp-subtract>" . evil-last-non-blank))
-    :config
-    (setq auto-indent-skip-when-open-file t)
-    (let ((auto-indent
-           (lambda (&rest _)
-             "auto-indent-for-evil-mode"
-             (unless auto-indent-skip-when-open-file
-               (save-match-data
-                 (ignore-errors
-                   (save-excursion
-                     (let ((beg (progn
-                                  (sp-backward-up-sexp)
-                                  (point)))
-                           (end (progn
-                                  (sp-forward-sexp)
-                                  (point))))
-                       (indent-region beg end))))))
-             (setq-local auto-indent-skip-when-open-file nil))))
-      (add-hook 'evil-normal-state-entry-hook auto-indent)
-      (dolist (fn '(evil-change
-                    evil-delete
-                    evil-paste-after
-                    evil-join))
-        (advice-add fn :after auto-indent)))))
+  (define-key evil-motion-state-map (kbd "g S-<kp-subtract>") #'evil-last-non-blank)
+  (add-hook 'evil-normal-state-entry-hook #'auto-indent)
+  (dolist (fn '(evil-change
+                evil-delete
+                evil-paste-after
+                evil-join))
+    (advice-add fn :after #'auto-indent)))
 
 (defun minor-mode-extentions/post-init-git-gutter-fringe+ ()
   (use-package git-gutter-fringe+
@@ -104,6 +90,7 @@
   (use-package linum-relative
     :config
     (add-hook 'prog-mode-hook (-partial #'linum-relative-mode 1))
+    (add-hook 'linum-relative-mode-hook (-partial #'diminish 'linum-relative-mode))
     (let ((height (face-attribute 'default :height)))
       (custom-set-faces
        `(linum ((t :underline nil :height ,height)))
@@ -115,55 +102,15 @@
     (setq sp-highlight-pair-overlay nil
           sp-highlight-wrap-overlay nil
           sp-highlight-wrap-tag-overlay nil
-          wrap-sp-supported-modes
-          '(
-            clojure-mode
-            cider-repl-mode
-            emas-lisp-mode
-            ))
-
-    (when (require 'smartparens-clojure nil t)
-      (defun wrap-sp-forward-symbol (&optional arg)
-        (save-match-data
-          (when (and (numberp arg)
-                     (> arg 0)
-                     (apply #'derived-mode-p wrap-sp-supported-modes)
-                     (-some->> (buffer-substring (point) (line-end-position))
-                               (string-match (concat "^\\s-*"
-                                                     sp-clojure-prefix
-                                                     "[^({\\[]"))))
-            (goto-char (+ (point) (match-end 0))))))
-      (defun wrap-sp-backward-symbol (&optional arg)
-        (save-match-data
-          (when (and (numberp arg)
-                     (> arg 0)
-                     (apply #'derived-mode-p wrap-sp-supported-modes)
-                     (-some->> (buffer-substring (line-beginning-position) (point))
-                               (string-match (concat sp-clojure-prefix
-                                                     "\\s-*$"))))
-            (beginning-of-line)
-            (goto-char (+ (point) (match-beginning 0))))))
-      (defun wrap-sp-forward-sexp (&optional arg)
-        (save-match-data
-          (when (and (numberp arg)
-                     (> arg 0)
-                     (apply #'derived-mode-p wrap-sp-supported-modes)
-                     (-some->> (char-after)
-                               (char-to-string)
-                               (string-match "\\s(")))
-            (forward-sexp))))
-      (defun wrap-sp-backward-sexp (&optional arg)
-        (save-match-data
-          (when (and (numberp arg)
-                     (> arg 0)
-                     (apply #'derived-mode-p wrap-sp-supported-modes)
-                     (-some->> (buffer-substring (line-beginning-position) (point))
-                               (string-match (concat sp-clojure-prefix "\\s-*$"))))
-            (beginning-of-line)
-            (goto-char (+ (point) (match-beginning 0))))))
-      (advice-add #'sp-forward-symbol :before #'wrap-sp-forward-symbol)
-      (advice-add #'sp-backward-symbol :after #'wrap-sp-backward-symbol)
-      (advice-add #'sp-forward-sexp :after #'wrap-sp-forward-sexp)
-      (advice-add #'sp-backward-sexp :after #'wrap-sp-backward-sexp))))
+          wrap-sp-supported-modes '(clojure-mode
+                                    cider-repl-mode
+                                    emas-lisp-mode))
+    (advice-add #'sp-newline :after #'auto-indent)
+    (eval-after-load "smartparens-clojure"
+      '(progn
+         (advice-add #'sp-forward-symbol :before #'wrap-sp-forward-symbol)
+         (advice-add #'sp-backward-symbol :after #'wrap-sp-backward-symbol)
+         (advice-add #'sp-forward-sexp :after #'wrap-sp-forward-sexp)
+         (advice-add #'sp-backward-sexp :after #'wrap-sp-backward-sexp)))))
 
 ;; packages.el ends here

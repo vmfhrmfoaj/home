@@ -33,14 +33,12 @@
       1 '(:inherit font-lock-constant-face))))
   (eval-after-load "evil"
     '(progn
-       (evil-define-key 'insert lisp-interaction-mode-map (kbd "RET") #'evil-ret-and-indent)
-       (evil-define-key 'insert lisp-interaction-mode-map (kbd "C-j") #'evil-ret-and-indent)
        (let ((f (lambda ()
                   (interactive)
                   (beginning-of-defun)
                   (forward-list)
                   (eval-print-last-sexp))))
-         (evil-define-key 'normal lisp-interaction-mode-map (kbd "RET") f)
-         (evil-define-key 'normal lisp-interaction-mode-map (kbd "C-j") f)))))
+         (define-key lisp-interaction-mode-map [remap eval-print-last-sexp] f)
+         (evil-define-key 'normal lisp-interaction-mode-map [remap evil-ret] f)))))
 
 ;;; packages.el ends here
