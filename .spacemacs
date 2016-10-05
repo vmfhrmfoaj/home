@@ -54,6 +54,7 @@ values."
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
+     themes-megapack
      version-control
      ;; ---------------------------------------------------------------
      ;; Extentions
@@ -156,16 +157,19 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-light)
+   dotspacemacs-themes '(leuven)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("MonacoB2"
+   ;; If you used macOS, you can control advance setting of fonts.
+   ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 3
+   ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1
+   dotspacemacs-default-font '("Fira Code"
                                :size 14
                                :weight normal
                                :width normal
-                               :powerline-scale 1.1)
+                               :powerline-scale 1.2)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
@@ -321,83 +325,12 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (setq custom-file "~/.spacemacs-custom.el")
   (load custom-file)
 
-  (defun pixel->frame-unit (pixel)
-    (round (/ pixel (/ (float (frame-pixel-width)) (frame-width)))))
-  (defun frame-unit->pixel (frame-unit)
-    (round (* frame-unit (/ (float (frame-pixel-width)) (frame-width)))))
-  (defun custom-display-pixel-width ()
-    (->> (--filter (-when-let (frames (-> (assoc 'frames it) cdr))
-                     (--some? (eq (selected-frame) it) frames))
-                   (display-monitor-attributes-list))
-         (first)
-         (assoc 'geometry)
-         (cdr)
-         (nth 2)))
+  ;; User info
+  (setq user-full-name "Jinseop Kim"
+        user-mail-address "vmfhrmfoaj@yahoo.com")
 
-  (defun resolve-sh-var (str)
-    (while (string-match (concat "\\$\\([_a-zA-Z0-9]+\\|[({].+[})]\\)") str)
-      (let* ((var (match-string 1 str))
-             (res (save-match-data
-                    (->> var
-                         (concat "echo $")
-                         (shell-command-to-string)
-                         (s-trim)))))
-        (setq str (replace-match res t nil str))))
-    str)
-  (defun include-shell-var-in (file)
-    (when (file-exists-p file)
-      (let* ((regx "export\\s-+\\([^=]+\\)=\"?\\(.+?\\)\"?$")
-             (exports (->> (with-temp-buffer
-                             (insert-file-contents file)
-                             (split-string (buffer-string) "\n" t))
-                           (--filter (not (string-match-p "^#" it)))
-                           (--filter (string-match-p regx it))
-                           (--map (replace-regexp-in-string "\\\\" "" it)))))
-        (dolist (it exports)
-          (string-match regx it)
-          (let ((key   (match-string-no-properties 1 it))
-                (value (match-string-no-properties 2 it)))
-            (setenv key (resolve-sh-var value)))))))
-
-  (defmacro -update->> (&rest thread)
-    `(setq ,(first thread) (-some->> ,@thread)))
-
-  (defun enabled? (mode-status)
-    (cond ((symbolp mode-status) mode-status)
-          ((numberp mode-status) (not (zerop mode-status)))
-          (t nil)))
-  (defun disable-modes (modes)
-    (or (->> modes
-             (-map #'symbol-value)
-             (--all? (not (enabled? it))))
-        (--map (funcall it 0) modes)))
-  (defun resotre-modes (modes status)
-    (--map (funcall (car it) (cdr it)) (-zip modes status)))
-  (defmacro with-disable-modes (modes &rest body)
-    `(let ((mode-status (-map #'symbol-value ,modes)))
-       (disable-modes ,modes)
-       (prog1 (progn ,@body)
-         (resotre-modes ,modes mode-status))))
-  (put 'with-disable-modes 'lisp-indent-function 'defun)
-  (defun advice-dsiable-modes (modes f)
-    (advice-add f :around
-                (lexical-let ((modes modes))
-                  (lambda (f &rest args)
-                    "Added by `advice-disable-modes'."
-                    (with-disable-modes modes
-                      (apply f args))))))
-
-  (defun gen-isearch-fn (regx &optional display-str)
-    (lexical-let ((regx regx)
-                  (display-str (or display-str regx)))
-      (lambda ()
-        (interactive)
-        (setq isearch-string  (concat isearch-string regx)
-              isearch-message (concat isearch-message
-                                      (mapconcat 'isearch-text-char-description
-                                                 display-str ""))
-              isearch-yank-flag t)
-        (isearch-search-and-update))))
+  ;; Setup the addtional font setting.
+  (setq-default line-spacing 3)
   )
 
 (defun dotspacemacs/user-config ()
@@ -408,15 +341,8 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
-  ;; User info
-  (setq user-full-name "Jinseop Kim"
-        user-mail-address "vmfhrmfoaj@yahoo.com")
-
   ;; Include the ".profile" file for the GUI emacs.
   (include-shell-var-in "~/.profile")
-
-  ;; Setup the addtional font setting.
-  (setq-default line-spacing 0)
 
   ;; Setup language.
   (set-language-environment "Korean")
@@ -458,24 +384,7 @@ you should place your code here."
   (setq tab-always-indent t)
   (global-set-key (kbd "<S-tab>") #'completion-at-point)
 
-  ;; Setup "Fira Code Symbol".
-  ;; NOTE
-  ;; Use customized "Fira Code Symbol" font for "MonacoB2" as the default font.
-  ;; - https://gist.github.com/mordocai/50783defab3c3d1650e068b4d1c91495
-  (add-hook 'after-make-frame-functions
-            (lambda (frame)
-              (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
-  (add-hook 'prog-mode-hook
-            (-partial #'font-lock-add-keywords nil
-                      fira-code-font-lock-keywords-alist))
-  (add-hook 'org-mode-hook
-            (-partial #'font-lock-add-keywords nil
-                      (-drop-last 1 fira-code-font-lock-keywords-alist)))
-
-  ;; Change the behavior of indent function for `prettify-symbols-mode'.
-  (advice-dsiable-modes '(prettify-symbols-mode) #'indent-for-tab-command)
-  (advice-dsiable-modes '(prettify-symbols-mode) #'indent-region)
-  (advice-dsiable-modes '(prettify-symbols-mode) #'indent-according-to-mode)
+  (mac-auto-operator-composition-mode)
 
   ;; Set the pos/size of the initial frame.
   (let* ((w 110)
@@ -497,11 +406,10 @@ you should place your code here."
 
   ;; Customize the theme.
   (custom-set-faces
-   '(auto-dim-other-buffers-face ((t (:background "#edebe7" :foreground "#74647e"))))
-   '(css-property ((t (:inherit font-lock-constant-face))))
-   '(font-lock-variable-name-face ((t (:inherit bold))))
-   '(font-lock-type-face ((t (:inherit nil))))
-   '(shadow ((t (:foreground "#83758c")))))
+   '(font-lock-function-name-face ((t (:background "#f2f9fd"))))
+   '(linum ((t (:inverse-video nil))))
+   '(linum-relative-current-face ((t (:weight bold :inherit linum))))
+   '(show-paren-match ((t (:background nil :weight bold :inverse-video t)))))
   (add-hook 'prog-mode-hook
             (lambda ()
               (font-lock-add-keywords
@@ -513,10 +421,87 @@ you should place your code here."
   ;; Turn on some packages globally.
   (spacemacs/toggle-camel-case-motion-globally-on)
   (spacemacs/toggle-smartparens-globally-on)
-  (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
   (global-prettify-symbols-mode)
   (auto-dim-other-buffers-mode)
   )
+
+(defun pixel->frame-unit (pixel)
+  (round (/ pixel (/ (float (frame-pixel-width)) (frame-width)))))
+(defun frame-unit->pixel (frame-unit)
+  (round (* frame-unit (/ (float (frame-pixel-width)) (frame-width)))))
+(defun custom-display-pixel-width ()
+  (->> (--filter (-when-let (frames (-> (assoc 'frames it) cdr))
+                   (--some? (eq (selected-frame) it) frames))
+                 (display-monitor-attributes-list))
+       (first)
+       (assoc 'geometry)
+       (cdr)
+       (nth 2)))
+
+(defun resolve-sh-var (str)
+  (while (string-match (concat "\\$\\([_a-zA-Z0-9]+\\|[({].+[})]\\)") str)
+    (let* ((var (match-string 1 str))
+           (res (save-match-data
+                  (->> var
+                       (concat "echo $")
+                       (shell-command-to-string)
+                       (s-trim)))))
+      (setq str (replace-match res t nil str))))
+  str)
+(defun include-shell-var-in (file)
+  (when (file-exists-p file)
+    (let* ((regx "export\\s-+\\([^=]+\\)=\"?\\(.+?\\)\"?$")
+           (exports (->> (with-temp-buffer
+                           (insert-file-contents file)
+                           (split-string (buffer-string) "\n" t))
+                         (--filter (not (string-match-p "^#" it)))
+                         (--filter (string-match-p regx it))
+                         (--map (replace-regexp-in-string "\\\\" "" it)))))
+      (dolist (it exports)
+        (string-match regx it)
+        (let ((key   (match-string-no-properties 1 it))
+              (value (match-string-no-properties 2 it)))
+          (setenv key (resolve-sh-var value)))))))
+
+(defmacro -update->> (&rest thread)
+  `(setq ,(first thread) (-some->> ,@thread)))
+
+(defun enabled? (mode-status)
+  (cond ((symbolp mode-status) mode-status)
+        ((numberp mode-status) (not (zerop mode-status)))
+        (t nil)))
+(defun disable-modes (modes)
+  (or (->> modes
+           (-map #'symbol-value)
+           (--all? (not (enabled? it))))
+      (--map (funcall it 0) modes)))
+(defun resotre-modes (modes status)
+  (--map (funcall (car it) (cdr it)) (-zip modes status)))
+(defmacro with-disable-modes (modes &rest body)
+  `(let ((mode-status (-map #'symbol-value ,modes)))
+     (disable-modes ,modes)
+     (prog1 (progn ,@body)
+       (resotre-modes ,modes mode-status))))
+(put 'with-disable-modes 'lisp-indent-function 'defun)
+(defun advice-dsiable-modes (modes f)
+  (advice-add f :around
+              (lexical-let ((modes modes))
+                (lambda (f &rest args)
+                  "Added by `advice-disable-modes'."
+                  (with-disable-modes modes
+                    (apply f args))))))
+
+(defun gen-isearch-fn (regx &optional display-str)
+  (lexical-let ((regx regx)
+                (display-str (or display-str regx)))
+    (lambda ()
+      (interactive)
+      (setq isearch-string  (concat isearch-string regx)
+            isearch-message (concat isearch-message
+                                    (mapconcat 'isearch-text-char-description
+                                               display-str ""))
+            isearch-yank-flag t)
+      (isearch-search-and-update))))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.

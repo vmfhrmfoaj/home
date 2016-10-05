@@ -5,13 +5,20 @@
     (save-match-data
       (ignore-errors
         (save-excursion
-          (let ((beg (progn
-                       (sp-backward-up-sexp)
-                       (point)))
+          (let ((start (progn
+                         (ignore-errors
+                           (cond ((sp-point-in-string)
+                                  (save-match-data
+                                    (re-search-backward "[^\\]\""))
+                                  (forward-char))
+                                 ((sp-point-in-comment)
+                                  (beginning-of-line)))
+                           (backward-up-list 2))
+                         (point)))
                 (end (progn
-                       (sp-forward-sexp)
+                       (forward-list)
                        (point))))
-            (indent-region beg end))))))
+            (indent-region start end))))))
   (setq-local auto-indent-skip-when-open-file nil))
 
 (defun wrap-sp-forward-symbol (&optional arg)
