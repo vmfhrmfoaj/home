@@ -64,7 +64,7 @@
   (use-package git-gutter-fringe+
     :config
     (let ((bitmap (-repeat (line-pixel-height)
-                           (apply #'concat (-repeat 7 "X")))))
+                           (apply #'concat (-repeat 8 "X")))))
       (define-fringe-bitmap 'git-gutter-fr+-added    (apply #'fringe-helper-convert bitmap) nil nil nil)
       (define-fringe-bitmap 'git-gutter-fr+-deleted  (apply #'fringe-helper-convert bitmap) nil nil nil)
       (define-fringe-bitmap 'git-gutter-fr+-modified (apply #'fringe-helper-convert bitmap) nil nil nil))))

@@ -165,7 +165,7 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1
-   dotspacemacs-default-font '("Fira Code"
+   dotspacemacs-default-font '("Liberation Mono"
                                :size 14
                                :weight normal
                                :width normal
@@ -384,32 +384,49 @@ you should place your code here."
   (setq tab-always-indent t)
   (global-set-key (kbd "<S-tab>") #'completion-at-point)
 
-  (mac-auto-operator-composition-mode)
-
   ;; Set the pos/size of the initial frame.
-  (let* ((w 110)
+  (let* ((w 120)
          (h (1- (/ (display-pixel-height) (frame-char-height))))
          (l (/ (custom-display-pixel-width) 2.0))
-         (l (floor (- l (* (frame-unit->pixel w) 0.4))))
+         (l (floor (- l (* (frame-unit->pixel w) 0.3))))
          (l (if (< 0 (- (custom-display-pixel-width)
                         (+ l (frame-unit->pixel w))))
                 l
-              (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w)))))
-         (W (max w (pixel->frame-unit (- (custom-display-pixel-width) 120 l)))))
+              (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w))))))
     (add-to-list 'default-frame-alist (cons 'width  w))
     (add-to-list 'default-frame-alist (cons 'height h))
-    (setq split-width-threshold (1+ W)
+    (setq split-width-threshold (1+ w)
           initial-frame-alist (list (cons 'top    0)
                                     (cons 'left   l)
-                                    (cons 'width  W)
+                                    (cons 'width  w)
                                     (cons 'height h))))
+
+  ;; Setup "Fira Code Symbol".
+  ;; NOTE
+  ;; Use customized "Fira Code Symbol" font for "MonacoB2" as the default font.
+  ;; - https://gist.github.com/mordocai/50783defab3c3d1650e068b4d1c91495
+  (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.95))
+  (add-hook 'after-make-frame-functions
+            (lambda (frame)
+              (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
+  (add-hook 'prog-mode-hook
+            (-partial #'font-lock-add-keywords nil
+                      fira-code-font-lock-keywords-alist))
+  (add-hook 'org-mode-hook
+            (-partial #'font-lock-add-keywords nil
+                      (-drop-last 1 fira-code-font-lock-keywords-alist)))
+
+  ;; Change the behavior of indent function for `prettify-symbols-mode'.
+  (advice-disable-modes '(prettify-symbols-mode) #'indent-for-tab-command)
+  (advice-disable-modes '(prettify-symbols-mode) #'indent-region)
+  (advice-disable-modes '(prettify-symbols-mode) #'indent-according-to-mode)
 
   ;; Customize the theme.
   (custom-set-faces
    '(font-lock-function-name-face ((t (:background "#f2f9fd"))))
-   '(linum ((t (:inverse-video nil))))
+   '(linum ((t (:inverse-video nil :underline nil))))
    '(linum-relative-current-face ((t (:weight bold :inherit linum))))
-   '(show-paren-match ((t (:background nil :weight bold :inverse-video t)))))
+   '(show-paren-match ((t (:background nil :weight bold :underline t)))))
   (add-hook 'prog-mode-hook
             (lambda ()
               (font-lock-add-keywords
@@ -483,7 +500,7 @@ you should place your code here."
      (prog1 (progn ,@body)
        (resotre-modes ,modes mode-status))))
 (put 'with-disable-modes 'lisp-indent-function 'defun)
-(defun advice-dsiable-modes (modes f)
+(defun advice-disable-modes (modes f)
   (advice-add f :around
               (lexical-let ((modes modes))
                 (lambda (f &rest args)
