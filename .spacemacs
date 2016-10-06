@@ -88,7 +88,6 @@ values."
    dotspacemacs-excluded-packages
    '(
      exec-path-from-shell
-     rainbow-delimiters
      )
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
@@ -157,19 +156,19 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(leuven)
+   dotspacemacs-themes '(default)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    ;; If you used macOS, you can control advance setting of fonts.
-   ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 3
-   ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1
-   dotspacemacs-default-font '("Liberation Mono"
+   ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
+   ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
+   dotspacemacs-default-font '("MonacoB2"
                                :size 14
                                :weight normal
                                :width normal
-                               :powerline-scale 1.2)
+                               :powerline-scale 1.1)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
@@ -330,7 +329,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; Setup the addtional font setting.
-  (setq-default line-spacing 3)
+  (setq-default line-spacing 2)
   )
 
 (defun dotspacemacs/user-config ()
@@ -351,6 +350,7 @@ you should place your code here."
                           (-replace-at 3 "Hangul" it)))
   (set-file-name-coding-system 'utf-8-hfs)
   (prefer-coding-system 'utf-8)
+  (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
 
   ;; Mac
   (when (eq system-type 'darwin)
@@ -405,7 +405,6 @@ you should place your code here."
   ;; NOTE
   ;; Use customized "Fira Code Symbol" font for "MonacoB2" as the default font.
   ;; - https://gist.github.com/mordocai/50783defab3c3d1650e068b4d1c91495
-  (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.95))
   (add-hook 'after-make-frame-functions
             (lambda (frame)
               (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
@@ -422,11 +421,61 @@ you should place your code here."
   (advice-disable-modes '(prettify-symbols-mode) #'indent-according-to-mode)
 
   ;; Customize the theme.
+  (require 'color-theme-sanityinc-tomorrow)
+  (color-theme-sanityinc-tomorrow--define-theme eighties)
+  (add-hook 'linum-mode-hook (lambda () (set-face-attribute 'linum nil :background nil)))
   (custom-set-faces
-   '(font-lock-function-name-face ((t (:background "#f2f9fd"))))
-   '(linum ((t (:inverse-video nil :underline nil))))
-   '(linum-relative-current-face ((t (:weight bold :inherit linum))))
-   '(show-paren-match ((t (:background nil :weight bold :underline t)))))
+   `(auto-dim-other-buffers-face ((t (:background "#242424"))))
+   `(clojure-interop-method-face ((t (:inherit default))))
+   `(clojure-keyword-face ((t (:inherit font-lock-builtin-face))))
+   `(company-tooltip ((t (:background "#393939"))))
+   `(company-tooltip-selection ((t (:background "#515151" :foreground "#99cc99" :weight bold))))
+   `(css-property ((t (:inherit font-lock-builtin-face))))
+   `(fic-face ((t (:inherit font-lock-warning-face :background nil :foreground nil :slant italic))))
+   `(font-latex-bold-face ((t (:foreground nil :weight bold))))
+   `(font-latex-italic-face ((t (:foreground nil :slant italic))))
+   `(font-latex-math-face ((t (:inherit font-lock-variable-name-face :foreground nil))))
+   `(font-latex-string-face ((t (:inherit font-lock-string-face))))
+   `(font-latex-warning-face ((t (:inherit font-lock-warning-face :foreground nil))))
+   `(font-lock-builtin-face ((t (:foreground "#d5aad5"))))
+   `(font-lock-doc-face ((t (:foreground "#39acac" :slant italic))))
+   `(font-lock-function-name-face ((t (:weight bold))))
+   `(font-lock-keyword-face ((t (:weight bold))))
+   `(font-lock-variable-name-face ((t (:weight bold))))
+   `(fringe ((t (:background "#1d1f21"))))
+   `(git-gutter+-added ((t (:foreground "#aad5aa"))))
+   `(git-gutter+-deleted ((t (:foreground "#faa170"))))
+   `(git-gutter+-modified ((t (:foreground "#ddbbdd"))))
+   `(helm-selection ((t (:background ,(face-attribute 'highlight :background) :weight bold :inherit nil))))
+   `(isearch ((t (:weight bold))))
+   `(lazy-highlight ((t (:weight normal))))
+   `(linum ((t (:inherit fringe :inverse-video nil :underline nil))))
+   `(linum-relative-current-face ((t (:foreground "#cccccc" :weight bold :inherit linum))))
+   `(mode-line-inactive ((t (:background "#313131" :foreground "#777777" :box (:line-width 1 :color "#777777")))))
+   `(org-hide ((t (:inherit default :background nil :foreground nil))))
+   `(org-level-1 ((t (:inherit outline-1 :weight bold :height 1.2 :overline t))))
+   `(org-level-2 ((t (:inherit outline-2 :weight bold :height 1.0))))
+   `(org-level-3 ((t (:inherit outline-3 :weight bold :height 1.0))))
+   `(org-level-4 ((t (:inherit outline-4 :weight bold :height 1.0))))
+   `(org-level-5 ((t (:inherit outline-5 :weight bold :height 1.0))))
+   `(org-level-6 ((t (:inherit outline-6 :weight bold :height 1.0))))
+   `(org-level-7 ((t (:inherit outline-7 :weight bold :height 1.0))))
+   `(org-level-8 ((t (:inherit outline-8 :weight bold :height 1.0))))
+   `(org-target ((t (:inherit font-lock-comment-face))))
+   `(rainbow-delimiters-depth-1-face ((t (:foreground "#7e807e"))))
+   `(rainbow-delimiters-depth-2-face ((t (:foreground "#5d807b"))))
+   `(rainbow-delimiters-depth-3-face ((t (:foreground "#b39556"))))
+   `(rainbow-delimiters-depth-4-face ((t (:foreground "#7b8046"))))
+   `(rainbow-delimiters-depth-5-face ((t (:foreground "#576d80"))))
+   `(rainbow-delimiters-depth-6-face ((t (:foreground "#7e807e"))))
+   `(rainbow-delimiters-depth-7-face ((t (:foreground "#5d807b"))))
+   `(rainbow-delimiters-depth-8-face ((t (:foreground "#b39556"))))
+   `(rainbow-delimiters-depth-9-face ((t (:foreground "#7b8046"))))
+   `(show-paren-match ((t (:foreground nil :background nil :weight bold :underline t))))
+   )
+
+  ;; for programming modes.
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
   (add-hook 'prog-mode-hook
             (lambda ()
               (font-lock-add-keywords

@@ -3,22 +3,14 @@
   "auto-indent-for-evil-mode"
   (unless auto-indent-skip-when-open-file
     (save-match-data
-      (ignore-errors
-        (save-excursion
-          (let ((start (progn
-                         (ignore-errors
-                           (cond ((sp-point-in-string)
-                                  (save-match-data
-                                    (re-search-backward "[^\\]\""))
-                                  (forward-char))
-                                 ((sp-point-in-comment)
-                                  (beginning-of-line)))
-                           (backward-up-list 2))
-                         (point)))
-                (end (progn
-                       (forward-list)
-                       (point))))
-            (indent-region start end))))))
+      (save-mark-and-excursion
+       (let ((start (progn
+                      (beginning-of-defun)
+                      (point)))
+             (end (progn
+                    (end-of-defun)
+                    (point))))
+         (indent-region start end)))))
   (setq-local auto-indent-skip-when-open-file nil))
 
 (defun wrap-sp-forward-symbol (&optional arg)

@@ -28,9 +28,7 @@
      ("(\\(assert\\)"
       1 '(:inherit font-lock-warning-face))
      (" \\(\\?.\\)"
-      1 '(:inherit font-lock-string-face))
-     ("\\(:[-+*/?0-9A-Za-z]+\\)"
-      1 '(:inherit font-lock-constant-face))))
+      1 '(:inherit font-lock-string-face))))
   (eval-after-load "evil"
     '(progn
        (let ((f (lambda ()

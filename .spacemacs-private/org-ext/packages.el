@@ -125,7 +125,8 @@
                   (->> (all-completions "org-capture-template-prompt-history" obarray)
                        (--map (intern it))
                        (--filter (ignore-errors (symbol-value it)))
-                       (--map (set it (-distinct (symbol-value it)))))))))
+                       (--map (set it (-distinct (--remove #'s-blank?
+                                                           (symbol-value it))))))))))
 
 (defun org-ext/post-init-org-agenda ()
   (use-package org-agenda
