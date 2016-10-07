@@ -392,7 +392,9 @@ you should place your code here."
          (l (if (< 0 (- (custom-display-pixel-width)
                         (+ l (frame-unit->pixel w))))
                 l
-              (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w))))))
+              (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w)))))
+         (w (min w (pixel->frame-unit (- (custom-display-pixel-width) l 120))))
+         (w (max w 100)))
     (add-to-list 'default-frame-alist (cons 'width  w))
     (add-to-list 'default-frame-alist (cons 'height h))
     (setq split-width-threshold (1+ w)
