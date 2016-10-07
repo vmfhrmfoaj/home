@@ -83,8 +83,9 @@
           (2 '(:inherit default)))
          ("\\s(\\(\\(?:as\\|cond\\|some\\)?->>?\\|and\\|or\\)\\_>"
           1 '(:inherit default))
-         ("^\\s-*\\s(def-[ \r\n\t]\\([^ \r\t\n]+\\)"
-          1 '(:inherit font-lock-variable-name-face) nil)
+         ("^\\s-*\\s(def-[ \r\n\t]\\([^ \r\t\n]+?\\)\\(!+\\)[ \r\t\n]"
+          (1 '(:inherit font-lock-variable-name-face))
+          (2 '(:inherit font-lock-warning-face :slant italic)))
          ("^\\s-*\\s(def-?[ \r\n\t]+\\([^ \r\t\n]+?\\)\\(!+\\)[ \r\t\n]"
           (1 '(:inherit font-lock-variable-name-face))
           (2 '(:inherit font-lock-warning-face :slant italic)))
