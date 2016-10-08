@@ -71,6 +71,7 @@ values."
      ;; Private layers
      ;; ---------------------------------------------------------------
      auto-dim-other-buffer
+     exercise
      eye-candy
      (focus :variables
             focus-mode-to-new-thing '((cider-repl-mode . list+)
@@ -322,7 +323,6 @@ before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
 
   (setq custom-file "~/.spacemacs-custom.el")
-  (load custom-file)
 
   ;; User info
   (setq user-full-name "Jinseop Kim"
@@ -449,6 +449,7 @@ you should place your code here."
    `(git-gutter+-deleted ((t (:foreground "#faa170"))))
    `(git-gutter+-modified ((t (:foreground "#ddbbdd"))))
    `(helm-selection ((t (:background ,(face-attribute 'highlight :background) :weight bold :inherit nil))))
+   `(hl-paren-face ((t (:weight bold))))
    `(isearch ((t (:weight bold))))
    `(lazy-highlight ((t (:weight normal))))
    `(linum ((t (:inherit fringe :inverse-video nil :underline nil))))
@@ -464,15 +465,15 @@ you should place your code here."
    `(org-level-7 ((t (:inherit outline-7 :weight bold :height 1.0))))
    `(org-level-8 ((t (:inherit outline-8 :weight bold :height 1.0))))
    `(org-target ((t (:inherit font-lock-comment-face))))
-   `(rainbow-delimiters-depth-1-face ((t (:foreground "#7e807e"))))
-   `(rainbow-delimiters-depth-2-face ((t (:foreground "#5d807b"))))
-   `(rainbow-delimiters-depth-3-face ((t (:foreground "#b39556"))))
-   `(rainbow-delimiters-depth-4-face ((t (:foreground "#7b8046"))))
-   `(rainbow-delimiters-depth-5-face ((t (:foreground "#576d80"))))
-   `(rainbow-delimiters-depth-6-face ((t (:foreground "#7e807e"))))
-   `(rainbow-delimiters-depth-7-face ((t (:foreground "#5d807b"))))
-   `(rainbow-delimiters-depth-8-face ((t (:foreground "#b39556"))))
-   `(rainbow-delimiters-depth-9-face ((t (:foreground "#7b8046"))))
+   `(rainbow-delimiters-depth-1-face ((t (:foreground "#a3a3a3"))))
+   `(rainbow-delimiters-depth-2-face ((t (:foreground "#51a3a3"))))
+   `(rainbow-delimiters-depth-3-face ((t (:foreground "#cca351"))))
+   `(rainbow-delimiters-depth-4-face ((t (:foreground "#7aa37a"))))
+   `(rainbow-delimiters-depth-5-face ((t (:foreground "#517aa3"))))
+   `(rainbow-delimiters-depth-6-face ((t (:foreground "#8e8e8e"))))
+   `(rainbow-delimiters-depth-7-face ((t (:foreground "#478e8e"))))
+   `(rainbow-delimiters-depth-8-face ((t (:foreground "#b28e47"))))
+   `(rainbow-delimiters-depth-9-face ((t (:foreground "#6b8e6b"))))
    `(show-paren-match ((t (:foreground nil :background nil :weight bold :underline t))))
    )
 
@@ -482,7 +483,7 @@ you should place your code here."
             (lambda ()
               (font-lock-add-keywords
                nil
-               `((,(concat "\\(\\s(\\|\\s)\\|::?\\|;\\|\\$\\|'\\|`(\\|,\\|"
+               `((,(concat "\\(\\s(\\|\\s)\\|'\\|`(\\|,\\|"
                            "\\\\\\|@\\|#\\|\\.\\|~\\|\\^\\)")
                   1 '(:inherit shadow))) t)))
 

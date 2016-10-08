@@ -101,18 +101,6 @@
     (dolist (i (number-sequence 1 org-n-level-faces))
       (set-face-attribute (intern (concat "org-level-" (number-to-string i))) nil
                           :weight 'bold))
-    (defun org-capture-todo ()
-      (interactive)
-      (org-capture nil "t"))
-    (defun org-capture-note ()
-      (interactive)
-      (org-capture nil "n"))
-    (defun org-capture-journal ()
-      (interactive)
-      (org-capture nil "j"))
-    (defun org-capture-journal-with-prompt ()
-      (interactive)
-      (org-capture nil "J"))
     (spacemacs/set-leader-keys
       "aoc" nil
       "aoct" #'org-capture-todo
@@ -125,8 +113,8 @@
                   (->> (all-completions "org-capture-template-prompt-history" obarray)
                        (--map (intern it))
                        (--filter (ignore-errors (symbol-value it)))
-                       (--map (set it (-distinct (--remove #'s-blank?
-                                                           (symbol-value it))))))))))
+                       (--map (set it (-distinct (-remove #'s-blank?
+                                                          (symbol-value it))))))))))
 
 (defun org-ext/post-init-org-agenda ()
   (use-package org-agenda

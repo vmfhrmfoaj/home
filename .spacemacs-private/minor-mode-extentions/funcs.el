@@ -1,4 +1,5 @@
-(setq auto-indent-skip-when-open-file t)
+(setq-default auto-indent-skip-when-open-file t)
+
 (defun auto-indent (&rest _)
   "auto-indent-for-evil-mode"
   (unless auto-indent-skip-when-open-file
@@ -23,6 +24,7 @@
                                                sp-clojure-prefix
                                                "[^({\\[]"))))
       (goto-char (+ (point) (match-end 0))))))
+
 (defun wrap-sp-backward-symbol (&optional arg)
   (save-match-data
     (when (and (numberp arg)
@@ -33,6 +35,7 @@
                                                "\\s-*$"))))
       (beginning-of-line)
       (goto-char (+ (point) (match-beginning 0))))))
+
 (defun wrap-sp-forward-sexp (&optional arg)
   (save-match-data
     (when (and (numberp arg)
@@ -42,6 +45,7 @@
                          (char-to-string)
                          (string-match "\\s(")))
       (forward-sexp))))
+
 (defun wrap-sp-backward-sexp (&optional arg)
   (save-match-data
     (when (and (numberp arg)

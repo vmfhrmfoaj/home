@@ -71,7 +71,8 @@
 
 (defun minor-mode-extentions/post-init-helm ()
   (use-package helm
-    :bind (("C-h" . delete-backward-char))
+    :bind (("C-h" . delete-backward-char)
+           (:map helm-comp-read-map ("C-h" . delete-backward-char)))
     :config
     (setq helm-truncate-lines t)))
 
