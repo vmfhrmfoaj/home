@@ -350,7 +350,6 @@ you should place your code here."
                           (-replace-at 3 "Hangul" it)))
   (set-file-name-coding-system 'utf-8-hfs)
   (prefer-coding-system 'utf-8)
-  (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
 
   ;; Mac
   (when (eq system-type 'darwin)
@@ -450,6 +449,7 @@ you should place your code here."
    `(git-gutter+-modified ((t (:foreground "#ddbbdd"))))
    `(helm-selection ((t (:background ,(face-attribute 'highlight :background) :weight bold :inherit nil))))
    `(hl-paren-face ((t (:weight bold))))
+   `(hl-todo ((t (:inherit font-lock-comment-face :foreground "#cc9393" :weight bold))))
    `(isearch ((t (:weight bold))))
    `(lazy-highlight ((t (:weight normal))))
    `(linum ((t (:inherit fringe :inverse-video nil :underline nil))))
@@ -489,7 +489,6 @@ you should place your code here."
 
   ;; Turn on some packages globally.
   (spacemacs/toggle-camel-case-motion-globally-on)
-  (spacemacs/toggle-smartparens-globally-on)
   (global-prettify-symbols-mode)
   (auto-dim-other-buffers-mode)
   )
@@ -540,12 +539,13 @@ you should place your code here."
         ((numberp mode-status) (not (zerop mode-status)))
         (t nil)))
 (defun disable-modes (modes)
-  (or (->> modes
-           (-map #'symbol-value)
-           (--all? (not (enabled? it))))
-      (--map (funcall it 0) modes)))
+  (--map (and (symbol-value it)
+              (funcall it 0))
+         modes))
 (defun resotre-modes (modes status)
-  (--map (funcall (car it) (cdr it)) (-zip modes status)))
+  (--map (and (cdr it)
+              (funcall (car it) (cdr it)))
+         (-zip modes status)))
 (defmacro with-disable-modes (modes &rest body)
   `(let ((mode-status (-map #'symbol-value ,modes)))
      (disable-modes ,modes)

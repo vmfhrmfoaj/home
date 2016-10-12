@@ -40,11 +40,11 @@
           org-capture-templates
           `(("t" "Todo" entry
              (file+headline ,org-default-notes-file ,(format-time-string "%b"))
-             ,(concat "* TODO %^{Task}"                             "\n"
-                      ":PROPERTIES:"                                "\n"
-                      ":Effort: %^{Effort|1:00|3:00|6:00|1d|3d|6d}" "\n"
-                      ":END:"                                       "\n"
-                      "SCHEDULED: %t DEADLINE: %^t"                 "\n"
+             ,(concat "* TODO %^{Task}"                                                  "\n"
+                      "DEADLINE: %^t SCHEDULED: %t"                                      "\n"
+                      ":PROPERTIES:"                                                     "\n"
+                      ":Effort: %^{Effort|1:00|3:00|6:00|1d|3d|6d|2w|3w|1m|3m|6m|9m|1y}" "\n"
+                      ":END:"                                                            "\n"
                       "\n"
                       "%?")
              :empty-lines 1

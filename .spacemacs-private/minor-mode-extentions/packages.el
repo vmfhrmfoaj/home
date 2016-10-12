@@ -37,10 +37,9 @@
                 ("C-h" . nil)
                 ("C-s" . completion-at-point))
     :config
-    (setq company-idle-delay 0.15
-          company-tooltip-exclude-modes '(prettify-symbols-mode)
+    (setq company-tooltip-exclude-modes '(prettify-symbols-mode)
           company-tooltip-exclude-mode-status nil)
-    (advice-add #'company-call-frontends :after
+    (advice-add #'company-call-frontends :before
                 (lambda (cmd)
                   (cond
                    ((eq 'show cmd)
@@ -53,12 +52,17 @@
 
 (defun minor-mode-extentions/post-init-evil ()
   (define-key evil-motion-state-map (kbd "g S-<kp-subtract>") #'evil-last-non-blank)
+  (define-key evil-ex-map (kbd "C-h") #'delete-backward-char)
+  (add-hook 'minibuffer-setup-hook #'smartparens-mode) ; for `evil-ex'
   (add-hook 'evil-normal-state-entry-hook #'auto-indent)
   (dolist (fn '(evil-change
                 evil-delete
                 evil-paste-after
                 evil-join))
-    (advice-add fn :after #'auto-indent)))
+    (advice-add fn :after #'auto-indent))
+  (advice-add #'evil-insert-resume :after
+              (lambda (&rest _)
+                (recenter))))
 
 (defun minor-mode-extentions/post-init-git-gutter-fringe+ ()
   (use-package git-gutter-fringe+

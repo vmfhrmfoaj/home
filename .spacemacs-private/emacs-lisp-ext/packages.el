@@ -29,6 +29,7 @@
       1 '(:inherit font-lock-warning-face))
      (" \\(\\?.\\)"
       1 '(:inherit font-lock-string-face))))
+  (add-hook 'lisp-interaction-mode-hook #'smartparens-mode)
   (eval-after-load "evil"
     '(progn
        (let ((f (lambda ()
