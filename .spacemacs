@@ -322,9 +322,6 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
 
-  ;; FIX
-  (defun xterm-color-unfontify-region (&rest _))
-
   (setq custom-file "~/.spacemacs-custom.el")
 
   ;; User info
@@ -333,6 +330,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; Setup the addtional font setting.
   (setq-default line-spacing 2)
+
+  ;; temporary fix
+  (fset 'xterm-color-unfontify-region 'font-lock-default-unfontify-region)
   )
 
 (defun dotspacemacs/user-config ()
@@ -481,13 +481,11 @@ you should place your code here."
    )
 
   ;; for programming modes.
-  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
   (add-hook 'prog-mode-hook
             (lambda ()
               (font-lock-add-keywords
                nil
-               `((,(concat "\\(\\s(\\|\\s)\\|'\\|`(\\|,\\|"
-                           "\\\\\\|@\\|#\\|\\.\\|~\\|\\^\\)")
+               `(("\\('\\|`\\|,\\|\\\\\\|@\\|#\\|\\.\\|~\\|\\^\\)"
                   1 '(:inherit shadow))) t)))
 
   ;; Turn on some packages globally.
