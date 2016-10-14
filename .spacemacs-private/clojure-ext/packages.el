@@ -25,7 +25,7 @@
                         :foreground nil
                         :inherit compilation-info-face)
     (setq cider-dynamic-indentation nil
-          cider-font-lock-dynamically nil
+          cider-font-lock-dynamically '(macro deprecated)
           cider-repl-use-pretty-printing t
           cider-mode-line
           '(:eval (with-current-buffer (ignore-errors (cider-current-connection))
