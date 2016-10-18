@@ -12,12 +12,11 @@
 ;;; Code:
 
 (defconst java-ext-packages
-  '(
-    eclim
-    ))
+  '(eclim))
 
 (defun java-ext/post-init-eclim ()
   (use-package eclim
+    :defer t
     :config
     (setq eclim-eclipse-dirs '("/Applications/Eclipse.app/Contents/Eclipse")
           eclim-executable "/Applications/Eclipse.app/Contents/Eclipse/eclim")))

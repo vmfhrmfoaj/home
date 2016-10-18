@@ -12,9 +12,7 @@
 ;;; Code:
 
 (defconst emacs-lisp-ext-packages
-  '(
-    (emacs-lisp :location built-in)
-    ))
+  '((emacs-lisp :location built-in)))
 
 (defun emacs-lisp-ext/post-init-emacs-lisp ()
   (font-lock-add-keywords

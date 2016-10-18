@@ -19,6 +19,7 @@
 
 (defun git-ext/post-init-magit ()
   (use-package magit
+    :defer t
     :config
     (setq magit-diff-refine-hunk t)
     (add-to-list 'magit-diff-section-arguments "--compaction-heuristic")

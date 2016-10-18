@@ -59,8 +59,8 @@ values."
      ;; ---------------------------------------------------------------
      ;; Extentions
      ;; ---------------------------------------------------------------
-     base-ext
      clojure-ext
+     ediff-ext
      emacs-lisp-ext
      git-ext
      html-ext
@@ -330,9 +330,6 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; Setup the addtional font setting.
   (setq-default line-spacing 2)
-
-  ;; temporary fix
-  (fset 'xterm-color-unfontify-region 'font-lock-default-unfontify-region)
   )
 
 (defun dotspacemacs/user-config ()

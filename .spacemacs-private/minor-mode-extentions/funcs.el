@@ -5,13 +5,14 @@
   (unless auto-indent-skip-when-open-file
     (save-match-data
       (save-mark-and-excursion
-       (let ((start (progn
-                      (beginning-of-defun)
-                      (point)))
-             (end (progn
-                    (end-of-defun)
-                    (point))))
-         (indent-region start end)))))
+       (when (derived-mode-p 'prog-mode)
+         (let ((start (progn
+                        (beginning-of-defun)
+                        (point)))
+               (end   (progn
+                        (end-of-defun)
+                        (point))))
+           (indent-region start end))))))
   (setq-local auto-indent-skip-when-open-file nil))
 
 (defun wrap-sp-forward-symbol (&optional arg)

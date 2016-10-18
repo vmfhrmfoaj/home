@@ -12,14 +12,13 @@
 ;;; Code:
 
 (defconst clojure-ext-packages
-  '(
-    cider
+  '(cider
     clj-refactor
-    clojure-mode
-    ))
+    clojure-mode))
 
 (defun clojure-ext/post-init-cider ()
   (use-package cider
+    :defer t
     :config
     (set-face-attribute 'cider-fringe-good-face nil
                         :foreground nil
@@ -37,10 +36,14 @@
                             (cadr nrepl-endpoint))))
           cider-cljs-lein-repl (caadr cider--cljs-repl-types))
     (evil-define-key 'insert cider-repl-mode-map (kbd "RET") #'evil-ret-and-indent)
-    (evil-define-key 'normal cider-repl-mode-map (kbd "RET") #'cider-repl-return)))
+    (evil-define-key 'normal cider-repl-mode-map (kbd "RET") #'cider-repl-return)
+    (add-hook 'cider-connected-hook
+              (lambda ()
+                (cider-nrepl-sync-request:eval "(set! *print-length* 50)")))))
 
 (defun clojure-ext/post-init-clj-refactor ()
   (use-package clj-refactor
+    :defer t
     :config
     (eval-after-load "diminish" '(diminish 'clj-refactor-mode))
     (setq cljr-expectations-test-declaration "[expectations :refer :all]")
@@ -74,6 +77,7 @@
 
 (defun clojure-ext/post-init-clojure-mode ()
   (use-package clojure-mode
+    :defer t
     :config
     (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
       (font-lock-add-keywords
@@ -95,13 +99,15 @@
          ("\\(#js\\)\\s-+\\s("
           1 '(:inherit font-lock-builtin-face))
          ("\\_<\\(\\.-?\\)[a-z][a-zA-Z0-9]*\\_>"
-          1 '(:inherit font-lock-keyword-face))))
+          1 '(:inherit font-lock-keyword-face))
+         ("^\\s-*\\s(ns[ \r\t\n]+\\([^ \r\t\n]+\\)"
+          1 '(:inherit font-lock-type-face :weight bold))))
       (font-lock-add-keywords
        mode
        '(("\\(!+\\)\\(?:\\s-+\\|\\s)\\|$\\)"
           1 '(:inherit font-lock-warning-face :slant italic))) t))
     (setq clojure-indent-style :align-arguments)
-    (put 'def-      'clojure-doc-string-elt 2)
-    (put 'defmacro- 'clojure-doc-string-elt 2)))
+    (put-clojure-indent 'ns 'defun)
+    ))
 
 ;;; packages.el ends here

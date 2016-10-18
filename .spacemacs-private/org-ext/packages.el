@@ -13,12 +13,13 @@
 
 (defconst org-ext-packages
   '(
-    (org :location built-in)
-    (org-agenda :location built-in)
+    org
+    org-agenda
     ))
 
 (defun org-ext/post-init-org ()
   (use-package org
+    :defer t
     :config
     (setq org-hide-emphasis-markers t
           org-pretty-entities t

@@ -19,11 +19,13 @@
 
 (defun html-ext/post-init-css-mode ()
   (use-package css-mode
+    :defer t
     :config
     (setq-default css-indent-offset 2)))
 
 (defun html-ext/post-init-web-mode ()
   (use-package web-mode
+    :defer t
     :config
     (setq-default web-mode-markup-indent-offset 2
                   web-mode-css-indent-offset 2
