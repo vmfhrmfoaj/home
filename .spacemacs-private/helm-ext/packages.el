@@ -26,11 +26,12 @@
 (defun helm-ext/post-init-helm-projectile ()
   (use-package helm-projectile
     :defer t
+    :config
     (define-key helm-projectile-find-file-map (kbd "C-h") #'delete-backward-char)))
 
 (defun helm-ext/init-minibuffer ()
   (use-package minibuffer
-    :commands (minibuffer-setup-hook)
+    :defer t
     :config
     (add-hook 'minibuffer-setup-hook
               (lambda ()
