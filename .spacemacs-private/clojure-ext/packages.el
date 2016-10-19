@@ -79,6 +79,8 @@
   (use-package clojure-mode
     :defer t
     :config
+    (set-face-attribute 'clojure-keyword-face nil
+                        :inherit font-lock-builtin-face)
     (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
       (font-lock-add-keywords
        mode
@@ -87,15 +89,6 @@
           (2 '(:inherit default)))
          ("\\s(\\(\\(?:as\\|cond\\|some\\)?->>?\\|and\\|or\\)\\_>"
           1 '(:inherit default))
-         ("^\\s-*\\s(def-[ \r\n\t]\\([^ \r\t\n]+?\\)\\(!+\\)[ \r\t\n]"
-          (1 '(:inherit font-lock-variable-name-face))
-          (2 '(:inherit font-lock-warning-face :slant italic)))
-         ("^\\s-*\\s(def-?[ \r\n\t]+\\([^ \r\t\n]+?\\)\\(!+\\)[ \r\t\n]"
-          (1 '(:inherit font-lock-variable-name-face))
-          (2 '(:inherit font-lock-warning-face :slant italic)))
-         ("^\\s-*\\s(defn-?[ \r\n\t]+\\([^ \r\t\n]+?\\)\\(!+\\)[ \r\t\n]"
-          (1 '(:inherit font-lock-function-name-face))
-          (2 '(:inherit font-lock-warning-face :slant italic)))
          ("\\(#js\\)\\s-+\\s("
           1 '(:inherit font-lock-builtin-face))
          ("\\_<\\(\\.-?\\)[a-z][a-zA-Z0-9]*\\_>"
@@ -107,7 +100,6 @@
        '(("\\(!+\\)\\(?:\\s-+\\|\\s)\\|$\\)"
           1 '(:inherit font-lock-warning-face :slant italic))) t))
     (setq clojure-indent-style :align-arguments)
-    (put-clojure-indent 'ns 'defun)
-    ))
+    (put-clojure-indent 'ns 'defun)))
 
 ;;; packages.el ends here

@@ -157,7 +157,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(default)
+   dotspacemacs-themes '(leuven)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -422,60 +422,13 @@ you should place your code here."
   (advice-disable-modes '(prettify-symbols-mode) #'indent-according-to-mode)
 
   ;; Customize the theme.
-  (require 'color-theme-sanityinc-tomorrow)
-  (color-theme-sanityinc-tomorrow--define-theme eighties)
-  (add-hook 'linum-mode-hook (lambda () (set-face-attribute 'linum nil :background nil)))
   (custom-set-faces
-   `(auto-dim-other-buffers-face ((t (:background "#242424"))))
-   `(clojure-interop-method-face ((t (:inherit default))))
-   `(clojure-keyword-face ((t (:inherit font-lock-builtin-face))))
-   `(company-tooltip ((t (:background "#393939"))))
-   `(company-tooltip-selection ((t (:background "#515151" :foreground "#99cc99" :weight bold))))
-   `(css-property ((t (:inherit font-lock-builtin-face))))
-   `(fic-face ((t (:inherit font-lock-warning-face :background nil :foreground nil :slant italic))))
-   `(font-latex-bold-face ((t (:foreground nil :weight bold))))
-   `(font-latex-italic-face ((t (:foreground nil :slant italic))))
-   `(font-latex-math-face ((t (:inherit font-lock-variable-name-face :foreground nil))))
-   `(font-latex-string-face ((t (:inherit font-lock-string-face))))
-   `(font-latex-warning-face ((t (:inherit font-lock-warning-face :foreground nil))))
-   `(font-lock-builtin-face ((t (:foreground "#d5aad5"))))
-   `(font-lock-doc-face ((t (:foreground "#39acac" :slant italic))))
    `(font-lock-function-name-face ((t (:weight bold))))
    `(font-lock-keyword-face ((t (:weight bold))))
    `(font-lock-variable-name-face ((t (:weight bold))))
-   `(fringe ((t (:background "#1d1f21"))))
-   `(git-gutter+-added ((t (:foreground "#aad5aa"))))
-   `(git-gutter+-deleted ((t (:foreground "#faa170"))))
-   `(git-gutter+-modified ((t (:foreground "#ddbbdd"))))
-   `(helm-selection ((t (:background ,(face-attribute 'highlight :background) :weight bold :inherit nil))))
-   `(hl-paren-face ((t (:weight bold))))
-   `(hl-todo ((t (:inherit font-lock-comment-face :foreground "#cc9393" :weight bold))))
-   `(isearch ((t (:weight bold))))
-   `(lazy-highlight ((t (:weight normal))))
-   `(linum ((t (:inherit fringe :inverse-video nil :underline nil))))
-   `(linum-relative-current-face ((t (:foreground "#cccccc" :weight bold :inherit linum))))
-   `(mode-line-inactive ((t (:background "#313131" :foreground "#777777" :box (:line-width 1 :color "#777777")))))
-   `(org-hide ((t (:inherit default :background nil :foreground nil))))
-   `(org-level-1 ((t (:inherit outline-1 :weight bold :height 1.2 :overline t))))
-   `(org-level-2 ((t (:inherit outline-2 :weight bold :height 1.0))))
-   `(org-level-3 ((t (:inherit outline-3 :weight bold :height 1.0))))
-   `(org-level-4 ((t (:inherit outline-4 :weight bold :height 1.0))))
-   `(org-level-5 ((t (:inherit outline-5 :weight bold :height 1.0))))
-   `(org-level-6 ((t (:inherit outline-6 :weight bold :height 1.0))))
-   `(org-level-7 ((t (:inherit outline-7 :weight bold :height 1.0))))
-   `(org-level-8 ((t (:inherit outline-8 :weight bold :height 1.0))))
-   `(org-target ((t (:inherit font-lock-comment-face))))
-   `(rainbow-delimiters-depth-1-face ((t (:foreground "#a3a3a3"))))
-   `(rainbow-delimiters-depth-2-face ((t (:foreground "#51a3a3"))))
-   `(rainbow-delimiters-depth-3-face ((t (:foreground "#cca351"))))
-   `(rainbow-delimiters-depth-4-face ((t (:foreground "#7aa37a"))))
-   `(rainbow-delimiters-depth-5-face ((t (:foreground "#517aa3"))))
-   `(rainbow-delimiters-depth-6-face ((t (:foreground "#8e8e8e"))))
-   `(rainbow-delimiters-depth-7-face ((t (:foreground "#478e8e"))))
-   `(rainbow-delimiters-depth-8-face ((t (:foreground "#b28e47"))))
-   `(rainbow-delimiters-depth-9-face ((t (:foreground "#6b8e6b"))))
-   `(show-paren-match ((t (:foreground nil :background nil :weight bold :underline t))))
-   )
+   `(linum ((t (:weight normal :underline nil :inverse-video nil))))
+   `(linum-relative-current-face ((t (:foreground ,(face-attribute 'default :foreground) :inherit linum))))
+   `(show-paren-match ((t (:background nil :weight bold :underline t)))))
 
   ;; for programming modes.
   (add-hook 'prog-mode-hook
@@ -486,10 +439,9 @@ you should place your code here."
                   1 '(:inherit shadow))) t)))
 
   ;; Turn on some packages globally.
-  (spacemacs/toggle-camel-case-motion-globally-on)
-  (global-prettify-symbols-mode)
   (auto-dim-other-buffers-mode)
-  )
+  (global-prettify-symbols-mode)
+  (spacemacs/toggle-camel-case-motion-globally-on))
 
 (defun pixel->frame-unit (pixel)
   (round (/ pixel (/ (float (frame-pixel-width)) (frame-width)))))

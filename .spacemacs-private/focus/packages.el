@@ -12,10 +12,8 @@
 ;;; Code:
 
 (defconst focus-packages
-  '(
-    evil
-    focus
-    ))
+  '(evil
+    focus))
 
 (defun focus/post-init-evil ()
   (add-hook 'evil-insert-state-entry-hook (lambda () (focus-mode 1)))

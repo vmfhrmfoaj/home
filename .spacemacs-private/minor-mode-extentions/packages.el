@@ -12,19 +12,18 @@
 ;;; Code:
 
 (defconst minor-mode-extentions-packages
-  '(
-    auto-highlight-symbol
+  '(auto-highlight-symbol
     company
     evil
     git-gutter-fringe+
     helm
     helm-projectile
     linum-relative
-    smartparens
-    ))
+    smartparens))
 
 (defun minor-mode-extentions/post-init-auto-highlight-symbol ()
   (use-package auto-highlight-symbol
+    :defer t
     :config
     (setq ahs-include '((clojure-mode . "[^ \r\t\n]+")
                         (clojurescript-mode . "[^ \r\t\n]+")
@@ -66,6 +65,7 @@
 
 (defun minor-mode-extentions/post-init-git-gutter-fringe+ ()
   (use-package git-gutter-fringe+
+    :defer t
     :config
     (let ((bitmap (-repeat (line-pixel-height)
                            (apply #'concat (-repeat 8 "X")))))
@@ -96,6 +96,7 @@
 
 (defun minor-mode-extentions/post-init-smartparens()
   (use-package smartparens
+    :defer t
     :config
     (setq sp-highlight-pair-overlay nil
           sp-highlight-wrap-overlay nil
