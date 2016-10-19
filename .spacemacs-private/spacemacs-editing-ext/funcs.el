@@ -1,19 +1,14 @@
-(setq-default auto-indent-skip-when-open-file t)
-
-(defun auto-indent (&rest _)
-  "auto-indent-for-evil-mode"
-  (unless auto-indent-skip-when-open-file
-    (save-match-data
-      (save-mark-and-excursion
-       (when (derived-mode-p 'prog-mode)
-         (let ((start (progn
-                        (beginning-of-defun)
-                        (point)))
-               (end   (progn
-                        (end-of-defun)
-                        (point))))
-           (indent-region start end))))))
-  (setq-local auto-indent-skip-when-open-file nil))
+(defun isearch-fn (regx &optional display-str)
+  (lexical-let ((regx regx)
+                (display-str (or display-str regx)))
+    (lambda ()
+      (interactive)
+      (setq isearch-string  (concat isearch-string regx)
+            isearch-message (concat isearch-message
+                                    (mapconcat 'isearch-text-char-description
+                                               display-str ""))
+            isearch-yank-flag t)
+      (isearch-search-and-update))))
 
 (defun wrap-sp-forward-symbol (&optional arg)
   (save-match-data

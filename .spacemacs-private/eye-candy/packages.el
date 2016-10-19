@@ -1,4 +1,6 @@
-;;; packages.el --- eye-candy layer packages file for Spacemacs. ;; ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
+;; ; packages.el --- eye-candy layer packages file for Spacemacs.
+;;
+;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
 ;;
 ;; Author: Jinseop Kim <vmfhrmfoaj@yahoo.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -7,31 +9,13 @@
 ;;
 ;;; License: GPLv3
 
-;;; Commentary:
-
-;; See the Spacemacs documentation and FAQs for instructions on how to implement
-;; a new layer:
-;;
-;;   SPC h SPC layers RET
-;;
-;;
-;; Briefly, each package to be installed or configured by this layer should be
-;; added to `eye-candy-packages'. Then, for each package PACKAGE:
-;;
-;; - If PACKAGE is not referenced by any other Spacemacs layer, define a
-;;   function `eye-candy/init-PACKAGE' to load and initialize the package.
-
-;; - Otherwise, PACKAGE is already referenced by another Spacemacs layer, so
-;;   define the functions `eye-candy/pre-init-PACKAGE' and/or
-;;   `eye-candy/post-init-PACKAGE' to customize the package as it is loaded.
-
 ;;; Code:
 
 (defconst eye-candy-packages
-  '(
-    all-the-icons
+  '(all-the-icons
+    auto-dim-other-buffers
     neotree
-    ))
+    (prettify-symbols-mode :location built-in)))
 
 (defun eye-candy/init-all-the-icons ()
   (use-package all-the-icons
@@ -44,7 +28,6 @@
                    :height 1.0
                    :face all-the-icons-blue))
 
-    ;; NOTE
     ;; https://github.com/domtronn/all-the-icons.el/wiki/Mode-Line#modified-or-read-only
     (eval-after-load "spaceline-segments"
       '(progn
@@ -70,9 +53,37 @@
          ;;       (powerline-major-mode (unless not-found? `(:family ,font-family))))))
          ))))
 
+(defun eye-candy/init-auto-dim-other-buffers ()
+  (use-package auto-dim-other-buffers
+    :ensure t
+    :config
+    (eval-after-load "diminish" '(diminish 'auto-dim-other-buffers-mode))
+    (advice-add #'adob--after-change-major-mode-hook :override
+                (lambda (&rest args)
+                  nil))
+    (auto-dim-other-buffers-mode)))
+
 (defun eye-candy/post-init-neotree ()
   (use-package neotree
     :config
     (setq neo-theme 'icons)))
+
+(defun eye-candy/init-prettify-symbols-mode ()
+  (use-package prog-mode
+    :commands (global-prettify-symbols-mode)
+    :config
+    (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
+    (add-hook 'after-make-frame-functions
+              (lambda (frame)
+                (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
+    (add-hook 'prog-mode-hook
+              (-partial #'font-lock-add-keywords nil
+                        fira-code-font-lock-keywords-alist))
+    (global-prettify-symbols-mode)
+
+    ;; Change the behavior of indent function for `prettify-symbols-mode'.
+    (advice-disable-modes '(prettify-symbols-mode) #'indent-for-tab-command)
+    (advice-disable-modes '(prettify-symbols-mode) #'indent-region)
+    (advice-disable-modes '(prettify-symbols-mode) #'indent-according-to-mode)))
 
 ;;; packages.el ends here

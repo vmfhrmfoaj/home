@@ -1,5 +1,4 @@
-;; https://gist.github.com/mordocai/50783defab3c3d1650e068b4d1c91495
-(set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
+;; - https://gist.github.com/mordocai/50783defab3c3d1650e068b4d1c91495
 (defconst fira-code-font-lock-keywords-alist
   (mapcar (lambda (regex-char-pair)
             `(,(car regex-char-pair)
@@ -55,7 +54,7 @@
             ;; ("\\(\\.\\.\\.\\)"             #Xe126)
             ("\\(\\?=\\)"                  #Xe127)
             ;; ("\\(\\?\\?\\)"                #Xe128)
-            ("\\(;;\\)"                    #Xe129)
+            ("\\(;;\\)[^;]"                #Xe129)
             ;; /*                          #Xe12a
             ("\\(/\\*\\)"                  #Xe12a)
             ;; /**                         #Xe12b

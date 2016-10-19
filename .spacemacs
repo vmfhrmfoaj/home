@@ -59,25 +59,29 @@ values."
      ;; ---------------------------------------------------------------
      ;; Extentions
      ;; ---------------------------------------------------------------
+     auto-completion-ext
      clojure-ext
      ediff-ext
      emacs-lisp-ext
      git-ext
+     helm-ext
      html-ext
      java-ext
-     minor-mode-extentions
      org-ext
+     spacemacs-bootstrap-ext
+     spacemacs-editing-ext
+     spacemacs-editing-visual-ext
+     spacemacs-evil-ext
+     version-control-ext
      ;; ---------------------------------------------------------------
      ;; Private layers
      ;; ---------------------------------------------------------------
-     auto-dim-other-buffer
      exercise
      eye-candy
      (focus :variables
             focus-mode-to-new-thing '((cider-repl-mode . list+)
                                       (clojure-mode    . list+)
-                                      (emacs-lisp-mode . list+)))
-     )
+                                      (emacs-lisp-mode . list+))))
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
@@ -322,15 +326,18 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
 
+  ;; load custom functions
+  (load "~/.spacemacs-funcs.el")
+
+  ;; set the `custom-file' to avoid appending tail...
   (setq custom-file "~/.spacemacs-custom.el")
 
-  ;; User info
+  ;; user info
   (setq user-full-name "Jinseop Kim"
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
-  ;; Setup the addtional font setting.
-  (setq-default line-spacing 2)
-  )
+  ;; set up the addtional font setting.
+  (setq-default line-spacing 2))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -340,50 +347,36 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
-  ;; Include the ".profile" file for the GUI emacs.
-  (include-shell-var-in "~/.profile")
+  ;; include the ".profile" file for the GUI emacs.
+  (when window-system
+    (include-shell-var-in "~/.profile"))
 
-  ;; Setup language.
+  ;; korean
   (set-language-environment "Korean")
   (-update->> input-method-alist
               (--map-when (string-equal "korean-hangul" (first it))
                           (-replace-at 3 "Hangul" it)))
   (set-file-name-coding-system 'utf-8-hfs)
   (prefer-coding-system 'utf-8)
+  (global-set-key (kbd "S-SPC") #'toggle-input-method)
 
-  ;; Mac
+  ;; mac
   (when (eq system-type 'darwin)
     (setq mac-command-modifier 'meta
-          mac-option-modifier 'meta
+          mac-option-modifier  'meta
           mac-pass-control-to-system nil
           mac-pass-command-to-system nil)
     (set-file-name-coding-system 'utf-8-hfs))
 
-  ;; Setup the keys.
-  (global-set-key (kbd "S-SPC") #'toggle-input-method)
+  ;; HHKB keyboard
   (global-set-key (kbd "<S-kp-divide>") "\\")
   (global-set-key (kbd "<S-kp-subtract>") "_")
   (global-set-key (kbd "<S-kp-add>") "=")
-  (define-key evil-read-key-map (kbd "<S-kp-divide>") "\\")
-  (define-key evil-read-key-map (kbd "<S-kp-subtract>") "_")
-  (define-key evil-read-key-map (kbd "<S-kp-add>") "=")
   (define-key key-translation-map (kbd "<S-kp-divide>") "\\")
   (define-key key-translation-map (kbd "<S-kp-subtract>") "_")
   (define-key key-translation-map (kbd "<S-kp-add>") "=")
-  (define-key isearch-mode-map (kbd "C-h") #'isearch-delete-char)
-  (define-key isearch-mode-map (kbd "SPC") (gen-isearch-fn ".*?" " "))
-  (define-key isearch-mode-map (kbd "M-<") (gen-isearch-fn "\\_<"))
-  (define-key isearch-mode-map (kbd "M->") (gen-isearch-fn "\\_>"))
-  (add-hook 'minibuffer-setup-hook
-            (lambda ()
-              (local-set-key (kbd "C-h")   #'backward-delete-char)
-              (local-set-key (kbd "S-SPC") #'toggle-input-method)))
 
-  ;; TAB do not have intelligent behavior.
-  (setq tab-always-indent t)
-  (global-set-key (kbd "<S-tab>") #'completion-at-point)
-
-  ;; Set the pos/size of the initial frame.
+  ;; set the pos/size of the initial frame.
   (let* ((w 120)
          (h (1- (/ (display-pixel-height) (frame-char-height))))
          (l (/ (custom-display-pixel-width) 2.0))
@@ -402,27 +395,9 @@ you should place your code here."
                                     (cons 'width  w)
                                     (cons 'height h))))
 
-  ;; Setup "Fira Code Symbol".
-  ;; NOTE
-  ;; Use customized "Fira Code Symbol" font for "MonacoB2" as the default font.
-  ;; - https://gist.github.com/mordocai/50783defab3c3d1650e068b4d1c91495
-  (add-hook 'after-make-frame-functions
-            (lambda (frame)
-              (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
-  (add-hook 'prog-mode-hook
-            (-partial #'font-lock-add-keywords nil
-                      fira-code-font-lock-keywords-alist))
-  (add-hook 'org-mode-hook
-            (-partial #'font-lock-add-keywords nil
-                      (-drop-last 1 fira-code-font-lock-keywords-alist)))
-
-  ;; Change the behavior of indent function for `prettify-symbols-mode'.
-  (advice-disable-modes '(prettify-symbols-mode) #'indent-for-tab-command)
-  (advice-disable-modes '(prettify-symbols-mode) #'indent-region)
-  (advice-disable-modes '(prettify-symbols-mode) #'indent-according-to-mode)
-
-  ;; Customize the theme.
+  ;; customize the theme.
   (custom-set-faces
+   `(font-lock-comment-face ((t (:slant normal))))
    `(font-lock-function-name-face ((t (:weight bold))))
    `(font-lock-keyword-face ((t (:weight bold))))
    `(font-lock-variable-name-face ((t (:weight bold))))
@@ -430,97 +405,8 @@ you should place your code here."
    `(linum-relative-current-face ((t (:foreground ,(face-attribute 'default :foreground) :inherit linum))))
    `(show-paren-match ((t (:background nil :weight bold :underline t)))))
 
-  ;; for programming modes.
-  (add-hook 'prog-mode-hook
-            (lambda ()
-              (font-lock-add-keywords
-               nil
-               `(("\\('\\|`\\|,\\|\\\\\\|@\\|#\\|\\.\\|~\\|\\^\\)"
-                  1 '(:inherit shadow))) t)))
-
-  ;; Turn on some packages globally.
-  (auto-dim-other-buffers-mode)
-  (global-prettify-symbols-mode)
+  ;; turn on some packages globally.
   (spacemacs/toggle-camel-case-motion-globally-on))
-
-(defun pixel->frame-unit (pixel)
-  (round (/ pixel (/ (float (frame-pixel-width)) (frame-width)))))
-(defun frame-unit->pixel (frame-unit)
-  (round (* frame-unit (/ (float (frame-pixel-width)) (frame-width)))))
-(defun custom-display-pixel-width ()
-  (->> (--filter (-when-let (frames (-> (assoc 'frames it) cdr))
-                   (--some? (eq (selected-frame) it) frames))
-                 (display-monitor-attributes-list))
-       (first)
-       (assoc 'geometry)
-       (cdr)
-       (nth 2)))
-
-(defun resolve-sh-var (str)
-  (while (string-match (concat "\\$\\([_a-zA-Z0-9]+\\|[({].+[})]\\)") str)
-    (let* ((var (match-string 1 str))
-           (res (save-match-data
-                  (->> var
-                       (concat "echo $")
-                       (shell-command-to-string)
-                       (s-trim)))))
-      (setq str (replace-match res t nil str))))
-  str)
-(defun include-shell-var-in (file)
-  (when (file-exists-p file)
-    (let* ((regx "export\\s-+\\([^=]+\\)=\"?\\(.+?\\)\"?$")
-           (exports (->> (with-temp-buffer
-                           (insert-file-contents file)
-                           (split-string (buffer-string) "\n" t))
-                         (--filter (not (string-match-p "^#" it)))
-                         (--filter (string-match-p regx it))
-                         (--map (replace-regexp-in-string "\\\\" "" it)))))
-      (dolist (it exports)
-        (string-match regx it)
-        (let ((key   (match-string-no-properties 1 it))
-              (value (match-string-no-properties 2 it)))
-          (setenv key (resolve-sh-var value)))))))
-
-(defmacro -update->> (&rest thread)
-  `(setq ,(first thread) (-some->> ,@thread)))
-
-(defun enabled? (mode-status)
-  (cond ((symbolp mode-status) mode-status)
-        ((numberp mode-status) (not (zerop mode-status)))
-        (t nil)))
-(defun disable-modes (modes)
-  (--map (and (symbol-value it)
-              (funcall it 0))
-         modes))
-(defun resotre-modes (modes status)
-  (--map (and (cdr it)
-              (funcall (car it) (cdr it)))
-         (-zip modes status)))
-(defmacro with-disable-modes (modes &rest body)
-  `(let ((mode-status (-map #'symbol-value ,modes)))
-     (disable-modes ,modes)
-     (prog1 (progn ,@body)
-       (resotre-modes ,modes mode-status))))
-(put 'with-disable-modes 'lisp-indent-function 'defun)
-(defun advice-disable-modes (modes f)
-  (advice-add f :around
-              (lexical-let ((modes modes))
-                (lambda (f &rest args)
-                  "Added by `advice-disable-modes'."
-                  (with-disable-modes modes
-                    (apply f args))))))
-
-(defun gen-isearch-fn (regx &optional display-str)
-  (lexical-let ((regx regx)
-                (display-str (or display-str regx)))
-    (lambda ()
-      (interactive)
-      (setq isearch-string  (concat isearch-string regx)
-            isearch-message (concat isearch-message
-                                    (mapconcat 'isearch-text-char-description
-                                               display-str ""))
-            isearch-yank-flag t)
-      (isearch-search-and-update))))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
