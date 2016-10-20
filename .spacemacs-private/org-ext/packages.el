@@ -12,10 +12,8 @@
 ;;; Code:
 
 (defconst org-ext-packages
-  '(
-    org
-    org-agenda
-    ))
+  '(org
+    org-agenda))
 
 (defun org-ext/post-init-org ()
   (use-package org
@@ -121,6 +119,7 @@
   (use-package org-agenda
     :defer t
     :config
+    (setq org-agenda-fontify-priorities nil)
     (evilified-state-evilify-map org-agenda-mode-map
       :mode org-agenda-mode
       :bindings

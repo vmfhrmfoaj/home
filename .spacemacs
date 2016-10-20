@@ -61,13 +61,13 @@ values."
      ;; ---------------------------------------------------------------
      auto-completion-ext
      clojure-ext
-     ediff-ext
      emacs-lisp-ext
      git-ext
      helm-ext
      html-ext
      java-ext
      org-ext
+     spacemacs-base-ext
      spacemacs-bootstrap-ext
      spacemacs-editing-ext
      spacemacs-editing-visual-ext
@@ -161,7 +161,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(leuven)
+   dotspacemacs-themes '(spacemacs-dark)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -397,13 +397,9 @@ you should place your code here."
 
   ;; customize the theme.
   (custom-set-faces
-   `(font-lock-comment-face ((t (:slant normal))))
-   `(font-lock-function-name-face ((t (:weight bold))))
-   `(font-lock-keyword-face ((t (:weight bold))))
-   `(font-lock-variable-name-face ((t (:weight bold))))
-   `(linum ((t (:weight normal :underline nil :inverse-video nil))))
-   `(linum-relative-current-face ((t (:foreground ,(face-attribute 'default :foreground) :inherit linum))))
-   `(show-paren-match ((t (:background nil :weight bold :underline t)))))
+   '(default ((t (:foreground "#b9b9b9"))))
+   '(font-lock-type-face ((t (:inherit nil))))
+   '(font-lock-variable-name-face ((t (:inherit bold)))))
 
   ;; turn on some packages globally.
   (spacemacs/toggle-camel-case-motion-globally-on))

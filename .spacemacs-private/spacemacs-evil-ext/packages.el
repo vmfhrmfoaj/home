@@ -19,6 +19,16 @@
     :config
     (add-hook 'prog-mode-hook (-partial #'linum-relative-mode 1))
     (add-hook 'linum-relative-mode-hook (-partial #'diminish 'linum-relative-mode))
+    (add-hook 'find-file-hook
+              (lambda ()
+                (setq-local linum-relative-format
+                            (concat "%"
+                                    (-> (count-lines (point-min) (point-max))
+                                        (number-to-string)
+                                        (length)
+                                        (max 3)
+                                        (number-to-string))
+                                    "s"))))
     (let ((height (face-attribute 'default :height)))
       (custom-set-faces
        `(linum ((t :underline nil :height ,height)))

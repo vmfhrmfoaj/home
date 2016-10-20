@@ -14,8 +14,10 @@
 (defconst eye-candy-packages
   '(all-the-icons
     auto-dim-other-buffers
+    git-gutter-fringe+
     neotree
-    (prettify-symbols-mode :location built-in)))
+    (prettify-symbols-mode :location built-in)
+    rainbow-delimiters))
 
 (defun eye-candy/init-all-the-icons ()
   (use-package all-the-icons
@@ -57,11 +59,39 @@
   (use-package auto-dim-other-buffers
     :ensure t
     :config
+    (set-face-attribute 'auto-dim-other-buffers-face
+                        nil
+                        :foreground
+                        (dim-color (face-attribute 'default :foreground) 5))
+    (set-face-attribute 'auto-dim-other-buffers-face
+                        nil
+                        :background
+                        (dim-color (face-attribute 'default :background) 2))
     (eval-after-load "diminish" '(diminish 'auto-dim-other-buffers-mode))
     (advice-add #'adob--after-change-major-mode-hook :override
                 (lambda (&rest args)
                   nil))
     (auto-dim-other-buffers-mode)))
+
+(defun eye-candy/post-init-git-gutter-fringe+ ()
+  (use-package git-gutter-fringe+
+    :defer t
+    :config
+    (let ((added    (face-attribute 'git-gutter+-added    :foreground))
+          (modified (face-attribute 'git-gutter+-modified :foreground))
+          (deleted  (face-attribute 'git-gutter+-deleted  :foreground)))
+      (set-face-attribute 'git-gutter-fr+-added
+                          nil
+                          :foreground
+                          (dim-color added 30))
+      (set-face-attribute 'git-gutter-fr+-modified
+                          nil
+                          :foreground
+                          (dim-color modified 25))
+      (set-face-attribute 'git-gutter-fr+-deleted
+                          nil
+                          :foreground
+                          (dim-color deleted 20)))))
 
 (defun eye-candy/post-init-neotree ()
   (use-package neotree
@@ -85,5 +115,15 @@
     (advice-disable-modes '(prettify-symbols-mode) #'indent-for-tab-command)
     (advice-disable-modes '(prettify-symbols-mode) #'indent-region)
     (advice-disable-modes '(prettify-symbols-mode) #'indent-according-to-mode)))
+
+(defun eye-candy/post-init-rainbow-delimiters ()
+  (use-package rainbow-delimiters
+    :defer t
+    :config
+    (dolist (i (number-sequence 1 9))
+      (let ((face (intern (concat "rainbow-delimiters-depth-"
+                                  (number-to-string i) "-face"))))
+        (set-face-attribute face nil :foreground
+                            (dim-color (face-attribute face :foreground) 10))))))
 
 ;;; packages.el ends here
