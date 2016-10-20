@@ -12,7 +12,7 @@
 ;;; Code:
 
 (defconst auto-completion-ext-packages
-  auto-completion-packages)
+  '(company))
 
 (defun auto-completion-ext/post-init-company ()
   (use-package company

@@ -12,7 +12,7 @@
 ;;; Code:
 
 (defconst version-control-ext-packages
-  version-control-packages)
+  '(git-gutter-fringe+))
 
 (defun version-control-ext/post-init-git-gutter-fringe+ ()
   (use-package git-gutter-fringe+
