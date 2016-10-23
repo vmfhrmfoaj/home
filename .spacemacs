@@ -331,6 +331,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; set the `custom-file' to avoid appending tail...
   (setq custom-file "~/.spacemacs-custom.el")
+  (load custom-file)
 
   ;; user info
   (setq user-full-name "Jinseop Kim"
@@ -398,8 +399,14 @@ you should place your code here."
   ;; customize the theme.
   (custom-set-faces
    '(default ((t (:foreground "#b9b9b9"))))
-   '(font-lock-type-face ((t (:inherit nil))))
-   '(font-lock-variable-name-face ((t (:inherit bold)))))
+   '(font-lock-type-face ((t (:inherit unspecified))))
+   '(font-lock-variable-name-face ((t (:foreground unspecified :inherit (bold font-lock-constant-face)))))
+   '(org-agenda-date-today ((t (:height unspecified :inherit org-agenda-date))))
+   '(org-agenda-date-weekend ((t (:height unspecified :inherit org-agenda-date))))
+   '(org-agenda-done ((t (:height 1.0 :inherit bold))))
+   '(org-cancelled ((t (:foreground unspecified :inherit (font-lock-type-face org-done)))))
+   '(org-next ((t (:foreground "#dca3a3" :inherit (org-todo)))))
+   '(org-scheduled-today ((t (:height 1.0 :inherit bold)))))
 
   ;; turn on some packages globally.
   (spacemacs/toggle-camel-case-motion-globally-on))
