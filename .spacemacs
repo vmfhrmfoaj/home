@@ -54,7 +54,6 @@ values."
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
-     themes-megapack
      version-control
      ;; ---------------------------------------------------------------
      ;; Extentions
@@ -161,7 +160,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark)
+   dotspacemacs-themes '(leuven)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -398,15 +397,18 @@ you should place your code here."
 
   ;; customize the theme.
   (custom-set-faces
-   '(default ((t (:foreground "#b9b9b9"))))
-   '(font-lock-type-face ((t (:inherit unspecified))))
-   '(font-lock-variable-name-face ((t (:foreground unspecified :inherit (bold font-lock-constant-face)))))
-   '(org-agenda-date-today ((t (:height unspecified :inherit org-agenda-date))))
-   '(org-agenda-date-weekend ((t (:height unspecified :inherit org-agenda-date))))
-   '(org-agenda-done ((t (:height 1.0 :inherit bold))))
-   '(org-cancelled ((t (:foreground unspecified :inherit (font-lock-type-face org-done)))))
-   '(org-next ((t (:foreground "#dca3a3" :inherit (org-todo)))))
-   '(org-scheduled-today ((t (:height 1.0 :inherit bold)))))
+   `(font-lock-comment-face ((t (:slant normal))))
+   `(font-lock-function-name-face ((t (:background "#eaf6fb" :weight bold))))
+   `(font-lock-keyword-face ((t (:weight bold))))
+   `(font-lock-variable-name-face ((t (:weight bold))))
+   `(linum ((t (:weight normal :underline nil :inverse-video nil))))
+   `(linum-relative-current-face ((t (:foreground ,(face-attribute 'default :foreground) :inherit linum))))
+   `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
+   `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground)))))
+   `(org-agenda-done ((t (:height 1.0 :inherit bold))))
+   `(org-cancelled ((t (:foreground unspecified :inherit (font-lock-type-face org-done)))))
+   `(org-next ((t (:foreground "#dca3a3" :inherit (org-todo)))))
+   `(show-paren-match ((t (:background unspecified :weight bold :underline t)))))
 
   ;; turn on some packages globally.
   (spacemacs/toggle-camel-case-motion-globally-on))

@@ -21,6 +21,7 @@
 
 (defun eye-candy/init-all-the-icons ()
   (use-package all-the-icons
+    :after spaceline-segments
     :config
     (setq all-the-icons-default-adjust 0.0
           all-the-icons-scale-factor 0.9)
@@ -29,44 +30,28 @@
                    all-the-icons-alltheicon "clojure"
                    :height 1.0
                    :face all-the-icons-blue))
-
-    ;; https://github.com/domtronn/all-the-icons.el/wiki/Mode-Line#modified-or-read-only
-    (eval-after-load "spaceline-segments"
-      '(progn
-         (spaceline-define-segment buffer-modified
-           (let* ((name (cond ((not buffer-file-name) "times-circle")
-                              ((buffer-modified-p)    "plus-circle")
-                              (buffer-read-only       "minus-circle")
-                              (t                      "check-circle")))
-                  (icon (all-the-icons-faicon name :v-adjust 0.0)))
-             (powerline-raw (propertize icon 'face nil)
-                            `(:family ,(all-the-icons-faicon-family)))))
-
-         ;; (spaceline-define-segment major-mode
-         ;;   (let* ((file-name (or buffer-file-name "foo"))
-         ;;          (font-family (all-the-icons-icon-family-for-file file-name))
-         ;;          (mode-symbol (all-the-icons-icon-for-file file-name :v-adjust -0.05))
-         ;;          (not-found? (string-equal mode-symbol (all-the-icons-faicon "file-o"))))
-         ;;     (flet ((format-mode-line
-         ;;             (&rest _)
-         ;;             (if not-found?
-         ;;                 mode-name
-         ;;               (propertize mode-symbol 'face nil))))
-         ;;       (powerline-major-mode (unless not-found? `(:family ,font-family))))))
-         ))))
+    (spaceline-define-segment buffer-modified
+      (let* ((name (cond ((not buffer-file-name) "times-circle")
+                         ((buffer-modified-p)    "plus-circle")
+                         (buffer-read-only       "minus-circle")
+                         (t                      "check-circle")))
+             (icon (all-the-icons-faicon name :v-adjust 0.0)))
+        (powerline-raw (propertize icon 'face nil)
+                       `(:family ,(all-the-icons-faicon-family)))))))
 
 (defun eye-candy/init-auto-dim-other-buffers ()
   (use-package auto-dim-other-buffers
     :ensure t
     :config
-    (set-face-attribute 'auto-dim-other-buffers-face
-                        nil
-                        :foreground
-                        (dim-color (face-attribute 'default :foreground) 5))
-    (set-face-attribute 'auto-dim-other-buffers-face
-                        nil
-                        :background
-                        (dim-color (face-attribute 'default :background) 2))
+    (cond ((eq 'spacemacs-dark (car dotspacemacs-themes))
+           (set-face-attribute 'auto-dim-other-buffers-face
+                               nil
+                               :foreground
+                               (dim-color (face-attribute 'default :foreground) 5))
+           (set-face-attribute 'auto-dim-other-buffers-face
+                               nil
+                               :background
+                               (dim-color (face-attribute 'default :background) 2))))
     (eval-after-load "diminish" '(diminish 'auto-dim-other-buffers-mode))
     (advice-add #'adob--after-change-major-mode-hook :override
                 (lambda (&rest args)
@@ -83,15 +68,15 @@
       (set-face-attribute 'git-gutter-fr+-added
                           nil
                           :foreground
-                          (dim-color added 30))
+                          (dim-color added 20))
       (set-face-attribute 'git-gutter-fr+-modified
                           nil
                           :foreground
-                          (dim-color modified 25))
+                          (dim-color modified 15))
       (set-face-attribute 'git-gutter-fr+-deleted
                           nil
                           :foreground
-                          (dim-color deleted 20)))))
+                          (dim-color deleted 10)))))
 
 (defun eye-candy/post-init-neotree ()
   (use-package neotree
@@ -120,10 +105,10 @@
   (use-package rainbow-delimiters
     :defer t
     :config
-    (dolist (i (number-sequence 1 9))
-      (let ((face (intern (concat "rainbow-delimiters-depth-"
-                                  (number-to-string i) "-face"))))
-        (set-face-attribute face nil :foreground
-                            (dim-color (face-attribute face :foreground) 10))))))
+    (cond ((eq 'spacemacs-dark (car dotspacemacs-themes))
+           (dolist (i (number-sequence 1 9))
+             (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
+               (set-face-attribute face nil :foreground
+                                   (dim-color (face-attribute face :foreground) 10))))))))
 
 ;;; packages.el ends here
