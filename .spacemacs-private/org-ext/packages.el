@@ -51,6 +51,7 @@
 
 (defun org-ext/post-init-org-agenda ()
   (use-package org-agenda
+    :after projectile
     :defer t
     :config
     (setq org-agenda-files (find-org-agenda-files)
@@ -59,7 +60,11 @@
       :mode org-agenda-mode
       :bindings
       (kbd "C-j") #'org-agenda-next-item
-      (kbd "C-k") #'org-agenda-previous-item)))
+      (kbd "C-k") #'org-agenda-previous-item)
+    (advice-add #'org-agenda-list :after
+                (lambda (&rest _)
+                  (highlight-lines-matching-regexp "records:"
+                                                   'org-agenda-calendar-record)))))
 
 (defun org-ext/init-org-capture ()
   (use-package org-capture
@@ -80,8 +85,10 @@
             ("n" "Note" entry
              (file+headline ,(concat org-directory "/notes/" (format-time-string "%Y") ".org")
                             ,(format-time-string "%b"))
-             ,(concat "* %^{Note}"    "\n"
-                      "SCHEDULED: %t" "\n"
+             ,(concat "* %^{Note}"   "\n"
+                      ":PROPERTIES:" "\n"
+                      ":Created: %t" "\n"
+                      ":END:"        "\n"
                       "\n"
                       "%?")
              :empty-lines 1
@@ -89,11 +96,11 @@
             ("p" "Protocol" entry
              (file+headline ,(concat org-directory "/notes/" (format-time-string "%Y") ".org")
                             ,(format-time-string "%b"))
-             ,(concat "* %^{Note}"    "\n"
-                      "SCHEDULED: %t" "\n"
-                      ":PROPERTIES:"  "\n"
-                      ":Source: %c"   "\n"
-                      ":END:"         "\n"
+             ,(concat "* %^{Note}"   "\n"
+                      ":PROPERTIES:" "\n"
+                      ":Created: %t" "\n"
+                      ":Source: %c"  "\n"
+                      ":END:"        "\n"
                       "\n"
                       "#+BEGIN_QUOTE" "\n"
                       "%i"            "\n"
@@ -105,25 +112,27 @@
             ("L" "Protocol Link" entry
              (file+headline ,(concat org-directory "/notes/" (format-time-string "%Y") ".org")
                             ,(format-time-string "%b"))
-             ,(concat "* %^{Note}"    "\n"
-                      "SCHEDULED: %t" "\n"
-                      ":PROPERTIES:"  "\n"
-                      ":Link: %c"     "\n"
-                      ":END:"         "\n"
+             ,(concat "* %^{Note}"   "\n"
+                      ":PROPERTIES:" "\n"
+                      ":Created: %t" "\n"
+                      ":Link: %c"    "\n"
+                      ":END:"        "\n"
                       "\n"
                       "%?")
              :empty-lines 1
              :prepend t)
-            ("j" "Journal" entry
-             (file+datetree ,(concat org-directory "/journal.org")))
-            ("J" "Journal with date" entry
-             (file+datetree+prompt ,(concat org-directory "/journal.org")))))
+            ("r" "Recorder" entry
+             (file+datetree ,(concat org-directory "/records.org"))
+             "* %T %?")
+            ("R" "Recorder with specified date" entry
+             (file+datetree+prompt ,(concat org-directory "/records.org"))
+             "* %T %?")))
     (spacemacs/set-leader-keys
       "aoc" nil
       "aoct" (defalias 'org-capture-todo (lambda () (interactive) (org-capture nil "t")))
       "aocn" (defalias 'org-capture-note (lambda () (interactive) (org-capture nil "n")))
-      "aocj" (defalias 'org-capture-journal (lambda () (interactive) (org-capture nil "j")))
-      "aocJ" (defalias 'org-capture-journal-with-prompt (lambda () (interactive) (org-capture nil "J"))))
+      "aocr" (defalias 'org-capture-record (lambda () (interactive) (org-capture nil "r")))
+      "aocR" (defalias 'org-capture-record-with-prompt (lambda () (interactive) (org-capture nil "R"))))
     (advice-add #'org-capture :before
                 (lambda (&rest _)
                   "Remove a duplicates history."

@@ -397,6 +397,8 @@ you should place your code here."
 
   ;; customize the theme.
   (custom-set-faces
+   `(css-selector ((t (:foreground unspecified :inherit font-lock-variable-name-face))))
+   `(css-property ((t (:foreground unspecified :inherit font-lock-builtin-face))))
    `(font-lock-comment-face ((t (:slant normal))))
    `(font-lock-function-name-face ((t (:background "#eaf6fb" :weight bold))))
    `(font-lock-keyword-face ((t (:weight bold))))
@@ -406,8 +408,8 @@ you should place your code here."
    `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
    `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground)))))
    `(org-agenda-done ((t (:height 1.0 :inherit bold))))
-   `(org-cancelled ((t (:foreground unspecified :inherit (font-lock-type-face org-done)))))
-   `(org-next ((t (:foreground "#dca3a3" :inherit (org-todo)))))
+   `(org-cancelled ((t (:foreground unspecified :inherit org-done))))
+   `(org-next ((t (:foreground "#dca3a3" :inherit org-todo))))
    `(show-paren-match ((t (:background unspecified :weight bold :underline t)))))
 
   ;; turn on some packages globally.
