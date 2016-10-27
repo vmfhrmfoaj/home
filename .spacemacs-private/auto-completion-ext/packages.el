@@ -22,7 +22,7 @@
     (define-key company-active-map (kbd "C-h") nil)
     (define-key company-active-map (kbd "C-s") #'completion-at-point)
     (setq tab-always-indent t           ; TAB do not have intelligent behavior.
-          company-tooltip-exclude-modes '(prettify-symbols-mode)
+          company-tooltip-exclude-modes '(prettify-symbols-mode page-break-lines-mode)
           company-tooltip-exclude-mode-status nil)
     (advice-add #'company-call-frontends :before
                 (lambda (cmd)

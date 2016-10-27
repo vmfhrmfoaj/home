@@ -337,7 +337,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting.
-  (setq-default line-spacing 2))
+  (setq-default line-spacing 1))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -400,9 +400,7 @@ you should place your code here."
    `(css-selector ((t (:foreground unspecified :inherit font-lock-variable-name-face))))
    `(css-property ((t (:foreground unspecified :inherit font-lock-builtin-face))))
    `(font-lock-comment-face ((t (:slant normal))))
-   `(font-lock-function-name-face ((t (:background "#eaf6fb" :weight bold))))
-   `(font-lock-keyword-face ((t (:weight bold))))
-   `(font-lock-variable-name-face ((t (:weight bold))))
+   `(font-lock-function-name-face ((t (:background "#eaf6fb"))))
    `(linum ((t (:weight normal :underline nil :inverse-video nil))))
    `(linum-relative-current-face ((t (:foreground ,(face-attribute 'default :foreground) :inherit linum))))
    `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))

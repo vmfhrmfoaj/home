@@ -41,6 +41,7 @@
 
 (defun eye-candy/init-auto-dim-other-buffers ()
   (use-package auto-dim-other-buffers
+    :after dash
     :ensure t
     :config
     (cond ((eq 'spacemacs-dark (car dotspacemacs-themes))

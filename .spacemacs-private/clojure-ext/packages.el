@@ -24,7 +24,7 @@
                         :foreground nil
                         :inherit compilation-info-face)
     (setq cider-dynamic-indentation nil
-          cider-font-lock-dynamically '(macro deprecated)
+          cider-font-lock-dynamically '(deprecated)
           cider-repl-use-pretty-printing t
           cider-mode-line
           '(:eval (with-current-buffer (ignore-errors (cider-current-connection))
@@ -46,7 +46,8 @@
     :defer t
     :config
     (eval-after-load "diminish" '(diminish 'clj-refactor-mode))
-    (setq cljr-expectations-test-declaration "[expectations :refer :all]")
+    (setq cljr-expectations-test-declaration "[expectations :refer :all]"
+          cljr-auto-clean-ns nil)
     (add-hook 'clojure-mode-hook (-partial #'clj-refactor-mode 1))
     (add-hook 'cider-connected-hook
               (lambda ()
@@ -92,9 +93,7 @@
          ("\\(#js\\)\\s-+\\s("
           1 '(:inherit font-lock-builtin-face))
          ("\\_<\\(\\.-?\\)[a-z][a-zA-Z0-9]*\\_>"
-          1 '(:inherit font-lock-keyword-face))
-         ("^\\s-*\\s(ns[ \r\t\n]+\\([^ \r\t\n]+\\)"
-          1 '(:inherit font-lock-type-face :weight bold))))
+          1 '(:inherit font-lock-keyword-face))))
       (font-lock-add-keywords
        mode
        '(("\\(!+\\)\\(?:\\s-+\\|\\s)\\|$\\)"

@@ -15,7 +15,8 @@
   '(org
     org-agenda
     (org-capture :location built-in)
-    org-projectile))
+    org-projectile
+    projectile))
 
 (defun org-ext/post-init-org ()
   (use-package org
@@ -51,11 +52,8 @@
 
 (defun org-ext/post-init-org-agenda ()
   (use-package org-agenda
-    :after projectile
     :defer t
     :config
-    (setq org-agenda-files (find-org-agenda-files)
-          org-agenda-fontify-priorities nil)
     (evilified-state-evilify-map org-agenda-mode-map
       :mode org-agenda-mode
       :bindings
@@ -161,5 +159,13 @@
                                     (lambda ()
                                       (setq-default org-agenda-files (find-org-agenda-files)))
                                     nil 'local))))))))))
+
+(defun org-ext/post-init-projectile ()
+  (use-package projectile
+    :after org-agenda
+    :defer t
+    :config
+    (projectile-load-known-projects)
+    (setq org-agenda-files (find-org-agenda-files))))
 
 ;;; packages.el ends here
