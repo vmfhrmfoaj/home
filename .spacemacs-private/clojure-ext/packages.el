@@ -37,9 +37,16 @@
           cider-cljs-lein-repl (caadr cider--cljs-repl-types))
     (evil-define-key 'insert cider-repl-mode-map (kbd "RET") #'evil-ret-and-indent)
     (evil-define-key 'normal cider-repl-mode-map (kbd "RET") #'cider-repl-return)
+    (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
+      (spacemacs/set-leader-keys-for-major-mode mode
+        "en" #'cider-eval-ns-form))
     (add-hook 'cider-connected-hook
               (lambda ()
-                (cider-nrepl-sync-request:eval "(set! *print-length* 50)")))))
+                (cider-nrepl-sync-request:eval
+                 "(do "
+                 "  (set! *print-length* 30)"
+                 "  (set! *print-level* 8)"
+                 "  )")))))
 
 (defun clojure-ext/post-init-clj-refactor ()
   (use-package clj-refactor
@@ -90,10 +97,20 @@
           (2 '(:inherit default)))
          ("\\s(\\(\\(?:as\\|cond\\|some\\)?->>?\\|and\\|or\\)\\_>"
           1 '(:inherit default))
+         ("^\\s-*\\s(def[ \r\n\t]+\\([^ \r\t\n]+?\\)\\(!+\\)[ \r\t\n]"
+          (1 '(:inherit font-lock-variable-name-face))
+          (2 '(:inherit (font-lock-warning-face font-lock-variable-name-face) :slant italic)))
+         ("^\\s-*\\s(defn-?[ \r\n\t]+\\([^ \r\t\n]+?\\)\\(!+\\)[ \r\t\n]"
+          (1 '(:inherit font-lock-function-name-face))
+          (2 '(:inherit (font-lock-warning-face font-lock-function-name-face) :slant italic)))
          ("\\(#js\\)\\s-+\\s("
           1 '(:inherit font-lock-builtin-face))
          ("\\_<\\(\\.-?\\)[a-z][a-zA-Z0-9]*\\_>"
-          1 '(:inherit font-lock-keyword-face))))
+          1 '(:inherit font-lock-keyword-face))
+         ("(\\(go-loop\\|while\\)[ \r\t\n]"
+          1 'font-lock-keyword-face)
+         ("(\\(?:defstate\\|defproject\\)[ \r\t\n]+\\([^ \r\t\n]+\\)[ \r\t\n]"
+          1 'font-lock-variable-name-face)))
       (font-lock-add-keywords
        mode
        '(("\\(!+\\)\\(?:\\s-+\\|\\s)\\|$\\)"

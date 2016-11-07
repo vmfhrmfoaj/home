@@ -82,7 +82,8 @@
   (unless auto-indent-skip-when-open-file
     (save-match-data
       (save-mark-and-excursion
-       (when (derived-mode-p 'prog-mode)
+       (when (and (derived-mode-p 'prog-mode)
+                  (not buffer-read-only))
          (let ((start (progn
                         (beginning-of-defun)
                         (point)))

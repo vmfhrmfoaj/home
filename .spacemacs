@@ -65,6 +65,7 @@ values."
      helm-ext
      html-ext
      java-ext
+     javascript-ext
      org-ext
      spacemacs-base-ext
      spacemacs-bootstrap-ext
@@ -337,6 +338,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting.
+  (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
   (setq-default line-spacing 1))
 
 (defun dotspacemacs/user-config ()
@@ -394,6 +396,18 @@ you should place your code here."
                                     (cons 'left   l)
                                     (cons 'width  w)
                                     (cons 'height h))))
+
+  ;; large file
+  (add-hook 'find-file-hook
+            (lambda ()
+              (when (>= (buffer-size) (* 1024 1024))
+                (turn-off-smartparens-mode)
+                (turn-off-show-smartparens-mode)))
+            'append)
+
+  ;; for improving performance.
+  (setq gc-cons-threshold (* 1024 1024 1024))
+  (run-with-idle-timer 3 t #'garbage-collect)
 
   ;; customize the theme.
   (custom-set-faces
