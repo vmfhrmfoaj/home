@@ -39,14 +39,7 @@
     (evil-define-key 'normal cider-repl-mode-map (kbd "RET") #'cider-repl-return)
     (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
       (spacemacs/set-leader-keys-for-major-mode mode
-        "en" #'cider-eval-ns-form))
-    (add-hook 'cider-connected-hook
-              (lambda ()
-                (cider-nrepl-sync-request:eval
-                 "(do "
-                 "  (set! *print-length* 30)"
-                 "  (set! *print-level* 8)"
-                 "  )")))))
+        "en" #'cider-eval-ns-form))))
 
 (defun clojure-ext/post-init-clj-refactor ()
   (use-package clj-refactor
