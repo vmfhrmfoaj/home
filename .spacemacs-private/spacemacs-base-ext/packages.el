@@ -21,13 +21,19 @@
     ;; NOTE
     ;; prevent to calculate the width of the window
     ;;  in `ediff-setup-windows-plain-compare' function.
-    (setq ediff-split-window-function (lambda (&rest _)
+    (setq ediff-exclude-modes '(golden-ratio-mode)
+          ediff-split-window-function (lambda (&rest _)
                                         (split-window-right)))
     (advice-add #'ediff-setup :before
                 (lambda (&rest _)
-                  (spacemacs/toggle-maximize-frame-on)))
+                  (setq ediff-exclude-mode-status (-map #'symbol-value ediff-exclude-modes))
+                  (disable-modes ediff-exclude-modes)
+                  (unless (cdr (assoc 'fullscreen (frame-parameters)))
+                    (spacemacs/toggle-maximize-frame-on))))
     (advice-add #'ediff-quit :after
                 (lambda (&rest _)
-                  (spacemacs/toggle-maximize-frame-off)))))
+                  (restore-modes ediff-exclude-modes ediff-exclude-mode-status)
+                  (when (eq 'maximized (cdr (assoc 'fullscreen (frame-parameters))))
+                    (spacemacs/toggle-maximize-frame-off))))))
 
 ;;; packages.el ends here

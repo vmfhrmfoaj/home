@@ -74,6 +74,7 @@
                                 (->> (char-before (1- (point)))
                                      (char-to-string)
                                      (string-match-p "[0-9A-Za-z]")))
+                       (company-cancel)
                        (company-complete-common-or-cycle)))))))
 
 (defun clojure-ext/post-init-clojure-mode ()
@@ -96,7 +97,7 @@
          ("^\\s-*\\s(defn-?[ \r\n\t]+\\([^ \r\t\n]+?\\)\\(!+\\)[ \r\t\n]"
           (1 '(:inherit font-lock-function-name-face))
           (2 '(:inherit (font-lock-warning-face font-lock-function-name-face) :slant italic)))
-         ("\\(#js\\)\\s-+\\s("
+         ("\\(#js\\)\\s-*\\s("
           1 '(:inherit font-lock-builtin-face))
          ("\\_<\\(\\.-?\\)[a-z][a-zA-Z0-9]*\\_>"
           1 '(:inherit font-lock-keyword-face))

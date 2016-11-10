@@ -54,6 +54,7 @@
   (use-package org-agenda
     :defer t
     :config
+    (setq org-agenda-window-setup 'current-window)
     (evilified-state-evilify-map org-agenda-mode-map
       :mode org-agenda-mode
       :bindings

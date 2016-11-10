@@ -30,7 +30,7 @@
                 (disable-modes evil-visual-state-exclude-modes)))
     (add-hook 'evil-visual-state-exit-hook
               (lambda ()
-                (resotre-modes evil-visual-state-exclude-modes
+                (restore-modes evil-visual-state-exclude-modes
                                evil-visual-state-exclude-mode-status)))
     (add-hook 'evil-normal-state-entry-hook #'auto-indent)
     (advice-add #'open-line :after #'auto-indent)

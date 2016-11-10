@@ -93,6 +93,7 @@ values."
    dotspacemacs-excluded-packages
    '(
      exec-path-from-shell
+     rainbow-delimiters
      )
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
@@ -338,8 +339,11 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting.
+  (set-fontset-font t 'hangul (font-spec :name "Apple SD Gothic Neo"))
+  (add-to-list 'face-font-rescale-alist '("Apple SD Gothic Neo" . 1.05))
   (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
-  (setq-default line-spacing 1))
+  (setq-default line-spacing 1)
+  (mac-auto-operator-composition-mode))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -382,7 +386,7 @@ you should place your code here."
   (let* ((w 120)
          (h (1- (/ (display-pixel-height) (frame-char-height))))
          (l (/ (custom-display-pixel-width) 2.0))
-         (l (floor (- l (* (frame-unit->pixel w) 0.3))))
+         (l (floor (- l (* (frame-unit->pixel w) 0.4))))
          (l (if (< 0 (- (custom-display-pixel-width)
                         (+ l (frame-unit->pixel w))))
                 l
@@ -411,10 +415,13 @@ you should place your code here."
 
   ;; customize the theme.
   (custom-set-faces
-   `(css-selector ((t (:foreground unspecified :inherit font-lock-variable-name-face))))
    `(css-property ((t (:foreground unspecified :inherit font-lock-builtin-face))))
+   `(css-selector ((t (:foreground unspecified :inherit font-lock-variable-name-face))))
    `(font-lock-comment-face ((t (:slant normal))))
    `(font-lock-function-name-face ((t (:background "#eaf6fb"))))
+   ;; `(font-lock-keyword-face ((t (:weight bold))))
+   ;; `(font-lock-type-face ((t (:weight bold))))
+   ;; `(font-lock-variable-name-face ((t (:weight bold))))
    `(linum ((t (:weight normal :underline nil :inverse-video nil))))
    `(linum-relative-current-face ((t (:foreground ,(face-attribute 'default :foreground) :inherit linum))))
    `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
@@ -424,7 +431,15 @@ you should place your code here."
    `(org-next ((t (:foreground "#dca3a3" :inherit org-todo))))
    `(show-paren-match ((t (:background unspecified :weight bold :underline t)))))
 
-  ;; turn on some packages globally.
+  ;; for programming
+  (add-hook 'prog-mode-hook
+            (lambda ()
+              (font-lock-add-keywords
+               nil
+               `(("\\('\\|`\\|,\\|@\\|#\\|~\\|\\^\\|\\s(\\|\\s)\\)"
+                  1 'shadow)) t)))
+
+  ;; turn on/off some packages globally.
   (spacemacs/toggle-camel-case-motion-globally-on))
 
 ;; Do not write anything past this comment. This is where Emacs will

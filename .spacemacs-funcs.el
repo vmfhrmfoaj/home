@@ -55,7 +55,7 @@
               (funcall it 0))
          modes))
 
-(defun resotre-modes (modes status)
+(defun restore-modes (modes status)
   (--map (and (cdr it)
               (funcall (car it) (cdr it)))
          (-zip modes status)))
@@ -64,7 +64,7 @@
   `(let ((mode-status (-map #'symbol-value ,modes)))
      (disable-modes ,modes)
      (prog1 (progn ,@body)
-       (resotre-modes ,modes mode-status))))
+       (restore-modes ,modes mode-status))))
 
 (put 'with-disable-modes 'lisp-indent-function 'defun)
 

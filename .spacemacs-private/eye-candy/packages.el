@@ -14,6 +14,8 @@
 (defconst eye-candy-packages
   '(all-the-icons
     auto-dim-other-buffers
+    company
+    evil
     git-gutter-fringe+
     neotree
     (prettify-symbols-mode :location built-in)
@@ -59,6 +61,36 @@
                   nil))
     (auto-dim-other-buffers-mode)))
 
+(defun eye-candy/post-init-company ()
+  (use-package company
+    :defer t
+    :config
+    (setq company-tooltip-exclude-modes '(prettify-symbols-mode page-break-lines-mode)
+          company-tooltip-exclude-mode-status nil)
+    (advice-add #'company-call-frontends :before
+                (lambda (cmd)
+                  (cond
+                   ((eq 'show cmd)
+                    (setq-local company-tooltip-exclude-mode-status
+                                (-map #'symbol-value company-tooltip-exclude-modes))
+                    (disable-modes company-tooltip-exclude-modes))
+                   ((eq 'hide cmd)
+                    (restore-modes company-tooltip-exclude-modes
+                                   company-tooltip-exclude-mode-status)))))))
+
+(defun seye-candy/post-init-evil ()
+  (when (require 'evil nil 'noerr)
+    (setq evil-visual-state-exclude-modes '(prettify-symbols-mode))
+    (add-hook 'evil-visual-state-entry-hook
+              (lambda ()
+                (setq-local evil-visual-state-exclude-mode-status
+                            (-map #'symbol-value evil-visual-state-exclude-modes))
+                (disable-modes evil-visual-state-exclude-modes)))
+    (add-hook 'evil-visual-state-exit-hook
+              (lambda ()
+                (restore-modes evil-visual-state-exclude-modes
+                               evil-visual-state-exclude-mode-status)))))
+
 (defun eye-candy/post-init-git-gutter-fringe+ ()
   (use-package git-gutter-fringe+
     :defer t
@@ -66,18 +98,9 @@
     (let ((added    (face-attribute 'git-gutter+-added    :foreground))
           (modified (face-attribute 'git-gutter+-modified :foreground))
           (deleted  (face-attribute 'git-gutter+-deleted  :foreground)))
-      (set-face-attribute 'git-gutter-fr+-added
-                          nil
-                          :foreground
-                          (dim-color added 20))
-      (set-face-attribute 'git-gutter-fr+-modified
-                          nil
-                          :foreground
-                          (dim-color modified 15))
-      (set-face-attribute 'git-gutter-fr+-deleted
-                          nil
-                          :foreground
-                          (dim-color deleted 10)))))
+      (set-face-attribute 'git-gutter-fr+-added nil :foreground (dim-color added 30))
+      (set-face-attribute 'git-gutter-fr+-modified nil :foreground (dim-color modified 25))
+      (set-face-attribute 'git-gutter-fr+-deleted nil :foreground (dim-color deleted 20)))))
 
 (defun eye-candy/post-init-neotree ()
   (use-package neotree
@@ -95,12 +118,10 @@
     (add-hook 'prog-mode-hook
               (-partial #'font-lock-add-keywords nil
                         fira-code-font-lock-keywords-alist))
-    (global-prettify-symbols-mode)
-
-    ;; Change the behavior of indent function for `prettify-symbols-mode'.
     (advice-disable-modes '(prettify-symbols-mode) #'indent-for-tab-command)
     (advice-disable-modes '(prettify-symbols-mode) #'indent-region)
-    (advice-disable-modes '(prettify-symbols-mode) #'indent-according-to-mode)))
+    (advice-disable-modes '(prettify-symbols-mode) #'indent-according-to-mode)
+    (global-prettify-symbols-mode)))
 
 (defun eye-candy/post-init-rainbow-delimiters ()
   (use-package rainbow-delimiters
