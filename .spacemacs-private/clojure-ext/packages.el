@@ -34,7 +34,15 @@
                                   ""
                                 (concat host ":")))
                             (cadr nrepl-endpoint))))
-          cider-cljs-lein-repl (caadr cider--cljs-repl-types))
+          cider-cljs-lein-repl (concat "(do"
+                                       "  (require 'figwheel-sidecar.repl-api)"
+                                       "  (swap! @#'strictly-specking-standalone.core/registry-ref"
+                                       "         dissoc :figwheel-sidecar.schemas.cljs-options/compiler-options)"
+                                       "  (strictly-specking-standalone.core/def-key"
+                                       "    :figwheel-sidecar.schemas.cljs-options/compiler-options"
+                                       "    map?)"
+                                       "  (figwheel-sidecar.repl-api/start-figwheel!)"
+                                       "  (figwheel-sidecar.repl-api/cljs-repl))"))
     (evil-define-key 'insert cider-repl-mode-map (kbd "RET") #'evil-ret-and-indent)
     (evil-define-key 'normal cider-repl-mode-map (kbd "RET") #'cider-repl-return)
     (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))

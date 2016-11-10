@@ -98,9 +98,9 @@
     (let ((added    (face-attribute 'git-gutter+-added    :foreground))
           (modified (face-attribute 'git-gutter+-modified :foreground))
           (deleted  (face-attribute 'git-gutter+-deleted  :foreground)))
-      (set-face-attribute 'git-gutter-fr+-added nil :foreground (dim-color added 30))
-      (set-face-attribute 'git-gutter-fr+-modified nil :foreground (dim-color modified 25))
-      (set-face-attribute 'git-gutter-fr+-deleted nil :foreground (dim-color deleted 20)))))
+      (set-face-attribute 'git-gutter-fr+-added    nil :foreground (dim-color added    20))
+      (set-face-attribute 'git-gutter-fr+-modified nil :foreground (dim-color modified 15))
+      (set-face-attribute 'git-gutter-fr+-deleted  nil :foreground (dim-color deleted  10)))))
 
 (defun eye-candy/post-init-neotree ()
   (use-package neotree
