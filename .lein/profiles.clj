@@ -2,7 +2,6 @@
                        [com.cemerick/piggieback "0.2.1"]
                        [figwheel-sidecar "0.5.8"]]
         :plugins [[cider/cider-nrepl "0.15.0-SNAPSHOT"]
-                  [lein-autoexpect "1.9.0"]
                   [lein-cljfmt "0.5.3"]
                   [lein-pprint "1.1.2"]
                   [refactor-nrepl "2.3.0-SNAPSHOT"]]
