@@ -112,7 +112,11 @@
          ("(\\(go-loop\\|while\\)[ \r\t\n]"
           1 'font-lock-keyword-face)
          ("(\\(?:defstate\\|defproject\\)[ \r\t\n]+\\([^ \r\t\n]+\\)[ \r\t\n]"
-          1 'font-lock-variable-name-face)))
+          1 'font-lock-variable-name-face)
+         ("(ns[ \r\t\n]+\\([^ \r\t\n]+\\)"
+          1 '(:inherit font-lock-type-face :weight bold))
+         ("\\(%[0-9]*\\)"
+          1 '(:inherit font-lock-variable-name-face :weight normal))))
       (font-lock-add-keywords
        mode
        '(("\\(!+\\)\\(?:\\s-+\\|\\s)\\|$\\)"

@@ -78,7 +78,7 @@
                     (restore-modes company-tooltip-exclude-modes
                                    company-tooltip-exclude-mode-status)))))))
 
-(defun seye-candy/post-init-evil ()
+(defun eye-candy/post-init-evil ()
   (when (require 'evil nil 'noerr)
     (setq evil-visual-state-exclude-modes '(prettify-symbols-mode))
     (add-hook 'evil-visual-state-entry-hook

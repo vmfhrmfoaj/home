@@ -22,16 +22,6 @@
     (define-key evil-read-key-map (kbd "<S-kp-divide>") "\\")
     (define-key evil-read-key-map (kbd "<S-kp-subtract>") "_")
     (define-key evil-read-key-map (kbd "<S-kp-add>") "=")
-    (setq evil-visual-state-exclude-modes '(prettify-symbols-mode))
-    (add-hook 'evil-visual-state-entry-hook
-              (lambda ()
-                (setq-local evil-visual-state-exclude-mode-status
-                            (-map #'symbol-value evil-visual-state-exclude-modes))
-                (disable-modes evil-visual-state-exclude-modes)))
-    (add-hook 'evil-visual-state-exit-hook
-              (lambda ()
-                (restore-modes evil-visual-state-exclude-modes
-                               evil-visual-state-exclude-mode-status)))
     (add-hook 'evil-normal-state-entry-hook #'auto-indent)
     (advice-add #'open-line :after #'auto-indent)
     (advice-add #'evil-insert-resume :after
