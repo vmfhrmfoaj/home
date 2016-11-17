@@ -339,10 +339,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting.
-  (set-fontset-font t 'hangul (font-spec :name "Apple SD Gothic Neo"))
-  (add-to-list 'face-font-rescale-alist '("Apple SD Gothic Neo" . 1.05))
+  (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
   (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
-  (setq-default line-spacing 1)
+  (setq-default line-spacing 3)
   (mac-auto-operator-composition-mode))
 
 (defun dotspacemacs/user-config ()
@@ -383,7 +382,7 @@ you should place your code here."
   (define-key key-translation-map (kbd "<S-kp-add>") "=")
 
   ;; set the pos/size of the initial frame.
-  (let* ((w 120)
+  (let* ((w 130)
          (h (1- (/ (display-pixel-height) (frame-char-height))))
          (l (/ (custom-display-pixel-width) 2.0))
          (l (floor (- l (* (frame-unit->pixel w) 0.4))))

@@ -54,7 +54,11 @@
     :defer t
     :config
     (eval-after-load "diminish" '(diminish 'clj-refactor-mode))
-    (setq cljr-expectations-test-declaration "[expectations :refer :all]"
+    (setq cljr-clojure-test-declaration "[clojure.test :refer :all]"
+          cljr-cljc-clojure-test-declaration
+          (concat "#?(:clj  [clojure.test :refer :all]" "\n"
+                  "   :cljs [cljs.test :refer [deftest is are] :include-macros true])")
+          cljr-expectations-test-declaration "[expectations :refer :all]"
           cljr-auto-clean-ns nil)
     (add-hook 'clojure-mode-hook (-partial #'clj-refactor-mode 1))
     (add-hook 'cider-connected-hook
@@ -114,6 +118,8 @@
          ("(\\(?:defstate\\|defproject\\)[ \r\t\n]+\\([^ \r\t\n]+\\)[ \r\t\n]"
           1 'font-lock-variable-name-face)
          ("(ns[ \r\t\n]+\\([^ \r\t\n]+\\)"
+          1 '(:inherit font-lock-type-face :weight bold))
+         ("(\\(?:defrecord\\|defprotocol\\)[ \r\t\n]+\\([^ \r\t\n]+\\)[ \r\t\n]"
           1 '(:inherit font-lock-type-face :weight bold))
          ("\\(%[0-9]*\\)"
           1 '(:inherit font-lock-variable-name-face :weight normal))))
