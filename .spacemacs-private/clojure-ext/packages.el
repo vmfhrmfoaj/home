@@ -119,7 +119,7 @@
           1 'font-lock-variable-name-face)
          ("(ns[ \r\t\n]+\\([^ \r\t\n]+\\)"
           1 '(:inherit font-lock-type-face :weight bold))
-         ("(\\(?:defrecord\\|defprotocol\\)[ \r\t\n]+\\([^ \r\t\n]+\\)[ \r\t\n]"
+         ("(def\\(?:record\\|protocol\\|type\\)[ \r\t\n]+\\([^ \r\t\n]+\\)[ \r\t\n]"
           1 '(:inherit font-lock-type-face :weight bold))
          ("\\(%[0-9]*\\)"
           1 '(:inherit font-lock-variable-name-face :weight normal))))

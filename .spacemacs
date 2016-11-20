@@ -341,7 +341,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; set up the addtional font setting.
   (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
   (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
-  (setq-default line-spacing 3)
+  (setq-default line-spacing 4)
   (mac-auto-operator-composition-mode))
 
 (defun dotspacemacs/user-config ()
@@ -417,7 +417,7 @@ you should place your code here."
    `(css-property ((t (:foreground unspecified :inherit font-lock-builtin-face))))
    `(css-selector ((t (:foreground unspecified :inherit font-lock-variable-name-face))))
    `(font-lock-comment-face ((t (:slant normal))))
-   `(font-lock-function-name-face ((t (:background "#eaf6fb" :weight bold))))
+   `(font-lock-function-name-face ((t (:weight bold))))
    `(font-lock-variable-name-face ((t (:weight bold))))
    `(linum ((t (:weight normal :underline nil :inverse-video nil))))
    `(linum-relative-current-face ((t (:foreground ,(face-attribute 'default :foreground) :inherit linum))))
