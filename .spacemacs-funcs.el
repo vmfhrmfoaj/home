@@ -63,7 +63,9 @@
 (defmacro with-disable-modes (modes &rest body)
   `(let ((mode-status (-map #'symbol-value ,modes)))
      (disable-modes ,modes)
-     (prog1 (progn ,@body)
+     (unwind-protect
+         (prog1 (progn ,@body)
+           (restore-modes ,modes mode-status))
        (restore-modes ,modes mode-status))))
 
 (put 'with-disable-modes 'lisp-indent-function 'defun)

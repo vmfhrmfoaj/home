@@ -80,6 +80,8 @@
 
 (defun eye-candy/post-init-evil ()
   (when (require 'evil nil 'noerr)
+    (advice-disable-modes '(prettify-symbols-mode) #'evil-next-line)
+    (advice-disable-modes '(prettify-symbols-mode) #'evil-previous-line)
     (setq evil-visual-state-exclude-modes '(prettify-symbols-mode))
     (add-hook 'evil-visual-state-entry-hook
               (lambda ()

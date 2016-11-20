@@ -170,8 +170,8 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font '("MonacoB2"
-                               :size 14
+   dotspacemacs-default-font `("MonacoB2"
+                               :size ,(if (<= 2560 (display-pixel-width)) 15 14)
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
