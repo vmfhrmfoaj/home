@@ -171,7 +171,7 @@ values."
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
    dotspacemacs-default-font `("MonacoB2"
-                               :size ,(if (<= 2560 (display-pixel-width)) 15 14)
+                               :size 15
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -341,7 +341,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; set up the addtional font setting.
   (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
   (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
-  (setq-default line-spacing 4)
+  (setq-default line-spacing 5)
   (mac-auto-operator-composition-mode))
 
 (defun dotspacemacs/user-config ()
@@ -419,6 +419,7 @@ you should place your code here."
    `(font-lock-comment-face ((t (:slant normal))))
    `(font-lock-function-name-face ((t (:weight bold))))
    `(font-lock-variable-name-face ((t (:weight bold))))
+   `(git-timemachine-minibuffer-detail-face ((t (:foreground unspecified :inherit highlight))))
    `(linum ((t (:weight normal :underline nil :inverse-video nil))))
    `(linum-relative-current-face ((t (:foreground ,(face-attribute 'default :foreground) :inherit linum))))
    `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
