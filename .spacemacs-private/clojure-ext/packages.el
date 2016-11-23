@@ -27,13 +27,14 @@
           cider-font-lock-dynamically '(deprecated)
           cider-repl-use-pretty-printing t
           cider-mode-line
-          '(:eval (with-current-buffer (ignore-errors (cider-current-connection))
-                    (format " CIDER<%s%s>"
-                            (let ((host (car nrepl-endpoint)))
-                              (if (string-equal host "localhost")
-                                  ""
-                                (concat host ":")))
-                            (cadr nrepl-endpoint))))
+          '(:eval (when (cider-connected-p)
+                    (with-current-buffer (ignore-errors (cider-current-connection))
+                      (format " CIDER<%s%s>"
+                              (let ((host (car nrepl-endpoint)))
+                                (if (string-equal host "localhost")
+                                    ""
+                                  (concat host ":")))
+                              (cadr nrepl-endpoint)))))
           cider-cljs-lein-repl (concat "(do"
                                        "  (require 'figwheel-sidecar.repl-api)"
                                        "  (swap! @#'strictly-specking-standalone.core/registry-ref"

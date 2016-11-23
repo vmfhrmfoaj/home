@@ -16,6 +16,7 @@
     org-agenda
     (org-capture :location built-in)
     org-projectile
+    (org-protocol :location built-in)
     projectile))
 
 (defun org-ext/post-init-org ()
@@ -160,6 +161,9 @@
                                     (lambda ()
                                       (setq-default org-agenda-files (find-org-agenda-files)))
                                     nil 'local))))))))))
+
+(defun org-ext/init-org-protocol ()
+  (use-package org-protocol))
 
 (defun org-ext/post-init-projectile ()
   (use-package projectile
