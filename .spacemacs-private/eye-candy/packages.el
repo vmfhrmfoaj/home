@@ -54,7 +54,16 @@
            (set-face-attribute 'auto-dim-other-buffers-face
                                nil
                                :background
-                               (dim-color (face-attribute 'default :background) 2))))
+                               (dim-color (face-attribute 'default :background) 2)))
+          ((eq 'spacemacs-light (car dotspacemacs-themes))
+           (set-face-attribute 'auto-dim-other-buffers-face
+                               nil
+                               :foreground
+                               (dim-color (face-attribute 'default :foreground) 10))
+           (set-face-attribute 'auto-dim-other-buffers-face
+                               nil
+                               :background
+                               (dim-color (face-attribute 'default :background) 5))))
     (eval-after-load "diminish" '(diminish 'auto-dim-other-buffers-mode))
     (advice-add #'adob--after-change-major-mode-hook :override
                 (lambda (&rest args)

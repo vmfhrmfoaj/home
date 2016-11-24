@@ -162,7 +162,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(leuven)
+   dotspacemacs-themes '(spacemacs-light)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -340,7 +340,6 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; set up the addtional font setting.
   (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
-  (add-to-list 'face-font-rescale-alist '("NanumBarunGothicOTF" . 0.95))
   (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
   (setq-default line-spacing 5)
   (mac-auto-operator-composition-mode))
@@ -417,18 +416,12 @@ you should place your code here."
   (custom-set-faces
    `(css-property ((t (:foreground unspecified :inherit font-lock-builtin-face))))
    `(css-selector ((t (:foreground unspecified :inherit font-lock-variable-name-face))))
-   `(font-lock-comment-face ((t (:slant normal))))
-   `(font-lock-function-name-face ((t (:background "#eaf6fb" :weight bold))))
+   `(font-lock-keyword-face ((t (:weight normal))))
+   `(font-lock-type-face ((t (:weight normal))))
    `(font-lock-variable-name-face ((t (:weight bold))))
-   `(git-timemachine-minibuffer-detail-face ((t (:foreground unspecified :inherit highlight))))
-   `(linum ((t (:weight normal :underline nil :inverse-video nil))))
-   `(linum-relative-current-face ((t (:foreground ,(face-attribute 'default :foreground) :inherit linum))))
-   `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
-   `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground)))))
-   `(org-agenda-done ((t (:height 1.0 :inherit bold))))
+   `(org-agenda-date-weekend ((t (:inherit org-agenda-date))))
    `(org-cancelled ((t (:foreground unspecified :inherit org-done))))
-   `(org-next ((t (:foreground "#dca3a3" :inherit org-todo))))
-   `(show-paren-match ((t (:background unspecified :weight bold :underline t)))))
+   `(org-next ((t (:foreground "#dca3a3" :inherit org-todo)))))
 
   ;; for programming
   (add-hook 'prog-mode-hook
