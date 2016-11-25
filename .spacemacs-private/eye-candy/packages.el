@@ -82,15 +82,34 @@
                    ((eq 'show cmd)
                     (setq-local company-tooltip-exclude-mode-status
                                 (-map #'symbol-value company-tooltip-exclude-modes))
-                    (disable-modes company-tooltip-exclude-modes))
+                    (disable-modes company-tooltip-exclude-modes)
+                    (redisplay))
                    ((eq 'hide cmd)
                     (restore-modes company-tooltip-exclude-modes
                                    company-tooltip-exclude-mode-status)))))))
 
 (defun eye-candy/post-init-evil ()
   (when (require 'evil nil 'noerr)
-    (advice-disable-modes '(prettify-symbols-mode) #'evil-next-line)
-    (advice-disable-modes '(prettify-symbols-mode) #'evil-previous-line)
+    (advice-add #'evil-next-line :around
+                (lambda (of &rest args)
+                  (let* ((str (save-excursion
+                                (buffer-substring-no-properties (line-beginning-position)
+                                                                (line-end-position 2))))
+                         (modes (if (string-match-p "->\\|.-\\|;;" str)
+                                    '(prettify-symbols-mode)
+                                  nil)))
+                    (with-disable-modes modes
+                      (apply of args)))))
+    (advice-add #'evil-previous-line :around
+                (lambda (of &rest args)
+                  (let* ((str (save-excursion
+                                (buffer-substring-no-properties (line-beginning-position 0)
+                                                                (line-end-position))))
+                         (modes (if (string-match-p "->\\|.-\\|;;" str)
+                                    '(prettify-symbols-mode)
+                                  nil)))
+                    (with-disable-modes modes
+                      (apply of args)))))
     (setq evil-visual-state-exclude-modes '(prettify-symbols-mode))
     (add-hook 'evil-visual-state-entry-hook
               (lambda ()

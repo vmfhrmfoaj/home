@@ -416,13 +416,17 @@ you should place your code here."
   (custom-set-faces
    `(css-property ((t (:foreground unspecified :inherit font-lock-builtin-face))))
    `(css-selector ((t (:foreground unspecified :inherit font-lock-variable-name-face))))
-   `(font-lock-keyword-face ((t (:weight normal))))
    `(font-lock-type-face ((t (:weight normal))))
    `(font-lock-variable-name-face ((t (:weight bold))))
+   `(isearch ((t (:weight bold))))
+   `(lazy-highlight ((t (:weight bold))))
+   `(org-agenda-date ((t (:height 1.2))))
+   `(org-agenda-date-today ((t (:height 1.2))))
    `(org-agenda-date-weekend ((t (:inherit org-agenda-date))))
    `(org-agenda-done ((t (:height 1.0))))
    `(org-cancelled ((t (:foreground unspecified :inherit org-done))))
    `(org-next ((t (:foreground "#dca3a3" :inherit org-todo))))
+   `(org-scheduled-previously ((t (:foreground "#6c4173"))))
    `(org-scheduled-today ((t (:height 1.1)))))
 
   ;; for programming
@@ -432,6 +436,9 @@ you should place your code here."
                nil
                `(("\\('\\|`\\|,\\|@\\|#\\|~\\|\\^\\|\\s(\\|\\s)\\)"
                   1 'shadow)) t)))
+
+  ;; for org-capture Chrome extension
+  (require 'org-protocol)
 
   ;; turn on/off some packages globally.
   (spacemacs/toggle-camel-case-motion-globally-on))

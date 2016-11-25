@@ -16,7 +16,6 @@
     org-agenda
     (org-capture :location built-in)
     org-projectile
-    (org-protocol :location built-in)
     projectile))
 
 (defun org-ext/post-init-org ()
@@ -57,9 +56,9 @@
     :config
     (setq org-agenda-skip-deadline-if-done t
           org-agenda-window-setup 'current-window
-          org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.2))
-                                      (0.5 . '(:inherit org-upcoming-deadline :height 1.2))
-                                      (0.0 . '(:height 1.1))))
+          org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0 :weight bold))
+                                      (0.5 . '(:inherit org-upcoming-deadline :height 1.0 :weight bold))
+                                      (0.0 . '(:height 1.0))))
     (evilified-state-evilify-map org-agenda-mode-map
       :mode org-agenda-mode
       :bindings
@@ -72,6 +71,7 @@
 
 (defun org-ext/init-org-capture ()
   (use-package org-capture
+    :defer t
     :config
     (setq org-directory (concat (getenv "HOME") "/Desktop/Org")
           org-default-notes-file (concat org-directory "/todos/" (format-time-string "%Y") ".org")
@@ -150,6 +150,7 @@
   (use-package org-projectile
     :defer t
     :config
+    (require 'org-capture)
     (advice-add #'org-projectile/capture :after
                 (lambda (&rest _)
                   (let* ((target (org-capture-get :target))
@@ -166,15 +167,13 @@
                                       (setq-default org-agenda-files (find-org-agenda-files)))
                                     nil 'local))))))))))
 
-(defun org-ext/init-org-protocol ()
-  (use-package org-protocol))
-
 (defun org-ext/post-init-projectile ()
   (use-package projectile
     :after org-agenda
     :defer t
     :config
     (projectile-load-known-projects)
+    (require 'org-projectile)
     (setq org-agenda-files (find-org-agenda-files))))
 
 ;;; packages.el ends here
