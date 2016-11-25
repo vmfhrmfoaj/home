@@ -420,8 +420,10 @@ you should place your code here."
    `(font-lock-type-face ((t (:weight normal))))
    `(font-lock-variable-name-face ((t (:weight bold))))
    `(org-agenda-date-weekend ((t (:inherit org-agenda-date))))
+   `(org-agenda-done ((t (:height 1.0))))
    `(org-cancelled ((t (:foreground unspecified :inherit org-done))))
-   `(org-next ((t (:foreground "#dca3a3" :inherit org-todo)))))
+   `(org-next ((t (:foreground "#dca3a3" :inherit org-todo))))
+   `(org-scheduled-today ((t (:height 1.1)))))
 
   ;; for programming
   (add-hook 'prog-mode-hook

@@ -55,7 +55,11 @@
   (use-package org-agenda
     :defer t
     :config
-    (setq org-agenda-window-setup 'current-window)
+    (setq org-agenda-skip-deadline-if-done t
+          org-agenda-window-setup 'current-window
+          org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.2))
+                                      (0.5 . '(:inherit org-upcoming-deadline :height 1.2))
+                                      (0.0 . '(:height 1.1))))
     (evilified-state-evilify-map org-agenda-mode-map
       :mode org-agenda-mode
       :bindings
