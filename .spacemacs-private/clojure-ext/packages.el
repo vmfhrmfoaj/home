@@ -129,6 +129,12 @@
        '(("\\(!+\\)\\(?:\\s-+\\|\\s)\\|$\\)"
           1 '(:inherit font-lock-warning-face :slant italic))) t))
     (setq clojure-indent-style :align-arguments)
-    (put-clojure-indent 'ns 'defun)))
+    (add-hook 'clojure-mode-hook
+              (lambda ()
+                (when (string-match-p "_expectations.clj\\(?:c\\|s\\)?" (buffer-file-name))
+                  (setq-local clojure-get-indent-function
+                              (lambda (fn)
+                                (when (string-match-p "\\(?:expect\\|freeze-time\\)" fn)
+                                  1))))))))
 
 ;;; packages.el ends here
