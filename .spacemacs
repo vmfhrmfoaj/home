@@ -91,10 +91,7 @@ values."
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
    dotspacemacs-excluded-packages
-   '(
-     exec-path-from-shell
-     rainbow-delimiters
-     )
+   '(exec-path-from-shell)
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
    ;; `used-only' installs only explicitly used packages and uninstall any
@@ -162,7 +159,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-light)
+   dotspacemacs-themes '(spacemacs-dark)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -416,6 +413,9 @@ you should place your code here."
   (custom-set-faces
    `(css-property ((t (:foreground unspecified :inherit font-lock-builtin-face))))
    `(css-selector ((t (:foreground unspecified :inherit font-lock-variable-name-face))))
+   `(font-lock-keyword-face ((t (:weight normal :foreground ,(-> 'font-lock-keyword-face
+                                                                 (face-attribute :foreground)
+                                                                 (dim-color 5))))))
    `(font-lock-type-face ((t (:weight normal))))
    `(font-lock-variable-name-face ((t (:weight bold))))
    `(isearch ((t (:weight bold))))
@@ -425,9 +425,10 @@ you should place your code here."
    `(org-agenda-date-weekend ((t (:inherit org-agenda-date))))
    `(org-agenda-done ((t (:height 1.0))))
    `(org-cancelled ((t (:foreground unspecified :inherit org-done))))
-   `(org-next ((t (:foreground "#dca3a3" :inherit org-todo))))
-   `(org-scheduled-previously ((t (:foreground "#6c4173"))))
-   `(org-scheduled-today ((t (:height 1.1)))))
+   `(org-next ((t (:inherit (hl-todo org-todo)))))
+   ;; `(org-scheduled-previously ((t (:foreground "#6c4173"))))
+   `(org-scheduled-today ((t (:height 1.1))))
+   `(shadow ((t (:foreground ,(-> 'default (face-attribute :foreground) (dim-color 25)))))))
 
   ;; for programming
   (add-hook 'prog-mode-hook

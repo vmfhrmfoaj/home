@@ -132,6 +132,11 @@
     (add-hook 'clojure-mode-hook
               (lambda ()
                 (when (string-match-p "_expectations.clj\\(?:c\\|s\\)?" (buffer-file-name))
+                  (make-local-variable 'font-lock-keywords)
+                  (font-lock-add-keywords
+                   nil
+                   '(("(\\(expect\\)[ \r\t\n]"
+                      1 '(:inherit font-lock-keyword-face :weight bold))))
                   (setq-local clojure-get-indent-function
                               (lambda (fn)
                                 (when (string-match-p "\\(?:expect\\|freeze-time\\)" fn)

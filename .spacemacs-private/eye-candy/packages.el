@@ -157,10 +157,13 @@
   (use-package rainbow-delimiters
     :defer t
     :config
-    (cond ((eq 'spacemacs-dark (car dotspacemacs-themes))
-           (dolist (i (number-sequence 1 9))
-             (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
-               (set-face-attribute face nil :foreground
-                                   (dim-color (face-attribute face :foreground) 10))))))))
+    (dolist (i (number-sequence 1 9))
+      (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
+        (set-face-attribute face nil :foreground
+                            (cond ((eq 'spacemacs-dark  (car dotspacemacs-themes))
+                                   (dim-color (face-attribute face :foreground) 20))
+                                  ((eq 'spacemacs-light (car dotspacemacs-themes))
+                                   (light-color (face-attribute face :foreground) 10))
+                                  (t (face-attribute face :foreground))))))))
 
 ;;; packages.el ends here
