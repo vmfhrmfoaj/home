@@ -161,7 +161,7 @@
       (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
         (set-face-attribute face nil :foreground
                             (cond ((eq 'spacemacs-dark  (car dotspacemacs-themes))
-                                   (dim-color (face-attribute face :foreground) 20))
+                                   (dim-color (face-attribute face :foreground) 15))
                                   ((eq 'spacemacs-light (car dotspacemacs-themes))
                                    (light-color (face-attribute face :foreground) 10))
                                   (t (face-attribute face :foreground))))))))

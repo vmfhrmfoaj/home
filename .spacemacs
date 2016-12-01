@@ -336,7 +336,6 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting.
-  (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
   (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
   (setq-default line-spacing 5)
   (mac-auto-operator-composition-mode))
