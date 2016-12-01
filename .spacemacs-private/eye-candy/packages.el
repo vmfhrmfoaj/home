@@ -160,10 +160,13 @@
     (dolist (i (number-sequence 1 9))
       (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
         (set-face-attribute face nil :foreground
-                            (cond ((eq 'spacemacs-dark  (car dotspacemacs-themes))
-                                   (dim-color (face-attribute face :foreground) 15))
+                            (cond ((eq 'spacemacs-dark (car dotspacemacs-themes))
+                                   (-> (face-attribute face :foreground)
+                                       (dim-color 15)))
                                   ((eq 'spacemacs-light (car dotspacemacs-themes))
-                                   (light-color (face-attribute face :foreground) 10))
+                                   (-> (face-attribute face :foreground)
+                                       (light-color 10)
+                                       (saturate-color -20)))
                                   (t (face-attribute face :foreground))))))))
 
 ;;; packages.el ends here

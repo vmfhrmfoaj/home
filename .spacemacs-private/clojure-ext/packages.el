@@ -122,7 +122,7 @@
           1 '(:inherit font-lock-type-face :weight bold))
          ("(def\\(?:record\\|protocol\\|type\\)[ \r\t\n]+\\([^ \r\t\n]+\\)[ \r\t\n]"
           1 '(:inherit font-lock-type-face :weight bold))
-         ("\\(%[0-9]*\\)"
+         ("\\(%\\(?:&\\|[0-9]*\\)\\)"
           1 '(:inherit font-lock-variable-name-face :weight normal))))
       (font-lock-add-keywords
        mode

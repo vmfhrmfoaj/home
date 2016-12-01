@@ -159,7 +159,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark)
+   dotspacemacs-themes '(spacemacs-light)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -412,9 +412,7 @@ you should place your code here."
   (custom-set-faces
    `(css-property ((t (:foreground unspecified :inherit font-lock-builtin-face))))
    `(css-selector ((t (:foreground unspecified :inherit font-lock-variable-name-face))))
-   `(font-lock-keyword-face ((t (:weight normal :foreground ,(-> 'font-lock-keyword-face
-                                                                 (face-attribute :foreground)
-                                                                 (dim-color 5))))))
+   `(font-lock-keyword-face ((t (:weight normal))))
    `(font-lock-type-face ((t (:weight normal))))
    `(font-lock-variable-name-face ((t (:weight bold))))
    `(isearch ((t (:weight bold))))
@@ -425,9 +423,8 @@ you should place your code here."
    `(org-agenda-done ((t (:height 1.0))))
    `(org-cancelled ((t (:foreground unspecified :inherit org-done))))
    `(org-next ((t (:inherit (hl-todo org-todo)))))
-   ;; `(org-scheduled-previously ((t (:foreground "#6c4173"))))
-   `(org-scheduled-today ((t (:height 1.1))))
-   `(shadow ((t (:foreground ,(-> 'default (face-attribute :foreground) (dim-color 25)))))))
+   `(org-scheduled-previously ((t (:foreground "#6c4173"))))
+   `(org-scheduled-today ((t (:height 1.1)))))
 
   ;; for programming
   (add-hook 'prog-mode-hook
