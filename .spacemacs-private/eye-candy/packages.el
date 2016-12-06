@@ -64,7 +64,8 @@
                                nil
                                :background
                                (dim-color (face-attribute 'default :background) 5))))
-    (eval-after-load "diminish" '(diminish 'auto-dim-other-buffers-mode))
+    (with-eval-after-load 'diminish
+      (diminish 'auto-dim-other-buffers-mode))
     (advice-add #'adob--after-change-major-mode-hook :override
                 (lambda (&rest args)
                   nil))

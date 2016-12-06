@@ -54,7 +54,8 @@
   (use-package clj-refactor
     :defer t
     :config
-    (eval-after-load "diminish" '(diminish 'clj-refactor-mode))
+    (with-eval-after-load 'diminish
+      (diminish 'clj-refactor-mode))
     (setq cljr-clojure-test-declaration "[clojure.test :refer :all]"
           cljr-cljc-clojure-test-declaration
           (concat "#?(:clj  [clojure.test :refer :all]" "\n"
@@ -79,16 +80,16 @@
                          "                   (re-find expect-regx d1) -1"                    "\n"
                          "                   (re-find expect-regx d2) 1"                     "\n"
                          "                   :else (.compareTo d1 d2))))))"))))
-    (eval-after-load "smartparens"
-      '(advice-add #'cljr-slash :after
-                   (lambda ()
-                     (when (and (not (bound-and-true-p multiple-cursors-mode))
-                                (not (sp-point-in-string-or-comment))
-                                (->> (char-before (1- (point)))
-                                     (char-to-string)
-                                     (string-match-p "[0-9A-Za-z]")))
-                       (company-cancel)
-                       (company-complete-common-or-cycle)))))))
+    (with-eval-after-load 'smartparens
+      (advice-add #'cljr-slash :after
+                  (lambda ()
+                    (when (and (not (bound-and-true-p multiple-cursors-mode))
+                               (not (sp-point-in-string-or-comment))
+                               (->> (char-before (1- (point)))
+                                    (char-to-string)
+                                    (string-match-p "[0-9A-Za-z]")))
+                      (company-cancel)
+                      (company-complete-common-or-cycle)))))))
 
 (defun clojure-ext/post-init-clojure-mode ()
   (use-package clojure-mode
@@ -100,34 +101,36 @@
       (font-lock-add-keywords
        mode
        '(("\\s(\\(?:[^ \r\t\n]+?/\\)?\\(default[^ \r\t\n]*?\\)[ \t\n]+\\([^ \r\t\n]+?\\)"
-          (1 '(:inherit default))
-          (2 '(:inherit default)))
+          (1 'default)
+          (2 'default))
          ("\\s(\\(\\(?:as\\|cond\\|some\\)?->>?\\|and\\|or\\)\\_>"
-          1 '(:inherit default))
+          1 'default)
          ("^\\s-*\\s(def[ \r\n\t]+\\([^ \r\t\n]+?\\)\\(!+\\)[ \r\t\n]"
-          (1 '(:inherit font-lock-variable-name-face))
-          (2 '(:inherit (font-lock-warning-face font-lock-variable-name-face) :slant italic)))
+          (1 'font-lock-variable-name-face)
+          (2 'clojure-side-effect-face))
          ("^\\s-*\\s(defn-?[ \r\n\t]+\\([^ \r\t\n]+?\\)\\(!+\\)[ \r\t\n]"
-          (1 '(:inherit font-lock-function-name-face))
-          (2 '(:inherit (font-lock-warning-face font-lock-function-name-face) :slant italic)))
+          (1 'font-lock-function-name-face)
+          (2 'clojure-side-effect-face))
+         ("\\(!+\\)\\(?:\\s-+\\|\\s)\\|$\\)"
+          1 'clojure-side-effect-face t)
          ("\\(#js\\)\\s-*\\s("
-          1 '(:inherit font-lock-builtin-face))
+          1 'font-lock-builtin-face)
          ("\\_<\\(\\.-?\\)[a-z][a-zA-Z0-9]*\\_>"
-          1 '(:inherit font-lock-keyword-face))
+          1 'font-lock-keyword-face)
          ("(\\(go-loop\\|while\\)[ \r\t\n]"
           1 'font-lock-keyword-face)
          ("(\\(?:defstate\\|defproject\\)[ \r\t\n]+\\([^ \r\t\n]+\\)[ \r\t\n]"
           1 'font-lock-variable-name-face)
          ("(ns[ \r\t\n]+\\([^ \r\t\n]+\\)"
-          1 '(:inherit font-lock-type-face :weight bold))
+          1 'clojure-define-type-face)
          ("(def\\(?:record\\|protocol\\|type\\)[ \r\t\n]+\\([^ \r\t\n]+\\)[ \r\t\n]"
-          1 '(:inherit font-lock-type-face :weight bold))
+          1 'clojure-define-type-face)
          ("\\(%\\(?:&\\|[0-9]*\\)\\)"
-          1 '(:inherit font-lock-variable-name-face :weight normal))))
-      (font-lock-add-keywords
-       mode
-       '(("\\(!+\\)\\(?:\\s-+\\|\\s)\\|$\\)"
-          1 '(:inherit font-lock-warning-face :slant italic))) t))
+          1 'clojure-just-variable-name-face)
+         ("\\^:dynamic[ \r\t\n]\\(\\*[^ \r\t\n]+\\*\\)"
+          1 'font-lock-variable-name-face)
+         ("\\(\\*[^ \r\t\n]+\\*\\)"
+          1 'clojure-just-variable-name-face))))
     (setq clojure-indent-style :align-arguments)
     (add-hook 'clojure-mode-hook
               (lambda ()

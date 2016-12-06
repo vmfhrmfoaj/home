@@ -18,24 +18,23 @@
   (font-lock-add-keywords
    'emacs-lisp-mode
    '(("\\s(\\(\\(?:-as\\|-some\\)?->>?\\|and\\|or\\)\\_>"
-      1 '(:inherit default) nil)
+      1 'default nil)
      ("(\\(lexical-let\\*?\\)"
-      1 '(:inherit font-lock-keyword-face))
+      1 'font-lock-keyword-face)
      ("\\(?:\\s-+\\|\\s(\\)\\<\\(nil\\|t\\)\\>"
-      1 '(:inherit font-lock-constant-face))
+      1 'font-lock-constant-face)
      ("(\\(assert\\)"
-      1 '(:inherit font-lock-warning-face))
+      1 'font-lock-warning-face)
      (" \\(\\?.\\)"
-      1 '(:inherit font-lock-string-face))))
+      1 'font-lock-string-face)))
   (add-hook 'lisp-interaction-mode-hook #'smartparens-mode)
-  (eval-after-load "evil"
-    '(progn
-       (let ((f (lambda ()
-                  (interactive)
-                  (beginning-of-defun)
-                  (forward-list)
-                  (eval-print-last-sexp))))
-         (define-key lisp-interaction-mode-map [remap eval-print-last-sexp] f)
-         (evil-define-key 'normal lisp-interaction-mode-map [remap evil-ret] f)))))
+  (with-eval-after-load 'evil
+    (let ((f (lambda ()
+               (interactive)
+               (beginning-of-defun)
+               (forward-list)
+               (eval-print-last-sexp))))
+      (define-key lisp-interaction-mode-map [remap eval-print-last-sexp] f)
+      (evil-define-key 'normal lisp-interaction-mode-map [remap evil-ret] f))))
 
 ;;; packages.el ends here

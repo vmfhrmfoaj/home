@@ -51,23 +51,23 @@
                            (point))))
              (cons start end))))
     (put 'list+ 'bounds-of-thing-at-point (get 'list 'bounds-of-thing-at-point))
-    (eval-after-load "smartparens"
-      '(put 'list+ 'bounds-of-thing-at-point
-            (lambda ()
-              (save-excursion
-                (let ((start (progn
-                               (ignore-errors
-                                 (cond ((sp-point-in-string)
-                                        (save-match-data
-                                          (re-search-backward "[^\\]\""))
-                                        (forward-char))
-                                       ((sp-point-in-comment)
-                                        (beginning-of-line)))
-                                 (backward-up-list 2))
-                               (point)))
-                      (end (progn
-                             (forward-list)
-                             (point))))
-                  (cons start end))))))))
+    (with-eval-after-load 'smartparens
+      (put 'list+ 'bounds-of-thing-at-point
+           (lambda ()
+             (save-excursion
+               (let ((start (progn
+                              (ignore-errors
+                                (cond ((sp-point-in-string)
+                                       (save-match-data
+                                         (re-search-backward "[^\\]\""))
+                                       (forward-char))
+                                      ((sp-point-in-comment)
+                                       (beginning-of-line)))
+                                (backward-up-list 2))
+                              (point)))
+                     (end (progn
+                            (forward-list)
+                            (point))))
+                 (cons start end))))))))
 
 ;;; packages.el ends here
