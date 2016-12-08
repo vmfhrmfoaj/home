@@ -12,3 +12,7 @@
   '((t :inherit font-lock-variable-name-face
        :weight normal))
   "Face used to font-lock Clojure variable name.")
+
+(defface clojure-important-keywords-face
+  '((t :inherit font-lock-keyword-face :weight bold))
+  "Face used to font-lock Clojure important keywords.")

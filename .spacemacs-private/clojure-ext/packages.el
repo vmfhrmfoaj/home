@@ -130,7 +130,9 @@
          ("\\^:dynamic[ \r\t\n]\\(\\*[^ \r\t\n]+\\*\\)"
           1 'font-lock-variable-name-face)
          ("\\(\\*[^ \r\t\n]+\\*\\)"
-          1 'clojure-just-variable-name-face))))
+          1 'clojure-just-variable-name-face)
+         ("(\\(fn\\)[ \r\t\n]"
+          1 'clojure-important-keywords-face))))
     (setq clojure-indent-style :align-arguments)
     (add-hook 'clojure-mode-hook
               (lambda ()

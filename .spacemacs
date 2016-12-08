@@ -159,7 +159,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-light)
+   dotspacemacs-themes '(leuven)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -337,7 +337,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; set up the addtional font setting.
   (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
-  (setq-default line-spacing 5)
+  (setq-default line-spacing 4)
   (mac-auto-operator-composition-mode))
 
 (defun dotspacemacs/user-config ()
@@ -366,8 +366,7 @@ you should place your code here."
     (setq mac-command-modifier 'meta
           mac-option-modifier  'meta
           mac-pass-control-to-system nil
-          mac-pass-command-to-system t  ; for `Help' menu
-          )
+          mac-pass-command-to-system t)
     (set-file-name-coding-system 'utf-8-hfs))
 
   ;; HHKB keyboard
@@ -411,33 +410,33 @@ you should place your code here."
 
   ;; customize the theme.
   (custom-set-faces
-   `(css-property ((t :foreground unspecified :inherit font-lock-builtin-face)))
-   `(css-selector ((t :foreground unspecified :inherit font-lock-variable-name-face)))
-   `(font-lock-keyword-face ((t :weight normal
-                                :foreground ,(-> 'font-lock-keyword-face
-                                                 (face-attribute :foreground)
-                                                 (light-color 5)
-                                                 (saturate-color 20)))))
-   `(font-lock-type-face ((t :weight normal)))
-   `(font-lock-variable-name-face ((t :weight bold)))
-   `(isearch ((t :weight bold)))
-   `(lazy-highlight ((t :weight bold)))
-   `(org-agenda-date ((t :height 1.2)))
-   `(org-agenda-date-today ((t :height 1.2)))
-   `(org-agenda-date-weekend ((t :inherit org-agenda-date)))
-   `(org-agenda-done ((t :height 1.0)))
-   `(org-cancelled ((t :foreground unspecified :inherit org-done)))
-   `(org-next ((t :inherit (hl-todo org-todo))))
-   `(org-scheduled-previously ((t :foreground "#6c4173")))
-   `(org-scheduled-today ((t :height 1.1))))
+   `(css-property ((t (:foreground unspecified :inherit font-lock-builtin-face))))
+   `(css-selector ((t (:foreground unspecified :inherit font-lock-variable-name-face))))
+   `(font-lock-comment-face ((t (:slant normal))))
+   `(font-lock-function-name-face ((t (:background "#eaf6fb" :weight bold))))
+   `(font-lock-variable-name-face ((t (:weight bold))))
+   `(git-timemachine-minibuffer-detail-face ((t (:foreground unspecified :inherit highlight))))
+   `(linum ((t (:weight normal :underline nil :inverse-video nil))))
+   `(linum-relative-current-face ((t (:foreground ,(face-attribute 'default :foreground) :inherit linum))))
+   `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
+   `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground)))))
+   `(org-agenda-done ((t (:height 1.0 :inherit bold))))
+   `(org-cancelled ((t (:foreground unspecified :inherit org-done))))
+   `(org-next ((t (:foreground "#dca3a3" :inherit org-todo))))
+   `(show-paren-match ((t (:background unspecified :weight bold :underline t)))))
 
   ;; for programming
   (add-hook 'prog-mode-hook
             (lambda ()
               (font-lock-add-keywords
                nil
-               `(("\\('\\|`\\|,\\|@\\|#\\|~\\|\\^\\|\\s(\\|\\s)\\)"
-                  1 'shadow)) t)))
+               `(("\\('\\|`\\|,\\|@\\|#\\|~\\|\\^\\|_\\|\\s(\\|\\s)\\)"
+                  1 'shadow)
+                 ("[\[ \r\t\n]\\(&\\)[ \r\t\n]"
+                  1 'shadow)
+                 ("[^ \r\t\n]\\(/\\)[^ \r\t\n]"
+                  1 'shadow t))
+               t)))
 
   ;; for org-capture Chrome extension
   (require 'org-protocol)
