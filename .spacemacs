@@ -337,7 +337,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; set up the addtional font setting.
   (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
-  (setq-default line-spacing 3)
+  (setq-default line-spacing 4)
   (mac-auto-operator-composition-mode))
 
 (defun dotspacemacs/user-config ()
@@ -403,6 +403,11 @@ you should place your code here."
                 (turn-off-smartparens-mode)
                 (turn-off-show-smartparens-mode)))
             'append)
+
+  ;; for improving performance.
+  (setq garbage-collection-messages t
+        gc-cons-threshold (* 512 1024 1024))
+  (run-with-idle-timer 30 t #'garbage-collect)
 
   ;; customize the theme.
   (custom-set-faces

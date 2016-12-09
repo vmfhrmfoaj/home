@@ -22,7 +22,7 @@
     :config
     (set-face-attribute 'cider-fringe-good-face nil :inherit 'success)
     (setq cider-dynamic-indentation nil
-          cider-font-lock-dynamically '(macro deprecated)
+          cider-font-lock-dynamically '(deprecated)
           cider-repl-use-pretty-printing t
           cider-mode-line
           '(:eval (when (cider-connected-p)
