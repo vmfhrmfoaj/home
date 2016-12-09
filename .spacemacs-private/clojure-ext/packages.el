@@ -20,9 +20,7 @@
   (use-package cider
     :defer t
     :config
-    (set-face-attribute 'cider-fringe-good-face nil
-                        :foreground nil
-                        :inherit compilation-info-face)
+    (set-face-attribute 'cider-fringe-good-face nil :inherit 'success)
     (setq cider-dynamic-indentation nil
           cider-font-lock-dynamically '(macro deprecated)
           cider-repl-use-pretty-printing t
@@ -130,9 +128,7 @@
          ("\\^:dynamic[ \r\t\n]\\(\\*[^ \r\t\n]+\\*\\)"
           1 'font-lock-variable-name-face)
          ("\\(\\*[^ \r\t\n]+\\*\\)"
-          1 'clojure-just-variable-name-face)
-         ("(\\(fn\\)[ \r\t\n]"
-          1 'clojure-important-keywords-face))))
+          1 'clojure-just-variable-name-face))))
     (setq clojure-indent-style :align-arguments)
     (add-hook 'clojure-mode-hook
               (lambda ()

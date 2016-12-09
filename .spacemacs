@@ -337,7 +337,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; set up the addtional font setting.
   (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
-  (setq-default line-spacing 4)
+  (setq-default line-spacing 3)
   (mac-auto-operator-composition-mode))
 
 (defun dotspacemacs/user-config ()
@@ -404,26 +404,23 @@ you should place your code here."
                 (turn-off-show-smartparens-mode)))
             'append)
 
-  ;; for improving performance.
-  (setq gc-cons-threshold (* 1024 1024 1024))
-  (run-with-idle-timer 3 t #'garbage-collect)
-
   ;; customize the theme.
   (custom-set-faces
-   `(css-property ((t (:foreground unspecified :inherit font-lock-builtin-face))))
-   `(css-selector ((t (:foreground unspecified :inherit font-lock-variable-name-face))))
-   `(font-lock-comment-face ((t (:slant normal))))
-   `(font-lock-function-name-face ((t (:background "#eaf6fb" :weight bold))))
-   `(font-lock-variable-name-face ((t (:weight bold))))
-   `(git-timemachine-minibuffer-detail-face ((t (:foreground unspecified :inherit highlight))))
-   `(linum ((t (:weight normal :underline nil :inverse-video nil))))
-   `(linum-relative-current-face ((t (:foreground ,(face-attribute 'default :foreground) :inherit linum))))
-   `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
-   `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground)))))
-   `(org-agenda-done ((t (:height 1.0 :inherit bold))))
-   `(org-cancelled ((t (:foreground unspecified :inherit org-done))))
-   `(org-next ((t (:foreground "#dca3a3" :inherit org-todo))))
-   `(show-paren-match ((t (:background unspecified :weight bold :underline t)))))
+   `(css-property ((t :inherit font-lock-builtin-face       :foreground unspecified)))
+   `(css-selector ((t :inherit font-lock-variable-name-face :foreground unspecified)))
+   `(font-lock-comment-face ((t :slant normal)))
+   `(font-lock-function-name-face ((t :background "#f4fafd" :weight bold)))
+   `(font-lock-variable-name-face ((t :weight bold)))
+   `(fringe ((t :background unspecified)))
+   `(git-timemachine-minibuffer-detail-face ((t :foreground unspecified :inherit highlight)))
+   `(linum ((t :weight normal :underline nil :inverse-video nil)))
+   `(linum-relative-current-face ((t :foreground ,(face-attribute 'default :foreground) :inherit linum)))
+   `(mode-line ((t :distant-foreground ,(face-attribute 'mode-line :foreground))))
+   `(mode-line-inactive ((t :distant-foreground ,(face-attribute 'mode-line-inactive :foreground))))
+   `(org-agenda-done ((t :height 1.0 :inherit bold)))
+   `(org-cancelled ((t :foreground unspecified :inherit org-done)))
+   `(org-next ((t :foreground "#dca3a3" :inherit org-todo)))
+   `(show-paren-match ((t :background unspecified :weight bold :underline t))))
 
   ;; for programming
   (add-hook 'prog-mode-hook
