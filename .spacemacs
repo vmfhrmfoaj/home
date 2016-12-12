@@ -167,7 +167,7 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("MonacoB2"
+   dotspacemacs-default-font `("MonacoB"
                                :size 14
                                :weight normal
                                :width normal
@@ -406,8 +406,8 @@ you should place your code here."
 
   ;; for improving performance.
   (setq garbage-collection-messages t
-        gc-cons-threshold (* 512 1024 1024))
-  (run-with-idle-timer 30 t #'garbage-collect)
+        gc-cons-threshold (* 24 1024 1024))
+  (run-with-idle-timer 1 t #'garbage-collect)
 
   ;; customize the theme.
   (custom-set-faces

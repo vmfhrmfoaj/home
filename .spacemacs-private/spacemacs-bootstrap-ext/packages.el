@@ -12,7 +12,8 @@
 ;;; Code:
 
 (defconst spacemacs-bootstrap-ext-packages
-  '(evil))
+  '(evil
+    which-key))
 
 (defun spacemacs-bootstrap-ext/post-init-evil ()
   (when (require 'evil nil 'noerr)
@@ -29,5 +30,11 @@
                   (recenter)))
     (dolist (fn '(evil-change evil-delete evil-join evil-paste-after))
       (advice-add fn :after #'auto-indent))))
+
+(defun spacemacs-bootstrap-ext/post-init-which-key ()
+  (use-package which-key
+    :defer
+    :config
+    (setq which-key-dont-use-unicode t)))
 
 ;;; packages.el ends here
