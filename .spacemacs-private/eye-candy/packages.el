@@ -163,11 +163,12 @@
         (set-face-attribute face nil :foreground
                             (cond ((eq 'spacemacs-dark (car dotspacemacs-themes))
                                    (-> (face-attribute face :foreground)
-                                       (dim-color 15)))
+                                       (dim-color 15)
+                                       (saturate-color -25)))
                                   ((eq 'spacemacs-light (car dotspacemacs-themes))
                                    (-> (face-attribute face :foreground)
-                                       (light-color 10)
-                                       (saturate-color -20)))
+                                       (light-color 20)
+                                       (saturate-color -30)))
                                   (t (face-attribute face :foreground))))))))
 
 ;;; packages.el ends here

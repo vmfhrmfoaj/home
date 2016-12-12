@@ -159,7 +159,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(leuven)
+   dotspacemacs-themes '(spacemacs-light)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -167,7 +167,7 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("MonacoB"
+   dotspacemacs-default-font `("MonacoB2"
                                :size 14
                                :weight normal
                                :width normal
@@ -411,21 +411,31 @@ you should place your code here."
 
   ;; customize the theme.
   (custom-set-faces
-   `(css-property ((t :inherit font-lock-builtin-face       :foreground unspecified)))
-   `(css-selector ((t :inherit font-lock-variable-name-face :foreground unspecified)))
-   `(font-lock-comment-face ((t :slant normal)))
-   `(font-lock-function-name-face ((t :background "#f4fafd" :weight bold)))
-   `(font-lock-variable-name-face ((t :weight bold)))
-   `(fringe ((t :background unspecified)))
-   `(git-timemachine-minibuffer-detail-face ((t :foreground unspecified :inherit highlight)))
-   `(linum ((t :weight normal :underline nil :inverse-video nil)))
-   `(linum-relative-current-face ((t :foreground ,(face-attribute 'default :foreground) :inherit linum)))
-   `(mode-line ((t :distant-foreground ,(face-attribute 'mode-line :foreground))))
-   `(mode-line-inactive ((t :distant-foreground ,(face-attribute 'mode-line-inactive :foreground))))
-   `(org-agenda-done ((t :height 1.0 :inherit bold)))
-   `(org-cancelled ((t :foreground unspecified :inherit org-done)))
-   `(org-next ((t :foreground "#dca3a3" :inherit org-todo)))
-   `(show-paren-match ((t :background unspecified :weight bold :underline t))))
+   `(default ((t (:background ,(-> 'default
+                                   (face-attribute :background)
+                                   (dim-color 1))))))
+   `(fringe ((t (:background unspecified))))
+   `(css-property ((t (:foreground unspecified :inherit font-lock-builtin-face))))
+   `(css-selector ((t (:foreground unspecified :inherit font-lock-variable-name-face))))
+   `(font-lock-builtin-face ((t (:foreground ,(-> 'font-lock-keyword-face
+                                                  (face-attribute :foreground)
+                                                  (saturate-color -10))))))
+   `(font-lock-keyword-face ((t (:weight normal :foreground ,(-> 'font-lock-keyword-face
+                                                                 (face-attribute :foreground)
+                                                                 (light-color 5)
+                                                                 (saturate-color 20))))))
+   `(font-lock-type-face ((t (:weight normal))))
+   `(font-lock-variable-name-face ((t (:weight bold))))
+   `(isearch ((t (:weight bold))))
+   `(lazy-highlight ((t (:weight bold))))
+   `(org-agenda-date ((t (:height 1.2))))
+   `(org-agenda-date-today ((t (:height 1.2))))
+   `(org-agenda-date-weekend ((t (:inherit org-agenda-date))))
+   `(org-agenda-done ((t (:height 1.0))))
+   `(org-cancelled ((t (:foreground unspecified :inherit org-done))))
+   `(org-next ((t (:inherit (hl-todo org-todo)))))
+   `(org-scheduled-previously ((t (:foreground "#6c4173"))))
+   `(org-scheduled-today ((t (:height 1.1)))))
 
   ;; for programming
   (add-hook 'prog-mode-hook
