@@ -118,17 +118,7 @@
          ("(\\(go-loop\\|while\\)[ \r\t\n]"
           1 'font-lock-keyword-face)
          ("(\\(?:defstate\\|defproject\\)[ \r\t\n]+\\([^ \r\t\n]+\\)[ \r\t\n]"
-          1 'font-lock-variable-name-face)
-         ("(ns[ \r\t\n]+\\([^ \r\t\n]+\\)"
-          1 'clojure-define-type-face)
-         ("(def\\(?:record\\|protocol\\|type\\)[ \r\t\n]+\\([^ \r\t\n]+\\)[ \r\t\n]"
-          1 'clojure-define-type-face)
-         ("\\(%\\(?:&\\|[0-9]*\\)\\)"
-          1 'clojure-just-variable-name-face)
-         ("\\^:dynamic[ \r\t\n]\\(\\*[^ \r\t\n]+\\*\\)"
-          1 'font-lock-variable-name-face)
-         ("\\(\\*[^ \r\t\n]+\\*\\)"
-          1 'clojure-just-variable-name-face))))
+          1 'font-lock-variable-name-face))))
     (setq clojure-indent-style :align-arguments)
     (add-hook 'clojure-mode-hook
               (lambda ()

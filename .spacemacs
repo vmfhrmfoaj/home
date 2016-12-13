@@ -54,6 +54,7 @@ values."
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
+     themes-megapack
      version-control
      ;; ---------------------------------------------------------------
      ;; Extentions
@@ -159,7 +160,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-light)
+   dotspacemacs-themes '(zenburn)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -167,7 +168,7 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("MonacoB2"
+   dotspacemacs-default-font `("MonacoB"
                                :size 14
                                :weight normal
                                :width normal
@@ -337,7 +338,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; set up the addtional font setting.
   (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
-  (setq-default line-spacing 4)
+  (setq-default line-spacing 3)
   (mac-auto-operator-composition-mode))
 
 (defun dotspacemacs/user-config ()
@@ -411,31 +412,23 @@ you should place your code here."
 
   ;; customize the theme.
   (custom-set-faces
-   `(default ((t (:background ,(-> 'default
-                                   (face-attribute :background)
-                                   (dim-color 1))))))
-   `(fringe ((t (:background unspecified))))
-   `(css-property ((t (:foreground unspecified :inherit font-lock-builtin-face))))
-   `(css-selector ((t (:foreground unspecified :inherit font-lock-variable-name-face))))
-   `(font-lock-builtin-face ((t (:foreground ,(-> 'font-lock-keyword-face
-                                                  (face-attribute :foreground)
-                                                  (saturate-color -10))))))
-   `(font-lock-keyword-face ((t (:weight normal :foreground ,(-> 'font-lock-keyword-face
-                                                                 (face-attribute :foreground)
-                                                                 (light-color 5)
-                                                                 (saturate-color 20))))))
-   `(font-lock-type-face ((t (:weight normal))))
-   `(font-lock-variable-name-face ((t (:weight bold))))
-   `(isearch ((t (:weight bold))))
-   `(lazy-highlight ((t (:weight bold))))
-   `(org-agenda-date ((t (:height 1.2))))
-   `(org-agenda-date-today ((t (:height 1.2))))
-   `(org-agenda-date-weekend ((t (:inherit org-agenda-date))))
-   `(org-agenda-done ((t (:height 1.0))))
+   `(auto-dim-other-buffers-face ((t :background ,(-> 'default
+                                                      (face-attribute :background)
+                                                      (dim-color 2))
+                                     :foreground ,(-> 'default
+                                                      (face-attribute :foreground)
+                                                      (dim-color 5)))))
+   `(css-property ((t :inherit font-lock-builtin-face       :foreground nil)))
+   `(css-selector ((t :inherit font-lock-variable-name-face :foreground nil)))
+   `(git-timemachine-minibuffer-detail-face ((t :foreground nil :inherit highlight)))
+   `(linum ((t :weight normal :underline nil :inverse-video nil)))
+   `(linum-relative-current-face ((t :inherit linum :weight bold)))
    `(org-cancelled ((t (:foreground unspecified :inherit org-done))))
    `(org-next ((t (:inherit (hl-todo org-todo)))))
-   `(org-scheduled-previously ((t (:foreground "#6c4173"))))
-   `(org-scheduled-today ((t (:height 1.1)))))
+   `(show-paren-match ((t :background nil :weight bold :underline t)))
+   `(shadow ((t :foreground ,(-> 'default
+                                 (face-attribute :foreground)
+                                 (dim-color 25))))))
 
   ;; for programming
   (add-hook 'prog-mode-hook
