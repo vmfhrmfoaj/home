@@ -20,7 +20,6 @@
   (use-package cider
     :defer t
     :config
-    (set-face-attribute 'cider-fringe-good-face nil :inherit 'success)
     (setq cider-dynamic-indentation nil
           cider-font-lock-dynamically '(deprecated)
           cider-repl-use-pretty-printing t
@@ -93,8 +92,6 @@
   (use-package clojure-mode
     :defer t
     :config
-    (set-face-attribute 'clojure-keyword-face nil
-                        :inherit font-lock-builtin-face)
     (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
       (font-lock-add-keywords
        mode

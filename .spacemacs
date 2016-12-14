@@ -160,7 +160,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(zenburn)
+   dotspacemacs-themes '(leuven)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -338,7 +338,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; set up the addtional font setting.
   (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
-  (setq-default line-spacing 3)
+  (setq-default line-spacing 4)
   (mac-auto-operator-composition-mode))
 
 (defun dotspacemacs/user-config ()
@@ -412,23 +412,22 @@ you should place your code here."
 
   ;; customize the theme.
   (custom-set-faces
-   `(auto-dim-other-buffers-face ((t :background ,(-> 'default
-                                                      (face-attribute :background)
-                                                      (dim-color 2))
-                                     :foreground ,(-> 'default
-                                                      (face-attribute :foreground)
-                                                      (dim-color 5)))))
    `(css-property ((t :inherit font-lock-builtin-face       :foreground nil)))
    `(css-selector ((t :inherit font-lock-variable-name-face :foreground nil)))
+   `(cider-fringe-good-face ((t :inherit success)))
+   `(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
+   `(font-lock-comment-face ((t :slant normal)))
+   `(font-lock-function-name-face ((t :background "#f4fafd")))
+   `(fringe ((t :background nil)))
    `(git-timemachine-minibuffer-detail-face ((t :foreground nil :inherit highlight)))
    `(linum ((t :weight normal :underline nil :inverse-video nil)))
-   `(linum-relative-current-face ((t :inherit linum :weight bold)))
-   `(org-cancelled ((t (:foreground unspecified :inherit org-done))))
-   `(org-next ((t (:inherit (hl-todo org-todo)))))
-   `(show-paren-match ((t :background nil :weight bold :underline t)))
-   `(shadow ((t :foreground ,(-> 'default
-                                 (face-attribute :foreground)
-                                 (dim-color 25))))))
+   `(linum-relative-current-face ((t :foreground ,(face-attribute 'default :foreground) :inherit linum)))
+   `(mode-line ((t :distant-foreground ,(face-attribute 'mode-line :foreground))))
+   `(mode-line-inactive ((t :distant-foreground ,(face-attribute 'mode-line-inactive :foreground))))
+   `(org-agenda-done ((t :height 1.0 :inherit bold)))
+   `(org-cancelled ((t :foreground nil :inherit org-done)))
+   `(org-next ((t :foreground "#dca3a3" :inherit org-todo)))
+   `(show-paren-match ((t :background nil :weight bold :underline t))))
 
   ;; for programming
   (add-hook 'prog-mode-hook
