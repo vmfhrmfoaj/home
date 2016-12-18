@@ -28,6 +28,7 @@
     (setq sp-highlight-pair-overlay nil
           sp-highlight-wrap-overlay nil
           sp-highlight-wrap-tag-overlay nil
+          sp-show-pair-from-inside nil
           wrap-sp-supported-modes '(clojure-mode
                                     cider-repl-mode
                                     emas-lisp-mode))

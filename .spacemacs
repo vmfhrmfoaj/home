@@ -168,11 +168,11 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("MonacoB"
-                               :size 14
+   dotspacemacs-default-font `("Fantasque Sans Mono"
+                               :size 16
                                :weight normal
                                :width normal
-                               :powerline-scale 1.1)
+                               :powerline-scale 1.5)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
@@ -337,8 +337,11 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting.
-  (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
-  (setq-default line-spacing 4)
+  (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
+  (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.9))
+  (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.2))
+  (add-to-list 'face-font-rescale-alist '("NanumBarunGothicOTF" . 0.9))
+  (setq-default line-spacing 2)
   (mac-auto-operator-composition-mode))
 
 (defun dotspacemacs/user-config ()
@@ -412,13 +415,14 @@ you should place your code here."
 
   ;; customize the theme.
   (custom-set-faces
-   `(css-property ((t :inherit font-lock-builtin-face       :foreground nil)))
-   `(css-selector ((t :inherit font-lock-variable-name-face :foreground nil)))
    `(cider-fringe-good-face ((t :inherit success)))
    `(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
+   `(css-property ((t :inherit font-lock-builtin-face :foreground nil)))
+   `(css-selector ((t :inherit font-lock-variable-name-face :foreground nil)))
    `(font-lock-comment-face ((t :slant normal)))
-   `(font-lock-function-name-face ((t :background "#f4fafd")))
-   `(fringe ((t :background nil)))
+   `(font-lock-function-name-face ((t :background "#e5f4fb" :foreground "#123555")))
+   `(font-lock-doc-face ((t :slant italic)))
+   `(fringe ((t :background ,(-> 'fringe (face-attribute :background) (light-color 5)))))
    `(git-timemachine-minibuffer-detail-face ((t :foreground nil :inherit highlight)))
    `(linum ((t :weight normal :underline nil :inverse-video nil)))
    `(linum-relative-current-face ((t :foreground ,(face-attribute 'default :foreground) :inherit linum)))
@@ -427,14 +431,14 @@ you should place your code here."
    `(org-agenda-done ((t :height 1.0 :inherit bold)))
    `(org-cancelled ((t :foreground nil :inherit org-done)))
    `(org-next ((t :foreground "#dca3a3" :inherit org-todo)))
-   `(show-paren-match ((t :background nil :weight bold :underline t))))
+   `(show-paren-match ((t :background nil :foreground "Springgreen2" :weight bold))))
 
   ;; for programming
   (add-hook 'prog-mode-hook
             (lambda ()
               (font-lock-add-keywords
                nil
-               `(("\\('\\|`\\|,\\|@\\|#\\|~\\|\\^\\|_\\|\\s(\\|\\s)\\)"
+               `(("\\('\\|`\\|,\\|@\\|#\\|~\\|\\^\\|_\\)"
                   1 'shadow)
                  ("[\[ \r\t\n]\\(&\\)[ \r\t\n]"
                   1 'shadow)

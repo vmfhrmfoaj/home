@@ -112,11 +112,12 @@
           1 'font-lock-builtin-face)
          ("\\_<\\(\\.-?\\)[a-z][a-zA-Z0-9]*\\_>"
           1 'font-lock-keyword-face)
-         ("(\\(go-loop\\|while\\)[ \r\t\n]"
+         ("(\\(extend-protocol\\|go-loop\\|while\\)[ \r\t\n]"
           1 'font-lock-keyword-face)
          ("(\\(?:defstate\\|defproject\\)[ \r\t\n]+\\([^ \r\t\n]+\\)[ \r\t\n]"
           1 'font-lock-variable-name-face))))
     (setq clojure-indent-style :align-arguments)
+    (put 'defstate 'clojure-doc-string-elt 2)
     (add-hook 'clojure-mode-hook
               (lambda ()
                 (when (string-match-p "_expectations.clj\\(?:c\\|s\\)?" (buffer-file-name))

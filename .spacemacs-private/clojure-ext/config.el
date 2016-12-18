@@ -1,5 +1,5 @@
 (defface clojure-side-effect-face
-  `((t :foreground ,(face-attribute 'font-lock-warning-face :foreground)
+  `((t :inherit font-lock-warning-face
        :slant italic
        :weight bold))
   "Face used to font-lock Clojure side-effect indicator.")

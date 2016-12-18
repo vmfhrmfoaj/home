@@ -16,10 +16,8 @@
     auto-dim-other-buffers
     company
     evil
-    git-gutter-fringe+
     neotree
-    (prettify-symbols-mode :location built-in)
-    rainbow-delimiters))
+    (prettify-symbols-mode :location built-in)))
 
 (defun eye-candy/init-all-the-icons ()
   (use-package all-the-icons
@@ -46,24 +44,6 @@
     :after dash
     :ensure t
     :config
-    (cond ((eq 'spacemacs-dark (car dotspacemacs-themes))
-           (set-face-attribute 'auto-dim-other-buffers-face
-                               nil
-                               :foreground
-                               (dim-color (face-attribute 'default :foreground) 5))
-           (set-face-attribute 'auto-dim-other-buffers-face
-                               nil
-                               :background
-                               (dim-color (face-attribute 'default :background) 2)))
-          ((eq 'spacemacs-light (car dotspacemacs-themes))
-           (set-face-attribute 'auto-dim-other-buffers-face
-                               nil
-                               :foreground
-                               (dim-color (face-attribute 'default :foreground) 10))
-           (set-face-attribute 'auto-dim-other-buffers-face
-                               nil
-                               :background
-                               (dim-color (face-attribute 'default :background) 5))))
     (with-eval-after-load 'diminish
       (diminish 'auto-dim-other-buffers-mode))
     (advice-add #'adob--after-change-major-mode-hook :override
@@ -122,17 +102,6 @@
                 (restore-modes evil-visual-state-exclude-modes
                                evil-visual-state-exclude-mode-status)))))
 
-(defun eye-candy/post-init-git-gutter-fringe+ ()
-  (use-package git-gutter-fringe+
-    :defer t
-    :config
-    (let ((added    (face-attribute 'git-gutter+-added    :foreground))
-          (modified (face-attribute 'git-gutter+-modified :foreground))
-          (deleted  (face-attribute 'git-gutter+-deleted  :foreground)))
-      (set-face-attribute 'git-gutter-fr+-added    nil :foreground (dim-color added    20))
-      (set-face-attribute 'git-gutter-fr+-modified nil :foreground (dim-color modified 15))
-      (set-face-attribute 'git-gutter-fr+-deleted  nil :foreground (dim-color deleted  10)))))
-
 (defun eye-candy/post-init-neotree ()
   (use-package neotree
     :config
@@ -153,26 +122,5 @@
     (advice-disable-modes '(prettify-symbols-mode) #'indent-region)
     (advice-disable-modes '(prettify-symbols-mode) #'indent-according-to-mode)
     (global-prettify-symbols-mode)))
-
-(defun eye-candy/post-init-rainbow-delimiters ()
-  (use-package rainbow-delimiters
-    :defer t
-    :config
-    (dolist (i (number-sequence 1 9))
-      (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
-        (set-face-attribute face nil :foreground
-                            (cond ((eq 'spacemacs-dark (car dotspacemacs-themes))
-                                   (-> (face-attribute face :foreground)
-                                       (dim-color 15)
-                                       (saturate-color -25)))
-                                  ((eq 'zenburn (car dotspacemacs-themes))
-                                   (-> (face-attribute face :foreground)
-                                       (dim-color 5)
-                                       (saturate-color -10)))
-                                  ((eq 'spacemacs-light (car dotspacemacs-themes))
-                                   (-> (face-attribute face :foreground)
-                                       (light-color 20)
-                                       (saturate-color -30)))
-                                  (t (face-attribute face :foreground))))))))
 
 ;;; packages.el ends here

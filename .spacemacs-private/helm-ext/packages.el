@@ -27,7 +27,10 @@
   (use-package helm-projectile
     :defer t
     :config
-    (define-key helm-projectile-find-file-map (kbd "C-h") #'delete-backward-char)))
+    (define-key helm-projectile-find-file-map
+      (kbd "C-h") #'delete-backward-char)
+    (define-key (assoc 'keymap helm-source-projectile-dired-files-list)
+      (kbd "C-h") #'delete-backward-char)))
 
 (defun helm-ext/init-minibuffer ()
   (use-package minibuffer
