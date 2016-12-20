@@ -341,7 +341,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.9))
   (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.2))
   (add-to-list 'face-font-rescale-alist '("NanumBarunGothicOTF" . 0.9))
-  (setq-default line-spacing 2)
+  (setq-default line-spacing 7)
   (mac-auto-operator-composition-mode))
 
 (defun dotspacemacs/user-config ()
@@ -410,19 +410,20 @@ you should place your code here."
 
   ;; for improving performance.
   (setq garbage-collection-messages t
-        gc-cons-threshold (* 24 1024 1024))
+        gc-cons-threshold (* 64 1024 1024))
   (run-with-idle-timer 1 t #'garbage-collect)
 
   ;; customize the theme.
   (custom-set-faces
    `(cider-fringe-good-face ((t :inherit success)))
    `(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
-   `(css-property ((t :inherit font-lock-builtin-face :foreground nil)))
-   `(css-selector ((t :inherit font-lock-variable-name-face :foreground nil)))
-   `(font-lock-comment-face ((t :slant normal)))
-   `(font-lock-function-name-face ((t :background "#e5f4fb" :foreground "#123555")))
+   `(css-property ((t :inherit font-lock-builtin-face :foreground nil :weight normal)))
+   `(css-selector ((t :inherit font-lock-variable-name-face :foreground nil :weight normal)))
+   `(font-lock-function-name-face ((t :background "#fafcfd")))
    `(font-lock-doc-face ((t :slant italic)))
-   `(fringe ((t :background ,(-> 'fringe (face-attribute :background) (light-color 5)))))
+   `(fringe ((t :background ,(-> 'fringe
+                                 (face-attribute :background)
+                                 (light-color 5)))))
    `(git-timemachine-minibuffer-detail-face ((t :foreground nil :inherit highlight)))
    `(linum ((t :weight normal :underline nil :inverse-video nil)))
    `(linum-relative-current-face ((t :foreground ,(face-attribute 'default :foreground) :inherit linum)))
@@ -431,7 +432,7 @@ you should place your code here."
    `(org-agenda-done ((t :height 1.0 :inherit bold)))
    `(org-cancelled ((t :foreground nil :inherit org-done)))
    `(org-next ((t :foreground "#dca3a3" :inherit org-todo)))
-   `(show-paren-match ((t :background nil :foreground "Springgreen2" :weight bold))))
+   `(show-paren-match ((t :background nil :underline t :weight bold))))
 
   ;; for programming
   (add-hook 'prog-mode-hook

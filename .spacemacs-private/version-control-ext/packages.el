@@ -18,7 +18,7 @@
   (use-package git-gutter-fringe+
     :defer t
     :config
-    (let* ((bitmap (-repeat (line-pixel-height)
+    (let* ((bitmap (-repeat (1- (line-pixel-height))
                             (apply #'concat (-repeat 8 "X"))))
            (fr-vec (apply #'fringe-helper-convert bitmap)))
       (define-fringe-bitmap 'git-gutter-fr+-added    fr-vec nil nil nil)
