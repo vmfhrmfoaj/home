@@ -56,6 +56,7 @@ values."
             shell-default-position 'bottom)
      themes-megapack
      version-control
+     yaml
      ;; ---------------------------------------------------------------
      ;; Extentions
      ;; ---------------------------------------------------------------
@@ -338,10 +339,12 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; set up the addtional font setting.
   (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
+  (add-to-list 'face-font-rescale-alist '("Arial" . 0.9))
+  (add-to-list 'face-font-rescale-alist '("Andale Mono" . 0.9))
   (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.9))
   (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.2))
   (add-to-list 'face-font-rescale-alist '("NanumBarunGothicOTF" . 0.9))
-  (setq-default line-spacing 7)
+  (setq-default line-spacing 5)
   (mac-auto-operator-composition-mode))
 
 (defun dotspacemacs/user-config ()
@@ -419,20 +422,24 @@ you should place your code here."
    `(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
    `(css-property ((t :inherit font-lock-builtin-face :foreground nil :weight normal)))
    `(css-selector ((t :inherit font-lock-variable-name-face :foreground nil :weight normal)))
-   `(font-lock-function-name-face ((t :background "#fafcfd")))
    `(font-lock-doc-face ((t :slant italic)))
-   `(fringe ((t :background ,(-> 'fringe
-                                 (face-attribute :background)
-                                 (light-color 5)))))
+   `(font-lock-function-name-face ((t :background "#fafcfd")))
+   `(fringe ((t :background "#f9f9f9")))
    `(git-timemachine-minibuffer-detail-face ((t :foreground nil :inherit highlight)))
    `(linum ((t :weight normal :underline nil :inverse-video nil)))
    `(linum-relative-current-face ((t :foreground ,(face-attribute 'default :foreground) :inherit linum)))
    `(mode-line ((t :distant-foreground ,(face-attribute 'mode-line :foreground))))
    `(mode-line-inactive ((t :distant-foreground ,(face-attribute 'mode-line-inactive :foreground))))
+   `(org-agenda-current-time (( t :height 0.9)))
    `(org-agenda-done ((t :height 1.0 :inherit bold)))
+   `(org-agenda-structure ((t :height 1.4)))
    `(org-cancelled ((t :foreground nil :inherit org-done)))
+   `(org-document-title ((t :family ,(first dotspacemacs-default-font) :height 1.4)))
    `(org-next ((t :foreground "#dca3a3" :inherit org-todo)))
+   `(org-time-grid ((t :height 0.9)))
    `(show-paren-match ((t :background nil :underline t :weight bold))))
+
+  (setq goto-address-mail-face '(:inherit link :slant italic))
 
   ;; for programming
   (add-hook 'prog-mode-hook

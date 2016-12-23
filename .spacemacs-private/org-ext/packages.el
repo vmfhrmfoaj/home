@@ -38,12 +38,9 @@
     (font-lock-add-keywords
      'org-mode
      '(("^\\s-*\\(-\\) "
-        1 (compose-region (match-beginning 1) (match-end 1) ?∙))
+        1 (compose-region (match-beginning 1) (match-end 1) ?·))
        ("\\(\\\\\\\\\\)\\s-*$"
         1 'shadow nil)))
-    (dolist (i (number-sequence 1 org-n-level-faces))
-      (set-face-attribute (intern (concat "org-level-" (number-to-string i))) nil
-                          :weight 'bold))
     (add-hook 'org-todo-get-default-hook
               (lambda (mark _)
                 (when (string-equal mark "NEXT")
@@ -89,39 +86,32 @@
             ("n" "Note" entry
              (file+headline ,(concat org-directory "/notes/" (format-time-string "%Y") ".org")
                             ,(format-time-string "%b"))
-             ,(concat "* %^{Note}"   "\n"
-                      ":PROPERTIES:" "\n"
-                      ":Created: %t" "\n"
-                      ":END:"        "\n"
+             ,(concat "* %^{Note}" "\n"
                       "\n"
-                      "%?")
+                      "%t:" "\n"
+                      "- %?")
              :empty-lines 1
              :prepend t)
             ("p" "Protocol" entry
              (file+headline ,(concat org-directory "/notes/" (format-time-string "%Y") ".org")
                             ,(format-time-string "%b"))
-             ,(concat "* %^{Note}"   "\n"
-                      ":PROPERTIES:" "\n"
-                      ":Created: %t" "\n"
-                      ":Source: %c"  "\n"
-                      ":END:"        "\n"
+             ,(concat "* %^{Note}"      "\n"
                       "\n"
-                      "#+BEGIN_QUOTE" "\n"
-                      "%i"            "\n"
-                      "#+End_QUOTE"   "\n"
-                      "\n"
+                      "%t:"             "\n"
+                      "- %c"            "\n"
+                      "  #+BEGIN_QUOTE" "\n"
+                      "  %i"            "\n"
+                      "  #+End_QUOTE"   "\n"
                       "%?")
              :empty-lines 1
              :prepend t)
             ("L" "Protocol Link" entry
              (file+headline ,(concat org-directory "/notes/" (format-time-string "%Y") ".org")
                             ,(format-time-string "%b"))
-             ,(concat "* %^{Note}"   "\n"
-                      ":PROPERTIES:" "\n"
-                      ":Created: %t" "\n"
-                      ":Link: %c"    "\n"
-                      ":END:"        "\n"
+             ,(concat "* %^{Note}" "\n"
                       "\n"
+                      "%t:"  "\n"
+                      "- %c" "\n"
                       "%?")
              :empty-lines 1
              :prepend t)
@@ -133,18 +123,10 @@
              "* %T %?")))
     (spacemacs/set-leader-keys
       "aoc" nil
-      "aoct" (defalias 'org-capture-todo (lambda () (interactive) (org-capture nil "t")))
-      "aocn" (defalias 'org-capture-note (lambda () (interactive) (org-capture nil "n")))
+      "aoct" (defalias 'org-capture-todo   (lambda () (interactive) (org-capture nil "t")))
+      "aocn" (defalias 'org-capture-note   (lambda () (interactive) (org-capture nil "n")))
       "aocr" (defalias 'org-capture-record (lambda () (interactive) (org-capture nil "r")))
-      "aocR" (defalias 'org-capture-record-with-prompt (lambda () (interactive) (org-capture nil "R"))))
-    (advice-add #'org-capture :before
-                (lambda (&rest _)
-                  "Remove a duplicates history."
-                  (->> (all-completions "org-capture-template-prompt-history" obarray)
-                       (--map (intern it))
-                       (--filter (ignore-errors (symbol-value it)))
-                       (--map (set it (-distinct (-remove #'s-blank?
-                                                          (symbol-value it))))))))))
+      "aocR" (defalias 'org-capture-record-with-prompt (lambda () (interactive) (org-capture nil "R"))))))
 
 (defun org-ext/post-init-org-projectile ()
   (use-package org-projectile
