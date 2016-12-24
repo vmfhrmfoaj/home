@@ -16,6 +16,7 @@
     auto-dim-other-buffers
     company
     evil
+    golden-ratio
     neotree
     (prettify-symbols-mode :location built-in)))
 
@@ -101,6 +102,12 @@
               (lambda ()
                 (restore-modes evil-visual-state-exclude-modes
                                evil-visual-state-exclude-mode-status)))))
+
+(defun eye-candy/post-init-golden-ratio ()
+  (use-package golden-ratio
+    :config
+    (setq golden-ratio-adjust-factor 0)
+    (setq-default truncate-lines t)))
 
 (defun eye-candy/post-init-neotree ()
   (use-package neotree

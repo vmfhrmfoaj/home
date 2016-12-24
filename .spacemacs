@@ -344,7 +344,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.9))
   (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.2))
   (add-to-list 'face-font-rescale-alist '("NanumBarunGothicOTF" . 0.9))
-  (setq-default line-spacing 5)
+  (setq-default line-spacing 3)
   (mac-auto-operator-composition-mode))
 
 (defun dotspacemacs/user-config ()
@@ -385,23 +385,42 @@ you should place your code here."
   (define-key key-translation-map (kbd "<S-kp-add>") "=")
 
   ;; set the pos/size of the initial frame.
-  (let* ((w 130)
-         (h (1- (/ (display-pixel-height) (frame-char-height))))
-         (l (/ (custom-display-pixel-width) 2.0))
-         (l (floor (- l (* (frame-unit->pixel w) 0.4))))
-         (l (if (< 0 (- (custom-display-pixel-width)
-                        (+ l (frame-unit->pixel w))))
-                l
-              (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w)))))
-         (w (min w (pixel->frame-unit (- (custom-display-pixel-width) l 120))))
-         (w (max w 100)))
-    (add-to-list 'default-frame-alist (cons 'width  w))
-    (add-to-list 'default-frame-alist (cons 'height h))
-    (setq split-width-threshold (1+ w)
-          initial-frame-alist (list (cons 'top    0)
-                                    (cons 'left   l)
-                                    (cons 'width  w)
-                                    (cons 'height h))))
+  ;; (let* ((w 130)
+  ;;        (h (1- (/ (display-pixel-height) (frame-char-height))))
+  ;;        (l (/ (custom-display-pixel-width) 2.0))
+  ;;        (l (floor (- l (* (frame-unit->pixel w) 0.4))))
+  ;;        (l (if (< 0 (- (custom-display-pixel-width)
+  ;;                       (+ l (frame-unit->pixel w))))
+  ;;               l
+  ;;             (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w)))))
+  ;;        (w (min w (pixel->frame-unit (- (custom-display-pixel-width) l 120))))
+  ;;        (w (max w 100)))
+  ;;   (add-to-list 'default-frame-alist (cons 'width  w))
+  ;;   (add-to-list 'default-frame-alist (cons 'height h))
+  ;;   (setq split-width-threshold (1+ w)
+  ;;         initial-frame-alist (list (cons 'top    0)
+  ;;                                   (cons 'left   l)
+  ;;                                   (cons 'width  w)
+  ;;                                   (cons 'height h))))
+  (toggle-frame-fullscreen)
+  (setq split-height-threshold nil)
+  (if (>= 2560 (display-pixel-width))
+      (spacemacs/layout-triple-columns)
+    (spacemacs/layout-double-columns))
+  (advice-add 'set-window-buffer :around
+              (lambda (set-win-buf wind buf &optional opt)
+                (when (->> (window-list)
+                           (-remove (-partial #'eq (selected-window)))
+                           (-map #'window-buffer)
+                           (-some? (-partial #'eq buf)))
+                  (funcall set-win-buf
+                           (->> (window-list)
+                                (--remove (eq (selected-window) it))
+                                (--filter (eq buf (window-buffer it)))
+                                (-first-item))
+                           (window-buffer wind)
+                           opt))
+                (funcall set-win-buf wind buf opt)))
 
   ;; large file
   (add-hook 'find-file-hook
@@ -418,16 +437,17 @@ you should place your code here."
 
   ;; customize the theme.
   (custom-set-faces
+   `(auto-dim-other-buffers-face ((t :foreground "#555555")))
    `(cider-fringe-good-face ((t :inherit success)))
    `(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
    `(css-property ((t :inherit font-lock-builtin-face :foreground nil :weight normal)))
    `(css-selector ((t :inherit font-lock-variable-name-face :foreground nil :weight normal)))
    `(font-lock-doc-face ((t :slant italic)))
-   `(font-lock-function-name-face ((t :background "#fafcfd")))
+   `(font-lock-function-name-face ((t :background "#f6fbfd")))
    `(fringe ((t :background "#f9f9f9")))
    `(git-timemachine-minibuffer-detail-face ((t :foreground nil :inherit highlight)))
    `(linum ((t :weight normal :underline nil :inverse-video nil)))
-   `(linum-relative-current-face ((t :foreground ,(face-attribute 'default :foreground) :inherit linum)))
+   `(linum-relative-current-face ((t :inherit linum :foreground "#333333")))
    `(mode-line ((t :distant-foreground ,(face-attribute 'mode-line :foreground))))
    `(mode-line-inactive ((t :distant-foreground ,(face-attribute 'mode-line-inactive :foreground))))
    `(org-agenda-current-time (( t :height 0.9)))
@@ -439,7 +459,8 @@ you should place your code here."
    `(org-time-grid ((t :height 0.9)))
    `(show-paren-match ((t :background nil :underline t :weight bold))))
 
-  (setq goto-address-mail-face '(:inherit link :slant italic))
+  (eval-after-load "goto-addr"
+    '(setq goto-address-mail-face '(:inherit link :slant italic)))
 
   ;; for programming
   (add-hook 'prog-mode-hook
@@ -458,7 +479,15 @@ you should place your code here."
   (require 'org-protocol)
 
   ;; turn on/off some packages globally.
-  (spacemacs/toggle-camel-case-motion-globally-on))
+  (spacemacs/toggle-camel-case-motion-globally-on)
+  (spacemacs/toggle-golden-ratio-on)
+
+  ;; cleanup
+  (eval-after-load "projectile"
+    '(projectile-cleanup-known-projects))
+
+  (eval-after-load "recentf"
+    '(recentf-cleanup)))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.

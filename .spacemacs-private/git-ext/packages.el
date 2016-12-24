@@ -18,7 +18,8 @@
   (use-package magit
     :defer t
     :config
-    (setq magit-diff-refine-hunk t)
+    (setq magit-diff-refine-hunk t
+          magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
     (add-to-list 'magit-diff-section-arguments "--compaction-heuristic")
     (add-hook 'magit-revision-mode-hook
               (lambda ()

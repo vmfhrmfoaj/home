@@ -22,6 +22,7 @@
     :config
     (setq cider-dynamic-indentation nil
           cider-font-lock-dynamically '(deprecated)
+          cider-repl-display-in-current-window t
           cider-repl-use-pretty-printing t
           cider-mode-line
           '(:eval (when (cider-connected-p)
