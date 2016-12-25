@@ -404,9 +404,8 @@ you should place your code here."
   ;;                                   (cons 'height h))))
   (toggle-frame-fullscreen)
   (setq split-height-threshold nil)
-  (if (>= 2560 (display-pixel-width))
-      (spacemacs/layout-triple-columns)
-    (spacemacs/layout-double-columns))
+  (dotimes (i (1- (/ (display-pixel-width) (frame-char-width) 100)))
+    (split-window-right))
   (advice-add 'set-window-buffer :around
               (lambda (set-win-buf wind buf &optional opt)
                 (when (->> (window-list)
