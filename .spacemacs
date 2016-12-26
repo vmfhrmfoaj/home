@@ -161,7 +161,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(leuven)
+   dotspacemacs-themes '(twilight-anti-bright)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -315,8 +315,7 @@ values."
    ;; `trailing' to delete only the whitespace at end of lines, `changed'to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
-   dotspacemacs-whitespace-cleanup nil
-   ))
+   dotspacemacs-whitespace-cleanup nil))
 
 (defun dotspacemacs/user-init ()
   "Initialization function for user code.
@@ -339,13 +338,16 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; set up the addtional font setting.
   (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
-  (add-to-list 'face-font-rescale-alist '("Arial" . 0.9))
   (add-to-list 'face-font-rescale-alist '("Andale Mono" . 0.9))
+  (add-to-list 'face-font-rescale-alist '("Arial-" . 0.9))
   (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.9))
   (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.2))
   (add-to-list 'face-font-rescale-alist '("NanumBarunGothicOTF" . 0.9))
   (setq-default line-spacing 3)
-  (mac-auto-operator-composition-mode))
+  (mac-auto-operator-composition-mode)
+
+  ;; theme
+  (setq-default frame-background-mode 'dark))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -403,23 +405,43 @@ you should place your code here."
   ;;                                   (cons 'width  w)
   ;;                                   (cons 'height h))))
   (toggle-frame-fullscreen)
+
+  ;; for fullscreen
   (setq split-height-threshold nil)
   (dotimes (i (1- (/ (display-pixel-width) (frame-char-width) 100)))
     (split-window-right))
-  (advice-add 'set-window-buffer :around
-              (lambda (set-win-buf wind buf &optional opt)
-                (when (->> (window-list)
-                           (-remove (-partial #'eq (selected-window)))
-                           (-map #'window-buffer)
-                           (-some? (-partial #'eq buf)))
-                  (funcall set-win-buf
-                           (->> (window-list)
-                                (--remove (eq (selected-window) it))
-                                (--filter (eq buf (window-buffer it)))
-                                (-first-item))
-                           (window-buffer wind)
-                           opt))
-                (funcall set-win-buf wind buf opt)))
+  (require 'dash-functional)
+  (defun set-window-buffer+ (set-win-buf wind buf &optional opt)
+    (when (and (->> (window-list)
+                    (-remove (-partial #'eq (selected-window)))
+                    (-map #'window-buffer)
+                    (-some? (-partial #'eq buf)))
+               (->> this-command
+                    (format "%s")
+                    (string-match-p "quit")
+                    (not)))
+      (funcall set-win-buf
+               (->> (window-list)
+                    (--remove (eq (selected-window) it))
+                    (--filter (eq buf (window-buffer it)))
+                    (-first-item))
+               (window-buffer wind) opt))
+    (funcall set-win-buf wind buf opt))
+  (advice-add 'set-window-buffer :around #'set-window-buffer+)
+  (eval-after-load "helm-buffers"
+    '(progn
+       (defvar helm-source-window-buffers-list
+         (helm-build-sync-source "Window buffers"
+           :action #'switch-to-buffer
+           :real-to-display (-compose (-partial #'apply #'concat)
+                                      #'helm-buffer--details)
+           :candidates (lambda ()
+                         (->> (window-list)
+                              (-remove (-partial #'eq (selected-window)))
+                              (-map #'window-buffer)
+                              (-distinct)))))
+       (add-to-list 'helm-mini-default-sources
+                    'helm-source-window-buffers-list)))
 
   ;; large file
   (add-hook 'find-file-hook
@@ -435,31 +457,68 @@ you should place your code here."
   (run-with-idle-timer 1 t #'garbage-collect)
 
   ;; customize the theme.
+  (custom-theme-set-faces
+   'twilight-anti-bright
+   `(default ((t :foreground "gray85")))
+   `(lazy-highlight ((t :background "paleturquoise4" :foreground "paleturquoise2")))
+   `(org-agenda-calendar-event ((t :foreground "orange")))
+   `(outline-4 ((t :inherit font-lock-string-face))))
+  (set-face-attribute 'isearch nil :weight 'bold)
+  (set-face-attribute 'company-scrollbar-fg nil :background "red2")
+  (set-face-attribute 'company-tooltip nil :background "yellow2")
+  (set-face-attribute 'company-tooltip-common nil :foreground "red2")
+  (set-face-attribute 'company-tooltip-selection nil :background "orange2")
   (custom-set-faces
-   `(auto-dim-other-buffers-face ((t :foreground "#555555")))
+   `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default
+                                                      (face-attribute :foreground)
+                                                      (dim-color 10))
+                                     :background ,(-> 'default
+                                                      (face-attribute :background)
+                                                      (dim-color 3)))))
    `(cider-fringe-good-face ((t :inherit success)))
    `(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
    `(css-property ((t :inherit font-lock-builtin-face :foreground nil :weight normal)))
    `(css-selector ((t :inherit font-lock-variable-name-face :foreground nil :weight normal)))
    `(font-lock-doc-face ((t :slant italic)))
-   `(font-lock-function-name-face ((t :background "#f6fbfd")))
-   `(fringe ((t :background "#f9f9f9")))
    `(git-timemachine-minibuffer-detail-face ((t :foreground nil :inherit highlight)))
-   `(linum ((t :weight normal :underline nil :inverse-video nil)))
-   `(linum-relative-current-face ((t :inherit linum :foreground "#333333")))
+   `(fringe ((t :background ,(-> 'default
+                                 (face-attribute :background)
+                                 (light-color 1)))))
+   `(link ((t :underline t)))
+   `(linum ((t :box nil
+               :height ,(face-attribute 'default :height)
+               :inverse-video nil
+               :overline nil
+               :underline nil
+               :weight normal)))
+   `(linum-relative-current-face ((t :inherit linum)))
    `(mode-line ((t :distant-foreground ,(face-attribute 'mode-line :foreground))))
    `(mode-line-inactive ((t :distant-foreground ,(face-attribute 'mode-line-inactive :foreground))))
-   `(org-agenda-current-time (( t :height 0.9)))
+   `(org-agenda-current-time (( t :foreground "#2d9574" :height 0.9)))
    `(org-agenda-done ((t :height 1.0 :inherit bold)))
    `(org-agenda-structure ((t :height 1.4)))
    `(org-cancelled ((t :foreground nil :inherit org-done)))
    `(org-document-title ((t :family ,(first dotspacemacs-default-font) :height 1.4)))
-   `(org-next ((t :foreground "#dca3a3" :inherit org-todo)))
-   `(org-time-grid ((t :height 0.9)))
-   `(show-paren-match ((t :background nil :underline t :weight bold))))
-
+   `(org-next ((t :foreground "#dca3a3" :weight bold :inherit org-todo)))
+   `(org-time-grid ((t :height 0.9
+                       :foreground ,(-> 'default
+                                        (face-attribute :foreground)
+                                        (dim-color 50)))))
+   `(show-paren-match ((t :background nil :foreground "Springgreen2" :weight bold)))
+   `(shadow ((t :foreground ,(-> 'default
+                                 (face-attribute :foreground)
+                                 (dim-color 30))))))
   (eval-after-load "goto-addr"
     '(setq goto-address-mail-face '(:inherit link :slant italic)))
+  (eval-after-load "rainbow-delimiters"
+    '(dolist (i (number-sequence 1 9))
+       (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
+         (set-face-attribute face nil :foreground
+                             (dim-color (face-attribute face :foreground) 10)))))
+  (eval-after-load "org"
+    '(dolist (i (number-sequence 1 org-n-level-faces))
+       (set-face-attribute (intern (concat "org-level-" (number-to-string i))) nil
+                           :weight 'bold)))
 
   ;; for programming
   (add-hook 'prog-mode-hook

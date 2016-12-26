@@ -17,7 +17,7 @@
 (defun spacemacs-evil-ext/post-init-linum-relative ()
   (use-package linum-relative
     :config
-    (add-hook 'prog-mode-hook (-partial #'linum-relative-mode 1))
+    (linum-relative-global-mode)
     (add-hook 'linum-relative-mode-hook (-partial #'diminish 'linum-relative-mode))
     (add-hook 'find-file-hook
               (lambda ()
@@ -28,10 +28,6 @@
                                         (length)
                                         (max 3)
                                         (number-to-string))
-                                    "s"))))
-    (let ((height (face-attribute 'default :height)))
-      (custom-set-faces
-       `(linum ((t :underline nil :height ,height)))
-       `(linum-relative-current-face ((t :underline nil :height ,height)))))))
+                                    "s"))))))
 
 ;;; packages.el ends here
