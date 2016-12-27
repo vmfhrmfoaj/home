@@ -161,7 +161,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(twilight-anti-bright)
+   dotspacemacs-themes '(twilight-bright)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -343,11 +343,8 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.9))
   (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.2))
   (add-to-list 'face-font-rescale-alist '("NanumBarunGothicOTF" . 0.9))
-  (setq-default line-spacing 3)
-  (mac-auto-operator-composition-mode)
-
-  ;; theme
-  (setq-default frame-background-mode 'dark))
+  (setq-default line-spacing 2)
+  (mac-auto-operator-composition-mode))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -458,20 +455,17 @@ you should place your code here."
 
   ;; customize the theme.
   (custom-theme-set-faces
-   'twilight-anti-bright
-   `(default ((t :foreground "gray85")))
-   `(lazy-highlight ((t :background "paleturquoise4" :foreground "paleturquoise2")))
-   `(org-agenda-calendar-event ((t :foreground "orange")))
+   'twilight-bright
+   `(hl-line ((t :background "#e8fff0")))
+   `(magit-section-highlight ((t :inherit hl-line)))
+   `(org-agenda-calendar-event ((t :foreground "orange3")))
    `(outline-4 ((t :inherit font-lock-string-face))))
-  (set-face-attribute 'isearch nil :weight 'bold)
-  (set-face-attribute 'company-scrollbar-fg nil :background "red2")
-  (set-face-attribute 'company-tooltip nil :background "yellow2")
-  (set-face-attribute 'company-tooltip-common nil :foreground "red2")
-  (set-face-attribute 'company-tooltip-selection nil :background "orange2")
+  (set-face-attribute 'powerline-active1 nil :foreground "#85ceeb")
+  (set-face-attribute 'powerline-active2 nil :foreground "#85ceeb")
   (custom-set-faces
    `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default
                                                       (face-attribute :foreground)
-                                                      (dim-color 10))
+                                                      (light-color 10))
                                      :background ,(-> 'default
                                                       (face-attribute :background)
                                                       (dim-color 3)))))
@@ -483,7 +477,7 @@ you should place your code here."
    `(git-timemachine-minibuffer-detail-face ((t :foreground nil :inherit highlight)))
    `(fringe ((t :background ,(-> 'default
                                  (face-attribute :background)
-                                 (light-color 1)))))
+                                 (dim-color 1)))))
    `(link ((t :underline t)))
    `(linum ((t :box nil
                :height ,(face-attribute 'default :height)
@@ -491,30 +485,36 @@ you should place your code here."
                :overline nil
                :underline nil
                :weight normal)))
-   `(linum-relative-current-face ((t :inherit linum)))
+   `(linum-relative-current-face ((t :foreground ,(face-attribute 'default :foreground)
+                                     :inherit linum)))
    `(mode-line ((t :distant-foreground ,(face-attribute 'mode-line :foreground))))
    `(mode-line-inactive ((t :distant-foreground ,(face-attribute 'mode-line-inactive :foreground))))
    `(org-agenda-current-time (( t :foreground "#2d9574" :height 0.9)))
+   `(org-agenda-date ((t :inherit (font-lock-variable-name-face org-agenda-structure))))
+   `(org-agenda-date-today ((t :inherit (font-lock-function-name-face org-agenda-structure))))
+   `(org-agenda-date-weekend ((t :inherit org-agenda-date)))
    `(org-agenda-done ((t :height 1.0 :inherit bold)))
-   `(org-agenda-structure ((t :height 1.4)))
+   `(org-agenda-structure ((t :height 1.3)))
+   `(org-hide ((t :background ,(face-attribute 'default :background)
+                  :foreground ,(face-attribute 'default :background))))
    `(org-cancelled ((t :foreground nil :inherit org-done)))
    `(org-document-title ((t :family ,(first dotspacemacs-default-font) :height 1.4)))
    `(org-next ((t :foreground "#dca3a3" :weight bold :inherit org-todo)))
    `(org-time-grid ((t :height 0.9
                        :foreground ,(-> 'default
                                         (face-attribute :foreground)
-                                        (dim-color 50)))))
+                                        (light-color 50)))))
    `(show-paren-match ((t :background nil :foreground "Springgreen2" :weight bold)))
    `(shadow ((t :foreground ,(-> 'default
                                  (face-attribute :foreground)
-                                 (dim-color 30))))))
+                                 (light-color 30))))))
   (eval-after-load "goto-addr"
     '(setq goto-address-mail-face '(:inherit link :slant italic)))
   (eval-after-load "rainbow-delimiters"
     '(dolist (i (number-sequence 1 9))
        (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
          (set-face-attribute face nil :foreground
-                             (dim-color (face-attribute face :foreground) 10)))))
+                             (light-color (face-attribute face :foreground) 15)))))
   (eval-after-load "org"
     '(dolist (i (number-sequence 1 org-n-level-faces))
        (set-face-attribute (intern (concat "org-level-" (number-to-string i))) nil
@@ -536,7 +536,10 @@ you should place your code here."
   ;; for org-capture Chrome extension
   (require 'org-protocol)
 
-  ;; turn on/off some packages globally.
+  ;; turn on/off the mode-line indicator.
+  (spaceline-toggle-minor-modes-off)
+
+  ;; turn on/off the packages globally.
   (spacemacs/toggle-camel-case-motion-globally-on)
   (spacemacs/toggle-golden-ratio-on)
 
