@@ -36,9 +36,24 @@
                          ((buffer-modified-p)    "plus-circle")
                          (buffer-read-only       "minus-circle")
                          (t                      "check-circle")))
-             (icon (all-the-icons-faicon name :v-adjust 0.0)))
+             (icon (all-the-icons-faicon name :v-adjust -0.1)))
         (powerline-raw (propertize icon 'face nil)
-                       `(:family ,(all-the-icons-faicon-family)))))))
+                       `(:family ,(all-the-icons-faicon-family)))))
+    (spaceline-define-segment major-mode
+      (let* ((file-name (or buffer-file-name "foo"))
+             (font-family (all-the-icons-icon-family-for-file file-name))
+             (mode-symbol (all-the-icons-icon-for-file file-name))
+             (not-found? (string-equal mode-symbol (all-the-icons-faicon "file-o"))))
+        (flet ((format-mode-line
+                (&rest _)
+                (if not-found?
+                    mode-name
+                  (propertize mode-symbol 'face nil))))
+          (powerline-major-mode (unless not-found? `(:family ,font-family))))))
+    (spaceline-define-segment version-control
+      (when vc-mode
+        (powerline-raw (concat (all-the-icons-octicon "git-branch" :height 1.2)
+                               " " (cadr (split-string vc-mode "[-:]"))))))))
 
 (defun eye-candy/init-auto-dim-other-buffers ()
   (use-package auto-dim-other-buffers

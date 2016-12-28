@@ -60,11 +60,7 @@
       :mode org-agenda-mode
       :bindings
       (kbd "C-j") #'org-agenda-next-item
-      (kbd "C-k") #'org-agenda-previous-item)
-    (advice-add #'org-agenda-list :after
-                (lambda (&rest _)
-                  (highlight-lines-matching-regexp "records:"
-                                                   'org-agenda-calendar-record)))))
+      (kbd "C-k") #'org-agenda-previous-item)))
 
 (defun org-ext/init-org-capture ()
   (use-package org-capture
@@ -114,19 +110,11 @@
                       "- %c" "\n"
                       "%?")
              :empty-lines 1
-             :prepend t)
-            ("r" "Recorder" entry
-             (file+datetree ,(concat org-directory "/records.org"))
-             "* %T %?")
-            ("R" "Recorder with specified date" entry
-             (file+datetree+prompt ,(concat org-directory "/records.org"))
-             "* %T %?")))
+             :prepend t)))
     (spacemacs/set-leader-keys
       "aoc" nil
       "aoct" (defalias 'org-capture-todo   (lambda () (interactive) (org-capture nil "t")))
-      "aocn" (defalias 'org-capture-note   (lambda () (interactive) (org-capture nil "n")))
-      "aocr" (defalias 'org-capture-record (lambda () (interactive) (org-capture nil "r")))
-      "aocR" (defalias 'org-capture-record-with-prompt (lambda () (interactive) (org-capture nil "R"))))))
+      "aocn" (defalias 'org-capture-note   (lambda () (interactive) (org-capture nil "n"))))))
 
 (defun org-ext/post-init-org-projectile ()
   (use-package org-projectile
