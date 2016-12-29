@@ -20,6 +20,8 @@
   (use-package helm
     :defer t
     :config
+    (define-key helm-map (kbd "C-n") #'helm-next-source)
+    (define-key helm-map (kbd "C-p") #'helm-previous-source)
     (define-key helm-comp-read-map (kbd "C-h") #'delete-backward-char)
     (setq helm-truncate-lines t)))
 

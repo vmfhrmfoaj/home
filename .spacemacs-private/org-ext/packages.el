@@ -14,15 +14,14 @@
 (defconst org-ext-packages
   '(org
     org-agenda
-    (org-capture :location built-in)
-    org-projectile
-    projectile))
+    (org-capture :location built-in)))
 
 (defun org-ext/post-init-org ()
   (use-package org
     :defer t
     :config
-    (setq org-hide-emphasis-markers t
+    (setq org-directory (concat (getenv "HOME") "/Desktop/Org")
+          org-hide-emphasis-markers t
           org-tags-column -90
           org-pretty-entities t
           org-src-fontify-natively t
@@ -52,12 +51,13 @@
   (use-package org-agenda
     :defer t
     :config
-    (setq org-agenda-skip-deadline-if-done t
-          org-agenda-tags-column -90
-          org-agenda-window-setup 'current-window
-          org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0 :weight bold))
+    (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0 :weight bold))
                                       (0.5 . '(:inherit org-upcoming-deadline :height 1.0 :weight bold))
-                                      (0.0 . '(:height 1.0))))
+                                      (0.0 . '(:height 1.0)))
+          org-agenda-files (find-org-agenda-files)
+          org-agenda-skip-deadline-if-done t
+          org-agenda-tags-column -95
+          org-agenda-window-setup 'current-window)
     (evilified-state-evilify-map org-agenda-mode-map
       :mode org-agenda-mode
       :bindings
@@ -66,13 +66,11 @@
 
 (defun org-ext/init-org-capture ()
   (use-package org-capture
-    :defer t
     :config
-    (setq org-directory (concat (getenv "HOME") "/Desktop/Org")
-          org-default-notes-file (concat org-directory "/todos/" (format-time-string "%Y") ".org")
-          org-capture-templates
+    (setq org-capture-templates
           `(("t" "Todo" entry
-             (file+headline ,org-default-notes-file ,(format-time-string "%b"))
+             (file+headline ,(concat org-directory "/todos/" (format-time-string "%Y") ".org")
+                            ,(format-time-string "%b"))
              ,(concat "* TODO %^{Task}"                                                  "\n"
                       ":PROPERTIES:"                                                     "\n"
                       ":Effort: %^{Effort|1:00|3:00|6:00|1d|3d|1w|2w|3w|1m|3m|6m|9m|1y}" "\n"
@@ -116,36 +114,7 @@
     (spacemacs/set-leader-keys
       "aoc" nil
       "aoct" (defalias 'org-capture-todo   (lambda () (interactive) (org-capture nil "t")))
-      "aocn" (defalias 'org-capture-note   (lambda () (interactive) (org-capture nil "n"))))))
-
-(defun org-ext/post-init-org-projectile ()
-  (use-package org-projectile
-    :defer t
-    :config
-    (require 'org-capture)
-    (advice-add #'org-projectile/capture :after
-                (lambda (&rest _)
-                  (let* ((target (org-capture-get :target))
-                         (type (car target))
-                         (target (cadr target)))
-                    (cond
-                     ((eq type 'function)
-                      (-when-let (buf (save-window-excursion
-                                        (funcall target)
-                                        (current-buffer)))
-                        (with-current-buffer buf
-                          (add-hook 'after-save-hook
-                                    (lambda ()
-                                      (setq-default org-agenda-files (find-org-agenda-files)))
-                                    nil 'local))))))))))
-
-(defun org-ext/post-init-projectile ()
-  (use-package projectile
-    :after org-agenda
-    :defer t
-    :config
-    (projectile-load-known-projects)
-    (require 'org-projectile)
-    (setq org-agenda-files (find-org-agenda-files))))
+      "aocn" (defalias 'org-capture-note   (lambda () (interactive) (org-capture nil "n"))))
+    (advice-add #'org-set-tags :after #'remove-duplicated-org-tags-history)))
 
 ;;; packages.el ends here

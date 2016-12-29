@@ -44,6 +44,8 @@
              (symbol (all-the-icons-icon-for-buffer))
              (offset (cond
                       ((eq 'emacs-lisp-mode major-mode) 0.05)
+                      ((eq 'messages-buffer-mode major-mode) 0.0)
+                      ((eq 'org-mode major-mode) 0.15)
                       (t 0.1)))
              (new-raise (ignore-errors
                           (with-temp-buffer

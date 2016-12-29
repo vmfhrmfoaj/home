@@ -459,6 +459,8 @@ you should place your code here."
    `(hl-line ((t :background "#e8fff0")))
    `(magit-section-highlight ((t :inherit hl-line)))
    `(org-agenda-calendar-event ((t :foreground "orange3")))
+   `(org-link ((t :inherit link)))
+   `(org-tag ((t :weight normal :underline t)))
    `(outline-4 ((t :inherit font-lock-string-face))))
   (set-face-attribute 'powerline-active1 nil :foreground "#85ceeb")
   (set-face-attribute 'powerline-active2 nil :foreground "#85ceeb")
