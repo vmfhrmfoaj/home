@@ -23,6 +23,7 @@
     :defer t
     :config
     (setq org-hide-emphasis-markers t
+          org-tags-column -90
           org-pretty-entities t
           org-src-fontify-natively t
           org-startup-indented t
@@ -52,6 +53,7 @@
     :defer t
     :config
     (setq org-agenda-skip-deadline-if-done t
+          org-agenda-tags-column -90
           org-agenda-window-setup 'current-window
           org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0 :weight bold))
                                       (0.5 . '(:inherit org-upcoming-deadline :height 1.0 :weight bold))
