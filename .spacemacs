@@ -169,11 +169,11 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("Fantasque Sans Mono"
-                               :size 16
+   dotspacemacs-default-font `("MonacoB"
+                               :size 14
                                :weight normal
                                :width normal
-                               :powerline-scale 1.5)
+                               :powerline-scale 1.1)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
@@ -337,14 +337,16 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting.
-  (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
-  (add-to-list 'face-font-rescale-alist '("Andale Mono" . 0.9))
-  (add-to-list 'face-font-rescale-alist '("Arial-" . 0.9))
-  (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.9))
-  (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.2))
-  (add-to-list 'face-font-rescale-alist '("NanumBarunGothicOTF" . 0.9))
+  (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
   (setq-default line-spacing 2)
-  (mac-auto-operator-composition-mode))
+  (mac-auto-operator-composition-mode)
+
+  ;; settings to fire after startup.
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              ;; a setting depend on the layout of the window.
+              (eval-after-load "org"
+                '(setq org-tags-column (* -1 (- (window-width) 10)))))))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -401,11 +403,10 @@ you should place your code here."
   ;;                                   (cons 'left   l)
   ;;                                   (cons 'width  w)
   ;;                                   (cons 'height h))))
-  (toggle-frame-fullscreen)
+  (toggle-frame-maximized)
 
   ;; for fullscreen
-  (setq split-height-threshold nil)
-  (dotimes (i (1- (/ (display-pixel-width) (frame-char-width) 100)))
+  (dotimes (i (1- (/ (custom-display-pixel-width) (frame-char-width) 120)))
     (split-window-right))
   (require 'dash-functional)
   (defun set-window-buffer+ (set-win-buf wind buf &optional opt)
@@ -456,9 +457,9 @@ you should place your code here."
   ;; customize the theme.
   (custom-theme-set-faces
    'twilight-bright
+   `(default ((t :foreground "#4d4d4d")))
    `(hl-line ((t :background "#e8fff0")))
    `(magit-section-highlight ((t :inherit hl-line)))
-   `(org-agenda-calendar-event ((t :foreground "orange3")))
    `(org-link ((t :inherit link)))
    `(org-tag ((t :weight normal :underline t)))
    `(outline-4 ((t :inherit font-lock-string-face))))
@@ -467,7 +468,7 @@ you should place your code here."
   (custom-set-faces
    `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default
                                                       (face-attribute :foreground)
-                                                      (light-color 10))
+                                                      (light-color 5))
                                      :background ,(-> 'default
                                                       (face-attribute :background)
                                                       (dim-color 3)))))
@@ -538,12 +539,8 @@ you should place your code here."
   ;; for org-capture Chrome extension
   (require 'org-protocol)
 
-  ;; turn on/off the mode-line indicator.
-  (spaceline-toggle-minor-modes-off)
-
   ;; turn on/off the packages globally.
   (spacemacs/toggle-camel-case-motion-globally-on)
-  (spacemacs/toggle-golden-ratio-on)
 
   ;; cleanup
   (eval-after-load "projectile"

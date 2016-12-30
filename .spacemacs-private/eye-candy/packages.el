@@ -62,9 +62,13 @@
                   (propertize symbol 'display `(raise ,new-raise) 'face nil))))
           (powerline-major-mode (unless not-found? `(:family ,font-family))))))
     (spaceline-define-segment version-control
-      (when vc-mode
-        (powerline-raw (concat (all-the-icons-octicon "git-branch" :height 1.2)
-                               " " (cadr (split-string vc-mode "[-:@]"))))))))
+      (-when-let (branch (-some-> vc-mode
+                                  (split-string "[-:@]")
+                                  (second)))
+        (powerline-raw (-> "git-branch"
+                           (all-the-icons-octicon :v-adjust -0.1)
+                           (propertize 'face nil)
+                           (concat "·" branch)))))))
 
 (defun eye-candy/init-auto-dim-other-buffers ()
   (use-package auto-dim-other-buffers

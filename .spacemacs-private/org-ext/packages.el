@@ -22,7 +22,6 @@
     :config
     (setq org-directory (concat (getenv "HOME") "/Desktop/Org")
           org-hide-emphasis-markers t
-          org-tags-column -90
           org-pretty-entities t
           org-src-fontify-natively t
           org-startup-indented t
@@ -55,8 +54,8 @@
                                       (0.5 . '(:inherit org-upcoming-deadline :height 1.0 :weight bold))
                                       (0.0 . '(:height 1.0)))
           org-agenda-files (find-org-agenda-files)
+          org-agenda-tags-column org-tags-column
           org-agenda-skip-deadline-if-done t
-          org-agenda-tags-column -95
           org-agenda-window-setup 'current-window)
     (evilified-state-evilify-map org-agenda-mode-map
       :mode org-agenda-mode
