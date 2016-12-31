@@ -113,6 +113,7 @@
           1 'font-lock-variable-name-face))))
     (setq clojure-indent-style :align-arguments)
     (put 'defstate 'clojure-doc-string-elt 2)
+    (put-clojure-indent 'redef-state :defn) ; for expectations
     (add-hook 'clojure-mode-hook
               (lambda ()
                 (when (string-match-p "_expectations.clj\\(?:c\\|s\\)?" (buffer-file-name))

@@ -169,11 +169,11 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("MonacoB"
-                               :size 14
+   dotspacemacs-default-font `("Fira Code"
+                               :size 15
                                :weight normal
                                :width normal
-                               :powerline-scale 1.1)
+                               :powerline-scale 1.3)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
@@ -337,8 +337,8 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting.
-  (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
-  (setq-default line-spacing 2)
+  (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
+  (setq-default line-spacing 6)
   (mac-auto-operator-composition-mode)
 
   ;; settings to fire after startup.
@@ -471,12 +471,11 @@ you should place your code here."
                                                       (light-color 5))
                                      :background ,(-> 'default
                                                       (face-attribute :background)
-                                                      (dim-color 3)))))
+                                                      (dim-color 2)))))
    `(cider-fringe-good-face ((t :inherit success)))
    `(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
    `(css-property ((t :inherit font-lock-builtin-face :foreground nil :weight normal)))
    `(css-selector ((t :inherit font-lock-variable-name-face :foreground nil :weight normal)))
-   `(font-lock-doc-face ((t :slant italic)))
    `(git-timemachine-minibuffer-detail-face ((t :foreground nil :inherit highlight)))
    `(fringe ((t :background ,(-> 'default
                                  (face-attribute :background)
