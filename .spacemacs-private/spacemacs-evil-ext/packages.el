@@ -26,7 +26,8 @@
                                     (-> (count-lines (point-min) (point-max))
                                         (number-to-string)
                                         (length)
-                                        (max 4)
+                                        (min 5)
+                                        (max 3)
                                         (number-to-string))
                                     "s"))))))
 

@@ -40,13 +40,16 @@
     (spaceline-define-segment major-mode
       (let* ((font-family (all-the-icons-icon-family-for-buffer))
              (symbol (all-the-icons-icon-for-buffer))
+             (height (cond
+                      ((eq 'emacs-lisp-mode major-mode) 0.95)
+                      (t 1.0)))
              (offset (cond
-                      ((eq 'emacs-lisp-mode major-mode) -0.05)
+                      ((eq 'emacs-lisp-mode major-mode) -0.1)
+                      ((eq 'lisp-interaction-mode major-mode) 0.0)
                       ((eq 'magit-status-mode major-mode) -0.1)
-                      ((eq 'messages-buffer-mode major-mode) -0.05)
                       ((eq 'org-mode major-mode) 0.1)
                       ((derived-mode-p 'clojure-mode) -0.1)
-                      (t 0.05)))
+                      (t -0.05)))
              (new-raise (ignore-errors
                           (with-temp-buffer
                             (insert symbol)
@@ -60,7 +63,7 @@
                 (if not-found?
                     mode-name
                   (propertize symbol 'display `(raise ,new-raise) 'face nil))))
-          (powerline-major-mode (unless not-found? `(:family ,font-family))))))
+          (powerline-major-mode (unless not-found? `(:family ,font-family :height ,height))))))
     (spaceline-define-segment version-control
       (-when-let (branch (-some-> vc-mode
                                   (split-string "[-:@]")

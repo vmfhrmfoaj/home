@@ -481,14 +481,8 @@ you should place your code here."
                                  (face-attribute :background)
                                  (dim-color 1)))))
    `(link ((t :underline t)))
-   `(linum ((t :box nil
-               :height ,(face-attribute 'default :height)
-               :inverse-video nil
-               :overline nil
-               :underline nil
-               :weight normal)))
-   `(linum-relative-current-face ((t :foreground ,(face-attribute 'default :foreground)
-                                     :inherit linum)))
+   `(linum ((t :inherit default)))
+   `(linum-relative-current-face ((t :foreground ,(face-attribute 'default :foreground) :inherit linum)))
    `(mode-line ((t :distant-foreground ,(face-attribute 'mode-line :foreground))))
    `(mode-line-inactive ((t :distant-foreground ,(face-attribute 'mode-line-inactive :foreground))))
    `(org-agenda-current-time (( t :foreground "#2d9574" :height 0.9)))
@@ -502,11 +496,10 @@ you should place your code here."
    `(org-cancelled ((t :foreground nil :inherit org-done)))
    `(org-document-title ((t :family ,(first dotspacemacs-default-font) :height 1.4)))
    `(org-next ((t :foreground "#dca3a3" :weight bold :inherit org-todo)))
-   `(org-time-grid ((t :height 0.9
-                       :foreground ,(-> 'default
-                                        (face-attribute :foreground)
-                                        (light-color 50)))))
-   `(show-paren-match ((t :background nil :foreground "Springgreen2" :weight bold)))
+   `(org-time-grid ((t :height 0.9 :foreground ,(-> 'default
+                                                    (face-attribute :foreground)
+                                                    (light-color 50)))))
+   `(show-paren-match ((t :background "#eefff6" :foreground "Springgreen2" :underline t :weight bold)))
    `(shadow ((t :foreground ,(-> 'default
                                  (face-attribute :foreground)
                                  (light-color 30))))))
