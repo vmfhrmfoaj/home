@@ -45,6 +45,7 @@
                       (t 1.0)))
              (offset (cond
                       ((eq 'emacs-lisp-mode major-mode) -0.1)
+                      ((eq 'swift-mode major-mode) -0.2)
                       ((eq 'lisp-interaction-mode major-mode) 0.0)
                       ((eq 'magit-status-mode major-mode) -0.1)
                       ((eq 'org-mode major-mode) 0.1)

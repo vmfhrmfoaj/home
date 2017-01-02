@@ -54,6 +54,7 @@ values."
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
+     swift
      themes-megapack
      version-control
      yaml
@@ -416,7 +417,7 @@ you should place your code here."
                     (-some? (-partial #'eq buf)))
                (->> this-command
                     (format "%s")
-                    (string-match-p "quit")
+                    (string-match-p "quit\\|bury")
                     (not)))
       (funcall set-win-buf
                (->> (window-list)
@@ -516,6 +517,7 @@ you should place your code here."
                            :weight 'bold)))
 
   ;; for programming
+  (add-to-list 'auto-mode-alist '("\\.m\\s-*$" . objc-mode))
   (add-hook 'prog-mode-hook
             (lambda ()
               (font-lock-add-keywords
