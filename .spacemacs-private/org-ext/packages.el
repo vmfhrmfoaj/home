@@ -54,8 +54,12 @@
                                       (0.5 . '(:inherit org-upcoming-deadline :height 1.0 :weight bold))
                                       (0.0 . '(:height 1.0)))
           org-agenda-files (find-org-agenda-files)
-          org-agenda-tags-column org-tags-column
           org-agenda-skip-deadline-if-done t
+          org-agenda-sorting-strategy '((agenda habit-down time-up priority-down category-keep)
+                                        (todo todo-state-down priority-down category-keep)
+                                        (tags priority-down category-keep)
+                                        (search category-keep))
+          org-agenda-tags-column org-tags-column
           org-agenda-window-setup 'current-window)
     (evilified-state-evilify-map org-agenda-mode-map
       :mode org-agenda-mode

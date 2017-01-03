@@ -339,7 +339,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; set up the addtional font setting.
   (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
-  (setq-default line-spacing 6)
+  (setq-default line-spacing 7)
   (mac-auto-operator-composition-mode)
 
   ;; settings to fire after startup.
@@ -459,11 +459,12 @@ you should place your code here."
   (custom-theme-set-faces
    'twilight-bright
    `(default ((t :foreground "#4d4d4d")))
-   `(hl-line ((t :background "#e8fff0")))
+   `(hl-line ((t :background "#fdeeee")))
    `(magit-section-highlight ((t :inherit hl-line)))
    `(org-link ((t :inherit link)))
    `(org-tag ((t :weight normal :underline t)))
-   `(outline-4 ((t :inherit font-lock-string-face))))
+   `(outline-4 ((t :inherit font-lock-string-face)))
+   `(region ((t :background "#fcdfdf"))))
   (set-face-attribute 'powerline-active1 nil :foreground "#85ceeb")
   (set-face-attribute 'powerline-active2 nil :foreground "#85ceeb")
   (custom-set-faces

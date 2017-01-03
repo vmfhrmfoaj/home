@@ -17,13 +17,8 @@
 (defun exercise/init-speed-type ()
   (use-package speed-type
     :config
+    (setq speed-type-gb-dir (locate-user-emacs-file ".cache/speed-type"))
     (spacemacs/set-leader-keys
-      "at" #'speed-type-text)
-    (advice-add #'speed-type--gb-retrieve :around
-                (lambda (of &rest args)
-                  (flet ((locate-user-emacs-file
-                          (new-name &rest _)
-                          (concat "~/.emacs.d/.cache/" new-name)))
-                    (apply of args))))))
+      "at" #'speed-type-text)))
 
 ;;; packages.el ends here
