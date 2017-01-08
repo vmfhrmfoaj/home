@@ -339,6 +339,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; set up the addtional font setting.
   (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
+  (add-to-list 'face-font-rescale-alist '("NanumBarunGothicOTF" . 0.95))
   (setq-default line-spacing 7)
   (mac-auto-operator-composition-mode)
 
@@ -386,11 +387,11 @@ you should place your code here."
   (define-key key-translation-map (kbd "<S-kp-subtract>") "_")
   (define-key key-translation-map (kbd "<S-kp-add>") "=")
 
-  ;; set the pos/size of the initial frame.
+  ;; for single window
   ;; (let* ((w 130)
   ;;        (h (1- (/ (display-pixel-height) (frame-char-height))))
   ;;        (l (/ (custom-display-pixel-width) 2.0))
-  ;;        (l (floor (- l (* (frame-unit->pixel w) 0.4))))
+  ;;        (l (floor (- l (* (frame-unit->pixel w) 0.5))))
   ;;        (l (if (< 0 (- (custom-display-pixel-width)
   ;;                       (+ l (frame-unit->pixel w))))
   ;;               l
@@ -404,9 +405,9 @@ you should place your code here."
   ;;                                   (cons 'left   l)
   ;;                                   (cons 'width  w)
   ;;                                   (cons 'height h))))
-  (toggle-frame-maximized)
 
   ;; for fullscreen
+  (toggle-frame-fullscreen)
   (dotimes (i (1- (/ (custom-display-pixel-width) (frame-char-width) 120)))
     (split-window-right))
   (require 'dash-functional)
