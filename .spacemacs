@@ -340,15 +340,8 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; set up the addtional font setting.
   (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
   (add-to-list 'face-font-rescale-alist '("NanumBarunGothicOTF" . 0.95))
-  (setq-default line-spacing 7)
-  (mac-auto-operator-composition-mode)
-
-  ;; settings to fire after startup.
-  (add-hook 'emacs-startup-hook
-            (lambda ()
-              ;; a setting depend on the layout of the window.
-              (eval-after-load "org"
-                '(setq org-tags-column (* -1 (- (window-width) 10)))))))
+  (setq-default line-spacing 4)
+  (mac-auto-operator-composition-mode))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -387,61 +380,64 @@ you should place your code here."
   (define-key key-translation-map (kbd "<S-kp-subtract>") "_")
   (define-key key-translation-map (kbd "<S-kp-add>") "=")
 
-  ;; for single window
-  ;; (let* ((w 130)
-  ;;        (h (1- (/ (display-pixel-height) (frame-char-height))))
-  ;;        (l (/ (custom-display-pixel-width) 2.0))
-  ;;        (l (floor (- l (* (frame-unit->pixel w) 0.5))))
-  ;;        (l (if (< 0 (- (custom-display-pixel-width)
-  ;;                       (+ l (frame-unit->pixel w))))
-  ;;               l
-  ;;             (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w)))))
-  ;;        (w (min w (pixel->frame-unit (- (custom-display-pixel-width) l 120))))
-  ;;        (w (max w 100)))
-  ;;   (add-to-list 'default-frame-alist (cons 'width  w))
-  ;;   (add-to-list 'default-frame-alist (cons 'height h))
-  ;;   (setq split-width-threshold (1+ w)
-  ;;         initial-frame-alist (list (cons 'top    0)
-  ;;                                   (cons 'left   l)
-  ;;                                   (cons 'width  w)
-  ;;                                   (cons 'height h))))
+  (when window-system
+    ;; for single window
+    (let* ((w 130)
+           (h (1- (/ (display-pixel-height) (frame-char-height))))
+           (l (/ (custom-display-pixel-width) 2.0))
+           (l (floor (- l (* (frame-unit->pixel w) 0.4))))
+           (l (if (< 0 (- (custom-display-pixel-width)
+                          (+ l (frame-unit->pixel w))))
+                  l
+                (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w)))))
+           (w (min w (pixel->frame-unit (- (custom-display-pixel-width) l 120))))
+           (w (max w 100)))
+      (add-to-list 'default-frame-alist (cons 'width  w))
+      (add-to-list 'default-frame-alist (cons 'height h))
+      (setq org-tags-column (* -1 (- w 10))
+            split-width-threshold (1+ w)
+            initial-frame-alist (list (cons 'top    0)
+                                      (cons 'left   l)
+                                      (cons 'width  w)
+                                      (cons 'height h))))
 
-  ;; for fullscreen
-  (toggle-frame-fullscreen)
-  (dotimes (i (1- (/ (custom-display-pixel-width) (frame-char-width) 120)))
-    (split-window-right))
-  (require 'dash-functional)
-  (defun set-window-buffer+ (set-win-buf wind buf &optional opt)
-    (when (and (->> (window-list)
-                    (-remove (-partial #'eq (selected-window)))
-                    (-map #'window-buffer)
-                    (-some? (-partial #'eq buf)))
-               (->> this-command
-                    (format "%s")
-                    (string-match-p "quit\\|bury")
-                    (not)))
-      (funcall set-win-buf
-               (->> (window-list)
-                    (--remove (eq (selected-window) it))
-                    (--filter (eq buf (window-buffer it)))
-                    (-first-item))
-               (window-buffer wind) opt))
-    (funcall set-win-buf wind buf opt))
-  (advice-add 'set-window-buffer :around #'set-window-buffer+)
-  (eval-after-load "helm-buffers"
-    '(progn
-       (defvar helm-source-window-buffers-list
-         (helm-build-sync-source "Window buffers"
-           :action #'switch-to-buffer
-           :real-to-display (-compose (-partial #'apply #'concat)
-                                      #'helm-buffer--details)
-           :candidates (lambda ()
-                         (->> (window-list)
-                              (-remove (-partial #'eq (selected-window)))
-                              (-map #'window-buffer)
-                              (-distinct)))))
-       (add-to-list 'helm-mini-default-sources
-                    'helm-source-window-buffers-list)))
+    ;; for fullscreen
+    ;; (toggle-frame-maximized)
+    ;; (dotimes (i (1- (/ (custom-display-pixel-width) (frame-char-width) 120)))
+    ;;   (split-window-right))
+    ;; (require 'dash-functional)
+    ;; (defun set-window-buffer+ (set-win-buf wind buf &optional opt)
+    ;;   (when (and (->> (window-list)
+    ;;                   (-remove (-partial #'eq (selected-window)))
+    ;;                   (-map #'window-buffer)
+    ;;                   (-some? (-partial #'eq buf)))
+    ;;              (->> this-command
+    ;;                   (format "%s")
+    ;;                   (string-match-p "quit\\|bury")
+    ;;                   (not)))
+    ;;     (funcall set-win-buf
+    ;;              (->> (window-list)
+    ;;                   (--remove (eq (selected-window) it))
+    ;;                   (--filter (eq buf (window-buffer it)))
+    ;;                   (-first-item))
+    ;;              (window-buffer wind) opt))
+    ;;   (funcall set-win-buf wind buf opt))
+    ;; (advice-add 'set-window-buffer :around #'set-window-buffer+)
+    ;; (eval-after-load "helm-buffers"
+    ;;   '(progn
+    ;;      (defvar helm-source-window-buffers-list
+    ;;        (helm-build-sync-source "Window buffers"
+    ;;          :action #'switch-to-buffer
+    ;;          :real-to-display (-compose (-partial #'apply #'concat)
+    ;;                                     #'helm-buffer--details)
+    ;;          :candidates (lambda ()
+    ;;                        (->> (window-list)
+    ;;                             (-remove (-partial #'eq (selected-window)))
+    ;;                             (-map #'window-buffer)
+    ;;                             (-distinct)))))
+    ;;      (add-to-list 'helm-mini-default-sources
+    ;;                   'helm-source-window-buffers-list)))
+    )
 
   ;; large file
   (add-hook 'find-file-hook
@@ -452,7 +448,7 @@ you should place your code here."
             'append)
 
   ;; for improving performance.
-  (setq garbage-collection-messages t
+  (setq garbage-collection-messages nil
         gc-cons-threshold (* 64 1024 1024))
   (run-with-idle-timer 1 t #'garbage-collect)
 
@@ -462,6 +458,7 @@ you should place your code here."
    `(default ((t :foreground "#4d4d4d")))
    `(hl-line ((t :background "#fdeeee")))
    `(magit-section-highlight ((t :inherit hl-line)))
+   `(org-block ((t :foreground "#4d4d4d" :background "#fcfcfc" :slant normal :inherit org-meta-line)))
    `(org-link ((t :inherit link)))
    `(org-tag ((t :weight normal :underline t)))
    `(outline-4 ((t :inherit font-lock-string-face)))
@@ -471,10 +468,10 @@ you should place your code here."
   (custom-set-faces
    `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default
                                                       (face-attribute :foreground)
-                                                      (light-color 5))
+                                                      (light-color 3))
                                      :background ,(-> 'default
                                                       (face-attribute :background)
-                                                      (dim-color 2)))))
+                                                      (dim-color 4)))))
    `(cider-fringe-good-face ((t :inherit success)))
    `(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
    `(css-property ((t :inherit font-lock-builtin-face :foreground nil :weight normal)))
