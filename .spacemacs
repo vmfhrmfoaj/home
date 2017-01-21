@@ -54,6 +54,10 @@ values."
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
+     (spell-checking :variables
+                     spell-checking-enable-by-default nil
+                     spell-checking-enable-auto-dictionary t
+                     =enable-flyspell-auto-completion= t)
      swift
      themes-megapack
      version-control
@@ -170,11 +174,11 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("Fira Code"
-                               :size 15
+   dotspacemacs-default-font `("MonacoB"
+                               :size 14
                                :weight normal
                                :width normal
-                               :powerline-scale 1.3)
+                               :powerline-scale 1.5)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
@@ -338,9 +342,8 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting.
-  (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
-  (add-to-list 'face-font-rescale-alist '("NanumBarunGothicOTF" . 0.95))
-  (setq-default line-spacing 4)
+  (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
+  (setq-default line-spacing 3)
   (mac-auto-operator-composition-mode))
 
 (defun dotspacemacs/user-config ()
@@ -443,8 +446,9 @@ you should place your code here."
   (add-hook 'find-file-hook
             (lambda ()
               (when (>= (buffer-size) (* 1024 1024))
-                (turn-off-smartparens-mode)
-                (turn-off-show-smartparens-mode)))
+                (prettify-symbols-mode -1)
+                (turn-off-show-smartparens-mode)
+                (turn-off-smartparens-mode)))
             'append)
 
   ;; for improving performance.
@@ -456,11 +460,12 @@ you should place your code here."
   (custom-theme-set-faces
    'twilight-bright
    `(default ((t :foreground "#4d4d4d")))
+   `(font-lock-type-face ((t :background "#fcf6f5" :foreground "#b23f1e")))
    `(hl-line ((t :background "#fdeeee")))
    `(magit-section-highlight ((t :inherit hl-line)))
    `(org-block ((t :foreground "#4d4d4d" :background "#fcfcfc" :slant normal :inherit org-meta-line)))
-   `(org-link ((t :inherit link)))
-   `(org-tag ((t :weight normal :underline t)))
+   `(org-link  ((t :inherit link)))
+   `(org-tag   ((t :weight normal :underline t)))
    `(outline-4 ((t :inherit font-lock-string-face)))
    `(region ((t :background "#fcdfdf"))))
   (set-face-attribute 'powerline-active1 nil :foreground "#85ceeb")
@@ -480,6 +485,7 @@ you should place your code here."
    `(fringe ((t :background ,(-> 'default
                                  (face-attribute :background)
                                  (dim-color 1)))))
+   `(font-lock-comment-face ((t :slant normal)))
    `(link ((t :underline t)))
    `(linum ((t :inherit default)))
    `(linum-relative-current-face ((t :foreground ,(face-attribute 'default :foreground) :inherit linum)))
@@ -521,7 +527,7 @@ you should place your code here."
             (lambda ()
               (font-lock-add-keywords
                nil
-               `(("\\('\\|`\\|,\\|@\\|#\\|~\\|\\^\\|_\\)"
+               `(("\\('\\|`\\|,\\|@\\|#\\|~\\|\\^\\|_\\|\\s(\\|\\s)\\|[{}]\\)"
                   1 'shadow)
                  ("[\[ \r\t\n]\\(&\\)[ \r\t\n]"
                   1 'shadow)

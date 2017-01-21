@@ -53,7 +53,9 @@
           (concat "#?(:clj  [clojure.test :refer :all]" "\n"
                   "   :cljs [cljs.test :refer [deftest is are] :include-macros true])")
           cljr-expectations-test-declaration "[expectations :refer :all]"
-          cljr-auto-clean-ns nil)
+          cljr-favor-prefix-notation nil
+          cljr-prune-ns-form nil
+          cljr-favor-private-functions nil)
     (add-hook 'clojure-mode-hook (-partial #'clj-refactor-mode 1))
     (add-hook 'cider-connected-hook
               (lambda ()
@@ -72,6 +74,10 @@
                          "                   (re-find expect-regx d1) -1"                    "\n"
                          "                   (re-find expect-regx d2) 1"                     "\n"
                          "                   :else (.compareTo d1 d2))))))"))))
+    (advice-add #'cljr--create-msg :filter-return
+                (lambda (msg)
+                  "for missing a configuration."
+                  (append msg `("prune-ns-form" ,(if cljr-prune-ns-form "true" "false")))))
     (with-eval-after-load 'smartparens
       (advice-add #'cljr-slash :after
                   (lambda ()
