@@ -174,7 +174,7 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("MonacoB"
+   dotspacemacs-default-font `("Fira Code"
                                :size 14
                                :weight normal
                                :width normal
@@ -342,8 +342,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting.
-  (add-to-list 'face-font-rescale-alist '("Helvetica" . 1.1))
-  (setq-default line-spacing 3)
+  (set-fontset-font t 'hangul (font-spec :name "NanumBarunGothicOTF"))
+  (add-to-list 'face-font-rescale-alist '("NanumBarunGothicOTF" . 0.95))
+  (setq-default line-spacing 5)
   (mac-auto-operator-composition-mode))
 
 (defun dotspacemacs/user-config ()
@@ -459,7 +460,7 @@ you should place your code here."
   ;; customize the theme.
   (custom-theme-set-faces
    'twilight-bright
-   `(default ((t :foreground "#4d4d4d")))
+   `(default ((t :foreground "#454545")))
    `(font-lock-type-face ((t :background "#fcf6f5" :foreground "#b23f1e")))
    `(hl-line ((t :background "#fdeeee")))
    `(magit-section-highlight ((t :inherit hl-line)))

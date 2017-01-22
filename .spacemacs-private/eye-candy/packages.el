@@ -14,8 +14,6 @@
 (defconst eye-candy-packages
   '(all-the-icons
     auto-dim-other-buffers
-    company
-    evil
     golden-ratio
     neotree
     (prettify-symbols-mode :location built-in)))
@@ -88,45 +86,6 @@
                   nil))
     (auto-dim-other-buffers-mode)))
 
-(defun eye-candy/post-init-company ()
-  (use-package company
-    :defer t
-    :config
-    (setq company-tooltip-exclude-modes '(prettify-symbols-mode page-break-lines-mode)
-          company-tooltip-exclude-mode-status nil)
-    (advice-add #'company-call-frontends :before
-                (lambda (cmd)
-                  (cond
-                   ((eq 'show cmd)
-                    (setq-local company-tooltip-exclude-mode-status
-                                (-map #'symbol-value company-tooltip-exclude-modes))
-                    (disable-modes company-tooltip-exclude-modes)
-                    (redisplay))
-                   ((eq 'hide cmd)
-                    (restore-modes company-tooltip-exclude-modes
-                                   company-tooltip-exclude-mode-status)))))))
-
-(defun eye-candy/post-init-evil ()
-  (when (require 'evil nil 'noerr)
-    (advice-add #'evil-next-line :around
-                (lambda (of &rest args)
-                  (with-disable-modes '(prettify-symbols-mode)
-                    (apply of args))))
-    (advice-add #'evil-previous-line :around
-                (lambda (of &rest args)
-                  (with-disable-modes '(prettify-symbols-mode)
-                    (apply of args))))
-    (setq evil-visual-state-exclude-modes '(prettify-symbols-mode))
-    (add-hook 'evil-visual-state-entry-hook
-              (lambda ()
-                (setq-local evil-visual-state-exclude-mode-status
-                            (-map #'symbol-value evil-visual-state-exclude-modes))
-                (disable-modes evil-visual-state-exclude-modes)))
-    (add-hook 'evil-visual-state-exit-hook
-              (lambda ()
-                (restore-modes evil-visual-state-exclude-modes
-                               evil-visual-state-exclude-mode-status)))))
-
 (defun eye-candy/post-init-golden-ratio ()
   (use-package golden-ratio
     :config
@@ -142,16 +101,6 @@
   (use-package prog-mode
     :commands (global-prettify-symbols-mode)
     :config
-    (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
-    (add-hook 'after-make-frame-functions
-              (lambda (frame)
-                (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
-    (add-hook 'prog-mode-hook
-              (-partial #'font-lock-add-keywords nil
-                        fira-code-font-lock-keywords-alist))
-    (advice-disable-modes '(prettify-symbols-mode) #'indent-for-tab-command)
-    (advice-disable-modes '(prettify-symbols-mode) #'indent-region)
-    (advice-disable-modes '(prettify-symbols-mode) #'indent-according-to-mode)
     (global-prettify-symbols-mode)))
 
 ;;; packages.el ends here
