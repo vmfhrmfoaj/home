@@ -19,7 +19,7 @@
     :config
     (linum-relative-global-mode)
     (add-hook 'linum-relative-mode-hook (-partial #'diminish 'linum-relative-mode))
-    (add-hook 'find-file-hook
+    (add-hook 'linum-mode-hook
               (lambda ()
                 (setq-local linum-relative-format
                             (concat "%"

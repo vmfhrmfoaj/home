@@ -44,13 +44,14 @@
                       ((eq 'emacs-lisp-mode major-mode) 0.95)
                       (t 1.0)))
              (offset (cond
-                      ((eq 'emacs-lisp-mode major-mode) -0.05)
-                      ((eq 'swift-mode major-mode) -0.15)
-                      ((eq 'lisp-interaction-mode major-mode) 0.05)
-                      ((eq 'magit-status-mode major-mode) -0.05)
-                      ((eq 'org-mode major-mode) 0.15)
-                      ((derived-mode-p 'clojure-mode) -0.05)
-                      (t 0.0)))
+                      ((string-match-p "^README" (buffer-name)) -0.05)
+                      ((eq 'emacs-lisp-mode major-mode) -0.1)
+                      ((eq 'swift-mode major-mode) -0.2)
+                      ((eq 'lisp-interaction-mode major-mode) 0.0)
+                      ((eq 'magit-status-mode major-mode) -0.1)
+                      ((eq 'org-mode major-mode) 0.1)
+                      ((derived-mode-p 'clojure-mode) -0.1)
+                      (t -0.05)))
              (new-raise (ignore-errors
                           (with-temp-buffer
                             (insert symbol)
@@ -68,11 +69,13 @@
     (spaceline-define-segment version-control
       (-when-let (branch (-some-> vc-mode
                                   (split-string "[-:@]")
-                                  (second)))
+                                  (rest)
+                                  (-some->> (-interpose "-")
+                                            (apply #'concat))))
         (powerline-raw (-> "git-branch"
                            (all-the-icons-octicon :v-adjust 0.05)
                            (propertize 'face nil)
-                           (concat "·" branch)))))))
+                           (concat " " branch)))))))
 
 (defun eye-candy/init-auto-dim-other-buffers ()
   (use-package auto-dim-other-buffers

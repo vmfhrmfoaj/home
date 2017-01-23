@@ -21,7 +21,8 @@
     (global-set-key (kbd "<S-tab>") #'completion-at-point)
     (define-key company-active-map (kbd "C-h") nil)
     (define-key company-active-map (kbd "C-s") #'completion-at-point)
-    (setq tab-always-indent t           ; TAB do not have intelligent behavior.
-          company-idle-delay 0.1)))
+    (setq company-idle-delay 0.2
+          tab-always-indent t ; TAB do not have intelligent behavior.
+          )))
 
 ;;; packages.el ends here
