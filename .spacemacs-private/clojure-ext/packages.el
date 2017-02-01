@@ -80,14 +80,17 @@
                   (append msg `("prune-ns-form" ,(if cljr-prune-ns-form "true" "false")))))
     (with-eval-after-load 'smartparens
       (advice-add #'cljr-slash :after
-                  (lambda ()
-                    (when (and (not (bound-and-true-p multiple-cursors-mode))
-                               (not (sp-point-in-string-or-comment))
-                               (->> (char-before (1- (point)))
-                                    (char-to-string)
-                                    (string-match-p "[0-9A-Za-z]")))
-                      (company-cancel)
-                      (company-complete-common-or-cycle)))))))
+                  (let ((byte-compile-warnings nil)
+                        (byte-compile-dynamic t)
+                        (f (lambda ()
+                             (when (and (not (bound-and-true-p multiple-cursors-mode))
+                                        (not (sp-point-in-string-or-comment))
+                                        (->> (char-before (1- (point)))
+                                             (char-to-string)
+                                             (string-match-p "[0-9A-Za-z]")))
+                               (company-cancel)
+                               (company-complete-common-or-cycle)))))
+                    (byte-compile f))))))
 
 (defun clojure-ext/post-init-clojure-mode ()
   (use-package clojure-mode
@@ -113,21 +116,20 @@
           1 'font-lock-builtin-face)
          ("\\_<\\(\\.-?\\)[a-z][a-zA-Z0-9]*\\_>"
           1 'font-lock-keyword-face)
-         ("(\\(extend-protocol\\|go-loop\\|while\\)[ \r\t\n]"
+         ("(\\(extend-protocol\\|go-loop\\)[ \r\t\n]"
           1 'font-lock-keyword-face)
          ("(\\(?:defstate\\|defproject\\)[ \r\t\n]+\\([^ \r\t\n]+\\)[ \r\t\n]"
-          1 'font-lock-variable-name-face))))
+          1 'font-lock-variable-name-face)
+         ("(ns[ \r\t\n]+\\([^ \r\t\n]+\\)"
+          1 'clojure-define-namespace)
+         ("(\\(case\\|condp?\\|for\\|if\\(-let\\)?\\|\\recur\\|throw\\|when\\(-let\\|-not\\)?\\|while\\)[ \r\t\n]"
+          1 'clojure-important-keywords-face t))))
     (setq clojure-indent-style :align-arguments)
     (put 'defstate 'clojure-doc-string-elt 2)
     (put-clojure-indent 'redef-state :defn) ; for expectations
     (add-hook 'clojure-mode-hook
               (lambda ()
-                (when (string-match-p "_expectations.clj\\(?:c\\|s\\)?" (buffer-file-name))
-                  (make-local-variable 'font-lock-keywords)
-                  (font-lock-add-keywords
-                   nil
-                   '(("(\\(expect\\)[ \r\t\n]"
-                      1 font-lock-keyword-face)))
+                (when (string-match-p "_expectations.clj\\(?:c\\|s\\)?$" (buffer-file-name))
                   (setq-local clojure-get-indent-function
                               (lambda (fn)
                                 (when (string-match-p "\\(?:expect\\|freeze-time\\)" fn)

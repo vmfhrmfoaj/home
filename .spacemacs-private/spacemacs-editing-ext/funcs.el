@@ -5,7 +5,7 @@
       (interactive)
       (setq isearch-string  (concat isearch-string regx)
             isearch-message (concat isearch-message
-                                    (mapconcat 'isearch-text-char-description
+                                    (mapconcat #'isearch-text-char-description
                                                display-str ""))
             isearch-yank-flag t)
       (isearch-search-and-update))))

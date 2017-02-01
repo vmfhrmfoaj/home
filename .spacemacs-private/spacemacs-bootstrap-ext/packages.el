@@ -26,8 +26,10 @@
     (add-hook 'evil-normal-state-entry-hook #'auto-indent)
     (advice-add #'open-line :after #'auto-indent)
     (advice-add #'evil-insert-resume :after
-                (lambda (&rest _)
-                  (recenter)))
+                (let ((byte-compile-warnings nil)
+                      (f (lambda (&rest _)
+                           (recenter))))
+                  (byte-compile f)))
     (dolist (fn '(evil-change evil-delete evil-join evil-paste-after))
       (advice-add fn :after #'auto-indent))))
 
