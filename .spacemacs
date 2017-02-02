@@ -178,7 +178,7 @@ values."
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
    dotspacemacs-default-font `("Fira Code"
-                               :size ,(if (<= 2560 (custom-display-pixel-width))
+                               :size ,(if (<= 2560 (car (cdddar (frame-monitor-attributes))))
                                           15 ; retina display
                                         14)
                                :weight light
@@ -465,10 +465,16 @@ you should place your code here."
         gc-cons-threshold (* 64 1024 1024))
   (run-with-idle-timer 1 t #'garbage-collect)
 
+
+  (let ((f (lambda (&rest _)
+             (->> (face-list)
+                  (--filter (eq 'normal (face-attribute it :weight)))
+                  (--map (set-face-attribute it nil :weight 'light))))))
+    (add-hook 'after-load-functions f)
+    (funcall f))
   ;; customize the theme.
   (custom-theme-set-faces
    'twilight-bright
-   `(default ((t (:foreground "#454545"))))
    `(hl-line ((t (:background "#fdeeee"))))
    `(magit-section-highlight ((t (:inherit hl-line))))
    `(org-block ((t (:foreground "#4d4d4d" :background "#fcfcfc" :slant normal :inherit org-meta-line))))
@@ -477,12 +483,12 @@ you should place your code here."
    `(outline-4 ((t (:inherit font-lock-string-face))))
    `(region ((t (:background "#fcdfdf")))))
   (custom-set-faces
-   `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (light-color 3))
-                                     :background ,(-> 'default (face-attribute :background) (dim-color 4)))))
+   `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (light-color 2))
+                                     :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
    `(cider-fringe-good-face ((t (:inherit success))))
    `(clojure-keyword-face ((t (:inherit font-lock-builtin-face))))
    `(css-property ((t (:inherit font-lock-builtin-face :foreground nil :weight light))))
-   `(css-selector ((t (:inherit font-lock-variable-name-face :foreground nil :weight light))))
+   `(css-selector ((t (:inherit font-lock-variable-name-face :foreground nil :weight bold))))
    `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
    `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1))))))
    `(font-lock-function-name-face ((t (:inherit bold))))

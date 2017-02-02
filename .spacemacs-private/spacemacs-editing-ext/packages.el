@@ -33,11 +33,6 @@
                                     cider-repl-mode
                                     emas-lisp-mode))
     (define-key evil-lisp-state-map (kbd "C-w") #'sp-rewrap-sexp)
-    (advice-add #'sp-newline :after #'auto-indent)
-    (when (require 'smartparens-clojure nil t)
-      (advice-add #'sp-forward-symbol :before #'wrap-sp-forward-symbol)
-      (advice-add #'sp-backward-symbol :after #'wrap-sp-backward-symbol)
-      (advice-add #'sp-forward-sexp :after #'wrap-sp-forward-sexp)
-      (advice-add #'sp-backward-sexp :after #'wrap-sp-backward-sexp))))
+    (advice-add #'sp-newline :after #'auto-indent)))
 
 ;;; packages.el ends here

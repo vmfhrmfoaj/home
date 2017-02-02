@@ -122,7 +122,7 @@
           1 'font-lock-variable-name-face)
          ("(ns[ \r\t\n]+\\([^ \r\t\n]+\\)"
           1 'clojure-define-namespace)
-         ("(\\(case\\|condp?\\|for\\|if\\(-let\\)?\\|\\recur\\|throw\\|when\\(-let\\|-not\\)?\\|while\\)[ \r\t\n]"
+         ("(\\(case\\|cond\\(p\\|->>?\\)?\\|for\\|if\\(-let\\|-not\\)?\\|recur\\|throw\\|when\\(-let\\|-not\\)?\\|while\\)[) \r\t\n]"
           1 'clojure-important-keywords-face t))))
     (setq clojure-indent-style :align-arguments)
     (put 'defstate 'clojure-doc-string-elt 2)
