@@ -13,6 +13,9 @@ export PATH=$HOME/.cask/bin:$PATH
 export PATH=/Library/TeX/texbin:$PATH
 export GS_FONTPATH=/System/Library/Fonts/:/Library/Fonts/:$HOME/Library/Fonts/
 
+# texinfo
+export PATH=/usr/local/opt/texinfo/bin:$PATH
+
 # perlbrew
 export PERLBREW_ROOT=$HOME/.perlbrew
 source $PERLBREW_ROOT/etc/bashrc
