@@ -1,7 +1,12 @@
-(defface clojure-define-namespace
+(defface clojure-defining-ns-face
   `((t :inherit font-lock-type-face
        :weight bold))
   "Face used to font-lock Clojure defining namespace.")
+
+(defface clojure-defining-spec-face
+  `((t :inherit clojure-keyword-face
+       :weight bold))
+  "Face used to font-lock Clojure defining Spec")
 
 (defface clojure-side-effect-face
   `((t :inherit font-lock-warning-face

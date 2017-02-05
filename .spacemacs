@@ -179,8 +179,8 @@ values."
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
    dotspacemacs-default-font `("Fira Code"
                                :size ,(if (<= 2560 (car (cdddar (frame-monitor-attributes))))
-                                          15 ; retina display
-                                        14)
+                                          16 ; retina display
+                                        15)
                                :weight light
                                :width normal
                                :powerline-scale 1.3)
@@ -394,7 +394,7 @@ you should place your code here."
     (let* ((w 130)
            (h (1- (/ (display-pixel-height) (frame-char-height))))
            (l (/ (custom-display-pixel-width) 2.0))
-           (l (floor (- l (* (frame-unit->pixel w) 0.45))))
+           (l (floor (- l (* (frame-unit->pixel w) 0.4))))
            (l (if (< 0 (- (custom-display-pixel-width)
                           (+ l (frame-unit->pixel w))))
                   l
@@ -465,17 +465,16 @@ you should place your code here."
         gc-cons-threshold (* 64 1024 1024))
   (run-with-idle-timer 1 t #'garbage-collect)
 
-
+  ;; customize the theme.
   (let ((f (lambda (&rest _)
              (->> (face-list)
                   (--filter (eq 'normal (face-attribute it :weight)))
                   (--map (set-face-attribute it nil :weight 'light))))))
     (add-hook 'after-load-functions f)
     (funcall f))
-  ;; customize the theme.
   (custom-theme-set-faces
    'twilight-bright
-   `(hl-line ((t (:background "#fdeeee"))))
+   `(hl-line ((t (:background "#fdeeee" :inverse-video nil))))
    `(magit-section-highlight ((t (:inherit hl-line))))
    `(org-block ((t (:foreground "#4d4d4d" :background "#fcfcfc" :slant normal :inherit org-meta-line))))
    `(org-link  ((t (:inherit link))))

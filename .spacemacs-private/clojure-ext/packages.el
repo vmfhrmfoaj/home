@@ -96,34 +96,84 @@
   (use-package clojure-mode
     :defer t
     :config
-    (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
-      (font-lock-add-keywords
-       mode
-       '(("\\s(\\(?:[^ \r\t\n]+?/\\)?\\(default[^ \r\t\n]*?\\)[ \t\n]+\\([^ \r\t\n]+?\\)"
-          (1 'default)
-          (2 'default))
-         ("\\s(\\(\\(?:as\\|cond\\|some\\)?->>?\\|and\\|or\\)\\_>"
-          1 'default)
-         ("^\\s-*\\s(def[ \r\n\t]+\\([^ \r\t\n]+?\\)\\(!+\\)[ \r\t\n]"
-          (1 'font-lock-variable-name-face)
-          (2 'clojure-side-effect-face))
-         ("^\\s-*\\s(defn-?[ \r\n\t]+\\([^ \r\t\n]+?\\)\\(!+\\)[ \r\t\n]"
-          (1 'font-lock-function-name-face)
-          (2 'clojure-side-effect-face))
-         ("\\(!+\\)\\(?:\\s-+\\|\\s)\\|$\\)"
-          1 'clojure-side-effect-face t)
-         ("\\(#js\\)\\s-*\\s("
-          1 'font-lock-builtin-face)
-         ("\\_<\\(\\.-?\\)[a-z][a-zA-Z0-9]*\\_>"
-          1 'font-lock-keyword-face)
-         ("(\\(extend-protocol\\|go-loop\\)[ \r\t\n]"
-          1 'font-lock-keyword-face)
-         ("(\\(?:defstate\\|defproject\\)[ \r\t\n]+\\([^ \r\t\n]+\\)[ \r\t\n]"
-          1 'font-lock-variable-name-face)
-         ("(ns[ \r\t\n]+\\([^ \r\t\n]+\\)"
-          1 'clojure-define-namespace)
-         ("(\\(case\\|cond\\(p\\|->>?\\)?\\|for\\|if\\(-let\\|-not\\)?\\|recur\\|throw\\|when\\(-let\\|-not\\)?\\|while\\)[) \r\t\n]"
-          1 'clojure-important-keywords-face t))))
+    (let* ((whitespace  "[ \r\t\n]")
+           (whitespace+ (concat whitespace "+"))
+           (whitespace* (concat whitespace "*"))
+           (symbol      clojure--sym-regexp)
+           (namespace   (concat "\\(?:" clojure--sym-regexp "/\\)"))
+           (namespace?  (concat namespace "?"))
+           (meta* "\\(?:#?^\\(?:{[^}]*}\\|\\sw+\\)[ \r\n\t]*\\)*"))
+      (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
+        (font-lock-add-keywords
+         mode
+         `(;; Replaces a regex rules `clojure-mode'.
+           (,(concat "(" namespace?
+                     "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
+                     whitespace+
+                     meta*
+                     "\\(:\\(?::\\|" namespace "\\)" symbol "\\)"
+                     )
+            (1 'font-lock-keyword-face)
+            (2 'clojure-defining-spec-face))
+           (,(concat "(" namespace?
+                     (regexp-opt '("defn" "defmacro") t) "\\>"
+                     whitespace+
+                     meta*
+                     "\\(" symbol "?\\)\\(!*\\)"
+                     whitespace+)
+            (1 'font-lock-keyword-face)
+            (2 'font-lock-function-name-face)
+            (3 'clojure-side-effect-face))
+           (,(concat "(" namespace?
+                     "\\(default\\(?:/?" symbol "\\)?\\)\\>"
+                     whitespace+)
+            (1 'default))
+           (,(concat "(" namespace?
+                     "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
+                     whitespace+
+                     meta*
+                     "\\(" symbol "?\\)\\(!*\\)"
+                     whitespace+)
+            (1 'font-lock-keyword-face)
+            (2 'font-lock-variable-name-face)
+            (3 'clojure-side-effect-face))
+           ;; Adds a rules
+           (,(concat symbol "\\(!\\)\\(?:" whitespace "\\|)\\)")
+            (1 'clojure-side-effect-face))
+           (,(concat "\\(#js\\)"
+                     whitespace*
+                     "\\s(")
+            (1 'font-lock-builtin-face))
+           (,(regexp-opt '("extend-protocol"
+                           "go-loop") t)
+            (1 'font-lock-builtin-face))
+           (,(concat "(ns"
+                     whitespace+
+                     meta*
+                     "\\(" symbol "\\)")
+            (1 'clojure-defining-ns-face))
+           (,(concat "\\_<\\(\\.-?\\)[_a-z][-_a-zA-Z0-9]*\\_>")
+            (1 'font-lock-keyword-face))
+           (,(concat "("
+                     (regexp-opt '("case"
+                                   "cond" "condp" "cond->" "cond->>"
+                                   "for"
+                                   "if" "if-let" "if-not"
+                                   "recur"
+                                   "throw"
+                                   "when" "when-let" "when-not"
+                                   "while"
+                                   ) t)
+                     "\\(?:)\\|" whitespace "\\)")
+            (1 'clojure-important-keywords-face))
+           ;; Removes(overwrite) a rules
+           (,(concat "(" (regexp-opt '("->"     "->>"
+                                       "as->"   "as->>"
+                                       "cond->" "cond->>"
+                                       "some->" "some->>"
+                                       "and"
+                                       "or") t))
+            (1 'default))))))
     (setq clojure-indent-style :align-arguments)
     (put 'defstate 'clojure-doc-string-elt 2)
     (put-clojure-indent 'redef-state :defn) ; for expectations

@@ -20,7 +20,8 @@
     :defer t
     :config
     (setq-default css-indent-offset 2)
-    (setq css-color-distnat-foreground
+    (setq css-color-distnat-threshold 60000
+          css-color-distnat-foreground
           (let ((base (/ (color-distance "white" "black") 2))
                 (bg (face-attribute 'default :background)))
             (if (> base (color-distance "white" bg))
@@ -35,30 +36,53 @@
         0 (put-text-property
            (match-beginning 0)
            (match-end 0)
-           'face (list :distant-foreground css-color-distnat-foreground
-                       :background (let ((max 255.0)
-                                         (r (match-string 1))
-                                         (g (match-string 2))
-                                         (b (match-string 3)))
-                                     (->> (list r g b)
-                                          (-map #'string-to-int)
-                                          (--map (min max it))
-                                          (--map (/ it max))
-                                          (apply #'color-rgb-to-hex))))))
+           'face (let* ((max 255.0)
+                        (r (match-string 1))
+                        (g (match-string 2))
+                        (b (match-string 3))
+                        (bg (->> (list r g b)
+                                 (-map #'string-to-int)
+                                 (--map (min max it))
+                                 (--map (/ it max))
+                                 (apply #'color-rgb-to-hex)))
+                        (fg (if (< css-color-distnat-threshold
+                                   (color-distance bg fg))
+                                fg
+                              css-color-distnat-foreground)))
+                   (list :inverse-video t
+                         :background fg
+                         :foreground bg
+                         :distant-foreground (funcall
+                                              (if (string= "white" css-color-distnat-foreground)
+                                                  #'dim-color
+                                                #'light-color)
+                                              bg 15)))))
        ;; http://ergoemacs.org/emacs/emacs_CSS_colors.html
        ("#[0-9A-Fa-f]\\{3,6\\}"
         0 (put-text-property
            (match-beginning 0)
            (match-end 0)
-           'face (list :distant-foreground css-color-distnat-foreground
-                       :background (let ((color (string-to-list (match-string 0))))
-                                     (if (= 7 (length color))
-                                         (apply #'string color)
-                                       (->> color
-                                            (--remove-first (char-equal ?# it))
-                                            (-take 3)
-                                            (--map (make-string 2 it))
-                                            (apply #'concat "#")))))))))))
+           'face (let* ((color (string-to-list (match-string 0)))
+                        (bg (if (= 7 (length color))
+                                (apply #'string color)
+                              (->> color
+                                   (--remove-first (char-equal ?# it))
+                                   (-take 3)
+                                   (--map (make-string 2 it))
+                                   (apply #'concat "#"))))
+                        (fg (face-attribute 'default :foreground))
+                        (fg (if (< css-color-distnat-threshold
+                                   (color-distance bg fg))
+                                fg
+                              css-color-distnat-foreground)))
+                   (list :inverse-video t
+                         :background fg
+                         :foreground bg
+                         :distant-foreground (funcall
+                                              (if (string= "white" css-color-distnat-foreground)
+                                                  #'dim-color
+                                                #'light-color)
+                                              bg 15)))))))))
 
 (defun html-ext/post-init-web-mode ()
   (use-package web-mode
