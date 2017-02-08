@@ -32,10 +32,10 @@
      `((,(concat "rgba?("
                  "\\([0-9A-Fa-f]+\\),[ \r\t\n]*"
                  "\\([0-9A-Fa-f]+\\),[ \r\t\n]*"
-                 "\\([0-9A-Fa-f]+\\)\\(?:,[ \r\n\t]*0?.[0-9]+\\)?)")
+                 "\\([0-9A-Fa-f]+\\)\\(?:,[ \r\n\t]*0?.[0-9]+\\)?")
         0 (put-text-property
-           (match-beginning 0)
-           (match-end 0)
+           (match-beginning 1)
+           (match-end 3)
            'face (let* ((max 255.0)
                         (r (match-string 1))
                         (g (match-string 2))
@@ -45,6 +45,7 @@
                                  (--map (min max it))
                                  (--map (/ it max))
                                  (apply #'color-rgb-to-hex)))
+                        (fg (face-attribute 'default :foreground))
                         (fg (if (< css-color-distnat-threshold
                                    (color-distance bg fg))
                                 fg

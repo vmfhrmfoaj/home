@@ -54,8 +54,9 @@
                   "   :cljs [cljs.test :refer [deftest is are] :include-macros true])")
           cljr-expectations-test-declaration "[expectations :refer :all]"
           cljr-favor-prefix-notation nil
+          cljr-favor-private-functions nil
           cljr-prune-ns-form nil
-          cljr-favor-private-functions nil)
+          cljr-suppress-middleware-warnings t)
     (add-hook 'clojure-mode-hook (-partial #'clj-refactor-mode 1))
     (add-hook 'cider-connected-hook
               (lambda ()
@@ -102,6 +103,7 @@
            (symbol      clojure--sym-regexp)
            (namespace   (concat "\\(?:" clojure--sym-regexp "/\\)"))
            (namespace?  (concat namespace "?"))
+           (namespace*  (concat namespace "*"))
            (meta* "\\(?:#?^\\(?:{[^}]*}\\|\\sw+\\)[ \r\n\t]*\\)*"))
       (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
         (font-lock-add-keywords
@@ -111,12 +113,14 @@
                      "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
                      whitespace+
                      meta*
-                     "\\(:\\(?::\\|" namespace "\\)" symbol "\\)"
-                     )
+                     "::?" namespace* "\\(" symbol "\\)")
             (1 'font-lock-keyword-face)
             (2 'clojure-defining-spec-face))
            (,(concat "(" namespace?
-                     (regexp-opt '("defn" "defmacro") t) "\\>"
+                     (regexp-opt '("defn"
+                                   "defmacro"
+                                   "defmethod") t)
+                     "\\>"
                      whitespace+
                      meta*
                      "\\(" symbol "?\\)\\(!*\\)"

@@ -349,7 +349,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; set up the addtional font setting.
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
   (add-to-list 'face-font-rescale-alist '("Nanum Gothic" . 0.95))
-  (setq-default line-spacing 1)
+  (setq-default line-spacing 0)
   (mac-auto-operator-composition-mode))
 
 (defun dotspacemacs/user-config ()
@@ -536,13 +536,15 @@ you should place your code here."
             (lambda ()
               (font-lock-add-keywords
                nil
-               `(("\\('\\|`\\|,\\|@\\|#\\|~\\|\\^\\|_\\|\\s(\\|\\s)\\|[{}]\\)"
+               '(("\\('\\|`\\|,\\|@\\|#\\|~\\|\\^\\|_\\|\\s(\\|\\s)\\|[{}]\\)"
                   1 'shadow)
                  ("[\[ \r\t\n]\\(&\\)[ \r\t\n]"
-                  1 'shadow)
-                 ("[^ \r\t\n]\\(/\\)[^ \r\t\n]"
-                  1 'shadow t))
-               t)))
+                  1 'shadow))
+               t)
+              (font-lock-add-keywords
+               nil
+               '(("[^ \r\t\n]\\(/\\)[^ \r\t\n]"
+                  1 'shadow)))))
 
   ;; for org-capture Chrome extension
   (require 'org-protocol)
