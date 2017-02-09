@@ -40,7 +40,24 @@
     (evil-define-key 'normal cider-repl-mode-map (kbd "RET") #'cider-repl-return)
     (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
       (spacemacs/set-leader-keys-for-major-mode mode
-        "en" #'cider-eval-ns-form))))
+        "en" #'cider-eval-ns-form))
+    (advice-add #'cider-expected-ns :around
+                (lambda (of &optional path)
+                  (-if-let (root-dirs (and (cider-connected-p)
+                                           (string= "cljs" (cider-connection-type-for-buffer))
+                                           (cider-cljs-root-dirs)))
+                      (let* ((path    (or path (file-truename (buffer-file-name))))
+                             (relpath (->> root-dirs
+                                           (--filter (string-prefix-p it path))
+                                           (--sort (< (length it) (length other)))
+                                           (-first-item))))
+                        (when relpath
+                          (->> path
+                               (string-remove-prefix (concat relpath "/"))
+                               (file-name-sans-extension)
+                               (replace-regexp-in-string "/" ".")
+                               (replace-regexp-in-string "_" "-"))))
+                    (funcall of path))))))
 
 (defun clojure-ext/post-init-clj-refactor ()
   (use-package clj-refactor
@@ -118,6 +135,7 @@
             (2 'clojure-defining-spec-face))
            (,(concat "(" namespace?
                      (regexp-opt '("defn"
+                                   "defn-"
                                    "defmacro"
                                    "defmethod") t)
                      "\\>"
