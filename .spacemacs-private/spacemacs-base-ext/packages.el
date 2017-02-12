@@ -12,7 +12,8 @@
 ;;; Code:
 
 (defconst spacemacs-base-ext-packages
-  '((ediff :location built-in)))
+  '((ediff :location built-in)
+    projectile))
 
 (defun spacemacs-base-ext/post-init-ediff ()
   (use-package ediff
@@ -35,5 +36,14 @@
                   (restore-modes ediff-exclude-modes ediff-exclude-mode-status)
                   (when (eq 'maximized (cdr (assoc 'fullscreen (frame-parameters))))
                     (spacemacs/toggle-maximize-frame-off))))))
+
+(defun spacemacs-base-ext/post-init-projectile ()
+  (use-package projectile
+    :defer t
+    :config
+    ;; NOTE
+    ;; The result of `projectile-sort-by-recentf-first' contain recently visited files.
+    ;; So, you will see ignored files.
+    (setq projectile-sort-order 'default)))
 
 ;;; packages.el ends here

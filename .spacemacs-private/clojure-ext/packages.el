@@ -72,7 +72,8 @@
           cljr-expectations-test-declaration "[expectations :refer :all]"
           cljr-favor-prefix-notation nil
           cljr-favor-private-functions nil
-          cljr-prune-ns-form nil
+          cljr-inject-dependencies-at-jack-in nil ; for using custom version.
+          cljr-prune-ns-form t ; for using the file local variable.
           cljr-suppress-middleware-warnings t)
     (add-hook 'clojure-mode-hook (-partial #'clj-refactor-mode 1))
     (add-hook 'cider-connected-hook
@@ -199,12 +200,21 @@
     (setq clojure-indent-style :align-arguments)
     (put 'defstate 'clojure-doc-string-elt 2)
     (put-clojure-indent 'redef-state :defn) ; for expectations
-    (add-hook 'clojure-mode-hook
-              (lambda ()
-                (when (string-match-p "_expectations.clj\\(?:c\\|s\\)?$" (buffer-file-name))
-                  (setq-local clojure-get-indent-function
-                              (lambda (fn)
-                                (when (string-match-p "\\(?:expect\\|freeze-time\\)" fn)
-                                  1))))))))
+    (add-hook
+     'clojure-mode-hook
+     (lambda ()
+       (let ((file-name (or (buffer-file-name) ""))
+             (buf-str   (buffer-string))
+             keywords)
+         (when (string-match-p "_expectations.clj[cs]?" file-name)
+           (add-to-list 'keywords "expect")
+           (add-to-list 'keywords "freeze-time"))
+         (when (string-match-p "compojure.core :" buf-str)
+           (add-to-list 'keywords "context"))
+         (when keywords
+           (setq-local clojure-get-indent-function
+                       (lexical-let ((keywords (regexp-opt keywords)))
+                         (lambda (func-name)
+                           (and (string-match-p keywords func-name) :defn))))))))))
 
 ;;; packages.el ends here
