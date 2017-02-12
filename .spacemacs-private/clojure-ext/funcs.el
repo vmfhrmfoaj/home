@@ -21,3 +21,52 @@
                  (nrepl-sync-request:eval repl)
                  (nrepl-dict-get "value")
                  (edn-read))))))
+
+(defvar clojure--binding-forms
+  '("let" "if-let" "when-let"))
+
+(defvar clojure--binding-regexp
+  (concat (regexp-opt clojure--binding-forms) "[ \r\t\n]*\\["))
+
+(defun clojure-space-key ()
+  (interactive)
+  (ignore-errors
+    (let ((point     (point))
+          (start-pos (progn (backward-up-list 1 t) (point)))
+          (end-pos   (progn (forward-sexp) (point))))
+      (clojure--goto-let)
+      ;; Is the current position inside the let binding?
+      (if (prog1 (not (and (re-search-forward clojure--binding-regexp end-pos t)
+                           (>= start-pos (progn (backward-char) (point)))
+                           (<= end-pos   (progn (forward-list)  (point)))))
+            (goto-char point))
+          (insert " ")
+        (if (>= start-pos (progn
+                            (previous-line)
+                            (end-of-line)
+                            (backward-sexp)
+                            (point)))
+            (progn
+              (goto-char point)
+              (insert " "))
+          (let ((target-pos    (point))
+                (target-column (current-column))
+                (prev-column   (progn
+                                 (goto-char point)
+                                 (previous-line)
+                                 (beginning-of-line-text)
+                                 (current-column)))
+                (cur-column (progn
+                              (goto-char point)
+                              (current-column))))
+            (when (>= cur-column target-column)
+              (goto-char target-pos)
+              (while (>= cur-column (current-column))
+                (setq point (1+ point))
+                (insert " "))
+              (goto-char point))
+            (insert " ")
+            (while (let ((column (current-column)))
+                     (and (< prev-column   column)
+                          (> target-column column)))
+              (insert " "))))))))

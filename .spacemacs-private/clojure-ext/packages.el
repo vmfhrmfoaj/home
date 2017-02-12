@@ -96,7 +96,10 @@
     (advice-add #'cljr--create-msg :filter-return
                 (lambda (msg)
                   "for missing a configuration."
-                  (append msg `("prune-ns-form" ,(if cljr-prune-ns-form "true" "false")))))
+                  (append msg (when (->> msg
+                                         (-filter #'stringp)
+                                         (-filter (-partial #'string= "prune-ns-form")))
+                                `("prune-ns-form" ,(if cljr-prune-ns-form "true" "false"))))))
     (with-eval-after-load 'smartparens
       (advice-add #'cljr-slash :after
                   (let ((byte-compile-warnings nil)
@@ -119,6 +122,7 @@
            (whitespace+ (concat whitespace "+"))
            (whitespace* (concat whitespace "*"))
            (symbol      clojure--sym-regexp)
+           (symbol?     (concat "\\(?:" clojure--sym-regexp "\\)?"))
            (namespace   (concat "\\(?:" clojure--sym-regexp "/\\)"))
            (namespace?  (concat namespace "?"))
            (namespace*  (concat namespace "*"))
@@ -126,7 +130,13 @@
       (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
         (font-lock-add-keywords
          mode
-         `(;; Replaces a regex rules `clojure-mode'.
+         `(;; Removes(overwrite) a rules
+           (,(concat "(" namespace?
+                     "\\(default/?[^" clojure--sym-forbidden-rest-chars "]*\\)"
+                     whitespace*
+                     "\\(" symbol? "\\)\\>")
+            (1 'default)
+            (2 'default))
            (,(concat "(" namespace?
                      "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
                      whitespace+
@@ -142,15 +152,11 @@
                      "\\>"
                      whitespace+
                      meta*
-                     "\\(" symbol "?\\)\\(!*\\)"
+                     "\\(" symbol? "\\)\\(!*\\)"
                      whitespace+)
             (1 'font-lock-keyword-face)
             (2 'font-lock-function-name-face)
             (3 'clojure-side-effect-face))
-           (,(concat "(" namespace?
-                     "\\(default\\(?:/?" symbol "\\)?\\)\\>"
-                     whitespace+)
-            (1 'default))
            (,(concat "(" namespace?
                      "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
                      whitespace+
@@ -160,22 +166,35 @@
             (1 'font-lock-keyword-face)
             (2 'font-lock-variable-name-face)
             (3 'clojure-side-effect-face))
+           ("\\<%[&1-9]?\\>"
+            (0 'clojure-special-variable-name-face))
+           (,(concat "\\(?:\\<\\|/\\)@?"
+                     "\\(\\*[^" clojure--sym-forbidden-rest-chars "*]*\\*\\)\\>")
+            (1 'clojure-special-variable-name-face))
+           (,(concat "(" (regexp-opt '("->"     "->>"
+                                       "as->"   "as->>"
+                                       "cond->" "cond->>"
+                                       "some->" "some->>"
+                                       "and"
+                                       "or") t))
+            (1 'default))
            ;; Adds a rules
-           (,(concat symbol "\\(!\\)\\(?:" whitespace "\\|)\\)")
+           (,(concat symbol "\\(!\\)\\>")
             (1 'clojure-side-effect-face))
            (,(concat "\\(#js\\)"
                      whitespace*
                      "\\s(")
             (1 'font-lock-builtin-face))
-           (,(regexp-opt '("extend-protocol"
-                           "go-loop") t)
-            (1 'font-lock-builtin-face))
+           (,(concat "(" namespace?
+                     (regexp-opt '("extend-protocol"
+                                   "go-loop") t))
+            (1 'font-lock-keyword-face))
            (,(concat "(ns"
                      whitespace+
                      meta*
                      "\\(" symbol "\\)")
             (1 'clojure-defining-ns-face))
-           (,(concat "\\_<\\(\\.-?\\)[_a-z][-_a-zA-Z0-9]*\\_>")
+           (,(concat "\\<\\(\\.-?\\)[_a-z][-_a-zA-Z0-9]*\\>")
             (1 'font-lock-keyword-face))
            (,(concat "("
                      (regexp-opt '("case"
@@ -188,29 +207,57 @@
                                    "while"
                                    ) t)
                      "\\(?:)\\|" whitespace "\\)")
-            (1 'clojure-important-keywords-face))
-           ;; Removes(overwrite) a rules
-           (,(concat "(" (regexp-opt '("->"     "->>"
-                                       "as->"   "as->>"
-                                       "cond->" "cond->>"
-                                       "some->" "some->>"
-                                       "and"
-                                       "or") t))
-            (1 'default))))))
+            (1 'clojure-important-keywords-face))))))
     (setq clojure-indent-style :align-arguments)
     (put 'defstate 'clojure-doc-string-elt 2)
     (put-clojure-indent 'redef-state :defn) ; for expectations
+    (evil-define-key 'insert clojure-mode-map (kbd "SPC") #'clojure-space-key)
     (add-hook
      'clojure-mode-hook
      (lambda ()
        (let ((file-name (or (buffer-file-name) ""))
-             (buf-str   (buffer-string))
+             (ns-form   (save-match-data
+                          (save-excursion
+                            (if (clojure-find-ns)
+                                (progn
+                                  (goto-char (match-beginning 0))
+                                  (end-of-defun)
+                                  (let ((end (point)))
+                                    (backward-sexp 1)
+                                    (buffer-substring-no-properties (point) end)))
+                              ""))))
              keywords)
          (when (string-match-p "_expectations.clj[cs]?" file-name)
+           (make-local-variable 'font-lock-keywords)
+           (font-lock-add-keywords
+            nil
+            '(("(\\(expect\\|freeze-time\\)[ \r\t\n]"
+               (1 'font-lock-keyword-face))))
            (add-to-list 'keywords "expect")
            (add-to-list 'keywords "freeze-time"))
-         (when (string-match-p "compojure.core :" buf-str)
-           (add-to-list 'keywords "context"))
+         (when (string-match-p (concat "compojure.core :"
+                                       "\\(?:as"
+                                       "\\|refer[ \r\t\n]\\[[^]]*"
+                                       (regexp-opt '("GET"
+                                                     "POST"
+                                                     "PUT"
+                                                     "DELETE"
+                                                     "HEAD"
+                                                     "OPTIONS"
+                                                     "PATCH"
+                                                     "ANY"
+                                                     "context"))
+                                       "\\>\\)")
+                               ns-form)
+           (setq keywords (append keywords '("GET"
+                                             "POST"
+                                             "PUT"
+                                             "DELETE"
+                                             "HEAD"
+                                             "OPTIONS"
+                                             "PATCH"
+                                             "ANY"
+                                             "context"))))
          (when keywords
            (setq-local clojure-get-indent-function
                        (lexical-let ((keywords (regexp-opt keywords)))

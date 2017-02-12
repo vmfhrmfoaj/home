@@ -169,7 +169,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(zenburn)
+   dotspacemacs-themes '(twilight-bright)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -179,9 +179,9 @@ values."
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
    dotspacemacs-default-font `("Fira Code"
                                :size ,(if (<= 2560 (car (cdddar (frame-monitor-attributes))))
-                                          16 ; retina display
-                                        15)
-                               :weight light
+                                          14 ; retina display
+                                        13)
+                               :weight normal
                                :width normal
                                :powerline-scale 1.3)
    ;; The leader key
@@ -346,11 +346,36 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (setq user-full-name "Jinseop Kim"
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
-  ;; set up the addtional font setting.
+  ;; set up the addtional font setting
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
-  (add-to-list 'face-font-rescale-alist '("Nanum Gothic" . 0.95))
-  (setq-default line-spacing 0)
-  (mac-auto-operator-composition-mode))
+  (setq-default line-spacing 2)
+  (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
+                 ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
+                 ( 36 . ".\\(?:>\\)")
+                 ( 37 . ".\\(?:\\(?:%%\\)\\|%\\)")
+                 ( 38 . ".\\(?:\\(?:&&\\)\\|&\\)")
+                 ( 42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*>]\\)") ; '*/' is delete.
+                 ( 43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
+                 ( 45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
+                 ( 46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
+                 ( 47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[/=]\\)") ; '/*' and '/>' is deleted.
+                 ( 48 . ".\\(?:x[a-zA-Z]\\)")
+                 ( 58 . ".\\(?:::\\|[:=]\\)")
+                 ( 59 . ".\\(?:;;\\|;\\)")
+                 ( 60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~<=>|-]\\)") ; '</' is deleted.
+                 ( 61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
+                 ( 62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
+                 ( 63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
+                 ( 91 . ".\\(?:]\\)")
+                 ( 92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
+                 ( 94 . ".\\(?:=\\)")
+                 (119 . ".\\(?:ww\\)")
+                 (123 . ".\\(?:-\\)")
+                 (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
+                 (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)"))))
+    (dolist (char-regexp alist)
+      (set-char-table-range composition-function-table (car char-regexp)
+                            `([,(cdr char-regexp) 0 font-shape-gstring])))))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -392,7 +417,8 @@ you should place your code here."
   (when window-system
     ;; for single window
     (let* ((w 130)
-           (h (1- (/ (display-pixel-height) (frame-char-height))))
+           (h (- (/ (display-pixel-height) (frame-char-height))
+                 (ceiling (/ 37.0 (frame-char-height)))))
            (l (/ (custom-display-pixel-width) 2.0))
            (l (floor (- l (* (frame-unit->pixel w) 0.4))))
            (l (if (< 0 (- (custom-display-pixel-width)
@@ -403,7 +429,7 @@ you should place your code here."
            (w (max w 100)))
       (add-to-list 'default-frame-alist (cons 'width  w))
       (add-to-list 'default-frame-alist (cons 'height h))
-      (setq org-tags-column (* -1 (- w 10))
+      (setq org-tags-column (- 10 w)
             split-width-threshold (1+ w)
             initial-frame-alist (list (cons 'top    0)
                                       (cons 'left   l)
@@ -467,29 +493,55 @@ you should place your code here."
   (run-with-idle-timer 1 t #'garbage-collect)
 
   ;; customize the theme.
-  (let ((f (lambda (&rest _)
-             (->> (face-list)
-                  (--filter (eq 'normal (face-attribute it :weight)))
-                  (--map (set-face-attribute it nil :weight 'light))))))
-    (add-hook 'after-load-functions f)
-    (funcall f))
   (custom-theme-set-faces
-   (car dotspacemacs-themes)
-   `(auto-dim-other-buffers-face
-     ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 5))
-         :background ,(-> 'default (face-attribute :background) (dim-color 2)))))
-   `(show-paren-match ((t :foreground "Springgreen2"
-                          :underline t
-                          :weight bold)))
-   `(sp-show-pair-mismatch-face)
-   `(sp-show-pair-match-face ((t (:inherit show-paren-match)))))
+   'twilight-bright
+   `(hl-line ((t (:background "#fdeeee" :inverse-video nil))))
+   `(magit-section-highlight ((t (:inherit hl-line))))
+   `(org-block ((t (:foreground "#4d4d4d" :background "#fcfcfc" :slant normal :inherit org-meta-line))))
+   `(org-link  ((t (:inherit link))))
+   `(org-tag   ((t (:weight normal :underline t))))
+   `(outline-4 ((t (:inherit font-lock-string-face))))
+   `(region ((t (:background "#fcdfdf")))))
   (custom-set-faces
-   `(font-lock-function-name-face ((t (:weight bold))))
-   `(font-lock-keyword-face ((t (:weight unspecified))))
-   `(font-lock-variable-name-face ((t (:weight bold))))
-   `(linum ((t (:inherit default)))))
+   `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (light-color 2))
+                                     :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
+   `(cider-fringe-good-face ((t (:inherit success))))
+   `(clojure-keyword-face ((t (:inherit font-lock-builtin-face))))
+   `(css-property ((t (:inherit font-lock-builtin-face :foreground nil :weight normal))))
+   `(css-selector ((t (:inherit font-lock-variable-name-face :foreground nil :weight bold))))
+   `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
+   `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1))))))
+   `(font-lock-function-name-face ((t (:inherit bold))))
+   `(font-lock-variable-name-face ((t (:inherit bold))))
+   `(font-lock-type-face ((t (:weight normal))))
+   `(font-lock-comment-face ((t (:slant normal))))
+   `(link ((t (:underline t))))
+   `(linum ((t (:inherit default))))
+   `(linum-relative-current-face ((t (:foreground ,(face-attribute 'default :foreground) :inherit linum))))
+   `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
+   `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground)))))
+   `(org-agenda-current-time (( t (:foreground "#2d9574" :height 0.9))))
+   `(org-agenda-date ((t (:inherit (font-lock-variable-name-face org-agenda-structure)))))
+   `(org-agenda-date-today ((t (:inherit (font-lock-function-name-face org-agenda-structure)))))
+   `(org-agenda-date-weekend ((t (:inherit org-agenda-date))))
+   `(org-agenda-done ((t (:height 1.0 :inherit bold))))
+   `(org-agenda-structure ((t (:height 1.3))))
+   `(org-hide ((t :background ,(face-attribute 'default :background)
+                  :foreground ,(face-attribute 'default :background))))
+   `(org-cancelled ((t (:foreground nil :inherit org-done))))
+   `(org-document-title ((t (:family ,(first dotspacemacs-default-font) :height 1.4))))
+   `(org-next ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
+   `(org-time-grid ((t :foreground ,(-> 'default
+                                        (face-attribute :foreground)
+                                        (light-color 50))
+                       :height 0.9)))
+   `(show-paren-match ((t (:background "#eefff6" :foreground "Springgreen2" :underline t :weight bold))))
+   `(shadow ((t (:foreground ,(-> 'default (face-attribute :foreground) (light-color 30)))))))
   (with-eval-after-load "goto-addr"
     (setq goto-address-mail-face "link"))
+  (with-eval-after-load "powerline"
+    (set-face-attribute 'powerline-active1 nil :foreground "#85ceeb")
+    (set-face-attribute 'powerline-active2 nil :foreground "#85ceeb"))
   (with-eval-after-load "org"
     (dolist (i (number-sequence 1 org-n-level-faces))
       (set-face-attribute (intern (concat "org-level-" (number-to-string i))) nil :weight 'bold)))
@@ -497,9 +549,7 @@ you should place your code here."
     (dolist (i (number-sequence 1 9))
       (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
         (set-face-attribute face nil :foreground
-                            (-> (face-attribute face :foreground)
-                                (dim-color 15)
-                                (saturate-color -35))))))
+                            (light-color (face-attribute face :foreground) 15)))))
 
   ;; for programming
   (add-to-list 'auto-mode-alist '("\\.m\\s-*$" . objc-mode))
