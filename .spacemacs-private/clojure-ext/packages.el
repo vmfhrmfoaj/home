@@ -179,7 +179,7 @@
                                        "or") t))
             (1 'default))
            ;; Adds a rules
-           (,(concat symbol "\\(!\\)\\>")
+           (,(concat symbol "?\\(!+\\)\\>")
             (1 'clojure-side-effect-face))
            (,(concat "\\(#js\\)"
                      whitespace*

@@ -26,9 +26,7 @@
      ("(\\(assert\\)"
       1 'font-lock-warning-face)
      (" \\(\\?.\\)"
-      1 'font-lock-string-face)
-     ("\\(:[-0-9A-Za-z:?!]+\\)"
-      1 'font-lock-constant-face)))
+      1 'font-lock-string-face)))
   (add-hook 'lisp-interaction-mode-hook #'smartparens-mode)
   (with-eval-after-load 'evil
     (let ((f (lambda ()

@@ -179,9 +179,9 @@ values."
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
    dotspacemacs-default-font `("Fira Code"
                                :size ,(if (<= 2560 (car (cdddar (frame-monitor-attributes))))
-                                          14 ; retina display
-                                        13)
-                               :weight normal
+                                          15 ; retina display
+                                        14)
+                               :weight light
                                :width normal
                                :powerline-scale 1.3)
    ;; The leader key
@@ -347,14 +347,15 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting
-  (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
+  (set-fontset-font t 'hangul (font-spec :name "Apple SD Gothic Neo"))
+  ;;  (add-to-list 'face-font-rescale-alist '("Apple SD Gothic Neo" . 0.95))
   (setq-default line-spacing 2)
   (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
                  ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
                  ( 36 . ".\\(?:>\\)")
                  ( 37 . ".\\(?:\\(?:%%\\)\\|%\\)")
                  ( 38 . ".\\(?:\\(?:&&\\)\\|&\\)")
-                 ( 42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*>]\\)") ; '*/' is delete.
+                 ( 42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*>]\\)") ; '*/' is deleted.
                  ( 43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
                  ( 45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
                  ( 46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
@@ -493,50 +494,57 @@ you should place your code here."
   (run-with-idle-timer 1 t #'garbage-collect)
 
   ;; customize the theme.
+  (let ((f (lambda (&rest _)
+             (->> (face-list)
+                  (--filter (eq 'normal (face-attribute it :weight)))
+                  (--map (set-face-attribute it nil :weight 'light))))))
+    (add-hook 'after-load-functions f)
+    (funcall f))
   (custom-theme-set-faces
    'twilight-bright
-   `(hl-line ((t (:background "#fdeeee" :inverse-video nil))))
-   `(magit-section-highlight ((t (:inherit hl-line))))
-   `(org-block ((t (:foreground "#4d4d4d" :background "#fcfcfc" :slant normal :inherit org-meta-line))))
-   `(org-link  ((t (:inherit link))))
-   `(org-tag   ((t (:weight normal :underline t))))
-   `(outline-4 ((t (:inherit font-lock-string-face))))
-   `(region ((t (:background "#fcdfdf")))))
-  (custom-set-faces
    `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (light-color 2))
                                      :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
    `(cider-fringe-good-face ((t (:inherit success))))
    `(clojure-keyword-face ((t (:inherit font-lock-builtin-face))))
    `(css-property ((t (:inherit font-lock-builtin-face :foreground nil :weight normal))))
    `(css-selector ((t (:inherit font-lock-variable-name-face :foreground nil :weight bold))))
+   `(font-lock-builtin-face  ((t (:foreground "#a66bab" :background "#f8f1f8"))))
+   `(font-lock-constant-face ((t (:foreground "#d2ad00" :background "#faf7e7"))))
+   `(fringe ((t (:background ,(-> 'default
+                                  (face-attribute :background)
+                                  (dim-color 1.5))))))
    `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
-   `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1))))))
-   `(font-lock-function-name-face ((t (:inherit bold))))
-   `(font-lock-variable-name-face ((t (:inherit bold))))
-   `(font-lock-type-face ((t (:weight normal))))
-   `(font-lock-comment-face ((t (:slant normal))))
-   `(link ((t (:underline t))))
-   `(linum ((t (:inherit default))))
-   `(linum-relative-current-face ((t (:foreground ,(face-attribute 'default :foreground) :inherit linum))))
-   `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
-   `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground)))))
+   `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
+   `(magit-section-highlight ((t (:inherit hl-line))))
    `(org-agenda-current-time (( t (:foreground "#2d9574" :height 0.9))))
    `(org-agenda-date ((t (:inherit (font-lock-variable-name-face org-agenda-structure)))))
    `(org-agenda-date-today ((t (:inherit (font-lock-function-name-face org-agenda-structure)))))
    `(org-agenda-date-weekend ((t (:inherit org-agenda-date))))
    `(org-agenda-done ((t (:height 1.0 :inherit bold))))
    `(org-agenda-structure ((t (:height 1.3))))
-   `(org-hide ((t :background ,(face-attribute 'default :background)
-                  :foreground ,(face-attribute 'default :background))))
+   `(org-block ((t (:foreground "#4d4d4d" :background "#fcfcfc" :slant normal :inherit org-meta-line))))
    `(org-cancelled ((t (:foreground nil :inherit org-done))))
    `(org-document-title ((t (:family ,(first dotspacemacs-default-font) :height 1.4))))
+   `(org-hide ((t :background ,(face-attribute 'default :background) :foreground ,(face-attribute 'default :background))))
+   `(org-link  ((t (:inherit link))))
    `(org-next ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
-   `(org-time-grid ((t :foreground ,(-> 'default
-                                        (face-attribute :foreground)
-                                        (light-color 50))
-                       :height 0.9)))
-   `(show-paren-match ((t (:background "#eefff6" :foreground "Springgreen2" :underline t :weight bold))))
-   `(shadow ((t (:foreground ,(-> 'default (face-attribute :foreground) (light-color 30)))))))
+   `(org-tag   ((t (:weight normal :underline t))))
+   `(org-time-grid ((t (:height 0.9 :foreground ,(-> 'default
+                                                     (face-attribute :foreground)
+                                                     (light-color 50))))))
+   `(outline-4 ((t (:inherit font-lock-string-face))))
+   `(shadow ((t (:foreground ,(-> 'default
+                                  (face-attribute :foreground)
+                                  (light-color 30))))))
+   `(show-paren-match ((t (:background "#eefff6" :foreground "Springgreen2" :underline t :weight bold)))))
+  (custom-set-faces
+   `(font-lock-comment-face ((t (:slant unspecified))))
+   `(font-lock-function-name-face ((t (:inherit bold))))
+   `(font-lock-variable-name-face ((t (:inherit bold))))
+   `(link ((t (:underline t))))
+   `(linum ((t (:inherit default))))
+   `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
+   `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground))))))
   (with-eval-after-load "goto-addr"
     (setq goto-address-mail-face "link"))
   (with-eval-after-load "powerline"
