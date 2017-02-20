@@ -20,7 +20,7 @@ values."
    ;; installation feature and you have to explicitly list a layer in the
    ;; variable `dotspacemacs-configuration-layers' to install it.
    ;; (default 'unused)
-   dotspacemacs-enable-lazy-installation 'unused
+   otspacemacs-enable-lazy-installation 'unused
    ;; If non-nil then Spacemacs will ask for confirmation before installing
    ;; a layer lazily. (default t)
    dotspacemacs-ask-for-lazy-installation t
@@ -178,10 +178,10 @@ values."
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
    dotspacemacs-default-font `("Fira Code"
-                               :size ,(if (<= 2560 (car (cdddar (frame-monitor-attributes))))
-                                          15 ; retina display
+                               :size ,(if (string-match-p "iMac" system-name)
+                                          15
                                         14)
-                               :weight light
+                               :weight normal
                                :width normal
                                :powerline-scale 1.3)
    ;; The leader key
@@ -347,8 +347,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting
-  (set-fontset-font t 'hangul (font-spec :name "Apple SD Gothic Neo"))
-  ;;  (add-to-list 'face-font-rescale-alist '("Apple SD Gothic Neo" . 0.95))
+  (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
   (setq-default line-spacing 2)
   (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
                  ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
@@ -415,6 +414,9 @@ you should place your code here."
   (define-key key-translation-map (kbd "<S-kp-subtract>") "_")
   (define-key key-translation-map (kbd "<S-kp-add>") "=")
 
+  ;; multi window
+  (advice-add 'set-window-buffer :around #'set-window-buffer+)
+
   (when window-system
     ;; for single window
     (let* ((w 130)
@@ -442,23 +444,6 @@ you should place your code here."
     ;; (dotimes (i (1- (/ (custom-display-pixel-width) (frame-char-width) 120)))
     ;;   (split-window-right))
     ;; (require 'dash-functional)
-    ;; (defun set-window-buffer+ (set-win-buf wind buf &optional opt)
-    ;;   (when (and (->> (window-list)
-    ;;                   (-remove (-partial #'eq (selected-window)))
-    ;;                   (-map #'window-buffer)
-    ;;                   (-some? (-partial #'eq buf)))
-    ;;              (->> this-command
-    ;;                   (format "%s")
-    ;;                   (string-match-p "quit\\|bury")
-    ;;                   (not)))
-    ;;     (funcall set-win-buf
-    ;;              (->> (window-list)
-    ;;                   (--remove (eq (selected-window) it))
-    ;;                   (--filter (eq buf (window-buffer it)))
-    ;;                   (-first-item))
-    ;;              (window-buffer wind) opt))
-    ;;   (funcall set-win-buf wind buf opt))
-    ;; (advice-add 'set-window-buffer :around #'set-window-buffer+)
     ;; (when (<= 3 (length (window-list)))
     ;;   (eval-after-load "helm-buffers"
     ;;     '(progn
@@ -494,70 +479,75 @@ you should place your code here."
   (run-with-idle-timer 1 t #'garbage-collect)
 
   ;; customize the theme.
-  (let ((f (lambda (&rest _)
-             (->> (face-list)
-                  (--filter (eq 'normal (face-attribute it :weight)))
-                  (--map (set-face-attribute it nil :weight 'light))))))
-    (add-hook 'after-load-functions f)
-    (funcall f))
-  (custom-theme-set-faces
-   'twilight-bright
-   `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (light-color 2))
-                                     :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
+  (when (featurep 'leuven-theme)
+    (custom-theme-set-faces
+     'leuven
+     `(font-lock-regexp-grouping-backslash ((t (:foreground "#00998d"))))
+     `(font-lock-regexp-grouping-construct ((t (:foreground "#00998d"))))
+     `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 3))))))
+     `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
+     `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
+     `(show-paren-match ((t (:background "#eefff6" :foreground "Springgreen2" :underline t :weight bold))))))
+  (when (featurep 'twilight-bright-theme)
+    (custom-theme-set-faces
+     'twilight-bright
+     `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (light-color 2))
+                                       :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
+     `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
+     `(font-lock-regexp-grouping-construct ((t (:weight bold :foreground ,(-> 'font-lock-string-face
+                                                                              (face-attribute :foreground)
+                                                                              (light-color 5)
+                                                                              (saturate-color 10))))))
+     `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1))))))
+     `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
+     `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
+     `(org-cancelled ((t (:foreground nil :inherit org-done))))
+     `(org-next ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
+     `(show-paren-match ((t (:background "#eefff6" :foreground "Springgreen2" :underline t :weight bold))))))
+  (when (featurep 'zenburn-theme)
+    (custom-theme-set-faces
+     'zenburn
+     `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 2))
+                                       :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
+     `(cider-fringe-good-face ((t (:inherit success))))
+     `(clojure-keyword-face ((t (:inherit font-lock-builtin-face))))
+     `(font-lock-builtin-face ((t (:foreground ,(-> 'font-lock-keyword-face
+                                                    (face-attribute :foreground)
+                                                    (dim-color 10)
+                                                    (saturate-color -25))))))
+     `(lazy-highlight ((t (:foreground "#d0bf8f" :background "#1e1e1e"))))
+     `(linum-relative-current-face ((t (:inherit linum :foreground ,(-> 'linum (face-attribute :foreground)
+                                                                        (light-color 15)
+                                                                        (saturate-color 25))))))
+     `(org-block ((t (:background ,(dim-color (face-attribute 'default :background) 1.5)))))
+     `(show-paren-match ((t (:foreground "Springgreen2" :underline t :weight bold))))
+     `(sp-show-pair-match-face ((t (:inherit show-paren-match)))))
+    (with-eval-after-load "rainbow-delimiters"
+      (dolist (i (number-sequence 1 9))
+        (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
+          (set-face-attribute face nil :foreground
+                              (-> (face-attribute face :foreground)
+                                  (dim-color 5)
+                                  (saturate-color -20)))))))
+  (custom-set-faces
    `(cider-fringe-good-face ((t (:inherit success))))
    `(clojure-keyword-face ((t (:inherit font-lock-builtin-face))))
    `(css-property ((t (:inherit font-lock-builtin-face :foreground nil :weight normal))))
    `(css-selector ((t (:inherit font-lock-variable-name-face :foreground nil :weight bold))))
-   `(font-lock-builtin-face  ((t (:foreground "#a66bab" :background "#f8f1f8"))))
-   `(font-lock-constant-face ((t (:foreground "#d2ad00" :background "#faf7e7"))))
-   `(fringe ((t (:background ,(-> 'default
-                                  (face-attribute :background)
-                                  (dim-color 1.5))))))
-   `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
-   `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
-   `(magit-section-highlight ((t (:inherit hl-line))))
-   `(org-agenda-current-time (( t (:foreground "#2d9574" :height 0.9))))
-   `(org-agenda-date ((t (:inherit (font-lock-variable-name-face org-agenda-structure)))))
-   `(org-agenda-date-today ((t (:inherit (font-lock-function-name-face org-agenda-structure)))))
-   `(org-agenda-date-weekend ((t (:inherit org-agenda-date))))
-   `(org-agenda-done ((t (:height 1.0 :inherit bold))))
-   `(org-agenda-structure ((t (:height 1.3))))
-   `(org-block ((t (:foreground "#4d4d4d" :background "#fcfcfc" :slant normal :inherit org-meta-line))))
-   `(org-cancelled ((t (:foreground nil :inherit org-done))))
-   `(org-document-title ((t (:family ,(first dotspacemacs-default-font) :height 1.4))))
-   `(org-hide ((t :background ,(face-attribute 'default :background) :foreground ,(face-attribute 'default :background))))
-   `(org-link  ((t (:inherit link))))
-   `(org-next ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
-   `(org-tag   ((t (:weight normal :underline t))))
-   `(org-time-grid ((t (:height 0.9 :foreground ,(-> 'default
-                                                     (face-attribute :foreground)
-                                                     (light-color 50))))))
-   `(outline-4 ((t (:inherit font-lock-string-face))))
-   `(shadow ((t (:foreground ,(-> 'default
-                                  (face-attribute :foreground)
-                                  (light-color 30))))))
-   `(show-paren-match ((t (:background "#eefff6" :foreground "Springgreen2" :underline t :weight bold)))))
-  (custom-set-faces
    `(font-lock-comment-face ((t (:slant unspecified))))
-   `(font-lock-function-name-face ((t (:inherit bold))))
-   `(font-lock-variable-name-face ((t (:inherit bold))))
-   `(link ((t (:underline t))))
+   `(font-lock-doc-face ((t (:slant italic))))
+   `(font-lock-function-name-face ((t (:inherit bold :weight unspecified))))
+   `(font-lock-keyword-face ((t (:inherit nil :weight unspecified))))
+   `(font-lock-type-face    ((t (:inherit nil :weight unspecified))))
+   `(font-lock-variable-name-face ((t (:inherit bold :weight unspecified))))
+   `(hl-line ((t (:inverse-video nil))))
+   `(link ((t (:underline t :weight unspecified))))
    `(linum ((t (:inherit default))))
+   `(linum-relative-current-face ((t (:inherit linum))))
    `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
    `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground))))))
   (with-eval-after-load "goto-addr"
     (setq goto-address-mail-face "link"))
-  (with-eval-after-load "powerline"
-    (set-face-attribute 'powerline-active1 nil :foreground "#85ceeb")
-    (set-face-attribute 'powerline-active2 nil :foreground "#85ceeb"))
-  (with-eval-after-load "org"
-    (dolist (i (number-sequence 1 org-n-level-faces))
-      (set-face-attribute (intern (concat "org-level-" (number-to-string i))) nil :weight 'bold)))
-  (with-eval-after-load "rainbow-delimiters"
-    (dolist (i (number-sequence 1 9))
-      (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
-        (set-face-attribute face nil :foreground
-                            (light-color (face-attribute face :foreground) 15)))))
 
   ;; for programming
   (add-to-list 'auto-mode-alist '("\\.m\\s-*$" . objc-mode))

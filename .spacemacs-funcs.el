@@ -94,3 +94,20 @@
                         (point))))
            (indent-region start end))))))
   (setq-local auto-indent-skip-when-open-file nil))
+
+(defun set-window-buffer+ (set-win-buf wind buf &optional opt)
+  (when (and (->> (window-list)
+                  (-remove (-partial #'eq (selected-window)))
+                  (-map #'window-buffer)
+                  (-some? (-partial #'eq buf)))
+             (->> this-command
+                  (format "%s")
+                  (string-match-p "quit\\|bury")
+                  (not)))
+    (funcall set-win-buf
+             (->> (window-list)
+                  (--remove (eq (selected-window) it))
+                  (--filter (eq buf (window-buffer it)))
+                  (-first-item))
+             (window-buffer wind) opt))
+  (funcall set-win-buf wind buf opt))

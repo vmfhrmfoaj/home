@@ -20,10 +20,10 @@
     :config
     (setq git-gutter-fr+-side 'left-fringe)
     (let* ((prefix  1)
-           (width   3)
+           (width   2)
            (width   (min width (- 8 prefix)))
            (postfix (- 8 prefix width))
-           (bitmap  (-repeat (line-pixel-height)
+           (bitmap  (-repeat (1- (line-pixel-height))
                              (apply #'concat (append (-repeat prefix  ".")
                                                      (-repeat width   "X")
                                                      (-repeat postfix ".")))))

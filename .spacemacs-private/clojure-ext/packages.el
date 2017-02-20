@@ -173,7 +173,6 @@
             (1 'clojure-special-variable-name-face))
            (,(concat "(" (regexp-opt '("->"     "->>"
                                        "as->"   "as->>"
-                                       "cond->" "cond->>"
                                        "some->" "some->>"
                                        "and"
                                        "or") t))

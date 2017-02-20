@@ -73,6 +73,15 @@
                         (end (progn
                                (forward-list)
                                (point))))
-                    (cons start end))))))))))
+                    (cons start end)))))))
+      (advice-add #'focus-move-focus :around
+                  (lambda (of)
+                    (condition-case nil
+                        (funcall of)
+                      (error (progn
+                               (focus-terminate)
+                               (focus-init)
+                               (funcall of))))))
+      )))
 
 ;;; packages.el ends here
