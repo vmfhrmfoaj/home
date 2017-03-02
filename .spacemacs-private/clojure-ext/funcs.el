@@ -75,7 +75,7 @@
   (when (eq 'clojurec-mode major-mode)
     (let ((cur-pos (point)))
       (save-excursion
-        (when (re-search-backward "#\\?(" nil t)
+        (when (re-search-backward "#\\?@?(" nil t)
           (let ((beg-pos (prog1 (point) (forward-sexp)))
                 (end-pos (point)))
             (when (< beg-pos cur-pos end-pos)

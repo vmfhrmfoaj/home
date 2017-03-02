@@ -111,6 +111,7 @@
 
 (defun eye-candy/post-init-evil ()
   (when (require 'evil nil 'noerr)
+    (setq evil-normal-state-cursor '("DarkGoldenrod2" (hbar . 4)))
     (let ((wrap-fn (lambda (of &rest args)
                      (with-disable-modes '(prettify-symbols-mode)
                        (apply of args)))))

@@ -19,7 +19,7 @@
     :defer t
     :config
     (setq git-gutter-fr+-side 'left-fringe)
-    (let* ((prefix  0)
+    (let* ((prefix  1)
            (width   6)
            (width   (min width (- 8 prefix)))
            (postfix (- 8 prefix width))

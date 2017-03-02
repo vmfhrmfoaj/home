@@ -61,7 +61,6 @@ values."
                      spell-checking-enable-auto-dictionary t
                      =enable-flyspell-auto-completion= t)
      swift
-     themes-megapack
      version-control
      yaml
      ;; ---------------------------------------------------------------
@@ -169,7 +168,9 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(twilight-bright)
+   dotspacemacs-themes '(spacemacs-dark
+                         twilight-bright
+                         zenburn)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -349,7 +350,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; set up the addtional font setting
   (unless (string-match-p "iMac" system-name)
     (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.95)))
-  (setq-default line-spacing 1))
+  (setq-default line-spacing 2))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -487,26 +488,33 @@ you should place your code here."
      'zenburn
      `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 2))
                                        :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
-     `(cider-fringe-good-face ((t (:inherit success))))
-     `(clojure-keyword-face ((t (:inherit font-lock-builtin-face))))
-     `(font-lock-builtin-face ((t (:foreground ,(-> 'font-lock-keyword-face
-                                                    (face-attribute :foreground)
-                                                    (dim-color 10)
-                                                    (saturate-color -25))))))
      `(lazy-highlight ((t (:foreground "#d0bf8f" :background "#1e1e1e"))))
      `(linum-relative-current-face ((t (:inherit linum :foreground ,(-> 'linum (face-attribute :foreground)
                                                                         (light-color 15)
                                                                         (saturate-color 25))))))
      `(org-block ((t (:background ,(dim-color (face-attribute 'default :background) 1.5)))))
      `(show-paren-match ((t (:foreground "Springgreen2" :underline t :weight bold))))
-     `(sp-show-pair-match-face ((t (:inherit show-paren-match)))))
-    (with-eval-after-load "rainbow-delimiters"
-      (dolist (i (number-sequence 1 9))
-        (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
-          (set-face-attribute face nil :foreground
-                              (-> (face-attribute face :foreground)
-                                  (dim-color 5)
-                                  (saturate-color -20)))))))
+     `(sp-show-pair-match-face ((t (:inherit show-paren-match))))))
+  (when (featurep 'spacemacs-dark-theme)
+    (custom-theme-set-faces
+     'spacemacs-dark
+     `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 2))
+                                       :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
+     `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
+     `(font-lock-regexp-grouping-construct ((t (:weight bold :foreground ,(-> 'font-lock-string-face
+                                                                              (face-attribute :foreground)
+                                                                              (light-color 5)
+                                                                              (saturate-color 10))))))
+     `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1.5))))))
+     `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added :background)))))
+     `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
+     `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
+     `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
+     `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
+     `(org-cancelled ((t (:foreground nil :inherit org-done))))
+     `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
+     `(org-next ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
+     `(show-paren-match ((t (:foreground "Springgreen2" :underline t :weight bold))))))
   (custom-set-faces
    `(cider-fringe-good-face ((t (:inherit success))))
    `(clojure-keyword-face ((t (:inherit font-lock-builtin-face))))
