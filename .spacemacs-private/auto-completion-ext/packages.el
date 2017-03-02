@@ -20,9 +20,7 @@
     :defer t
     :config
     (define-key company-active-map (kbd "C-h") nil)
-    (when (configuration-layer/package-usedp 'company)
-      (define-key company-active-map (kbd "C-s")  #'helm-company-plus)
-      (advice-add #'completion-at-point :override #'helm-company-plus))
+    (define-key company-active-map (kbd "C-s")  #'helm-company-plus)
     (setq company-idle-delay 0.2)))
 
 (defun auto-completion-ext/post-init-helm-company ()

@@ -177,10 +177,10 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("Fira Code"
+   dotspacemacs-default-font `("MonacoB2"
                                :size ,(if (string-match-p "iMac" system-name)
-                                          15
-                                        14)
+                                          14
+                                        13)
                                :weight normal
                                :width normal
                                :powerline-scale 1.3)
@@ -347,35 +347,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting
-  (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
-  (setq-default line-spacing 2)
-  (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
-                 ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
-                 ( 36 . ".\\(?:>\\)")
-                 ( 37 . ".\\(?:\\(?:%%\\)\\|%\\)")
-                 ( 38 . ".\\(?:\\(?:&&\\)\\|&\\)")
-                 ( 42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*>]\\)") ; '*/' is deleted.
-                 ( 43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
-                 ( 45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
-                 ( 46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
-                 ( 47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[/=]\\)") ; '/*' and '/>' is deleted.
-                 ( 48 . ".\\(?:x[a-zA-Z]\\)")
-                 ( 58 . ".\\(?:::\\|[:=]\\)")
-                 ( 59 . ".\\(?:;;\\|;\\)")
-                 ( 60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~<=>|-]\\)") ; '</' is deleted.
-                 ( 61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
-                 ( 62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
-                 ( 63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
-                 ( 91 . ".\\(?:]\\)")
-                 ( 92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
-                 ( 94 . ".\\(?:=\\)")
-                 (119 . ".\\(?:ww\\)")
-                 (123 . ".\\(?:-\\)")
-                 (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
-                 (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)"))))
-    (dolist (char-regexp alist)
-      (set-char-table-range composition-function-table (car char-regexp)
-                            `([,(cdr char-regexp) 0 font-shape-gstring])))))
+  (unless (string-match-p "iMac" system-name)
+    (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.95)))
+  (setq-default line-spacing 1))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -419,7 +393,7 @@ you should place your code here."
 
   (when window-system
     ;; for single window
-    (let* ((w 130)
+    (let* ((w 140)
            (h (- (/ (display-pixel-height) (frame-char-height))
                  (ceiling (/ 37.0 (frame-char-height)))))
            (l (/ (custom-display-pixel-width) 2.0))
@@ -499,9 +473,13 @@ you should place your code here."
                                                                               (light-color 5)
                                                                               (saturate-color 10))))))
      `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1))))))
+     `(git-gutter+-added ((t (:foreground ,(face-attribute 'diff-refine-added :background)))))
+     `(git-gutter+-deleted ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
+     `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
      `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
      `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
      `(org-cancelled ((t (:foreground nil :inherit org-done))))
+     `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
      `(org-next ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
      `(show-paren-match ((t (:background "#eefff6" :foreground "Springgreen2" :underline t :weight bold))))))
   (when (featurep 'zenburn-theme)

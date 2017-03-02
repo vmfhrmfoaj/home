@@ -19,8 +19,8 @@
     :defer t
     :config
     (setq git-gutter-fr+-side 'left-fringe)
-    (let* ((prefix  1)
-           (width   2)
+    (let* ((prefix  0)
+           (width   6)
            (width   (min width (- 8 prefix)))
            (postfix (- 8 prefix width))
            (bitmap  (-repeat (1- (line-pixel-height))

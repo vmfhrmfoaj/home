@@ -70,3 +70,15 @@
             (while (let ((column (current-column)))
                      (> target-column column))
               (insert " "))))))))
+
+(defun cider-connection-type-for-cljc-buffer ()
+  (when (eq 'clojurec-mode major-mode)
+    (let ((cur-pos (point)))
+      (save-excursion
+        (when (re-search-backward "#\\?(" nil t)
+          (let ((beg-pos (prog1 (point) (forward-sexp)))
+                (end-pos (point)))
+            (when (< beg-pos cur-pos end-pos)
+              (goto-char cur-pos)
+              (when (re-search-backward "\\(?:^\\s-*\\|(\\):\\(cljs?\\)[ \r\t\n]+"  beg-pos t)
+                (match-string-no-properties 1)))))))))

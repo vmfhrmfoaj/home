@@ -20,7 +20,8 @@
   (use-package cider
     :defer t
     :config
-    (setq cider-dynamic-indentation nil
+    (setq cider-font-lock-reader-conditionals nil
+          cider-dynamic-indentation nil
           cider-font-lock-dynamically '(deprecated)
           cider-repl-display-in-current-window t
           cider-repl-use-pretty-printing t
@@ -41,6 +42,8 @@
     (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
       (spacemacs/set-leader-keys-for-major-mode mode
         "en" #'cider-eval-ns-form))
+    (advice-add #'cider-connection-type-for-buffer :before-until
+                #'cider-connection-type-for-cljc-buffer)
     (advice-add #'cider-expected-ns :around
                 (lambda (of &optional path)
                   (-if-let (root-dirs (and (cider-connected-p)
