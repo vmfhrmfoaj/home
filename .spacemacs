@@ -168,9 +168,10 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark
-                         twilight-bright
-                         zenburn)
+   dotspacemacs-themes '(twilight-bright
+                         spacemacs-dark
+                         zenburn
+                         leuven)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -179,12 +180,10 @@ values."
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
    dotspacemacs-default-font `("MonacoB2"
-                               :size ,(if (string-match-p "iMac" system-name)
-                                          14
-                                        13)
+                               :size ,(if (string-match-p "iMac" system-name) 14 13)
                                :weight normal
                                :width normal
-                               :powerline-scale 1.3)
+                               :powerline-scale 1.2)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
@@ -349,8 +348,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; set up the addtional font setting
   (unless (string-match-p "iMac" system-name)
-    (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.95)))
-  (setq-default line-spacing 2))
+    (add-to-list 'face-font-rescale-alist  '("Fira Code Symbol" . 1.1)))
+  (add-to-list 'face-font-rescale-alist '("Apple SD Gothic Neo" . 1.1))
+  (setq-default line-spacing 1))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -460,14 +460,18 @@ you should place your code here."
      `(font-lock-regexp-grouping-backslash ((t (:foreground "#00998d"))))
      `(font-lock-regexp-grouping-construct ((t (:foreground "#00998d"))))
      `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 3))))))
+     `(git-gutter+-added ((t (:foreground ,(face-attribute 'diff-refine-added :background)))))
+     `(git-gutter+-deleted ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
+     `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
      `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
      `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
      `(show-paren-match ((t (:background "#eefff6" :foreground "Springgreen2" :underline t :weight bold))))))
   (when (featurep 'twilight-bright-theme)
     (custom-theme-set-faces
      'twilight-bright
-     `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (light-color 2))
+     `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (light-color 5))
                                        :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
+     `(default ((t (:foreground "#555555"))))
      `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
      `(font-lock-regexp-grouping-construct ((t (:weight bold :foreground ,(-> 'font-lock-string-face
                                                                               (face-attribute :foreground)
@@ -506,15 +510,34 @@ you should place your code here."
                                                                               (light-color 5)
                                                                               (saturate-color 10))))))
      `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1.5))))))
-     `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added :background)))))
-     `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
-     `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
+     `(git-gutter+-added    ((t (:foreground ,(-> 'diff-refine-added
+                                                  (face-attribute :background)
+                                                  (dim-color 10)
+                                                  (saturate-color -30))))))
+     `(git-gutter+-deleted  ((t (:foreground ,(-> 'diff-refine-removed
+                                                  (face-attribute :background)
+                                                  (dim-color 20)
+                                                  (saturate-color -30))))))
+     `(git-gutter+-modified ((t (:foreground ,(-> 'diff-refine-changed
+                                                  (face-attribute :background)
+                                                  (dim-color 20)
+                                                  (saturate-color -30))))))
      `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
      `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
      `(org-cancelled ((t (:foreground nil :inherit org-done))))
      `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
      `(org-next ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
-     `(show-paren-match ((t (:foreground "Springgreen2" :underline t :weight bold))))))
+     `(shadow ((t (:foreground ,(-> 'default
+                                    (face-attribute :foreground)
+                                    (dim-color 15))))))
+     `(show-paren-match ((t (:foreground "Springgreen2" :underline t :weight bold)))))
+    (with-eval-after-load "rainbow-delimiters"
+      (dolist (i (number-sequence 1 9))
+        (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
+          (set-face-attribute face nil :foreground
+                              (-> (face-attribute face :foreground)
+                                  (dim-color 3)
+                                  (saturate-color -10)))))))
   (custom-set-faces
    `(cider-fringe-good-face ((t (:inherit success))))
    `(clojure-keyword-face ((t (:inherit font-lock-builtin-face))))
@@ -548,7 +571,7 @@ you should place your code here."
                t)
               (font-lock-add-keywords
                nil
-               '(("[^ \r\t\n]\\(/\\)[^ \r\t\n]"
+               '(("[0-9A-Za-z]\\(/\\)[0-9A-Za-z]"
                   1 'shadow)))))
 
   ;; for org-capture Chrome extension

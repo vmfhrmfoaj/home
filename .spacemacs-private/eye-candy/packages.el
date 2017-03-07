@@ -111,30 +111,61 @@
 
 (defun eye-candy/post-init-evil ()
   (when (require 'evil nil 'noerr)
-    (setq evil-normal-state-cursor '("DarkGoldenrod2" (hbar . 4)))
-    (let ((wrap-fn (lambda (of &rest args)
-                     (with-disable-modes '(prettify-symbols-mode)
-                       (apply of args)))))
-      (advice-add #'evil-next-line     :around wrap-fn)
-      (advice-add #'evil-previous-line :around wrap-fn))
-    (setq-default exclude-mode-status '(t))
-    (add-hook 'evil-visual-state-entry-hook
-              (lambda ()
-                (setq-local exclude-mode-status
-                            (-map #'symbol-value '(prettify-symbols-mode)))
-                (disable-modes '(prettify-symbols-mode))))
-    (add-hook 'evil-insert-state-exit-hook
-              (lambda ()
-                (when evil-insert-vcount
-                  (setq-local exclude-mode-status
-                              (-map #'symbol-value '(prettify-symbols-mode)))
-                  (disable-modes '(prettify-symbols-mode)))))
-    (add-hook 'evil-normal-state-entry-hook
-              (lambda ()
-                (restore-modes '(prettify-symbols-mode) exclude-mode-status)))
-    (add-hook 'evil-visual-state-exit-hook
-              (lambda ()
-                (restore-modes '(prettify-symbols-mode) exclude-mode-status)))))
+    (setq evil-replace-state-cursor '("chocolate" (hbar . 4)))
+    (eval-after-load "dash"
+      '(defvar fira-code-font-lock-keywords-regx
+         (->> fira-code-font-lock-keywords-alist
+              (-map #'first)
+              (-interpose "\\|")
+              (apply #'concat))))
+    (let ((byte-compile-warnings nil)
+          (byte-compile-dynamic t))
+      (advice-add #'evil-next-line :around
+                  (byte-compile
+                   (lambda (of &rest args)
+                     (let ((ok? (save-mark-and-excursion
+                                 (let ((point (line-beginning-position)))
+                                   (forward-line 1)
+                                   (end-of-line)
+                                   (re-search-backward fira-code-font-lock-keywords-regx
+                                                       point t 1)))))
+                       (with-disable-modes (when ok?
+                                             '(prettify-symbols-mode))
+                         (apply of args))))))
+      (advice-add #'evil-previous-line :around
+                  (byte-compile
+                   (lambda (of &rest args)
+                     (let ((ok? (save-mark-and-excursion
+                                 (let ((point (point)))
+                                   (forward-line -1)
+                                   (beginning-of-line)
+                                   (re-search-forward fira-code-font-lock-keywords-regx
+                                                      point t 1)))))
+                       (with-disable-modes (when ok?
+                                             '(prettify-symbols-mode))
+                         (apply of args))))))
+      (setq-default exclude-mode-status '(t))
+      (add-hook 'evil-visual-state-entry-hook
+                (byte-compile
+                 (lambda ()
+                   (setq-local exclude-mode-status
+                               (-map #'symbol-value '(prettify-symbols-mode)))
+                   (disable-modes '(prettify-symbols-mode)))))
+      (add-hook 'evil-insert-state-exit-hook
+                (byte-compile
+                 (lambda ()
+                   (when evil-insert-vcount
+                     (setq-local exclude-mode-status
+                                 (-map #'symbol-value '(prettify-symbols-mode)))
+                     (disable-modes '(prettify-symbols-mode))))))
+      (add-hook 'evil-normal-state-entry-hook
+                (byte-compile
+                 (lambda ()
+                   (restore-modes '(prettify-symbols-mode) exclude-mode-status))))
+      (add-hook 'evil-visual-state-exit-hook
+                (byte-compile
+                 (lambda ()
+                   (restore-modes '(prettify-symbols-mode) exclude-mode-status)))))))
 
 (defun eye-candy/post-init-golden-ratio ()
   (use-package golden-ratio

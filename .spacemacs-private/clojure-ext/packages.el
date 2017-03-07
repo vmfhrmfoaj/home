@@ -77,7 +77,8 @@
           cljr-favor-private-functions nil
           cljr-inject-dependencies-at-jack-in nil ; for using custom version.
           cljr-prune-ns-form t ; for using the file local variable.
-          cljr-suppress-middleware-warnings t)
+          cljr-suppress-middleware-warnings t
+          cljr-warn-on-eval nil)
     (add-hook 'clojure-mode-hook (-partial #'clj-refactor-mode 1))
     (add-hook 'cider-connected-hook
               (lambda ()

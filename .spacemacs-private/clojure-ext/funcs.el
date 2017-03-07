@@ -23,7 +23,7 @@
                  (edn-read))))))
 
 (defvar clojure--binding-forms
-  '("let" "if-let" "when-let"))
+  '("binding" "let" "with-redefs"))
 
 (defvar clojure--binding-regexp
   (concat (regexp-opt clojure--binding-forms) "[ \r\t\n]*\\["))
@@ -57,10 +57,16 @@
               (insert " "))
           (let ((target-pos    (point))
                 (target-column (current-column))
-                (cur-column    (progn
+                (prev-column   (progn
                                  (goto-char point)
-                                 (current-column))))
-            (when (>= cur-column target-column)
+                                 (previous-line)
+                                 (beginning-of-line-text)
+                                 (current-column)))
+                (cur-column (progn
+                              (goto-char point)
+                              (current-column))))
+            (when (and (< prev-column cur-column)
+                       (>= cur-column target-column))
               (goto-char target-pos)
               (while (>= cur-column (current-column))
                 (setq point (1+ point))
@@ -68,7 +74,8 @@
               (goto-char point))
             (insert " ")
             (while (let ((column (current-column)))
-                     (> target-column column))
+                     (and (< prev-column   column)
+                          (> target-column column)))
               (insert " "))))))))
 
 (defun cider-connection-type-for-cljc-buffer ()
