@@ -168,8 +168,8 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(twilight-bright
-                         spacemacs-dark
+   dotspacemacs-themes '(spacemacs-dark
+                         twilight-bright
                          zenburn
                          leuven)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
@@ -350,7 +350,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (unless (string-match-p "iMac" system-name)
     (add-to-list 'face-font-rescale-alist  '("Fira Code Symbol" . 1.1)))
   (add-to-list 'face-font-rescale-alist '("Apple SD Gothic Neo" . 1.1))
-  (setq-default line-spacing 1))
+  (setq-default line-spacing 3))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.

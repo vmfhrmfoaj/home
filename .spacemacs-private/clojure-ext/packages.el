@@ -215,6 +215,8 @@
     (put 'defstate 'clojure-doc-string-elt 2)
     (put-clojure-indent 'redef-state :defn) ; for expectations
     (evil-define-key 'insert clojure-mode-map (kbd "SPC") #'clojure-space-key)
+    (eval-after-load "page-break-lines"
+      '(add-to-list 'page-break-lines-modes 'clojure-mode))
     (add-hook
      'clojure-mode-hook
      (lambda ()
