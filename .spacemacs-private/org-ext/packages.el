@@ -118,6 +118,7 @@
       "aoc" nil
       "aoct" (defalias 'org-capture-todo   (lambda () (interactive) (org-capture nil "t")))
       "aocn" (defalias 'org-capture-note   (lambda () (interactive) (org-capture nil "n"))))
-    (advice-add #'org-set-tags :after #'remove-duplicated-org-tags-history)))
+    (advice-add #'org-set-tags :after #'remove-duplicated-org-tags-history)
+    (advice-add #'org-protocol-sanitize-uri :override (lambda (url) url))))
 
 ;;; packages.el ends here
