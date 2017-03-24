@@ -30,6 +30,7 @@
 
 (defun clojure-space-key ()
   (interactive)
+  ;; string or comment?
   (if (->> (syntax-ppss)
            (-drop 3)
            (-take 2)
@@ -65,7 +66,7 @@
                 (cur-column (progn
                               (goto-char point)
                               (current-column))))
-            (when (and (< prev-column cur-column)
+            (when (and (not (< column prev-column))
                        (>= cur-column target-column))
               (goto-char target-pos)
               (while (>= cur-column (current-column))
@@ -73,9 +74,9 @@
                 (insert " "))
               (goto-char point))
             (insert " ")
-            (while (let ((column (current-column)))
-                     (and (< prev-column   column)
-                          (> target-column column)))
+            (while (let ((cur-col (current-column)))
+                     (and (not (< column prev-column))
+                          (> target-column cur-col)))
               (insert " "))))))))
 
 (defun cider-connection-type-for-cljc-buffer ()

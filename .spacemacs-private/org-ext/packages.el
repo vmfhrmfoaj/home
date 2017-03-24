@@ -12,9 +12,7 @@
 ;;; Code:
 
 (defconst org-ext-packages
-  '(org
-    org-agenda
-    (org-capture :location built-in)))
+  '(org))
 
 (defun org-ext/post-init-org ()
   (use-package org
@@ -44,9 +42,8 @@
               (lambda (mark _)
                 (when (string-equal mark "NEXT")
                   (org-insert-schedule-&-deadline)
-                  nil)))))
+                  nil))))
 
-(defun org-ext/post-init-org-agenda ()
   (use-package org-agenda
     :defer t
     :config
@@ -65,9 +62,8 @@
       :mode org-agenda-mode
       :bindings
       (kbd "C-j") #'org-agenda-next-item
-      (kbd "C-k") #'org-agenda-previous-item)))
+      (kbd "C-k") #'org-agenda-previous-item))
 
-(defun org-ext/init-org-capture ()
   (use-package org-capture
     :config
     (setq org-capture-templates
@@ -118,7 +114,10 @@
       "aoc" nil
       "aoct" (defalias 'org-capture-todo   (lambda () (interactive) (org-capture nil "t")))
       "aocn" (defalias 'org-capture-note   (lambda () (interactive) (org-capture nil "n"))))
-    (advice-add #'org-set-tags :after #'remove-duplicated-org-tags-history)
+    (advice-add #'org-set-tags :after #'remove-duplicated-org-tags-history))
+
+  (use-package org-protocol
+    :config
     (advice-add #'org-protocol-sanitize-uri :override (lambda (url) url))))
 
 ;;; packages.el ends here

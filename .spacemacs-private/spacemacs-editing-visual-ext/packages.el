@@ -12,7 +12,8 @@
 ;;; Code:
 
 (defconst spacemacs-editing-visual-ext-packages
-   '(auto-highlight-symbol))
+  '(auto-highlight-symbol
+    rainbow-delimiters))
 
 (defun spacemacs-editing-visual-ext/post-init-auto-highlight-symbol ()
   (use-package auto-highlight-symbol
@@ -22,5 +23,25 @@
                         (clojurescript-mode . "[^ \r\t\n]+")
                         (clojurec-mode . "[^ \r\t\n]+")
                         (emacs-lisp-mode . "[^ \r\t\n]+")))))
+
+(defun spacemacs-editing-visual-ext/post-init-rainbow-delimiters ()
+  (use-package rainbow-delimiters
+    :defer t
+    :config
+    (setq rainbow-delimiters--prefix-regx (regexp-opt '("#" "_" "@" "'" "`")))
+    (advice-add #'rainbow-delimiters--apply-color :override
+                (let ((byte-compile-warnings nil)
+                      (byte-compile-dynamic t)
+                      (f (lambda (loc depth match)
+                           (let ((face (funcall rainbow-delimiters-pick-face-function depth match loc))
+                                 (start loc)
+                                 (end (1+ loc)))
+                             (when face
+                               (while (when (-some->> (char-before start)
+                                                      (char-to-string)
+                                                      (string-match-p rainbow-delimiters--prefix-regx))
+                                        (setq start (1- start))))
+                               (font-lock-prepend-text-property start end 'face face))))))
+                  (byte-compile f)))))
 
 ;;; packages.el ends here

@@ -179,7 +179,7 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("MonacoB2"
+   dotspacemacs-default-font `("Fira Code"
                                :size ,(if (string-match-p "iMac" system-name) 14 13)
                                :weight normal
                                :width normal
@@ -347,10 +347,35 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting
-  (unless (string-match-p "iMac" system-name)
-    (add-to-list 'face-font-rescale-alist  '("Fira Code Symbol" . 1.1)))
-  (add-to-list 'face-font-rescale-alist '("Apple SD Gothic Neo" . 1.1))
-  (setq-default line-spacing 3))
+  (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
+  (setq-default line-spacing 5)
+  (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
+                 ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
+                 ( 36 . ".\\(?:>\\)")
+                 ( 37 . ".\\(?:\\(?:%%\\)\\|%\\)")
+                 ( 38 . ".\\(?:\\(?:&&\\)\\|&\\)")
+                 ( 42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*>]\\)") ; '*/' is deleted.
+                 ( 43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
+                 ( 45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
+                 ( 46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
+                 ( 47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[/=]\\)") ; '/*' and '/>' is deleted.
+                 ( 48 . ".\\(?:x[a-zA-Z]\\)")
+                 ( 58 . ".\\(?:::\\|[:=]\\)")
+                 ( 59 . ".\\(?:;;\\|;\\)")
+                 ( 60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~<=>|-]\\)") ; '</' is deleted.
+                 ( 61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
+                 ( 62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
+                 ( 63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
+                 ( 91 . ".\\(?:]\\)")
+                 ( 92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
+                 ( 94 . ".\\(?:=\\)")
+                 (119 . ".\\(?:ww\\)")
+                 (123 . ".\\(?:-\\)")
+                 (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
+                 (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)"))))
+    (dolist (char-regexp alist)
+      (set-char-table-range composition-function-table (car char-regexp)
+                            `([,(cdr char-regexp) 0 font-shape-gstring])))))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -496,6 +521,10 @@ you should place your code here."
      `(linum-relative-current-face ((t (:inherit linum :foreground ,(-> 'linum (face-attribute :foreground)
                                                                         (light-color 15)
                                                                         (saturate-color 25))))))
+     `(font-lock-builtin-face ((t (:foreground ,(-> 'font-lock-keyword-face
+                                                    (face-attribute :foreground)
+                                                    (dim-color 10)
+                                                    (saturate-color -25))))))
      `(org-block ((t (:background ,(dim-color (face-attribute 'default :background) 1.5)))))
      `(show-paren-match ((t (:foreground "Springgreen2" :underline t :weight bold))))
      `(sp-show-pair-match-face ((t (:inherit show-paren-match))))))
@@ -536,8 +565,8 @@ you should place your code here."
         (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
           (set-face-attribute face nil :foreground
                               (-> (face-attribute face :foreground)
-                                  (dim-color 3)
-                                  (saturate-color -10)))))))
+                                  (dim-color 5)
+                                  (saturate-color -20)))))))
   (custom-set-faces
    `(cider-fringe-good-face ((t (:inherit success))))
    `(clojure-keyword-face ((t (:inherit font-lock-builtin-face))))
@@ -571,7 +600,7 @@ you should place your code here."
                t)
               (font-lock-add-keywords
                nil
-               '(("[0-9A-Za-z]\\(/\\)[0-9A-Za-z]"
+               '(("[0-9A-Za-z]\\(/\\)[<>0-9A-Za-z]"
                   1 'shadow)))))
 
   ;; for org-capture Chrome extension
