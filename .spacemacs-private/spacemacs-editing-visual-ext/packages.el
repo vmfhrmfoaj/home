@@ -28,7 +28,7 @@
   (use-package rainbow-delimiters
     :defer t
     :config
-    (setq rainbow-delimiters--prefix-regx (regexp-opt '("#" "_" "@" "'" "`")))
+    (setq rainbow-delimiters--prefix-regx (regexp-opt '("#" "_" "'" "`")))
     (advice-add #'rainbow-delimiters--apply-color :override
                 (let ((byte-compile-warnings nil)
                       (byte-compile-dynamic t)

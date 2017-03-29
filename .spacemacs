@@ -168,10 +168,11 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark
+   dotspacemacs-themes '(leuven
+                         spacemacs-dark
                          twilight-bright
                          zenburn
-                         leuven)
+                         )
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -348,34 +349,35 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; set up the addtional font setting
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
-  (setq-default line-spacing 5)
-  (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
-                 ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
-                 ( 36 . ".\\(?:>\\)")
-                 ( 37 . ".\\(?:\\(?:%%\\)\\|%\\)")
-                 ( 38 . ".\\(?:\\(?:&&\\)\\|&\\)")
-                 ( 42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*>]\\)") ; '*/' is deleted.
-                 ( 43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
-                 ( 45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
-                 ( 46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
-                 ( 47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[/=]\\)") ; '/*' and '/>' is deleted.
-                 ( 48 . ".\\(?:x[a-zA-Z]\\)")
-                 ( 58 . ".\\(?:::\\|[:=]\\)")
-                 ( 59 . ".\\(?:;;\\|;\\)")
-                 ( 60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~<=>|-]\\)") ; '</' is deleted.
-                 ( 61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
-                 ( 62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
-                 ( 63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
-                 ( 91 . ".\\(?:]\\)")
-                 ( 92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
-                 ( 94 . ".\\(?:=\\)")
-                 (119 . ".\\(?:ww\\)")
-                 (123 . ".\\(?:-\\)")
-                 (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
-                 (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)"))))
-    (dolist (char-regexp alist)
-      (set-char-table-range composition-function-table (car char-regexp)
-                            `([,(cdr char-regexp) 0 font-shape-gstring])))))
+  (setq-default line-spacing 4)
+  (when (string-equal "Fira Code" (car dotspacemacs-default-font))
+    (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
+                   ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
+                   ( 36 . ".\\(?:>\\)")
+                   ( 37 . ".\\(?:\\(?:%%\\)\\|%\\)")
+                   ( 38 . ".\\(?:\\(?:&&\\)\\|&\\)")
+                   ( 42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*>]\\)") ; '*/' is deleted.
+                   ( 43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
+                   ( 45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
+                   ( 46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
+                   ( 47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[/=]\\)") ; '/*' and '/>' is deleted.
+                   ( 48 . ".\\(?:x[a-zA-Z]\\)")
+                   ( 58 . ".\\(?:::\\|[:=]\\)")
+                   ( 59 . ".\\(?:;;\\|;\\)")
+                   ( 60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~<=>|-]\\)") ; '</' is deleted.
+                   ( 61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
+                   ( 62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
+                   ( 63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
+                   ( 91 . ".\\(?:]\\)")
+                   ( 92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
+                   ( 94 . ".\\(?:=\\)")
+                   (119 . ".\\(?:ww\\)")
+                   (123 . ".\\(?:-\\)")
+                   (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
+                   (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)"))))
+      (dolist (char-regexp alist)
+        (set-char-table-range composition-function-table (car char-regexp)
+                              `([,(cdr char-regexp) 0 font-shape-gstring]))))))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -482,8 +484,8 @@ you should place your code here."
   (when (featurep 'leuven-theme)
     (custom-theme-set-faces
      'leuven
-     `(font-lock-regexp-grouping-backslash ((t (:foreground "#00998d"))))
-     `(font-lock-regexp-grouping-construct ((t (:foreground "#00998d"))))
+     `(font-lock-regexp-grouping-backslash ((t (:foreground "#00998d" :weight bold))))
+     `(font-lock-regexp-grouping-construct ((t (:foreground "#00998d" :weight bold))))
      `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 3))))))
      `(git-gutter+-added ((t (:foreground ,(face-attribute 'diff-refine-added :background)))))
      `(git-gutter+-deleted ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
@@ -496,7 +498,6 @@ you should place your code here."
      'twilight-bright
      `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (light-color 5))
                                        :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
-     `(default ((t (:foreground "#555555"))))
      `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
      `(font-lock-regexp-grouping-construct ((t (:weight bold :foreground ,(-> 'font-lock-string-face
                                                                               (face-attribute :foreground)
@@ -566,7 +567,7 @@ you should place your code here."
           (set-face-attribute face nil :foreground
                               (-> (face-attribute face :foreground)
                                   (dim-color 5)
-                                  (saturate-color -20)))))))
+                                  (saturate-color -15)))))))
   (custom-set-faces
    `(cider-fringe-good-face ((t (:inherit success))))
    `(clojure-keyword-face ((t (:inherit font-lock-builtin-face))))

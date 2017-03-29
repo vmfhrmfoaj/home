@@ -92,11 +92,11 @@
                          "            d2 (@#'refactor-nrepl.ns.rebuild/get-sort-name d2)]"   "\n"
                          "        (cond (and (re-find clj-regx d1)"                          "\n"
                          "                   (re-find clj-regx d2)) (.compareTo d1 d2)"      "\n"
-                         "                   (re-find clj-regx d1) -1"                       "\n"
-                         "                   (re-find clj-regx d2) 1"                        "\n"
-                         "                   (re-find expect-regx d1) -1"                    "\n"
-                         "                   (re-find expect-regx d2) 1"                     "\n"
-                         "                   :else (.compareTo d1 d2))))))"))))
+                         "              (re-find clj-regx d1)    -1"                         "\n"
+                         "              (re-find clj-regx d2)     1"                         "\n"
+                         "              (re-find expect-regx d1) -1"                         "\n"
+                         "              (re-find expect-regx d2)  1"                         "\n"
+                         "              :else (.compareTo d1 d2))))))"))))
     (advice-add #'cljr--create-msg :filter-return
                 (lambda (msg)
                   "for missing a configuration."
@@ -145,7 +145,7 @@
                      "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
                      whitespace+
                      meta*
-                     "::?" namespace* "\\(" symbol "\\)")
+                     "::?" namespace* "\\(" symbol "\\)\\>")
             (1 'font-lock-keyword-face)
             (2 'clojure-defining-spec-face))
            (,(concat "(" namespace?
@@ -156,7 +156,7 @@
                      "\\>"
                      whitespace+
                      meta*
-                     "\\(" symbol? "\\)\\(!*\\)"
+                     "\\(" symbol? "\\)\\(!*\\)\\>"
                      whitespace+)
             (1 'font-lock-keyword-face)
             (2 'font-lock-function-name-face)
@@ -165,7 +165,7 @@
                      "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
                      whitespace+
                      meta*
-                     "\\(" symbol "?\\)\\(!*\\)"
+                     "\\(" symbol "?\\)\\(!*\\)\\>"
                      whitespace+)
             (1 'font-lock-keyword-face)
             (2 'font-lock-variable-name-face)
@@ -195,7 +195,7 @@
            (,(concat "(ns"
                      whitespace+
                      meta*
-                     "\\(" symbol "\\)")
+                     "\\(" symbol "\\)\\>")
             (1 'clojure-defining-ns-face))
            (,(concat "\\<\\(\\.-?\\)[_a-z][-_a-zA-Z0-9]*\\>")
             (1 'font-lock-keyword-face))
