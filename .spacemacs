@@ -180,7 +180,7 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("Fira Code"
+   dotspacemacs-default-font `("MonacoB2"
                                :size ,(if (string-match-p "iMac" system-name) 14 13)
                                :weight normal
                                :width normal
@@ -349,7 +349,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; set up the addtional font setting
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
-  (setq-default line-spacing 4)
+  (setq-default line-spacing 3)
   (when (string-equal "Fira Code" (car dotspacemacs-default-font))
     (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
                    ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
@@ -425,7 +425,7 @@ you should place your code here."
            (h (- (/ (display-pixel-height) (frame-char-height))
                  (ceiling (/ 37.0 (frame-char-height)))))
            (l (/ (custom-display-pixel-width) 2.0))
-           (l (floor (- l (* (frame-unit->pixel w) 0.4))))
+           (l (floor (- l (* (frame-unit->pixel w) 0.45))))
            (l (if (< 0 (- (custom-display-pixel-width)
                           (+ l (frame-unit->pixel w))))
                   l
@@ -477,19 +477,29 @@ you should place your code here."
 
   ;; for improving performance.
   (setq garbage-collection-messages nil
-        gc-cons-threshold (* 64 1024 1024))
+        gc-cons-threshold (* 24 1024 1024))
   (run-with-idle-timer 1 t #'garbage-collect)
 
   ;; customize the theme.
   (when (featurep 'leuven-theme)
     (custom-theme-set-faces
      'leuven
+     `(bold ((t (:weight bold))))
      `(font-lock-regexp-grouping-backslash ((t (:foreground "#00998d" :weight bold))))
      `(font-lock-regexp-grouping-construct ((t (:foreground "#00998d" :weight bold))))
      `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 3))))))
-     `(git-gutter+-added ((t (:foreground ,(face-attribute 'diff-refine-added :background)))))
-     `(git-gutter+-deleted ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
-     `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
+     `(git-gutter+-added    ((t (:foreground ,(-> 'git-gutter+-added
+                                                  (face-attribute :foreground)
+                                                  (light-color 20)
+                                                  (saturate-color 50))))))
+     `(git-gutter+-deleted  ((t (:foreground ,(-> 'git-gutter+-deleted
+                                                  (face-attribute :foreground)
+                                                  (light-color 20)
+                                                  (saturate-color 55))))))
+     `(git-gutter+-modified ((t (:foreground ,(-> 'git-gutter+-modified
+                                                  (face-attribute :foreground)
+                                                  (light-color 25)
+                                                  (saturate-color 55))))))
      `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
      `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
      `(show-paren-match ((t (:background "#eefff6" :foreground "Springgreen2" :underline t :weight bold))))))
@@ -504,8 +514,8 @@ you should place your code here."
                                                                               (light-color 5)
                                                                               (saturate-color 10))))))
      `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1))))))
-     `(git-gutter+-added ((t (:foreground ,(face-attribute 'diff-refine-added :background)))))
-     `(git-gutter+-deleted ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
+     `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added   :background)))))
+     `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
      `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
      `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
      `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))

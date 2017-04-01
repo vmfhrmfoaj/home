@@ -23,7 +23,7 @@
            (width   6)
            (width   (min width (- 8 prefix)))
            (postfix (- 8 prefix width))
-           (bitmap  (-repeat (1- (line-pixel-height))
+           (bitmap  (-repeat (line-pixel-height)
                              (apply #'concat (append (-repeat prefix  ".")
                                                      (-repeat width   "X")
                                                      (-repeat postfix ".")))))

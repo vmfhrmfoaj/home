@@ -14,6 +14,7 @@
 (defconst eye-candy-packages
   '(all-the-icons
     auto-dim-other-buffers
+    company
     evil
     golden-ratio
     neotree
@@ -46,14 +47,14 @@
                         ((eq 'emacs-lisp-mode major-mode) 0.95)
                         (t 1.0)))
                (offset (cond
-                        ((string-match-p "^README" (buffer-name)) -0.05)
-                        ((eq 'emacs-lisp-mode major-mode) -0.1)
-                        ((eq 'swift-mode major-mode) -0.2)
-                        ((eq 'lisp-interaction-mode major-mode) 0.0)
-                        ((eq 'magit-status-mode major-mode) -0.1)
-                        ((eq 'org-mode major-mode) 0.1)
                         ((eq 'clojurescript-mode major-mode) 0.1)
                         ((derived-mode-p 'clojure-mode) -0.1)
+                        ((eq 'emacs-lisp-mode major-mode) -0.1)
+                        ((eq 'lisp-interaction-mode major-mode) 0.0)
+                        ((eq 'magit-status-mode major-mode) -0.1)
+                        ((eq 'makefile-bsdmake-mode major-mode) 0.1)
+                        ((eq 'org-mode major-mode) 0.1)
+                        ((eq 'swift-mode major-mode) -0.2)
                         (t -0.05)))
                (new-raise (ignore-errors
                             (with-temp-buffer
@@ -92,9 +93,85 @@
                   nil))
     (auto-dim-other-buffers-mode)))
 
+(defun eye-candy/post-init-company ()
+  (use-package company
+    :defer t
+    :config
+    (let ((byte-compile-warnings nil)
+          (byte-compile-dynamic  t)
+          (f (lambda (cmd)
+               (ignore-errors
+                 (cond
+                  ((eq 'show cmd)
+                   (let ((start (window-start))
+                         (end   (window-end)))
+                     (setq-local company-tt-start-pos (point))
+                     (setq-local company-composition-props (get-text-properties start end 'composition))
+                     (with-silent-modifications
+                       (remove-text-properties start end '(composition nil)))))
+                  ((eq 'hide cmd)
+                   (with-silent-modifications
+                     (let ((delta (- (point) company-tt-start-pos)))
+                       (->> company-composition-props
+                            (--map (let* ((pos (car it))
+                                          (pos (if (> company-tt-start-pos pos)
+                                                   pos
+                                                 (+ delta pos))))
+                                     (cons pos (cdr it))))
+                            (put-text-properties))
+                       (setq-local company-composition-props nil)))))))))
+      (advice-add #'company-call-frontends :before
+                  (byte-compile f))
+      )))
+
 (defun eye-candy/post-init-evil ()
-  (with-eval-after-load 'evil
-    (setq evil-replace-state-cursor '("chocolate" (hbar . 4)))))
+  (when (require 'evil nil 'noerr)
+    (setq composition-props nil
+          evil-replace-state-cursor '("chocolate" (hbar . 4)))
+    (let ((byte-compile-warnings nil)
+          (byte-compile-dynamic  t))
+      (advice-add #'evil-next-line :around
+                  (byte-compile
+                   (lambda (of &rest args)
+                     (let ((start (line-beginning-position))
+                           (end   (line-end-position 2)))
+                       (without-text-property start end 'composition
+                         (apply of args))))))
+      (advice-add #'evil-previous-line :around
+                  (byte-compile
+                   (lambda (of &rest args)
+                     (let ((start (line-beginning-position -1)))
+                       (without-text-property start (point) 'composition
+                         (apply of args))))))
+      (add-hook 'evil-visual-state-entry-hook
+                (byte-compile
+                 (lambda ()
+                   (let ((start (window-start))
+                         (end   (window-end)))
+                     (setq-local composition-props (get-text-properties start end 'composition))
+                     (with-silent-modifications
+                       (remove-text-properties start end '(composition nil)))))))
+      (add-hook 'evil-visual-state-exit-hook
+                (byte-compile
+                 (lambda ()
+                   (with-silent-modifications
+                     (put-text-properties composition-props))
+                   (setq-local composition-props nil))))
+      (add-hook 'evil-insert-state-exit-hook
+                (byte-compile
+                 (lambda ()
+                   (when evil-insert-vcount
+                     (let ((start (window-start))
+                           (end   (window-end)))
+                       (setq-local composition-props (get-text-properties start end 'composition))
+                       (with-silent-modifications
+                         (remove-text-properties start end '(composition nil))))))))
+      (add-hook 'evil-normal-state-entry-hook
+                (byte-compile
+                 (lambda ()
+                   (with-silent-modifications
+                     (put-text-properties composition-props))
+                   (setq-local composition-props nil)))))))
 
 (defun eye-candy/post-init-golden-ratio ()
   (use-package golden-ratio
@@ -111,6 +188,16 @@
   (use-package prog-mode
     :commands (global-prettify-symbols-mode)
     :config
+    (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
+    (add-hook 'after-make-frame-functions
+              (lambda (frame)
+                (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
+    (add-hook 'prog-mode-hook
+              (-partial #'font-lock-add-keywords nil
+                        fira-code-font-lock-keywords-alist))
+    (advice-disable-modes '(prettify-symbols-mode) #'indent-for-tab-command)
+    (advice-disable-modes '(prettify-symbols-mode) #'indent-region)
+    (advice-disable-modes '(prettify-symbols-mode) #'indent-according-to-mode)
     (global-prettify-symbols-mode)))
 
 ;;; packages.el ends here

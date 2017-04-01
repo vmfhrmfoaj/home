@@ -69,6 +69,7 @@
     (with-eval-after-load 'diminish
       (diminish 'clj-refactor-mode))
     (setq cljr-clojure-test-declaration "[clojure.test :refer :all]"
+          cljr-clojure-test-namespace-under-test-alias "target"
           cljr-cljc-clojure-test-declaration
           (concat "#?(:clj  [clojure.test :refer :all]" "\n"
                   "   :cljs [cljs.test :refer [deftest is are] :include-macros true])")
@@ -156,8 +157,7 @@
                      "\\>"
                      whitespace+
                      meta*
-                     "\\(" symbol? "\\)\\(!*\\)\\>"
-                     whitespace+)
+                     "\\(" symbol? "\\)\\(!*\\)\\>")
             (1 'font-lock-keyword-face)
             (2 'font-lock-function-name-face)
             (3 'clojure-side-effect-face))
@@ -165,8 +165,15 @@
                      "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
                      whitespace+
                      meta*
-                     "\\(" symbol "?\\)\\(!*\\)\\>"
-                     whitespace+)
+                     "\\(" symbol "?\\)\\(!*\\)\\>")
+            (1 'font-lock-keyword-face)
+            (2 'font-lock-variable-name-face)
+            (3 'clojure-side-effect-face))
+           (,(concat "(" namespace?
+                     "\\(fdef\\)\\>"
+                     whitespace+
+                     namespace?
+                     "\\(" symbol "?\\)\\(!*\\)\\>")
             (1 'font-lock-keyword-face)
             (2 'font-lock-variable-name-face)
             (3 'clojure-side-effect-face))
@@ -214,6 +221,7 @@
     (setq clojure-indent-style :align-arguments)
     (put 'defstate 'clojure-doc-string-elt 2)
     (put-clojure-indent 'redef-state :defn) ; for expectations
+    (put-clojure-indent 'fdef :defn) ; for spec
     (evil-define-key 'insert clojure-mode-map (kbd "SPC") #'clojure-space-key)
     (eval-after-load "page-break-lines"
       '(add-to-list 'page-break-lines-modes 'clojure-mode))
