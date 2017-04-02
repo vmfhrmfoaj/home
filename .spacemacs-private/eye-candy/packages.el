@@ -121,8 +121,7 @@
                             (put-text-properties))
                        (setq-local company-composition-props nil)))))))))
       (advice-add #'company-call-frontends :before
-                  (byte-compile f))
-      )))
+                  (byte-compile f)))))
 
 (defun eye-candy/post-init-evil ()
   (when (require 'evil nil 'noerr)
@@ -143,6 +142,12 @@
                      (let ((start (line-beginning-position -1)))
                        (without-text-property start (point) 'composition
                          (apply of args))))))
+      (advice-add #'evil-delete :before
+                  (byte-compile
+                   (lambda (&rest _)
+                     (with-silent-modifications
+                       (put-text-properties composition-props))
+                     (setq-local composition-props nil))))
       (add-hook 'evil-visual-state-entry-hook
                 (byte-compile
                  (lambda ()
