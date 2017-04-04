@@ -168,9 +168,10 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(leuven
-                         spacemacs-dark
+   dotspacemacs-themes '(
                          twilight-bright
+                         leuven
+                         spacemacs-dark
                          zenburn
                          )
    ;; If non nil the cursor color matches the state color in GUI Emacs.
@@ -362,7 +363,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; set up the addtional font setting
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
-  (setq-default line-spacing 3)
+  (setq-default line-spacing 2)
   (when (string-equal "Fira Code" (car dotspacemacs-default-font))
     (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
                    ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
@@ -531,11 +532,15 @@ you should place your code here."
      `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
      `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
      `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
+     `(hl-line ((t (:background "#eef7fd"))))
      `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
+     `(magit-diff-context-highlight ((t (:background "#f2f9fd"))))
+     `(magit-diff-hunk-heading-highlight ((t (:background "#c8e9ff"))))
+     `(magit-section-highlight ((t (:background "#eef7fd"))))
      `(org-cancelled ((t (:foreground nil :inherit org-done))))
      `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
      `(org-next ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
-     `(show-paren-match ((t (:background "#eefff6" :foreground "Springgreen2" :underline t :weight bold))))))
+     `(show-paren-match ((t (:foreground "Springgreen2" :underline t :weight bold))))))
   (when (featurep 'zenburn-theme)
     (custom-theme-set-faces
      'zenburn

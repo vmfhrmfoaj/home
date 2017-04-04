@@ -103,23 +103,10 @@
                (ignore-errors
                  (cond
                   ((eq 'show cmd)
-                   (let ((start (window-start))
-                         (end   (window-end)))
-                     (setq-local company-tt-start-pos (point))
-                     (setq-local company-composition-props (get-text-properties start end 'composition))
-                     (with-silent-modifications
-                       (remove-text-properties start end '(composition nil)))))
-                  ((eq 'hide cmd)
                    (with-silent-modifications
-                     (let ((delta (- (point) company-tt-start-pos)))
-                       (->> company-composition-props
-                            (--map (let* ((pos (car it))
-                                          (pos (if (> company-tt-start-pos pos)
-                                                   pos
-                                                 (+ delta pos))))
-                                     (cons pos (cdr it))))
-                            (put-text-properties))
-                       (setq-local company-composition-props nil)))))))))
+                     (remove-text-properties (point-min) (point-max) '(composition nil))))
+                  ((eq 'hide cmd)
+                   (font-lock-flush)))))))
       (advice-add #'company-call-frontends :before
                   (byte-compile f)))))
 
@@ -132,51 +119,44 @@
       (advice-add #'evil-next-line :around
                   (byte-compile
                    (lambda (of &rest args)
-                     (let ((start (line-beginning-position))
-                           (end   (line-end-position 2)))
-                       (without-text-property start end 'composition
-                         (apply of args))))))
+                     (if evil-insert-vcount
+                         (apply of args)
+                       (let ((start (line-beginning-position))
+                             (end   (line-end-position 2)))
+                         (without-text-property start end 'composition
+                           (apply of args)))))))
       (advice-add #'evil-previous-line :around
                   (byte-compile
                    (lambda (of &rest args)
-                     (let ((start (line-beginning-position -1)))
-                       (without-text-property start (point) 'composition
-                         (apply of args))))))
+                     (if evil-insert-vcount
+                         (apply of args)
+                       (let ((start (line-beginning-position -1))
+                             (end   (line-end-position 2)))
+                         (without-text-property start end 'composition
+                           (apply of args)))))))
       (advice-add #'evil-delete :before
                   (byte-compile
                    (lambda (&rest _)
-                     (with-silent-modifications
-                       (put-text-properties composition-props))
-                     (setq-local composition-props nil))))
+                     (font-lock-flush))))
       (add-hook 'evil-visual-state-entry-hook
                 (byte-compile
                  (lambda ()
-                   (let ((start (window-start))
-                         (end   (window-end)))
-                     (setq-local composition-props (get-text-properties start end 'composition))
-                     (with-silent-modifications
-                       (remove-text-properties start end '(composition nil)))))))
+                   (with-silent-modifications
+                     (remove-text-properties (point-min) (point-max) '(composition nil))))))
       (add-hook 'evil-visual-state-exit-hook
                 (byte-compile
                  (lambda ()
-                   (with-silent-modifications
-                     (put-text-properties composition-props))
-                   (setq-local composition-props nil))))
+                   (font-lock-flush))))
       (add-hook 'evil-insert-state-exit-hook
                 (byte-compile
                  (lambda ()
                    (when evil-insert-vcount
-                     (let ((start (window-start))
-                           (end   (window-end)))
-                       (setq-local composition-props (get-text-properties start end 'composition))
-                       (with-silent-modifications
-                         (remove-text-properties start end '(composition nil))))))))
+                     (with-silent-modifications
+                       (remove-text-properties (point-min) (point-max) '(composition nil)))))))
       (add-hook 'evil-normal-state-entry-hook
                 (byte-compile
                  (lambda ()
-                   (with-silent-modifications
-                     (put-text-properties composition-props))
-                   (setq-local composition-props nil)))))))
+                   (font-lock-flush)))))))
 
 (defun eye-candy/post-init-golden-ratio ()
   (use-package golden-ratio
@@ -200,9 +180,12 @@
     (add-hook 'prog-mode-hook
               (-partial #'font-lock-add-keywords nil
                         fira-code-font-lock-keywords-alist))
-    (advice-disable-modes '(prettify-symbols-mode) #'indent-for-tab-command)
-    (advice-disable-modes '(prettify-symbols-mode) #'indent-region)
-    (advice-disable-modes '(prettify-symbols-mode) #'indent-according-to-mode)
+    (dolist (f '(indent-for-tab-command indent-region indent-according-to-mode))
+      (advice-add f :around
+                  (byte-compile
+                   (lambda (of &rest args)
+                     (without-text-property nil nil 'composition
+                       (apply of args))))))
     (global-prettify-symbols-mode)))
 
 ;;; packages.el ends here

@@ -26,7 +26,7 @@
   '("binding" "let" "with-redefs"))
 
 (defvar clojure--binding-regexp
-  (concat (regexp-opt clojure--binding-forms) "[ \r\t\n]*\\["))
+  (concat "(" (regexp-opt clojure--binding-forms) "[ \r\t\n]+\\["))
 
 (defun clojure-space-key ()
   (interactive)
@@ -40,7 +40,9 @@
           (column    (progn (ignore-errors (backward-sexp)) (current-column)))
           (start-pos (progn (backward-up-list 1 t) (point)))
           (end-pos   (progn (forward-sexp) (point))))
-      (clojure--goto-let)
+      (ignore-errors
+        (while (not (looking-at-p clojure--binding-regexp))
+          (backward-up-list 1 t)))
       ;; Is the current position inside the let binding?
       (if (prog1 (not (and (re-search-forward clojure--binding-regexp end-pos t)
                            (= column     (current-column))
