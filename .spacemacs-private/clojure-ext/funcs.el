@@ -11,7 +11,7 @@
                          "                (clojure.edn/read-string)"
                          "                (some->> (drop 3) (apply hash-map))"
                          "                (get-in [:cljsbuild :builds]))"
-                         "        b (cond-> b (map? b) (vals))]"
+                         "      b (cond-> b (map? b) (vals))]"
                          "  (some->> b"
                          "           (mapcat :source-paths)"
                          "           (apply hash-set)"

@@ -116,6 +116,13 @@
           evil-replace-state-cursor '("chocolate" (hbar . 4)))
     (let ((byte-compile-warnings nil)
           (byte-compile-dynamic  t))
+      (advice-add #'current-column :around
+                  (byte-compile
+                   (lambda (of &rest args)
+                     (let ((start (line-beginning-position))
+                           (end   (line-end-position)))
+                       (without-text-property start end 'composition
+                         (apply of args))))))
       (advice-add #'evil-next-line :around
                   (byte-compile
                    (lambda (of &rest args)

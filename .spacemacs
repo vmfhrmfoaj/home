@@ -364,6 +364,8 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; set up the addtional font setting
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
   (setq-default line-spacing 2)
+  (unless (string-match-p "iMac" system-name)
+    (add-to-list 'face-font-rescale-alist  '("Fira Code Symbol" . 1.1)))
   (when (string-equal "Fira Code" (car dotspacemacs-default-font))
     (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
                    ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
@@ -489,9 +491,9 @@ you should place your code here."
                 (turn-off-smartparens-mode)))
             'append)
 
-  ;; for improving performance.
+  ;; for improving the performance.
   (setq garbage-collection-messages nil
-        gc-cons-threshold (* 24 1024 1024))
+        gc-cons-threshold (* 512 1024 1024))
   (run-with-idle-timer 1 t #'garbage-collect)
 
   ;; customize the theme.
@@ -539,6 +541,7 @@ you should place your code here."
      `(magit-section-highlight ((t (:background "#eef7fd"))))
      `(org-cancelled ((t (:foreground nil :inherit org-done))))
      `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
+     `(org-link ((t (:inherit link))))
      `(org-next ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
      `(show-paren-match ((t (:foreground "Springgreen2" :underline t :weight bold))))))
   (when (featurep 'zenburn-theme)

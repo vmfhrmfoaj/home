@@ -248,6 +248,8 @@
                (1 'font-lock-keyword-face))))
            (add-to-list 'keywords "expect")
            (add-to-list 'keywords "freeze-time"))
+         (when (string-match-p "_test.clj[cs]" file-name)
+           (add-to-list 'keywords "async"))
          (when (string-match-p (concat "compojure.core :"
                                        "\\(?:as"
                                        "\\|refer[ \r\t\n]\\[[^]]*"
@@ -275,6 +277,21 @@
            (setq-local clojure-get-indent-function
                        (lexical-let ((keywords (regexp-opt keywords)))
                          (lambda (func-name)
-                           (and (string-match-p keywords func-name) :defn))))))))))
+                           (and (string-match-p keywords func-name) :defn))))))))
+    (advice-add #'clojure-font-lock-syntactic-face-function
+                :around (lambda (of state)
+                          (let ((res (funcall of state)))
+                            (if (and (eq res font-lock-doc-face)
+                                     (let ((list-end (save-excursion
+                                                       (goto-char (nth 1 state))
+                                                       (forward-sexp)
+                                                       (1- (point))))
+                                           (str-end  (save-excursion
+                                                       (goto-char (nth 8 state))
+                                                       (forward-sexp)
+                                                       (point))))
+                                       (= list-end str-end)))
+                                font-lock-string-face
+                              res))))))
 
 ;;; packages.el ends here
