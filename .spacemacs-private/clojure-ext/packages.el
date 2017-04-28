@@ -69,6 +69,7 @@
     (with-eval-after-load 'diminish
       (diminish 'clj-refactor-mode))
     (setq cljr-clojure-test-declaration "[clojure.test :refer :all]"
+          cljr-cljs-clojure-test-declaration "[cljs.test :refer-macros [async deftest is testing]]"
           cljr-clojure-test-namespace-under-test-alias "target"
           cljr-cljc-clojure-test-declaration
           (concat "#?(:clj  [clojure.test :refer :all]" "\n"
@@ -197,7 +198,9 @@
             (1 'font-lock-builtin-face))
            (,(concat "(" namespace?
                      (regexp-opt '("extend-protocol"
-                                   "go-loop") t))
+                                   "go-loop"
+                                   "with-hard-redefs")
+                                 t))
             (1 'font-lock-keyword-face))
            (,(concat "(ns"
                      whitespace+

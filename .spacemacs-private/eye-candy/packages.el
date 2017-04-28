@@ -97,73 +97,75 @@
   (use-package company
     :defer t
     :config
-    (let ((byte-compile-warnings nil)
-          (byte-compile-dynamic  t)
-          (f (lambda (cmd)
-               (ignore-errors
-                 (cond
-                  ((eq 'show cmd)
-                   (with-silent-modifications
-                     (remove-text-properties (point-min) (point-max) '(composition nil))))
-                  ((eq 'hide cmd)
-                   (font-lock-flush)))))))
-      (advice-add #'company-call-frontends :before
-                  (byte-compile f)))))
+    ;; (let ((byte-compile-warnings nil)
+    ;;       (byte-compile-dynamic  t)
+    ;;       (f (lambda (cmd)
+    ;;            (ignore-errors
+    ;;              (cond
+    ;;               ((eq 'show cmd)
+    ;;                (with-silent-modifications
+    ;;                  (remove-text-properties (point-min) (point-max) '(composition nil))))
+    ;;               ((eq 'hide cmd)
+    ;;                (font-lock-flush)))))))
+    ;;   (advice-add #'company-call-frontends :before
+    ;;               (byte-compile f)))
+    ))
 
 (defun eye-candy/post-init-evil ()
   (when (require 'evil nil 'noerr)
     (setq composition-props nil
           evil-replace-state-cursor '("chocolate" (hbar . 4)))
-    (let ((byte-compile-warnings nil)
-          (byte-compile-dynamic  t))
-      (advice-add #'current-column :around
-                  (byte-compile
-                   (lambda (of &rest args)
-                     (let ((start (line-beginning-position))
-                           (end   (line-end-position)))
-                       (without-text-property start end 'composition
-                         (apply of args))))))
-      (advice-add #'evil-next-line :around
-                  (byte-compile
-                   (lambda (of &rest args)
-                     (if evil-insert-vcount
-                         (apply of args)
-                       (let ((start (line-beginning-position))
-                             (end   (line-end-position 2)))
-                         (without-text-property start end 'composition
-                           (apply of args)))))))
-      (advice-add #'evil-previous-line :around
-                  (byte-compile
-                   (lambda (of &rest args)
-                     (if evil-insert-vcount
-                         (apply of args)
-                       (let ((start (line-beginning-position -1))
-                             (end   (line-end-position 2)))
-                         (without-text-property start end 'composition
-                           (apply of args)))))))
-      (advice-add #'evil-delete :before
-                  (byte-compile
-                   (lambda (&rest _)
-                     (font-lock-flush))))
-      (add-hook 'evil-visual-state-entry-hook
-                (byte-compile
-                 (lambda ()
-                   (with-silent-modifications
-                     (remove-text-properties (point-min) (point-max) '(composition nil))))))
-      (add-hook 'evil-visual-state-exit-hook
-                (byte-compile
-                 (lambda ()
-                   (font-lock-flush))))
-      (add-hook 'evil-insert-state-exit-hook
-                (byte-compile
-                 (lambda ()
-                   (when evil-insert-vcount
-                     (with-silent-modifications
-                       (remove-text-properties (point-min) (point-max) '(composition nil)))))))
-      (add-hook 'evil-normal-state-entry-hook
-                (byte-compile
-                 (lambda ()
-                   (font-lock-flush)))))))
+    ;; (let ((byte-compile-warnings nil)
+    ;;       (byte-compile-dynamic  t))
+    ;;   (advice-add #'current-column :around
+    ;;               (byte-compile
+    ;;                (lambda (of &rest args)
+    ;;                  (let ((start (line-beginning-position))
+    ;;                        (end   (line-end-position)))
+    ;;                    (without-text-property start end 'composition
+    ;;                      (apply of args))))))
+    ;;   (advice-add #'evil-next-line :around
+    ;;               (byte-compile
+    ;;                (lambda (of &rest args)
+    ;;                  (if evil-insert-vcount
+    ;;                      (apply of args)
+    ;;                    (let ((start (line-beginning-position))
+    ;;                          (end   (line-end-position 2)))
+    ;;                      (without-text-property start end 'composition
+    ;;                        (apply of args)))))))
+    ;;   (advice-add #'evil-previous-line :around
+    ;;               (byte-compile
+    ;;                (lambda (of &rest args)
+    ;;                  (if evil-insert-vcount
+    ;;                      (apply of args)
+    ;;                    (let ((start (line-beginning-position -1))
+    ;;                          (end   (line-end-position 2)))
+    ;;                      (without-text-property start end 'composition
+    ;;                        (apply of args)))))))
+    ;;   (advice-add #'evil-delete :before
+    ;;               (byte-compile
+    ;;                (lambda (&rest _)
+    ;;                  (font-lock-flush))))
+    ;;   (add-hook 'evil-visual-state-entry-hook
+    ;;             (byte-compile
+    ;;              (lambda ()
+    ;;                (with-silent-modifications
+    ;;                  (remove-text-properties (point-min) (point-max) '(composition nil))))))
+    ;;   (add-hook 'evil-visual-state-exit-hook
+    ;;             (byte-compile
+    ;;              (lambda ()
+    ;;                (font-lock-flush))))
+    ;;   (add-hook 'evil-insert-state-exit-hook
+    ;;             (byte-compile
+    ;;              (lambda ()
+    ;;                (when evil-insert-vcount
+    ;;                  (with-silent-modifications
+    ;;                    (remove-text-properties (point-min) (point-max) '(composition nil)))))))
+    ;;   (add-hook 'evil-normal-state-entry-hook
+    ;;             (byte-compile
+    ;;              (lambda ()
+    ;;                (font-lock-flush)))))
+    ))
 
 (defun eye-candy/post-init-golden-ratio ()
   (use-package golden-ratio
@@ -180,19 +182,19 @@
   (use-package prog-mode
     :commands (global-prettify-symbols-mode)
     :config
-    (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
-    (add-hook 'after-make-frame-functions
-              (lambda (frame)
-                (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
-    (add-hook 'prog-mode-hook
-              (-partial #'font-lock-add-keywords nil
-                        fira-code-font-lock-keywords-alist))
-    (dolist (f '(indent-for-tab-command indent-region indent-according-to-mode))
-      (advice-add f :around
-                  (byte-compile
-                   (lambda (of &rest args)
-                     (without-text-property nil nil 'composition
-                       (apply of args))))))
+    ;; (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
+    ;; (add-hook 'after-make-frame-functions
+    ;;           (lambda (frame)
+    ;;             (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
+    ;; (add-hook 'prog-mode-hook
+    ;;           (-partial #'font-lock-add-keywords nil
+    ;;                     fira-code-font-lock-keywords-alist))
+    ;; (dolist (f '(indent-for-tab-command indent-region indent-according-to-mode))
+    ;;   (advice-add f :around
+    ;;               (byte-compile
+    ;;                (lambda (of &rest args)
+    ;;                  (without-text-property nil nil 'composition
+    ;;                    (apply of args))))))
     (global-prettify-symbols-mode)))
 
 ;;; packages.el ends here
