@@ -53,4 +53,14 @@
              (put-text-properties props))
          (put-text-properties props)))))
 
-(put 'without-text-property 'lisp-indent-function 'defun)
+(defmacro without-text-property-hard (start end property &rest body)
+  `(progn
+     (with-silent-modifications
+       (remove-text-properties ,start ,end (list ,property nil)))
+     (unwind-protect
+         (prog1 (progn ,@body)
+           (font-lock-flush ,start ,end))
+       (font-lock-flush))))
+
+(put 'without-text-property      'lisp-indent-function 'defun)
+(put 'without-text-property-hard 'lisp-indent-function 'defun)
