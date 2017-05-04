@@ -441,7 +441,7 @@ you should place your code here."
            (h (- (/ (display-pixel-height) (frame-char-height))
                  (ceiling (/ 37.0 (frame-char-height)))))
            (l (/ (custom-display-pixel-width) 2.0))
-           (l (floor (- l (* (frame-unit->pixel w) 0.45))))
+           (l (floor (- l (* (frame-unit->pixel w) 0.5))))
            (l (if (< 0 (- (custom-display-pixel-width)
                           (+ l (frame-unit->pixel w))))
                   l

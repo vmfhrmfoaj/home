@@ -15,6 +15,7 @@
   '(all-the-icons
     auto-dim-other-buffers
     company
+    clojure-mode
     evil
     golden-ratio
     neotree
@@ -156,7 +157,7 @@
                         (without-text-property-hard (point-min) (point-max) 'composition
                           (apply of args))
                       (apply of args))))
-      (setq without-composition-prop nil)
+      (setq-default without-composition-prop nil)
       (advice-add #'evil-insert :before
                   (byte-compile
                    (lambda (&rest _)
@@ -167,12 +168,22 @@
                          (remove-text-properties (point-min)
                                                  (point-max)
                                                  (list 'composition nil)))))))
-      (add-hook 'evil-insert-state-exit-hook
+      (add-hook 'evil-normal-state-entry-hook
                 (byte-compile
                  (lambda ()
                    (when without-composition-prop
                      (setq-local without-composition-prop nil)
                      (font-lock-flush))))))))
+
+(defun eye-candy/post-init-clojure-mode ()
+  (use-package clojure-mode
+    :defer t
+    :config
+    (advice-add #'clojure-font-lock-extend-region-def :around
+                (lambda (of &rest args)
+                  (if without-composition-prop
+                      nil
+                    (apply of args))))))
 
 (defun eye-candy/post-init-golden-ratio ()
   (use-package golden-ratio
