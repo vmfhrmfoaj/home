@@ -16,6 +16,8 @@
     smartparens))
 
 (defun spacemacs-editing-ext/init-isearch-mode ()
+  (setq isearch-mode-end-hook-quit t)
+  (add-hook 'isearch-mode-end-hook #'deactivate-input-method)
   (define-key isearch-mode-map (kbd "C-h") #'isearch-delete-char)
   (define-key isearch-mode-map (kbd "SPC") (isearch-fn ".*?" " "))
   (define-key isearch-mode-map (kbd "M-<") (isearch-fn "\\_<"))

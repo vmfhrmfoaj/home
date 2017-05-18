@@ -93,7 +93,7 @@
              ,(concat "* %^{Note}"      "\n"
                       "\n"
                       "%t:"             "\n"
-                      "- %c"            "\n"
+                      "- %a"            "\n"
                       "  #+BEGIN_QUOTE" "\n"
                       "  %i"            "\n"
                       "  #+End_QUOTE"   "\n"
@@ -106,7 +106,7 @@
              ,(concat "* %^{Note}" "\n"
                       "\n"
                       "%t:"  "\n"
-                      "- %c" "\n"
+                      "- %a" "\n"
                       "%?")
              :empty-lines 1
              :prepend t)))

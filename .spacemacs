@@ -40,6 +40,7 @@ values."
      better-defaults
      (c-c++ :variables c-c++-enable-clang-support t)
      clojure
+     csv
      emacs-lisp
      git
      (gtags :variables gtags-enable-by-default nil)
@@ -169,10 +170,10 @@ values."
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
    dotspacemacs-themes '(
-                         twilight-bright
-                         leuven
                          spacemacs-dark
                          zenburn
+                         twilight-bright
+                         leuven
                          )
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
@@ -182,7 +183,7 @@ values."
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
    dotspacemacs-default-font `("MonacoB2"
-                               :size ,(if (string-match-p "iMac" system-name) 14 13)
+                               :size 13
                                :weight normal
                                :width normal
                                :powerline-scale 1.2)
@@ -364,8 +365,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; set up the addtional font setting
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
   (setq-default line-spacing 2)
-  (unless (string-match-p "iMac" system-name)
-    (add-to-list 'face-font-rescale-alist  '("Fira Code Symbol" . 1.1)))
+  (add-to-list 'face-font-rescale-alist  '("Arial Unicode MS" . 0.95))
+  (add-to-list 'face-font-rescale-alist  '("Fira Code Symbol" . 1.1))
+  (add-to-list 'face-font-rescale-alist  '("STIXGeneral" . 0.9))
   (when (string-equal "Fira Code" (car dotspacemacs-default-font))
     (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
                    ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
@@ -438,10 +440,9 @@ you should place your code here."
   (when window-system
     ;; for single window
     (let* ((w 140)
-           (h (- (/ (display-pixel-height) (frame-char-height))
-                 (ceiling (/ 37.0 (frame-char-height)))))
+           (h (/ (display-pixel-height) (frame-char-height)))
            (l (/ (custom-display-pixel-width) 2.0))
-           (l (floor (- l (* (frame-unit->pixel w) 0.5))))
+           (l (floor (- l (* (frame-unit->pixel w) 0.45))))
            (l (if (< 0 (- (custom-display-pixel-width)
                           (+ l (frame-unit->pixel w))))
                   l
@@ -501,6 +502,7 @@ you should place your code here."
     (custom-theme-set-faces
      'leuven
      `(bold ((t (:weight bold))))
+     `(font-lock-function-name-face ((t (:foreground "#006699" :background "#e5eff4" :weight bold))))
      `(font-lock-regexp-grouping-backslash ((t (:foreground "#00998d" :weight bold))))
      `(font-lock-regexp-grouping-construct ((t (:foreground "#00998d" :weight bold))))
      `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 3))))))
@@ -536,6 +538,7 @@ you should place your code here."
      `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
      `(hl-line ((t (:background "#eef7fd"))))
      `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
+     `(link ((t (:foreground "#55850f" :underline t))))
      `(magit-diff-context-highlight ((t (:background "#f2f9fd"))))
      `(magit-diff-hunk-heading-highlight ((t (:background "#c8e9ff"))))
      `(magit-section-highlight ((t (:background "#eef7fd"))))
@@ -549,17 +552,28 @@ you should place your code here."
      'zenburn
      `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 2))
                                        :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
+     `(git-gutter+-added    ((t (:foreground ,(-> 'diff-refine-added
+                                                  (face-attribute :background)
+                                                  (saturate-color -20))))))
+     `(git-gutter+-deleted  ((t (:foreground ,(-> 'diff-refine-removed
+                                                  (face-attribute :background)
+                                                  (saturate-color -20))))))
+     `(git-gutter+-modified ((t (:foreground ,(-> 'diff-refine-changed
+                                                  (face-attribute :background)
+                                                  (saturate-color -25))))))
      `(lazy-highlight ((t (:foreground "#d0bf8f" :background "#1e1e1e"))))
      `(linum-relative-current-face ((t (:inherit linum :foreground ,(-> 'linum (face-attribute :foreground)
                                                                         (light-color 15)
                                                                         (saturate-color 25))))))
-     `(font-lock-builtin-face ((t (:foreground ,(-> 'font-lock-keyword-face
-                                                    (face-attribute :foreground)
-                                                    (dim-color 10)
-                                                    (saturate-color -25))))))
      `(org-block ((t (:background ,(dim-color (face-attribute 'default :background) 1.5)))))
      `(show-paren-match ((t (:foreground "Springgreen2" :underline t :weight bold))))
-     `(sp-show-pair-match-face ((t (:inherit show-paren-match))))))
+     `(sp-show-pair-match-face ((t (:inherit show-paren-match)))))
+    (with-eval-after-load "rainbow-delimiters"
+      (dolist (i (number-sequence 1 9))
+        (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
+          (set-face-attribute face nil :foreground
+                              (-> (face-attribute face :foreground)
+                                  (saturate-color -10)))))))
   (when (featurep 'spacemacs-dark-theme)
     (custom-theme-set-faces
      'spacemacs-dark
