@@ -118,6 +118,11 @@
 
   (use-package org-protocol
     :config
-    (advice-add #'org-protocol-sanitize-uri :override (lambda (url) url))))
+    (advice-add #'org-protocol-sanitize-uri :filter-return
+                (lambda (url)
+                  (if org-capture-use-cached-url
+                      (concat "http://webcache.googleusercontent.com/search?q=cache:"
+                              (url-hexify-string url))
+                    url)))))
 
 ;;; packages.el ends here

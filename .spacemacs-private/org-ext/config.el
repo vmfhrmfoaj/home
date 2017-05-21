@@ -12,3 +12,8 @@
   '((t (:height 0.9 :inherit (shadow default))))
   "Face used to show events and appointments in the agenda."
   :group 'org-faces)
+
+(defcustom org-capture-use-cached-url t
+  "Non-nil means using Google Web Cache when captured by org-protocol."
+  :group 'org-protocol
+  :type 'boolean)
