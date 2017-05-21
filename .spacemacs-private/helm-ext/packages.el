@@ -22,12 +22,24 @@
     :config
     (define-key helm-map (kbd "C-n") #'helm-next-source)
     (define-key helm-map (kbd "C-p") #'helm-previous-source)
-    (setq helm-truncate-lines t))
+    (setq helm-truncate-lines t
+          helm-autoresize-min-height 35)
+    (helm-autoresize-mode 1))
   (use-package helm-mode
     :ensure helm
     :defer t
     :config
-    (define-key helm-comp-read-map (kbd "C-h") #'delete-backward-char)))
+    (define-key helm-comp-read-map (kbd "C-h") #'delete-backward-char))
+  (use-package helm-org
+    :ensure helm
+    :defer t
+    :config
+    (advice-add #'helm-org-completing-read-tags
+                :around (lambda (of &rest args)
+                          (let ((temp (copy-alist helm-completing-read-handlers-alist)))
+                            (unwind-protect
+                                (apply of args)
+                              (setq helm-completing-read-handlers-alist temp)))))))
 
 (defun helm-ext/post-init-helm-projectile ()
   (use-package helm-projectile

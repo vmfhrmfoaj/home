@@ -18,7 +18,8 @@
   (use-package org
     :defer t
     :config
-    (setq org-directory (concat (getenv "HOME") "/Desktop/Org")
+    (setq org-complete-tags-always-offer-all-agenda-tags t
+          org-directory (concat (getenv "HOME") "/Desktop/Org")
           org-hide-emphasis-markers t
           org-pretty-entities t
           org-src-fontify-natively t
@@ -53,8 +54,8 @@
           org-agenda-files (find-org-agenda-files)
           org-agenda-skip-deadline-if-done t
           org-agenda-sorting-strategy '((agenda habit-down time-up priority-down category-keep)
-                                        (todo todo-state-down priority-down category-keep)
-                                        (tags priority-down category-keep)
+                                        (todo   todo-state-down priority-down category-keep)
+                                        (tags   priority-down category-keep)
                                         (search category-keep))
           org-agenda-tags-column org-tags-column
           org-agenda-window-setup 'current-window)
@@ -96,7 +97,7 @@
                       "- %a"            "\n"
                       "  #+BEGIN_QUOTE" "\n"
                       "  %i"            "\n"
-                      "  #+End_QUOTE"   "\n"
+                      "  #+END_QUOTE"   "\n"
                       "%?")
              :empty-lines 1
              :prepend t)
@@ -113,8 +114,7 @@
     (spacemacs/set-leader-keys
       "aoc" nil
       "aoct" (defalias 'org-capture-todo   (lambda () (interactive) (org-capture nil "t")))
-      "aocn" (defalias 'org-capture-note   (lambda () (interactive) (org-capture nil "n"))))
-    (advice-add #'org-set-tags :after #'remove-duplicated-org-tags-history))
+      "aocn" (defalias 'org-capture-note   (lambda () (interactive) (org-capture nil "n")))))
 
   (use-package org-protocol
     :config
