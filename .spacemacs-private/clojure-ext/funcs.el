@@ -23,7 +23,7 @@
                  (edn-read))))))
 
 (defvar clojure--binding-forms
-  '("binding" "let" "with-redefs"))
+  '("binding" "let" "loop" "with-redefs"))
 
 (defvar clojure--binding-regexp
   (concat "(" (regexp-opt clojure--binding-forms) "[ \r\t\n]+\\["))

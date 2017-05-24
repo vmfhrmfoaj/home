@@ -117,6 +117,24 @@
           evil-replace-state-cursor '("chocolate" (hbar . 4)))
     (let ((byte-compile-warnings nil)
           (byte-compile-dynamic  t))
+      (advice-add #'evil-insert :before
+                  (byte-compile
+                   (lambda (&rest _)
+                     (while (and (get-text-property (point)      'composition)
+                                 (get-text-property (1- (point)) 'composition))
+                       (backward-char)))))
+      (advice-add #'evil-append :before
+                  (byte-compile
+                   (lambda (&rest _)
+                     (while (and (get-text-property (point) 'composition)
+                                 (get-text-property (1+ (point)) 'composition))
+                       (forward-char)))))
+      (add-hook 'evil-insert-state-exit-hook
+                (byte-compile
+                 (lambda ()
+                   (while (and (get-text-property (- (point) 1) 'composition)
+                               (get-text-property (- (point) 2) 'composition))
+                     (backward-char)))))
       (advice-add #'current-column :around
                   (byte-compile
                    (lambda (of &rest args)

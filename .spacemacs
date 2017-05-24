@@ -362,10 +362,10 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; set up the addtional font setting
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
-  (setq-default line-spacing 1)
-  (add-to-list 'face-font-rescale-alist  '("Arial Unicode MS" . 0.95))
-  (add-to-list 'face-font-rescale-alist  '("Fira Code Symbol" . 1.1))
-  (add-to-list 'face-font-rescale-alist  '("STIXGeneral" . 0.9))
+  (setq-default line-spacing 2)
+  (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
+  (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 1.1))
+  (add-to-list 'face-font-rescale-alist '("STIXGeneral"      . 0.9))
   (when (string-equal "Fira Code" (car dotspacemacs-default-font))
     (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
                    ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
@@ -497,6 +497,7 @@ you should place your code here."
 
   ;; customize the theme.
   (let ((f (lambda (theme &rest _)
+             (set-frame-height (selected-frame) (cdr (assoc 'height default-frame-alist)))
              (when (eq theme 'twilight-bright)
                (custom-theme-set-faces
                 'twilight-bright
@@ -582,6 +583,7 @@ you should place your code here."
 
   ;; turn on/off the packages globally.
   (spacemacs/toggle-camel-case-motion-globally-on)
+  (spacemacs/toggle-golden-ratio-on)
 
   ;; cleanup
   (eval-after-load "projectile"
