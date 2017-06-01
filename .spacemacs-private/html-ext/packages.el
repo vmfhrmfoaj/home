@@ -20,13 +20,6 @@
     :defer t
     :config
     (setq-default css-indent-offset 2)
-    (setq css-color-distnat-threshold 60000
-          css-color-distnat-foreground
-          (let ((base (/ (color-distance "white" "black") 2))
-                (bg (face-attribute 'default :background)))
-            (if (> base (color-distance "white" bg))
-                "white"
-              "black")))
     (font-lock-add-keywords
      'css-mode
      `((,(concat "rgba?("
@@ -37,53 +30,48 @@
            (match-beginning 1)
            (match-end 3)
            'face (let* ((max 255.0)
-                        (r (match-string 1))
-                        (g (match-string 2))
-                        (b (match-string 3))
-                        (bg (->> (list r g b)
-                                 (-map #'string-to-int)
-                                 (--map (min max it))
-                                 (--map (/ it max))
-                                 (apply #'color-rgb-to-hex)))
-                        (fg (face-attribute 'default :foreground))
-                        (fg (if (< css-color-distnat-threshold
-                                   (color-distance bg fg))
+                        (r   (match-string 1))
+                        (g   (match-string 2))
+                        (b   (match-string 3))
+                        (bg  (->> (list r g b)
+                                  (-map #'string-to-int)
+                                  (--map (min max it))
+                                  (--map (/ it max))
+                                  (apply #'color-rgb-to-hex)))
+                        (fg (light-color bg 40))
+                        (fg (if (< 1000 (color-distance fg bg))
                                 fg
-                              css-color-distnat-foreground)))
-                   (list :inverse-video t
-                         :background fg
-                         :foreground bg
-                         :distant-foreground (funcall
-                                              (if (string= "white" css-color-distnat-foreground)
-                                                  #'dim-color
-                                                #'light-color)
-                                              bg 15)))))
+                              (dim-color bg 40)))
+                        (default-bg (face-attribute 'default :background)))
+                   (if (> (min (color-distance default-bg "#d5d5d5")
+                               (color-distance default-bg "#555555"))
+                          (color-distance bg default-bg))
+                       `(:foreground ,bg)
+                     `(:inverse-video t :background ,fg :foreground ,bg)))))
        ;; http://ergoemacs.org/emacs/emacs_CSS_colors.html
        ("#[0-9A-Fa-f]\\{3,6\\}"
         0 (put-text-property
            (match-beginning 0)
            (match-end 0)
-           'face (let* ((color (string-to-list (match-string 0)))
-                        (bg (if (= 7 (length color))
-                                (apply #'string color)
-                              (->> color
-                                   (--remove-first (char-equal ?# it))
-                                   (-take 3)
-                                   (--map (make-string 2 it))
-                                   (apply #'concat "#"))))
-                        (fg (face-attribute 'default :foreground))
-                        (fg (if (< css-color-distnat-threshold
-                                   (color-distance bg fg))
+           'face (let* ((max   255.0)
+                        (color (string-to-list (match-string 0)))
+                        (bg    (if (= 7 (length color))
+                                   (apply #'string color)
+                                 (->> color
+                                      (--remove-first (char-equal ?# it))
+                                      (-take 3)
+                                      (--map (make-string 2 it))
+                                      (apply #'concat "#"))))
+                        (fg (light-color bg 40))
+                        (fg (if (< 1000 (color-distance fg bg))
                                 fg
-                              css-color-distnat-foreground)))
-                   (list :inverse-video t
-                         :background fg
-                         :foreground bg
-                         :distant-foreground (funcall
-                                              (if (string= "white" css-color-distnat-foreground)
-                                                  #'dim-color
-                                                #'light-color)
-                                              bg 15)))))))))
+                              (dim-color bg 40)))
+                        (default-bg (face-attribute 'default :background)))
+                   (if (> (min (color-distance default-bg "#d5d5d5")
+                               (color-distance default-bg "#555555"))
+                          (color-distance bg default-bg))
+                       `(:background ,bg)
+                     `(:inverse-video t :foreground ,bg :background ,fg)))))))))
 
 (defun html-ext/post-init-web-mode ()
   (use-package web-mode

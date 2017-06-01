@@ -12,21 +12,23 @@
 ;;; Code:
 
 (defconst org-ext-packages
-  '(org))
+  '(org
+    evil-org))
 
 (defun org-ext/post-init-org ()
   (use-package org
     :defer t
     :config
-    (setq org-complete-tags-always-offer-all-agenda-tags t
+    (setq org-bullets-bullet-list '("■" "□" "◙" "◘" "●" "○" "◌")
+          org-complete-tags-always-offer-all-agenda-tags t
           org-directory (concat (getenv "HOME") "/Desktop/Org")
           org-hide-emphasis-markers t
+          org-insert-schedule-deadline t
+          org-log-done 'time
+          org-log-into-drawer t
           org-pretty-entities t
           org-src-fontify-natively t
           org-startup-indented t
-          org-bullets-bullet-list '("■" "□" "◙" "◘" "●" "○" "◌")
-          org-log-done 'time
-          org-log-into-drawer t
           org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
                               (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)"))
           org-todo-keyword-faces '(("TODO" . org-todo)
@@ -41,9 +43,19 @@
         1 'shadow nil)))
     (add-hook 'org-todo-get-default-hook
               (lambda (mark _)
-                (when (string-equal mark "NEXT")
+                (when (and org-insert-schedule-deadline
+                           (string-equal mark "NEXT"))
                   (org-insert-schedule-&-deadline)
-                  nil))))
+                  nil)))
+    (add-hook 'org-after-todo-statistics-hook
+              (lambda (num-done-task num-remaining-task)
+                (let (org-log-done
+                      org-log-states
+                      org-insert-schedule-deadline)
+                  (cond
+                   ((= 0 num-remaining-task) (org-todo "DONE"))
+                   ((= 0 num-done-task)      (org-todo "TODO"))
+                   (t))))))
 
   (use-package org-agenda
     :defer t
@@ -51,6 +63,7 @@
     (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0 :weight bold))
                                       (0.5 . '(:inherit org-upcoming-deadline :height 1.0 :weight bold))
                                       (0.0 . '(:height 1.0)))
+          org-agenda-clockreport-parameter-plist '(:link t :fileskip0 t :stepskip0 t :maxlevel 5 :tcolumns 1 :narrow 70!)
           org-agenda-files (find-org-agenda-files)
           org-agenda-skip-deadline-if-done t
           org-agenda-sorting-strategy '((agenda habit-down time-up priority-down category-keep)
@@ -113,8 +126,9 @@
              :prepend t)))
     (spacemacs/set-leader-keys
       "aoc" nil
-      "aoct" (defalias 'org-capture-todo   (lambda () (interactive) (org-capture nil "t")))
-      "aocn" (defalias 'org-capture-note   (lambda () (interactive) (org-capture nil "n")))))
+      "aoct" (defalias 'org-capture-todo (lambda () (interactive) (org-capture nil "t")))
+      "aocn" (defalias 'org-capture-note (lambda () (interactive) (org-capture nil "n")))
+      "aogc" #'org-clock-jump-to-current-clock))
 
   (use-package org-protocol
     :config
@@ -123,6 +137,29 @@
                   (if org-capture-use-cached-url
                       (concat "http://webcache.googleusercontent.com/search?q=cache:"
                               (url-hexify-string url))
-                    url)))))
+                    url))))
+
+  (use-package org-clock
+    :defer t
+    :config
+    (setq org-clock-into-drawer t)
+    (advice-add #'org-clock-get-clocktable :filter-return
+                (lambda (tlb)
+                  (concat "\n" (propertize "CLOCKING:" 'face 'org-agenda-date)
+                          "\n" (->> (split-string tlb "\n")
+                                    (--map (concat "  " it))
+                                    (-interpose "\n")
+                                    (apply #'concat))))))
+  (use-package org-colview
+    :defer t
+    :config
+    (setq org-columns-default-format "%40ITEM %TODO %5Effort %5CLOCKSUM %TAGS")))
+
+(defun org-ext/post-init-evil-org ()
+  (use-package evil-org
+    :defer t
+    :config
+    (spacemacs/set-leader-keys-for-major-mode 'org-mode
+      "C" #'org-columns)))
 
 ;;; packages.el ends here

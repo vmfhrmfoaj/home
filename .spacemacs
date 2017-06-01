@@ -366,6 +366,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
   (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 1.1))
   (add-to-list 'face-font-rescale-alist '("STIXGeneral"      . 0.9))
+  (add-to-list 'face-font-rescale-alist '("Nanum Gothic"     . 1.05))
   (when (string-equal "Fira Code" (car dotspacemacs-default-font))
     (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
                    ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
@@ -519,7 +520,9 @@ you should place your code here."
                 `(magit-diff-context-highlight ((t (:background "#f2f9fd"))))
                 `(magit-diff-hunk-heading-highlight ((t (:background "#c8e9ff"))))
                 `(magit-section-highlight ((t (:background "#eef7fd"))))
+                `(org-agenda-clocking ((t (:height 1.05))))
                 `(org-cancelled ((t (:foreground nil :inherit org-done))))
+                `(org-column ((t (:background "gray90" :weight bold :height 1.05))))
                 `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
                 `(org-link ((t (:inherit link))))
                 `(org-next ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
@@ -535,6 +538,7 @@ you should place your code here."
                 `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
                 `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
                 `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
+                `(org-agenda-clocking ((t (:height 1.05))))
                 `(org-cancelled ((t (:foreground nil :inherit org-done))))
                 `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
                 `(org-link ((t (:inherit link))))
@@ -584,6 +588,7 @@ you should place your code here."
   ;; turn on/off the packages globally.
   (spacemacs/toggle-camel-case-motion-globally-on)
   (spacemacs/toggle-golden-ratio-on)
+  (spacemacs/toggle-mode-line-org-clock)
 
   ;; cleanup
   (eval-after-load "projectile"

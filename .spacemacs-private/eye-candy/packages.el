@@ -14,8 +14,8 @@
 (defconst eye-candy-packages
   '(all-the-icons
     auto-dim-other-buffers
-    company
     clojure-mode
+    company
     evil
     golden-ratio
     neotree
@@ -94,6 +94,16 @@
                   nil))
     (auto-dim-other-buffers-mode)))
 
+(defun eye-candy/post-init-clojure-mode ()
+  (use-package clojure-mode
+    :defer t
+    :config
+    (advice-add #'clojure-font-lock-extend-region-def :around
+                (lambda (of &rest args)
+                  (if without-composition-prop
+                      nil
+                    (apply of args))))))
+
 (defun eye-candy/post-init-company ()
   (use-package company
     :defer t
@@ -103,13 +113,13 @@
           (f (lambda (cmd)
                (ignore-errors
                  (cond
-                  ((eq 'show cmd)
+                  ((eq 'post-command cmd)
                    (with-silent-modifications
                      (remove-text-properties (point-min) (point-max) '(composition nil))))
                   ((eq 'hide cmd)
                    (font-lock-flush)))))))
-      (advice-add #'company-call-frontends :before
-                  (byte-compile f)))))
+      (advice-add #'company-pseudo-tooltip-frontend
+                  :before (byte-compile f)))))
 
 (defun eye-candy/post-init-evil ()
   (when (require 'evil nil 'noerr)
@@ -132,9 +142,10 @@
       (add-hook 'evil-insert-state-exit-hook
                 (byte-compile
                  (lambda ()
-                   (while (and (get-text-property (- (point) 1) 'composition)
-                               (get-text-property (- (point) 2) 'composition))
-                     (backward-char)))))
+                   (ignore-errors
+                     (while (and (get-text-property (- (point) 1) 'composition)
+                                 (get-text-property (- (point) 2) 'composition))
+                       (backward-char))))))
       (advice-add #'current-column :around
                   (byte-compile
                    (lambda (of &rest args)
@@ -192,16 +203,6 @@
                    (when without-composition-prop
                      (setq-local without-composition-prop nil)
                      (font-lock-flush))))))))
-
-(defun eye-candy/post-init-clojure-mode ()
-  (use-package clojure-mode
-    :defer t
-    :config
-    (advice-add #'clojure-font-lock-extend-region-def :around
-                (lambda (of &rest args)
-                  (if without-composition-prop
-                      nil
-                    (apply of args))))))
 
 (defun eye-candy/post-init-golden-ratio ()
   (use-package golden-ratio

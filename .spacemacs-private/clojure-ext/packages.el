@@ -39,6 +39,9 @@
                                        "  (figwheel-sidecar.repl-api/cljs-repl))"))
     (evil-define-key 'insert cider-repl-mode-map (kbd "RET") #'evil-ret-and-indent)
     (evil-define-key 'normal cider-repl-mode-map (kbd "RET") #'cider-repl-return)
+    (spacemacs/set-leader-keys-for-major-mode 'cider-repl-mode
+      "gn" #'cider-repl-set-ns
+      "gN" #'cider-browse-ns)
     (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
       (spacemacs/set-leader-keys-for-major-mode mode
         "en" #'cider-eval-ns-form))
@@ -242,8 +245,12 @@
                                     (backward-sexp 1)
                                     (buffer-substring-no-properties (point) end)))
                               ""))))
+             (compojure-kws '("GET" "POST" "PUT" "DELETE" "HEAD" "OPTIONS" "PATCH" "ANY" "context"))
              keywords)
-         (when (string-match-p "_expectations.clj[cs]?" file-name)
+         (cond
+          ((string-match-p "_test.clj[cs]?$" file-name)
+           (add-to-list 'keywords "is"))
+          ((string-match-p "_expectations.clj[cs]?$" file-name)
            (make-local-variable 'font-lock-keywords)
            (font-lock-add-keywords
             nil
@@ -251,31 +258,15 @@
                (1 'font-lock-keyword-face))))
            (add-to-list 'keywords "expect")
            (add-to-list 'keywords "freeze-time"))
-         (when (string-match-p "_test.clj[cs]" file-name)
+          ((string-match-p "_test.clj[cs]" file-name)
            (add-to-list 'keywords "async"))
-         (when (string-match-p (concat "compojure.core :"
-                                       "\\(?:as"
-                                       "\\|refer[ \r\t\n]\\[[^]]*"
-                                       (regexp-opt '("GET"
-                                                     "POST"
-                                                     "PUT"
-                                                     "DELETE"
-                                                     "HEAD"
-                                                     "OPTIONS"
-                                                     "PATCH"
-                                                     "ANY"
-                                                     "context"))
-                                       "\\>\\)")
-                               ns-form)
-           (setq keywords (append keywords '("GET"
-                                             "POST"
-                                             "PUT"
-                                             "DELETE"
-                                             "HEAD"
-                                             "OPTIONS"
-                                             "PATCH"
-                                             "ANY"
-                                             "context"))))
+          ((string-match-p (concat "compojure.core :"
+                                   "\\(?:as"
+                                   "\\|refer[ \r\t\n]\\[[^]]*"
+                                   (regexp-opt compojure-kws)
+                                   "\\>\\)")
+                           ns-form)
+           (setq keywords (append keywords compojure-kws))))
          (when keywords
            (setq-local clojure-get-indent-function
                        (lexical-let ((keywords (regexp-opt keywords)))
