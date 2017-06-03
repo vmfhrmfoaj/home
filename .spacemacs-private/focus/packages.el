@@ -13,7 +13,8 @@
 
 (defconst focus-packages
   '(evil
-    focus))
+    focus
+    org))
 
 (defun focus/post-init-evil ()
   (when (require 'evil nil 'noerr)
@@ -26,21 +27,24 @@
     :config
     (add-to-list 'focus-mode-to-thing '(tex-mode . tex-sentence))
     (add-to-list 'focus-mode-to-thing '(org-mode . org))
-    (setq focus-mode-to-thing (append focus-mode-to-new-thing focus-mode-to-thing))
+    (setq focus-mode-org-thing-lock nil
+          focus-mode-to-thing (append focus-mode-to-new-thing focus-mode-to-thing))
     (let ((byte-compile-warnings nil)
           (byte-compile-dynamic t))
       (put 'org 'bounds-of-thing-at-point
            (byte-compile
             (lambda ()
-              (save-excursion
-                (let ((start (progn
-                               (outline-previous-heading)
-                               (point)))
-                      (end   (progn
-                               (outline-next-visible-heading 1)
-                               (beginning-of-line)
-                               (point))))
-                  (cons start end))))))
+              (if focus-mode-org-thing-lock
+                  (cons 0 0)
+                (save-excursion
+                  (let ((start (progn
+                                 (outline-previous-heading)
+                                 (point)))
+                        (end   (progn
+                                 (outline-next-visible-heading 1)
+                                 (beginning-of-line)
+                                 (point))))
+                    (cons start end)))))))
       (put 'tex-sentence 'bounds-of-thing-at-point
            (byte-compile
             (lambda ()
@@ -81,7 +85,19 @@
                       (error (progn
                                (focus-terminate)
                                (focus-init)
-                               (funcall of))))))
-      )))
+                               (funcall of)))))))))
+
+(defun focus/post-init-org ()
+  (use-package org-colview
+    :defer t
+    :config
+    (advice-add #'org-columns :before
+                (lambda (&rest _)
+                  (setq-local focus-mode-org-thing-lock t)
+                  (focus-mode 1)))
+    (advice-add #'org-columns-quit :after
+                (lambda (&rest _)
+                  (setq-local focus-mode-org-thing-lock nil)
+                  (focus-mode 0)))))
 
 ;;; packages.el ends here

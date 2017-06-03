@@ -55,7 +55,14 @@
                   (cond
                    ((= 0 num-remaining-task) (org-todo "DONE"))
                    ((= 0 num-done-task)      (org-todo "TODO"))
-                   (t))))))
+                   (t)))))
+    (advice-add #'org-todo :around
+                (lambda (of &optional arg)
+                  (let* ((is-done?            (member (org-get-todo-state) org-done-keywords))
+                         (org-todo-log-states (if is-done?
+                                                  (cons '("TODO" note time) org-todo-log-states)
+                                                org-todo-log-states)))
+                    (funcall of arg)))))
 
   (use-package org-agenda
     :defer t
