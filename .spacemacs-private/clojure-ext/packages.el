@@ -157,28 +157,26 @@
             (,(lexical-let ((symbol symbol)
                             (namespace? namespace?))
                 (lambda (limit)
-                  (when (and (> limit (point))
-                             (re-search-forward (concat "\\(?:^\\s-*;.*[ \r\n\t]+\\)*"
-                                                        "\\(?:\\^" symbol "[ \r\n\t]+\\)?"
-                                                        "\\<" namespace?
-                                                        "\\(" symbol "\\)\\>")
-                                                limit t))
-                    (condition-case nil
-                        (progn
-                          (forward-sexp)
-                          (let ((p (save-excursion
-                                     (ignore-errors
-                                       (up-list)
-                                       (point)))))
-                            (and p (= p limit))))
-                      (error
-                       (ignore-errors
-                         (up-list)
-                         (forward-sexp))
-                       nil)))))
+                  (ignore-errors
+                    ;; skip `comment'
+                    (when (looking-at-p "[ \r\t\n]*;")
+                      (re-search-forward "\\(?:[ \r\t\n]*;.*\\)+" limit t))
+                    ;; skip `type-hint'
+                    (when (looking-at-p (concat "[ \r\t\n]*\\^" symbol))
+                      (forward-sexp))
+                    ;; skip `destructuring-bind'
+                    (while (looking-at-p "[ \r\t\n]*\\(?:{\\|\\[\\)")
+                      (forward-sexp)
+                      (forward-sexp))
+                    (let ((local-limit (save-excursion (forward-sexp) (point))))
+                      (unless (re-search-forward (concat namespace? "\\(" symbol "\\)\\>")
+                                                 (min local-limit limit) t)
+                        (set-match-data (-repeat 4 (make-marker))))
+                      (goto-char local-limit)
+                      (forward-sexp)
+                      t))))
              (save-excursion
-               (setq-local binding-form-point  (point))
-               (setq-local binding-form-column (current-column))
+               (setq-local binding-form-point (point))
                (up-list)
                (point))
              (goto-char binding-form-point)
@@ -189,21 +187,50 @@
                   ;; NOTE
                   ;; We need to iterate to search symbols in the destructuring form,
                   ;; but anchored-matcher does not support recursion.
-                  (when (or (and binding-form-recursive-point (goto-char binding-form-recursive-point))
-                            (and (re-search-forward "\\(?:\\[\\|{\\)" limit t)
-                                 ;; FIXME
-                                 (= (1- (current-column)) binding-form-column)))
-                    (unless binding-form-recursive-limit
-                      (setq-local binding-form-recursive-limit
-                                  (min limit (save-excursion (up-list) (point)))))
-                    (if (re-search-forward (concat "\\<" symbol "\\>") binding-form-recursive-limit t)
-                        (progn
-                          (setq-local binding-form-recursive-point (point))
-                          t)
-                      (setq-local binding-form-recursive-point nil)
-                      (setq-local binding-form-recursive-limit nil)
-                      nil))))
+                  (ignore-errors
+                    (unless binding-form-recursive-point
+                      (while (and (> limit (point))
+                                  ;; skip `comment'
+                                  (or (and (looking-at-p "[ \r\t\n]*;")
+                                           (re-search-forward "\\(?:[ \r\t\n]*;.*\\)+" limit t)) t)
+                                  ;; skip `type-hint'
+                                  (or (and (looking-at-p (concat "[ \r\t\n]*\\^" symbol))
+                                           (forward-sexp)) t)
+                                  ;; check `destructuring-bind'
+                                  (not (looking-at-p "[ \r\t\n]*\\(?:{\\|\\[\\)"))
+                                  (prog1 t
+                                    (forward-sexp)
+                                    (forward-sexp))))
+                      (when (looking-at-p "[ \r\t\n]*\\(?:{\\|\\[\\)")
+                        (setq-local binding-form-recursive-point (point))
+                        (setq-local binding-form-recursive-limit
+                                    (save-excursion (forward-sexp) (point)))))
+                    (when binding-form-recursive-point
+                      (if (re-search-forward (concat "\\<" symbol "\\>")
+                                             binding-form-recursive-limit t)
+                          (progn
+                            ;; ignores
+                            (when (string-match-p (concat "\\("
+                                                          ":as\\|"
+                                                          ":or\\|"
+                                                          "&"
+                                                          "\\)")
+                                                  (match-string-no-properties 0))
+                              (set-match-data (-repeat 2 (make-marker))))
+                            ;; for binding map
+                            (when (save-excursion
+                                    (up-list)
+                                    (and (eq (char-before) ?})
+                                         (< (point) binding-form-recursive-limit)))
+                              (forward-sexp)))
+                        (goto-char binding-form-recursive-limit)
+                        (forward-sexp)
+                        (setq-local binding-form-recursive-point nil)
+                        (setq-local binding-form-recursive-limit nil)
+                        (set-match-data (-repeat 2 (make-marker))))
+                      t))))
              (save-excursion
+               (setq-local binding-form-point (point))
                (setq-local binding-form-recursive-point nil)
                (setq-local binding-form-recursive-limit nil)
                (up-list)
