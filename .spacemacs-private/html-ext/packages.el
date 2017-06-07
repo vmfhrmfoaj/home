@@ -39,7 +39,7 @@
                                   (--map (/ it max))
                                   (apply #'color-rgb-to-hex)))
                         (fg (light-color bg 40))
-                        (fg (if (< 1000 (color-distance fg bg))
+                        (fg (if (< 25000 (color-distance fg bg))
                                 fg
                               (dim-color bg 40)))
                         (default-bg (face-attribute 'default :background)))
@@ -63,7 +63,7 @@
                                       (--map (make-string 2 it))
                                       (apply #'concat "#"))))
                         (fg (light-color bg 40))
-                        (fg (if (< 1000 (color-distance fg bg))
+                        (fg (if (< 25000 (color-distance fg bg))
                                 fg
                               (dim-color bg 40)))
                         (default-bg (face-attribute 'default :background)))

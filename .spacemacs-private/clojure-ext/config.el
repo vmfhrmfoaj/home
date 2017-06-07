@@ -17,3 +17,7 @@
 (defface clojure-special-variable-name-face
   '((t (:inherit font-lock-variable-name-face :weight normal)))
   "Face used to font-lock Clojure special variable name.")
+
+(defface clojure-local-binding-variable-name-face
+  '((t (:inherit font-lock-variable-name-face :weight normal)))
+  "Face used to font-lock Clojure local binding variable name.")

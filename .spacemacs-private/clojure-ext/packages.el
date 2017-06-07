@@ -139,7 +139,78 @@
       (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
         (font-lock-add-keywords
          mode
-         `(;; Removes(overwrite) a rules
+         `(;; Binding forms
+           (,"(letfn[ \r\n\t]+\\["
+            (,(lexical-let ((symbol symbol))
+                (lambda (limit)
+                  (when (re-search-forward (concat "(\\(" symbol "\\)\\>") limit t)
+                    (up-list)
+                    t)))
+             (save-excursion
+               (setq-local binding-form-point  (point))
+               (up-list)
+               (point))
+             (goto-char binding-form-point)
+             (1 'clojure-local-binding-variable-name-face)))
+           (,clojure--binding-regexp
+            ;; Normal bindings
+            (,(lexical-let ((symbol symbol)
+                            (namespace? namespace?))
+                (lambda (limit)
+                  (when (and (> limit (point))
+                             (re-search-forward (concat "\\(?:^\\s-*;.*[ \r\n\t]+\\)*"
+                                                        "\\(?:\\^" symbol "[ \r\n\t]+\\)?"
+                                                        "\\<" namespace?
+                                                        "\\(" symbol "\\)\\>")
+                                                limit t))
+                    (condition-case nil
+                        (progn
+                          (forward-sexp)
+                          (let ((p (save-excursion
+                                     (ignore-errors
+                                       (up-list)
+                                       (point)))))
+                            (and p (= p limit))))
+                      (error
+                       (ignore-errors
+                         (up-list)
+                         (forward-sexp))
+                       nil)))))
+             (save-excursion
+               (setq-local binding-form-point  (point))
+               (setq-local binding-form-column (current-column))
+               (up-list)
+               (point))
+             (goto-char binding-form-point)
+             (1 'clojure-local-binding-variable-name-face))
+            ;; Destructuring bindings
+            (,(lexical-let ((symbol symbol))
+                (lambda (limit)
+                  ;; NOTE
+                  ;; We need to iterate to search symbols in the destructuring form,
+                  ;; but anchored-matcher does not support recursion.
+                  (when (or (and binding-form-recursive-point (goto-char binding-form-recursive-point))
+                            (and (re-search-forward "\\(?:\\[\\|{\\)" limit t)
+                                 ;; FIXME
+                                 (= (1- (current-column)) binding-form-column)))
+                    (unless binding-form-recursive-limit
+                      (setq-local binding-form-recursive-limit
+                                  (min limit (save-excursion (up-list) (point)))))
+                    (if (re-search-forward (concat "\\<" symbol "\\>") binding-form-recursive-limit t)
+                        (progn
+                          (setq-local binding-form-recursive-point (point))
+                          t)
+                      (setq-local binding-form-recursive-point nil)
+                      (setq-local binding-form-recursive-limit nil)
+                      nil))))
+             (save-excursion
+               (setq-local binding-form-recursive-point nil)
+               (setq-local binding-form-recursive-limit nil)
+               (up-list)
+               (point))
+             (goto-char binding-form-point)
+             (0 'clojure-local-binding-variable-name-face)))
+           ;; Removes(overwrite) rules
            (,(concat "(" namespace?
                      "\\(default/?[^" clojure--sym-forbidden-rest-chars "]*\\)"
                      whitespace*
@@ -192,7 +263,9 @@
                                        "and"
                                        "or") t))
             (1 'default))
-           ;; Adds a rules
+           ;; Adds rules
+           (,(concat "\\^\\(" symbol "\\)\\>")
+            (1 'font-lock-type-face))
            (,(concat symbol "?\\(!+\\)\\>")
             (1 'clojure-side-effect-face))
            (,(concat "\\(#js\\)"

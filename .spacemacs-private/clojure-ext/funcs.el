@@ -23,7 +23,7 @@
                  (edn-read))))))
 
 (defvar clojure--binding-forms
-  '("binding" "let" "loop" "with-redefs"))
+  '("binding" "doseq" "dotimes" "for" "let" "if-let" "when-let" "loop" "with-redefs"))
 
 (defvar clojure--binding-regexp
   (concat "(" (regexp-opt clojure--binding-forms) "[ \r\t\n]+\\["))
@@ -71,13 +71,15 @@
             (when (and (not (< column prev-column))
                        (>= cur-column target-column))
               (goto-char target-pos)
-              (while (>= cur-column (current-column))
+              (while (and (>= 5 (- cur-column (current-column)))
+                          (>= cur-column (current-column)))
                 (setq point (1+ point))
                 (insert " "))
               (goto-char point))
             (insert " ")
             (while (let ((cur-col (current-column)))
                      (and (not (< column prev-column))
+                          (>= 5 (- target-column cur-col))
                           (> target-column cur-col)))
               (insert " "))))))))
 
