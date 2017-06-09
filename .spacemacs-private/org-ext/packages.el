@@ -115,9 +115,9 @@
                       "\n"
                       "%t:"             "\n"
                       "- %a"            "\n"
-                      "  #+BEGIN_QUOTE" "\n"
-                      "  %i"            "\n"
-                      "  #+END_QUOTE"   "\n"
+                      "   #+BEGIN_QUOTE" "\n"
+                      "   %i"            "\n"
+                      "   #+END_QUOTE"   "\n"
                       "%?")
              :empty-lines 1
              :prepend t)

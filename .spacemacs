@@ -373,11 +373,11 @@ before packages are loaded. If you are unsure, you should try in setting them in
                    ( 36 . ".\\(?:>\\)")
                    ( 37 . ".\\(?:\\(?:%%\\)\\|%\\)")
                    ( 38 . ".\\(?:\\(?:&&\\)\\|&\\)")
-                   ( 42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*>]\\)") ; '*/' is deleted.
+                   ( 42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*>]\\)") ; '*/' was deleted.
                    ( 43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
                    ( 45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
                    ( 46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
-                   ( 47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[/=]\\)") ; '/*' and '/>' is deleted.
+                   ( 47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[/=]\\)") ; '/*' and '/>' were deleted.
                    ( 48 . ".\\(?:x[a-zA-Z]\\)")
                    ( 58 . ".\\(?:::\\|[:=]\\)")
                    ( 59 . ".\\(?:;;\\|;\\)")
@@ -549,7 +549,6 @@ you should place your code here."
              (custom-set-faces
               `(cider-fringe-good-face ((t (:inherit success))))
               `(clojure-keyword-face ((t (:inherit font-lock-builtin-face))))
-              `(clojure-local-binding-variable-name-face ((t (:inherit font-lock-variable-name-face :weight normal))))
               `(css-property ((t (:inherit font-lock-builtin-face :foreground nil :weight normal))))
               `(css-selector ((t (:inherit font-lock-variable-name-face :foreground nil :weight bold))))
               `(font-lock-comment-face ((t (:slant unspecified))))

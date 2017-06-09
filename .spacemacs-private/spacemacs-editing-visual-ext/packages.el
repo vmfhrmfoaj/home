@@ -28,7 +28,7 @@
   (use-package rainbow-delimiters
     :defer t
     :config
-    (setq rainbow-delimiters--prefix-regx (regexp-opt '("#" "_" "'" "`")))
+    (setq rainbow-delimiters--prefix-str (concat "#" "_" "'" "`"))
     (advice-add #'rainbow-delimiters--apply-color :override
                 (let ((byte-compile-warnings nil)
                       (byte-compile-dynamic t)
@@ -37,10 +37,11 @@
                                  (start loc)
                                  (end (1+ loc)))
                              (when face
-                               (while (when (-some->> (char-before start)
-                                                      (char-to-string)
-                                                      (string-match-p rainbow-delimiters--prefix-regx))
-                                        (setq start (1- start))))
+                               (save-excursion
+                                 (goto-char start)
+                                 (when (looking-at-p "\\s(")
+                                   (skip-chars-backward rainbow-delimiters--prefix-str)
+                                   (setq start (point))))
                                (font-lock-prepend-text-property start end 'face face))))))
                   (byte-compile f)))))
 

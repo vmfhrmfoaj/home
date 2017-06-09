@@ -21,3 +21,25 @@
 (defface clojure-local-binding-variable-name-face
   '((t (:inherit font-lock-variable-name-face :weight normal)))
   "Face used to font-lock Clojure local binding variable name.")
+
+(defface clojure-semi-function-name-face
+  '((t (:inherit font-lock-function-name-face :weight normal)))
+  "Face used to font-lock Clojure OOP style functions.")
+
+(defface clojure-cond-condtion-face
+  '((t (:slant italic)))
+  "Face used to font-lock Clojure conditions in `cond' form.")
+
+
+(defcustom clojure--binding-forms
+  '("binding" "doseq" "dotimes" "for" "let" "if-let" "if-some" "when-let" "when-some" "loop" "with-redefs")
+  "List of Clojure binding form."
+  :type '(repeat string)
+  :safe (lambda (value)
+          (and (listp value)
+               (cl-every 'stringp value))))
+
+(defcustom clojure-spc-key-valign-skip 5
+  "TODO"
+  :type 'integer
+  :safe 'integerp)
