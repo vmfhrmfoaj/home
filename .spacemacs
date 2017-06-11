@@ -82,6 +82,7 @@ values."
      spacemacs-editing-ext
      spacemacs-editing-visual-ext
      spacemacs-evil-ext
+     spacemacs-ui-visual-ext
      version-control-ext
      ;; ---------------------------------------------------------------
      ;; Private layers
@@ -181,7 +182,7 @@ values."
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
    dotspacemacs-default-font `("Fira Code"
-                               :size 14
+                               :size 13
                                :weight normal
                                :width normal
                                :powerline-scale 1.2)
@@ -361,12 +362,11 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting
-  (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
+  (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic:weight=bold"))
   (setq-default line-spacing 2)
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
   (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 1.1))
   (add-to-list 'face-font-rescale-alist '("STIXGeneral"      . 0.9))
-  (add-to-list 'face-font-rescale-alist '("Nanum Gothic"     . 1.05))
   (when (string-equal "Fira Code" (car dotspacemacs-default-font))
     (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
                    ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
@@ -504,6 +504,9 @@ you should place your code here."
                 'twilight-bright
                 `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (light-color 5))
                                                   :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
+                `(clojure-if-true-face ((t (:background ,(-> 'default
+                                                             (face-attribute :background)
+                                                             (dim-color 0.8))))))
                 `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
                 `(font-lock-regexp-grouping-construct ((t (:weight bold :foreground ,(-> 'font-lock-string-face
                                                                                          (face-attribute :foreground)
@@ -533,11 +536,15 @@ you should place your code here."
                 'twilight-anti-bright
                 `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 7))
                                                   :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
+                `(clojure-if-true-face ((t (:background ,(-> 'default
+                                                             (face-attribute :background)
+                                                             (light-color 1.27))))))
                 `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1))))))
                 `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added   :background)))))
                 `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
                 `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
                 `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
+                `(lazy-highlight ((t :background "paleturquoise4" :foreground "paleturquoise3")))
                 `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
                 `(org-agenda-clocking ((t (:height 1.05))))
                 `(org-cancelled ((t (:foreground nil :inherit org-done))))
@@ -584,8 +591,31 @@ you should place your code here."
                '(("[0-9A-Za-z]\\(/\\)[<>0-9A-Za-z]"
                   1 'shadow)))))
 
+  (setq custom-forward-symbol nil)
+  (put 'evil-symbol 'bounds-of-thing-at-point
+       (let ((byte-compile-warnings nil)
+             (byte-compile-dynamic t))
+         (byte-compile
+          (lambda ()
+            (save-excursion
+              (let* ((fwd-sym (or custom-forward-symbol #'forward-symbol))
+                     (point (point))
+                     (end   (progn (funcall fwd-sym  1) (point)))
+                     (start (progn (funcall fwd-sym -1) (point))))
+                (if (and (not (= start point end))
+                         (<= start point end))
+                    (cons start end)
+                  (cons point (1+ point)))))))))
+
   ;; for org-capture Chrome extension
   (require 'org-protocol)
+
+  ;; recenter after jump
+  (let ((byte-compile-warnings nil)
+        (byte-compile-dynamic t)
+        (f (byte-compile (lambda (&rest _) (recenter)))))
+    (advice-add #'spacemacs/jump-to-definition :after f)
+    (advice-add #'xref-pop-marker-stack        :after f))
 
   ;; turn on/off the packages globally.
   (spacemacs/toggle-camel-case-motion-globally-on)

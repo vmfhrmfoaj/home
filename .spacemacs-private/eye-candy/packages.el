@@ -89,9 +89,19 @@
     :config
     (with-eval-after-load 'diminish
       (diminish 'auto-dim-other-buffers-mode))
-    (advice-add #'adob--after-change-major-mode-hook :override
-                (lambda (&rest args)
-                  nil))
+    (let ((byte-compile-warnings nil)
+          (byte-compile-dynamic  t))
+      (with-eval-after-load 'helm
+        (add-hook 'helm-after-action-hook
+                  (byte-compile
+                   (lambda ()
+                     (adob--dim-all-buffers t)
+                     (adob--dim-buffer nil)
+                     (setq adob--last-buffer (current-buffer)))))
+        (advice-add #'adob--ignore-buffer :filter-return
+                    (byte-compile
+                     (lambda (ret)
+                       (or ret (helm-alive-p)))))))
     (auto-dim-other-buffers-mode)))
 
 ;; (defun eye-candy/post-init-clojure-mode ()

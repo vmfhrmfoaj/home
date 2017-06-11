@@ -21,7 +21,14 @@
   (define-key isearch-mode-map (kbd "C-h") #'isearch-delete-char)
   (define-key isearch-mode-map (kbd "SPC") (isearch-fn ".*?" " "))
   (define-key isearch-mode-map (kbd "M-<") (isearch-fn "\\_<"))
-  (define-key isearch-mode-map (kbd "M->") (isearch-fn "\\_>")))
+  (define-key isearch-mode-map (kbd "M->") (isearch-fn "\\_>"))
+  (advice-add #'isearch-update :after
+              (let ((byte-compile-warnings nil)
+                    (byte-compile-dynamic t))
+                (byte-compile
+                 (lambda (&rest _)
+                   (if (and isearch-message (not (string-empty-p isearch-message)))
+                       (recenter)))))))
 
 (defun spacemacs-editing-ext/post-init-smartparens()
   (use-package smartparens

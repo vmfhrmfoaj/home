@@ -62,7 +62,15 @@
                          (org-todo-log-states (if is-done?
                                                   (cons '("TODO" note time) org-todo-log-states)
                                                 org-todo-log-states)))
-                    (funcall of arg)))))
+                    (funcall of arg))))
+    ;; NOTE
+    ;; Because `org-mode' use the lexical binding,
+    ;;  we can not take advantage of dynamic scope with `org-metaleft' and `org-metaright' function.
+    ;; I forcibly changed the name of function in byte code of `org-metaleft' and `org-metaright' function.
+    (let ((l-consts (aref (symbol-function #'org-metaleft)  2))
+          (r-consts (aref (symbol-function #'org-metaright) 2)))
+      (aset l-consts (1- (length l-consts)) #'evil-shift-left)
+      (aset r-consts (1- (length r-consts)) #'evil-shift-right)))
 
   (use-package org-agenda
     :defer t
@@ -115,9 +123,9 @@
                       "\n"
                       "%t:"             "\n"
                       "- %a"            "\n"
-                      "   #+BEGIN_QUOTE" "\n"
-                      "   %i"            "\n"
-                      "   #+END_QUOTE"   "\n"
+                      "  #+BEGIN_QUOTE" "\n"
+                      "  %i"            "\n"
+                      "  #+END_QUOTE"   "\n"
                       "%?")
              :empty-lines 1
              :prepend t)

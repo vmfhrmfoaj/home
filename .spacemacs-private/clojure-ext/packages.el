@@ -132,6 +132,10 @@
                         (goto-char (match-beginning 0))
                         (point-at-bol))
                       (point)))
+    (defun safe-up-list-1 ()
+      (condition-case nil
+          (up-list)
+        (setq-local font-lock--skip t)))
     (let* ((whitespace  "[ \r\t\n]")
            (whitespace+ (concat whitespace "+"))
            (whitespace* (concat whitespace "*"))
@@ -140,13 +144,15 @@
            (namespace   (concat "\\(?:" symbol "/\\)"))
            (namespace?  (concat namespace "?"))
            (namespace*  (concat namespace "*"))
-           (meta* "\\(?:#?^\\(?:{[^}]*}\\|\\sw+\\)[ \r\n\t]*\\)*"))
+           (meta* "\\(?:#?^\\(?:{[^}]*}\\|\\sw+\\)[ \r\n\t]*\\)*")
+           (core-ns  (concat (regexp-opt '("clojure.core" "cljs.core" "core") nil) "/"))
+           (core-ns? (concat "\\(?:" core-ns "\\)?")))
       (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
         ;; append rules
         (font-lock-add-keywords
          mode
          `(;; Highlight condtions in `cond' form.
-           ("(cond[ \r\t\n]+"
+           (,(concat "(" core-ns? "cond[ \r\t\n]+")
             (,(lambda (limit)
                 (ignore-errors
                   (when font-lock--skip
@@ -161,18 +167,40 @@
                    (setq-local font-lock--skip t)
                  (setq-local font-lock--skip nil)
                  (setq-local cond-form-point (point))
-                 (up-list)
+                 (safe-up-list-1)
                  (point)))
              (if font-lock--skip
                  (end-of-line)
                (goto-char cond-form-point))
-             (0 'clojure-cond-condtion-face prepend))))
+             (0 'clojure-cond-condtion-face prepend)))
+           (,(concat "(" core-ns? (regexp-opt '("if" "if-some" "if-let")) "[ \r\t\n]+")
+            (,(lambda (limit)
+                (ignore-errors
+                  (when font-lock--skip
+                    (error ""))
+                  (when (> limit (point))
+                    (clojure-forward-sexp)
+                    (set-match-data (list (progn (clojure-skip :comment :ignored-form) (point-marker))
+                                          (progn (clojure-forward-sexp) (point-marker))))
+                    (clojure-forward-sexp)
+                    t)))
+             (save-excursion
+               (if (in-comment?)
+                   (setq-local font-lock--skip t)
+                 (setq-local font-lock--skip nil)
+                 (setq-local if-form-point (point))
+                 (safe-up-list-1)
+                 (point)))
+             (if font-lock--skip
+                 (end-of-line)
+               (goto-char if-form-point))
+             (0 'clojure-if-true-face  append))))
          'append)
         ;; prepend rules
         (font-lock-add-keywords
          mode
          `(;; Binding forms
-           (,(clojure--binding-regexp)
+           (,(concat "(" core-ns? (substring (clojure--binding-regexp) 1))
             ;; Normal bindings
             (,(lexical-let ((symbol symbol) (namespace? namespace?))
                 (lambda (limit)
@@ -192,7 +220,7 @@
                    (setq-local font-lock--skip t)
                  (setq-local font-lock--skip nil)
                  (setq-local binding-form-point (point))
-                 (up-list)
+                 (safe-up-list-1)
                  (point)))
              (if font-lock--skip
                  (end-of-line)
@@ -214,12 +242,12 @@
                                   (not (looking-at-p "[ \r\t\n]*\\(?:{\\|\\[\\)"))
                                   (prog1 t (clojure-forward-sexp 2))))
                       (when (looking-at-p "[ \r\t\n]*\\(?:{\\|\\[\\)")
-                        (setq-local binding-form-recursive-point (point))
+                        (setq-local binding-form-recursive-point (progn (down-list) (point)))
                         (setq-local binding-form-recursive-limit
-                                    (save-excursion (clojure-forward-sexp) (point)))))
+                                    (save-excursion (up-list) (point)))))
                     (when binding-form-recursive-point
                       (clojure-skip :comment :ignored-form :type-hint)
-                      (if (re-search-forward (concat "\\<" symbol "\\>")
+                      (if (re-search-forward (concat "\\(?:\\^" symbol "[ \r\t\n]+\\)?" "\\(\\<" symbol "\\>\\)")
                                              (min limit binding-form-recursive-limit) t)
                           (progn
                             ;; ignores
@@ -229,7 +257,7 @@
                                                           "&"
                                                           "\\)")
                                                   (match-string-no-properties 0))
-                              (set-match-data (-repeat 2 (make-marker))))
+                              (set-match-data (-repeat 4 (make-marker))))
                             ;; for binding map
                             (when (save-excursion
                                     (up-list)
@@ -240,7 +268,7 @@
                         (clojure-forward-sexp)
                         (setq-local binding-form-recursive-point nil)
                         (setq-local binding-form-recursive-limit nil)
-                        (set-match-data (-repeat 2 (make-marker))))
+                        (set-match-data (-repeat 4 (make-marker))))
                       t))))
              (save-excursion
                (if (in-comment?)
@@ -249,14 +277,15 @@
                  (setq-local binding-form-point (point))
                  (setq-local binding-form-recursive-point nil)
                  (setq-local binding-form-recursive-limit nil)
-                 (up-list)
+                 (safe-up-list-1)
                  (point)))
              (if font-lock--skip
                  (end-of-line)
                (goto-char binding-form-point))
-             (0 'clojure-local-binding-variable-name-face)))
+             (1 'clojure-local-binding-variable-name-face)))
            ;; OOP style function forms & letfn
-           (,(concat "(\\(?:"
+           (,(concat "(" core-ns?
+                     "\\(?:"
                      (concat (regexp-opt '(;; "definterface"
                                            ;; "defprotocol"
                                            "defrecord"
@@ -291,7 +320,7 @@
                    (setq-local font-lock--skip t)
                  (setq-local font-lock--skip nil)
                  (setq-local oop-fn-form-point (point))
-                 (up-list)
+                 (safe-up-list-1)
                  (point)))
              (if font-lock--skip
                  (end-of-line)
@@ -360,8 +389,7 @@
                      "\\s(")
             (1 'font-lock-builtin-face))
            (,(concat "(" namespace?
-                     (regexp-opt '("extend-protocol"
-                                   "go-loop"
+                     (regexp-opt '("go-loop"
                                    "with-hard-redefs")
                                  t))
             (1 'font-lock-keyword-face))
@@ -394,6 +422,23 @@
     (add-hook
      'clojure-mode-hook
      (lambda ()
+       (setq-local custom-forward-symbol
+                   (let ((byte-compile-warnings nil)
+                         (byte-compile-dynamic t))
+                     (byte-compile
+                      (lambda (n)
+                        (let ((sym     (concat "^/" clojure--sym-forbidden-rest-chars))
+                              (not-sym (concat "/"  clojure--sym-forbidden-rest-chars))
+                              (skip-chars (if (< 0 n)
+                                              #'skip-chars-forward
+                                            (lambda (s)
+                                              (skip-chars-backward s)
+                                              (skip-chars-forward ".-"))))
+                              (n (abs n)))
+                          (while (<= 1 n)
+                            (setq n (1- n))
+                            (funcall skip-chars not-sym)
+                            (funcall skip-chars sym)))))))
        (let ((file-name (or (buffer-file-name) ""))
              (ns-form   (save-match-data
                           (save-excursion

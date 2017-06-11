@@ -25,13 +25,15 @@
     (define-key evil-read-key-map (kbd "<S-kp-add>") "=")
     (add-hook 'evil-normal-state-entry-hook #'auto-indent)
     (advice-add #'open-line :after #'auto-indent)
-    (advice-add #'evil-insert-resume :after
-                (let ((byte-compile-warnings nil)
-                      (f (lambda (&rest _)
-                           (recenter))))
-                  (byte-compile f)))
     (dolist (fn '(evil-change evil-delete evil-join evil-paste-after))
-      (advice-add fn :after #'auto-indent))))
+      (advice-add fn :after #'auto-indent))
+    (let ((byte-compile-warnings nil)
+          (byte-compile-dynamic t)
+          (f (byte-compile (lambda (&rest _)
+                             (recenter)))))
+      (advice-add #'evil-goto-mark :after f)
+      (advice-add #'evil-flash-search-pattern :before f)
+      (advice-add #'evil-insert-resume :after f))))
 
 (defun spacemacs-bootstrap-ext/post-init-which-key ()
   (use-package which-key

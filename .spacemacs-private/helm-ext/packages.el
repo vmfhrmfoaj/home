@@ -13,6 +13,7 @@
 
 (defconst helm-ext-packages
   '(helm
+    helm-ag
     helm-projectile
     (minibuffer :location built-in)))
 
@@ -24,12 +25,24 @@
     (define-key helm-map (kbd "C-p") #'helm-previous-source)
     (setq helm-truncate-lines t
           helm-autoresize-min-height 35)
-    (helm-autoresize-mode 1))
+    (helm-autoresize-mode 1)
+    (add-hook 'helm-after-action-hook #'recenter))
+
   (use-package helm-mode
-    :ensure helm
     :defer t
     :config
     (define-key helm-comp-read-map (kbd "C-h") #'delete-backward-char)))
+
+(defun helm-ext/post-init-helm-ag ()
+  (use-package helm-ag
+    :defer t
+    :config
+    (advice-add #'helm-ag--marked-input :around
+                (lambda (of escape)
+                  (let ((res (funcall of escape)))
+                    (if (and escape res)
+                        (regexp-quote res)
+                      res))))))
 
 (defun helm-ext/post-init-helm-projectile ()
   (use-package helm-projectile

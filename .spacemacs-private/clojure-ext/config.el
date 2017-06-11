@@ -30,6 +30,10 @@
   '((t (:slant italic)))
   "Face used to font-lock Clojure conditions in `cond' form.")
 
+(defface clojure-if-true-face
+  '((t (:background "light green")))
+  "Face used to font-lock Clojure `if' true form.")
+
 
 (defcustom clojure--binding-forms
   '("binding" "doseq" "dotimes" "for" "let" "if-let" "if-some" "when-let" "when-some" "loop" "with-redefs")
