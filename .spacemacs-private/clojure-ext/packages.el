@@ -147,6 +147,8 @@
            (meta* "\\(?:#?^\\(?:{[^}]*}\\|\\sw+\\)[ \r\n\t]*\\)*")
            (core-ns  (concat (regexp-opt '("clojure.core" "cljs.core" "core") nil) "/"))
            (core-ns? (concat "\\(?:" core-ns "\\)?")))
+      ;; TODO
+      ;; I need a function to build anchored matches.
       (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
         ;; append rules
         (font-lock-add-keywords
@@ -158,6 +160,28 @@
                   (when font-lock--skip
                     (error ""))
                   (when (> limit (point))
+                    (clojure-skip :comment :ignored-form)
+                    (set-match-data (list (point-marker) (progn (forward-sexp) (point-marker))))
+                    (clojure-forward-sexp)
+                    t)))
+             (save-excursion
+               (if (in-comment?)
+                   (setq-local font-lock--skip t)
+                 (setq-local font-lock--skip nil)
+                 (setq-local cond-form-point (point))
+                 (safe-up-list-1)
+                 (point)))
+             (if font-lock--skip
+                 (end-of-line)
+               (goto-char cond-form-point))
+             (0 'clojure-cond-condtion-face prepend)))
+           (,(concat "(" core-ns? "cond->>?[ \r\t\n]+")
+            (,(lambda (limit)
+                (ignore-errors
+                  (when font-lock--skip
+                    (error ""))
+                  (when (> limit (point))
+                    (clojure-forward-sexp)
                     (clojure-skip :comment :ignored-form)
                     (set-match-data (list (point-marker) (progn (forward-sexp) (point-marker))))
                     (clojure-forward-sexp)
@@ -200,7 +224,8 @@
         (font-lock-add-keywords
          mode
          `(;; Binding forms
-           (,(concat "(" core-ns? (substring (clojure--binding-regexp) 1))
+           (,(concat "(" core-ns? "\\(" (regexp-opt clojure--binding-forms) "\\|" "with-" symbol "\\)[ \r\t\n]+\\[")
+            (1 'font-lock-keyword-face)
             ;; Normal bindings
             (,(lexical-let ((symbol symbol) (namespace? namespace?))
                 (lambda (limit)
@@ -209,8 +234,9 @@
                       (error ""))
                     (clojure-skip :comment :ignored-form :type-hint :destructuring-bind)
                     (let ((local-limit (save-excursion (forward-sexp) (point))))
-                      (unless (re-search-forward (concat namespace? "\\(" symbol "\\)\\>")
-                                                 (min local-limit limit) t)
+                      (unless (and (re-search-forward (concat "\\<" namespace? "\\(" symbol "\\)\\>") (min local-limit limit) t)
+                                   (not (string-match-p (regexp-opt clojure--ignore-binding-highlight-keywords)
+                                                        (match-string-no-properties 1))))
                         (set-match-data (-repeat 4 (make-marker))))
                       (goto-char local-limit))
                     (clojure-forward-sexp)
@@ -251,12 +277,10 @@
                                              (min limit binding-form-recursive-limit) t)
                           (progn
                             ;; ignores
-                            (when (string-match-p (concat "\\("
-                                                          ":as\\|"
-                                                          ":or\\|"
-                                                          "&"
-                                                          "\\)")
-                                                  (match-string-no-properties 0))
+                            (when (-> clojure--ignore-binding-highlight-keywords
+                                      (append '(":as" ":or" "&"))
+                                      (regexp-opt)
+                                      (string-match-p (match-string-no-properties 0)))
                               (set-match-data (-repeat 4 (make-marker))))
                             ;; for binding map
                             (when (save-excursion
@@ -340,18 +364,21 @@
                      "::?" namespace* "\\(" symbol "\\)\\>")
             (1 'font-lock-keyword-face)
             (2 'clojure-defining-spec-face))
-           (,(concat "(" namespace?
-                     (regexp-opt '("defn"
-                                   "defn-"
-                                   "defmacro"
-                                   "defmethod") t)
-                     "\\>"
-                     whitespace+
-                     meta*
-                     "\\(" symbol? "\\)\\(!*\\)\\>")
-            (1 'font-lock-keyword-face)
-            (2 'font-lock-function-name-face)
-            (3 'clojure-side-effect-face))
+           ;; NOTE
+           ;; 1. (defn ...)     == (def (fn ...))
+           ;; 2. (defmacro ...) == (defn ...)
+           ;; (,(concat "(" namespace?
+           ;;           (regexp-opt '("defn"
+           ;;                         "defn-"
+           ;;                         "defmacro"
+           ;;                         "defmethod") t)
+           ;;           "\\>"
+           ;;           whitespace+
+           ;;           meta*
+           ;;           "\\(" symbol? "\\)\\(!*\\)\\>")
+           ;;  (1 'font-lock-keyword-face)
+           ;;  (2 'font-lock-function-name-face)
+           ;;  (3 'clojure-side-effect-face))
            (,(concat "(" namespace?
                      "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
                      whitespace+
@@ -430,10 +457,13 @@
                         (let ((sym     (concat "^/" clojure--sym-forbidden-rest-chars))
                               (not-sym (concat "/"  clojure--sym-forbidden-rest-chars))
                               (skip-chars (if (< 0 n)
-                                              #'skip-chars-forward
+                                              (lambda (s)
+                                                (skip-chars-forward s)
+                                                (skip-chars-backward "."))
                                             (lambda (s)
                                               (skip-chars-backward s)
-                                              (skip-chars-forward ".-"))))
+                                              (if (looking-at-p "\\.-?")
+                                                  (skip-chars-forward ".-")))))
                               (n (abs n)))
                           (while (<= 1 n)
                             (setq n (1- n))

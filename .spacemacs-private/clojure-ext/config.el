@@ -35,6 +35,14 @@
   "Face used to font-lock Clojure `if' true form.")
 
 
+(defcustom clojure--ignore-binding-highlight-keywords
+  '("_")
+  "TODO"
+  :type '(repeat string)
+  :safe (lambda (value)
+          (and (listp value)
+               (cl-every 'stringp value))))
+
 (defcustom clojure--binding-forms
   '("binding" "doseq" "dotimes" "for" "let" "if-let" "if-some" "when-let" "when-some" "loop" "with-redefs")
   "List of Clojure binding form."

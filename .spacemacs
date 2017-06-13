@@ -181,8 +181,8 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("Fira Code"
-                               :size 13
+   dotspacemacs-default-font `("MonacoB2"
+                               :size 14
                                :weight normal
                                :width normal
                                :powerline-scale 1.2)
@@ -362,11 +362,10 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting
-  (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic:weight=bold"))
   (setq-default line-spacing 2)
-  (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
-  (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 1.1))
-  (add-to-list 'face-font-rescale-alist '("STIXGeneral"      . 0.9))
+  (add-to-list 'face-font-rescale-alist '("Apple SD Gothic Neo" . 1.1))
+  (add-to-list 'face-font-rescale-alist '("Arial Unicode MS"    . 0.95))
+  (add-to-list 'face-font-rescale-alist '("STIXGeneral"         . 0.9))
   (when (string-equal "Fira Code" (car dotspacemacs-default-font))
     (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
                    ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
