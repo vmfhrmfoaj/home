@@ -19,7 +19,12 @@
     :defer t
     :config
     (setq magit-diff-refine-hunk t)
-    (add-hook 'magit-revision-mode-hook (lambda ()
-                                          (setq-local line-spacing 0)))))
+    (add-hook 'magit-revision-mode-hook (lambda () (setq-local line-spacing 0))))
+
+  (use-package magit-blame
+    :defer
+    :config
+    (define-key magit-blame-mode-map "n" nil)
+    (define-key magit-blame-mode-map "N" nil)))
 
 ;;; packages.el ends here

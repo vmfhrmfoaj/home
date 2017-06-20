@@ -57,7 +57,6 @@
           wrap-sp-supported-modes '(clojure-mode
                                     cider-repl-mode
                                     emas-lisp-mode))
-    (define-key evil-lisp-state-map (kbd "C-w") #'sp-rewrap-sexp)
     (advice-add #'sp-newline :after #'auto-indent)))
 
 ;;; packages.el ends here

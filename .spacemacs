@@ -181,7 +181,7 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("MonacoB2"
+   dotspacemacs-default-font `("Fira Code"
                                :size 14
                                :weight normal
                                :width normal
@@ -362,9 +362,10 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting
-  (setq-default line-spacing 2)
-  (add-to-list 'face-font-rescale-alist '("Apple SD Gothic Neo" . 1.1))
+  (setq-default line-spacing 0)
+  (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic:weight=bold"))
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS"    . 0.95))
+  (add-to-list 'face-font-rescale-alist '("Fira Code Symbol"    . 1.1))
   (add-to-list 'face-font-rescale-alist '("STIXGeneral"         . 0.9))
   (when (string-equal "Fira Code" (car dotspacemacs-default-font))
     (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
@@ -438,7 +439,7 @@ you should place your code here."
   (when window-system
     ;; for single window
     (let* ((w 140)
-           (h (1- (/ (display-pixel-height) (frame-char-height))))
+           (h (/ (display-pixel-height) (frame-char-height)))
            (l (/ (custom-display-pixel-width) 2.0))
            (l (floor (- l (* (frame-unit->pixel w) 0.45))))
            (l (if (< 0 (- (custom-display-pixel-width)
@@ -503,9 +504,9 @@ you should place your code here."
                 'twilight-bright
                 `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (light-color 5))
                                                   :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
-                `(clojure-if-true-face ((t (:background ,(-> 'default
+                `(clojure-if-true-face ((t (:background ,(-> 'font-lock-keyword-face
                                                              (face-attribute :background)
-                                                             (dim-color 0.8))))))
+                                                             (light-color 1.9))))))
                 `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
                 `(font-lock-regexp-grouping-construct ((t (:weight bold :foreground ,(-> 'font-lock-string-face
                                                                                          (face-attribute :foreground)
@@ -522,7 +523,6 @@ you should place your code here."
                 `(magit-diff-context-highlight ((t (:background "#f2f9fd"))))
                 `(magit-diff-hunk-heading-highlight ((t (:background "#c8e9ff"))))
                 `(magit-section-highlight ((t (:background "#eef7fd"))))
-                `(org-agenda-clocking ((t (:height 1.05))))
                 `(org-cancelled ((t (:foreground nil :inherit org-done))))
                 `(org-column ((t (:weight bold))))
                 `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
@@ -535,9 +535,10 @@ you should place your code here."
                 'twilight-anti-bright
                 `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 7))
                                                   :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
-                `(clojure-if-true-face ((t (:background ,(-> 'default
+                `(clojure-if-true-face ((t (:background ,(-> 'font-lock-keyword-face
                                                              (face-attribute :background)
-                                                             (light-color 1.27))))))
+                                                             (saturate-color -6)
+                                                             (dim-color 4.35))))))
                 `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1))))))
                 `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added   :background)))))
                 `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
@@ -545,7 +546,6 @@ you should place your code here."
                 `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
                 `(lazy-highlight ((t :background "paleturquoise4" :foreground "paleturquoise3")))
                 `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
-                `(org-agenda-clocking ((t (:height 1.05))))
                 `(org-cancelled ((t (:foreground nil :inherit org-done))))
                 `(org-column ((t (:weight bold))))
                 `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
@@ -568,7 +568,9 @@ you should place your code here."
               `(linum ((t (:inherit default))))
               `(linum-relative-current-face ((t (:inherit linum))))
               `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
-              `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground)))))))))
+              `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground)))))
+              `(org-column ((t (:inherit default))))
+              `(org-agenda-clocking ((t (:height 1.0 :weight bold))))))))
     (advice-add #'load-theme :after f)
     (funcall f (first dotspacemacs-themes)))
   (with-eval-after-load "goto-addr"

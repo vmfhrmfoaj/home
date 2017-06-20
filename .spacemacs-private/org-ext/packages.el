@@ -168,7 +168,7 @@
   (use-package org-colview
     :defer t
     :config
-    (setq org-columns-default-format "%40ITEM %TODO %5Effort %5CLOCKSUM %TAGS")))
+    (setq org-columns-default-format "%40ITEM %TODO %5Effort %7CLOCKSUM %TAGS")))
 
 (defun org-ext/post-init-evil-org ()
   (use-package evil-org

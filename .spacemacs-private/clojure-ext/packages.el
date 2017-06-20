@@ -29,12 +29,21 @@
                                     "Ⓡ" ; (R)ELP
                                     ))
           cider-cljs-lein-repl (concat "(do"
+                                       "  (println \"Patch on Figwheel.\")"
                                        "  (require 'figwheel-sidecar.repl-api)"
                                        "  (swap! @#'strictly-specking-standalone.core/registry-ref"
-                                       "         dissoc :figwheel-sidecar.schemas.cljs-options/compiler-options)"
+                                       "         dissoc "
+                                       "        :figwheel-sidecar.schemas.config/build-config"
+                                       "        :figwheel-sidecar.schemas.cljs-options/compiler-options)"
                                        "  (strictly-specking-standalone.core/def-key"
-                                       "    :figwheel-sidecar.schemas.cljs-options/compiler-options"
-                                       "    map?)"
+                                       "   :figwheel-sidecar.schemas.config/build-config"
+                                       "   some?)"
+                                       "  (strictly-specking-standalone.core/def-key"
+                                       "   :figwheel-sidecar.schemas.cljs-options/compiler-options"
+                                       "   some?)"
+                                       "  (-> (find-ns 'figwheel-sidecar.config)"
+                                       "      (intern 'optimizations-none?)"
+                                       "      (alter-var-root (fn [f] #(or (f %) (:figwheel %)))))"
                                        "  (figwheel-sidecar.repl-api/start-figwheel!)"
                                        "  (figwheel-sidecar.repl-api/cljs-repl))"))
     (evil-define-key 'insert cider-repl-mode-map (kbd "RET") #'evil-ret-and-indent)
@@ -181,18 +190,18 @@
                   (when font-lock--skip
                     (error ""))
                   (when (> limit (point))
-                    (clojure-forward-sexp)
                     (clojure-skip :comment :ignored-form)
                     (set-match-data (list (point-marker) (progn (forward-sexp) (point-marker))))
                     (clojure-forward-sexp)
                     t)))
-             (save-excursion
-               (if (in-comment?)
-                   (setq-local font-lock--skip t)
-                 (setq-local font-lock--skip nil)
-                 (setq-local cond-form-point (point))
-                 (safe-up-list-1)
-                 (point)))
+             (prog1 (save-excursion
+                      (if (in-comment?)
+                          (setq-local font-lock--skip t)
+                        (setq-local font-lock--skip nil)
+                        (setq-local cond-form-point (point))
+                        (safe-up-list-1)
+                        (point)))
+               (clojure-forward-sexp))
              (if font-lock--skip
                  (end-of-line)
                (goto-char cond-form-point))
@@ -224,8 +233,7 @@
         (font-lock-add-keywords
          mode
          `(;; Binding forms
-           (,(concat "(" core-ns? "\\(" (regexp-opt clojure--binding-forms) "\\|" "with-" symbol "\\)[ \r\t\n]+\\[")
-            (1 'font-lock-keyword-face)
+           (,(concat "(" core-ns? (substring (clojure--binding-regexp) 1))
             ;; Normal bindings
             (,(lexical-let ((symbol symbol) (namespace? namespace?))
                 (lambda (limit)
@@ -425,7 +433,7 @@
                      meta*
                      "\\(" symbol "\\)\\>")
             (1 'clojure-defining-ns-face))
-           (,(concat "\\<\\(\\.-?\\)[_a-z][-_a-zA-Z0-9]*\\>")
+           (,(concat "\\<\\(\\.-?\\)" symbol "\\>")
             (1 'font-lock-keyword-face))
            (,(concat "("
                      (regexp-opt '("case"

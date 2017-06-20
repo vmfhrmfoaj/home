@@ -37,7 +37,7 @@
 
 (defun spacemacs-bootstrap-ext/post-init-which-key ()
   (use-package which-key
-    :defer
+    :defer t
     :config
     (setq which-key-dont-use-unicode t)))
 
