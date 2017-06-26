@@ -364,9 +364,10 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; set up the addtional font setting
   (setq-default line-spacing 0)
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic:weight=bold"))
-  (add-to-list 'face-font-rescale-alist '("Arial Unicode MS"    . 0.95))
-  (add-to-list 'face-font-rescale-alist '("Fira Code Symbol"    . 1.1))
-  (add-to-list 'face-font-rescale-alist '("STIXGeneral"         . 0.9))
+  (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
+  (add-to-list 'face-font-rescale-alist '("Courier"          . 0.95))
+  (add-to-list 'face-font-rescale-alist '("Nanum Gothic"     . 0.95))
+  (add-to-list 'face-font-rescale-alist '("STIXGeneral"      . 0.9))
   (when (string-equal "Fira Code" (car dotspacemacs-default-font))
     (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
                    ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
@@ -438,7 +439,7 @@ you should place your code here."
 
   (when window-system
     ;; for single window
-    (let* ((w 140)
+    (let* ((w 130)
            (h (/ (display-pixel-height) (frame-char-height)))
            (l (/ (custom-display-pixel-width) 2.0))
            (l (floor (- l (* (frame-unit->pixel w) 0.45))))

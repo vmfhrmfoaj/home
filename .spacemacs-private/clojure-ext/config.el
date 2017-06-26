@@ -31,7 +31,7 @@
   "Face used to font-lock Clojure conditions in `cond' form.")
 
 (defface clojure-if-true-face
-  '((t (:background "light green")))
+  '((t (:inherit default)))
   "Face used to font-lock Clojure `if' true form.")
 
 

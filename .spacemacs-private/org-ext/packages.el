@@ -105,7 +105,6 @@
                       ":END:"                                                            "\n"
                       "\n"
                       "%?")
-             :empty-lines 1
              :prepend t)
             ("n" "Note" entry
              (file+headline ,(concat org-directory "/notes/" (format-time-string "%Y") ".org")
@@ -114,7 +113,6 @@
                       "\n"
                       "%t:" "\n"
                       "- %?")
-             :empty-lines 1
              :prepend t)
             ("p" "Protocol" entry
              (file+headline ,(concat org-directory "/notes/" (format-time-string "%Y") ".org")
@@ -127,7 +125,6 @@
                       "  %i"            "\n"
                       "  #+END_QUOTE"   "\n"
                       "%?")
-             :empty-lines 1
              :prepend t)
             ("L" "Protocol Link" entry
              (file+headline ,(concat org-directory "/notes/" (format-time-string "%Y") ".org")
@@ -137,7 +134,6 @@
                       "%t:"  "\n"
                       "- %a" "\n"
                       "%?")
-             :empty-lines 1
              :prepend t)))
     (spacemacs/set-leader-keys
       "aoc" nil
