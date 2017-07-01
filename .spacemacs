@@ -171,8 +171,7 @@ values."
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
    dotspacemacs-themes '(
-                         twilight-bright      ; daytime
-                         twilight-anti-bright ; night
+                         zenburn
                          )
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
@@ -362,7 +361,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting
-  (setq-default line-spacing 0)
+  (setq-default line-spacing 1)
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic:weight=bold"))
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
   (add-to-list 'face-font-rescale-alist '("Courier"          . 0.95))
@@ -498,82 +497,52 @@ you should place your code here."
   (run-with-idle-timer 1 t #'garbage-collect)
 
   ;; customize the theme.
-  (let ((f (lambda (theme &rest _)
-             (set-frame-height (selected-frame) (cdr (assoc 'height default-frame-alist)))
-             (when (eq theme 'twilight-bright)
-               (custom-theme-set-faces
-                'twilight-bright
-                `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (light-color 5))
-                                                  :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
-                `(clojure-if-true-face ((t (:background ,(-> 'font-lock-keyword-face
-                                                             (face-attribute :background)
-                                                             (light-color 1.9))))))
-                `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
-                `(font-lock-regexp-grouping-construct ((t (:weight bold :foreground ,(-> 'font-lock-string-face
-                                                                                         (face-attribute :foreground)
-                                                                                         (light-color 5)
-                                                                                         (saturate-color 10))))))
-                `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1))))))
-                `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added   :background)))))
-                `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
-                `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
-                `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
-                `(hl-line ((t (:background "#eef7fd"))))
-                `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
-                `(link ((t (:foreground "#55850f" :underline t))))
-                `(magit-diff-context-highlight ((t (:background "#f2f9fd"))))
-                `(magit-diff-hunk-heading-highlight ((t (:background "#c8e9ff"))))
-                `(magit-section-highlight ((t (:background "#eef7fd"))))
-                `(org-cancelled ((t (:foreground nil :inherit org-done))))
-                `(org-column ((t (:weight bold))))
-                `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
-                `(org-link ((t (:inherit link))))
-                `(org-next ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
-                `(outline-4 ((t (:inherit font-lock-string-face))))
-                `(show-paren-match ((t (:foreground "Springgreen2" :underline t :weight bold))))))
-             (when (eq theme 'twilight-anti-bright)
-               (custom-theme-set-faces
-                'twilight-anti-bright
-                `(auto-dim-other-buffers-face ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 7))
-                                                  :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
-                `(clojure-if-true-face ((t (:background ,(-> 'font-lock-keyword-face
-                                                             (face-attribute :background)
-                                                             (saturate-color -6)
-                                                             (dim-color 4.35))))))
-                `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1))))))
-                `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added   :background)))))
-                `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
-                `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
-                `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
-                `(lazy-highlight ((t :background "paleturquoise4" :foreground "paleturquoise3")))
-                `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
-                `(org-cancelled ((t (:foreground nil :inherit org-done))))
-                `(org-column ((t (:weight bold))))
-                `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
-                `(org-link ((t (:inherit link))))
-                `(org-next ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
-                `(show-paren-match ((t (:foreground "Springgreen2" :underline t :weight bold))))))
-             (custom-set-faces
-              `(cider-fringe-good-face ((t (:inherit success))))
-              `(clojure-keyword-face ((t (:inherit font-lock-builtin-face))))
-              `(css-property ((t (:inherit font-lock-builtin-face :foreground nil :weight normal))))
-              `(css-selector ((t (:inherit font-lock-variable-name-face :foreground nil :weight bold))))
-              `(font-lock-comment-face ((t (:slant unspecified))))
-              `(font-lock-doc-face ((t (:slant italic))))
-              `(font-lock-function-name-face ((t (:inherit bold :weight unspecified))))
-              `(font-lock-keyword-face ((t (:inherit nil :weight unspecified))))
-              `(font-lock-type-face    ((t (:inherit nil :weight unspecified))))
-              `(font-lock-variable-name-face ((t (:inherit bold :weight unspecified))))
-              `(hl-line ((t (:inverse-video nil))))
-              `(link ((t (:underline t :weight unspecified))))
-              `(linum ((t (:inherit default))))
-              `(linum-relative-current-face ((t (:inherit linum))))
-              `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
-              `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground)))))
-              `(org-column ((t (:inherit default))))
-              `(org-agenda-clocking ((t (:height 1.0 :weight bold))))))))
-    (advice-add #'load-theme :after f)
-    (funcall f (first dotspacemacs-themes)))
+  (custom-theme-set-faces
+   'zenburn
+   `(auto-dim-other-buffers-face
+     ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 2))
+         :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
+   `(clojure-if-true-face ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1.05))))))
+   `(git-gutter+-added    ((t (:foreground ,(-> 'diff-refine-added   (face-attribute :background) (saturate-color -20))))))
+   `(git-gutter+-deleted  ((t (:foreground ,(-> 'diff-refine-removed (face-attribute :background) (saturate-color -20))))))
+   `(git-gutter+-modified ((t (:foreground ,(-> 'diff-refine-changed (face-attribute :background) (saturate-color -25))))))
+   `(lazy-highlight ((t (:foreground "#d0bf8f" :background "#1e1e1e"))))
+   `(linum-relative-current-face
+     ((t (:inherit linum :foreground ,(-> 'linum (face-attribute :foreground)
+                                          (light-color 15)
+                                          (saturate-color 25))))))
+   `(org-block     ((t (:background ,(dim-color (face-attribute 'default :background) 1.5)))))
+   `(org-cancelled ((t (:foreground nil :inherit org-done))))
+   `(org-column    ((t (:weight bold))))
+   `(org-hide      ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
+   `(org-link      ((t (:inherit link))))
+   `(org-next      ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
+   `(region ((t (:background ,(-> 'default (face-attribute :background) (dim-color 7.5))))))
+   `(show-paren-match        ((t (:foreground "Springgreen2" :underline t :weight bold))))
+   `(sp-show-pair-match-face ((t (:inherit show-paren-match)))))
+  (custom-set-faces
+   `(cider-fringe-good-face ((t (:inherit success))))
+   `(clojure-keyword-face   ((t (:inherit font-lock-builtin-face))))
+   `(css-property ((t (:inherit font-lock-builtin-face :foreground nil :weight normal))))
+   `(css-selector ((t (:inherit font-lock-variable-name-face :foreground nil :weight bold))))
+   `(font-lock-comment-face ((t (:slant unspecified))))
+   `(font-lock-doc-face ((t (:slant italic))))
+   `(font-lock-function-name-face ((t (:inherit bold :weight unspecified))))
+   `(font-lock-keyword-face ((t (:inherit nil :weight unspecified))))
+   `(font-lock-type-face    ((t (:inherit nil :weight unspecified))))
+   `(font-lock-variable-name-face ((t (:inherit bold :weight unspecified))))
+   `(hl-line ((t (:inverse-video nil))))
+   `(link    ((t (:underline t :weight unspecified))))
+   `(linum   ((t (:inherit default))))
+   `(linum-relative-current-face ((t (:inherit linum))))
+   `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
+   `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground))))))
+  (with-eval-after-load "rainbow-delimiters"
+    (dolist (i (number-sequence 1 9))
+      (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
+        (set-face-attribute face nil :foreground
+                            (-> (face-attribute face :foreground)
+                                (saturate-color -10))))))
   (with-eval-after-load "goto-addr"
     (setq goto-address-mail-face "link"))
 
