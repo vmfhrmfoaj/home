@@ -1,6 +1,7 @@
 # android
-export ANDROID_SDK_ROOT=$HOME/Android_SDK
-export PATH=$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools:$PATH
+export ANDROID_SDK=$HOME/Android_SDK
+export ANDROID_HOME=$ANDROID_SDK
+export PATH=$ANDROID_SDK/tools:$ANDROID_SDK/platform-tools:$PATH
 
 # cocoapod
 export GEM_HOME=$HOME/.gem/ruby/2.0.0
