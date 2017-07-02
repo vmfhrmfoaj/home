@@ -19,10 +19,7 @@
   (use-package auto-highlight-symbol
     :defer t
     :config
-    (advice-add #'ahs-select :after
-                (let ((byte-compile-warnings nil)
-                      (byte-compile-dynamic t))
-                  (byte-compile (lambda (&rest _) (recenter)))))))
+    (advice-add #'ahs-select :after (byte-compile (lambda (&rest _) (recenter))))))
 
 (defun spacemacs-editing-visual-ext/post-init-rainbow-delimiters ()
   (use-package rainbow-delimiters
@@ -30,19 +27,17 @@
     :config
     (setq rainbow-delimiters--prefix-str (concat "@" "?" "#" "_" "'" "`"))
     (advice-add #'rainbow-delimiters--apply-color :override
-                (let ((byte-compile-warnings nil)
-                      (byte-compile-dynamic t)
-                      (f (lambda (loc depth match)
-                           (let ((face (funcall rainbow-delimiters-pick-face-function depth match loc))
-                                 (start loc)
-                                 (end (1+ loc)))
-                             (when face
-                               (save-excursion
-                                 (goto-char start)
-                                 (when (looking-at-p "\\s(")
-                                   (skip-chars-backward rainbow-delimiters--prefix-str)
-                                   (setq start (point))))
-                               (font-lock-prepend-text-property start end 'face face))))))
-                  (byte-compile f)))))
+                (byte-compile
+                 (lambda (loc depth match)
+                   (let ((face (funcall rainbow-delimiters-pick-face-function depth match loc))
+                         (start loc)
+                         (end (1+ loc)))
+                     (when face
+                       (save-excursion
+                         (goto-char start)
+                         (when (looking-at-p "\\s(")
+                           (skip-chars-backward rainbow-delimiters--prefix-str)
+                           (setq start (point))))
+                       (font-lock-prepend-text-property start end 'face face))))))))
 
 ;;; packages.el ends here

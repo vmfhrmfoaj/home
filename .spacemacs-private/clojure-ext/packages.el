@@ -20,6 +20,8 @@
   (use-package cider
     :defer t
     :config
+    (byte-compile #'cider-connection-type-for-cljc-buffer)
+    (byte-compile #'cider-cljs-root-dirs)
     (setq cider-font-lock-reader-conditionals nil
           cider-dynamic-indentation nil
           cider-font-lock-dynamically '(deprecated)
@@ -57,22 +59,23 @@
     (advice-add #'cider-connection-type-for-buffer :before-until
                 #'cider-connection-type-for-cljc-buffer)
     (advice-add #'cider-expected-ns :around
-                (lambda (of &optional path)
-                  (-if-let (root-dirs (and (cider-connected-p)
-                                           (string= "cljs" (cider-connection-type-for-buffer))
-                                           (cider-cljs-root-dirs)))
-                      (let* ((path    (or path (file-truename (buffer-file-name))))
-                             (relpath (->> root-dirs
-                                           (--filter (string-prefix-p it path))
-                                           (--sort (< (length it) (length other)))
-                                           (-first-item))))
-                        (when relpath
-                          (->> path
-                               (string-remove-prefix (concat relpath "/"))
-                               (file-name-sans-extension)
-                               (replace-regexp-in-string "/" ".")
-                               (replace-regexp-in-string "_" "-"))))
-                    (funcall of path))))))
+                (byte-compile
+                 (lambda (of &optional path)
+                   (-if-let (root-dirs (and (cider-connected-p)
+                                            (string= "cljs" (cider-connection-type-for-buffer))
+                                            (cider-cljs-root-dirs)))
+                       (let* ((path    (or path (file-truename (buffer-file-name))))
+                              (relpath (->> root-dirs
+                                            (--filter (string-prefix-p it path))
+                                            (--sort (< (length it) (length other)))
+                                            (-first-item))))
+                         (when relpath
+                           (->> path
+                                (string-remove-prefix (concat relpath "/"))
+                                (file-name-sans-extension)
+                                (replace-regexp-in-string "/" ".")
+                                (replace-regexp-in-string "_" "-"))))
+                     (funcall of path)))))))
 
 (defun clojure-ext/post-init-clj-refactor ()
   (use-package clj-refactor
@@ -112,17 +115,16 @@
                          "              (re-find expect-regx d2)  1"                         "\n"
                          "              :else (.compareTo d1 d2))))))"))))
     (advice-add #'cljr--create-msg :filter-return
-                (lambda (msg)
-                  "for missing a configuration."
-                  (append msg (when (->> msg
-                                         (-filter #'stringp)
-                                         (-filter (-partial #'string= "prune-ns-form")))
-                                `("prune-ns-form" ,(if cljr-prune-ns-form "true" "false"))))))
+                (byte-compile
+                 (lambda (msg)
+                   "for missing a configuration."
+                   (append msg (when (->> msg
+                                          (-filter #'stringp)
+                                          (-filter (-partial #'string= "prune-ns-form")))
+                                 `("prune-ns-form" ,(if cljr-prune-ns-form "true" "false")))))))
     (with-eval-after-load 'smartparens
       (advice-add #'cljr-slash :after
-                  (let ((byte-compile-warnings nil)
-                        (byte-compile-dynamic t)
-                        (f (lambda ()
+                  (let ((f (lambda ()
                              (when (and (not (bound-and-true-p multiple-cursors-mode))
                                         (not (sp-point-in-string-or-comment))
                                         (->> (char-before (1- (point)))
@@ -136,6 +138,10 @@
   (use-package clojure-mode
     :defer t
     :config
+    (byte-compile #'clojure--binding-regexp)
+    (byte-compile #'clojure-space-key)
+    (byte-compile #'clojure-skip)
+    (byte-compile #'clojure-forward-sexp)
     (defun in-comment? ()
       (comment-only-p (save-excursion
                         (goto-char (match-beginning 0))
@@ -164,15 +170,16 @@
          mode
          `(;; Highlight condtions in `cond' form.
            (,(concat "(" core-ns? "cond[ \r\t\n]+")
-            (,(lambda (limit)
-                (ignore-errors
-                  (when font-lock--skip
-                    (error ""))
-                  (when (> limit (point))
-                    (clojure-skip :comment :ignored-form)
-                    (set-match-data (list (point-marker) (progn (forward-sexp) (point-marker))))
-                    (clojure-forward-sexp)
-                    t)))
+            (,(byte-compile
+               (lambda (limit)
+                 (ignore-errors
+                   (when font-lock--skip
+                     (error ""))
+                   (when (> limit (point))
+                     (clojure-skip :comment :ignored-form)
+                     (set-match-data (list (point-marker) (progn (forward-sexp) (point-marker))))
+                     (clojure-forward-sexp)
+                     t))))
              (save-excursion
                (if (in-comment?)
                    (setq-local font-lock--skip t)
@@ -185,15 +192,16 @@
                (goto-char cond-form-point))
              (0 'clojure-cond-condtion-face prepend)))
            (,(concat "(" core-ns? "cond->>?[ \r\t\n]+")
-            (,(lambda (limit)
-                (ignore-errors
-                  (when font-lock--skip
-                    (error ""))
-                  (when (> limit (point))
-                    (clojure-skip :comment :ignored-form)
-                    (set-match-data (list (point-marker) (progn (forward-sexp) (point-marker))))
-                    (clojure-forward-sexp)
-                    t)))
+            (,(byte-compile
+               (lambda (limit)
+                 (ignore-errors
+                   (when font-lock--skip
+                     (error ""))
+                   (when (> limit (point))
+                     (clojure-skip :comment :ignored-form)
+                     (set-match-data (list (point-marker) (progn (forward-sexp) (point-marker))))
+                     (clojure-forward-sexp)
+                     t))))
              (prog1 (save-excursion
                       (if (in-comment?)
                           (setq-local font-lock--skip t)
@@ -207,16 +215,17 @@
                (goto-char cond-form-point))
              (0 'clojure-cond-condtion-face prepend)))
            (,(concat "(" core-ns? (regexp-opt '("if" "if-some" "if-let")) "[ \r\t\n]+")
-            (,(lambda (limit)
-                (ignore-errors
-                  (when font-lock--skip
-                    (error ""))
-                  (when (> limit (point))
-                    (clojure-forward-sexp)
-                    (set-match-data (list (progn (clojure-skip :comment :ignored-form) (point-marker))
-                                          (progn (clojure-forward-sexp) (point-marker))))
-                    (clojure-forward-sexp)
-                    t)))
+            (,(byte-compile
+               (lambda (limit)
+                 (ignore-errors
+                   (when font-lock--skip
+                     (error ""))
+                   (when (> limit (point))
+                     (clojure-forward-sexp)
+                     (set-match-data (list (progn (clojure-skip :comment :ignored-form) (point-marker))
+                                           (progn (clojure-forward-sexp) (point-marker))))
+                     (clojure-forward-sexp)
+                     t))))
              (save-excursion
                (if (in-comment?)
                    (setq-local font-lock--skip t)
@@ -235,8 +244,9 @@
          `(;; Binding forms
            (,(concat "(" core-ns? (substring (clojure--binding-regexp) 1))
             ;; Normal bindings
-            (,(lexical-let ((symbol symbol) (namespace? namespace?))
-                (lambda (limit)
+            (,(-partial
+               (byte-compile
+                (lambda (symbol namespace? limit)
                   (ignore-errors
                     (when font-lock--skip
                       (error ""))
@@ -249,6 +259,7 @@
                       (goto-char local-limit))
                     (clojure-forward-sexp)
                     t)))
+               symbol namespace?)
              (save-excursion
                (if (in-comment?)
                    (setq-local font-lock--skip t)
@@ -261,8 +272,9 @@
                (goto-char binding-form-point))
              (1 'clojure-local-binding-variable-name-face))
             ;; Destructuring bindings
-            (,(lexical-let ((symbol symbol))
-                (lambda (limit)
+            (,(-partial
+               (byte-compile
+                (lambda (symbol limit)
                   ;; NOTE
                   ;; We need to iterate to search symbols in the destructuring form,
                   ;; but anchored-matcher does not support recursion.
@@ -302,6 +314,7 @@
                         (setq-local binding-form-recursive-limit nil)
                         (set-match-data (-repeat 4 (make-marker))))
                       t))))
+               symbol)
              (save-excursion
                (if (in-comment?)
                    (setq-local font-lock--skip t)
@@ -330,8 +343,9 @@
                      "\\|"
                      "letfn[ \r\t\n]+\\["
                      "\\)")
-            (,(lexical-let ((symbol symbol))
-                (lambda (limit)
+            (,(-partial
+               (byte-compile
+                (lambda (symbol limit)
                   (ignore-errors
                     (when font-lock--skip
                       (error ""))
@@ -347,6 +361,7 @@
                           (set-match-data (-repeat 2 (make-marker)))))
                       (up-list)
                       t))))
+               symbol)
              (save-excursion
                (if (in-comment?)
                    (setq-local font-lock--skip t)
@@ -458,25 +473,23 @@
      'clojure-mode-hook
      (lambda ()
        (setq-local custom-forward-symbol
-                   (let ((byte-compile-warnings nil)
-                         (byte-compile-dynamic t))
-                     (byte-compile
-                      (lambda (n)
-                        (let ((sym     (concat "^/" clojure--sym-forbidden-rest-chars))
-                              (not-sym (concat "/"  clojure--sym-forbidden-rest-chars))
-                              (skip-chars (if (< 0 n)
-                                              (lambda (s)
-                                                (skip-chars-forward s)
-                                                (skip-chars-backward "."))
+                   (byte-compile
+                    (lambda (n)
+                      (let ((sym     (concat "^/" clojure--sym-forbidden-rest-chars))
+                            (not-sym (concat "/"  clojure--sym-forbidden-rest-chars))
+                            (skip-chars (if (< 0 n)
                                             (lambda (s)
-                                              (skip-chars-backward s)
-                                              (if (looking-at-p "\\.-?")
-                                                  (skip-chars-forward ".-")))))
-                              (n (abs n)))
-                          (while (<= 1 n)
-                            (setq n (1- n))
-                            (funcall skip-chars not-sym)
-                            (funcall skip-chars sym)))))))
+                                              (skip-chars-forward s)
+                                              (skip-chars-backward "."))
+                                          (lambda (s)
+                                            (skip-chars-backward s)
+                                            (if (looking-at-p "\\.-?")
+                                                (skip-chars-forward ".-")))))
+                            (n (abs n)))
+                        (while (<= 1 n)
+                          (setq n (1- n))
+                          (funcall skip-chars not-sym)
+                          (funcall skip-chars sym))))))
        (let ((file-name (or (buffer-file-name) ""))
              (ns-form   (save-match-data
                           (save-excursion
@@ -512,23 +525,26 @@
            (setq keywords (append keywords compojure-kws))))
          (when keywords
            (setq-local clojure-get-indent-function
-                       (lexical-let ((keywords (regexp-opt keywords)))
-                         (lambda (func-name)
-                           (and (string-match-p keywords func-name) :defn))))))))
-    (advice-add #'clojure-font-lock-syntactic-face-function
-                :around (lambda (of state)
-                          (let ((res (funcall of state)))
-                            (if (and (eq res font-lock-doc-face)
-                                     (let ((list-end (save-excursion
-                                                       (goto-char (nth 1 state))
-                                                       (forward-sexp)
-                                                       (1- (point))))
-                                           (str-end  (save-excursion
-                                                       (goto-char (nth 8 state))
-                                                       (forward-sexp)
-                                                       (point))))
-                                       (= list-end str-end)))
-                                font-lock-string-face
-                              res))))))
+                       (-partial
+                        (byte-compile
+                         (lambda (keywords func-name)
+                           (and (string-match-p keywords func-name) :defn)))
+                        (regexp-opt keywords)))))))
+    ;; (advice-add #'clojure-font-lock-syntactic-face-function
+    ;;             :around (lambda (of state)
+    ;;                       (let ((res (funcall of state)))
+    ;;                         (if (and (eq res font-lock-doc-face)
+    ;;                                  (let ((list-end (save-excursion
+    ;;                                                    (goto-char (nth 1 state))
+    ;;                                                    (forward-sexp)
+    ;;                                                    (1- (point))))
+    ;;                                        (str-end  (save-excursion
+    ;;                                                    (goto-char (nth 8 state))
+    ;;                                                    (forward-sexp)
+    ;;                                                    (point))))
+    ;;                                    (= list-end str-end)))
+    ;;                             font-lock-string-face
+    ;;                           res))))
+    ))
 
 ;;; packages.el ends here

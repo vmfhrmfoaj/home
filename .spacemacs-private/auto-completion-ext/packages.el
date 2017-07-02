@@ -19,6 +19,8 @@
   (use-package company
     :defer t
     :config
+    (byte-compile #'helm-company-action-insert-plus)
+    (byte-compile #'helm-company-plus)
     (define-key company-active-map (kbd "C-h") nil)
     (define-key company-active-map (kbd "C-s")  #'helm-company-plus)
     (setq company-idle-delay 0.2)))

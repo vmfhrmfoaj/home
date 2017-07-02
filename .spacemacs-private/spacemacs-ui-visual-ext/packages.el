@@ -22,7 +22,8 @@
           (list (list (caar hl-todo-keywords)
                       `(1 (hl-todo-get-face) prepend))))
     (advice-add #'hl-todo-get-face :filter-return
-                (lambda (ret)
-                  (list ret)))))
+                (byte-compile
+                 (lambda (ret)
+                   (list ret))))))
 
 ;;; packages.el ends here

@@ -19,6 +19,7 @@
   (use-package org
     :defer t
     :config
+    (byte-compile #'org-insert-schedule-&-deadline)
     (setq org-bullets-bullet-list '("■" "□" "◙" "◘" "●" "○" "◌")
           org-complete-tags-always-offer-all-agenda-tags t
           org-directory (concat (getenv "HOME") "/Desktop/Org")
@@ -43,14 +44,15 @@
                (insert "- [ ] ")
                (org-update-checkbox-count-maybe))))
     (advice-add #'org-insert-item :filter-args
-                (lambda (checkbox)
-                  (let ((pos (org-in-item-p)))
-                    (if (and checkbox
-                             (not pos))
-                        checkbox
-                      (save-excursion
-                        (goto-char pos)
-                        (list (looking-at-p "-[ ]+\\[.?\\]")))))))
+                (byte-compile
+                 (lambda (checkbox)
+                   (let ((pos (org-in-item-p)))
+                     (if (and checkbox
+                              (not pos))
+                         checkbox
+                       (save-excursion
+                         (goto-char pos)
+                         (list (looking-at-p "-[ ]+\\[.?\\]"))))))))
     (font-lock-add-keywords
      'org-mode
      '(("^\\s-*\\(-\\) "
@@ -74,7 +76,7 @@
                    (t)))))
     (advice-add #'org-todo :around
                 (lambda (of &optional arg)
-                  (let* ((is-done?            (member (org-get-todo-state) org-done-keywords))
+                  (let* ((is-done? (member (org-get-todo-state) org-done-keywords))
                          (org-todo-log-states (if is-done?
                                                   (cons '("TODO" note time) org-todo-log-states)
                                                 org-todo-log-states)))
@@ -91,6 +93,7 @@
   (use-package org-agenda
     :defer t
     :config
+    (byte-compile #'find-org-agenda-files)
     (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0 :weight bold))
                                       (0.5 . '(:inherit org-upcoming-deadline :height 1.0 :weight bold))
                                       (0.0 . '(:height 1.0)))

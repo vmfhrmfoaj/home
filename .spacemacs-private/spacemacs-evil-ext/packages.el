@@ -20,17 +20,18 @@
     :defer t
     :config
     (advice-add #'evil-surround-region :filter-args
-                (lambda (args)
-                  (if (> 4 (length args))
-                      args
-                    (let* ((char     (nth 3 args))
-                           (new-char (cond
-                                      ((= char 33554477) 95)
-                                      ((= char 33554475) 61)
-                                      ((= char 33554479) 92))))
-                      (if new-char
-                          (-replace-at 3 new-char args)
-                        args)))))))
+                (byte-compile
+                 (lambda (args)
+                   (if (> 4 (length args))
+                       args
+                     (let* ((char     (nth 3 args))
+                            (new-char (cond
+                                       ((= char 33554477) 95)
+                                       ((= char 33554475) 61)
+                                       ((= char 33554479) 92))))
+                       (if new-char
+                           (-replace-at 3 new-char args)
+                         args))))))))
 
 (defun spacemacs-evil-ext/post-init-linum-relative ()
   (use-package linum-relative

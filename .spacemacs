@@ -349,6 +349,10 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
 
+  ;; compile settings
+  (setq-default byte-compile-dynamic t
+                byte-compile-warnings nil)
+
   ;; load custom functions
   (load "~/.spacemacs-funcs.el")
 

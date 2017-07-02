@@ -29,12 +29,13 @@
       1 'font-lock-string-face)))
   (add-hook 'lisp-interaction-mode-hook #'smartparens-mode)
   (with-eval-after-load 'evil
-    (let ((f (lambda ()
-               (interactive)
-               (beginning-of-defun)
-               (forward-list)
-               (eval-print-last-sexp))))
-      (define-key lisp-interaction-mode-map [remap eval-print-last-sexp] f)
+    (let ((f (byte-compile
+              (lambda ()
+                (interactive)
+                (beginning-of-defun)
+                (forward-list)
+                (eval-print-last-sexp)))))
+      (define-key lisp-interaction-mode-map [remap eval-print-last-sexp]  f)
       (evil-define-key 'normal lisp-interaction-mode-map [remap evil-ret] f))))
 
 ;;; packages.el ends here

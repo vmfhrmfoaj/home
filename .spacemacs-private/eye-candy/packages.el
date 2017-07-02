@@ -89,19 +89,17 @@
     :config
     (with-eval-after-load 'diminish
       (diminish 'auto-dim-other-buffers-mode))
-    (let ((byte-compile-warnings nil)
-          (byte-compile-dynamic  t))
-      (with-eval-after-load 'helm
-        (add-hook 'helm-after-action-hook
+    (with-eval-after-load 'helm
+      (add-hook 'helm-after-action-hook
+                (byte-compile
+                 (lambda ()
+                   (adob--dim-all-buffers t)
+                   (adob--dim-buffer nil)
+                   (setq adob--last-buffer (current-buffer)))))
+      (advice-add #'adob--ignore-buffer :filter-return
                   (byte-compile
-                   (lambda ()
-                     (adob--dim-all-buffers t)
-                     (adob--dim-buffer nil)
-                     (setq adob--last-buffer (current-buffer)))))
-        (advice-add #'adob--ignore-buffer :filter-return
-                    (byte-compile
-                     (lambda (ret)
-                       (or ret (helm-alive-p)))))))
+                   (lambda (ret)
+                     (or ret (helm-alive-p))))))
     (auto-dim-other-buffers-mode)))
 
 ;; (defun eye-candy/post-init-clojure-mode ()
@@ -118,9 +116,7 @@
 ;;   (use-package company
 ;;     :defer t
 ;;     :config
-;;     (let ((byte-compile-warnings nil)
-;;           (byte-compile-dynamic  t)
-;;           (f (lambda (cmd)
+;;     (let ((f (lambda (cmd)
 ;;                (ignore-errors
 ;;                  (cond
 ;;                   ((eq 'post-command cmd)
@@ -135,84 +131,88 @@
   (when (require 'evil nil 'noerr)
     (setq composition-props nil
           evil-replace-state-cursor '("chocolate" (hbar . 4)))
-    ;; (let ((byte-compile-warnings nil)
-    ;;       (byte-compile-dynamic  t))
-    ;;   (advice-add #'evil-insert :before
-    ;;               (byte-compile
-    ;;                (lambda (&rest _)
-    ;;                  (while (and (get-text-property (point)      'composition)
-    ;;                              (get-text-property (1- (point)) 'composition))
-    ;;                    (backward-char)))))
-    ;;   (advice-add #'evil-append :before
-    ;;               (byte-compile
-    ;;                (lambda (&rest _)
-    ;;                  (while (and (get-text-property (point) 'composition)
-    ;;                              (get-text-property (1+ (point)) 'composition))
-    ;;                    (forward-char)))))
-    ;;   (add-hook 'evil-insert-state-exit-hook
+
+    ;; (byte-compile #'get-text-properties)
+    ;; (byte-compile #'put-text-properties)
+    ;; (byte-compile #'without-text-property)
+    ;; (byte-compile #'without-text-property-hard)
+
+    ;; (advice-add #'evil-insert :before
     ;;             (byte-compile
-    ;;              (lambda ()
-    ;;                (ignore-errors
-    ;;                  (while (and (get-text-property (- (point) 1) 'composition)
-    ;;                              (get-text-property (- (point) 2) 'composition))
-    ;;                    (backward-char))))))
-    ;;   (advice-add #'current-column :around
+    ;;              (lambda (&rest _)
+    ;;                (while (and (get-text-property (point)      'composition)
+    ;;                            (get-text-property (1- (point)) 'composition))
+    ;;                  (backward-char)))))
+    ;; (advice-add #'evil-append :before
+    ;;             (byte-compile
+    ;;              (lambda (&rest _)
+    ;;                (while (and (get-text-property (point) 'composition)
+    ;;                            (get-text-property (1+ (point)) 'composition))
+    ;;                  (forward-char)))))
+    ;; (add-hook 'evil-insert-state-exit-hook
+    ;;           (byte-compile
+    ;;            (lambda ()
+    ;;              (ignore-errors
+    ;;                (while (and (get-text-property (- (point) 1) 'composition)
+    ;;                            (get-text-property (- (point) 2) 'composition))
+    ;;                  (backward-char))))))
+    ;; (advice-add #'current-column :around
+    ;;             (byte-compile
+    ;;              (lambda (of &rest args)
+    ;;                (let ((beg (line-beginning-position))
+    ;;                      (end (line-end-position)))
+    ;;                  (without-text-property beg end 'composition
+    ;;                    (apply of args))))))
+    ;; (dolist (f '(evil-next-line evil-next-visual-line))
+    ;;   (advice-add f :around
     ;;               (byte-compile
     ;;                (lambda (of &rest args)
     ;;                  (let ((beg (line-beginning-position))
-    ;;                        (end (line-end-position)))
+    ;;                        (end (line-end-position 2)))
     ;;                    (without-text-property beg end 'composition
-    ;;                      (apply of args))))))
-    ;;   (dolist (f '(evil-next-line evil-next-visual-line))
-    ;;     (advice-add f :around
-    ;;                 (byte-compile
-    ;;                  (lambda (of &rest args)
-    ;;                    (let ((beg (line-beginning-position))
-    ;;                          (end (line-end-position 2)))
-    ;;                      (without-text-property beg end 'composition
-    ;;                        (apply of args)))))))
-    ;;   (dolist (f '(evil-previous-line evil-previous-visual-line))
-    ;;     (advice-add f :around
-    ;;                 (byte-compile
-    ;;                  (lambda (of &rest args)
-    ;;                    (let ((beg (line-beginning-position -1))
-    ;;                          (end (line-end-position 2)))
-    ;;                      (without-text-property beg end 'composition
-    ;;                        (apply of args)))))))
-    ;;   (advice-add #'evil-visual-highlight-block :around
+    ;;                      (apply of args)))))))
+    ;; (dolist (f '(evil-previous-line evil-previous-visual-line))
+    ;;   (advice-add f :around
     ;;               (byte-compile
-    ;;                (lambda (of beg end &optional overlays)
-    ;;                  (let ((beg_ (save-excursion
-    ;;                                (goto-char beg)
-    ;;                                (line-beginning-position)))
-    ;;                        (end_ (save-excursion
-    ;;                                (goto-char end)
-    ;;                                (line-end-position))))
-    ;;                    (without-text-property beg_ end_ 'composition
-    ;;                      (funcall of beg end overlays))))))
-    ;;   (advice-add #'evil-delete :around
-    ;;               (lambda (of &rest args)
-    ;;                 (if (evil-visual-state-p)
-    ;;                     (without-text-property-hard (point-min) (point-max) 'composition
-    ;;                       (apply of args))
-    ;;                   (apply of args))))
-    ;;   (setq-default without-composition-prop nil)
-    ;;   (advice-add #'evil-insert :before
-    ;;               (byte-compile
-    ;;                (lambda (&rest _)
-    ;;                  (when (and (not without-composition-prop)
-    ;;                             (evil-visual-state-p))
-    ;;                    (setq-local without-composition-prop t)
-    ;;                    (with-silent-modifications
-    ;;                      (remove-text-properties (point-min)
-    ;;                                              (point-max)
-    ;;                                              (list 'composition nil)))))))
-    ;;   (add-hook 'evil-normal-state-entry-hook
+    ;;                (lambda (of &rest args)
+    ;;                  (let ((beg (line-beginning-position -1))
+    ;;                        (end (line-end-position 2)))
+    ;;                    (without-text-property beg end 'composition
+    ;;                      (apply of args)))))))
+    ;; (advice-add #'evil-visual-highlight-block :around
     ;;             (byte-compile
-    ;;              (lambda ()
-    ;;                (when without-composition-prop
-    ;;                  (setq-local without-composition-prop nil)
-    ;;                  (font-lock-flush))))))
+    ;;              (lambda (of beg end &optional overlays)
+    ;;                (let ((beg_ (save-excursion
+    ;;                              (goto-char beg)
+    ;;                              (line-beginning-position)))
+    ;;                      (end_ (save-excursion
+    ;;                              (goto-char end)
+    ;;                              (line-end-position))))
+    ;;                  (without-text-property beg_ end_ 'composition
+    ;;                    (funcall of beg end overlays))))))
+    ;; (advice-add #'evil-delete :around
+    ;;             (lambda (of &rest args)
+    ;;               (if (evil-visual-state-p)
+    ;;                   (without-text-property-hard (point-min) (point-max) 'composition
+    ;;                     (apply of args))
+    ;;                 (apply of args))))
+    ;; (setq-default without-composition-prop nil)
+    ;; (advice-add #'evil-insert :before
+    ;;             (byte-compile
+    ;;              (lambda (&rest _)
+    ;;                (when (and (not without-composition-prop)
+    ;;                           (evil-visual-state-p))
+    ;;                  (setq-local without-composition-prop t)
+    ;;                  (with-silent-modifications
+    ;;                    (remove-text-properties (point-min)
+    ;;                                            (point-max)
+    ;;                                            (list 'composition nil)))))))
+    ;; (add-hook 'evil-normal-state-entry-hook
+    ;;           (byte-compile
+    ;;            (lambda ()
+    ;;              (when without-composition-prop
+    ;;                (setq-local without-composition-prop nil)
+    ;;                (font-lock-flush)))))
     ))
 
 (defun eye-candy/post-init-golden-ratio ()
