@@ -35,10 +35,26 @@
                                    ("NEXT" . org-next)
                                    ("DONE" . org-done)
                                    ("CANCELLED" . org-cancelled)))
+    (spacemacs/set-leader-keys-for-major-mode 'org-mode
+      "it" (lambda ()
+             (interactive)
+             (if (org-in-item-p)
+                 (org-insert-item 'checkbox)
+               (insert "- [ ] ")
+               (org-update-checkbox-count-maybe))))
+    (advice-add #'org-insert-item :filter-args
+                (lambda (checkbox)
+                  (let ((pos (org-in-item-p)))
+                    (if (and checkbox
+                             (not pos))
+                        checkbox
+                      (save-excursion
+                        (goto-char pos)
+                        (list (looking-at-p "-[ ]+\\[.?\\]")))))))
     (font-lock-add-keywords
      'org-mode
      '(("^\\s-*\\(-\\) "
-        1 (compose-region (match-beginning 1) (match-end 1) ?·))
+        1 (compose-region (match-beginning 1) (match-end 1) ?╺))
        ("\\(\\\\\\\\\\)\\s-*$"
         1 'shadow nil)))
     (add-hook 'org-todo-get-default-hook
