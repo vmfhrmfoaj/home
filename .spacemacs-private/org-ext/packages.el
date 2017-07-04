@@ -19,7 +19,6 @@
   (use-package org
     :defer t
     :config
-    (byte-compile #'org-insert-schedule-&-deadline)
     (setq org-bullets-bullet-list '("■" "□" "◙" "◘" "●" "○" "◌")
           org-complete-tags-always-offer-all-agenda-tags t
           org-directory (concat (getenv "HOME") "/Desktop/Org")
@@ -38,14 +37,18 @@
                                    ("CANCELLED" . org-cancelled)))
     (spacemacs/set-leader-keys-for-major-mode 'org-mode
       "it" (lambda ()
+             "Insert a new task at current level."
              (interactive)
-             (if (org-in-item-p)
-                 (org-insert-item 'checkbox)
-               (insert "- [ ] ")
+             (unless (and (org-in-item-p)
+                          (org-insert-item 'checkbox))
+               (insert "- "))
+             (unless (looking-back "[ ]+\\[[ ]\\][ ]+" (line-beginning-position))
+               (insert "[ ] ")
                (org-update-checkbox-count-maybe))))
     (advice-add #'org-insert-item :filter-args
                 (byte-compile
                  (lambda (checkbox)
+                   "Imporve the `clever-insert-item'."
                    (let ((pos (org-in-item-p)))
                      (if (and checkbox
                               (not pos))
@@ -57,16 +60,46 @@
      'org-mode
      '(("^\\s-*\\(-\\) "
         1 (compose-region (match-beginning 1) (match-end 1) ?╺))
+       ("^\\s-*\\(\\([0-9]\\)\\.\\) "
+        1 (progn
+            (let ((x (match-string 2))
+                  (s (match-beginning 1))
+                  (e (match-end 1)))
+              (compose-region
+               s e
+               (->> (all-the-icons-material-data)
+                    (assoc (concat "filter_" x))
+                    (cdr)
+                    (string-to-char)))
+              (put-text-property s e 'display '(raise -0.2))
+              (put-text-property s e 'face '(:family "Material Icons")))))
+       ("^\\s-*\\(?:-\\|[0-9]+\\.\\) \\(\\[\\(?: \\|X\\)\\]\\) "
+        1 (progn
+            (let ((x (match-string 1))
+                  (s (match-beginning 1))
+                  (e (match-end 1)))
+              (compose-region
+               s e
+               (->> (all-the-icons-material-data)
+                    (assoc (if (string-equal x "[ ]")
+                               "check_box_outline_blank"
+                             "check_box"))
+                    (cdr)
+                    (string-to-char)))
+              (put-text-property s e 'display '(raise -0.2))
+              (put-text-property s e 'face '(:family "Material Icons")))))
        ("\\(\\\\\\\\\\)\\s-*$"
         1 'shadow nil)))
     (add-hook 'org-todo-get-default-hook
               (lambda (mark _)
+                "Set a schedule and deadline for NEXT."
                 (when (and org-insert-schedule-deadline
                            (string-equal mark "NEXT"))
                   (org-insert-schedule-&-deadline)
                   nil)))
     (add-hook 'org-after-todo-statistics-hook
               (lambda (num-done-task num-remaining-task)
+                "Automatically changes the status of _TODO_ according to sub-TODO."
                 (let (org-log-done
                       org-log-states
                       org-insert-schedule-deadline)
@@ -76,24 +109,26 @@
                    (t)))))
     (advice-add #'org-todo :around
                 (lambda (of &optional arg)
+                  "If reopen the completed _TODO_, show a popup for logging."
                   (let* ((is-done? (member (org-get-todo-state) org-done-keywords))
                          (org-todo-log-states (if is-done?
                                                   (cons '("TODO" note time) org-todo-log-states)
                                                 org-todo-log-states)))
                     (funcall of arg))))
-    ;; NOTE
-    ;; Because `org-mode' use the lexical binding,
-    ;;  we can not take advantage of dynamic scope with `org-metaleft' and `org-metaright' function.
-    ;; I forcibly changed the name of function in byte code of `org-metaleft' and `org-metaright' function.
-    (let ((l-consts (aref (symbol-function #'org-metaleft)  2))
-          (r-consts (aref (symbol-function #'org-metaright) 2)))
-      (aset l-consts (1- (length l-consts)) #'evil-shift-left)
-      (aset r-consts (1- (length r-consts)) #'evil-shift-right)))
+    (add-hook 'org-metaleft-hook
+              (lambda ()
+                (unless (org-at-heading-or-item-p)
+                  (call-interactively #'evil-shift-left)
+                  t)))
+    (add-hook 'org-metaright-hook
+              (lambda ()
+                (unless (org-at-heading-or-item-p)
+                  (call-interactively #'evil-shift-right)
+                  t))))
 
   (use-package org-agenda
     :defer t
     :config
-    (byte-compile #'find-org-agenda-files)
     (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0 :weight bold))
                                       (0.5 . '(:inherit org-upcoming-deadline :height 1.0 :weight bold))
                                       (0.0 . '(:height 1.0)))
@@ -164,6 +199,7 @@
     :config
     (advice-add #'org-protocol-sanitize-uri :filter-return
                 (lambda (url)
+                  "FIXME: Insert prefix to use Google web cache."
                   (if org-capture-use-cached-url
                       (concat "http://webcache.googleusercontent.com/search?q=cache:"
                               (url-hexify-string url))
@@ -175,6 +211,7 @@
     (setq org-clock-into-drawer t)
     (advice-add #'org-clock-get-clocktable :filter-return
                 (lambda (tlb)
+                  "Pretty the org clock table."
                   (concat "\n" (propertize "CLOCKING:" 'face 'org-agenda-date)
                           "\n" (->> (split-string tlb "\n")
                                     (--map (concat "  " it))

@@ -40,7 +40,16 @@
                      (deactivate-mark)
                      (setq isearch-string  regex
                            isearch-message regex)
-                     (isearch-search-and-update)))))))
+                     (isearch-search-and-update))))))
+  (add-hook 'isearch-mode-end-hook
+            (lambda ()
+              (let ((a (save-excursion
+                         (goto-char isearch-other-end)
+                         (point-marker)))
+                    (b (point-marker)))
+                (set-match-data (if isearch-forward
+                                    (list a b)
+                                  (list b a)))))))
 
 (defun spacemacs-editing-ext/post-init-smartparens()
   (use-package smartparens

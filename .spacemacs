@@ -171,7 +171,7 @@ values."
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
    dotspacemacs-themes '(
-                         zenburn
+                         leuven
                          )
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
@@ -180,8 +180,8 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("Fira Code"
-                               :size 14
+   dotspacemacs-default-font `("MonacoB2"
+                               :size 13
                                :weight normal
                                :width normal
                                :powerline-scale 1.2)
@@ -366,11 +366,15 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; set up the addtional font setting
   (setq-default line-spacing 1)
-  (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic:weight=bold"))
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
-  (add-to-list 'face-font-rescale-alist '("Courier"          . 0.95))
-  (add-to-list 'face-font-rescale-alist '("Nanum Gothic"     . 0.95))
   (add-to-list 'face-font-rescale-alist '("STIXGeneral"      . 0.9))
+  (let ((font (car dotspacemacs-default-font))
+        (size (plist-get (cdr dotspacemacs-default-font) :size)))
+    (cond
+     ((string-equal font "MonacoB2")
+      (add-to-list 'face-font-rescale-alist  '("Apple SD Gothic Neo" . 1.1))
+      (if (= size 13)
+          (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 1.1))))))
   (when (string-equal "Fira Code" (car dotspacemacs-default-font))
     (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
                    ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
@@ -398,7 +402,8 @@ before packages are loaded. If you are unsure, you should try in setting them in
                    (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)"))))
       (dolist (char-regexp alist)
         (set-char-table-range composition-function-table (car char-regexp)
-                              `([,(cdr char-regexp) 0 font-shape-gstring]))))))
+                              `([,(cdr char-regexp) 0 font-shape-gstring])))))
+  )
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -474,25 +479,24 @@ you should place your code here."
     ;;            :action #'switch-to-buffer
     ;;            :real-to-display (-compose (-partial #'apply #'concat)
     ;;                                       #'helm-buffer--details)
-    ;;            :candidates (let ((byte-compile-warnings nil)
-    ;;                              (byte-compile-dynamic t)
-    ;;                              (f (lambda ()
-    ;;                                   (->> (window-list)
-    ;;                                        (-remove (-partial #'eq (selected-window)))
-    ;;                                        (-map #'window-buffer)
-    ;;                                        (-distinct)))))
-    ;;                          (byte-compile f))))
+    ;;            :candidates (byte-compile
+    ;;                         (lambda ()
+    ;;                           (->> (window-list)
+    ;;                                (-remove (-partial #'eq (selected-window)))
+    ;;                                (-map #'window-buffer)
+    ;;                                (-distinct))))))
     ;;        (add-to-list 'helm-mini-default-sources
     ;;                     'helm-source-window-buffers-list))))
     )
 
   ;; large file
   (add-hook 'find-file-hook
-            (lambda ()
-              (when (>= (buffer-size) (* 1024 1024))
-                (prettify-symbols-mode -1)
-                (turn-off-show-smartparens-mode)
-                (turn-off-smartparens-mode)))
+            (byte-compile
+             (lambda ()
+               (when (>= (buffer-size) (* 1024 1024))
+                 (prettify-symbols-mode -1)
+                 (turn-off-show-smartparens-mode)
+                 (turn-off-smartparens-mode))))
             'append)
 
   ;; for improving the performance.
@@ -502,28 +506,30 @@ you should place your code here."
 
   ;; customize the theme.
   (custom-theme-set-faces
-   'zenburn
-   `(auto-dim-other-buffers-face
-     ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 2))
-         :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
-   `(clojure-if-true-face ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1.05))))))
-   `(git-gutter+-added    ((t (:foreground ,(-> 'diff-refine-added   (face-attribute :background) (saturate-color -20))))))
-   `(git-gutter+-deleted  ((t (:foreground ,(-> 'diff-refine-removed (face-attribute :background) (saturate-color -20))))))
-   `(git-gutter+-modified ((t (:foreground ,(-> 'diff-refine-changed (face-attribute :background) (saturate-color -25))))))
-   `(lazy-highlight ((t (:foreground "#d0bf8f" :background "#1e1e1e"))))
-   `(linum-relative-current-face
-     ((t (:inherit linum :foreground ,(-> 'linum (face-attribute :foreground)
-                                          (light-color 15)
-                                          (saturate-color 25))))))
-   `(org-block     ((t (:background ,(dim-color (face-attribute 'default :background) 1.5)))))
-   `(org-cancelled ((t (:foreground nil :inherit org-done))))
-   `(org-column    ((t (:weight bold))))
-   `(org-hide      ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
-   `(org-link      ((t (:inherit link))))
-   `(org-next      ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
-   `(region ((t (:background ,(-> 'default (face-attribute :background) (dim-color 7.5))))))
-   `(show-paren-match        ((t (:foreground "Springgreen2" :underline t :weight bold))))
-   `(sp-show-pair-match-face ((t (:inherit show-paren-match)))))
+   'leuven
+   `(bold ((t (:weight bold))))
+   `(font-lock-regexp-grouping-backslash ((t (:foreground "#00998d" :weight bold))))
+   `(font-lock-regexp-grouping-construct ((t (:foreground "#00998d" :weight bold))))
+   `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 3))))))
+   `(git-gutter+-added
+     ((t (:foreground ,(-> 'git-gutter+-added
+                           (face-attribute :foreground)
+                           (light-color 20)
+                           (saturate-color 50))))))
+   `(git-gutter+-deleted
+     ((t (:foreground ,(-> 'git-gutter+-deleted
+                           (face-attribute :foreground)
+                           (light-color 20)
+                           (saturate-color 55))))))
+   `(git-gutter+-modified
+     ((t (:foreground ,(-> 'git-gutter+-modified
+                           (face-attribute :foreground)
+                           (light-color 25)
+                           (saturate-color 55))))))
+   `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
+   `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
+   `(org-checkbox ((t (:weight bold))))
+   `(show-paren-match ((t (:background "#eefff6" :foreground "Springgreen2" :underline t :weight bold)))))
   (custom-set-faces
    `(cider-fringe-good-face ((t (:inherit success))))
    `(clojure-keyword-face   ((t (:inherit font-lock-builtin-face))))
@@ -568,27 +574,23 @@ you should place your code here."
 
   (setq custom-forward-symbol nil)
   (put 'evil-symbol 'bounds-of-thing-at-point
-       (let ((byte-compile-warnings nil)
-             (byte-compile-dynamic t))
-         (byte-compile
-          (lambda ()
-            (save-excursion
-              (let* ((fwd-sym (or custom-forward-symbol #'forward-symbol))
-                     (point (point))
-                     (end   (progn (funcall fwd-sym  1) (point)))
-                     (start (progn (funcall fwd-sym -1) (point))))
-                (if (and (not (= start point end))
-                         (<= start point end))
-                    (cons start end)
-                  (cons point (1+ point)))))))))
+       (byte-compile
+        (lambda ()
+          (save-excursion
+            (let* ((fwd-sym (or custom-forward-symbol #'forward-symbol))
+                   (point (point))
+                   (end   (progn (funcall fwd-sym  1) (point)))
+                   (start (progn (funcall fwd-sym -1) (point))))
+              (if (and (not (= start point end))
+                       (<= start point end))
+                  (cons start end)
+                (cons point (1+ point))))))))
 
   ;; for org-capture Chrome extension
   (require 'org-protocol)
 
   ;; recenter after jump
-  (let ((byte-compile-warnings nil)
-        (byte-compile-dynamic t)
-        (f (byte-compile (lambda (&rest _) (recenter)))))
+  (let ((f (byte-compile (lambda (&rest _) (recenter)))))
     (advice-add #'spacemacs/jump-to-definition :after f)
     (advice-add #'xref-pop-marker-stack        :after f))
 

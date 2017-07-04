@@ -387,21 +387,19 @@
                      "::?" namespace* "\\(" symbol "\\)\\>")
             (1 'font-lock-keyword-face)
             (2 'clojure-defining-spec-face))
-           ;; NOTE
-           ;; 1. (defn ...)     == (def (fn ...))
-           ;; 2. (defmacro ...) == (defn ...)
-           ;; (,(concat "(" namespace?
-           ;;           (regexp-opt '("defn"
-           ;;                         "defn-"
-           ;;                         "defmacro"
-           ;;                         "defmethod") t)
-           ;;           "\\>"
-           ;;           whitespace+
-           ;;           meta*
-           ;;           "\\(" symbol? "\\)\\(!*\\)\\>")
-           ;;  (1 'font-lock-keyword-face)
-           ;;  (2 'font-lock-function-name-face)
-           ;;  (3 'clojure-side-effect-face))
+           (,(concat "(" namespace?
+                     (regexp-opt '("defmacro"
+                                   ;; "defn"
+                                   ;; "defn-"
+                                   ;; "defmethod"
+                                   ) t)
+                     "\\>"
+                     whitespace+
+                     meta*
+                     "\\(" symbol? "\\)\\(!*\\)\\>")
+            (1 'font-lock-keyword-face)
+            (2 'font-lock-function-name-face)
+            (3 'clojure-side-effect-face))
            (,(concat "(" namespace?
                      "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
                      whitespace+
