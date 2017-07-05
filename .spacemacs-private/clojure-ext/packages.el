@@ -31,21 +31,7 @@
                                     "Ⓡ" ; (R)ELP
                                     ))
           cider-cljs-lein-repl (concat "(do"
-                                       "  (println \"Patch on Figwheel.\")"
                                        "  (require 'figwheel-sidecar.repl-api)"
-                                       "  (swap! @#'strictly-specking-standalone.core/registry-ref"
-                                       "         dissoc "
-                                       "        :figwheel-sidecar.schemas.config/build-config"
-                                       "        :figwheel-sidecar.schemas.cljs-options/compiler-options)"
-                                       "  (strictly-specking-standalone.core/def-key"
-                                       "   :figwheel-sidecar.schemas.config/build-config"
-                                       "   some?)"
-                                       "  (strictly-specking-standalone.core/def-key"
-                                       "   :figwheel-sidecar.schemas.cljs-options/compiler-options"
-                                       "   some?)"
-                                       "  (-> (find-ns 'figwheel-sidecar.config)"
-                                       "      (intern 'optimizations-none?)"
-                                       "      (alter-var-root (fn [f] #(or (f %) (:figwheel %)))))"
                                        "  (figwheel-sidecar.repl-api/start-figwheel!)"
                                        "  (figwheel-sidecar.repl-api/cljs-repl))"))
     (evil-define-key 'insert cider-repl-mode-map (kbd "RET") #'evil-ret-and-indent)
@@ -151,6 +137,7 @@
       (condition-case nil
           (up-list)
         (setq-local font-lock--skip t)))
+
     (let* ((whitespace  "[ \r\t\n]")
            (whitespace+ (concat whitespace "+"))
            (whitespace* (concat whitespace "*"))
@@ -460,6 +447,7 @@
                                    ) t)
                      "\\(?:)\\|" whitespace "\\)")
             (1 'clojure-important-keywords-face))))))
+
     (setq clojure-indent-style :align-arguments)
     (put 'defstate 'clojure-doc-string-elt 2)
     (put-clojure-indent 'redef-state :defn) ; for expectations
@@ -503,6 +491,7 @@
              keywords)
          (cond
           ((string-match-p "_test.clj[cs]?$" file-name)
+           (add-to-list 'keywords "async")
            (add-to-list 'keywords "is"))
           ((string-match-p "_expectations.clj[cs]?$" file-name)
            (make-local-variable 'font-lock-keywords)
@@ -512,8 +501,6 @@
                (1 'font-lock-keyword-face))))
            (add-to-list 'keywords "expect")
            (add-to-list 'keywords "freeze-time"))
-          ((string-match-p "_test.clj[cs]" file-name)
-           (add-to-list 'keywords "async"))
           ((string-match-p (concat "compojure.core :"
                                    "\\(?:as"
                                    "\\|refer[ \r\t\n]\\[[^]]*"
@@ -528,21 +515,21 @@
                          (lambda (keywords func-name)
                            (and (string-match-p keywords func-name) :defn)))
                         (regexp-opt keywords)))))))
-    ;; (advice-add #'clojure-font-lock-syntactic-face-function
-    ;;             :around (lambda (of state)
-    ;;                       (let ((res (funcall of state)))
-    ;;                         (if (and (eq res font-lock-doc-face)
-    ;;                                  (let ((list-end (save-excursion
-    ;;                                                    (goto-char (nth 1 state))
-    ;;                                                    (forward-sexp)
-    ;;                                                    (1- (point))))
-    ;;                                        (str-end  (save-excursion
-    ;;                                                    (goto-char (nth 8 state))
-    ;;                                                    (forward-sexp)
-    ;;                                                    (point))))
-    ;;                                    (= list-end str-end)))
-    ;;                             font-lock-string-face
-    ;;                           res))))
-    ))
+    (advice-add #'clojure-font-lock-syntactic-face-function
+                :around (lambda (of state)
+                          "(def XXX 'abc' <-- should be string)"
+                          (let ((res (funcall of state)))
+                            (if (and (eq res font-lock-doc-face)
+                                     (let ((list-end (save-excursion
+                                                       (goto-char (nth 1 state))
+                                                       (forward-sexp)
+                                                       (1- (point))))
+                                           (str-end  (save-excursion
+                                                       (goto-char (nth 8 state))
+                                                       (forward-sexp)
+                                                       (point))))
+                                       (= list-end str-end)))
+                                font-lock-string-face
+                              res))))))
 
 ;;; packages.el ends here

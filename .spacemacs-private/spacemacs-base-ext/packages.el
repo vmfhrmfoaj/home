@@ -44,6 +44,15 @@
     ;; NOTE
     ;; The result of `projectile-sort-by-recentf-first' contain recently visited files.
     ;; So, you will see ignored files.
-    (setq projectile-sort-order 'default)))
+    (setq projectile-sort-order 'default)
+    (advice-add #'projectile-switch-project-by-name :after
+                (lambda (&rest _)
+                  "Improves `spacemacs/helm-persp-switch-project'."
+                  (when (and (featurep 'persp-mode)
+                             (get-current-persp))
+                    (->> (projectile-project-buffer-names)
+                         (--remove (and (not (string-match-p "^\\*cider-repl" it))
+                                        (string-match-p "^\\*" it )))
+                         (-map #'persp-add-buffer)))))))
 
 ;;; packages.el ends here

@@ -19,6 +19,10 @@
   (use-package auto-highlight-symbol
     :defer t
     :config
+    (setq ahs-include '((clojure-mode . "[^ \r\t\n]+")
+                        (clojurescript-mode . "[^ \r\t\n]+")
+                        (clojurec-mode . "[^ \r\t\n]+")
+                        (emacs-lisp-mode . "[^ \r\t\n]+")))
     (advice-add #'ahs-select :after (byte-compile (lambda (&rest _) (recenter))))))
 
 (defun spacemacs-editing-visual-ext/post-init-rainbow-delimiters ()

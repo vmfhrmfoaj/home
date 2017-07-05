@@ -36,15 +36,19 @@
                                    ("DONE" . org-done)
                                    ("CANCELLED" . org-cancelled)))
     (spacemacs/set-leader-keys-for-major-mode 'org-mode
-      "it" (lambda ()
-             "Insert a new task at current level."
-             (interactive)
-             (unless (and (org-in-item-p)
-                          (org-insert-item 'checkbox))
-               (insert "- "))
-             (unless (looking-back "[ ]+\\[[ ]\\][ ]+" (line-beginning-position))
-               (insert "[ ] ")
-               (org-update-checkbox-count-maybe))))
+      "it" (defalias 'org-isnert-task-item
+             (lambda ()
+               "Insert a new task at current level."
+               (interactive)
+               (-if-let (pos (org-in-item-p))
+                   (progn
+                     (goto-char pos)
+                     (re-search-forward "- " (line-end-position)))
+                 (insert "- "))
+               (if (looking-at "\\[[\\( \\|-\\)]\\] ")
+                   (goto-char (match-end 0))
+                 (insert "[ ] ")
+                 (org-update-checkbox-count-maybe)))))
     (advice-add #'org-insert-item :filter-args
                 (byte-compile
                  (lambda (checkbox)
@@ -55,7 +59,7 @@
                          checkbox
                        (save-excursion
                          (goto-char pos)
-                         (list (looking-at-p "-[ ]+\\[.?\\]"))))))))
+                         (list (looking-at-p "[ ]*- \\[\\( \\|-\\|X\\)\\]"))))))))
     (font-lock-add-keywords
      'org-mode
      '(("^\\s-*\\(-\\) "
@@ -73,21 +77,26 @@
                     (string-to-char)))
               (put-text-property s e 'display '(raise -0.2))
               (put-text-property s e 'face '(:family "Material Icons")))))
-       ("^\\s-*\\(?:-\\|[0-9]+\\.\\) \\(\\[\\(?: \\|X\\)\\]\\) "
+       ("^\\s-*\\(?:-\\|[0-9]+\\.\\) \\(\\[\\( \\|-\\|X\\)\\]\\) "
         1 (progn
-            (let ((x (match-string 1))
+            (let ((x (match-string 2))
                   (s (match-beginning 1))
                   (e (match-end 1)))
               (compose-region
                s e
                (->> (all-the-icons-material-data)
-                    (assoc (if (string-equal x "[ ]")
-                               "check_box_outline_blank"
-                             "check_box"))
+                    (assoc (cond
+                            ((string-equal x " ") "check_box_outline_blank")
+                            ((string-equal x "-") "indeterminate_check_box")
+                            ((string-equal x "X") "check_box")))
                     (cdr)
                     (string-to-char)))
               (put-text-property s e 'display '(raise -0.2))
-              (put-text-property s e 'face '(:family "Material Icons")))))
+              (put-text-property s e 'face
+                                 (list :family "Material Icons"
+                                       :foreground (face-attribute (if (string-equal x "X")
+                                                                       'org-done 'org-todo)
+                                                                   :foreground))))))
        ("\\(\\\\\\\\\\)\\s-*$"
         1 'shadow nil)))
     (add-hook 'org-todo-get-default-hook
@@ -112,7 +121,9 @@
                   "If reopen the completed _TODO_, show a popup for logging."
                   (let* ((is-done? (member (org-get-todo-state) org-done-keywords))
                          (org-todo-log-states (if is-done?
-                                                  (cons '("TODO" note time) org-todo-log-states)
+                                                  (append '(("TODO" note time)
+                                                            ("NEXT" note time))
+                                                          org-todo-log-states)
                                                 org-todo-log-states)))
                     (funcall of arg))))
     (add-hook 'org-metaleft-hook

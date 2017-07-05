@@ -1,26 +1,37 @@
 (defun cider-cljs-root-dirs ()
-  (let (repl)
+  (let (repl reconn? cur-ns)
     (dolist (buf (cider-connections) repl)
       (with-current-buffer buf
         (when (string= "clj" cider-repl-type)
           (setq repl buf))))
-    (when repl
-      (ignore-errors
-        (-some-> (concat "(let [b (some-> \"project.clj\""
-                         "                (slurp)"
-                         "                (clojure.edn/read-string)"
-                         "                (some->> (drop 3) (apply hash-map))"
-                         "                (get-in [:cljsbuild :builds]))"
-                         "      b (cond-> b (map? b) (vals))]"
-                         "  (some->> b"
-                         "           (mapcat :source-paths)"
-                         "           (apply hash-set)"
-                         "           (seq)"
-                         "           (map clojure.java.io/as-file)"
-                         "           (map (memfn getAbsolutePath))))")
-                 (nrepl-sync-request:eval repl)
-                 (nrepl-dict-get "value")
-                 (edn-read))))))
+    (unless repl
+      (setq repl (car (cider-connections))
+            reconn? t)
+      (when repl
+        ;; How to get a current namespace in RPEL
+        ;; (setq cur-ns (cider-current-ns))
+        (nrepl-sync-request:eval ":cljs/quit" repl)))
+    (prog1
+        (when repl
+          (ignore-errors
+            (-some-> (concat "(let [b (some-> \"project.clj\""
+                             "                (slurp)"
+                             "                (clojure.edn/read-string)"
+                             "                (some->> (drop 3) (apply hash-map))"
+                             "                (get-in [:cljsbuild :builds]))"
+                             "      b (cond-> b (map? b) (vals))]"
+                             "  (some->> b"
+                             "           (map :source-paths)"
+                             "           (flatten)"
+                             "           (apply hash-set)"
+                             "           (map clojure.java.io/as-file)"
+                             "           (map (memfn getAbsolutePath))))")
+                     (nrepl-sync-request:eval repl)
+                     (nrepl-dict-get "value")
+                     (edn-read))))
+      (when (and repl reconn?)
+        (nrepl-sync-request:eval cider-cljs-lein-repl repl)
+        (and cur-ns (cider-repl-set-ns cur-ns))))))
 
 (defun cider-connection-type-for-cljc-buffer ()
   (when (eq 'clojurec-mode major-mode)

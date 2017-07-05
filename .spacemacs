@@ -82,6 +82,7 @@ values."
      spacemacs-editing-ext
      spacemacs-editing-visual-ext
      spacemacs-evil-ext
+     spacemacs-layout-ext
      spacemacs-ui-visual-ext
      version-control-ext
      ;; ---------------------------------------------------------------
@@ -171,7 +172,7 @@ values."
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
    dotspacemacs-themes '(
-                         leuven
+                         zenburn
                          )
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
@@ -180,8 +181,8 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("MonacoB2"
-                               :size 13
+   dotspacemacs-default-font `("Fira Code"
+                               :size 14
                                :weight normal
                                :width normal
                                :powerline-scale 1.2)
@@ -223,10 +224,10 @@ values."
    dotspacemacs-default-layout-name "Default"
    ;; If non nil the default layout name is displayed in the mode-line.
    ;; (default nil)
-   dotspacemacs-display-default-layout nil
+   dotspacemacs-display-default-layout t
    ;; If non nil then the last auto saved layouts are resume automatically upon
    ;; start. (default nil)
-   dotspacemacs-auto-resume-layouts nil
+   dotspacemacs-auto-resume-layouts t
    ;; Size (in MB) above which spacemacs will prompt to open the large file
    ;; literally to avoid performance issues. Opening a file literally means that
    ;; no major mode or minor modes are active. (default is 1)
@@ -365,7 +366,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting
-  (setq-default line-spacing 1)
+  (setq-default line-spacing 2)
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
   (add-to-list 'face-font-rescale-alist '("STIXGeneral"      . 0.9))
   (let ((font (car dotspacemacs-default-font))
@@ -506,30 +507,33 @@ you should place your code here."
 
   ;; customize the theme.
   (custom-theme-set-faces
-   'leuven
-   `(bold ((t (:weight bold))))
-   `(font-lock-regexp-grouping-backslash ((t (:foreground "#00998d" :weight bold))))
-   `(font-lock-regexp-grouping-construct ((t (:foreground "#00998d" :weight bold))))
-   `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 3))))))
-   `(git-gutter+-added
-     ((t (:foreground ,(-> 'git-gutter+-added
+   'zenburn
+   `(auto-dim-other-buffers-face
+     ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 2))
+         :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
+   `(clojure-if-true-face ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1.05))))))
+   `(font-lock-builtin-face
+     ((t (:foreground ,(-> 'font-lock-keyword-face
                            (face-attribute :foreground)
-                           (light-color 20)
-                           (saturate-color 50))))))
-   `(git-gutter+-deleted
-     ((t (:foreground ,(-> 'git-gutter+-deleted
-                           (face-attribute :foreground)
-                           (light-color 20)
-                           (saturate-color 55))))))
-   `(git-gutter+-modified
-     ((t (:foreground ,(-> 'git-gutter+-modified
-                           (face-attribute :foreground)
-                           (light-color 25)
-                           (saturate-color 55))))))
-   `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
-   `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
-   `(org-checkbox ((t (:weight bold))))
-   `(show-paren-match ((t (:background "#eefff6" :foreground "Springgreen2" :underline t :weight bold)))))
+                           (saturate-color -31)
+                           (dim-color 5))))))
+   `(git-gutter+-added    ((t (:foreground ,(-> 'diff-refine-added   (face-attribute :background) (saturate-color -20))))))
+   `(git-gutter+-deleted  ((t (:foreground ,(-> 'diff-refine-removed (face-attribute :background) (saturate-color -20))))))
+   `(git-gutter+-modified ((t (:foreground ,(-> 'diff-refine-changed (face-attribute :background) (saturate-color -25))))))
+   `(lazy-highlight ((t (:foreground "#d0bf8f" :background "#1e1e1e"))))
+   `(linum-relative-current-face
+     ((t (:inherit linum :foreground ,(-> 'linum (face-attribute :foreground)
+                                          (light-color 15)
+                                          (saturate-color 25))))))
+   `(org-block     ((t (:background ,(dim-color (face-attribute 'default :background) 1.5)))))
+   `(org-cancelled ((t (:foreground nil :inherit org-done))))
+   `(org-column    ((t (:weight bold))))
+   `(org-hide      ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
+   `(org-link      ((t (:inherit link))))
+   `(org-next      ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
+   `(region ((t (:background ,(-> 'default (face-attribute :background) (dim-color 7.5))))))
+   `(show-paren-match        ((t (:foreground "Springgreen2" :underline t :weight bold))))
+   `(sp-show-pair-match-face ((t (:inherit show-paren-match)))))
   (custom-set-faces
    `(cider-fringe-good-face ((t (:inherit success))))
    `(clojure-keyword-face   ((t (:inherit font-lock-builtin-face))))

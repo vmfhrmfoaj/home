@@ -18,8 +18,7 @@
     company
     evil
     golden-ratio
-    neotree
-    (prettify-symbols-mode :location built-in)))
+    neotree))
 
 (defun eye-candy/init-all-the-icons ()
   ;; see, https://github.com/jwiegley/use-package/issues/440
@@ -141,6 +140,16 @@
         (byte-compile #'without-text-property)
         (byte-compile #'without-text-property-hard))
 
+      (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
+      (add-hook 'after-make-frame-functions (lambda (frame) (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
+      (add-hook 'prog-mode-hook (lambda () (font-lock-add-keywords nil fira-code-font-lock-keywords-alist)))
+      (dolist (f '(indent-for-tab-command indent-region indent-according-to-mode))
+        (advice-add f :around
+                    (byte-compile
+                     (lambda (of &rest args)
+                       (without-text-property-hard (point-min) (point-max) 'composition
+                         (apply of args))))))
+
       (advice-add #'evil-insert :before
                   (byte-compile
                    (lambda (&rest _)
@@ -200,23 +209,35 @@
                         (without-text-property-hard (point-min) (point-max) 'composition
                           (apply of args))
                       (apply of args))))
+      (advice-add #'evil-replace :around
+                  (lambda (of &rest args)
+                    (if (evil-visual-state-p)
+                        (let ((s (save-excursion
+                                   (goto-char evil-visual-beginning)
+                                   (line-beginning-position)))
+                              (e (save-excursion
+                                   (goto-char evil-visual-end)
+                                   (line-end-position))))
+                          (without-text-property-hard s e 'composition
+                            (apply of args)))
+                      (apply of args))))
       (setq-default without-composition-prop nil)
-      (advice-add #'evil-insert :before
-                  (byte-compile
-                   (lambda (&rest _)
-                     (when (and (not without-composition-prop)
-                                (evil-visual-state-p))
-                       (setq-local without-composition-prop t)
-                       (with-silent-modifications
-                         (remove-text-properties (point-min)
-                                                 (point-max)
-                                                 (list 'composition nil)))))))
-      (add-hook 'evil-normal-state-entry-hook
-                (byte-compile
-                 (lambda ()
-                   (when without-composition-prop
-                     (setq-local without-composition-prop nil)
-                     (font-lock-flush))))))))
+      (let ((disable-comp-prop (byte-compile
+                                (lambda (&rest _)
+                                  (when (and (not without-composition-prop)
+                                             (evil-visual-state-p))
+                                    (setq-local without-composition-prop t)
+                                    (with-silent-modifications
+                                      (remove-text-properties (point-min)
+                                                              (point-max)
+                                                              (list 'composition nil)))))))
+            (restore-comp-porp (byte-compile
+                                (lambda ()
+                                  (when without-composition-prop
+                                    (setq-local without-composition-prop nil)
+                                    (font-lock-flush))))))
+        (advice-add #'evil-insert :before        disable-comp-prop)
+        (add-hook 'evil-normal-state-entry-hook  restore-comp-porp)))))
 
 (defun eye-candy/post-init-golden-ratio ()
   (use-package golden-ratio
@@ -228,25 +249,5 @@
   (use-package neotree
     :config
     (setq neo-theme 'icons)))
-
-(defun eye-candy/init-prettify-symbols-mode ()
-  (use-package prog-mode
-    :commands (global-prettify-symbols-mode)
-    :config
-    (unless (string-equal "Fira Code" (car dotspacemacs-default-font))
-      (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
-      (add-hook 'after-make-frame-functions
-                (lambda (frame)
-                  (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
-      (add-hook 'prog-mode-hook
-                (-partial #'font-lock-add-keywords nil
-                          fira-code-font-lock-keywords-alist))
-      (dolist (f '(indent-for-tab-command indent-region indent-according-to-mode))
-        (advice-add f :around
-                    (byte-compile
-                     (lambda (of &rest args)
-                       (without-text-property-hard (point-min) (point-max) 'composition
-                         (apply of args)))))))
-    (global-prettify-symbols-mode)))
 
 ;;; packages.el ends here
