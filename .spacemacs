@@ -171,9 +171,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(
-                         zenburn
-                         )
+   dotspacemacs-themes '(zenburn)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -181,7 +179,7 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("Fira Code"
+   dotspacemacs-default-font `("MonacoB2"
                                :size 14
                                :weight normal
                                :width normal
@@ -468,27 +466,27 @@ you should place your code here."
                                       (cons 'height h))))
 
     ;; for fullscreen
-    ;; (toggle-frame-maximized)
-    ;; (dotimes (i (1- (/ (custom-display-pixel-width) (frame-char-width) 120)))
-    ;;   (split-window-right))
-    ;; (require 'dash-functional)
-    ;; (when (<= 3 (length (window-list)))
-    ;;   (eval-after-load "helm-buffers"
-    ;;     '(progn
-    ;;        (defvar helm-source-window-buffers-list
-    ;;          (helm-build-sync-source "Window buffers"
-    ;;            :action #'switch-to-buffer
-    ;;            :real-to-display (-compose (-partial #'apply #'concat)
-    ;;                                       #'helm-buffer--details)
-    ;;            :candidates (byte-compile
-    ;;                         (lambda ()
-    ;;                           (->> (window-list)
-    ;;                                (-remove (-partial #'eq (selected-window)))
-    ;;                                (-map #'window-buffer)
-    ;;                                (-distinct))))))
-    ;;        (add-to-list 'helm-mini-default-sources
-    ;;                     'helm-source-window-buffers-list))))
-    )
+    (when (or dotspacemacs-fullscreen-at-startup
+              dotspacemacs-fullscreen-use-non-native)
+      (dotimes (i (1- (/ (custom-display-pixel-width) (frame-char-width) 120)))
+        (split-window-right))
+      (require 'dash-functional)
+      (when (<= 3 (length (window-list)))
+        (eval-after-load "helm-buffers"
+          '(progn
+             (defvar helm-source-window-buffers-list
+               (helm-build-sync-source "Window buffers"
+                 :action #'switch-to-buffer
+                 :real-to-display (-compose (-partial #'apply #'concat)
+                                            #'helm-buffer--details)
+                 :candidates (byte-compile
+                              (lambda ()
+                                (->> (window-list)
+                                     (-remove (-partial #'eq (selected-window)))
+                                     (-map #'window-buffer)
+                                     (-distinct))))))
+             (add-to-list 'helm-mini-default-sources
+                          'helm-source-window-buffers-list))))))
 
   ;; large file
   (add-hook 'find-file-hook
@@ -527,6 +525,7 @@ you should place your code here."
                                           (saturate-color 25))))))
    `(org-block     ((t (:background ,(dim-color (face-attribute 'default :background) 1.5)))))
    `(org-cancelled ((t (:foreground nil :inherit org-done))))
+   `(org-checkbox  ((t (:weight bold))))
    `(org-column    ((t (:weight bold))))
    `(org-hide      ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
    `(org-link      ((t (:inherit link))))
@@ -559,6 +558,11 @@ you should place your code here."
                                 (saturate-color -10))))))
   (with-eval-after-load "goto-addr"
     (setq goto-address-mail-face "link"))
+
+  (with-eval-after-load "highlight-parentheses"
+    (setq hl-paren-colors (--iterate (dim-color it 10)
+                                     (apply 'color-rgb-to-hex (color-name-to-rgb "Springgreen1"))
+                                     4)))
 
   ;; for programming
   (add-to-list 'auto-mode-alist '("\\.m\\s-*$" . objc-mode))

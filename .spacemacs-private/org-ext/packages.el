@@ -63,7 +63,9 @@
     (font-lock-add-keywords
      'org-mode
      '(("^\\s-*\\(-\\) "
-        1 (compose-region (match-beginning 1) (match-end 1) ?╺))
+        1 (progn
+            (compose-region (match-beginning 1) (match-end 1) ?╺)
+            'default))
        ("^\\s-*\\(\\([0-9]\\)\\.\\) "
         1 (progn
             (let ((x (match-string 2))
@@ -156,7 +158,15 @@
       :mode org-agenda-mode
       :bindings
       (kbd "C-j") #'org-agenda-next-item
-      (kbd "C-k") #'org-agenda-previous-item))
+      (kbd "C-k") #'org-agenda-previous-item)
+    (with-eval-after-load "persp-mode"
+      (spacemacs|define-custom-layout "@Org"
+        :binding "o"
+        :body
+        (->> (buffer-list)
+             (--filter (-when-let (file-name (buffer-file-name it))
+                         (member file-name org-agenda-files)))
+             (-map #'persp-add-buffer)))))
 
   (use-package org-capture
     :config

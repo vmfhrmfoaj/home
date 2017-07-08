@@ -51,8 +51,7 @@
                   (when (and (featurep 'persp-mode)
                              (get-current-persp))
                     (->> (projectile-project-buffer-names)
-                         (--remove (and (not (string-match-p "^\\*cider-repl" it))
-                                        (string-match-p "^\\*" it )))
+                         (--remove (string-match-p "^\\*" it))
                          (-map #'persp-add-buffer)))))))
 
 ;;; packages.el ends here

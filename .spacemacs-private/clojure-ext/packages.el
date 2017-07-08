@@ -109,16 +109,17 @@
                                           (-filter (-partial #'string= "prune-ns-form")))
                                  `("prune-ns-form" ,(if cljr-prune-ns-form "true" "false")))))))
     (with-eval-after-load 'smartparens
-      (advice-add #'cljr-slash :after
-                  (let ((f (lambda ()
-                             (when (and (not (bound-and-true-p multiple-cursors-mode))
-                                        (not (sp-point-in-string-or-comment))
-                                        (->> (char-before (1- (point)))
-                                             (char-to-string)
-                                             (string-match-p "[0-9A-Za-z]")))
-                               (company-cancel)
-                               (company-complete-common-or-cycle)))))
-                    (byte-compile f))))))
+      (advice-add #'cljr-slash :around
+                  (byte-compile
+                   (lambda (of)
+                     (when (and (not (bound-and-true-p multiple-cursors-mode))
+                                (not (sp-point-in-string-or-comment))
+                                (->> (char-before (1- (point)))
+                                     (char-to-string)
+                                     (string-match-p "[0-9A-Za-z]")))
+                       (funcall of)
+                       (company-cancel)
+                       (company-complete-common-or-cycle))))))))
 
 (defun clojure-ext/post-init-clojure-mode ()
   (use-package clojure-mode
@@ -223,7 +224,34 @@
              (if font-lock--skip
                  (end-of-line)
                (goto-char if-form-point))
-             (0 'clojure-if-true-face  append))))
+             (0 'clojure-if-true-face append)))
+           ;; DSL
+           ;; - CSS
+           (,(concat "(" namespace? "css[ \r\t\n]")
+            ("\\(#[0-9A-Fa-f]\\{3,6\\}\\)"
+             (save-excursion
+               (up-list)
+               (point))
+             nil
+             (0 (let* ((max 255.0)
+                       (str (string-to-list (match-string 0)))
+                       (bg_ (face-attribute 'default :background))
+                       (bg  (if (= 7 (length str))
+                                (apply #'string str)
+                              (->> str
+                                   (--remove-first (char-equal ?# it))
+                                   (-take 3)
+                                   (--map (make-string 2 it))
+                                   (apply #'concat "#"))))
+                       (di (if (> 294784 (color-distance "black" bg_)) (+ 1) (- 1)))
+                       (fg (dim-color bg (* di 40))))
+                  (if (or (> 2500 (color-distance bg bg_))
+                          (> 5000 (color-distance bg fg)))
+                      (list :underline (> 2500 (color-distance bg bg_))
+                            :foreground bg
+                            :distant-foreground (light-color bg (* di 30)))
+                    `(:inverse-video t :foreground ,bg :background ,fg)))
+                t))))
          'append)
         ;; prepend rules
         (font-lock-add-keywords
