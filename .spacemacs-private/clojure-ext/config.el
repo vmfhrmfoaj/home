@@ -22,6 +22,10 @@
   '((t (:inherit font-lock-variable-name-face :weight normal)))
   "Face used to font-lock Clojure local binding variable name.")
 
+(defface clojure-fn-parameter-face
+  '((t (:inherit font-lock-variable-name-face :weight normal)))
+  "Face used to font-lock Clojure parameter.")
+
 (defface clojure-semi-function-name-face
   '((t (:inherit font-lock-function-name-face :weight normal)))
   "Face used to font-lock Clojure OOP style functions.")
@@ -36,7 +40,7 @@
 
 
 (defcustom clojure--ignore-binding-highlight-keywords
-  '("_")
+  '("_" "&")
   "TODO"
   :type '(repeat string)
   :safe (lambda (value)

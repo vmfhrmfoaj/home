@@ -510,11 +510,17 @@ you should place your code here."
      ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 2))
          :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
    `(clojure-if-true-face ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1.05))))))
+   `(clojure-fn-parameter-face
+     ((t (:foreground ,(-> 'font-lock-variable-name-face
+                           (face-attribute :foreground)
+                           (dim-color 5)
+                           (saturate-color -10))))))
+   `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
    `(font-lock-builtin-face
      ((t (:foreground ,(-> 'font-lock-keyword-face
                            (face-attribute :foreground)
-                           (saturate-color -31)
-                           (dim-color 5))))))
+                           (dim-color 5)
+                           (saturate-color -31))))))
    `(git-gutter+-added    ((t (:foreground ,(-> 'diff-refine-added   (face-attribute :background) (saturate-color -20))))))
    `(git-gutter+-deleted  ((t (:foreground ,(-> 'diff-refine-removed (face-attribute :background) (saturate-color -20))))))
    `(git-gutter+-modified ((t (:foreground ,(-> 'diff-refine-changed (face-attribute :background) (saturate-color -25))))))
