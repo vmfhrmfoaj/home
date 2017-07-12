@@ -364,7 +364,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting
-  (setq-default line-spacing 2)
+  (setq-default line-spacing 0)
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
   (add-to-list 'face-font-rescale-alist '("STIXGeneral"      . 0.9))
   (let ((font (car dotspacemacs-default-font))
@@ -556,15 +556,8 @@ you should place your code here."
    `(linum-relative-current-face ((t (:inherit linum))))
    `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
    `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground))))))
-  (with-eval-after-load "rainbow-delimiters"
-    (dolist (i (number-sequence 1 9))
-      (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
-        (set-face-attribute face nil :foreground
-                            (-> (face-attribute face :foreground)
-                                (saturate-color -10))))))
   (with-eval-after-load "goto-addr"
     (setq goto-address-mail-face "link"))
-
   (with-eval-after-load "highlight-parentheses"
     (setq hl-paren-colors (--iterate (dim-color it 10)
                                      (apply 'color-rgb-to-hex (color-name-to-rgb "Springgreen1"))

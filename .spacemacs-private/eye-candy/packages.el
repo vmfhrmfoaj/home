@@ -14,7 +14,6 @@
 (defconst eye-candy-packages
   '(all-the-icons
     auto-dim-other-buffers
-    clojure-mode
     company
     evil
     golden-ratio
@@ -100,17 +99,6 @@
                    (lambda (ret)
                      (or ret (helm-alive-p))))))
     (auto-dim-other-buffers-mode)))
-
-(defun eye-candy/post-init-clojure-mode ()
-  (unless (string-equal "Fira Code" (car dotspacemacs-default-font))
-    (use-package clojure-mode
-      :defer t
-      :config
-      (advice-add #'clojure-font-lock-extend-region-def :around
-                  (lambda (of &rest args)
-                    (if without-composition-prop
-                        nil
-                      (apply of args)))))))
 
 (defun eye-candy/post-init-company ()
   (unless (string-equal "Fira Code" (car dotspacemacs-default-font))
@@ -205,27 +193,28 @@
                          (funcall of beg end overlays))))))
       (advice-add #'evil-delete :around
                   (lambda (of &rest args)
-                    (if (evil-visual-state-p)
+                    (if (and (evil-visual-state-p)
+                             (eq 'block (evil-visual-type)))
                         (without-text-property-hard (point-min) (point-max) 'composition
                           (apply of args))
                       (apply of args))))
       (advice-add #'evil-replace :around
                   (lambda (of &rest args)
-                    (if (evil-visual-state-p)
-                        (let ((s (save-excursion
-                                   (goto-char evil-visual-beginning)
-                                   (line-beginning-position)))
-                              (e (save-excursion
-                                   (goto-char evil-visual-end)
-                                   (line-end-position))))
-                          (without-text-property-hard s e 'composition
+                    (if (and (evil-visual-state-p)
+                             (eq 'block (evil-visual-type)))
+                        (let ((beg (save-excursion
+                                     (goto-char evil-visual-beginning)
+                                     (line-beginning-position)))
+                              (end (save-excursion
+                                     (goto-char evil-visual-end)
+                                     (line-end-position))))
+                          (without-text-property-hard beg end 'composition
                             (apply of args)))
                       (apply of args))))
-      (setq-default without-composition-prop nil)
+      (setq without-composition-prop nil)
       (let ((disable-comp-prop (byte-compile
-                                (lambda (&rest _)
-                                  (when (and (not without-composition-prop)
-                                             (evil-visual-state-p))
+                                (lambda ()
+                                  (when (not without-composition-prop)
                                     (setq-local without-composition-prop t)
                                     (with-silent-modifications
                                       (remove-text-properties (point-min)
@@ -236,8 +225,15 @@
                                   (when without-composition-prop
                                     (setq-local without-composition-prop nil)
                                     (font-lock-flush))))))
-        (advice-add #'evil-insert :before        disable-comp-prop)
-        (add-hook 'evil-normal-state-entry-hook  restore-comp-porp)))))
+        (add-hook 'evil-visual-state-entry-hook disable-comp-prop)
+        (add-hook 'evil-visual-state-exit-hook  restore-comp-porp))
+      (advice-add #'evil-cleanup-insert-state :around
+                  (byte-compile
+                   (lambda (of)
+                     (if evil-insert-vcount
+                         (without-text-property-hard (point-min) (point-max) 'composition
+                           (funcall of))
+                       (funcall of))))))))
 
 (defun eye-candy/post-init-golden-ratio ()
   (use-package golden-ratio

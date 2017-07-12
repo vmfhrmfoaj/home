@@ -55,7 +55,7 @@
           (and (listp value)
                (cl-every 'stringp value))))
 
-(defcustom clojure-spc-key-valign-skip 5
+(defcustom clojure-spc-key-valign-skip 3
   "TODO"
   :type 'integer
   :safe 'integerp)

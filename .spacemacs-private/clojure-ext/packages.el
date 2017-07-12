@@ -112,11 +112,12 @@
       (advice-add #'cljr-slash :around
                   (byte-compile
                    (lambda (of)
-                     (when (and (not (bound-and-true-p multiple-cursors-mode))
-                                (not (sp-point-in-string-or-comment))
-                                (->> (char-before (1- (point)))
-                                     (char-to-string)
-                                     (string-match-p "[0-9A-Za-z]")))
+                     (if (not (and (not (bound-and-true-p multiple-cursors-mode))
+                                   (not (sp-point-in-string-or-comment))
+                                   (->> (char-before (1- (point)))
+                                        (char-to-string)
+                                        (string-match-p "[0-9A-Za-z]"))))
+                         (insert "/")
                        (funcall of)
                        (company-cancel)
                        (company-complete-common-or-cycle))))))))
@@ -126,7 +127,6 @@
     :defer t
     :config
     (byte-compile #'clojure--binding-regexp)
-    (byte-compile #'clojure-space-key)
     (byte-compile #'clojure-skip)
     (byte-compile #'clojure-forward-sexp)
     (defun in-comment? ()
@@ -185,7 +185,7 @@
                  (end-of-line)
                (goto-char cond-form-point))
              (0 'clojure-cond-condtion-face prepend)))
-           (,(concat "(" core-ns? (regexp-opt '("if" "if-some" "if-let")) "[ \r\t\n]+")
+           (,(concat "(" core-ns? (regexp-opt '("if" "if-some" "if-let" "if-not")) "[ \r\t\n]+")
             (,(byte-compile
                (lambda (limit)
                  (ignore-errors
@@ -293,7 +293,7 @@
                                     (save-excursion (up-list) (point)))))
                     (when binding-form-recursive-point
                       (clojure-skip :comment :ignored-form :type-hint)
-                      (if (re-search-forward (concat "\\(?:\\^" symbol "[ \r\t\n]+\\)?" "\\(\\<" symbol "\\>\\)")
+                      (if (re-search-forward (concat "\\(?:\\^" symbol "[ \r\t\n]+\\)?" "\\(\\_<" symbol "\\>\\)")
                                              (min limit binding-form-recursive-limit) t)
                           (progn
                             ;; ignores
@@ -301,11 +301,13 @@
                                       (regexp-opt)
                                       (string-match-p (match-string-no-properties 0)))
                               (set-match-data (-repeat 4 (make-marker))))
-                            ;; for binding map
+                            ;; Handle default bind map
                             (when (save-excursion
-                                    (up-list)
-                                    (and (eq (char-before) ?})
-                                         (< (point) binding-form-recursive-limit)))
+                                    (backward-up-list)
+                                    (and (char-after ?{)
+                                         (ignore-errors
+                                           (clojure-forward-sexp -1)
+                                           (looking-at-p ":or"))))
                               (clojure-forward-sexp)))
                         (goto-char binding-form-recursive-limit)
                         (clojure-forward-sexp)
@@ -385,13 +387,13 @@
                       (-when-let (point (car oop-fn-form-points))
                         (setq oop-fn-form-points (cdr oop-fn-form-points))
                         (goto-char point)
-                        (safe-down-list-1)
+                        (down-list)
                         (setq oop-fn-recursive-point (point)
                               oop-fn-recursive-limit (save-excursion
-                                                       (safe-up-list-1)
+                                                       (up-list)
                                                        (point)))))
                     (when oop-fn-recursive-point
-                      (unless (re-search-forward (concat symbol "\\>") (min limit oop-fn-recursive-limit) t)
+                      (unless (re-search-forward (concat "\\_<" symbol "\\>") (min limit oop-fn-recursive-limit) t)
                         (set-match-data (-repeat 2 (make-marker)))
                         (setq oop-fn-recursive-point nil
                               oop-fn-recursive-limit nil))
@@ -448,8 +450,7 @@
                       (error ""))
                     (unless fn-recursive-point
                       (when fn-form-multi-arity?
-                        (safe-up-list-1)
-                        (safe-up-list-1))
+                        (up-list 2))
                       (apply #'clojure-skip
                              :comment :ignored-form
                              (if (not fn-form-method?)
@@ -458,15 +459,15 @@
                                nil))
                       (when (looking-at "(")
                         (setq fn-form-multi-arity? t)
-                        (safe-down-list-1))
+                        (down-list))
                       (when (looking-at "\\[")
-                        (safe-down-list-1)
+                        (down-list)
                         (setq fn-recursive-point (point)
                               fn-recursive-limit (save-excursion
-                                                   (safe-up-list-1)
+                                                   (up-list)
                                                    (1- (point))))))
                     (when fn-recursive-point
-                      (if (re-search-forward (concat "\\<" symbol "\\>") (min limit fn-recursive-limit) t)
+                      (if (re-search-forward (concat "\\_<" symbol "\\>") (min limit fn-recursive-limit) t)
                           (when (-> clojure--ignore-binding-highlight-keywords
                                     (regexp-opt)
                                     (string-match-p (match-string 0)))
@@ -545,7 +546,6 @@
     (put 'defstate 'clojure-doc-string-elt 2)
     (put-clojure-indent 'redef-state :defn) ; for expectations
     (put-clojure-indent 'fdef :defn) ; for spec
-    (evil-define-key 'insert clojure-mode-map (kbd "SPC") #'clojure-space-key)
     (eval-after-load "page-break-lines"
       '(add-to-list 'page-break-lines-modes 'clojure-mode))
     (add-hook
