@@ -26,3 +26,6 @@ export REACT_EDITOR=emacsclient
 
 # lein
 export JVM_OPTS="$(if [ `uname -a | grep -o iMac` ]; then echo '-Xms2g -Xmx4g'; fi)"
+
+# node
+export NODE_PATH=/usr/local/lib/node_modules
