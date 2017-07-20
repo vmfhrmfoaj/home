@@ -38,5 +38,16 @@
            (font-lock-flush ,start ,end))
        (font-lock-flush))))
 
-(put 'without-text-property      'lisp-indent-function 'defun)
-(put 'without-text-property-hard 'lisp-indent-function 'defun)
+(defmacro without-text-properties-hard (start end properties &rest body)
+  `(progn
+     (with-silent-modifications
+       (dolist (property ,properties)
+         (remove-text-properties ,start ,end (list property nil))))
+     (unwind-protect
+         (prog1 (progn ,@body)
+           (font-lock-flush ,start ,end))
+       (font-lock-flush))))
+
+(put 'without-text-property        'lisp-indent-function 'defun)
+(put 'without-text-property-hard   'lisp-indent-function 'defun)
+(put 'without-text-properties-hard 'lisp-indent-function 'defun)

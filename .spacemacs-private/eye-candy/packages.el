@@ -130,7 +130,7 @@
 
       (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
       (add-hook 'after-make-frame-functions (lambda (frame) (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
-      (add-hook 'prog-mode-hook (lambda () (font-lock-add-keywords nil fira-code-font-lock-keywords-alist)))
+      (add-hook 'prog-mode-hook (lambda () (font-lock-add-keywords nil fira-code-font-lock-keywords-alist 'append)))
       (dolist (f '(indent-for-tab-command indent-region indent-according-to-mode))
         (advice-add f :around
                     (byte-compile
@@ -231,7 +231,7 @@
                   (byte-compile
                    (lambda (of)
                      (if evil-insert-vcount
-                         (without-text-property-hard (point-min) (point-max) 'composition
+                         (without-text-properties-hard (point-min) (point-max) '(composition font-lock-multiline)
                            (funcall of))
                        (funcall of))))))))
 

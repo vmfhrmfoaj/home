@@ -179,7 +179,7 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("MonacoB2"
+   dotspacemacs-default-font `("Fira Code"
                                :size 14
                                :weight normal
                                :width normal
@@ -370,10 +370,28 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (let ((font (car dotspacemacs-default-font))
         (size (plist-get (cdr dotspacemacs-default-font) :size)))
     (cond
+     ((string-equal font "Fira Code")
+      (cond
+       ((= size 13)
+        (setq-default line-spacing 1))))
      ((string-equal font "MonacoB2")
-      (add-to-list 'face-font-rescale-alist  '("Apple SD Gothic Neo" . 1.1))
-      (if (= size 13)
-          (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 1.1))))))
+      (add-to-list 'face-font-rescale-alist '("Apple SD Gothic Neo" . 1.1))
+      (cond
+       ((= size 13)
+        (setq-default line-spacing 1)
+        (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 1.1)))))
+     ((string-equal font "Fantasque Sans Mono")
+      (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
+      (add-to-list 'face-font-rescale-alist '("Nanum Gothic" . 0.9))
+      (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.9))
+      (add-to-list 'face-font-rescale-alist '("Arial" . 0.9))
+      (add-to-list 'face-font-rescale-alist '("Andale Mono" . 0.9))
+      (add-to-list 'face-font-rescale-alist '("all-the-icons" . 0.9))
+      (add-to-list 'face-font-rescale-alist '("file-icons" . 0.9))
+      (add-to-list 'face-font-rescale-alist '("FontAwesome" . 0.9))
+      (add-to-list 'face-font-rescale-alist '("github-octicons" . 0.9))
+      (add-to-list 'face-font-rescale-alist '("Weather Icons" . 0.9))
+      (add-to-list 'face-font-rescale-alist '("Material Icons" . 0.9)))))
   (when (string-equal "Fira Code" (car dotspacemacs-default-font))
     (let ((alist '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
                    ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
@@ -509,7 +527,7 @@ you should place your code here."
    `(auto-dim-other-buffers-face
      ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 2))
          :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
-   `(clojure-if-true-face ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1.05))))))
+   `(clojure-if-true-face ((t (:background ,(-> 'default (face-attribute :background) (dim-color 0.4))))))
    `(clojure-fn-parameter-face
      ((t (:foreground ,(-> 'font-lock-variable-name-face
                            (face-attribute :foreground)

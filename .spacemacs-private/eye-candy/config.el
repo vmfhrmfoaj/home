@@ -1,12 +1,31 @@
 ;; - https://gist.github.com/mordocai/50783defab3c3d1650e068b4d1c91495
+
+(defconst fira-code-font-italic-face
+  (if (and (string-equal "MonacoB2" (car dotspacemacs-default-font))
+           (= 13 (plist-get (cdr dotspacemacs-default-font) :size)))
+      '((:height 1))
+    '((:height 0.95))))
+
 (defconst fira-code-font-lock-keywords-alist
   (mapcar (lambda (regex-char-pair)
             `(,(car regex-char-pair)
-              (0 (prog1 ()
+              (1 (progn
                    (compose-region (match-beginning 1)
                                    (match-end 1)
                                    ;; The first argument to concat is a string containing a literal tab
-                                   ,(concat "	" (list (decode-char 'ucs (cadr regex-char-pair)))))))))
+                                   ,(concat "	" (list (decode-char 'ucs (cadr regex-char-pair)))))
+                   (let ((face-prop (get-text-property (match-beginning 1) 'face)) italicp)
+                     (dolist (face (if (listp face-prop) face-prop (list face-prop)) italicp)
+                       (let ((slant (cond
+                                     ((symbolp face) (face-attribute face :slant))
+                                     ((listp face) (plist-get face :slant)))))
+                         (setq italicp
+                               (or italicp
+                                   (eq 'italic slant)
+                                   (eq 'oblique slant)))))
+                     (when italicp
+                       fira-code-font-italic-face)))
+                 prepend)))
           '(;;                             #Xe
             ;;www                          #Xe
             ("\\(www\\)"                   #Xe100)
@@ -95,9 +114,9 @@
             ("\\(>>=\\)"                   #Xe149)
             ("\\(>>>\\)"                   #Xe14a)
             ;; <*                          #Xe
-            ("\\(<\\*\\)"                  #Xe14b)
+            ;; ("\\(<\\*\\)"                  #Xe14b)
             ;; *>                          #Xe
-            ("\\(<\\*>\\)"                 #Xe14c)
+            ;; ("\\(<\\*>\\)"                 #Xe14c)
             ("\\(<|\\)"                    #Xe14d)
             ("\\(<|>\\)"                   #Xe14e)
             ("\\(<\\$\\)"                  #Xe14f)

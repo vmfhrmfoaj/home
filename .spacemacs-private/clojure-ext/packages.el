@@ -180,7 +180,9 @@
                         (safe-up-list-1)
                         (point)))
                (when (string-match-p "->>?" (match-string 1))
-                 (clojure-forward-sexp)))
+                 (condition-case nil
+                     (clojure-forward-sexp)
+                   (error (setq-local font-lock--skip t)))))
              (if font-lock--skip
                  (end-of-line)
                (goto-char cond-form-point))
@@ -527,8 +529,16 @@
                      meta*
                      "\\(" symbol "\\)\\>")
             (1 'clojure-defining-ns-face))
-           (,(concat "\\<\\(\\.-?\\)" symbol "\\>")
-            (1 'font-lock-keyword-face))
+           (,(concat "(\\(\\.\\.\\) " symbol)
+            (1 'clojure-interop-method-face)
+            (,(concat "\\<\\(-\\)" symbol)
+             (save-excursion
+               (up-list)
+               (point))
+             nil
+             (1 'clojure-interop-method-face)))
+           (,(concat "(\\(\\.-?\\)" symbol)
+            (1 'clojure-interop-method-face))
            (,(concat "("
                      (regexp-opt '("case"
                                    "cond" "condp" "cond->" "cond->>"

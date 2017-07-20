@@ -78,7 +78,7 @@
                     (cdr)
                     (string-to-char)))
               (put-text-property s e 'display '(raise -0.2))
-              (put-text-property s e 'face '(:family "Material Icons")))))
+              '((:family "Material Icons" :height 1.1)))))
        ("^\\s-*\\(?:-\\|[0-9]+\\.\\) \\(\\[\\( \\|-\\|X\\)\\]\\) "
         1 (progn
             (let ((x (match-string 2))
@@ -94,11 +94,10 @@
                     (cdr)
                     (string-to-char)))
               (put-text-property s e 'display '(raise -0.2))
-              (put-text-property s e 'face
-                                 (list :family "Material Icons"
-                                       :foreground (face-attribute (if (string-equal x "X")
-                                                                       'org-done 'org-todo)
-                                                                   :foreground))))))
+              (list (list :family "Material Icons"
+                          :foreground (face-attribute (if (string-equal x "X")
+                                                          'org-done 'org-todo)
+                                                      :foreground))))))
        ("\\(\\\\\\\\\\)\\s-*$"
         1 'shadow nil)))
     (add-hook 'org-todo-get-default-hook
