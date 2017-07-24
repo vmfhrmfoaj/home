@@ -179,8 +179,8 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("Fira Code"
-                               :size 14
+   dotspacemacs-default-font `("MonacoB2"
+                               :size 13
                                :weight normal
                                :width normal
                                :powerline-scale 1.2)
@@ -378,7 +378,6 @@ before packages are loaded. If you are unsure, you should try in setting them in
       (add-to-list 'face-font-rescale-alist '("Apple SD Gothic Neo" . 1.1))
       (cond
        ((= size 13)
-        (setq-default line-spacing 1)
         (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 1.1)))))
      ((string-equal font "Fantasque Sans Mono")
       (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
