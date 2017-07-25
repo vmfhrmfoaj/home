@@ -100,6 +100,12 @@
           (setq l (-remove-item :map items))
           (forward-sexp direction)
           (clojure-skip :map)))
+       ((eq (car l) :vector)
+        (if (not (looking-at-p "\\["))
+            (setq l (cdr l))
+          (setq l (-remove-item :vector items))
+          (forward-sexp direction)
+          (clojure-skip :vector)))
        (t (setq l (cdr l)))))))
 
 (defun clojure-forward-sexp (&optional n)

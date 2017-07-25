@@ -157,13 +157,6 @@
                      (while (and (get-text-property (- (point) 1) 'composition)
                                  (get-text-property (- (point) 2) 'composition))
                        (backward-char))))))
-      (advice-add #'current-column :around
-                  (byte-compile
-                   (lambda (of &rest args)
-                     (let ((beg (line-beginning-position))
-                           (end (line-end-position)))
-                       (without-text-property beg end 'composition
-                         (apply of args))))))
       (dolist (f '(evil-next-line evil-next-visual-line))
         (advice-add f :around
                     (byte-compile
