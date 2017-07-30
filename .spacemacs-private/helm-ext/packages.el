@@ -26,7 +26,11 @@
     (setq helm-truncate-lines t
           helm-autoresize-min-height 35)
     (helm-autoresize-mode 1)
-    (add-hook 'helm-after-action-hook #'recenter))
+    (add-hook 'helm-after-action-hook
+              (byte-compile
+               (lambda ()
+                 (ignore-errors
+                   (recenter))))))
 
   (use-package helm-mode
     :defer t

@@ -150,7 +150,6 @@
            (symbol?     (concat "\\(?:" symbol "\\)?"))
            (namespace   (concat "\\(?:" symbol "/\\)"))
            (namespace?  (concat namespace "?"))
-           (namespace*  (concat namespace "*"))
            (meta* "\\(?:#?^\\(?:{[^}]*}\\|\\sw+\\)[ \r\n\t]*\\)*")
            (core-ns  (concat (regexp-opt '("clojure.core" "cljs.core" "core") nil) "/"))
            (core-ns? (concat "\\(?:" core-ns "\\)?")))
@@ -462,7 +461,7 @@
                      "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
                      whitespace+
                      meta*
-                     "::?" namespace* "\\(" symbol "\\)\\>")
+                     "::?" namespace? "\\(" symbol "\\)\\>")
             (1 'font-lock-keyword-face)
             (2 'clojure-defining-spec-face))
            (,(concat "(" namespace?

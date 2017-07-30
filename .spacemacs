@@ -171,7 +171,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(twilight-bright)
+   dotspacemacs-themes '(twilight-anti-bright)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -179,8 +179,8 @@ values."
    ;; If you used macOS, you can control advance setting of fonts.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 1~16
-   dotspacemacs-default-font `("Fira Code"
-                               :size 14
+   dotspacemacs-default-font `("MonacoB2"
+                               :size 13
                                :weight normal
                                :width normal
                                :powerline-scale 1.2)
@@ -522,40 +522,29 @@ you should place your code here."
 
   ;; customize the theme.
   (custom-theme-set-faces
-   'twilight-bright
+   'twilight-anti-bright
    `(auto-dim-other-buffers-face
-     ((t :foreground ,(-> 'default (face-attribute :foreground) (light-color 5))
+     ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 7))
          :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
    `(clojure-if-true-face
      ((t (:background ,(-> 'font-lock-keyword-face
                            (face-attribute :background)
-                           (light-color 1.9))))))
+                           (dim-color 4.35)
+                           (saturate-color -8))))))
    `(clojure-fn-parameter-face ((t (:inherit font-lock-variable-name-face :weight normal))))
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
-   `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
-   `(font-lock-regexp-grouping-construct ((t (:weight bold :foreground ,(-> 'font-lock-string-face
-                                                                            (face-attribute :foreground)
-                                                                            (light-color 5)
-                                                                            (saturate-color 10))))))
    `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1))))))
    `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added   :background)))))
    `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
    `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
    `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
-   `(hl-line ((t (:background "#eef7fd"))))
+   `(lazy-highlight ((t :background "paleturquoise4" :foreground "paleturquoise3")))
    `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
-   `(link ((t (:foreground "#55850f" :underline t))))
-   `(magit-diff-context-highlight ((t (:background "#f2f9fd"))))
-   `(magit-diff-hunk-heading-highlight ((t (:background "#c8e9ff"))))
-   `(magit-section-highlight ((t (:background "#eef7fd"))))
    `(org-cancelled ((t (:foreground nil :inherit org-done))))
    `(org-column ((t (:weight bold))))
    `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
    `(org-link ((t (:inherit link))))
    `(org-next ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
-   `(org-checkbox  ((t (:weight bold))))
-   `(org-next      ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
-   `(outline-4 ((t (:inherit font-lock-string-face))))
    `(show-paren-match ((t (:foreground "Springgreen2" :underline t :weight bold)))))
   (custom-set-faces
    `(cider-fringe-good-face ((t (:inherit success))))
@@ -570,7 +559,7 @@ you should place your code here."
    `(font-lock-variable-name-face ((t (:inherit bold :weight unspecified))))
    `(hl-line ((t (:inverse-video nil))))
    `(link    ((t (:underline t :weight unspecified))))
-   `(linum   ((t (:inherit default))))
+   `(linum   ((t (:inherit default :underline nil :height 1.0))))
    `(linum-relative-current-face ((t (:inherit linum))))
    `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
    `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground))))))
