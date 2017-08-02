@@ -546,6 +546,11 @@ you should place your code here."
    `(org-link ((t (:inherit link))))
    `(org-next ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
    `(show-paren-match ((t (:foreground "Springgreen2" :underline t :weight bold)))))
+  (set-face-attribute 'isearch nil :weight 'bold)
+  (set-face-attribute 'company-scrollbar-fg nil :background "red4")
+  (set-face-attribute 'company-tooltip nil :background "yellow3")
+  (set-face-attribute 'company-tooltip-common nil :foreground "red3")
+  (set-face-attribute 'company-tooltip-selection nil :background "orange3")
   (custom-set-faces
    `(cider-fringe-good-face ((t (:inherit success))))
    `(clojure-keyword-face   ((t (:inherit font-lock-builtin-face))))
