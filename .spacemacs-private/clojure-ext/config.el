@@ -47,8 +47,10 @@
   "Face used to font-lock Clojure `if' true form.")
 
 
-(defcustom clojure--ignore-binding-highlight-keywords
-  '("_" "&")
+(defcustom clojure--ignore-binding-highlight-regex
+  (concat "^\\("
+          "_\\|"
+          "&\\)$")
   "TODO"
   :type '(repeat string)
   :safe (lambda (value)

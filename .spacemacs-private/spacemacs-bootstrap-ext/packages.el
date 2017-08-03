@@ -17,6 +17,8 @@
 
 (defun spacemacs-bootstrap-ext/post-init-evil ()
   (when (require 'evil nil 'noerr)
+    (when (require 'evil-search nil 'noerr)
+      (evil-select-search-module 'evil-search-module 'isearch))
     (define-key evil-ex-map (kbd "C-h") #'delete-backward-char)
     (define-key evil-insert-state-map (kbd "C-h") #'delete-backward-char)
     (define-key evil-motion-state-map (kbd "g S-<kp-subtract>") #'evil-last-non-blank)

@@ -82,6 +82,14 @@
           cljr-prune-ns-form t ; for using the file local variable.
           cljr-suppress-middleware-warnings t
           cljr-warn-on-eval nil)
+    (define-key clj-refactor-map (kbd "/") nil)
+    (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
+      (spacemacs/set-leader-keys-for-major-mode mode
+        "r/" (defalias 'cljr-magic-requires
+               (lambda ()
+                 (interactive)
+                 (forward-char)
+                 (cljr-slash)))))
     (add-hook 'clojure-mode-hook (-partial #'clj-refactor-mode 1))
     (add-hook 'cider-connected-hook
               (lambda ()
@@ -107,20 +115,7 @@
                    (append msg (when (->> msg
                                           (-filter #'stringp)
                                           (-filter (-partial #'string= "prune-ns-form")))
-                                 `("prune-ns-form" ,(if cljr-prune-ns-form "true" "false")))))))
-    (with-eval-after-load 'smartparens
-      (advice-add #'cljr-slash :around
-                  (byte-compile
-                   (lambda (of)
-                     (if (not (and (not (bound-and-true-p multiple-cursors-mode))
-                                   (not (sp-point-in-string-or-comment))
-                                   (->> (char-before (1- (point)))
-                                        (char-to-string)
-                                        (string-match-p "[0-9A-Za-z]"))))
-                         (insert "/")
-                       (funcall of)
-                       (company-cancel)
-                       (company-complete-common-or-cycle))))))))
+                                 `("prune-ns-form" ,(if cljr-prune-ns-form "true" "false")))))))))
 
 (defun clojure-ext/post-init-clojure-mode ()
   (use-package clojure-mode
@@ -282,7 +277,7 @@
                     (let ((local-limit (save-excursion (forward-sexp) (point))))
                       (unless (and (re-search-forward (concat "\\<" namespace? "\\(" symbol "\\)\\>")
                                                       (min local-limit limit) t)
-                                   (not (string-match-p (regexp-opt clojure--ignore-binding-highlight-keywords)
+                                   (not (string-match-p clojure--ignore-binding-highlight-regex
                                                         (match-string-no-properties 1))))
                         (set-match-data (-repeat 4 (point-min-marker))))
                       (goto-char local-limit))
@@ -329,9 +324,8 @@
                                              (min limit clojure-binding-form-recursive-limit) t)
                           (progn
                             ;; ignores
-                            (when (-> clojure--ignore-binding-highlight-keywords
-                                      (regexp-opt)
-                                      (string-match-p (match-string-no-properties 0)))
+                            (when (string-match-p clojure--ignore-binding-highlight-regex
+                                                  (match-string-no-properties 1))
                               (set-match-data (-repeat 4 (point-min-marker))))
                             ;; Handle default bind map
                             (when (save-excursion
@@ -422,13 +416,16 @@
                       (-when-let (point (car clojure-oop-fn-form-points))
                         (setq clojure-oop-fn-form-points (cdr clojure-oop-fn-form-points))
                         (goto-char point)
-                        (down-list)
+                        (re-search-forward "\\[" limit)
                         (setq clojure-oop-fn-recursive-point (point)
                               clojure-oop-fn-recursive-limit (save-excursion
                                                                (up-list)
                                                                (point)))))
                     (when clojure-oop-fn-recursive-point
-                      (unless (re-search-forward (concat "\\_<" symbol "\\>") (min limit clojure-oop-fn-recursive-limit) t)
+                      (if (re-search-forward (concat "\\_<" symbol "\\>") (min limit clojure-oop-fn-recursive-limit) t)
+                          (when (string-match-p clojure--ignore-binding-highlight-regex
+                                                (match-string-no-properties 0))
+                            (set-match-data (-repeat 2 (point-min-marker))))
                         (set-match-data (-repeat 2 (point-min-marker)))
                         (setq clojure-oop-fn-recursive-point nil
                               clojure-oop-fn-recursive-limit nil))
@@ -506,9 +503,7 @@
                                                    (1- (point))))))
                     (when fn-recursive-point
                       (if (re-search-forward (concat "\\_<" symbol "\\>") (min limit fn-recursive-limit) t)
-                          (when (-> clojure--ignore-binding-highlight-keywords
-                                    (regexp-opt)
-                                    (string-match-p (match-string 0)))
+                          (when (string-match-p clojure--ignore-binding-highlight-regex (match-string 0))
                             (set-match-data (-repeat 2 (point-min-marker))))
                         (set-match-data (-repeat 2 (point-min-marker)))
                         (setq fn-recursive-point nil

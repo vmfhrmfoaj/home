@@ -16,7 +16,8 @@
     smartparens))
 
 (defun spacemacs-editing-ext/init-isearch-mode ()
-  (setq isearch-mode-end-hook-quit t)
+  (setq isearch-mode-end-hook-quit t
+        isearch-lazy-highlight-initial-delay 0)
   (add-hook 'isearch-mode-end-hook #'deactivate-input-method)
   (define-key isearch-mode-map (kbd "C-h") #'isearch-delete-char)
   (define-key isearch-mode-map (kbd "SPC") (isearch-fn ".*?" " "))
@@ -41,15 +42,18 @@
                      (setq isearch-string  regex
                            isearch-message regex)
                      (isearch-search-and-update))))))
+  (add-hook 'isearch-mode-hook
+            (lambda ()
+              (global-hl-line-mode -1)))
   (add-hook 'isearch-mode-end-hook
             (lambda ()
-              (let ((a (save-excursion
-                         (goto-char isearch-other-end)
-                         (point-marker)))
-                    (b (point-marker)))
-                (set-match-data (if isearch-forward
-                                    (list a b)
-                                  (list b a)))))))
+              (global-hl-line-mode 1)
+              (when isearch-other-end
+                (let ((a (save-excursion
+                           (goto-char isearch-other-end)
+                           (point-marker)))
+                      (b (point-marker)))
+                  (set-match-data (list a b)))))))
 
 (defun spacemacs-editing-ext/post-init-smartparens()
   (use-package smartparens
