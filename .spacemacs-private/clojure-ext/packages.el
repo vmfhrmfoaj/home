@@ -124,15 +124,21 @@
     (byte-compile #'clojure--binding-regexp)
     (byte-compile #'clojure-skip)
     (byte-compile #'clojure-forward-sexp)
+
+    ;; NOTE: testing
+    (advice-add #'clojure-font-lock-extend-region-def :override (lambda (&rest _) nil))
+
     (defun in-comment? ()
       (comment-only-p (save-excursion
                         (goto-char (match-beginning 0))
                         (point-at-bol))
                       (point)))
+
     (defun safe-up-list-1 ()
       (condition-case nil
           (up-list)
         (setq-local font-lock--skip t)))
+
     (defun safe-down-list-1 ()
       (condition-case nil
           (down-list)
@@ -145,7 +151,7 @@
            (symbol?     (concat "\\(?:" symbol "\\)?"))
            (namespace   (concat "\\(?:" symbol "/\\)"))
            (namespace?  (concat namespace "?"))
-           (meta* "\\(?:#?^\\(?:{[^}]*}\\|\\sw+\\)[ \r\n\t]*\\)*")
+           (meta? "\\(?:\\(?:#\\^{[^}]*}\\|\\^:\\sw+\\)[ \r\n\t]+\\)?")
            (core-ns  (concat (regexp-opt '("clojure.core" "cljs.core" "core") nil) "/"))
            (core-ns? (concat "\\(?:" core-ns "\\)?")))
       ;; TODO
@@ -454,22 +460,20 @@
                      "\\(" symbol "\\)\\>")
             (1 'default)
             (2 'default))
-           (,(concat "(" namespace?
-                     "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
+           (,(concat "(" core-ns? "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
                      whitespace+
-                     meta*
+                     meta?
                      "::?" namespace? "\\(" symbol "\\)\\>")
             (1 'font-lock-keyword-face)
             (2 'clojure-defining-spec-face))
-           (,(concat "(" namespace?
-                     (regexp-opt '("defmacro"
-                                   "defn"
-                                   "defn-"
-                                   "defmethod"
-                                   "fn") t)
+           (,(concat "(" core-ns? (regexp-opt '("defmacro"
+                                                "defn"
+                                                "defn-"
+                                                "defmethod"
+                                                "fn") t)
                      "\\>"
                      whitespace+
-                     meta*
+                     meta?
                      "\\(" symbol? "\\)")
             (1 'font-lock-keyword-face)
             (2 (progn
@@ -528,10 +532,9 @@
                          (string-match-p clojure-core-regex (or (match-string 0) "")))
                     'clojure-fn-parameter-warning-face
                   'clojure-fn-parameter-face))))
-           (,(concat "(" namespace?
-                     "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
+           (,(concat "(" core-ns? "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
                      whitespace+
-                     meta*
+                     meta?
                      "\\(" symbol "\\)")
             (1 'font-lock-keyword-face)
             (2 'font-lock-variable-name-face))
@@ -558,11 +561,6 @@
                                    "with-hard-redefs")
                                  t))
             (1 'font-lock-keyword-face))
-           (,(concat "(ns"
-                     whitespace+
-                     meta*
-                     "\\(" symbol "\\)\\>")
-            (1 'clojure-defining-ns-face))
            (,(concat "(\\(\\.\\.\\) " symbol)
             (1 'clojure-interop-method-face)
             (,(concat "\\<\\(-\\)" symbol)

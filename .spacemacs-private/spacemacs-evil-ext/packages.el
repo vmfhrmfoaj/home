@@ -36,8 +36,19 @@
 (defun spacemacs-evil-ext/post-init-linum-relative ()
   (use-package linum-relative
     :config
-    (linum-relative-global-mode)
-    (add-hook 'linum-relative-mode-hook (-partial #'diminish 'linum-relative-mode))
+    (setq linum-delay 0.1
+          linum-schedule-timer nil)
+    (advice-add #'linum-schedule :override
+                (lambda ()
+                  (unless (eq 'self-insert-command this-command)
+                    (when linum-schedule-timer
+                      (cancel-timer linum-schedule-timer))
+                    (let ((timer (run-with-idle-timer
+                                  linum-delay nil
+                                  (lambda ()
+                                    (setq linum-schedule-timer nil)
+                                    (linum-update-current)))))
+                      (setq-local linum-schedule-timer timer)))))
     (add-hook 'linum-mode-hook
               (lambda ()
                 (setq-local linum-relative-format

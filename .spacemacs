@@ -171,7 +171,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(twilight-anti-bright)
+   dotspacemacs-themes '(twilight-bright)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -306,7 +306,7 @@ values."
    ;;                       text-mode
    ;;   :size-limit-kb 1000)
    ;; (default nil)
-   dotspacemacs-line-numbers nil
+   dotspacemacs-line-numbers 'relative
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
    dotspacemacs-folding-method 'evil
@@ -365,23 +365,24 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; set up the addtional font setting
   (setq-default line-spacing 0)
+  (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
   (add-to-list 'face-font-rescale-alist '("STIXGeneral"      . 0.9))
   (let ((font (car dotspacemacs-default-font))
         (size (plist-get (cdr dotspacemacs-default-font) :size)))
     (cond
      ((string-equal font "Fira Code")
+      (add-to-list 'face-font-rescale-alist '("Nanum Gothic" . 0.95))
       (cond
        ((= 13 size)
         (setq-default line-spacing 1))))
      ((string-equal font "MonacoB2")
-      (add-to-list 'face-font-rescale-alist '("Apple SD Gothic Neo" . 1.1))
       (cond
        ((= 13 size)
+        (setq-default line-spacing 1)
         (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 1.1)))))
      ((string-equal font "Fantasque Sans Mono")
-      (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
-      (add-to-list 'face-font-rescale-alist '("Nanum Gothic" . 0.9))
+      (add-to-list 'face-font-rescale-alist '("Nanum Gothic" . 0.85))
       (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.9))
       (add-to-list 'face-font-rescale-alist '("Arial" . 0.9))
       (add-to-list 'face-font-rescale-alist '("Andale Mono" . 0.9))
@@ -418,8 +419,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
                    (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)"))))
       (dolist (char-regexp alist)
         (set-char-table-range composition-function-table (car char-regexp)
-                              `([,(cdr char-regexp) 0 font-shape-gstring])))))
-  )
+                              `([,(cdr char-regexp) 0 font-shape-gstring]))))))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -522,30 +522,45 @@ you should place your code here."
 
   ;; customize the theme.
   (custom-theme-set-faces
-   'twilight-anti-bright
+   'twilight-bright
    `(auto-dim-other-buffers-face
-     ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 7))
+     ((t :foreground ,(-> 'default (face-attribute :foreground) (light-color 5))
          :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
    `(clojure-if-true-face
      ((t (:background ,(-> 'font-lock-keyword-face
                            (face-attribute :background)
-                           (dim-color 4.35)
-                           (saturate-color -8))))))
+                           (light-color 1.9))))))
    `(clojure-fn-parameter-face ((t (:inherit font-lock-variable-name-face :weight normal))))
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
+   `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
+   `(font-lock-regexp-grouping-construct ((t (:weight bold :foreground ,(-> 'font-lock-string-face
+                                                                            (face-attribute :foreground)
+                                                                            (light-color 5)
+                                                                            (saturate-color 10))))))
    `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1))))))
    `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added   :background)))))
    `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
    `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
    `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
-   `(lazy-highlight ((t :background "paleturquoise4" :foreground "paleturquoise3")))
+   `(hl-line ((t (:background "#eef7fd"))))
    `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
+   `(link ((t (:foreground "#55850f" :underline t))))
+   `(magit-diff-context-highlight ((t (:background "#f2f9fd"))))
+   `(magit-diff-hunk-heading-highlight ((t (:background "#c8e9ff"))))
+   `(magit-section-highlight ((t (:background "#eef7fd"))))
    `(org-cancelled ((t (:foreground nil :inherit org-done))))
    `(org-column ((t (:weight bold))))
    `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
    `(org-link ((t (:inherit link))))
    `(org-next ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
-   `(show-paren-match ((t (:foreground "Springgreen2" :underline t :weight bold)))))
+   `(org-checkbox  ((t (:weight bold))))
+   `(org-next      ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
+   `(outline-4 ((t (:inherit font-lock-string-face))))
+   `(show-paren-match ((t (:foreground "Springgreen2" :underline t :weight bold))))
+   `(powerline-active1   ((t (:foreground "#85CEEB" :background "#383838" :inherit mode-line))))
+   `(powerline-active2   ((t (:foreground "#85CEEB" :background "#6b6b6b" :inherit mode-line))))
+   `(powerline-inactive1 ((t (:foreground "#F0F0EF" :background "#686868" :inherit mode-line-inactive))))
+   `(powerline-inactive2 ((t (:foreground "#F0F0EF" :background "#A9A9A9" :inherit mode-line-inactive)))))
   (custom-set-faces
    `(cider-fringe-good-face ((t (:inherit success))))
    `(clojure-keyword-face   ((t (:inherit font-lock-builtin-face))))
