@@ -95,6 +95,7 @@
                     (string-to-char)))
               (put-text-property s e 'display '(raise -0.2))
               (list (list :family "Material Icons"
+                          :height 0.9
                           :foreground (face-attribute (if (string-equal x "X")
                                                           'org-done 'org-todo)
                                                       :foreground))))))

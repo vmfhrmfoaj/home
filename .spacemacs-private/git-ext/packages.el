@@ -19,6 +19,8 @@
     :defer t
     :config
     (setq magit-diff-refine-hunk t)
+    (if dotspacemacs-fullscreen-at-startup
+        (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
     (add-hook 'magit-revision-mode-hook (lambda () (setq-local line-spacing 0))))
 
   (use-package magit-blame

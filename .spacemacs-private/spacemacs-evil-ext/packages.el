@@ -49,7 +49,7 @@
                                     (setq linum-schedule-timer nil)
                                     (linum-update-current)))))
                       (setq-local linum-schedule-timer timer)))))
-    (add-hook 'linum-mode-hook
+    (add-hook 'find-file-hook
               (lambda ()
                 (setq-local linum-relative-format
                             (concat "%"
