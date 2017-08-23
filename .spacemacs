@@ -244,7 +244,7 @@ It should only modify the values of Spacemacs settings."
    ;; Maximum number of rollback slots to keep in the cache. (default 5)
    dotspacemacs-max-rollback-slots 5
    ;; If non-nil, `helm' will try to minimize the space it uses. (default nil)
-   dotspacemacs-helm-resize nil
+   dotspacemacs-helm-resize t
    ;; if non-nil, the helm header is hidden when there is only one source.
    ;; (default nil)
    dotspacemacs-helm-no-header nil
@@ -397,7 +397,14 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
 
   ;; set the `custom-file' to avoid appending tail...
   (setq custom-file "~/.spacemacs-custom.el")
-  (load custom-file)
+  (load custom-file))
+
+(defun dotspacemacs/user-config ()
+  "Configuration for user code:
+This function is called at the very end of Spacemacs startup, after layer
+configuration.
+Put your configuration code here, except for variables that should be set
+before packages are loaded."
 
   ;; user info
   (setq user-full-name "Jinseop Kim"
@@ -412,10 +419,8 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
         (size (plist-get (cdr dotspacemacs-default-font) :size)))
     (cond
      ((string-equal font "Fira Code")
-      (add-to-list 'face-font-rescale-alist '("Nanum Gothic" . 0.95))
-      (cond
-       ((= 13 size)
-        (setq-default line-spacing 1))))
+      (setq-default line-spacing 1)
+      (add-to-list 'face-font-rescale-alist '("Nanum Gothic" . 0.95)))
      ((string-equal font "MonacoB2")
       (cond
        ((= 13 size)
@@ -460,14 +465,6 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
       (dolist (char-regexp alist)
         (set-char-table-range composition-function-table (car char-regexp)
                               `([,(cdr char-regexp) 0 font-shape-gstring])))))
-  )
-
-(defun dotspacemacs/user-config ()
-  "Configuration for user code:
-This function is called at the very end of Spacemacs startup, after layer
-configuration.
-Put your configuration code here, except for variables that should be set
-before packages are loaded."
 
   ;; include the ".profile" file for the GUI emacs.
   (when window-system
@@ -501,48 +498,29 @@ before packages are loaded."
   (advice-add 'set-window-buffer :around #'set-window-buffer+)
 
   (when window-system
-    ;; for single window
-    (let* ((w 130)
-           (h (/ (display-pixel-height) (frame-char-height)))
-           (l (/ (custom-display-pixel-width) 2.0))
-           (l (floor (- l (* (frame-unit->pixel w) 0.45))))
-           (l (if (< 0 (- (custom-display-pixel-width)
-                          (+ l (frame-unit->pixel w))))
-                  l
-                (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w)))))
-           (w (min w (pixel->frame-unit (- (custom-display-pixel-width) l 120))))
-           (w (max w 100)))
-      (add-to-list 'default-frame-alist (cons 'width  w))
-      (add-to-list 'default-frame-alist (cons 'height h))
-      (setq org-tags-column (- 10 w)
-            split-width-threshold (1+ w)
-            initial-frame-alist (list (cons 'top    0)
-                                      (cons 'left   l)
-                                      (cons 'width  w)
-                                      (cons 'height h))))
-
-    ;; for fullscreen
-    (when (or dotspacemacs-fullscreen-at-startup
-              dotspacemacs-fullscreen-use-non-native)
-      (dotimes (i (1- (/ (custom-display-pixel-width) (frame-char-width) 120)))
-        (split-window-right))
-      (require 'dash-functional)
-      (when (<= 3 (length (window-list)))
-        (eval-after-load "helm-buffers"
-          '(progn
-             (defvar helm-source-window-buffers-list
-               (helm-build-sync-source "Window buffers"
-                 :action #'switch-to-buffer
-                 :real-to-display (-compose (-partial #'apply #'concat)
-                                            #'helm-buffer--details)
-                 :candidates (byte-compile
-                              (lambda ()
-                                (->> (window-list)
-                                     (-remove (-partial #'eq (selected-window)))
-                                     (-map #'window-buffer)
-                                     (-distinct))))))
-             (add-to-list 'helm-mini-default-sources
-                          'helm-source-window-buffers-list))))))
+    (if (or dotspacemacs-fullscreen-at-startup
+            dotspacemacs-fullscreen-use-non-native
+            dotspacemacs-maximized-at-startup)
+        (dotimes (i (1- (/ (custom-display-pixel-width) (frame-char-width) 120)))
+          (split-window-right))
+      (let* ((w 130)
+             (h (/ (display-pixel-height) (frame-char-height)))
+             (l (/ (custom-display-pixel-width) 2.0))
+             (l (floor (- l (* (frame-unit->pixel w) 0.45))))
+             (l (if (< 0 (- (custom-display-pixel-width)
+                            (+ l (frame-unit->pixel w))))
+                    l
+                  (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w)))))
+             (w (min w (pixel->frame-unit (- (custom-display-pixel-width) l 120))))
+             (w (max w 100)))
+        (add-to-list 'default-frame-alist (cons 'width  w))
+        (add-to-list 'default-frame-alist (cons 'height h))
+        (setq org-tags-column (- 10 w)
+              split-width-threshold (1+ w)
+              initial-frame-alist (list (cons 'top    0)
+                                        (cons 'left   l)
+                                        (cons 'width  w)
+                                        (cons 'height h))))))
 
   ;; large file
   (add-hook 'find-file-hook
@@ -556,8 +534,8 @@ before packages are loaded."
 
   ;; for improving the performance.
   (setq garbage-collection-messages nil
-        gc-cons-threshold (* 10 1024 1024 1024))
-  (run-with-idle-timer 5 t #'garbage-collect)
+        gc-cons-threshold (* 512 1024 1024))
+  (run-with-idle-timer 60 t #'garbage-collect)
 
   ;; customize the theme.
   (custom-theme-set-faces
@@ -572,7 +550,6 @@ before packages are loaded."
                            (dim-color 5)
                            (saturate-color -10))))))
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
-   `(fancy-narrow-blocked-face ((t (:foreground ,(dim-color (focus-make-dim-color) 15)))))
    `(font-lock-builtin-face
      ((t (:foreground ,(-> 'font-lock-keyword-face
                            (face-attribute :foreground)
@@ -619,6 +596,12 @@ before packages are loaded."
     (setq hl-paren-colors (--iterate (dim-color it 10)
                                      (apply 'color-rgb-to-hex (color-name-to-rgb "Springgreen1"))
                                      4)))
+  (with-eval-after-load "rainbow-delimiters"
+    (dolist (i (number-sequence 1 9))
+      (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
+        (set-face-attribute face nil :foreground
+                            (-> (face-attribute face :foreground)
+                                (saturate-color -10))))))
 
   ;; for programming
   (add-to-list 'auto-mode-alist '("\\.m\\s-*$" . objc-mode))
@@ -662,11 +645,4 @@ before packages are loaded."
   (spacemacs/toggle-camel-case-motion-globally-on)
   (spacemacs/toggle-mode-line-org-clock)
   (unless dotspacemacs-fullscreen-at-startup
-    (spacemacs/toggle-golden-ratio-on))
-
-  ;; cleanup
-  (eval-after-load "projectile"
-    '(projectile-cleanup-known-projects))
-  (eval-after-load "recentf"
-    '(recentf-cleanup))
-  )
+    (spacemacs/toggle-golden-ratio-on)))

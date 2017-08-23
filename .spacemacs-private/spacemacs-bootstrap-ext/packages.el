@@ -38,6 +38,9 @@
   (use-package which-key
     :defer t
     :config
-    (setq which-key-dont-use-unicode t)))
+    (setq which-key-dont-use-unicode t)
+    (push '(("\\(.*\\)`" . "winum-select-window-by-number") .
+            ("\\1`" . "select window by number"))
+          which-key-replacement-alist)))
 
 ;;; packages.el ends here

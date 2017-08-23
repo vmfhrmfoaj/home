@@ -23,9 +23,12 @@
     :config
     (define-key helm-map (kbd "C-n") #'helm-next-source)
     (define-key helm-map (kbd "C-p") #'helm-previous-source)
-    (setq helm-truncate-lines t
-          helm-autoresize-min-height 35)
-    (helm-autoresize-mode 1)
+    (setq helm-autoresize-min-height 20
+          helm-autoresize-max-height 45
+          helm-display-function #'helm-default-display-buffer
+          helm-split-window-in-side-p t
+          helm-truncate-lines t
+          pupo-split-active-window t)
     (add-hook 'helm-after-action-hook
               (byte-compile
                (lambda ()
