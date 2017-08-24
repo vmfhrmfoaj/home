@@ -51,14 +51,15 @@
                       (setq-local linum-schedule-timer timer)))))
     (add-hook 'find-file-hook
               (lambda ()
-                (setq-local linum-relative-format
-                            (concat "%"
-                                    (-> (count-lines (point-min) (point-max))
-                                        (number-to-string)
-                                        (length)
-                                        (min 5)
-                                        (max 3)
-                                        (number-to-string))
-                                    "s"))))))
+                (unless (-contains? spacemacs-large-file-modes-list major-mode)
+                  (setq-local linum-relative-format
+                              (concat "%"
+                                      (-> (count-lines (point-min) (point-max))
+                                          (number-to-string)
+                                          (length)
+                                          (min 5)
+                                          (max 3)
+                                          (number-to-string))
+                                      "s")))))))
 
 ;;; packages.el ends here
