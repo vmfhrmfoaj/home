@@ -37,9 +37,7 @@ This function should only modify configuration layer settings."
      ;; ----------------------------------------------------------------
      auto-completion
      better-defaults
-     (c-c++ :variables
-            c-c++-default-mode-for-headers 'c++-mode
-            c-c++-enable-clang-support t)
+     c-c++
      clojure
      csv
      emacs-lisp
@@ -81,13 +79,7 @@ This function should only modify configuration layer settings."
      javascript-ext
      latex-ext
      org-ext
-     spacemacs-base-ext
-     spacemacs-bootstrap-ext
-     spacemacs-editing-ext
-     spacemacs-editing-visual-ext
-     spacemacs-evil-ext
-     spacemacs-layout-ext
-     spacemacs-ui-visual-ext
+     spacemacs-ext
      version-control-ext
      ;; ---------------------------------------------------------------
      ;; Private layers
@@ -170,7 +162,7 @@ It should only modify the values of Spacemacs settings."
    ;; True if the home buffer should respond to resize events. (default t)
    dotspacemacs-startup-buffer-responsive t
    ;; Default major mode of the scratch buffer (default `text-mode')
-   dotspacemacs-scratch-mode 'lisp-interaction-mode
+   dotspacemacs-scratch-mode 'org-mode
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
@@ -182,7 +174,7 @@ It should only modify the values of Spacemacs settings."
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 0~16
-   dotspacemacs-default-font '("Fira Code"
+   dotspacemacs-default-font '("MonacoB2"
                                :size 14
                                :weight normal
                                :width normal
@@ -378,8 +370,7 @@ It should only modify the values of Spacemacs settings."
    ;; Run `spacemacs/prettify-org-buffer' when
    ;; visiting README.org files of Spacemacs.
    ;; (default nil)
-   dotspacemacs-pretty-docs nil
-   ))
+   dotspacemacs-pretty-docs nil))
 
 (defun dotspacemacs/user-init ()
   "Initialization for user code:
@@ -397,7 +388,12 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
 
   ;; set the `custom-file' to avoid appending tail...
   (setq custom-file "~/.spacemacs-custom.el")
-  (load custom-file))
+  (load custom-file)
+
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (recentf-cleanup)
+              (projectile-cleanup-known-projects))))
 
 (defun dotspacemacs/user-config ()
   "Configuration for user code:
@@ -411,7 +407,7 @@ before packages are loaded."
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting
-  (setq-default line-spacing 0)
+  (setq-default line-spacing 1)
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
   (add-to-list 'face-font-rescale-alist '("STIXGeneral" . 0.9))
@@ -419,12 +415,10 @@ before packages are loaded."
         (size (plist-get (cdr dotspacemacs-default-font) :size)))
     (cond
      ((string-equal font "Fira Code")
-      (setq-default line-spacing 1)
       (add-to-list 'face-font-rescale-alist '("Nanum Gothic" . 0.95)))
      ((string-equal font "MonacoB2")
       (cond
        ((= 13 size)
-        (setq-default line-spacing 1)
         (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 1.1)))))
      ((string-equal font "Fantasque Sans Mono")
       (add-to-list 'face-font-rescale-alist '("Nanum Gothic" . 0.85))
@@ -494,33 +488,34 @@ before packages are loaded."
   (define-key key-translation-map (kbd "<S-kp-subtract>") "_")
   (define-key key-translation-map (kbd "<S-kp-add>") "=")
 
-  ;; multi window
+  ;; multiple window
   (advice-add 'set-window-buffer :around #'set-window-buffer+)
 
+  ;; window pos & size
   (when window-system
-    (if (or dotspacemacs-fullscreen-at-startup
-            dotspacemacs-fullscreen-use-non-native
-            dotspacemacs-maximized-at-startup)
-        (dotimes (i (1- (/ (custom-display-pixel-width) (frame-char-width) 120)))
-          (split-window-right))
-      (let* ((w 130)
-             (h (/ (display-pixel-height) (frame-char-height)))
-             (l (/ (custom-display-pixel-width) 2.0))
-             (l (floor (- l (* (frame-unit->pixel w) 0.45))))
-             (l (if (< 0 (- (custom-display-pixel-width)
-                            (+ l (frame-unit->pixel w))))
-                    l
-                  (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w)))))
-             (w (min w (pixel->frame-unit (- (custom-display-pixel-width) l 120))))
-             (w (max w 100)))
-        (add-to-list 'default-frame-alist (cons 'width  w))
-        (add-to-list 'default-frame-alist (cons 'height h))
-        (setq org-tags-column (- 10 w)
-              split-width-threshold (1+ w)
-              initial-frame-alist (list (cons 'top    0)
-                                        (cons 'left   l)
-                                        (cons 'width  w)
-                                        (cons 'height h))))))
+    (let ((w 150))
+      (setq org-tags-column (- w))
+      (if (or dotspacemacs-fullscreen-at-startup
+              dotspacemacs-fullscreen-use-non-native
+              dotspacemacs-maximized-at-startup)
+          (dotimes (i (1- (/ (custom-display-pixel-width) (frame-char-width) w)))
+            (split-window-right))
+        (let* ((h (/ (display-pixel-height) (frame-char-height)))
+               (l (/ (custom-display-pixel-width) 2.0))
+               (l (floor (- l (* (frame-unit->pixel w) 0.45))))
+               (l (if (< 0 (- (custom-display-pixel-width)
+                              (+ l (frame-unit->pixel w))))
+                      l
+                    (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w)))))
+               (w (min w (pixel->frame-unit (- (custom-display-pixel-width) l 120))))
+               (w (max w 100)))
+          (add-to-list 'default-frame-alist (cons 'width  w))
+          (add-to-list 'default-frame-alist (cons 'height h))
+          (setq split-width-threshold (1+ w)
+                initial-frame-alist (list (cons 'top    0)
+                                          (cons 'left   l)
+                                          (cons 'width  w)
+                                          (cons 'height h)))))))
 
   ;; large file
   (add-hook 'find-file-hook
@@ -533,15 +528,20 @@ before packages are loaded."
             'append)
 
   ;; for improving the performance.
-  (setq garbage-collection-messages nil
-        gc-cons-threshold (* 512 1024 1024))
-  (run-with-idle-timer 60 t #'garbage-collect)
+  (setq default-gc-cons-threshold gc-cons-threshold)
+  (add-hook 'minibuffer-setup-hook
+            (lambda ()
+              (setq gc-cons-threshold (* 5 default-gc-cons-threshold))))
+  (add-hook 'minibuffer-exit-hook
+            (lambda ()
+              (garbage-collect)
+              (setq gc-cons-threshold default-gc-cons-threshold)))
 
   ;; customize the theme.
   (custom-theme-set-faces
    'zenburn
    `(auto-dim-other-buffers-face
-     ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 2))
+     ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 3))
          :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
    `(clojure-if-true-face ((t (:background ,(-> 'default (face-attribute :background) (dim-color 0.4))))))
    `(clojure-fn-parameter-face
@@ -555,6 +555,7 @@ before packages are loaded."
                            (face-attribute :foreground)
                            (dim-color 5)
                            (saturate-color -31))))))
+   `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 2))))))
    `(git-gutter+-added    ((t (:foreground ,(-> 'diff-refine-added   (face-attribute :background) (saturate-color -20))))))
    `(git-gutter+-deleted  ((t (:foreground ,(-> 'diff-refine-removed (face-attribute :background) (saturate-color -20))))))
    `(git-gutter+-modified ((t (:foreground ,(-> 'diff-refine-changed (face-attribute :background) (saturate-color -25))))))
@@ -563,16 +564,17 @@ before packages are loaded."
      ((t (:inherit linum :foreground ,(-> 'linum (face-attribute :foreground)
                                           (light-color 15)
                                           (saturate-color 25))))))
-   `(org-block     ((t (:background ,(dim-color (face-attribute 'default :background) 1.5)))))
+   `(org-block ((t (:background ,(dim-color (face-attribute 'default :background) 1.5)))))
    `(org-cancelled ((t (:foreground nil :inherit org-done))))
-   `(org-checkbox  ((t (:weight bold))))
-   `(org-column    ((t (:weight bold))))
-   `(org-hide      ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
-   `(org-link      ((t (:inherit link))))
-   `(org-next      ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
+   `(org-checkbox ((t (:weight bold))))
+   `(org-column ((t (:weight bold))))
+   `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
+   `(org-link ((t (:inherit link))))
+   `(org-next ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
    `(region ((t (:background ,(-> 'default (face-attribute :background) (dim-color 7.5))))))
    `(show-paren-match        ((t (:foreground "Springgreen2" :underline t :weight bold))))
-   `(sp-show-pair-match-face ((t (:inherit show-paren-match)))))
+   `(sp-show-pair-match-face ((t (:inherit show-paren-match))))
+   `(vertical-border ((t (:foreground ,(-> 'shadow (face-attribute :foreground) (dim-color 25)))))))
   (custom-set-faces
    `(cider-fringe-good-face ((t (:inherit success))))
    `(clojure-keyword-face   ((t (:inherit font-lock-builtin-face))))
@@ -585,8 +587,8 @@ before packages are loaded."
    `(font-lock-type-face    ((t (:inherit nil :weight unspecified))))
    `(font-lock-variable-name-face ((t (:inherit bold :weight unspecified))))
    `(hl-line ((t (:inverse-video nil))))
-   `(link    ((t (:underline t :weight unspecified))))
-   `(linum   ((t (:inherit default :underline nil :height 1.0))))
+   `(link ((t (:underline t :weight unspecified))))
+   `(linum ((t (:inherit default :underline nil :height 1.0))))
    `(linum-relative-current-face ((t (:inherit linum))))
    `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
    `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground))))))
@@ -601,7 +603,7 @@ before packages are loaded."
       (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
         (set-face-attribute face nil :foreground
                             (-> (face-attribute face :foreground)
-                                (saturate-color -10))))))
+                                (saturate-color -5))))))
 
   ;; for programming
   (add-to-list 'auto-mode-alist '("\\.m\\s-*$" . objc-mode))

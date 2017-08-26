@@ -1,0 +1,221 @@
+;;; packages.el --- spacemacs-ext layer packages file for Spacemacs.
+;;
+;; Copyright (c) 2012-2017 Sylvain Benner & Contributors
+;;
+;; Author: Jinseop Kim <vmfhrmfoaj@yahoo.com>
+;; URL: https://github.com/syl20bnr/spacemacs
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; License: GPLv3
+
+;;; Commentary:
+
+;; See the Spacemacs documentation and FAQs for instructions on how to implement
+;; a new layer:
+;;
+;;   SPC h SPC layers RET
+;;
+;;
+;; Briefly, each package to be installed or configured by this layer should be
+;; added to `spacemacs-ext-packages'. Then, for each package PACKAGE:
+;;
+;; - If PACKAGE is not referenced by any other Spacemacs layer, define a
+;;   function `spacemacs-ext/init-PACKAGE' to load and initialize the package.
+
+;; - Otherwise, PACKAGE is already referenced by another Spacemacs layer, so
+;;   define the functions `spacemacs-ext/pre-init-PACKAGE' and/or
+;;   `spacemacs-ext/post-init-PACKAGE' to customize the package as it is loaded.
+
+;;; Code:
+
+(defconst spacemacs-ext-packages
+  '((ediff :location built-in)
+    auto-highlight-symbol
+    evil
+    evil-surround
+    hl-todo
+    linum-relative
+    persp-mode
+    projectile
+    rainbow-delimiters
+    smartparens
+    which-key))
+
+(defun spacemacs-ext/post-init-ediff ()
+  (use-package ediff
+    :defer t
+    :config
+    ;; NOTE
+    ;; prevent to calculate the width of the window
+    ;;  in `ediff-setup-windows-plain-compare' function.
+    (setq ediff-exclude-modes '(golden-ratio-mode)
+          ediff-split-window-function (lambda (&rest _) (split-window-right)))
+    (advice-add #'ediff-setup :before
+                (lambda (&rest _)
+                  (setq ediff-exclude-mode-status (-map #'symbol-value ediff-exclude-modes))
+                  (disable-modes ediff-exclude-modes)
+                  (unless (cdr (assoc 'fullscreen (frame-parameters)))
+                    (spacemacs/toggle-maximize-frame-on))))
+    (advice-add #'ediff-quit :after
+                (lambda (&rest _)
+                  (restore-modes ediff-exclude-modes ediff-exclude-mode-status)
+                  (when (eq 'maximized (cdr (assoc 'fullscreen (frame-parameters))))
+                    (spacemacs/toggle-maximize-frame-off))))))
+
+(defun spacemacs-ext/post-init-auto-highlight-symbol ()
+  (use-package auto-highlight-symbol
+    :defer t
+    :config
+    (setq ahs-include '((clojure-mode . "[^ \r\t\n]+")
+                        (clojurescript-mode . "[^ \r\t\n]+")
+                        (clojurec-mode . "[^ \r\t\n]+")
+                        (emacs-lisp-mode . "[^ \r\t\n]+")))
+    (advice-add #'ahs-select :after (byte-compile (lambda (&rest _) (recenter))))))
+
+(defun spacemacs-ext/post-init-evil ()
+  (when (require 'evil nil 'noerr)
+    (define-key evil-ex-map (kbd "C-h") #'delete-backward-char)
+    (define-key evil-insert-state-map (kbd "C-h") #'delete-backward-char)
+    (define-key evil-motion-state-map (kbd "g S-<kp-subtract>") #'evil-last-non-blank)
+    (define-key evil-read-key-map (kbd "<S-kp-divide>") "\\")
+    (define-key evil-read-key-map (kbd "<S-kp-subtract>") "_")
+    (define-key evil-read-key-map (kbd "<S-kp-add>") "=")
+    (add-hook 'evil-normal-state-entry-hook #'auto-indent)
+    (advice-add #'open-line :after #'auto-indent)
+    (dolist (fn '(evil-change evil-delete evil-join evil-paste-after))
+      (advice-add fn :after #'auto-indent))
+    (let ((f (byte-compile (lambda (&rest _) (recenter)))))
+      (advice-add #'evil-goto-mark :after f)
+      (advice-add #'evil-flash-search-pattern :before f)
+      (advice-add #'evil-insert-resume :after f))))
+
+(defun spacemacs-ext/post-init-evil-surround ()
+  (use-package evil-surround
+    :defer t
+    :config
+    (advice-add #'evil-surround-region :filter-args
+                (byte-compile
+                 (lambda (args)
+                   (if (> 4 (length args))
+                       args
+                     (let* ((char     (nth 3 args))
+                            (new-char (cond
+                                       ((= char 33554477) 95)
+                                       ((= char 33554475) 61)
+                                       ((= char 33554479) 92))))
+                       (if new-char
+                           (-replace-at 3 new-char args)
+                         args))))))))
+
+(defun spacemacs-ext/post-init-hl-todo ()
+  (use-package hl-todo
+    :defer t
+    :config
+    (setq hl-todo-keywords
+          (list (list (caar hl-todo-keywords)
+                      `(1 (hl-todo-get-face) prepend))))
+    (advice-add #'hl-todo-get-face :filter-return
+                (byte-compile
+                 (lambda (ret)
+                   (list ret))))))
+
+(defun spacemacs-ext/post-init-linum-relative ()
+  (use-package linum-relative
+    :config
+    (setq linum-delay 0.1
+          linum-schedule-timer nil)
+    (advice-add #'linum-schedule :override
+                (lambda ()
+                  (unless (eq 'self-insert-command this-command)
+                    (when linum-schedule-timer
+                      (cancel-timer linum-schedule-timer))
+                    (let ((timer (run-with-idle-timer
+                                  linum-delay nil
+                                  (lambda ()
+                                    (setq linum-schedule-timer nil)
+                                    (linum-update-current)))))
+                      (setq-local linum-schedule-timer timer)))))
+    (add-hook 'find-file-hook
+              (lambda ()
+                (unless (-contains? spacemacs-large-file-modes-list major-mode)
+                  (setq-local linum-relative-format
+                              (concat "%"
+                                      (-> (count-lines (point-min) (point-max))
+                                          (number-to-string)
+                                          (length)
+                                          (min 5)
+                                          (max 3)
+                                          (number-to-string))
+                                      "s")))))))
+
+(defun spacemacs-ext/post-init-persp-mode ()
+  (use-package persp-mode
+    :defer t
+    :config
+    (advice-add #'persp-kill :before
+                (lambda (&rest _)
+                  "Kill all buffer in the layout."
+                  (-when-let (persp (get-current-persp))
+                    (dolist (buf (aref persp 2))
+                      (kill-buffer-if-not-modified buf)))))))
+
+(defun spacemacs-ext/post-init-projectile ()
+  (use-package projectile
+    :defer t
+    :config
+    ;; NOTE
+    ;; The result of `projectile-sort-by-recentf-first' contain recently visited files.
+    ;; So, you will see ignored files.
+    (setq projectile-sort-order 'default)
+    (advice-add #'projectile-switch-project-by-name :after
+                (lambda (&rest _)
+                  "Improves `spacemacs/helm-persp-switch-project'."
+                  (when (and (featurep 'persp-mode)
+                             (get-current-persp))
+                    (->> (projectile-project-buffer-names)
+                         (--remove (string-match-p "^\\*" it))
+                         (-map #'persp-add-buffer)))))))
+
+(defun spacemacs-ext/post-init-rainbow-delimiters ()
+  (use-package rainbow-delimiters
+    :defer t
+    :config
+    (setq rainbow-delimiters--prefix-str (concat "@" "?" "#" "_" "'" "`"))
+    (advice-add #'rainbow-delimiters--apply-color :override
+                (byte-compile
+                 (lambda (loc depth match)
+                   (let ((face (funcall rainbow-delimiters-pick-face-function depth match loc))
+                         (start loc)
+                         (end (1+ loc)))
+                     (when face
+                       (save-excursion
+                         (goto-char start)
+                         (when (looking-at-p "\\s(")
+                           (skip-chars-backward rainbow-delimiters--prefix-str)
+                           (setq start (point))))
+                       (font-lock-prepend-text-property start end 'face face))))))))
+
+(defun spacemacs-ext/post-init-smartparens()
+  (use-package smartparens
+    :defer t
+    :config
+    (setq sp-highlight-pair-overlay nil
+          sp-highlight-wrap-overlay nil
+          sp-highlight-wrap-tag-overlay nil
+          sp-show-pair-from-inside nil
+          wrap-sp-supported-modes '(clojure-mode
+                                    cider-repl-mode
+                                    emas-lisp-mode))
+    (advice-add #'sp-newline :after #'auto-indent)))
+
+(defun spacemacs-ext/post-init-which-key ()
+  (use-package which-key
+    :defer t
+    :config
+    (setq which-key-dont-use-unicode t)
+    (push '(("\\(.*\\)`" . "winum-select-window-by-number") .
+            ("\\1`" . "select window by number"))
+          which-key-replacement-alist)))
+
+;;; packages.el ends here

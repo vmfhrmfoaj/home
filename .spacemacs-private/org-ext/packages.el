@@ -78,7 +78,7 @@
                     (cdr)
                     (string-to-char)))
               (put-text-property s e 'display '(raise -0.2))
-              '((:family "Material Icons" :height 1.1)))))
+              '((:family "Material Icons")))))
        ("^\\s-*\\(?:-\\|[0-9]+\\.\\) \\(\\[\\( \\|-\\|X\\)\\]\\) "
         1 (progn
             (let ((x (match-string 2))
@@ -95,7 +95,6 @@
                     (string-to-char)))
               (put-text-property s e 'display '(raise -0.2))
               (list (list :family "Material Icons"
-                          :height 0.9
                           :foreground (face-attribute (if (string-equal x "X")
                                                           'org-done 'org-todo)
                                                       :foreground))))))

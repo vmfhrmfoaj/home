@@ -26,7 +26,10 @@
      ("(\\(assert\\)"
       1 'font-lock-warning-face)
      (" \\(\\?.\\)"
-      1 'font-lock-string-face)))
+      1 'font-lock-string-face)
+     ;; spacemacs style function
+     ("(defun[ \r\t\n]+\\([-/?0-9a-zA-Z]+\\)"
+      1 'font-lock-function-name-face t)))
   (add-hook 'lisp-interaction-mode-hook #'smartparens-mode)
   (with-eval-after-load 'evil
     (let ((f (byte-compile
@@ -36,6 +39,12 @@
                 (forward-list)
                 (eval-print-last-sexp)))))
       (define-key lisp-interaction-mode-map [remap eval-print-last-sexp]  f)
-      (evil-define-key 'normal lisp-interaction-mode-map [remap evil-ret] f))))
+      (evil-define-key 'normal lisp-interaction-mode-map [remap evil-ret] f)))
+  (evil-leader/set-key-for-mode 'emacs-lisp-mode
+    "ss" (defalias 'jump-to-emacs-lisp-REPL
+           (lambda ()
+             (interactive)
+             (switch-to-buffer (get-buffer-create "*emacs-lisp-REPL*"))
+             (lisp-interaction-mode)))))
 
 ;;; packages.el ends here
