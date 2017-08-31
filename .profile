@@ -29,3 +29,7 @@ export JVM_OPTS="$(if [ `uname -a | grep -o iMac` ]; then echo '-Xms2g -Xmx4g'; 
 
 # node
 export NODE_PATH=/usr/local/lib/node_modules
+
+# perl
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
