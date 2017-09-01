@@ -50,7 +50,7 @@ This function should only modify configuration layer settings."
      (latex :variables
             latex-build-command "LaTeX"
             latex-enable-auto-fill nil)
-     markdown
+     (markdown :variables markdown-live-preview-engine 'vmd)
      org
      osx
      python
@@ -472,7 +472,7 @@ before packages are loaded."
   (prefer-coding-system 'utf-8)
   (global-set-key (kbd "S-SPC") #'toggle-input-method)
 
-  ;; mac
+  ;; macOS
   (when (eq system-type 'darwin)
     (setq mac-command-modifier 'meta
           mac-option-modifier  'meta
@@ -621,21 +621,7 @@ before packages are loaded."
                '(("[0-9A-Za-z]\\(/\\)[<>0-9A-Za-z]"
                   1 'shadow)))))
 
-  (setq custom-forward-symbol nil)
-  (put 'evil-symbol 'bounds-of-thing-at-point
-       (byte-compile
-        (lambda ()
-          (save-excursion
-            (let* ((fwd-sym (or custom-forward-symbol #'forward-symbol))
-                   (point (point))
-                   (end   (progn (funcall fwd-sym  1) (point)))
-                   (start (progn (funcall fwd-sym -1) (point))))
-              (if (and (not (= start point end))
-                       (<= start point end))
-                  (cons start end)
-                (cons point (1+ point))))))))
-
-  ;; for org-capture Chrome extension
+  ;; for org-capture Browser extension
   (require 'org-protocol)
 
   ;; recenter after jump

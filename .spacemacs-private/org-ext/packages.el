@@ -36,6 +36,7 @@
                                    ("DONE" . org-done)
                                    ("CANCELLED" . org-cancelled)))
     (spacemacs/set-leader-keys-for-major-mode 'org-mode
+      ":" #'org-set-tags
       "it" (defalias 'org-isnert-task-item
              (lambda ()
                "Insert a new task at current level."
@@ -156,8 +157,10 @@
     (evilified-state-evilify-map org-agenda-mode-map
       :mode org-agenda-mode
       :bindings
-      (kbd "C-j") #'org-agenda-next-item
-      (kbd "C-k") #'org-agenda-previous-item)
+      (kbd "h") #'org-agenda-earlier
+      (kbd "j") #'org-agenda-next-item
+      (kbd "k") #'org-agenda-previous-item
+      (kbd "l") #'org-agenda-later)
     (with-eval-after-load "persp-mode"
       (spacemacs|define-custom-layout "@Org"
         :binding "o"

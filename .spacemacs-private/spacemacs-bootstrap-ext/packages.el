@@ -32,7 +32,20 @@
     (let ((f (byte-compile (lambda (&rest _) (recenter)))))
       (advice-add #'evil-goto-mark :after f)
       (advice-add #'evil-flash-search-pattern :before f)
-      (advice-add #'evil-insert-resume :after f))))
+      (advice-add #'evil-insert-resume :after f))
+    (setq custom-forward-symbol nil)
+    (put 'evil-symbol 'bounds-of-thing-at-point
+         (byte-compile
+          (lambda ()
+            (save-excursion
+              (let* ((fwd-sym (or custom-forward-symbol #'forward-symbol))
+                     (point (point))
+                     (end   (progn (funcall fwd-sym  1) (point)))
+                     (start (progn (funcall fwd-sym -1) (point))))
+                (if (and (not (= start point end))
+                         (<= start point end))
+                    (cons start end)
+                  (cons point (1+ point))))))))))
 
 (defun spacemacs-bootstrap-ext/post-init-which-key ()
   (use-package which-key
