@@ -12,8 +12,16 @@
 ;;; Code:
 
 (defconst org-ext-packages
-  '(org
-    evil-org))
+  '(evil-org
+    org
+    org-agenda))
+
+(defun org-ext/post-init-evil-org ()
+  (use-package evil-org
+    :defer t
+    :config
+    (spacemacs/set-leader-keys-for-major-mode 'org-mode
+      "C" #'org-columns)))
 
 (defun org-ext/post-init-org ()
   (use-package org
@@ -139,37 +147,6 @@
                   (call-interactively #'evil-shift-right)
                   t))))
 
-  (use-package org-agenda
-    :defer t
-    :config
-    (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0 :weight bold))
-                                      (0.5 . '(:inherit org-upcoming-deadline :height 1.0 :weight bold))
-                                      (0.0 . '(:height 1.0)))
-          org-agenda-clockreport-parameter-plist '(:link t :fileskip0 t :stepskip0 t :maxlevel 5 :tcolumns 1 :narrow 70!)
-          org-agenda-files (find-org-agenda-files)
-          org-agenda-skip-deadline-if-done t
-          org-agenda-sorting-strategy '((agenda habit-down time-up priority-down category-keep)
-                                        (todo   todo-state-down priority-down category-keep)
-                                        (tags   priority-down category-keep)
-                                        (search category-keep))
-          org-agenda-tags-column org-tags-column
-          org-agenda-window-setup 'current-window)
-    (evilified-state-evilify-map org-agenda-mode-map
-      :mode org-agenda-mode
-      :bindings
-      (kbd "h") #'org-agenda-earlier
-      (kbd "j") #'org-agenda-next-item
-      (kbd "k") #'org-agenda-previous-item
-      (kbd "l") #'org-agenda-later)
-    (with-eval-after-load "persp-mode"
-      (spacemacs|define-custom-layout "@Org"
-        :binding "o"
-        :body
-        (->> (buffer-list)
-             (--filter (-when-let (file-name (buffer-file-name it))
-                         (member file-name org-agenda-files)))
-             (-map #'persp-add-buffer)))))
-
   (use-package org-capture
     :config
     (setq org-capture-templates
@@ -245,11 +222,36 @@
     :config
     (setq org-columns-default-format "%40ITEM %TODO %5Effort %7CLOCKSUM %TAGS")))
 
-(defun org-ext/post-init-evil-org ()
-  (use-package evil-org
+(defun org-ext/post-init-org-agenda ()
+  (use-package org-agenda
     :defer t
     :config
-    (spacemacs/set-leader-keys-for-major-mode 'org-mode
-      "C" #'org-columns)))
+    (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0 :weight bold))
+                                      (0.5 . '(:inherit org-upcoming-deadline :height 1.0 :weight bold))
+                                      (0.0 . '(:height 1.0)))
+          org-agenda-clockreport-parameter-plist '(:link t :fileskip0 t :stepskip0 t :maxlevel 5 :tcolumns 1 :narrow 70!)
+          org-agenda-files (find-org-agenda-files)
+          org-agenda-skip-deadline-if-done t
+          org-agenda-sorting-strategy '((agenda habit-down time-up priority-down category-keep)
+                                        (todo   todo-state-down priority-down category-keep)
+                                        (tags   priority-down category-keep)
+                                        (search category-keep))
+          org-agenda-tags-column org-tags-column
+          org-agenda-window-setup 'current-window)
+    (evilified-state-evilify-map org-agenda-mode-map
+      :mode org-agenda-mode
+      :bindings
+      (kbd "h") #'org-agenda-earlier
+      (kbd "j") #'org-agenda-next-item
+      (kbd "k") #'org-agenda-previous-item
+      (kbd "l") #'org-agenda-later)
+    (with-eval-after-load "persp-mode"
+      (spacemacs|define-custom-layout "@Org"
+        :binding "o"
+        :body
+        (->> (buffer-list)
+             (--filter (-when-let (file-name (buffer-file-name it))
+                         (member file-name org-agenda-files)))
+             (-map #'persp-add-buffer))))))
 
 ;;; packages.el ends here

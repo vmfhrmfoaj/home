@@ -71,9 +71,6 @@
                   (c-set-offset 'statement-case-intro  level)
                   (c-set-offset 'statement-case-open   0)
                   (c-set-offset 'member-init-intro     (* level 2))
-                  (c-set-offset 'statement-cont        (* level 2)))))
-    (add-hook 'c++-mode-hook
-              (lambda ()
-                (define-key c++-mode-map [tab] 'clang-format-buffer)))))
+                  (c-set-offset 'statement-cont        (* level 2)))))))
 
 ;;; packages.el ends here

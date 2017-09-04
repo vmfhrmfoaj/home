@@ -151,7 +151,7 @@
            (symbol?     (concat "\\(?:" symbol "\\)?"))
            (namespace   (concat "\\(?:" symbol "/\\)"))
            (namespace?  (concat namespace "?"))
-           (meta? "\\(?:\\(?:#\\^{[^}]*}\\|\\^:\\sw+\\)[ \r\n\t]+\\)?")
+           (meta? "\\(?:\\(?:#\\^{[^}]*}\\|\\^:?\\sw+\\)[ \r\n\t]+\\)?")
            (core-ns  (concat (regexp-opt '("clojure.core" "cljs.core" "core") nil) "/"))
            (core-ns? (concat "\\(?:" core-ns "\\)?")))
       ;; TODO
@@ -476,10 +476,7 @@
                      meta?
                      "\\(" symbol? "\\)")
             (1 'font-lock-keyword-face)
-            (2 (progn
-                 (if (string-match-p "defmacro\\|^fn" (match-string 1))
-                     'font-lock-function-name-face
-                   'font-lock-variable-name-face)))
+            (2 'font-lock-function-name-face)
             ;; fn parameters highlight
             (,(-partial
                (byte-compile
