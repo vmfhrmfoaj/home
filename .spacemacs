@@ -464,13 +464,15 @@ before packages are loaded."
   (when window-system
     (include-shell-var-in "~/.profile"))
 
-  ;; korean
+  ;; Korean
   (set-language-environment "Korean")
   (-update->> input-method-alist
               (--map-when (string-equal "korean-hangul" (first it))
                           (-replace-at 3 "Hangul" it)))
-  (prefer-coding-system 'utf-8)
   (global-set-key (kbd "S-SPC") #'toggle-input-method)
+
+  ;; UTF-8
+  (prefer-coding-system 'utf-8)
 
   ;; macOS
   (when (eq system-type 'darwin)
@@ -478,6 +480,7 @@ before packages are loaded."
           mac-option-modifier  'meta
           mac-pass-control-to-system nil
           mac-pass-command-to-system t)
+    (require 'ucs-normalize)
     (set-file-name-coding-system 'utf-8-hfs))
 
   ;; HHKB keyboard
