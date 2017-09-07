@@ -407,7 +407,7 @@ before packages are loaded."
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting
-  (setq-default line-spacing 1)
+  (setq-default line-spacing 0)
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
   (add-to-list 'face-font-rescale-alist '("STIXGeneral" . 0.9))
@@ -415,11 +415,12 @@ before packages are loaded."
         (size (plist-get (cdr dotspacemacs-default-font) :size)))
     (cond
      ((string-equal font "Fira Code")
+      (setq-default line-spacing 1)
       (add-to-list 'face-font-rescale-alist '("Nanum Gothic" . 0.95)))
      ((string-equal font "MonacoB2")
-      (cond
-       ((= 13 size)
-        (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 1.1)))))
+      (when (= 13 size)
+        (setq-default line-spacing 1)
+        (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 1.1))))
      ((string-equal font "Fantasque Sans Mono")
       (add-to-list 'face-font-rescale-alist '("Nanum Gothic" . 0.85))
       (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.9))
@@ -507,13 +508,11 @@ before packages are loaded."
                      (min 1 (% (display-pixel-height) (frame-char-height)))
                      2))
                (l (/ (custom-display-pixel-width) 2.0))
-               (l (floor (- l (* (frame-unit->pixel w) 0.45))))
+               (l (floor (- l (* (frame-unit->pixel w) 0.5))))
                (l (if (< 0 (- (custom-display-pixel-width)
                               (+ l (frame-unit->pixel w))))
                       l
-                    (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w)))))
-               (w (min w (pixel->frame-unit (- (custom-display-pixel-width) l 120))))
-               (w (max w 100)))
+                    (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w))))))
           (add-to-list 'default-frame-alist (cons 'width  w))
           (add-to-list 'default-frame-alist (cons 'height h))
           (setq split-width-threshold (1+ w)
