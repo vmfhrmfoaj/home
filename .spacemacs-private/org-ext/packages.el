@@ -18,6 +18,7 @@
 
 (defun org-ext/post-init-evil-org ()
   (use-package evil-org
+    :ensure t
     :defer t
     :config
     (spacemacs/set-leader-keys-for-major-mode 'org-mode

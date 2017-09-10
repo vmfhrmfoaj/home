@@ -498,7 +498,7 @@ before packages are loaded."
   ;; window pos & size
   (when window-system
     (let ((w 150))
-      (setq org-tags-column (- w))
+      (setq org-tags-column (+ (- w) 5))
       (if (or dotspacemacs-fullscreen-at-startup
               dotspacemacs-fullscreen-use-non-native
               dotspacemacs-maximized-at-startup)
