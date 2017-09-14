@@ -19,6 +19,7 @@
     :defer t
     :config
     (setq magit-diff-refine-hunk t)
+    (-update->> magit-status-sections-hook (delete 'magit-insert-campaign-header))
     (if dotspacemacs-fullscreen-at-startup
         (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
     (add-hook 'magit-revision-mode-hook (lambda () (setq-local line-spacing 0))))

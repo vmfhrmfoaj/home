@@ -83,6 +83,7 @@
 
 (defun eye-candy/init-auto-dim-other-buffers ()
   (use-package auto-dim-other-buffers
+    :disabled t ; screen flickering...
     :after dash
     :ensure t
     :config

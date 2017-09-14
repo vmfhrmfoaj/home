@@ -264,7 +264,18 @@
                 (end-of-line)
               (goto-char clojure-interface-form-point))
             (0 'font-lock-doc-face t))
-           (,(concat symbol "?\\(!+\\)\\>")
+           (,(-partial
+              (byte-compile
+               (lambda (symbol limit)
+                 (when (re-search-forward (concat symbol "?\\(!+\\)\\>") limit 'no-err)
+                   (let ((face (plist-get (text-properties-at (match-beginning 1)) 'face))
+                         (ignore-faces '(font-lock-doc-face
+                                         font-lock-string-face
+                                         font-lock-comment-face)))
+                     (when (memq face ignore-faces)
+                       (set-match-data (-repeat 4 (point-min-marker))))
+                     t))))
+              symbol)
             (1 'clojure-side-effect-face t)))
          'append)
         ;; prepend rules
