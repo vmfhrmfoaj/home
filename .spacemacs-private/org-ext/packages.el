@@ -245,7 +245,11 @@
       (kbd "h") #'org-agenda-earlier
       (kbd "j") #'org-agenda-next-item
       (kbd "k") #'org-agenda-previous-item
-      (kbd "l") #'org-agenda-later)
+      (kbd "l") #'org-agenda-later
+      (kbd "D") #'org-agenda-day-view
+      (kbd "W") #'org-agenda-week-view
+      (kbd "M") #'org-agenda-month-view
+      (kbd "Y") #'org-agenda-year-view)
     (with-eval-after-load "persp-mode"
       (spacemacs|define-custom-layout "@Org"
         :binding "o"

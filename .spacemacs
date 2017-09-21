@@ -172,13 +172,14 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
+   ;; Options(only available on macOS):
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 0~16
    dotspacemacs-default-font '("MonacoB2"
                                :size 14
                                :weight normal
                                :width normal
-                               :powerline-scale 1.1)
+                               :powerline-scale 1.15)
    ;; The leader key (default "SPC")
    dotspacemacs-leader-key "SPC"
    ;; The key used for Emacs commands `M-x' (after pressing on the leader key).
@@ -407,20 +408,23 @@ before packages are loaded."
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting
-  (setq-default line-spacing 0)
+  (setq-default line-spacing 1)
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
   (add-to-list 'face-font-rescale-alist '("STIXGeneral" . 0.9))
   (let ((font (car dotspacemacs-default-font))
-        (size (plist-get (cdr dotspacemacs-default-font) :size)))
+        (size (plist-get (cdr dotspacemacs-default-font) :size))
+        (linux? (eq system-type 'gnu/linux))
+        (mac? (eq system-type 'darwin)))
     (cond
      ((string-equal font "Fira Code")
-      (setq-default line-spacing 1)
       (add-to-list 'face-font-rescale-alist '("Nanum Gothic" . 0.95)))
      ((string-equal font "MonacoB2")
-      (when (= 13 size)
-        (setq-default line-spacing 1)
-        (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 1.1))))
+      (cond
+       ((and linux? (not (= 13 size)))
+        (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.95)))
+       ((and mac? (= 13 size))
+        (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 1.1)))))
      ((string-equal font "Fantasque Sans Mono")
       (add-to-list 'face-font-rescale-alist '("Nanum Gothic" . 0.85))
       (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.9))
@@ -505,7 +509,8 @@ before packages are loaded."
           (dotimes (i (1- (/ (custom-display-pixel-width) (frame-char-width) w)))
             (split-window-right))
         (let* ((h (- (/ (display-pixel-height) (frame-char-height))
-                     (min 1 (% (display-pixel-height) (frame-char-height)))
+                     (if (zerop (% (display-pixel-height) (frame-char-height)))
+                         2 1)
                      2))
                (l (/ (custom-display-pixel-width) 2.0))
                (l (floor (- l (* (frame-unit->pixel w) 0.5))))
@@ -532,27 +537,28 @@ before packages are loaded."
             'append)
 
   ;; for improving the performance.
-  (setq default-gc-cons-threshold gc-cons-threshold)
+  (setq-default default-gc-cons-threshold gc-cons-threshold)
   (add-hook 'minibuffer-setup-hook
             (lambda ()
+              (setq default-gc-cons-threshold gc-cons-threshold)
               (setq gc-cons-threshold (* 5 default-gc-cons-threshold))))
   (add-hook 'minibuffer-exit-hook
             (lambda ()
-              (garbage-collect)
               (setq gc-cons-threshold default-gc-cons-threshold)))
 
   ;; customize the theme.
   (custom-theme-set-faces
    'twilight-bright
    `(auto-dim-other-buffers-face
-     ((t :foreground ,(-> 'default (face-attribute :foreground) (light-color 5))
-         :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
+     ((t :foreground  ,(-> 'default (face-attribute :foreground) (light-color 5))
+         :background  ,(-> 'default (face-attribute :background) (dim-color 3)))))
    `(clojure-if-true-face
      ((t (:background ,(-> 'font-lock-keyword-face
                            (face-attribute :background)
                            (light-color 1.9))))))
    `(clojure-fn-parameter-face ((t (:inherit font-lock-variable-name-face :weight normal))))
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
+   `(evil-ex-lazy-highlight ((t (:inherit lazy-highlight :weight bold))))
    `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
    `(font-lock-regexp-grouping-construct ((t (:weight bold :foreground ,(-> 'font-lock-string-face
                                                                             (face-attribute :foreground)
@@ -624,11 +630,6 @@ before packages are loaded."
 
   ;; for org-capture Browser extension
   (require 'org-protocol)
-
-  ;; recenter after jump
-  (let ((f (byte-compile (lambda (&rest _) (recenter)))))
-    (advice-add #'spacemacs/jump-to-definition :after f)
-    (advice-add #'xref-pop-marker-stack        :after f))
 
   ;; turn on/off the packages globally.
   (spacemacs/toggle-camel-case-motion-globally-on)

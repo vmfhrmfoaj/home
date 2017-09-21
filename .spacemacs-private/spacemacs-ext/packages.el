@@ -70,8 +70,7 @@
     (setq ahs-include '((clojure-mode . "[^ \r\t\n]+")
                         (clojurescript-mode . "[^ \r\t\n]+")
                         (clojurec-mode . "[^ \r\t\n]+")
-                        (emacs-lisp-mode . "[^ \r\t\n]+")))
-    (advice-add #'ahs-select :after (byte-compile (lambda (&rest _) (recenter))))))
+                        (emacs-lisp-mode . "[^ \r\t\n]+")))))
 
 (defun spacemacs-ext/post-init-evil ()
   (when (require 'evil nil 'noerr)
@@ -85,10 +84,6 @@
     (advice-add #'open-line :after #'auto-indent)
     (dolist (fn '(evil-change evil-delete evil-join evil-paste-after))
       (advice-add fn :after #'auto-indent))
-    (let ((f (byte-compile (lambda (&rest _) (recenter)))))
-      (advice-add #'evil-goto-mark :after f)
-      (advice-add #'evil-flash-search-pattern :before f)
-      (advice-add #'evil-insert-resume :after f))
     (setq custom-forward-symbol nil)
     (put 'evil-symbol 'bounds-of-thing-at-point
          (byte-compile
