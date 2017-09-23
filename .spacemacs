@@ -175,8 +175,10 @@ It should only modify the values of Spacemacs settings."
    ;; Options(only available on macOS):
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 0~16
-   dotspacemacs-default-font '("MonacoB2"
-                               :size 14
+   dotspacemacs-default-font `("MonacoB2"
+                               :size ,(cond
+                                       ((eq system-type 'gnu/linux) 12)
+                                       (t 14))
                                :weight normal
                                :width normal
                                :powerline-scale 1.15)
