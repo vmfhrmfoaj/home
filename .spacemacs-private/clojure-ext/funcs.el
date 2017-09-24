@@ -45,6 +45,16 @@
               (when (re-search-backward "\\(?:^\\s-*\\|(\\):\\(cljs?\\)[ \r\t\n]+"  beg-pos t)
                 (match-string-no-properties 1)))))))))
 
+(defun cider-switch-to-releated-repl-buffer (&optional set-namespace)
+  (interactive "P")
+  (let* ((connections (cider-connections))
+         (repl-bufs (--filter (member it connections) (buffer-list)))
+         (repl-type (cider-connection-type-for-buffer))
+         (buffer (--first (with-current-buffer it
+                            (string-equal repl-type cider-repl-type))
+                          repl-bufs)))
+    (cider--switch-to-repl-buffer (or buffer (-first-item repl-bufs)) set-namespace)))
+
 
 (defun clojure--binding-regexp ()
   (concat "(" (regexp-opt clojure--binding-forms) "[ \r\t\n]+\\["))

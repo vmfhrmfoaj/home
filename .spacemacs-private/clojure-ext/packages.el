@@ -22,6 +22,7 @@
     :config
     (byte-compile #'cider-connection-type-for-cljc-buffer)
     (byte-compile #'cider-cljs-root-dirs)
+    (byte-compile #'cider-switch-to-releated-repl-buffer)
     (setq cider-font-lock-reader-conditionals nil
           cider-dynamic-indentation nil
           cider-font-lock-dynamically '(deprecated)
@@ -44,6 +45,8 @@
         "en" #'cider-eval-ns-form))
     (advice-add #'cider-connection-type-for-buffer :before-until
                 #'cider-connection-type-for-cljc-buffer)
+    (advice-add #'cider-switch-to-repl-buffer :override
+                #'cider-switch-to-releated-repl-buffer)
     (advice-add #'cider-expected-ns :around
                 (byte-compile
                  (lambda (of &optional path)
