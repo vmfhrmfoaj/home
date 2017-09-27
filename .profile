@@ -33,3 +33,6 @@ export NODE_PATH=/usr/local/lib/node_modules
 # perl
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
+
+# mpv
+alias mplay="mpv --sub-codepage=utf8:cp949 --cache=8192 --hwdec=videotoolbox --vo=opengl"
