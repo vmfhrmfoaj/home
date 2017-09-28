@@ -405,6 +405,9 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
+  ;; FIXME: will be removed
+  (setf (symbol-function 'spacemacs/presp-perspectives) (symbol-function 'spacemacs/presp-buffers))
+
   ;; user info
   (setq user-full-name "Jinseop Kim"
         user-mail-address "vmfhrmfoaj@yahoo.com")
