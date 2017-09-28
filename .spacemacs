@@ -557,7 +557,7 @@ before packages are loaded."
    `(clojure-if-true-face
      ((t (:background ,(-> 'font-lock-keyword-face
                            (face-attribute :background)
-                           (light-color 1.9))))))
+                           (light-color 2.5))))))
    `(clojure-fn-parameter-face ((t (:inherit font-lock-variable-name-face :weight normal))))
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
    `(evil-ex-lazy-highlight ((t (:inherit lazy-highlight :weight bold))))
