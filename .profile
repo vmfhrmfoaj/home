@@ -36,3 +36,6 @@ export LANG=en_US.UTF-8
 
 # mpv
 alias mplay="mpv --sub-codepage=utf8:cp949 --cache=8192 --hwdec=videotoolbox --vo=opengl --volume=70"
+alias aplay="mplay --no-video"
+alias vplay="mplay --no-audio"
+alias ylplay="aplay --ytdl-format 95"
