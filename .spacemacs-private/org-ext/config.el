@@ -17,3 +17,8 @@
   "Non-nil means using Google Web Cache when captured by org-protocol."
   :group 'org-protocol
   :type 'boolean)
+
+(defcustom org-cache-url-prefix "http://webcache.googleusercontent.com/search?q=cache:"
+  "TODO"
+  :group 'org
+  :type 'string)

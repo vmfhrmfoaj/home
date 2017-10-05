@@ -47,18 +47,19 @@
     (spacemacs/set-leader-keys-for-major-mode 'org-mode
       ":" #'org-set-tags
       "it" (defalias 'org-isnert-task-item
-             (lambda ()
-               "Insert a new task at current level."
-               (interactive)
-               (-if-let (pos (org-in-item-p))
-                   (progn
-                     (goto-char pos)
-                     (re-search-forward "- " (line-end-position)))
-                 (insert "- "))
-               (if (looking-at "\\[[\\( \\|-\\)]\\] ")
-                   (goto-char (match-end 0))
-                 (insert "[ ] ")
-                 (org-update-checkbox-count-maybe)))))
+             (byte-compile
+              (lambda ()
+                "Insert a new task at current level."
+                (interactive)
+                (-if-let (pos (org-in-item-p))
+                    (progn
+                      (goto-char pos)
+                      (re-search-forward "- " (line-end-position)))
+                  (insert "- "))
+                (if (looking-at "\\[[\\( \\|-\\)]\\] ")
+                    (goto-char (match-end 0))
+                  (insert "[ ] ")
+                  (org-update-checkbox-count-maybe))))))
     (advice-add #'org-insert-item :filter-args
                 (byte-compile
                  (lambda (checkbox)
@@ -111,42 +112,47 @@
        ("\\(\\\\\\\\\\)\\s-*$"
         1 'shadow nil)))
     (add-hook 'org-todo-get-default-hook
-              (lambda (mark _)
-                "Set a schedule and deadline for NEXT."
-                (when (and org-insert-schedule-deadline
-                           (string-equal mark "NEXT"))
-                  (org-insert-schedule-&-deadline)
-                  nil)))
+              (byte-compile
+               (lambda (mark _)
+                 "Set a schedule and deadline for NEXT."
+                 (when (and org-insert-schedule-deadline
+                            (string-equal mark "NEXT"))
+                   (org-insert-schedule-&-deadline)
+                   nil))))
     (add-hook 'org-after-todo-statistics-hook
-              (lambda (num-done-task num-remaining-task)
-                "Automatically changes the status of _TODO_ according to sub-TODO."
-                (let (org-log-done
-                      org-log-states
-                      org-insert-schedule-deadline)
-                  (cond
-                   ((= 0 num-remaining-task) (org-todo "DONE"))
-                   ((= 0 num-done-task)      (org-todo "TODO"))
-                   (t)))))
+              (byte-compile
+               (lambda (num-done-task num-remaining-task)
+                 "Automatically changes the status of _TODO_ according to sub-TODO."
+                 (let (org-log-done
+                       org-log-states
+                       org-insert-schedule-deadline)
+                   (cond
+                    ((= 0 num-remaining-task) (org-todo "DONE"))
+                    ((= 0 num-done-task)      (org-todo "TODO"))
+                    (t))))))
     (advice-add #'org-todo :around
-                (lambda (of &optional arg)
-                  "If reopen the completed _TODO_, show a popup for logging."
-                  (let* ((is-done? (member (org-get-todo-state) org-done-keywords))
-                         (org-todo-log-states (if is-done?
-                                                  (append '(("TODO" note time)
-                                                            ("NEXT" note time))
-                                                          org-todo-log-states)
-                                                org-todo-log-states)))
-                    (funcall of arg))))
+                (byte-compile
+                 (lambda (of &optional arg)
+                   "If reopen the completed _TODO_, show a popup for logging."
+                   (let* ((is-done? (member (org-get-todo-state) org-done-keywords))
+                          (org-todo-log-states (if is-done?
+                                                   (append '(("TODO" note time)
+                                                             ("NEXT" note time))
+                                                           org-todo-log-states)
+                                                 org-todo-log-states)))
+                     (funcall of arg)))))
     (add-hook 'org-metaleft-hook
-              (lambda ()
-                (unless (org-at-heading-or-item-p)
-                  (call-interactively #'evil-shift-left)
-                  t)))
+              (byte-compile
+               (lambda ()
+                 (unless (org-at-heading-or-item-p)
+                   (call-interactively #'evil-shift-left)
+                   t))))
     (add-hook 'org-metaright-hook
-              (lambda ()
-                (unless (org-at-heading-or-item-p)
-                  (call-interactively #'evil-shift-right)
-                  t))))
+              (byte-compile
+               (lambda ()
+                 (unless (org-at-heading-or-item-p)
+                   (call-interactively #'evil-shift-right)
+                   t)))))
 
   (use-package org-capture
     :config
@@ -198,26 +204,27 @@
 
   (use-package org-protocol
     :config
+    (byte-compile #'org-protocol-cached-url)
     (advice-add #'org-protocol-sanitize-uri :filter-return
-                (lambda (url)
-                  "FIXME: Insert prefix to use Google web cache."
-                  (if org-capture-use-cached-url
-                      (concat "http://webcache.googleusercontent.com/search?q=cache:"
-                              (url-hexify-string url))
-                    url))))
+                (byte-compile
+                 (lambda (url)
+                   (if org-capture-use-cached-url
+                       (org-protocol-cached-url url)
+                     url)))))
 
   (use-package org-clock
     :defer t
     :config
     (setq org-clock-into-drawer t)
     (advice-add #'org-clock-get-clocktable :filter-return
-                (lambda (tlb)
-                  "Pretty the org clock table."
-                  (concat "\n" (propertize "CLOCKING:" 'face 'org-agenda-date)
-                          "\n" (->> (split-string tlb "\n")
-                                    (--map (concat "  " it))
-                                    (-interpose "\n")
-                                    (apply #'concat))))))
+                (byte-compile
+                 (lambda (tlb)
+                   "Pretty the org clock table."
+                   (concat "\n" (propertize "CLOCKING:" 'face 'org-agenda-date)
+                           "\n" (->> (split-string tlb "\n")
+                                     (--map (concat "  " it))
+                                     (-interpose "\n")
+                                     (apply #'concat)))))))
   (use-package org-colview
     :defer t
     :config
@@ -231,7 +238,7 @@
                                       (0.5 . '(:inherit org-upcoming-deadline :height 1.0 :weight bold))
                                       (0.0 . '(:height 1.0)))
           org-agenda-clockreport-parameter-plist '(:link t :fileskip0 t :stepskip0 t :maxlevel 5 :tcolumns 1 :narrow 70!)
-          org-agenda-files (find-org-agenda-files)
+          org-agenda-files (org-agenda-find-files)
           org-agenda-skip-deadline-if-done t
           org-agenda-sorting-strategy '((agenda habit-down time-up priority-down category-keep)
                                         (todo   todo-state-down priority-down category-keep)
