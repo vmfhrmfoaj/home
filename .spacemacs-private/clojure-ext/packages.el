@@ -474,7 +474,7 @@
                      "\\(" symbol "\\)\\>")
             (1 'default)
             (2 'default))
-           (,(concat "(" core-ns? "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
+           (,(concat "(" namespace? "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
                      whitespace+
                      meta?
                      "::?" namespace? "\\(" symbol "\\)\\>")
@@ -490,7 +490,11 @@
                      meta?
                      "\\(" symbol? "\\)")
             (1 'font-lock-keyword-face)
-            (2 'font-lock-function-name-face)
+            (2 (progn
+                 ;; NOTE
+                 (if (string-match-p "defmacro\\|^fn" (match-string 1))
+                     'font-lock-function-name-face
+                   'font-lock-variable-name-face)))
             ;; fn parameters highlight
             (,(-partial
                (byte-compile
