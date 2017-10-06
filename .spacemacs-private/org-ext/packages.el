@@ -44,6 +44,7 @@
                                    ("NEXT" . org-next)
                                    ("DONE" . org-done)
                                    ("CANCELLED" . org-cancelled)))
+    (spacemacs/declare-prefix-for-mode 'org-mode "mu" "update")
     (spacemacs/set-leader-keys-for-major-mode 'org-mode
       ":" #'org-set-tags
       "it" (defalias 'org-isnert-task-item
@@ -59,7 +60,8 @@
                 (if (looking-at "\\[[\\( \\|-\\)]\\] ")
                     (goto-char (match-end 0))
                   (insert "[ ] ")
-                  (org-update-checkbox-count-maybe))))))
+                  (org-update-checkbox-count-maybe)))))
+      "ul" #'org-url=>cached-url)
     (advice-add #'org-insert-item :filter-args
                 (byte-compile
                  (lambda (checkbox)
