@@ -505,12 +505,12 @@
                     (unless fn-recursive-point
                       (when fn-form-multi-arity?
                         (up-list 2))
-                      (apply #'clojure-skip
-                             :comment :ignored-form
-                             (if (not fn-form-method?)
-                                 '(:string :map)
-                               (clojure-forward-sexp)
-                               nil))
+                      (while (progn
+                               (clojure-skip :comment :ignored-form :string :map)
+                               (when fn-form-method?
+                                 (setq fn-form-method? nil)
+                                 (clojure-forward-sexp)
+                                 t)))
                       (when (looking-at "(")
                         (setq fn-form-multi-arity? t)
                         (down-list))
