@@ -490,11 +490,12 @@
                      meta?
                      "\\(" symbol? "\\)")
             (1 'font-lock-keyword-face)
-            (2 (progn
-                 ;; NOTE
-                 (if (string-match-p "defmacro\\|^fn" (match-string 1))
-                     'font-lock-function-name-face
-                   'font-lock-variable-name-face)))
+            ;; NOTE
+            ;; Clojure is a Lisp-1.
+            ;; It is mean the symbol of the variable and the function are no different.
+            (2 (if (string-match-p "defmacro\\|^fn" (match-string 1))
+                   'font-lock-function-name-face
+                 'font-lock-variable-name-face))
             ;; fn parameters highlight
             (,(-partial
                (byte-compile

@@ -166,7 +166,7 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(zenburn)
+   dotspacemacs-themes '(twilight-bright)
    ;; If non-nil the cursor color matches the state color in GUI Emacs.
    ;; (default t)
    dotspacemacs-colorize-cursor-according-to-state t
@@ -553,42 +553,46 @@ before packages are loaded."
 
   ;; customize the theme.
   (custom-theme-set-faces
-   'zenburn
+   'twilight-bright
    `(auto-dim-other-buffers-face
-     ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 3))
-         :background ,(-> 'default (face-attribute :background) (dim-color 3)))))
-   `(clojure-if-true-face ((t (:background ,(-> 'default (face-attribute :background) (dim-color 0.4))))))
-   `(clojure-fn-parameter-face
-     ((t (:foreground ,(-> 'font-lock-variable-name-face
-                           (face-attribute :foreground)
-                           (dim-color 5)
-                           (saturate-color -10))))))
+     ((t :foreground  ,(-> 'default (face-attribute :foreground) (light-color 5))
+         :background  ,(-> 'default (face-attribute :background) (dim-color 3)))))
+   `(clojure-if-true-face
+     ((t (:background ,(-> 'font-lock-keyword-face
+                           (face-attribute :background)
+                           (light-color 2.5))))))
+   `(clojure-fn-parameter-face ((t (:inherit font-lock-variable-name-face :weight normal))))
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
-   `(font-lock-builtin-face
-     ((t (:foreground ,(-> 'font-lock-keyword-face
-                           (face-attribute :foreground)
-                           (dim-color 5)
-                           (saturate-color -31))))))
-   `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 2))))))
-   `(git-gutter+-added    ((t (:foreground ,(-> 'diff-refine-added   (face-attribute :background) (saturate-color -20))))))
-   `(git-gutter+-deleted  ((t (:foreground ,(-> 'diff-refine-removed (face-attribute :background) (saturate-color -20))))))
-   `(git-gutter+-modified ((t (:foreground ,(-> 'diff-refine-changed (face-attribute :background) (saturate-color -25))))))
-   `(lazy-highlight ((t (:foreground "#d0bf8f" :background "#1e1e1e"))))
-   `(linum-relative-current-face
-     ((t (:inherit linum :foreground ,(-> 'linum (face-attribute :foreground)
-                                          (light-color 15)
-                                          (saturate-color 25))))))
-   `(org-block ((t (:background ,(dim-color (face-attribute 'default :background) 1.5)))))
+   `(evil-ex-lazy-highlight ((t (:inherit lazy-highlight :weight bold))))
+   `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
+   `(font-lock-regexp-grouping-construct ((t (:weight bold :foreground ,(-> 'font-lock-string-face
+                                                                            (face-attribute :foreground)
+                                                                            (light-color 5)
+                                                                            (saturate-color 10))))))
+   `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1))))))
+   `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added   :background)))))
+   `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
+   `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
+   `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
+   `(hl-line ((t (:background "#eef7fd"))))
+   `(linum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
+   `(link ((t (:foreground "#55850f" :underline t))))
+   `(magit-diff-context-highlight ((t (:background "#f2f9fd"))))
+   `(magit-diff-hunk-heading-highlight ((t (:background "#c8e9ff"))))
+   `(magit-section-highlight ((t (:background "#eef7fd"))))
    `(org-cancelled ((t (:foreground nil :inherit org-done))))
-   `(org-checkbox ((t (:weight bold))))
    `(org-column ((t (:weight bold))))
    `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
    `(org-link ((t (:inherit link))))
    `(org-next ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
-   `(region ((t (:background ,(-> 'default (face-attribute :background) (dim-color 7.5))))))
-   `(show-paren-match        ((t (:foreground "Springgreen2" :underline t :weight bold))))
-   `(sp-show-pair-match-face ((t (:inherit show-paren-match))))
-   `(vertical-border ((t (:foreground ,(-> 'shadow (face-attribute :foreground) (dim-color 25)))))))
+   `(org-checkbox  ((t (:weight bold))))
+   `(org-next      ((t (:foreground "#dca3a3" :weight bold :inherit org-todo))))
+   `(outline-4 ((t (:inherit font-lock-string-face))))
+   `(show-paren-match ((t (:foreground "Springgreen2" :underline t :weight bold))))
+   `(powerline-active1   ((t (:foreground "#85CEEB" :background "#383838" :inherit mode-line))))
+   `(powerline-active2   ((t (:foreground "#85CEEB" :background "#6b6b6b" :inherit mode-line))))
+   `(powerline-inactive1 ((t (:foreground "#F0F0EF" :background "#686868" :inherit mode-line-inactive))))
+   `(powerline-inactive2 ((t (:foreground "#F0F0EF" :background "#A9A9A9" :inherit mode-line-inactive)))))
   (custom-set-faces
    `(cider-fringe-good-face ((t (:inherit success))))
    `(clojure-keyword-face   ((t (:inherit font-lock-builtin-face))))
@@ -612,12 +616,6 @@ before packages are loaded."
     (setq hl-paren-colors (--iterate (dim-color it 10)
                                      (apply 'color-rgb-to-hex (color-name-to-rgb "Springgreen1"))
                                      4)))
-  (with-eval-after-load "rainbow-delimiters"
-    (dolist (i (number-sequence 1 9))
-      (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
-        (set-face-attribute face nil :foreground
-                            (-> (face-attribute face :foreground)
-                                (saturate-color -5))))))
 
   ;; for programming
   (add-to-list 'auto-mode-alist '("\\.m$" . objc-mode))
