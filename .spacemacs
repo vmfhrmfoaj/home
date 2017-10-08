@@ -413,7 +413,7 @@ before packages are loaded."
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting
-  (setq-default line-spacing 1)
+  (setq-default line-spacing 0)
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
   (add-to-list 'face-font-rescale-alist '("STIXGeneral" . 0.9))
@@ -423,12 +423,14 @@ before packages are loaded."
         (mac? (eq system-type 'darwin)))
     (cond
      ((string-equal font "Fira Code")
+      (setq-default line-spacing 1)
       (add-to-list 'face-font-rescale-alist '("Nanum Gothic" . 0.95)))
      ((string-equal font "MonacoB2")
       (cond
        ((and linux? (not (= 13 size)))
         (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.95)))
        ((and mac? (= 13 size))
+        (setq-default line-spacing 1)
         (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 1.1)))))
      ((string-equal font "Fantasque Sans Mono")
       (add-to-list 'face-font-rescale-alist '("Nanum Gothic" . 0.85))
