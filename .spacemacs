@@ -543,16 +543,6 @@ before packages are loaded."
                  (turn-off-smartparens-mode))))
             'append)
 
-  ;; for improving the performance.
-  (setq-default default-gc-cons-threshold gc-cons-threshold)
-  (add-hook 'minibuffer-setup-hook
-            (lambda ()
-              (setq default-gc-cons-threshold gc-cons-threshold)
-              (setq gc-cons-threshold (* 5 default-gc-cons-threshold))))
-  (add-hook 'minibuffer-exit-hook
-            (lambda ()
-              (setq gc-cons-threshold default-gc-cons-threshold)))
-
   ;; customize the theme.
   (custom-theme-set-faces
    'twilight-bright
