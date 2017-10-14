@@ -128,8 +128,8 @@
     (byte-compile #'clojure-skip)
     (byte-compile #'clojure-forward-sexp)
 
-    ;; NOTE: testing
-    (advice-add #'clojure-font-lock-extend-region-def :override (lambda (&rest _) nil))
+    (advice-add #'clojure-font-lock-extend-region-def :override
+                (byte-compile (lambda (&rest _) nil)))
 
     (defun in-comment? ()
       (comment-only-p (save-excursion

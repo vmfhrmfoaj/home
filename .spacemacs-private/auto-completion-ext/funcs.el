@@ -2,7 +2,7 @@
   "Insert CANDIDATE."
   (let* ((company-candidates (helm-attr 'company-candidates))
          (company-backend (helm-attr 'company-backend))
-         (selection (cl-find-if (lambda (s) (string-match-p candidate s)) company-candidates))
+         (selection (cl-find-if (byte-compile (lambda (s) (string-match-p candidate s))) company-candidates))
          (company-common (helm-attr 'company-common))
          (company-prefix company-common))
     (company-finish selection))

@@ -77,13 +77,14 @@
                              (point))))
                   (cons start end)))))))
     (advice-add #'focus-move-focus :around
-                (lambda (of)
-                  (condition-case nil
-                      (funcall of)
-                    (error (progn
-                             (focus-terminate)
-                             (focus-init)
-                             (funcall of))))))))
+                (byte-compile
+                 (lambda (of)
+                   (condition-case nil
+                       (funcall of)
+                     (error (progn
+                              (focus-terminate)
+                              (focus-init)
+                              (funcall of)))))))))
 
 (defun focus/post-init-org ()
   (use-package org-colview
