@@ -55,22 +55,9 @@
                     (beginning-of-buffer)
                     (when (re-search-forward "^\\s-*@\\(?:class\\|interface\\|end\\)" nil t)
                       (objc-mode))))
-                (let ((level 1))
-                  (c-set-offset 'access-label          (* level -1))
-                  (c-set-offset 'brace-list-intro      (* level 2))
-                  (c-set-offset 'defun-block-intro     (* level 2))
-                  (c-set-offset 'inclass               (* level 2))
-                  (c-set-offset 'inextern-lang         0)
-                  (c-set-offset 'innamespace           0)
-                  (c-set-offset 'label                 0)
-                  (c-set-offset 'statement-block-intro (* level 2))
-                  (c-set-offset 'statement-case-intro  (* level 2))
-                  (c-set-offset 'substatement          (* level 2))
-                  (c-set-offset 'substatement-open     0)
-                  (c-set-offset 'case-label            level)
-                  (c-set-offset 'statement-case-intro  level)
-                  (c-set-offset 'statement-case-open   0)
-                  (c-set-offset 'member-init-intro     (* level 2))
-                  (c-set-offset 'statement-cont        (* level 2)))))))
+                ;; NOTE
+                ;; You can apply different indent styles to each project as following:
+                ;; .dir-locals: ((c-mode . ((eval . (c-setup-indent-config c-indent-config--xxx)))))
+                (c-setup-indent-config c-indent-config)))))
 
 ;;; packages.el ends here
