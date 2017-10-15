@@ -131,22 +131,6 @@
     (advice-add #'clojure-font-lock-extend-region-def :override
                 (byte-compile (lambda (&rest _) nil)))
 
-    (defun in-comment? ()
-      (comment-only-p (save-excursion
-                        (goto-char (match-beginning 0))
-                        (point-at-bol))
-                      (point)))
-
-    (defun safe-up-list-1 ()
-      (condition-case nil
-          (up-list)
-        (setq-local font-lock--skip t)))
-
-    (defun safe-down-list-1 ()
-      (condition-case nil
-          (down-list)
-        (setq-local font-lock--skip t)))
-
     (let* ((whitespace  "[ \r\t\n]")
            (whitespace+ (concat whitespace "+"))
            (whitespace* (concat whitespace "*"))

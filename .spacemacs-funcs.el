@@ -139,3 +139,19 @@
        (apply (-rpartial #'color-saturate-hsl p))
        (apply #'color-hsl-to-rgb)
        (apply #'color-rgb-to-hex)))
+
+(defun in-comment? ()
+  (comment-only-p (save-excursion
+                    (goto-char (match-beginning 0))
+                    (point-at-bol))
+                  (point)))
+
+(defun safe-up-list-1 ()
+  (condition-case nil
+      (up-list)
+    (setq-local font-lock--skip t)))
+
+(defun safe-down-list-1 ()
+  (condition-case nil
+      (down-list)
+    (setq-local font-lock--skip t)))
