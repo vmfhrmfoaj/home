@@ -129,7 +129,9 @@
     (byte-compile #'clojure-forward-sexp)
 
     (advice-add #'clojure-font-lock-extend-region-def :override
-                (byte-compile (lambda (&rest _) nil)))
+                (lambda (&rest _)
+                  (-update->> font-lock-extend-region-functions
+                              (remove 'clojure-font-lock-extend-region-def))))
 
     (let* ((whitespace  "[ \r\t\n]")
            (whitespace+ (concat whitespace "+"))
