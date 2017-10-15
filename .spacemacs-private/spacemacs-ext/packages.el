@@ -91,7 +91,15 @@
                 (if (and (not (= start point end))
                          (<= start point end))
                     (cons start end)
-                  (cons point (1+ point))))))))))
+                  (cons point (1+ point))))))))
+    (setq _font-lock-multiline_ nil)
+    (add-hook 'evil-insert-state-entry-hook
+              (lambda ()
+                (setq-local _font-lock-multiline_ font-lock-multiline)
+                (setq-local font-lock-multiline nil)))
+    (add-hook 'evil-insert-state-exit-hook
+              (lambda ()
+                (setq-local font-lock-multiline _font-lock-multiline_)))))
 
 (defun spacemacs-ext/post-init-hl-todo ()
   (use-package hl-todo
