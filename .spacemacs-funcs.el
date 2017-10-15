@@ -87,10 +87,14 @@
        (when (and (derived-mode-p 'prog-mode)
                   (not buffer-read-only))
          (let ((start (progn
-                        (beginning-of-defun)
+                        (condition-case nil
+                            (backward-up-list)
+                          (error (beginning-of-line)))
                         (point)))
                (end   (progn
-                        (end-of-defun)
+                        (condition-case nil
+                            (forward-list)
+                          (error (beginning-of-line)))
                         (point))))
            (indent-region start end))))))
   (setq-local auto-indent-skip-when-open-file nil))
