@@ -396,6 +396,10 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   (setq custom-file "~/.spacemacs-custom.el")
   (load custom-file)
 
+  ;; enable the `dir-local-variable' on remote
+  (setq enable-remote-dir-locals t)
+
+  ;; clean up list of recently visited file and project
   (add-hook 'emacs-startup-hook
             (lambda ()
               (recentf-cleanup)
