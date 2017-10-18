@@ -79,24 +79,34 @@
                     (apply f args))))))
 
 (setq-default auto-indent-skip-when-open-file t)
+(setq-default auto-indent-block-level 3)
 (defun auto-indent (&rest _)
   "auto-indent-for-evil-mode"
   (unless auto-indent-skip-when-open-file
     (save-match-data
       (save-mark-and-excursion
        (when (and (derived-mode-p 'prog-mode)
-                  (not buffer-read-only))
-         (let ((start (progn
-                        (condition-case nil
-                            (backward-up-list)
-                          (error (beginning-of-line)))
-                        (point)))
-               (end   (progn
-                        (condition-case nil
-                            (forward-list)
-                          (error (beginning-of-line)))
-                        (point))))
-           (indent-region start end))))))
+                  (not buffer-read-only)
+                  (>= auto-indent-block-level 1))
+         (let ((start
+                (progn
+                  (condition-case nil
+                      (progn
+                        (backward-up-list)
+                        (ignore-errors
+                          (dotimes (_ (1- auto-indent-block-level))
+                            (backward-up-list)))
+                        (point))
+                    (error nil))))
+               (end
+                (progn
+                  (condition-case nil
+                      (progn
+                        (forward-list)
+                        (point))
+                    (error nil)))))
+           (when (and start end)
+             (indent-region start end)))))))
   (setq-local auto-indent-skip-when-open-file nil))
 
 (defun set-window-buffer+ (set-win-buf wind buf &optional opt)
