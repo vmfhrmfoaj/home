@@ -39,8 +39,9 @@
     ;; for Linux
     (font-lock-add-keywords
      'c-mode
-     '(("[_0-9a-zA-Z]+\\s-+__[_0-9a-zA-Z]+\\s-+\\([_0-9a-zA-Z]+\\)("
-        (1 '(:inherit font-lock-function-name-face)))))
+     '(("[_0-9a-zA-Z]+\\s-+\\(__[_0-9a-zA-Z]+\\)\\s-+\\([_0-9a-zA-Z]+\\)\\s-*("
+        (1 font-lock-keyword-face)
+        (2 font-lock-function-name-face))))
     ;; for objc
     (font-lock-add-keywords
      'objc-mode
