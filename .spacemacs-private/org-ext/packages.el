@@ -43,7 +43,8 @@
           org-todo-keyword-faces '(("TODO" . org-todo)
                                    ("NEXT" . org-next)
                                    ("DONE" . org-done)
-                                   ("CANCELLED" . org-cancelled)))
+                                   ("CANCELLED" . org-cancelled))
+          org-use-sub-superscripts nil)
     (spacemacs/declare-prefix-for-mode 'org-mode "mu" "update")
     (spacemacs/set-leader-keys-for-major-mode 'org-mode
       ":" #'org-set-tags
