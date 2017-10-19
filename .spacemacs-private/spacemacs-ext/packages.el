@@ -100,27 +100,7 @@
                 (setq-local font-lock-multiline nil)))
     (add-hook 'evil-insert-state-exit-hook
               (lambda ()
-                (setq-local font-lock-multiline _font-lock-multiline_)
-                (save-excursion
-                  (let ((start
-                         (progn
-                           (condition-case nil
-                               (progn
-                                 (backward-up-list)
-                                 (ignore-errors
-                                   (dotimes (_ (1- _font-lock-multiline-block-level_))
-                                     (backward-up-list)))
-                                 (point))
-                             (error nil))))
-                        (end
-                         (progn
-                           (condition-case nil
-                               (progn
-                                 (forward-list)
-                                 (point))
-                             (error nil)))))
-                    (when (and start end)
-                      (font-lock-fontify-region start end))))))))
+                (setq-local font-lock-multiline _font-lock-multiline_)))))
 
 (defun spacemacs-ext/post-init-hl-todo ()
   (use-package hl-todo
