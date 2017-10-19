@@ -31,6 +31,9 @@
      ("(defun[ \r\t\n]+\\([-+/=>&?0-9a-zA-Z]+\\)"
       1 'font-lock-function-name-face t)))
   (add-hook 'lisp-interaction-mode-hook #'smartparens-mode)
+  (add-hook 'emacs-lisp-mode-hook
+            (lambda ()
+              (setq-local auto-indent-block-level 3)))
   (with-eval-after-load 'evil
     (let ((f (byte-compile
               (lambda ()

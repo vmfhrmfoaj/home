@@ -79,7 +79,7 @@
                     (apply f args))))))
 
 (setq-default auto-indent-skip-when-open-file t)
-(setq-default auto-indent-block-level 3)
+(setq-default auto-indent-block-level 1)
 (defun auto-indent (&rest _)
   "auto-indent-for-evil-mode"
   (unless auto-indent-skip-when-open-file
