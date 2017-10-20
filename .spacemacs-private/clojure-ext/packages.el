@@ -595,8 +595,8 @@
     (add-hook
      'clojure-mode-hook
      (lambda ()
-       (setq-local auto-indent-block-level 3
-                   custom-forward-symbol
+       (setq-local auto-indent-block-level 3)
+       (setq-local custom-forward-symbol
                    (byte-compile
                     (lambda (n)
                       (let ((sym     (concat "^/" clojure--sym-forbidden-rest-chars))
