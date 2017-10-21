@@ -19,7 +19,7 @@ export PATH=/usr/local/opt/texinfo/bin:$PATH
 
 # perlbrew
 export PERLBREW_ROOT=$HOME/.perlbrew
-source $PERLBREW_ROOT/etc/bashrc
+[ -e $PERLBREW_ROOT/etc/bashrc ] && source $PERLBREW_ROOT/etc/bashrc
 
 # react
 export REACT_EDITOR=emacsclient
