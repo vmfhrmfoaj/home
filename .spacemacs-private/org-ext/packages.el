@@ -243,6 +243,7 @@
           org-agenda-clockreport-parameter-plist '(:link t :fileskip0 t :stepskip0 t :maxlevel 5 :tcolumns 1 :narrow 70!)
           org-agenda-files (org-agenda-find-files)
           org-agenda-skip-deadline-if-done t
+          org-agenda-skip-scheduled-if-deadline-is-shown t
           org-agenda-sorting-strategy '((agenda habit-down time-up priority-down category-keep)
                                         (todo   todo-state-down priority-down category-keep)
                                         (tags   priority-down category-keep)
