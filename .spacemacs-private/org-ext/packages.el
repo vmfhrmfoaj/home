@@ -80,19 +80,6 @@
         1 (progn
             (compose-region (match-beginning 1) (match-end 1) ?╺)
             'default))
-       ("^\\s-*\\(\\([0-9]\\)\\.\\) "
-        1 (progn
-            (let ((x (match-string 2))
-                  (s (match-beginning 1))
-                  (e (match-end 1)))
-              (compose-region
-               s e
-               (->> (all-the-icons-material-data)
-                    (assoc (concat "filter_" x))
-                    (cdr)
-                    (string-to-char)))
-              (put-text-property s e 'display '(raise -0.2))
-              '((:family "Material Icons")))))
        ("^\\s-*\\(?:-\\|[0-9]+\\.\\) \\(\\[\\( \\|-\\|X\\)\\]\\) "
         1 (progn
             (let ((x (match-string 2))
