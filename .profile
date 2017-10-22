@@ -39,3 +39,15 @@ alias mplay="mpv --sub-codepage=utf8:cp949 --cache=8192 --hwdec=videotoolbox --v
 alias aplay="mplay --no-video"
 alias vplay="mplay --no-audio"
 alias ylplay="aplay --ytdl-format 95"
+
+# emacs tramp
+# - https://wxchen.wordpress.com/2012/05/20/getting-tramp-in-emacs-to-work-with-zsh-as-default-shell/
+if [[ "$SHELL" == "/bin/zsh" && "$TERM" == "dumb" ]]
+then
+    unsetopt zle
+    unsetopt prompt_cr
+    unsetopt prompt_subst
+    unfunction precmd
+    unfunction preexec
+    PS1='$ '
+fi
