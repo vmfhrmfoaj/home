@@ -41,7 +41,7 @@ This function should only modify configuration layer settings."
      clojure
      csv
      emacs-lisp
-     git
+     (git :variables git-enable-magit-svn-plugin t)
      (gtags :variables gtags-enable-by-default nil)
      helm
      html
