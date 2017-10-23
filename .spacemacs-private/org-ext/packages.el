@@ -80,6 +80,8 @@
         1 (progn
             (compose-region (match-beginning 1) (match-end 1) ?╺)
             'default))
+       ("^\\s-*\\(\\([0-9]\\.\\)\\) "
+        1 'bold)
        ("^\\s-*\\(?:-\\|[0-9]+\\.\\) \\(\\[\\( \\|-\\|X\\)\\]\\) "
         1 (progn
             (let ((x (match-string 2))
