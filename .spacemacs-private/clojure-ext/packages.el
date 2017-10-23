@@ -596,6 +596,7 @@
      'clojure-mode-hook
      (lambda ()
        (setq-local auto-indent-block-level 3)
+       (setq-local font-lock-multiline--re-fontify-level 3)
        (setq-local custom-forward-symbol
                    (byte-compile
                     (lambda (n)

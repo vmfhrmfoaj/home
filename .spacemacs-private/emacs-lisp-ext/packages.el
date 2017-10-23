@@ -59,6 +59,7 @@
   (add-hook 'emacs-lisp-mode-hook
             (lambda ()
               (setq-local auto-indent-block-level 3)
+              (setq-local font-lock-multiline--re-fontify-level 3)
               (setq-local font-lock-multiline t)))
   (with-eval-after-load 'evil
     (let ((f (byte-compile
