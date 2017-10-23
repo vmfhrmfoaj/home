@@ -78,8 +78,10 @@
      'org-mode
      '(("^\\s-*\\(-\\) "
         1 (progn
-            (compose-region (match-beginning 1) (match-end 1) ?╺)
-            'default))
+            (let ((s (match-beginning 1))
+                  (e (match-end 1)))
+              (compose-region s e ?·))
+            'bold))
        ("^\\s-*\\(\\([0-9]\\.\\)\\) "
         1 'bold)
        ("^\\s-*\\(?:-\\|[0-9]+\\.\\) \\(\\[\\( \\|-\\|X\\)\\]\\) "
@@ -89,15 +91,15 @@
                   (e (match-end 1)))
               (compose-region
                s e
-               (->> (all-the-icons-material-data)
+               (->> (all-the-icons-faicon-data)
                     (assoc (cond
-                            ((string-equal x " ") "check_box_outline_blank")
-                            ((string-equal x "-") "indeterminate_check_box")
-                            ((string-equal x "X") "check_box")))
+                            ((string-equal x " ") "square")
+                            ((string-equal x "-") "minus-square")
+                            ((string-equal x "X") "check-square")))
                     (cdr)
                     (string-to-char)))
               (put-text-property s e 'display '(raise -0.2))
-              (list (list :family "Material Icons"
+              (list (list :family "FontAwesome"
                           :foreground (face-attribute (if (string-equal x "X")
                                                           'org-done 'org-todo)
                                                       :foreground))))))
