@@ -176,13 +176,13 @@ It should only modify the values of Spacemacs settings."
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 0~16
    dotspacemacs-default-font (let ((linux? (eq system-type 'gnu/linux)))
-                               `("Fira Code"
+                               `("MonacoB2"
                                  :size ,(cond
                                          (linux? 13)
                                          (t 14))
                                  :weight medium
                                  :width normal
-                                 :powerline-scale 1.2))
+                                 :powerline-scale 1.15))
    ;; The leader key (default "SPC")
    dotspacemacs-leader-key "SPC"
    ;; The key used for Emacs commands `M-x' (after pressing on the leader key).
