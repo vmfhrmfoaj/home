@@ -78,8 +78,11 @@
                   (with-disable-modes modes
                     (apply f args))))))
 
+
 (setq-default auto-indent-skip-when-open-file t)
+
 (setq-default auto-indent-block-level 1)
+
 (defun auto-indent (&rest _)
   "auto-indent-for-evil-mode"
   (unless auto-indent-skip-when-open-file
@@ -109,6 +112,7 @@
              (indent-region start end)))))))
   (setq-local auto-indent-skip-when-open-file nil))
 
+
 (defun set-window-buffer+ (set-win-buf wind buf &optional opt)
   (when (and (->> (window-list)
                   (-remove (-partial #'eq (selected-window)))
@@ -125,6 +129,7 @@
                   (-first-item))
              (window-buffer wind) opt))
   (funcall set-win-buf wind buf opt))
+
 
 (defun dim-color (color p)
   (->> color
@@ -150,6 +155,7 @@
        (apply #'color-hsl-to-rgb)
        (apply #'color-rgb-to-hex)))
 
+
 (defun in-comment? ()
   (comment-only-p (save-excursion
                     (goto-char (match-beginning 0))
@@ -165,3 +171,18 @@
   (condition-case nil
       (down-list)
     (setq-local font-lock--skip t)))
+
+
+(setq tramp-sync-dir nil)
+
+(defun tramp-sync ()
+  (when (and tramp-sync-dir buffer-file-name)
+    (-when-let (root (car (dir-locals-find-file buffer-file-name)))
+      (let ((path (->> root
+                       (file-relative-name buffer-file-name)
+                       (concat tramp-sync-dir "/"))))
+        (if (fboundp 'async-start)
+            (async-start
+             `(lambda ()
+                (copy-file ,buffer-file-name ,path)))
+          (copy-file buffer-file-name path))))))
