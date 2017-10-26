@@ -17,6 +17,8 @@
 (defun gtags-ext/post-init-ggtags ()
   (use-package ggtags
     :no-require t
-    :diminish ggtags-mode))
+    :diminish ggtags-mode
+    :config
+    (setq ggtags-highlight-tag nil)))
 
 ;;; packages.el ends here
