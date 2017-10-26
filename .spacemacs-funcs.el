@@ -184,5 +184,8 @@
         (if (fboundp 'async-start)
             (async-start
              `(lambda ()
-                (copy-file ,buffer-file-name ,path)))
+                (condition-case e
+                    (copy-file ,buffer-file-name ,path t)
+                  (error (message "Error ouccurred while syncing: %s"
+                                  (error-message-string e))))))
           (copy-file buffer-file-name path))))))
