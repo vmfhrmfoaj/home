@@ -610,6 +610,9 @@ before packages are loaded."
    `(linum-relative-current-face ((t (:inherit linum))))
    `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
    `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground))))))
+  (with-eval-after-load "magit"
+    (dolist (face '(magit-branch-current magit-branch-local magit-branch-remote magit-head magit-tag))
+      (set-face-attribute face nil :weight 'bold)))
   (with-eval-after-load "goto-addr"
     (setq goto-address-mail-face "link"))
   (with-eval-after-load "highlight-parentheses"

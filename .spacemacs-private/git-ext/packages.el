@@ -25,7 +25,22 @@
                                 'magit-insert-unpushed-to-upstream))
     (if dotspacemacs-fullscreen-at-startup
         (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
-    (add-hook 'magit-revision-mode-hook (lambda () (setq-local line-spacing 0))))
+    (add-hook 'magit-revision-mode-hook (lambda () (setq-local line-spacing 0)))
+    (advice-add #'magit-log-propertize-keywords :after
+                (byte-compile
+                 (lambda (msg)
+                   (when (and magit-log-highlight-keywords
+                              (string-match "^\\([-_/A-Za-z]+\\)\\(?:(\\([-_/A-Za-z]+\\))\\)?:" msg))
+                     (put-text-property (match-beginning 1)
+                                        (match-end 1)
+                                        'face 'magit-commit-log-type-face
+                                        msg)
+                     (when (match-beginning 2)
+                       (put-text-property (match-beginning 2)
+                                          (match-end 2)
+                                          'face 'magit-commit-log-scope-face
+                                          msg)))
+                   msg))))
 
   (use-package magit-blame
     :defer
