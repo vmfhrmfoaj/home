@@ -84,7 +84,7 @@
           1 (progn
               (let ((s (match-beginning 1))
                     (e (match-end 1)))
-                (compose-region s e ?·))
+                (compose-region s e ?╺))
               'bold))
          ("^\\s-*\\(\\([0-9]\\.\\)\\) "
           1 'bold)
