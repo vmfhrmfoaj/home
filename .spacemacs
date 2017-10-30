@@ -383,6 +383,12 @@ configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
 
+  ;; See, https://github.com/syl20bnr/spacemacs/commit/65d5e42b8ea603abe25cbf3a832a204c15aeedd8
+  (setq configuration-layer--elpa-archives
+        '(("melpa"    . "melpa.org/packages/")
+          ("org"      . "orgmode.org/elpa/")
+          ("gnu"      . "elpa.gnu.org/packages/")))
+
   ;; compile settings
   (setq-default byte-compile-dynamic t
                 byte-compile-warnings nil)
