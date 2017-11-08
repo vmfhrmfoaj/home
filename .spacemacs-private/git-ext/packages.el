@@ -51,6 +51,7 @@
 (defun git-ext/init-magit-svn ()
   (use-package magit-svn
     :if git-enable-magit-svn-plugin
+    :diminish magit-svn-mode
     :config
     (add-hook 'magit-mode-hook 'magit-svn-mode)
     (when (featurep 'evil-magit)
