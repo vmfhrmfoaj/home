@@ -46,11 +46,11 @@
                         ((eq 'emacs-lisp-mode major-mode) 0.95)
                         (t 1.0)))
                (offset (cond
-                        ((string-match-p "\\<test\\>" (or buffer-file-name "")) 0.1)
+                        ((string-match-p "\\<test\\>" (or buffer-file-name "")) 0.15)
                         ((eq 'clojurescript-mode major-mode) 0.1)
                         ((derived-mode-p 'clojure-mode) -0.1)
                         ((eq 'emacs-lisp-mode major-mode) -0.1)
-                        ((eq 'lisp-interaction-mode major-mode) 0.0)
+                        ((eq 'lisp-interaction-mode major-mode) 0.05)
                         ((eq 'magit-status-mode major-mode) -0.1)
                         ((eq 'makefile-bsdmake-mode major-mode) 0.1)
                         ((eq 'org-mode major-mode) 0.1)
