@@ -171,21 +171,3 @@
   (condition-case nil
       (down-list)
     (setq-local font-lock--skip t)))
-
-
-(setq tramp-sync-dir nil)
-
-(defun tramp-sync ()
-  (when (and tramp-sync-dir buffer-file-name)
-    (-when-let (root (car (dir-locals-find-file buffer-file-name)))
-      (let ((path (->> root
-                       (file-relative-name buffer-file-name)
-                       (concat tramp-sync-dir "/"))))
-        (if (fboundp 'async-start)
-            (async-start
-             `(lambda ()
-                (condition-case e
-                    (copy-file ,buffer-file-name ,path t)
-                  (error (message "Error ouccurred while syncing: %s"
-                                  (error-message-string e))))))
-          (copy-file buffer-file-name path))))))
