@@ -13,7 +13,11 @@
 
 (defconst git-ext-packages
   '(magit
-    magit-svn))
+    magit-svn
+    smartparens))
+
+(defun git-ext/post-init-smartparens ()
+  (add-hook 'git-commit-mode-hook #'smartparens-mode))
 
 (defun git-ext/post-init-magit ()
   (use-package magit
