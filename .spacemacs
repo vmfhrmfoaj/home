@@ -45,7 +45,7 @@ This function should only modify configuration layer settings."
      (gtags :variables gtags-enable-by-default nil)
      helm
      html
-     java
+     (java :variables java-backend 'eclim)
      javascript
      (latex :variables
             latex-build-command "LaTeX"
