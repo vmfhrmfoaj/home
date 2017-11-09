@@ -19,15 +19,8 @@
     :defer t
     :config
     (setq eclim-eclipse-dirs '("/Applications/Eclipse.app/Contents/Eclipse")
-          eclim-executable "/Applications/Eclipse.app/Contents/Eclipse/eclim"))
-
-  (use-package eclim-problems
-    :defer t
-    :config
-    (ad-remove-advice #'switch-to-buffer 'after 'eclim-problems-highlight-switch-to-buffer)
-    (ad-remove-advice #'other-window     'after 'eclim-problems-highlight-on-other-window)
-    ;; for compiled advice
-    (ad-update 'switch-to-buffer)
-    (ad-update 'other-window)))
+          eclim-executable "/Applications/Eclipse.app/Contents/Eclipse/eclim")
+    (advice-add #'eclim-problems-advice-other-window     :override (byte-compile (lambda (&rest _))))
+    (advice-add #'eclim-problems-advice-switch-to-buffer :override (byte-compile (lambda (&rest _))))))
 
 ;;; packages.el ends here
