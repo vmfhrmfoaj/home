@@ -36,6 +36,9 @@
   (use-package cc-mode
     :defer t
     :config
+    (spacemacs/declare-prefix-for-mode 'c-mode "mh" "help")
+    (spacemacs/set-leader-keys-for-major-mode 'c-mode
+      "hh" #'helm-man-woman)
     ;; for Linux
     (font-lock-add-keywords
      'c-mode
