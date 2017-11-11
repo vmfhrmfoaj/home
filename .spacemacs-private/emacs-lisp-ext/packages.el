@@ -28,7 +28,7 @@
      (" \\(\\?.\\)"
       1 'font-lock-string-face)
      ;; spacemacs style function
-     ("(defun[ \r\t\n]+\\([-+/=>&?0-9a-zA-Z]+\\)"
+     ("(defun\\*?[ \r\t\n]+\\([-+/=>&?0-9a-zA-Z]+\\)"
       1 'font-lock-function-name-face t)
      ;; local variables
      ("(\\(?:lexical\\)?let\\*? ("
