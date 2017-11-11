@@ -47,13 +47,19 @@
 
 (defun cider-switch-to-releated-repl-buffer (&optional set-namespace)
   (interactive "P")
-  (let* ((connections (cider-connections))
-         (repl-bufs (--filter (member it connections) (buffer-list)))
-         (repl-type (cider-connection-type-for-buffer))
+  (let* ((repl-type (cider-connection-type-for-buffer))
+         (root (clojure-project-root-path))
+         (all-repl-bufs (cider-connections))
+         (prj-repl-bufs (--filter (with-current-buffer it
+                                    (string-equal root (clojure-project-root-path)))
+                                  all-repl-bufs))
          (buffer (--first (with-current-buffer it
                             (string-equal repl-type cider-repl-type))
-                          repl-bufs)))
-    (cider--switch-to-repl-buffer (or buffer (-first-item repl-bufs)) set-namespace)))
+                          (or prj-repl-bufs all-repl-bufs))))
+    (cider--switch-to-repl-buffer (or buffer
+                                      (-first-item prj-repl-bufs)
+                                      (-first-item all-repl-bufs))
+                                  set-namespace)))
 
 
 (defun clojure--binding-regexp ()
