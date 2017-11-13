@@ -126,6 +126,10 @@ It should only modify the values of Spacemacs settings."
    ;; Maximum allowed time in seconds to contact an ELPA repository.
    ;; (default 5)
    dotspacemacs-elpa-timeout 5
+   ;; If non-nil then Spacelpa repository is the primary source to install
+   ;; a locked version of packages. If nil then Spacemacs will install the lastest
+   ;; version of packages from MELPA. (default nil)
+   dotspacemacs-use-spacelpa nil
    ;; If non-nil then spacemacs will check for updates at startup
    ;; when the current branch is not `develop'. Note that checking for
    ;; new versions works via git commands, thus it calls GitHub services
@@ -382,13 +386,6 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
-
-  ;; See, https://github.com/syl20bnr/spacemacs/commit/65d5e42b8ea603abe25cbf3a832a204c15aeedd8
-  ;;      https://github.com/syl20bnr/spacemacs/commit/8a5771559ec77f3de645ab0bb704f0765a6c020c
-  (setq configuration-layer-elpa-archives
-        '(("melpa" . "melpa.org/packages/")
-          ("org" . "orgmode.org/elpa/")
-          ("gnu" . "elpa.gnu.org/packages/")))
 
   ;; compile settings
   (setq-default byte-compile-dynamic t
