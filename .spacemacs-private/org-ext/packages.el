@@ -146,7 +146,8 @@
                (lambda ()
                  (unless (org-at-heading-or-item-p)
                    (call-interactively #'evil-shift-right)
-                   t)))))
+                   t))))
+    (add-hook 'org-mode-hook #'smartparens-mode))
 
   (use-package org-capture
     :config
