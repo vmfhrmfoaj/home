@@ -70,7 +70,6 @@
     (add-hook 'minibuffer-setup-hook
               (lambda ()
                 (local-set-key (kbd "C-h")   #'backward-delete-char)
-                (local-set-key (kbd "S-SPC") #'toggle-input-method)
-                (smartparens-mode 1)))))
+                (local-set-key (kbd "S-SPC") #'toggle-input-method)))))
 
 ;;; packages.el ends here
