@@ -236,6 +236,13 @@
           org-agenda-files (org-agenda-find-files)
           org-agenda-skip-deadline-if-done t
           org-agenda-skip-scheduled-if-deadline-is-shown t
+          org-agenda-skip-function-global
+          (byte-compile
+           (lambda ()
+             (and (eq (car org-agenda-redo-command) 'org-agenda-list)
+                  (org-agenda-skip-subtree-if 'todo '("HOLD" "WAITING"))
+                  (org-agenda-skip-subtree-if 'scheduled)
+                  (org-agenda-skip-subtree-if 'notdeadline))))
           org-agenda-sorting-strategy '((agenda habit-down time-up priority-down category-keep)
                                         (todo   todo-state-down priority-down category-keep)
                                         (tags   priority-down category-keep)
