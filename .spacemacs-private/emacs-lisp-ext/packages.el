@@ -28,7 +28,7 @@
      (" \\(\\?.\\)"
       1 'font-lock-string-face)
      ;; spacemacs style function
-     ("(defun\\*?[ \r\t\n]+\\([-+/=>&?0-9a-zA-Z]+\\)"
+     ("(defun\\*?[ \r\t\n]+\\([-+*/=>&?0-9a-zA-Z]+\\)"
       1 'font-lock-function-name-face t)
      ;; local variables
      ("(\\(?:lexical\\)?let\\*? ("
@@ -39,7 +39,7 @@
                (error ""))
              (comment-forward (point-max))
              (let ((local-limit (save-excursion (forward-sexp) (point))))
-               (unless (and (re-search-forward "(\\([-+/=>&?0-9a-zA-Z]+\\)[ \r\t\n]+"
+               (unless (and (re-search-forward "(\\([-+*/=>&?0-9a-zA-Z]+\\)[ \r\t\n]+"
                                                (min local-limit limit) t))
                  (set-match-data (-repeat 4 (point-min-marker))))
                (goto-char local-limit))
