@@ -54,6 +54,7 @@ This function should only modify configuration layer settings."
      nlinum
      org
      osx
+     perl5
      python
      (shell :variables
             shell-default-height 30
