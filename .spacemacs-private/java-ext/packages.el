@@ -18,8 +18,6 @@
   (use-package eclim
     :defer t
     :config
-    (setq eclim-eclipse-dirs '("/Applications/Eclipse.app/Contents/Eclipse")
-          eclim-executable "/Applications/Eclipse.app/Contents/Eclipse/eclim")
     (advice-add #'eclim-problems-advice-other-window     :override (byte-compile (lambda (&rest _))))
     (advice-add #'eclim-problems-advice-switch-to-buffer :override (byte-compile (lambda (&rest _))))))
 
