@@ -51,6 +51,7 @@ This function should only modify configuration layer settings."
             latex-build-command "LaTeX"
             latex-enable-auto-fill nil)
      (markdown :variables markdown-live-preview-engine 'vmd)
+     nlinum
      org
      osx
      python
@@ -584,6 +585,7 @@ before packages are loaded."
    `(magit-diff-context-highlight ((t (:background "#f2f9fd"))))
    `(magit-diff-hunk-heading-highlight ((t (:background "#c8e9ff"))))
    `(magit-section-highlight ((t (:background "#eef7fd"))))
+   `(nlinum-relative-current-face ((t (:inherit linum :foreground ,(face-attribute 'default :foreground)))))
    `(org-cancelled ((t (:foreground nil :inherit org-done))))
    `(org-column ((t (:weight bold))))
    `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
@@ -613,7 +615,9 @@ before packages are loaded."
    `(linum ((t (:inherit default :underline nil :height 1.0))))
    `(linum-relative-current-face ((t (:inherit linum))))
    `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
-   `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground))))))
+   `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground)))))
+   `(nlinum-current-line ((t (:inherit linum))))
+   `(nlinum-relative-current-face ((t (:inherit linum)))))
   (with-eval-after-load "magit"
     (dolist (face '(magit-branch-current magit-branch-local magit-branch-remote magit-head magit-tag))
       (set-face-attribute face nil :weight 'bold)))
