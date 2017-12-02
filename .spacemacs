@@ -533,7 +533,7 @@ before packages are loaded."
                          2 1)
                      2))
                (l (/ (custom-display-pixel-width) 2.0))
-               (l (floor (- l (* (frame-unit->pixel w) 0.5))))
+               (l (floor (- l (* (frame-unit->pixel w) 0.45))))
                (l (if (< 0 (- (custom-display-pixel-width)
                               (+ l (frame-unit->pixel w))))
                       l
