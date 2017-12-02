@@ -14,31 +14,14 @@
        (nth 2)))
 
 
-(defun resolve-sh-var (str)
-  (while (string-match (concat "\\$\\([_a-zA-Z0-9]+\\|[({].+[})]\\)") str)
-    (let* ((var (match-string 1 str))
-           (res (save-match-data
-                  (->> var
-                       (concat "echo $")
-                       (shell-command-to-string)
-                       (s-trim)))))
-      (setq str (replace-match res t nil str))))
-  str)
-
 (defun include-shell-var-in (file)
-  (when (file-exists-p file)
-    (let* ((regx "export\\s-+\\([^=]+\\)=\"?\\(.+?\\)\"?$")
-           (exports (->> (with-temp-buffer
-                           (insert-file-contents file)
-                           (split-string (buffer-string) "\n" t))
-                         (--filter (not (string-match-p "^#" it)))
-                         (--filter (string-match-p regx it))
-                         (--map (replace-regexp-in-string "\\\\" "" it)))))
-      (dolist (it exports)
-        (string-match regx it)
-        (let ((key   (match-string-no-properties 1 it))
-              (value (match-string-no-properties 2 it)))
-          (setenv key (resolve-sh-var value)))))))
+  (dolist (it (->> (concat "source " file "; env")
+                   (shell-command-to-string)
+                   (s-lines)
+                   (--map (s-split "=" it))))
+    (let ((key (car it))
+          (val (cadr it)))
+      (setenv key val))))
 
 
 (defmacro -update->> (&rest thread)
