@@ -1,7 +1,10 @@
 ;; TODO
 ;; Create custom `c-style'.
 (defvar c-indent-config--default
-  '(offset
+  '(var
+    ((indent-tabs-mode nil))
+
+    offset
     ((access-label          -1)
      (brace-list-intro      2)
      (case-label            1)
