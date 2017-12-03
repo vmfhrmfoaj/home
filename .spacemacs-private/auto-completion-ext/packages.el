@@ -22,7 +22,7 @@
     (byte-compile #'helm-company-action-insert-plus)
     (byte-compile #'helm-company-plus)
     (define-key company-active-map (kbd "C-h") nil)
-    (define-key company-active-map (kbd "C-s")  #'helm-company-plus)
+    (define-key company-active-map (kbd "C-s")  #'helm-company)
     (setq company-idle-delay 0.2)))
 
 (defun auto-completion-ext/post-init-helm-company ()
