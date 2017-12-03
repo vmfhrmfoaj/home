@@ -80,6 +80,7 @@ This function should only modify configuration layer settings."
      javascript-ext
      latex-ext
      org-ext
+     perl5-ext
      spacemacs-ext
      version-control-ext
      ;; ---------------------------------------------------------------
