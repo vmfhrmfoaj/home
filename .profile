@@ -18,10 +18,6 @@ export GS_FONTPATH=/System/Library/Fonts/:/Library/Fonts/:$HOME/Library/Fonts/
 # texinfo
 export PATH=/usr/local/opt/texinfo/bin:$PATH
 
-# perlbrew
-export PERLBREW_ROOT=$HOME/.perlbrew
-[ -e $PERLBREW_ROOT/etc/bashrc ] && source $PERLBREW_ROOT/etc/bashrc
-
 # react
 export REACT_EDITOR=emacsclient
 
@@ -32,8 +28,10 @@ export JVM_OPTS="$(if [ `uname -a | grep -o iMac` ]; then echo '-Xms2g -Xmx4g'; 
 export NODE_PATH=/usr/local/lib/node_modules
 
 # perl
-export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export PERLBREW_ROOT=$HOME/.perlbrew
+[ -e $PERLBREW_ROOT/etc/bashrc ] && source $PERLBREW_ROOT/etc/bashrc
 
 # mpv
 alias mplay="mpv --sub-codepage=utf8:cp949 --cache=8192 --hwdec=videotoolbox --vo=opengl --volume=70"
