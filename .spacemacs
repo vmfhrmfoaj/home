@@ -58,6 +58,7 @@ This function should only modify configuration layer settings."
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
+     shell-scripts
      (spell-checking :variables
                      spell-checking-enable-by-default nil
                      spell-checking-enable-auto-dictionary t
@@ -81,6 +82,7 @@ This function should only modify configuration layer settings."
      latex-ext
      org-ext
      perl5-ext
+     shell-scripts-ext
      spacemacs-ext
      version-control-ext
      ;; ---------------------------------------------------------------
