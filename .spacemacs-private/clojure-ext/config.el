@@ -71,6 +71,23 @@
   :type 'boolean
   :safe 'booleanp)
 
+(defcustom clojure-lein-profile-kw ":dev"
+  "TODO"
+  :type 'stringp
+  :safe (lambda (kw)
+          (and (stringp kw)
+               (string-match-p "^:" kw))))
+
+(defcustom clojure-clj-test-declaration "[clojure.test :refer :all]"
+  "TODO"
+  :type 'stringp
+  :safe 'stringp)
+
+(defcustom clojure-cljs-test-declaration "[cljs.test :refer-macros [async deftest is testing]]"
+  "TODO"
+  :type 'stringp
+  :safe 'stringp)
+
 
 (defconst clojure-core-regex
   (regexp-opt '("accessor"

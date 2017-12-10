@@ -603,27 +603,55 @@
                                           (replace-regexp-in-string "_" "-"))))
                              (with-current-buffer cur-buf
                                (goto-char (point-min))
-                               (insert "(ns " ns ")\n\n")))))))))
+                               (insert "(ns " ns)
+                               (when (string-match-p "-test$" ns)
+                                 (insert "\n")
+                                 (insert "(:require [" (s-left -5 ns) " :as target]")
+                                 (let* ((ext (file-name-extension file-rel-path))
+                                        (clj? (string-match-p "^cljc?$" ext))
+                                        (cljs? (string-match-p "^clj[cs]$" ext))
+                                        (both? (string-equal "cljc" ext)))
+                                   (insert "\n")
+                                   (when both?
+                                     (insert "#?@("))
+                                   (when clj?
+                                     (when both?
+                                       (insert ":clj  ["))
+                                     (insert clojure-clj-test-declaration)
+                                     (when both?
+                                       (insert "]")))
+                                   (when cljs?
+                                     (when both?
+                                       (insert "\n")
+                                       (insert ":cljs ["))
+                                     (insert clojure-cljs-test-declaration)
+                                     (when both?
+                                       (insert "]")))
+                                   (when both?
+                                     (insert ")")))
+                                 (insert ")"))
+                               (insert ")\n\n")
+                               (indent-region (point-min) (point-max))))))))))
            (if (string-equal "cljs" (cider-connection-type-for-buffer))
                (cider-tooling-eval
-                "(let [builds (->> \"project.clj\"
-                              (slurp)
-                              (clojure.edn/read-string)
-                              (drop 3)
-                              (apply hash-map)
-                              :cljsbuild :builds)]
-              (:source-paths (cond
-                               (map? builds) (:dev builds)
-                               (sequential? builds) (first (filter #(= \"dev\" (:id %)) builds))
-                               :else nil)))" cb)
+                (concat "(let [builds (->> \"project.clj\"
+                                           (slurp)
+                                           (clojure.edn/read-string)
+                                           (drop 3)
+                                           (apply hash-map)
+                                           :cljsbuild :builds)]
+                           (:source-paths (cond
+                                            (map? builds) (get builds " clojure-lein-profile-kw ")
+                                            (sequential? builds) (first (filter #(= (name " clojure-lein-profile-kw ") (:id %)) builds))
+                                            :else nil)))") cb)
              (cider-tooling-eval
-              "(let [proj (->> \"project.clj\"
-                           (slurp)
-                           (clojure.edn/read-string)
-                           (drop 3)
-                           (apply hash-map))]
-          (concat (get-in proj [:source-paths])
-                  (get-in proj [:profiles :dev :source-paths])))" cb))))))
+              (concat "(let [proj (->> \"project.clj\"
+                                       (slurp)
+                                       (clojure.edn/read-string)
+                                       (drop 3)
+                                       (apply hash-map))]
+                         (concat (get-in proj [:source-paths])
+                                 (get-in proj [:profiles " clojure-lein-profile-kw " :source-paths])))") cb))))))
 
     ;; fix the docstring face
     (advice-add #'clojure-font-lock-syntactic-face-function :around
