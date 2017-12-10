@@ -405,6 +405,12 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   ;; enable the `dir-local-variable' on remote
   (setq enable-remote-dir-locals t)
 
+  ;; auto indent
+  (setq-default auto-indent-block-level 1)
+
+  ;; ...
+  (setq-default font-lock-multiline--re-fontify-level 1)
+
   ;; clean up list of recently visited file and project
   (add-hook 'emacs-startup-hook
             (lambda ()
