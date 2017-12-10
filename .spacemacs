@@ -565,6 +565,11 @@ before packages are loaded."
                  (turn-off-smartparens-mode))))
             'append)
 
+  ;; for improving the performance
+  (setq garbage-collection-messages nil
+        gc-cons-threshold (* 1024 1024 1024))
+  (run-with-idle-timer 5 t #'garbage-collect)
+
   ;; customize the theme.
   (custom-theme-set-faces
    'twilight-bright
