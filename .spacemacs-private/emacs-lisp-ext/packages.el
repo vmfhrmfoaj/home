@@ -28,10 +28,10 @@
      (" \\(\\?.\\)"
       1 'font-lock-string-face)
      ;; spacemacs style function
-     ("(defun\\*?[ \r\t\n]+\\([-+*/=>&?0-9a-zA-Z]+\\)"
+     ("(defun\\*?[ \r\t\n]+\\([-+*/=>&?:_0-9a-zA-Z]+\\)"
       1 'font-lock-function-name-face t)
      ;; local variables
-     ("(\\(?:lexical\\)?let\\*? ("
+     ("(\\(?:lexical-\\)?let\\*? ("
       (,(byte-compile
          (lambda (limit)
            (ignore-errors
@@ -39,7 +39,7 @@
                (error ""))
              (comment-forward (point-max))
              (let ((local-limit (save-excursion (forward-sexp) (point))))
-               (unless (and (re-search-forward "(\\([-+*/=>&?0-9a-zA-Z]+\\)[ \r\t\n]+"
+               (unless (and (re-search-forward "(\\([-+*/=>&?:_0-9a-zA-Z]+\\)[ \r\t\n]+"
                                                (min local-limit limit) t))
                  (set-match-data (-repeat 4 (point-min-marker))))
                (goto-char local-limit))
@@ -55,7 +55,7 @@
            (end-of-line)
          (goto-char lisp--binding-form-point))
        (1 'lisp-local-binding-variable-name-face)))
-     ("(-\\(?:when\\|if\\)-let\\*?[ \r\n\t]+(\\([-+/=>&?0-9a-zA-Z]+\\)[ \r\t\n]"
+     ("(-\\(?:when\\|if\\)-let\\*?[ \r\n\t]+(\\([-+/=>&?:_0-9a-zA-Z]+\\)[ \r\t\n]"
       (1 'lisp-local-binding-variable-name-face))))
   (add-hook 'lisp-interaction-mode-hook #'smartparens-mode)
   (add-hook 'emacs-lisp-mode-hook
