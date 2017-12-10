@@ -13,8 +13,8 @@
 
 (defconst clojure-ext-packages
   '(cider
-    clj-refactor
-    clojure-mode))
+    clojure-mode
+    edn))
 
 (defun clojure-ext/post-init-cider ()
   (use-package cider
@@ -66,60 +66,6 @@
                                 (replace-regexp-in-string "_" "-"))))
                      (funcall of path)))))))
 
-(defun clojure-ext/post-init-clj-refactor ()
-  (use-package clj-refactor
-    :defer t
-    :config
-    (with-eval-after-load 'diminish
-      (diminish 'clj-refactor-mode))
-    (setq cljr-clojure-test-declaration "[clojure.test :refer :all]"
-          cljr-cljs-clojure-test-declaration "[cljs.test :refer-macros [async deftest is testing]]"
-          cljr-clojure-test-namespace-under-test-alias "target"
-          cljr-cljc-clojure-test-declaration
-          (concat "#?(:clj  [clojure.test :refer :all]" "\n"
-                  "   :cljs [cljs.test :refer [deftest is are] :include-macros true])")
-          cljr-expectations-test-declaration "[expectations :refer :all]"
-          cljr-favor-prefix-notation nil
-          cljr-favor-private-functions nil
-          cljr-inject-dependencies-at-jack-in nil ; for using custom version.
-          cljr-prune-ns-form t ; for using the file local variable.
-          cljr-suppress-middleware-warnings t
-          cljr-warn-on-eval nil)
-    (define-key clj-refactor-map (kbd "/") nil)
-    (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
-      (spacemacs/set-leader-keys-for-major-mode mode
-        "r/" (defalias 'cljr-magic-requires
-               (lambda ()
-                 (interactive)
-                 (forward-char)
-                 (cljr-slash)))))
-    (add-hook 'clojure-mode-hook (-partial #'clj-refactor-mode 1))
-    (add-hook 'cider-connected-hook
-              (lambda ()
-                (cider-nrepl-sync-request:eval
-                 (concat "(alter-var-root #'refactor-nrepl.ns.rebuild/dependency-comparator" "\n"
-                         "  (fn [f]"                                                         "\n"
-                         "    (fn [d1 d2]"                                                   "\n"
-                         "      (let [clj-regx #\"^(clojure|cljs)(\\.|\\s*\\[)\""            "\n"
-                         "            expect-regx #\"^expectations\""                        "\n"
-                         "            d1 (@#'refactor-nrepl.ns.rebuild/get-sort-name d1)"    "\n"
-                         "            d2 (@#'refactor-nrepl.ns.rebuild/get-sort-name d2)]"   "\n"
-                         "        (cond (and (re-find clj-regx d1)"                          "\n"
-                         "                   (re-find clj-regx d2)) (.compareTo d1 d2)"      "\n"
-                         "              (re-find clj-regx d1)    -1"                         "\n"
-                         "              (re-find clj-regx d2)     1"                         "\n"
-                         "              (re-find expect-regx d1) -1"                         "\n"
-                         "              (re-find expect-regx d2)  1"                         "\n"
-                         "              :else (.compareTo d1 d2))))))"))))
-    (advice-add #'cljr--create-msg :filter-return
-                (byte-compile
-                 (lambda (msg)
-                   "for missing a configuration."
-                   (append msg (when (->> msg
-                                          (-filter #'stringp)
-                                          (-filter (-partial #'string= "prune-ns-form")))
-                                 `("prune-ns-form" ,(if cljr-prune-ns-form "true" "false")))))))))
-
 (defun clojure-ext/post-init-clojure-mode ()
   (use-package clojure-mode
     :defer t
@@ -127,6 +73,7 @@
     (byte-compile #'clojure--binding-regexp)
     (byte-compile #'clojure-skip)
     (byte-compile #'clojure-forward-sexp)
+    (byte-compile #'clojure-forward-symbol)
 
     (advice-add #'clojure-font-lock-extend-region-def :override
                 (lambda (&rest _)
@@ -586,60 +533,35 @@
                      "\\(?:)\\|" whitespace "\\)")
             (1 'clojure-important-keywords-face))))))
 
+    (eval-after-load "page-break-lines"
+      '(add-to-list 'page-break-lines-modes 'clojure-mode))
+
+    ;; indent
     (setq clojure-indent-style :align-arguments)
     (put 'defstate 'clojure-doc-string-elt 2)
     (put-clojure-indent 'redef-state :defn) ; for expectations
     (put-clojure-indent 'fdef :defn) ; for spec
-    (eval-after-load "page-break-lines"
-      '(add-to-list 'page-break-lines-modes 'clojure-mode))
     (add-hook
      'clojure-mode-hook
      (lambda ()
-       (setq-local auto-indent-block-level 3)
-       (setq-local font-lock-multiline--re-fontify-level 3)
-       (setq-local custom-forward-symbol
-                   (byte-compile
-                    (lambda (n)
-                      (let ((sym     (concat "^/" clojure--sym-forbidden-rest-chars))
-                            (not-sym (concat "/"  clojure--sym-forbidden-rest-chars))
-                            (skip-chars (if (< 0 n)
-                                            (lambda (s)
-                                              (skip-chars-forward s)
-                                              (skip-chars-backward "."))
-                                          (lambda (s)
-                                            (skip-chars-backward s)
-                                            (if (looking-at-p "\\.-?")
-                                                (skip-chars-forward ".-")))))
-                            (n (abs n)))
-                        (while (<= 1 n)
-                          (setq n (1- n))
-                          (funcall skip-chars not-sym)
-                          (funcall skip-chars sym))))))
+       ;; for dynamic indent without CIDER
        (let ((file-name (or (buffer-file-name) ""))
-             (ns-form   (save-match-data
-                          (save-excursion
-                            (if (clojure-find-ns)
-                                (progn
-                                  (goto-char (match-beginning 0))
-                                  (end-of-defun)
-                                  (let ((end (point)))
-                                    (backward-sexp 1)
-                                    (buffer-substring-no-properties (point) end)))
-                              ""))))
+             (ns-form (save-match-data
+                        (save-excursion
+                          (if (clojure-find-ns)
+                              (progn
+                                (goto-char (match-beginning 0))
+                                (end-of-defun)
+                                (let ((end (point)))
+                                  (backward-sexp 1)
+                                  (buffer-substring-no-properties (point) end)))
+                            ""))))
              (compojure-kws '("GET" "POST" "PUT" "DELETE" "HEAD" "OPTIONS" "PATCH" "ANY" "context"))
              keywords)
          (cond
           ((string-match-p "_test.clj[cs]?$" file-name)
            (add-to-list 'keywords "async")
            (add-to-list 'keywords "is"))
-          ((string-match-p "_expectations.clj[cs]?$" file-name)
-           (make-local-variable 'font-lock-keywords)
-           (font-lock-add-keywords
-            nil
-            '(("(\\(expect\\|freeze-time\\)[ \r\t\n]"
-               (1 'font-lock-keyword-face))))
-           (add-to-list 'keywords "expect")
-           (add-to-list 'keywords "freeze-time"))
           ((string-match-p (concat "compojure.core :"
                                    "\\(?:as"
                                    "\\|refer[ \r\t\n]\\[[^]]*"
@@ -653,7 +575,57 @@
                         (byte-compile
                          (lambda (keywords func-name)
                            (and (string-match-p keywords func-name) :defn)))
-                        (regexp-opt keywords)))))))
+                        (regexp-opt keywords)))))
+
+       (setq-local auto-indent-block-level 3)
+       (setq-local font-lock-multiline--re-fontify-level 3)
+       (setq-local custom-forward-symbol 'clojure-forward-symbol)
+
+       ;; insrt ns-form when create a file
+       (when (and buffer-file-name
+                  (= (point-min) (point-max))
+                  (cider-connected-p))
+         (let ((cb (lexical-let ((cur-buf (current-buffer))
+                                 (file-rel-path (clojure-project-relative-path (buffer-file-name))))
+                     (lambda (resp)
+                       (let* ((paths (edn-read (nrepl-dict-get resp "value")))
+                              (src-dir (->> paths
+                                            (--map (if (string-match-p "/$" it)
+                                                       (s-left -1 it)
+                                                     it))
+                                            (--map (concat it "/"))
+                                            (--filter (string-match-p (concat "^" it) file-rel-path))
+                                            (-first-item))))
+                         (when src-dir
+                           (let ((ns (->> (file-relative-name file-rel-path src-dir)
+                                          (file-name-sans-extension)
+                                          (replace-regexp-in-string "/+" ".")
+                                          (replace-regexp-in-string "_" "-"))))
+                             (with-current-buffer cur-buf
+                               (goto-char (point-min))
+                               (insert "(ns " ns ")\n\n")))))))))
+           (if (string-equal "cljs" (cider-connection-type-for-buffer))
+               (cider-tooling-eval
+                "(let [builds (->> \"project.clj\"
+                              (slurp)
+                              (clojure.edn/read-string)
+                              (drop 3)
+                              (apply hash-map)
+                              :cljsbuild :builds)]
+              (:source-paths (cond
+                               (map? builds) (:dev builds)
+                               (sequential? builds) (first (filter #(= \"dev\" (:id %)) builds))
+                               :else nil)))" cb)
+             (cider-tooling-eval
+              "(let [proj (->> \"project.clj\"
+                           (slurp)
+                           (clojure.edn/read-string)
+                           (drop 3)
+                           (apply hash-map))]
+          (concat (get-in proj [:source-paths])
+                  (get-in proj [:profiles :dev :source-paths])))" cb))))))
+
+    ;; fix the docstring face
     (advice-add #'clojure-font-lock-syntactic-face-function :around
                 (lambda (of state)
                   "(def _ \"abc\")<~ It should be the string."
@@ -673,5 +645,9 @@
                                (= list-end str-end)))
                         font-lock-string-face
                       res))))))
+
+(defun clojure-ext/init-edn ()
+  (use-package edn
+    :ensure t))
 
 ;;; packages.el ends here
