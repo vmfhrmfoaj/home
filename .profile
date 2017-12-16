@@ -23,9 +23,23 @@ export PATH=/usr/local/opt/texinfo/bin:$PATH
 export REACT_EDITOR=emacsclient
 
 # java
-export JVM_OPTS="$(if [ `uname -a | grep -o iMac` ]; then echo '-Xms2g -Xmx4g'; fi)"
 export JAVA_HOME=$(java -XshowSettings:properties -version 2>&1 | grep "java.home" | cut -d'=' -f2 | xargs dirname)
 export PATH=$JAVA_HOME/bin:$PATH
+os=`uname`
+mem_in_gb=0
+if   [[ "$os" == "Darwin" ]]; then
+  mem_in_gb=$(($(sysctl -n hw.memsize) / 1024 / 1024 / 1024))
+elif [[ "$os" == "Linux" ]]; then
+  mem_in_gb=$(($(cat /proc/meminfo | grep MemTotal | grep -o "[0-9]\+") / 1024 / 1024))
+fi
+JVM_OPTS=""
+if   [[ $mem_in_gb -gt 16 ]]; then
+  export JVM_OPTS="$JVM_OPTS -Xms2g -Xmx8g"
+elif [[ $mem_in_gb -gt  8 ]]; then
+  export JVM_OPTS="$JVM_OPTS -Xms1g -Xmx4g"
+elif [[ $mem_in_gb -gt  4 ]]; then
+  export JVM_OPTS="$JVM_OPTS -Xms512m -Xmx2g"
+fi
 
 # node
 export NODE_PATH=/usr/local/lib/node_modules
@@ -46,12 +60,12 @@ alias ylplay="aplay --ytdl-format 95"
 # - https://wxchen.wordpress.com/2012/05/20/getting-tramp-in-emacs-to-work-with-zsh-as-default-shell/
 if [[ "$SHELL" == "/bin/zsh" && "$TERM" == "dumb" ]]
 then
-    unsetopt zle
-    unsetopt prompt_cr
-    unsetopt prompt_subst
-    unfunction precmd
-    unfunction preexec
-    PS1='$ '
+  unsetopt zle
+  unsetopt prompt_cr
+  unsetopt prompt_subst
+  unfunction precmd
+  unfunction preexec
+  PS1='$ '
 fi
 
 # gtag
