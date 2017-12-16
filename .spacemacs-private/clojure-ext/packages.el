@@ -66,7 +66,11 @@
                                 (file-name-sans-extension)
                                 (replace-regexp-in-string "/" ".")
                                 (replace-regexp-in-string "_" "-"))))
-                     (funcall of path)))))))
+                     (funcall of path)))))
+    (advice-add #'cider-find-var :after
+                (lambda (&optional arg var line)
+                  (unless (string-match-p "^Default$" (spacemacs//current-layout-name))
+                    (persp-add-buffer (current-buffer)))))))
 
 (defun clojure-ext/post-init-clojure-mode ()
   (use-package clojure-mode
