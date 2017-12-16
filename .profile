@@ -2,7 +2,8 @@
 export ANDROID_SDK=$HOME/Android_SDK
 export ANDROID_HOME=$ANDROID_SDK
 export PATH=$ANDROID_SDK/tools:$ANDROID_SDK/tools/bin:$PATH
-export PATH=$ANDROID_SDK/platform-tools:$ANDROID_SDK/platform-tools/bin:$PATH
+export PATH=$ANDROID_SDK/platform-tools:$PATH
+function emulator { local cur_dir=$PWD; cd $ANDROID_SDK/tools && ./emulator $@; cd $cur_dir }
 
 # cocoapod
 export GEM_HOME=$HOME/.gem/ruby/2.0.0
@@ -21,8 +22,10 @@ export PATH=/usr/local/opt/texinfo/bin:$PATH
 # react
 export REACT_EDITOR=emacsclient
 
-# lein
+# java
 export JVM_OPTS="$(if [ `uname -a | grep -o iMac` ]; then echo '-Xms2g -Xmx4g'; fi)"
+export JAVA_HOME=$(java -XshowSettings:properties -version 2>&1 | grep "java.home" | cut -d'=' -f2 | xargs dirname)
+export PATH=$JAVA_HOME/bin:$PATH
 
 # node
 export NODE_PATH=/usr/local/lib/node_modules
