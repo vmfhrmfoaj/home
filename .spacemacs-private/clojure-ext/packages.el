@@ -17,20 +17,24 @@
     edn))
 
 (defun clojure-ext/post-init-cider ()
+  (use-package cider-mode
+    :defer t
+    :config
+    (setq cider-dynamic-indentation nil
+          cider-font-lock-dynamically '(deprecated)
+          cider-font-lock-reader-conditionals nil
+          cider-mode-line '(:eval (when (cider-connected-p)
+                                    "Ⓡ" ; (R)ELP
+                                    ))))
   (use-package cider
     :defer t
     :config
     (byte-compile #'cider-connection-type-for-cljc-buffer)
     (byte-compile #'cider-cljs-root-dirs)
     (byte-compile #'cider-switch-to-releated-repl-buffer)
-    (setq cider-font-lock-reader-conditionals nil
-          cider-dynamic-indentation nil
-          cider-font-lock-dynamically '(deprecated)
-          cider-repl-display-in-current-window t
+
+    (setq cider-repl-display-in-current-window t
           cider-repl-use-pretty-printing t
-          cider-mode-line '(:eval (when (cider-connected-p)
-                                    "Ⓡ" ; (R)ELP
-                                    ))
           cider-cljs-lein-repl (concat "(do"
                                        "  (require 'figwheel-sidecar.repl-api)"
                                        "  (figwheel-sidecar.repl-api/start-figwheel!)"
@@ -43,10 +47,8 @@
     (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
       (spacemacs/set-leader-keys-for-major-mode mode
         "en" #'cider-eval-ns-form))
-    (advice-add #'cider-connection-type-for-buffer :before-until
-                #'cider-connection-type-for-cljc-buffer)
-    (advice-add #'cider-switch-to-repl-buffer :override
-                #'cider-switch-to-releated-repl-buffer)
+    (advice-add #'cider-connection-type-for-buffer :before-until #'cider-connection-type-for-cljc-buffer)
+    (advice-add #'cider-switch-to-repl-buffer :override #'cider-switch-to-releated-repl-buffer)
     (advice-add #'cider-expected-ns :around
                 (byte-compile
                  (lambda (of &optional path)
