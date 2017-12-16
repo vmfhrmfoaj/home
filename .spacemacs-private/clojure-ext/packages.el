@@ -384,7 +384,8 @@
                   (ignore-errors
                     (when font-lock--skip
                       (error ""))
-                    (unless clojure-oop-fn-recursive--point
+                    (while (and (not clojure-oop-fn-recursive--point)
+                                clojure-oop-fn-form--points)
                       (-when-let (point (car clojure-oop-fn-form--points))
                         (setq clojure-oop-fn-form--points (cdr clojure-oop-fn-form--points))
                         (goto-char point)
@@ -393,10 +394,10 @@
                                 clojure-oop-fn-recursive--limit (save-excursion
                                                                   (up-list)
                                                                   (point)))
-                          (when (string-match-p (regexp-opt '("definterface" "defprotocol"))
-                                                clojure-oop-kw--str)
+                          (when (string-match-p "definterface\\|defprotocol" clojure-oop-kw--str)
                             (setq clojure-oop-fn-form--points
-                                  (cons (point) clojure-oop-fn-form--points))))))
+                                  (cons clojure-oop-fn-recursive--limit
+                                        clojure-oop-fn-form--points))))))
                     (when clojure-oop-fn-recursive--point
                       (if (re-search-forward (concat "\\(?:\\^" symbol "[ \r\t\n]+\\)?" "\\(\\_<" symbol "\\>\\)")
                                              (min limit clojure-oop-fn-recursive--limit) t)
