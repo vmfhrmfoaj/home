@@ -42,6 +42,10 @@
   '((t (:inherit default)))
   "Face used to font-lock Clojure `if' true form.")
 
+(defface clojure-define-type-face
+  '((t (:inherit font-lock-type-face :weight bold)))
+  "TODO")
+
 
 (defcustom clojure--ignore-binding-highlight-regex
   (concat "^\\("
