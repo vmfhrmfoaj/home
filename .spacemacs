@@ -566,9 +566,7 @@ before packages are loaded."
             'append)
 
   ;; for improving the performance
-  (setq garbage-collection-messages nil
-        gc-cons-threshold (* 1024 1024 1024))
-  (run-with-idle-timer 5 t #'garbage-collect)
+  (setq gc-cons-threshold (* 128 1024 1024))
 
   ;; customize the theme.
   (custom-theme-set-faces
