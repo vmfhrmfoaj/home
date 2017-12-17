@@ -21,11 +21,15 @@
     :defer t
     :config
     (setq cider-dynamic-indentation nil
-          cider-font-lock-dynamically '(deprecated)
+          cider-font-lock-dynamically nil
           cider-font-lock-reader-conditionals nil
           cider-mode-line '(:eval (when (cider-connected-p)
                                     "Ⓡ" ; (R)ELP
-                                    ))))
+                                    )))
+    (add-hook 'cider-mode-hook
+              (lambda ()
+                (setq-local font-lock-fontify-region-function
+                            #'font-lock-default-fontify-region))))
   (use-package cider
     :defer t
     :config
