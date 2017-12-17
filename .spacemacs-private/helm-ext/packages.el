@@ -36,17 +36,7 @@
               (byte-compile
                (lambda ()
                  (ignore-errors
-                   (recenter)))))
-    (setq helm--exclude-modes '(global-linum-mode))
-    (setq helm--exclude-mode-status '())
-    (add-hook 'helm-before-initialize-hook
-              (lambda ()
-                (setq helm--exclude-mode-status (-map #'symbol-value helm--exclude-modes))
-                (disable-modes helm--exclude-modes)))
-    (let ((f (lambda ()
-               (restore-modes helm--exclude-modes helm--exclude-mode-status))))
-      (add-hook 'helm-exit-minibuffer-hook f)
-      (add-hook 'helm-quit-hook f)))
+                   (recenter))))))
 
   (use-package helm-mode
     :defer t
