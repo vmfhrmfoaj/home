@@ -76,10 +76,10 @@
                 (progn
                   (condition-case nil
                       (progn
-                        (backward-up-list)
+                        (backward-up-list 1 t)
                         (ignore-errors
                           (dotimes (_ (1- auto-indent-block-level))
-                            (backward-up-list)))
+                            (backward-up-list 1 t)))
                         (point))
                     (error nil))))
                (end

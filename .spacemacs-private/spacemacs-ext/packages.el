@@ -93,43 +93,17 @@
                          (<= start point end))
                     (cons start end)
                   (cons point (1+ point))))))))
-    (setq _font-lock-multiline_ nil)
-    (setq-default font-lock-multiline--start-inserting-pos nil)
     (add-hook 'evil-insert-state-entry-hook
               (lambda ()
-                (setq-local _font-lock-multiline_ font-lock-multiline)
-                (setq-local font-lock-multiline nil)
-                (setq-local font-lock-multiline--start-inserting-pos (point))))
+                (when font-lock-multiline
+                  (-update->> font-lock-extend-region-functions
+                              (remove 'font-lock-extend-region-multiline)))))
     (add-hook 'evil-insert-state-exit-hook
-              (byte-compile
-               (lambda ()
-                 (setq-local font-lock-multiline _font-lock-multiline_)
-                 (when _font-lock-multiline_
-                   (save-excursion
-                     (when (and (numberp font-lock-multiline--start-inserting-pos)
-                                (< font-lock-multiline--start-inserting-pos (point)))
-                       (goto-char font-lock-multiline--start-inserting-pos))
-                     (when (and (derived-mode-p 'prog-mode)
-                                (>= font-lock-multiline--re-fontify-level 1))
-                       (let ((start
-                              (progn
-                                (condition-case nil
-                                    (progn
-                                      (backward-up-list)
-                                      (ignore-errors
-                                        (dotimes (_ (1- font-lock-multiline--re-fontify-level))
-                                          (backward-up-list)))
-                                      (point))
-                                  (error nil))))
-                             (end
-                              (progn
-                                (condition-case nil
-                                    (progn
-                                      (forward-list)
-                                      (point))
-                                  (error nil)))))
-                         (when (and start end)
-                           (font-lock-fontify-region start end)))))))))))
+              (lambda ()
+                (when font-lock-multiline
+                  (add-to-list 'font-lock-extend-region-functions
+                               #'font-lock-extend-region-multiline
+                               'append))))))
 
 (defun spacemacs-ext/post-init-hl-todo ()
   (use-package hl-todo
