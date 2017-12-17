@@ -34,12 +34,13 @@
     auto-highlight-symbol
     evil
     hl-todo
-    linum-relative
+    ;;linum-relative
     persp-mode
     projectile
     rainbow-delimiters
     smartparens
-    which-key))
+    which-key
+    (whitespace :location built-in)))
 
 (defun spacemacs-ext/post-init-ediff ()
   (use-package ediff
@@ -238,5 +239,16 @@
     (push '(("\\(.*\\)`" . "winum-select-window-by-number") .
             ("\\1`" . "select window by number"))
           which-key-replacement-alist)))
+
+(defun spacemacs-ext/post-init-whitespace ()
+  (use-package whitespace
+    :defer t
+    :init
+    (advice-add #'whitespace-turn-on  :before
+                (lambda (&rest _)
+                  (nlinum-mode 0)))
+    (advice-add #'whitespace-turn-off :before
+                (lambda (&rest _)
+                  (nlinum-mode 1)))))
 
 ;;; packages.el ends here
