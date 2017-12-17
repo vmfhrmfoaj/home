@@ -530,7 +530,7 @@
            (,(concat "(" core-ns? "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
                      whitespace+
                      meta?
-                     "\\(" symbol "\\)")
+                     namespace? "\\(" symbol "\\)")
             (1 'font-lock-keyword-face)
             (2 'font-lock-variable-name-face))
            ("\\<%[&1-9]?\\>"
