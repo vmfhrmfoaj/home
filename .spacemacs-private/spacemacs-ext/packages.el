@@ -34,7 +34,7 @@
     auto-highlight-symbol
     evil
     hl-todo
-    ;;linum-relative
+    linum-relative
     persp-mode
     projectile
     rainbow-delimiters
@@ -220,9 +220,11 @@
     :init
     (advice-add #'whitespace-turn-on  :before
                 (lambda (&rest _)
-                  (nlinum-mode 0)))
+                  (when (featurep 'nlinum-mode)
+                    (nlinum-mode 0))))
     (advice-add #'whitespace-turn-off :before
                 (lambda (&rest _)
-                  (nlinum-mode 1)))))
+                  (when (featurep 'nlinum-mode)
+                    (nlinum-mode 1))))))
 
 ;;; packages.el ends here

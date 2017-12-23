@@ -51,7 +51,6 @@ This function should only modify configuration layer settings."
             latex-build-command "LaTeX"
             latex-enable-auto-fill nil)
      (markdown :variables markdown-live-preview-engine 'vmd)
-     nlinum
      org
      osx
      perl5
