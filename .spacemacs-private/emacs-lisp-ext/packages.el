@@ -15,6 +15,8 @@
   '((emacs-lisp :location built-in)))
 
 (defun emacs-lisp-ext/post-init-emacs-lisp ()
+  (setq font-lock--skip nil)
+  (setq lisp--binding-form-point nil)
   (font-lock-add-keywords
    'emacs-lisp-mode
    `(("\\s(\\(\\(?:-as\\|-some\\)?->>?\\|and\\|or\\)\\_>"
@@ -41,14 +43,14 @@
              (let ((local-limit (save-excursion (forward-sexp) (point))))
                (unless (and (re-search-forward "(\\([-+*/=>&?:_0-9a-zA-Z]+\\)[ \r\t\n]+"
                                                (min local-limit limit) t))
-                 (set-match-data (-repeat 4 (point-min-marker))))
+                 (set-match-data elisp-fake-match-4))
                (goto-char local-limit))
              t)))
        (save-excursion
          (if (in-comment?)
-             (setq-local font-lock--skip t)
-           (setq-local font-lock--skip nil)
-           (setq-local lisp--binding-form-point (point))
+             (setq font-lock--skip t)
+           (setq font-lock--skip nil)
+           (setq lisp--binding-form-point (point))
            (safe-up-list-1)
            (point)))
        (if font-lock--skip
@@ -60,8 +62,10 @@
   (add-hook 'lisp-interaction-mode-hook #'smartparens-mode)
   (add-hook 'emacs-lisp-mode-hook
             (lambda ()
+              (make-local-variable 'font-lock--skip)
+              (make-local-variable 'lisp--binding-form-point)
+              (setq-local elisp-fake-match-4 (-repeat 4 (point-min-marker)))
               (setq-local auto-indent-block-level 3)
-              (setq-local font-lock-multiline--re-fontify-level 3)
               (setq-local font-lock-multiline t)))
   (with-eval-after-load 'evil
     (let ((f (byte-compile
