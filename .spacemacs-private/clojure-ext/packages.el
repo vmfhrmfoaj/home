@@ -569,7 +569,9 @@
            (,(concat "(\\(\\.-?\\)" symbol)
             (1 'clojure-interop-method-face))
            (,(concat "(" important-kw "\\(?:)\\|" whitespace "\\)")
-            (1 'clojure-important-keywords-face))))))
+            (1 'clojure-important-keywords-face))
+           (,(concat "::\\(" symbol "\\)/" symbol "\\>")
+            (1 'font-lock-type-face))))))
 
     (eval-after-load "page-break-lines"
       '(add-to-list 'page-break-lines-modes 'clojure-mode))
