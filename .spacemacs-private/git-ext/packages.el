@@ -33,17 +33,19 @@
     (advice-add #'magit-log-propertize-keywords :after
                 (byte-compile
                  (lambda (msg)
-                   (when (and magit-log-highlight-keywords
-                              (string-match "^\\([-_/A-Za-z]+\\)\\(?:(\\([-_/A-Za-z]+\\))\\)?:" msg))
-                     (put-text-property (match-beginning 1)
-                                        (match-end 1)
-                                        'face 'magit-commit-log-type-face
-                                        msg)
-                     (when (match-beginning 2)
-                       (put-text-property (match-beginning 2)
-                                          (match-end 2)
-                                          'face 'magit-commit-log-scope-face
-                                          msg)))
+                   (let ((type  "[-_/A-Za-z]+")
+                         (scope "[-_/A-Za-z, ]+"))
+                     (when (and magit-log-highlight-keywords
+                                (string-match (concat "^\\(" type "\\)\\(?:(\\(" scope "\\))\\)?:") msg))
+                       (put-text-property (match-beginning 1)
+                                          (match-end 1)
+                                          'face 'magit-commit-log-type-face
+                                          msg)
+                       (when (match-beginning 2)
+                         (put-text-property (match-beginning 2)
+                                            (match-end 2)
+                                            'face 'magit-commit-log-scope-face
+                                            msg))))
                    msg))))
 
   (use-package magit-blame
