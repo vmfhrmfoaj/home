@@ -51,6 +51,10 @@
     (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
       (spacemacs/set-leader-keys-for-major-mode mode
         "en" #'cider-eval-ns-form))
+    (add-hook 'cider-repl-mode-hook
+              (lambda ()
+                (unless (string-match-p "^Default$" (spacemacs//current-layout-name))
+                  (persp-add-buffer (current-buffer)))))
     (advice-add #'cider-connection-type-for-buffer :before-until #'cider-connection-type-for-cljc-buffer)
     (advice-add #'cider-switch-to-repl-buffer :override #'cider-switch-to-releated-repl-buffer)
     (advice-add #'cider-expected-ns :around
