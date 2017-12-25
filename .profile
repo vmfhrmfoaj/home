@@ -75,3 +75,10 @@ export GTAGSLABEL=pygments
 # go lang
 export GOROOT=$HOME/.go_lang
 export PATH=$PATH:$GOROOT/bin
+
+# groovy
+if   [[ "$os" == "Darwin" ]]; then
+  GROOVY_HOME=/usr/local/opt/groovy/libexec
+elif [[ "$os" == "Linux" ]]; then
+fi
+export GROOVY_HOME
