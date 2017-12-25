@@ -319,10 +319,10 @@
                             ;; Handle default bind map
                             (when (save-excursion
                                     (backward-up-list)
-                                    (and (char-after ?{)
+                                    (and (char-equal ?{ (char-after))
                                          (ignore-errors
                                            (clojure-forward-sexp -1)
-                                           (looking-at-p ":or"))))
+                                           (looking-at-p ":or\\>"))))
                               (setq clojure-binding-form--in-or t)
                               (clojure-forward-sexp)))
                         (goto-char clojure-binding-form--recursive-limit)
@@ -508,10 +508,10 @@
                             ;; Handle default bind map
                             (when (save-excursion
                                     (backward-up-list)
-                                    (and (char-after ?{)
+                                    (and (char-equal ?{ (char-after))
                                          (ignore-errors
                                            (clojure-forward-sexp -1)
-                                           (looking-at-p ":or"))))
+                                           (looking-at-p ":or\\>"))))
                               (clojure-forward-sexp)))
                         (set-match-data clojure-fake-match-4)
                         (setq clojure-fn-recursive--point nil
