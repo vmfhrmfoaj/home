@@ -632,7 +632,7 @@ before packages are loaded."
    `(font-lock-variable-name-face ((t (:inherit bold :weight unspecified))))
    `(hl-line ((t (:inverse-video nil))))
    `(link ((t (:underline t :weight unspecified))))
-   `(linum ((t (:inherit default :underline nil :height 1.0))))
+   `(linum ((t (:inherit default :underline nil :height 1.0 :distant-foreground ,(face-attribute 'linum :foreground)))))
    `(linum-relative-current-face ((t (:inherit linum))))
    `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
    `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground)))))
