@@ -328,6 +328,7 @@ It should only modify the values of Spacemacs settings."
                                     :disabled-for-modes
                                     dired-mode
                                     doc-view-mode
+                                    fundamental-mode
                                     markdown-mode
                                     org-mode
                                     pdf-view-mode
