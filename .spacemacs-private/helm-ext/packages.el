@@ -36,12 +36,32 @@
               (byte-compile
                (lambda ()
                  (ignore-errors
-                   (recenter))))))
+                   (recenter)))))
+    (setq helm-autoresize-max-height--save nil)
+    (setq helm-autoresize-max-height-for-swoop 65)
+    (add-hook 'helm-minibuffer-set-up-hook
+              (lambda ()
+                (when (and (boundp 'helm-swoop-buffer)
+                           (string-equal helm-swoop-buffer (or helm-buffer "")))
+                  (setq helm-autoresize-max-height--save helm-autoresize-max-height
+                        helm-autoresize-max-height helm-autoresize-max-height-for-swoop)
+                  (helm--autoresize-hook))))
+    (let ((f (lambda ()
+               (when helm-autoresize-max-height--save
+                 (setq helm-autoresize-max-height helm-autoresize-max-height--save
+                       helm-autoresize-max-height--save nil)))))
+      (add-hook 'helm-exit-minibuffer-hook f)
+      (add-hook 'helm-quit-hook f)))
 
   (use-package helm-mode
     :defer t
     :config
-    (define-key helm-comp-read-map (kbd "C-h") #'delete-backward-char)))
+    (define-key helm-comp-read-map (kbd "C-h") #'delete-backward-char))
+
+  (use-package helm-files
+    :defer t
+    :config
+    (define-key helm-find-files-map (kbd "C-h") #'backward-delete-char)))
 
 (defun helm-ext/post-init-helm-ag ()
   (use-package helm-ag
@@ -69,7 +89,9 @@
     :config
     (add-hook 'minibuffer-setup-hook
               (lambda ()
+                (local-set-key (kbd "C-d")   #'delete-char)
                 (local-set-key (kbd "C-h")   #'backward-delete-char)
-                (local-set-key (kbd "S-SPC") #'toggle-input-method)))))
+                (local-set-key (kbd "S-SPC") #'toggle-input-method)
+                (smartparens-mode t)))))
 
 ;;; packages.el ends here
