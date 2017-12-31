@@ -12,10 +12,36 @@
 ;;; Code:
 
 (defconst helm-ext-packages
-  '(helm
+  '(dumb-jump
+    helm
     helm-ag
     helm-projectile
     (minibuffer :location built-in)))
+
+(defun helm-ext/post-init-dumb-jump ()
+  (use-package helm
+    :defer t
+    :config
+    (byte-compile #'helm-dump-jump--insert-file)
+    (byte-compile #'helm-dump-jump--actions)
+    (byte-compile #'helm-dump-jump--persistent-action)
+
+    (defvar helm-dump-jump--actions
+      (helm-make-actions
+       "Open file"              (-partial #'helm-dump-jump--action #'find-file)
+       "Open file other window" (-partial #'helm-dump-jump--action #'find-file-other-window)))
+    (advice-add #'dumb-jump-prompt-user-for-choice :before-until
+                (byte-compile
+                 (lambda (proj results)
+                   (when (eq 'helm dumb-jump-selector)
+                     (let ((candidates (--map (dumb-jump--format-result proj it) results)))
+                       (helm :sources
+                             (helm-build-sync-source "Dump Jump"
+                               :candidates candidates
+                               :action helm-dump-jump--actions
+                               :persistent-action #'helm-dump-jump--persistent-action)
+                             :buffer "*helm-dumb-jump*"))
+                     t))))))
 
 (defun helm-ext/post-init-helm ()
   (use-package helm
