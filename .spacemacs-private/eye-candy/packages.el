@@ -16,6 +16,7 @@
     auto-dim-other-buffers
     company
     evil
+    fancy-narrow
     golden-ratio
     neotree))
 
@@ -229,6 +230,9 @@
                          (without-text-properties-hard (point-min) (point-max) '(composition font-lock-multiline)
                            (funcall of))
                        (funcall of))))))))
+
+(defun eye-candy/init-fancy-narrow ()
+  (use-package fancy-narrow))
 
 (defun eye-candy/post-init-golden-ratio ()
   (use-package golden-ratio
