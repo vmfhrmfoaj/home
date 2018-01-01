@@ -572,7 +572,24 @@ before packages are loaded."
             'append)
 
   ;; for improving the performance
-  (setq gc-cons-threshold (* 128 1024 1024))
+  (setq gc-cons-threshold (* 64 1024 1024)
+        gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect)
+        font-lock-idle-time 0.15
+        font-lock-idle-timer nil)
+  (make-local-variable 'font-lock-idle-timer)
+  (advice-add #'jit-lock-after-change :around
+              (byte-compile
+               (lambda (fn &rest arg)
+                 (if (not font-lock-idle-time)
+                     (apply fn arg)
+                   (when font-lock-idle-timer
+                     (cancel-timer font-lock-idle-timer))
+                   (setq font-lock-idle-timer
+                         (run-with-idle-timer font-lock-idle-time nil
+                                              (lexical-let ((fn fn) (arg arg))
+                                                (lambda ()
+                                                  (setq font-lock-idle-timer nil)
+                                                  (apply fn arg)))))))))
 
   ;; customize the theme.
   (custom-theme-set-faces

@@ -18,8 +18,8 @@
 
 (defun focus/post-init-evil ()
   (when (require 'evil nil 'noerr)
-    (add-hook 'evil-insert-state-entry-hook (lambda () (focus-mode 1)) 'append)
-    (add-hook 'evil-insert-state-exit-hook  (lambda () (focus-mode 0)) 'append)))
+    (add-hook 'evil-insert-state-entry-hook (lambda () (focus-mode 1)))
+    (add-hook 'evil-insert-state-exit-hook  (lambda () (focus-mode 0)))))
 
 (defun focus/init-focus ()
   (use-package focus
