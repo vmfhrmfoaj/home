@@ -33,6 +33,7 @@
   '((ediff :location built-in)
     auto-highlight-symbol
     evil
+    evil-surround
     hl-todo
     linum-relative
     persp-mode
@@ -93,6 +94,24 @@
                          (<= start point end))
                     (cons start end)
                   (cons point (1+ point))))))))))
+
+(defun spacemacs-ext/post-init-evil-surround ()
+  (use-package evil-surround
+    :defer t
+    :config
+    (advice-add #'evil-surround-region :filter-args
+                (byte-compile
+                 (lambda (args)
+                   (if (> 4 (length args))
+                       args
+                     (let* ((char (nth 3 args))
+                            (new-char (cond
+                                       ((= char 33554477) 95)
+                                       ((= char 33554475) 61)
+                                       ((= char 33554479) 92))))
+                       (if new-char
+                           (-replace-at 3 new-char args)
+                         args))))))))
 
 (defun spacemacs-ext/post-init-hl-todo ()
   (use-package hl-todo
