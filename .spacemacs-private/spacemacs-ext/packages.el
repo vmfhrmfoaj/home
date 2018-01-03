@@ -35,6 +35,7 @@
     evil
     evil-surround
     hl-todo
+    (linum :location built-in)
     linum-relative
     persp-mode
     projectile
@@ -124,6 +125,13 @@
                 (byte-compile
                  (lambda (ret)
                    (list ret))))))
+
+(defun spacemacs-ext/post-init-linum ()
+  (use-package linum
+    :config
+    (add-hook 'linum-mode-hook
+              (lambda ()
+                (make-local-variable 'window-initial-margins)))))
 
 (defun spacemacs-ext/post-init-linum-relative ()
   (use-package linum-relative
