@@ -112,7 +112,17 @@
                                        ((= char 33554479) 92))))
                        (if new-char
                            (-replace-at 3 new-char args)
-                         args))))))))
+                         args))))))
+    (advice-add #'evil-surround-change :filter-args
+                (byte-compile
+                 (lambda (args)
+                   (interactive (list (read-key)))
+                   args)))
+    (advice-add #'evil-surround-delete :filter-args
+                (byte-compile
+                 (lambda (args)
+                   (interactive (list (read-key)))
+                   args)))))
 
 (defun spacemacs-ext/post-init-hl-todo ()
   (use-package hl-todo
