@@ -57,6 +57,28 @@
            (end-of-line)
          (goto-char lisp--binding-form-point))
        (1 'lisp-local-binding-variable-name-face)))
+     ;; function arguments
+     ("\\(?:defun\\|lambda\\)[ \r\t\n]+\\(?:[-+*/=>&?:_0-9a-zA-Z]+[ \r\t\n]+\\)?("
+      (,(byte-compile
+         (lambda (limit)
+           (ignore-errors
+             (when font-lock--skip
+               (error ""))
+             (when (re-search-forward "\\([-+*/=>&?:_0-9a-zA-Z]+\\)\\>" limit t)
+               (when (string-match-p "^&" (match-string 1))
+                 (set-match-data elisp-fake-match-4))
+               t))))
+       (save-excursion
+         (if (in-comment?)
+             (setq font-lock--skip t)
+           (setq font-lock--skip nil)
+           (setq lisp--binding-form-point (point))
+           (safe-up-list-1)
+           (point)))
+       (if font-lock--skip
+           (end-of-line)
+         (goto-char lisp--binding-form-point))
+       (1 'lisp-local-binding-variable-name-face)))
      ("(-\\(?:when\\|if\\)-let\\*?[ \r\n\t]+(\\([-+/=>&?:_0-9a-zA-Z]+\\)[ \r\t\n]"
       (1 'lisp-local-binding-variable-name-face))))
   (add-hook 'lisp-interaction-mode-hook #'smartparens-mode)
