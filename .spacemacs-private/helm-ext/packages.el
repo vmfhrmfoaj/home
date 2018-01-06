@@ -52,7 +52,6 @@
                             (ctxs  (->> results
                                         (--map (plist-get it :context))
                                         (--map (s-trim it))
-                                        ;; TODO: highlight matching string
                                         (--map (s-split helm-dumb-jump--keyword it))
                                         (--map (-interpose (propertize helm-dumb-jump--keyword 'face 'helm-match) ij))
                                         (--map (apply #'concat " " it))))
@@ -73,6 +72,8 @@
     :config
     (define-key helm-map (kbd "C-n") #'helm-next-source)
     (define-key helm-map (kbd "C-p") #'helm-previous-source)
+    (define-key helm-comp-read-map  (kbd "C-h") #'delete-backward-char)
+    (define-key helm-find-files-map (kbd "C-h") #'delete-backward-char)
     (setq helm-autoresize-min-height 20
           helm-autoresize-max-height 45
           helm-truncate-lines t)
@@ -101,17 +102,7 @@
                  (setq helm-autoresize-max-height helm-autoresize-max-height--save
                        helm-autoresize-max-height--save nil)))))
       (add-hook 'helm-exit-minibuffer-hook f)
-      (add-hook 'helm-quit-hook f)))
-
-  (use-package helm-mode
-    :defer t
-    :config
-    (define-key helm-comp-read-map (kbd "C-h") #'delete-backward-char))
-
-  (use-package helm-files
-    :defer t
-    :config
-    (define-key helm-find-files-map (kbd "C-h") #'backward-delete-char)))
+      (add-hook 'helm-quit-hook f))))
 
 (defun helm-ext/post-init-helm-ag ()
   (use-package helm-ag
@@ -140,7 +131,7 @@
     (add-hook 'minibuffer-setup-hook
               (lambda ()
                 (local-set-key (kbd "C-d")   #'delete-char)
-                (local-set-key (kbd "C-h")   #'backward-delete-char)
+                (local-set-key (kbd "C-h")   #'delete-backward-char)
                 (local-set-key (kbd "S-SPC") #'toggle-input-method)
                 (smartparens-mode t)))))
 
