@@ -54,6 +54,7 @@ This function should only modify configuration layer settings."
      org
      osx
      perl5
+     php
      python
      (shell :variables
             shell-default-height 30
@@ -63,6 +64,7 @@ This function should only modify configuration layer settings."
                      spell-checking-enable-by-default nil
                      spell-checking-enable-auto-dictionary t
                      =enable-flyspell-auto-completion= t)
+     sql
      swift
      version-control
      yaml
