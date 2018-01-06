@@ -26,15 +26,39 @@
     (byte-compile #'helm-dump-jump--actions)
     (byte-compile #'helm-dump-jump--persistent-action)
 
+    (setq dumb-jump-git-grep-cmd "git grep --full-name")
     (defvar helm-dump-jump--actions
       (helm-make-actions
        "Open file"              (-partial #'helm-dump-jump--action #'find-file)
        "Open file other window" (-partial #'helm-dump-jump--action #'find-file-other-window)))
+    (advice-add #'dumb-jump-handle-results :before
+                (byte-compile
+                 (lambda (results cur-file proj-root ctx-type look-for use-tooltip prefer-external)
+                   (setq helm-dumb-jump--keyword look-for))))
     (advice-add #'dumb-jump-prompt-user-for-choice :before-until
                 (byte-compile
                  (lambda (proj results)
                    (when (eq 'helm dumb-jump-selector)
-                     (let ((candidates (--map (dumb-jump--format-result proj it) results)))
+                     (setq helm-dumb-jump--proj proj)
+                     (let* ((proj-regex (concat "^" (regexp-quote proj) "/*"))
+                            (paths (->> results
+                                        (--map (plist-get it :path))
+                                        (--map (s-replace-regexp proj-regex "" it))
+                                        (--map (propertize it 'face 'helm-moccur-buffer))))
+                            (lines (->> results
+                                        (--map (plist-get it :line))
+                                        (--map (number-to-string it))
+                                        (--map (propertize it 'face 'helm-grep-lineno))))
+                            (ctxs  (->> results
+                                        (--map (plist-get it :context))
+                                        (--map (s-trim it))
+                                        ;; TODO: highlight matching string
+                                        (--map (s-split helm-dumb-jump--keyword it))
+                                        (--map (-interpose (propertize helm-dumb-jump--keyword 'face 'helm-match) ij))
+                                        (--map (apply #'concat " " it))))
+                            (candidates (->> (-zip paths lines ctxs)
+                                             (--map (-interpose ":" it))
+                                             (--map (apply #'concat it)))))
                        (helm :sources
                              (helm-build-sync-source "Dump Jump"
                                :candidates candidates
