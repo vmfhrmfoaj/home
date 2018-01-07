@@ -40,7 +40,7 @@ This function should only modify configuration layer settings."
      c-c++
      clojure
      csv
-     emacs-lisp
+     (emacs-lisp :variables emacs-lisp-hide-namespace-prefix nil)
      (git :variables git-enable-magit-svn-plugin t)
      (gtags :variables gtags-enable-by-default nil)
      helm
