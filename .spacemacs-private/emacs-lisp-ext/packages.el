@@ -15,8 +15,6 @@
   '((emacs-lisp :location built-in)))
 
 (defun emacs-lisp-ext/post-init-emacs-lisp ()
-  (setq font-lock--skip nil)
-  (setq lisp--binding-form-point nil)
   (font-lock-add-keywords
    'emacs-lisp-mode
    `(("\\s(\\(\\(?:-as\\|-some\\)?->>?\\|and\\|or\\)\\_>"
