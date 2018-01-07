@@ -74,6 +74,7 @@
     (define-key helm-map (kbd "C-p") #'helm-previous-source)
     (define-key helm-comp-read-map  (kbd "C-h") #'delete-backward-char)
     (define-key helm-find-files-map (kbd "C-h") #'delete-backward-char)
+    (define-key helm-read-file-map  (kbd "C-h") #'delete-backward-char)
     (setq helm-autoresize-min-height 20
           helm-autoresize-max-height 45
           helm-truncate-lines t)
@@ -108,6 +109,7 @@
   (use-package helm-ag
     :defer t
     :config
+    (setq helm-ag-use-emacs-lisp-regexp t)
     (advice-add #'helm-ag--marked-input :around
                 (lambda (of escape)
                   (let ((res (funcall of escape)))
