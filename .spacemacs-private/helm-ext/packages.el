@@ -53,7 +53,7 @@
                                         (--map (plist-get it :context))
                                         (--map (s-trim it))
                                         (--map (s-split helm-dumb-jump--keyword it))
-                                        (--map (-interpose (propertize helm-dumb-jump--keyword 'face 'helm-match) ij))
+                                        (--map (-interpose (propertize helm-dumb-jump--keyword 'face 'helm-match) it))
                                         (--map (apply #'concat " " it))))
                             (candidates (->> (-zip paths lines ctxs)
                                              (--map (-interpose ":" it))
