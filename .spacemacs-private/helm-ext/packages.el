@@ -109,13 +109,7 @@
   (use-package helm-ag
     :defer t
     :config
-    (setq helm-ag-use-emacs-lisp-regexp t)
-    (advice-add #'helm-ag--marked-input :around
-                (lambda (of escape)
-                  (let ((res (funcall of escape)))
-                    (if (and escape res)
-                        (regexp-quote res)
-                      res))))))
+    (setq helm-ag-use-emacs-lisp-regexp t)))
 
 (defun helm-ext/post-init-helm-projectile ()
   (use-package helm-projectile
