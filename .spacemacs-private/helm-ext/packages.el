@@ -31,15 +31,26 @@
       (helm-make-actions
        "Open file"              (-partial #'helm-dump-jump--action #'find-file)
        "Open file other window" (-partial #'helm-dump-jump--action #'find-file-other-window)))
-    (advice-add #'dumb-jump-handle-results :before
+    (advice-add #'dumb-jump-get-results :filter-return
                 (byte-compile
-                 (lambda (results cur-file proj-root ctx-type look-for use-tooltip prefer-external)
-                   (setq helm-dumb-jump--keyword look-for))))
+                 (lambda (info)
+                   (setq helm-dumb-jump--proj (plist-get info :root)
+                         helm-dumb-jump--keyword (plist-get info :symbol))
+                   info)))
+    (advice-add #'dumb-jump--result-follow :override
+                (byte-compile
+                 (lambda (result &optional use-tooltip proj)
+                   (let* ((path (concat helm-dumb-jump--proj "/" (plist-get result :path)))
+                          (line (plist-get result :line))
+                          (pos (->> (plist-get result :context)
+                                    (s-split helm-dumb-jump--keyword)
+                                    (first)
+                                    (length))))
+                     (dumb-jump-goto-file-line path line pos)))))
     (advice-add #'dumb-jump-prompt-user-for-choice :before-until
                 (byte-compile
                  (lambda (proj results)
                    (when (eq 'helm dumb-jump-selector)
-                     (setq helm-dumb-jump--proj proj)
                      (let* ((proj-regex (concat "^" (regexp-quote proj) "/*"))
                             (paths (->> results
                                         (--map (plist-get it :path))
