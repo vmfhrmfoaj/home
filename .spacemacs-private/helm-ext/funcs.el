@@ -12,7 +12,10 @@
     (goto-char (point-min))
     (when line
       (forward-line (1- (string-to-number line)))
-      (beginning-of-line))
+      (beginning-of-line)
+      (when (re-search-forward (regexp-quote helm-dumb-jump--keyword)
+                               (line-end-position) 'noerr)
+        (goto-char (match-beginning 0))))
     (with-demoted-errors "Error running `dumb-jump-after-jump-hook': %S"
       (run-hooks 'dumb-jump-after-jump-hook))))
 
