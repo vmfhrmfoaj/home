@@ -110,10 +110,6 @@
     :defer t
     :config
     (setq helm-ag-use-emacs-lisp-regexp t)
-    (when (and (executable-find "rg")
-               (> (--find-index (string-equal it "ag") dotspacemacs-search-tools)
-                  (--find-index (string-equal it "rg") dotspacemacs-search-tools)))
-      (setq helm-ag-base-command "rg --color never --no-heading"))
     (advice-add #'helm-ag--marked-input :around
                 (lambda (of escape)
                   (let ((res (funcall of escape)))
