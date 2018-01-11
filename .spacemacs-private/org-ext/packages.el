@@ -18,11 +18,10 @@
 
 (defun org-ext/post-init-evil-org ()
   (use-package evil-org
-    :ensure t
     :defer t
     :config
     (spacemacs/set-leader-keys-for-major-mode 'org-mode
-      "C" #'org-columns)))
+      "l" #'org-columns)))
 
 (defun org-ext/post-init-org ()
   (use-package org
