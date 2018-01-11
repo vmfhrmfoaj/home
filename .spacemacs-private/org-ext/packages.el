@@ -73,37 +73,38 @@
                        (save-excursion
                          (goto-char pos)
                          (list (looking-at-p "[ ]*- \\[\\( \\|-\\|X\\)\\]"))))))))
-    (font-lock-add-keywords
-     'org-mode
-     (let* ((data (all-the-icons-faicon-data))
-            (square       (string-to-char (cdr (assoc "square" data))))
-            (minus-square (string-to-char (cdr (assoc "minus-square" data))))
-            (check-square (string-to-char (cdr (assoc "check-square" data)))))
-       `(("^\\s-*\\(-\\) "
-          1 (progn
-              (let ((s (match-beginning 1))
-                    (e (match-end 1)))
-                (compose-region s e ?╺))
-              'bold))
-         ("^\\s-*\\(\\([0-9]\\.\\)\\) "
-          1 'bold)
-         ("^\\s-*\\(?:-\\|[0-9]+\\.\\) \\(\\[\\( \\|-\\|X\\)\\]\\) "
-          1 (progn
-              (let ((x (match-string 2))
-                    (s (match-beginning 1))
-                    (e (match-end 1)))
-                (compose-region
-                 s e
-                 (cond
-                  ((string-equal x " ") ,square)
-                  ((string-equal x "-") ,minus-square)
-                  ((string-equal x "X") ,check-square)))
-                (list (list :family "FontAwesome"
-                            :foreground (face-attribute (if (string-equal x "X")
-                                                            'org-done 'org-todo)
-                                                        :foreground))))))
-         ("\\(\\\\\\\\\\)\\s-*$"
-          1 'shadow nil))))
+    (when (require 'all-the-icons nil 'no-error)
+      (font-lock-add-keywords
+       'org-mode
+       (let* ((data (all-the-icons-faicon-data))
+              (square       (string-to-char (cdr (assoc "square" data))))
+              (minus-square (string-to-char (cdr (assoc "minus-square" data))))
+              (check-square (string-to-char (cdr (assoc "check-square" data)))))
+         `(("^\\s-*\\(-\\) "
+            1 (progn
+                (let ((s (match-beginning 1))
+                      (e (match-end 1)))
+                  (compose-region s e ?╺))
+                'bold))
+           ("^\\s-*\\(\\([0-9]\\.\\)\\) "
+            1 'bold)
+           ("^\\s-*\\(?:-\\|[0-9]+\\.\\) \\(\\[\\( \\|-\\|X\\)\\]\\) "
+            1 (progn
+                (let ((x (match-string 2))
+                      (s (match-beginning 1))
+                      (e (match-end 1)))
+                  (compose-region
+                   s e
+                   (cond
+                    ((string-equal x " ") ,square)
+                    ((string-equal x "-") ,minus-square)
+                    ((string-equal x "X") ,check-square)))
+                  (list (list :family "FontAwesome"
+                              :foreground (face-attribute (if (string-equal x "X")
+                                                              'org-done 'org-todo)
+                                                          :foreground))))))
+           ("\\(\\\\\\\\\\)\\s-*$"
+            1 'shadow nil)))))
     (add-hook 'org-todo-get-default-hook
               (byte-compile
                (lambda (mark _)
