@@ -455,6 +455,7 @@ before packages are loaded."
      ((string-equal font "MonacoB2")
       (cond
        ((and linux? (not (= 13 size)))
+        (add-to-list 'face-font-rescale-alist '("Free-Symbola" . 0.95))
         (add-to-list 'face-font-rescale-alist '("Fira Code Symbol" . 0.95)))
        ((and mac? (= 13 size))
         (setq-default line-spacing 1)
