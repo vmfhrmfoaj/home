@@ -84,6 +84,7 @@ This function should only modify configuration layer settings."
      latex-ext
      org-ext
      perl5-ext
+     php-ext
      shell-scripts-ext
      spacemacs-ext
      version-control-ext
