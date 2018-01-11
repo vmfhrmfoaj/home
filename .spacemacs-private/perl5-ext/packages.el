@@ -32,6 +32,16 @@
     :init
     (add-hook 'cperl-mode-hook
               (lambda ()
-                (perl-setup-indent-config perl-indent-config)))))
+                (perl-setup-indent-config perl-indent-config)))
+    :config
+    (font-lock-add-keywords
+     'cperl-mode
+     '(("\\([@$%][_0-9a-zA-Z]+\\)\\_>"
+        (1 'default t))
+       ("\\([@$%][_0-9a-zA-Z]+\\)\\s-*[.+-*/]?=[^~]"
+        (1 'font-lock-variable-name-face t))
+       ("(\\(\\(?:[@$%][_0-9a-zA-Z]+\\(?:,\\s-*\\)?\\)+\\))\\s-*[.+-*/]?=[^~]"
+        (1 'font-lock-variable-name-face t)))
+     'append)))
 
 ;;; packages.el ends here
