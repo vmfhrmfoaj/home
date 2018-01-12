@@ -16,6 +16,7 @@
     auto-dim-other-buffers
     company
     evil
+    evil-goggles
     fancy-narrow
     golden-ratio
     neotree))
@@ -230,6 +231,12 @@
                          (without-text-properties-hard (point-min) (point-max) '(composition font-lock-multiline)
                            (funcall of))
                        (funcall of))))))))
+
+(defun eye-candy/init-evil-goggles ()
+  (use-package evil-goggles
+    :config
+    (evil-goggles-mode)
+    (evil-goggles-use-diff-faces)))
 
 (defun eye-candy/init-fancy-narrow ()
   (use-package fancy-narrow))
