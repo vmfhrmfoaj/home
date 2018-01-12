@@ -16,7 +16,6 @@
     helm
     helm-ag
     helm-projectile
-    helm-swoop
     (minibuffer :location built-in)))
 
 (defun helm-ext/post-init-dumb-jump ()
@@ -121,17 +120,7 @@
   (use-package helm-ag
     :defer t
     :config
-    (setq helm-ag-use-emacs-lisp-regexp t))
-  ;; NOTE:
-  ;;  Spacemacs is changing their packages load order.
-  ;;  see: https://github.com/syl20bnr/spacemacs/issues/9979
-  ;;  see: https://github.com/syl20bnr/spacemacs/issues/10132
-  (use-package helm-swoop
-    :config
-    (spacemacs/set-leader-keys
-      "ss"    'helm-swoop
-      "sS"    'spacemacs/helm-swoop-region-or-symbol
-      "s C-s" 'helm-multi-swoop-all)))
+    (setq helm-ag-use-emacs-lisp-regexp t)))
 
 (defun helm-ext/post-init-helm-projectile ()
   (use-package helm-projectile
@@ -141,9 +130,6 @@
       (kbd "C-h") #'delete-backward-char)
     (define-key (assoc 'keymap helm-source-projectile-dired-files-list)
       (kbd "C-h") #'delete-backward-char)))
-
-(defun helm-ext/post-init-helm-swoop ()
-  )
 
 (defun helm-ext/init-minibuffer ()
   (use-package minibuffer

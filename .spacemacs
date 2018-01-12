@@ -403,8 +403,6 @@ configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
 
-  (setq c-c++-enable-rtags-support t)
-
   ;; compile settings
   (setq-default byte-compile-dynamic t
                 byte-compile-warnings nil)
