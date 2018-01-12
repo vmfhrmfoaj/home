@@ -32,12 +32,11 @@ function setEnv () {
   export REACT_EDITOR=emacsclient
 
   # java
-  local java_home=$(java -XshowSettings:properties -version 2>&1 | grep "java.home" | cut -d'=' -f2)
+  local java_dir=$(java -XshowSettings:properties -version 2>&1 | grep "java.home" | cut -d'=' -f2)
   if [[ "$os" == "Linux" ]]; then
-    java_home=$(dirname $java_home)
+    java_dir=$(dirname $java_dir)
   fi
-  export JAVA_HOME=$java_home
-  export PATH=$JAVA_HOME/bin:$PATH
+  export PATH=$java_dir/bin:$PATH
   local mem_in_gb=0
   if   [[ "$os" == "Darwin" ]]; then
     mem_in_gb=$(($(sysctl -n hw.memsize) / 1024 / 1024 / 1024))
