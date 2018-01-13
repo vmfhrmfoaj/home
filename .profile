@@ -43,7 +43,7 @@ function setEnv () {
   elif [[ "$os" == "Linux" ]]; then
     mem_in_gb=$(($(cat /proc/meminfo | grep MemTotal | grep -o "[0-9]\+") / 1024 / 1024))
   fi
-  local jvm_ots=""
+  local jvm_opts="--add-opens java.base/java.io=ALL-UNNAMED"
   if   [[ $mem_in_gb -gt 16 ]]; then
     export JVM_OPTS="$jvm_opts -Xms2g -Xmx8g"
   elif [[ $mem_in_gb -gt  8 ]]; then
