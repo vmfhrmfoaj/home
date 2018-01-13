@@ -129,7 +129,11 @@
   (use-package helm-ag
     :defer t
     :config
-    (setq helm-ag-use-emacs-lisp-regexp t)))
+    (setq helm-ag-use-emacs-lisp-regexp t)
+    (advice-add #'helm-ag--propertize-candidates :before-until
+                (byte-compile
+                 (lambda (input)
+                   (not (safe-regexp? input)))))))
 
 (defun helm-ext/post-init-helm-projectile ()
   (use-package helm-projectile

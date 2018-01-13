@@ -13,7 +13,6 @@
        (cdr)
        (nth 2)))
 
-
 (defun include-shell-var-in (file)
   (dolist (it (->> (concat "source " file "; env")
                    (shell-command-to-string)
@@ -61,7 +60,6 @@
                   (with-disable-modes modes
                     (apply f args))))))
 
-
 (setq-default auto-indent-skip-when-open-file t)
 
 (defun auto-indent (&rest _)
@@ -93,7 +91,6 @@
              (indent-region start end)))))))
   (setq-local auto-indent-skip-when-open-file nil))
 
-
 (defun set-window-buffer+ (set-win-buf wind buf &optional opt)
   (when (and (->> (window-list)
                   (-remove (-partial #'eq (selected-window)))
@@ -110,7 +107,6 @@
                   (-first-item))
              (window-buffer wind) opt))
   (funcall set-win-buf wind buf opt))
-
 
 (defun dim-color (color p)
   (->> color
@@ -152,3 +148,8 @@
   (condition-case nil
       (down-list)
     (setq-local font-lock--skip t)))
+
+(defun safe-regexp? (regex)
+  (condition-case nil
+      (progn (string-match-p regex "") t)
+    (error nil)))
