@@ -92,5 +92,12 @@ function setEnv () {
     export GROOVY_HOME=/usr/local/opt/groovy/libexec
   elif [[ "$os" == "Linux" ]]; then
   fi
+
+  # oh my zsh
+  if [[ "/bin/zsh" == "$SHELL" ]]; then
+    if [[ ! -z $(echo $plugins | grep "vi-mode") ]]; then
+      bindkey -M vicmd '^r' history-incremental-search-backward
+    fi
+  fi
 }
 setEnv
