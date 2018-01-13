@@ -78,7 +78,7 @@
   (when (require 'evil nil 'noerr)
     (define-key evil-ex-map (kbd "C-h") #'delete-backward-char)
     (define-key evil-insert-state-map (kbd "C-h") #'delete-backward-char)
-    (add-hook 'evil-normal-state-entry-hook
+    (add-hook 'evil-insert-state-entry-hook
               (lambda ()
                 (auto-indent)
                 (evil-ex-nohighlight)))
