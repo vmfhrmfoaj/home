@@ -114,7 +114,15 @@
                  (setq helm-autoresize-max-height helm-autoresize-max-height--save
                        helm-autoresize-max-height--save nil)))))
       (add-hook 'helm-exit-minibuffer-hook f)
-      (add-hook 'helm-quit-hook f))))
+      (add-hook 'helm-quit-hook f)))
+  (use-package helm-org
+    :defer t
+    :config
+    (advice-add #'helm-org-completing-read-tags :around
+                (byte-compile
+                 (lambda (fn &rest args)
+                   (let ((completion-ignore-case t))
+                     (apply fn args)))))))
 
 (defun helm-ext/post-init-helm-ag ()
   (use-package helm-ag
