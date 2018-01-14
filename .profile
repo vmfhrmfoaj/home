@@ -94,9 +94,15 @@ function setEnv () {
   fi
 
   # oh my zsh
-  if [[ ! -z $(echo $SHELL | grep "zsh") ]]; then
+  if [[ ! -z $(echo $SHELL | grep "zsh$") ]]; then
     if [[ ! -z $(echo $plugins | grep "vi-mode") ]]; then
       bindkey -M vicmd '^r' history-incremental-search-backward
+      bindkey -M vicmd '^a' beginning-of-line
+      bindkey -M vicmd '^e' end-of-line
+      bindkey -M vicmd '^b' backward-char
+      bindkey -M vicmd '^f' forward-char
+      bindkey '^b' backward-char
+      bindkey '^f' forward-char
     fi
   fi
 }
