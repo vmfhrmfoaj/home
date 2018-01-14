@@ -20,6 +20,23 @@
     :config
     (setq sh-basic-offset 2
           sh-indentation 2
-          sh-learn-basic-offset t)))
+          sh-learn-basic-offset t)
+    (font-lock-add-keywords
+     'sh-mode
+     '(("\\(\\$[_0-9a-zA-Z]+\\)"
+        (1 (let ((face (plist-get (text-properties-at (match-beginning 0)) 'face)) face-lst)
+             (setq face-lst (if (listp face) face (list face)))
+             (if (or (memq 'font-lock-comment-face face-lst)
+                     (memq 'font-lock-string-face  face-lst))
+                 face
+               'default))
+           t))
+       ("\\(\\${[_0-9a-zA-Z]}+\\)"
+        (1 'default t))
+       ("\\([_0-9a-zA-Z]+\\)=[^~]"
+        (1 'font-lock-variable-name-face))
+       ("export\\s-+\\([_0-9a-zA-Z]+\\)"
+        (1 'font-lock-variable-name-face)))
+     'append)))
 
 ;;; packages.el ends here

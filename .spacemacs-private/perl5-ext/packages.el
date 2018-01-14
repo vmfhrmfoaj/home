@@ -36,12 +36,18 @@
     :config
     (font-lock-add-keywords
      'cperl-mode
-     '(("\\([@$%][_0-9a-zA-Z]+\\)\\_>"
-        (1 'default t))
+     '(("\\([@$%][_0-9a-zA-Z]+\\)"
+        (1 (let ((face (plist-get (text-properties-at (match-beginning 0)) 'face)) face-lst)
+             (setq face-lst (if (listp face) face (list face)))
+             (if (or (memq 'font-lock-comment-face face-lst)
+                     (memq 'font-lock-string-face  face-lst))
+                 face
+               'default))
+           t))
        ("\\([@$%][_0-9a-zA-Z]+\\)\\s-*[.+-*/]?=[^~]"
-        (1 'font-lock-variable-name-face t))
+        (1 'font-lock-variable-name-face))
        ("(\\(\\(?:[@$%][_0-9a-zA-Z]+\\(?:,\\s-*\\)?\\)+\\))\\s-*[.+-*/]?=[^~]"
-        (1 'font-lock-variable-name-face t)))
+        (1 'font-lock-variable-name-face)))
      'append)))
 
 ;;; packages.el ends here
