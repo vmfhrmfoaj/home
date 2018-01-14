@@ -579,21 +579,33 @@ before packages are loaded."
   (setq gc-cons-threshold (* 64 1024 1024)
         gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect)
         font-lock-idle-time 0.15
-        font-lock-idle-timer nil)
+        font-lock-idle-timer nil
+        font-lock-idle-avoid-buf-regex (regexp-opt '("org-src-fontification")))
   (make-local-variable 'font-lock-idle-timer)
   (advice-add #'jit-lock-after-change :around
               (byte-compile
                (lambda (fn &rest arg)
-                 (if (not font-lock-idle-time)
+                 (if (or (not font-lock-idle-time)
+                         (string-match-p font-lock-idle-avoid-buf-regex (buffer-name)))
                      (apply fn arg)
                    (when font-lock-idle-timer
                      (cancel-timer font-lock-idle-timer))
                    (setq font-lock-idle-timer
                          (run-with-idle-timer font-lock-idle-time nil
-                                              (lexical-let ((fn fn) (arg arg))
+                                              (lexical-let ((fn fn)
+                                                            (arg arg)
+                                                            (buf (current-buffer)))
                                                 (lambda ()
                                                   (setq font-lock-idle-timer nil)
-                                                  (apply fn arg)))))))))
+                                                  (if (eq buf (current-buffer))
+                                                      (apply fn arg)
+                                                    (message (concat "jit-lock-after-change: "
+                                                                     "Fire a timer in another buffer("
+                                                                     "regisered buffer=" (buffer-name buf) ", "
+                                                                     "fired buffer=" (buffer-name) ")."))
+                                                    (when (get-buffer buf)
+                                                      (with-current-buffer buf
+                                                        (apply fn arg))))))))))))
 
   ;; customize the theme.
   (custom-theme-set-faces
