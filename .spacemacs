@@ -597,15 +597,9 @@ before packages are loaded."
                                                             (buf (current-buffer)))
                                                 (lambda ()
                                                   (setq font-lock-idle-timer nil)
-                                                  (if (eq buf (current-buffer))
-                                                      (apply fn arg)
-                                                    (message (concat "jit-lock-after-change: "
-                                                                     "Fire a timer in another buffer("
-                                                                     "regisered buffer=" (buffer-name buf) ", "
-                                                                     "fired buffer=" (buffer-name) ")."))
-                                                    (when (get-buffer buf)
-                                                      (with-current-buffer buf
-                                                        (apply fn arg))))))))))))
+                                                  (when (get-buffer buf)
+                                                    (with-current-buffer buf
+                                                      (apply fn arg)))))))))))
 
   ;; customize the theme.
   (custom-theme-set-faces
