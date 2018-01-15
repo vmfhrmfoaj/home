@@ -103,6 +103,7 @@ function setEnv () {
       bindkey -M vicmd '^f' forward-char
       bindkey '^b' backward-char
       bindkey '^f' forward-char
+      bindkey '^d' delete-char
     fi
   fi
 }
