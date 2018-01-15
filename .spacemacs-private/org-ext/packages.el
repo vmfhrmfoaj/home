@@ -21,7 +21,9 @@
     :defer t
     :config
     (spacemacs/set-leader-keys-for-major-mode 'org-mode
-      "l" #'org-columns)))
+      "l" #'org-columns)
+    (spacemacs/set-leader-keys-for-major-mode 'org-agenda-mode
+      "l" #'org-agenda-columns)))
 
 (defun org-ext/post-init-org ()
   (use-package org
