@@ -50,7 +50,9 @@
        ("\\([@$%][_0-9a-zA-Z]+\\)\\s-*[.+-*/]?=[^=~]"
         (1 'font-lock-variable-name-face))
        ("(\\(\\(?:[@$%][_0-9a-zA-Z]+\\(?:,\\s-*\\)?\\)+\\))\\s-*[.+-*/]?=[^=~]"
-        (1 'font-lock-variable-name-face)))
+        (1 'font-lock-variable-name-face))
+       ("\\([@$]_\\|\\$[ab]\\)"
+        (1 'perl-sepcial-variable-name-face)))
      'append)))
 
 ;;; packages.el ends here
