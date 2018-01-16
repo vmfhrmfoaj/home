@@ -30,6 +30,10 @@
   (use-package cperl-mode
     :defer t
     :init
+    (let ((f (lambda (&rest _))))
+      (advice-add #'cperl-electric-keyword :override f)
+      (advice-add #'cperl-electric-else    :override f)
+      (advice-add #'cperl-electric-pod     :override f))
     (add-hook 'cperl-mode-hook
               (lambda ()
                 (perl-setup-indent-config perl-indent-config)))
