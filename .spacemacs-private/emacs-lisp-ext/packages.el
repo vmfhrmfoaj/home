@@ -77,7 +77,7 @@
            (end-of-line)
          (goto-char lisp--binding-form-point))
        (1 'lisp-local-binding-variable-name-face)))
-     ("(-\\(?:when\\|if\\)-let\\*?[ \r\n\t]+(\\([-+/=>&?:_0-9a-zA-Z]+\\)[ \r\t\n]"
+     ("(-\\(?:when\\|if\\)-let\\*?[ \r\n\t]+(\\([-+*/=>&?:_0-9a-zA-Z]+\\)[ \r\t\n]"
       (1 'lisp-local-binding-variable-name-face))))
   (add-hook 'lisp-interaction-mode-hook #'smartparens-mode)
   (add-hook 'emacs-lisp-mode-hook
