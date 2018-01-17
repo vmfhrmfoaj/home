@@ -691,6 +691,9 @@ before packages are loaded."
                '(("[0-9A-Za-z]\\(/\\)[<>0-9A-Za-z]"
                   1 'shadow)))))
 
+  ;; for sync
+  (add-hook 'after-save-hook #'tramp-sync)
+
   ;; for org-capture Browser extension
   (require 'org-protocol)
 

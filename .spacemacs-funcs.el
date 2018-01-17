@@ -152,3 +152,23 @@
   (condition-case nil
       (progn (string-match-p regex "") t)
     (error nil)))
+
+(setq tramp-sync-dir nil)
+
+(defun tramp-sync (&optional buf)
+  (let ((buf (or buf (current-buffer)))
+        (path (buffer-file-name buf)))
+    (when (and tramp-sync-dir path)
+      (-when-let (root (car (dir-locals-find-file path)))
+        (let ((remote-path (->> root
+                                (file-relative-name path)
+                                (concat tramp-sync-dir "/"))))
+          (if (fboundp 'async-start)
+              (async-start
+               `(lambda ()
+                  (condition-case e
+                      (copy-file ,path ,remote-path t)
+                    (error (message "Error ouccurred while syncing: %s"
+                                    (error-message-string e))))
+                  'ignore))
+            (copy-file path remote-path t)))))))
