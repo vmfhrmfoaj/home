@@ -196,9 +196,13 @@
                   "Improves `spacemacs/helm-persp-switch-project'."
                   (when (and (featurep 'persp-mode)
                              (get-current-persp))
-                    (let ((root (aref (get-current-persp) 1)))
+                    (let* ((root (aref (get-current-persp) 1))
+                           (root_ (if (string-prefix-p "/" root)
+                                      (concat "~/" (file-relative-name root (getenv "HOME")))
+                                    (file-truename root))))
                       (->> (buffer-list)
-                           (--filter (projectile-project-buffer-p it root))
+                           (--filter (or (projectile-project-buffer-p it root_)
+                                         (projectile-project-buffer-p it root)))
                            (-map #'persp-add-buffer))))))))
 
 (defun spacemacs-ext/post-init-rainbow-delimiters ()
