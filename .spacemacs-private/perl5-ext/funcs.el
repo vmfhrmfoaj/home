@@ -1,4 +1,5 @@
 (setq-default perl-offset-level 1)
+
 (defun perl-set-offsets (offsets &optional level)
   (let ((level (or level perl-offset-level)))
     (dolist (offset offsets)
@@ -22,23 +23,5 @@
     (when offset
       (perl-set-offsets offset))))
 
-
-(defun perl-plsense-jump-to-definition ()
-  (interactive)
-  (company-plsense--update-package-and-file)
-  (company-plsense--update-function)
-  (let* ((sym (symbol-name (symbol-at-point)))
-         (subinfo (or (company-plsense--sync-request (concat "subinfo " sym)) ""))
-         (file (when (string-match "^FILE: \\([^\n]+\\)" subinfo)
-                 (match-string-no-properties 1 subinfo)))
-         (line (when (string-match "^LINE: \\([0-9]+\\)" subinfo)
-                 (string-to-number (match-string-no-properties 1 subinfo))))
-         (col (when (string-match "^COL: \\([0-9]+\\)" subinfo)
-                (string-to-number (match-string-no-properties 1 subinfo)))))
-    (if (not (and file line col))
-        (message "Not found definition location at point.")
-      (xref-push-marker-stack)
-      (find-file file)
-      (goto-char (point-min))
-      (forward-line (1- line))
-      (forward-char (1- col)))))
+(defvar perl-defun-regex
+  "sub[ \r\t\n]+[_0-9A-Za-z]+[ \r\t\n]+{")

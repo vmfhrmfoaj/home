@@ -12,32 +12,32 @@
 ;;; Code:
 
 (defconst perl5-ext-packages
-  '(company-plsense
-    (cperl-mode :location built-in)))
-
-(defun perl5-ext/post-init-company-plsense ()
-  (use-package company-plsense
-    :defer t
-    :init
-    (byte-compile #'perl-plsense-jump-to-definition)
-    (add-hook 'cperl-mode-hook
-              (lambda ()
-                (add-to-list 'spacemacs-jump-handlers
-                             #'perl-plsense-jump-to-definition))
-              'append)))
+  '((cperl-mode :location built-in)))
 
 (defun perl5-ext/post-init-cperl-mode ()
   (use-package cperl-mode
     :defer t
-    :init
-    (let ((f (lambda (&rest _))))
+    :config
+    (byte-compile #'perl-set-offsets)
+    (byte-compile #'perl-set-vars)
+    (byte-compile #'perl-setup-indent-config)
+
+    (add-to-list 'spacemacs-jump-handlers-cperl-mode 'dumb-jump-go)
+    (let ((f (byte-compile (lambda (&rest _)))))
       (advice-add #'cperl-electric-keyword :override f)
       (advice-add #'cperl-electric-else    :override f)
       (advice-add #'cperl-electric-pod     :override f))
     (add-hook 'cperl-mode-hook
               (lambda ()
-                (perl-setup-indent-config perl-indent-config)))
-    :config
+                (perl-setup-indent-config perl-indent-config)
+                (setq-local beginning-of-defun-function
+                            (byte-compile
+                             (lambda (arg)
+                               (unless (re-search-backward perl-defun-regex nil t)
+                                 (error "Not found starting of the subroutine.")))))
+                (setq-local end-of-defun-function
+                            (lambda ()
+                              (and (re-search-forward perl-defun-regex) (up-list))))))
     (font-lock-add-keywords
      'cperl-mode
      (let* ((symbol "[@$%][_0-9a-zA-Z]+")
