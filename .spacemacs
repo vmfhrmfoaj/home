@@ -692,7 +692,7 @@ before packages are loaded."
                   1 'shadow)))))
 
   ;; for sync
-  (add-hook 'after-save-hook #'tramp-sync)
+  (add-hook 'after-save-hook #'rsync-remote-dir)
 
   ;; for org-capture Browser extension
   (require 'org-protocol)

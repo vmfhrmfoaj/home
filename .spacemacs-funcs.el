@@ -153,22 +153,38 @@
       (progn (string-match-p regex "") t)
     (error nil)))
 
-(setq tramp-sync-dir nil)
+(setq rsync-retry-coutner 3
+      rsync-remote-dir nil
+      rsync-remote-opts "-z -e \"ssh -T -o Compression=no -x\"")
 
-(defun tramp-sync (&optional buf)
-  (let ((buf (or buf (current-buffer)))
-        (path (buffer-file-name buf)))
-    (when (and tramp-sync-dir path)
-      (-when-let (root (car (dir-locals-find-file path)))
-        (let ((remote-path (->> root
-                                (file-relative-name path)
-                                (concat tramp-sync-dir "/"))))
-          (if (fboundp 'async-start)
-              (async-start
-               `(lambda ()
-                  (condition-case e
-                      (copy-file ,path ,remote-path t)
-                    (error (message "Error ouccurred while syncing: %s"
-                                    (error-message-string e))))
-                  'ignore))
-            (copy-file path remote-path t)))))))
+(defun rsync-remote-dir (&optional buf)
+  (let* ((buf (or (get-buffer buf) (current-buffer)))
+         (buf-name (buffer-name buf))
+         (path (buffer-file-name buf)))
+    (-when-let (root (and rsync-remote-dir path
+                          (car (dir-locals-find-file path))))
+      (let* ((remote-root (s-chop-suffix "/" rsync-remote-dir))
+             (remote-path (->> root
+                               (file-relative-name path)
+                               (concat remote-root "/"))))
+        (if (not (fboundp 'async-start))
+            (copy-file path remote-path t)
+          (setq-local rsync-retry-coutner (1- rsync-retry-coutner))
+          (async-start
+           `(lambda ()
+              (let ((err-buf-name "*err*")
+                    (cmd (concat "rsync " ,rsync-remote-opts " " ,path " " ,remote-path)))
+                (if (= 0 (shell-command cmd nil err-buf-name))
+                    t
+                  (concat "Error ouccurred while syncing '"
+                          ,buf-name "'; "
+                          (when (get-buffer err-buf-name)
+                            (with-current-buffer err-buf-name
+                              (goto-char (point-min))
+                              (buffer-substring (point-min) (line-end-position))))))))
+           `(lambda (res)
+              (if (not (stringp res))
+                  (message (concat "'" ,buf-name "' sync is done!"))
+                (message res)
+                (when (<= 0 ,rsync-retry-coutner)
+                  (rsync-remote-dir ,buf-name))))))))))
