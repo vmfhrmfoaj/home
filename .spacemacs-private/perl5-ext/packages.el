@@ -40,19 +40,28 @@
     :config
     (font-lock-add-keywords
      'cperl-mode
-     '(("\\([@$%][_0-9a-zA-Z]+\\)"
-        (1 (let ((face (plist-get (text-properties-at (1- (match-beginning 0))) 'face)) face-lst)
-             (setq face-lst (if (listp face) face (list face)))
-             (when (or (memq 'font-lock-comment-face face-lst)
-                       (memq 'font-lock-string-face  face-lst))
-               face))
-           t))
-       ("\\([@$%][_0-9a-zA-Z]+\\)\\s-*[.+-*/]?=[^=~]"
-        (1 'font-lock-variable-name-face))
-       ("(\\(\\(?:[@$%][_0-9a-zA-Z]+\\(?:,\\s-*\\)?\\)+\\))\\s-*[.+-*/]?=[^=~]"
-        (1 'font-lock-variable-name-face))
-       ("\\([@$]_\\|\\$[ab]\\>\\)"
-        (1 'perl-sepcial-variable-name-face)))
+     (let* ((symbol "[@$%][_0-9a-zA-Z]+")
+            (whitespace "[ \r\t\n]")
+            (whitespace+ (concat whitespace "+"))
+            (whitespace* (concat whitespace "*")))
+       `((,(concat "\\(" symbol "\\)")
+          (1 (let ((face (plist-get (text-properties-at (1- (match-beginning 0))) 'face)) face-lst)
+               (setq face-lst (if (listp face) face (list face)))
+               (when (or (memq 'font-lock-comment-face face-lst)
+                         (memq 'font-lock-string-face  face-lst))
+                 face))
+             t))
+         (,(concat "\\(?:my\\|local\\|our\\)" whitespace+ "\\(" symbol "\\)")
+          (1 'font-lock-variable-name-face))
+         (,(concat "\\(?:my\\|local\\|our\\)" whitespace+ "(" )
+          (,(concat "\\(" symbol "\\)")
+           (save-excursion
+             (safe-up-list-1)
+             (point))
+           nil
+           (1 'font-lock-variable-name-face)))
+         ("for\\(each\\)? my \\([@$%][_0-9a-zA-Z]+\\)"
+          (1 'font-lock-variable-name-face))))
      'append)))
 
 ;;; packages.el ends here

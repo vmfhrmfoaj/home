@@ -23,20 +23,23 @@
           sh-learn-basic-offset t)
     (font-lock-add-keywords
      'sh-mode
-     '(("\\(\\$[_0-9a-zA-Z]+\\)"
-        (1 (let ((face (plist-get (text-properties-at (1- (match-beginning 0))) 'face)) face-lst)
-             (setq face-lst (if (listp face) face (list face)))
-             (when (or (memq 'font-lock-comment-face face-lst)
-                       (memq 'font-lock-string-face  face-lst))
-               face
-               ))
-           t))
-       ("\\(\\${[_0-9a-zA-Z]+}\\)"
-        (1 'default t))
-       ("\\([_0-9a-zA-Z]+\\)=[^~]"
-        (1 'font-lock-variable-name-face))
-       ("export\\s-+\\([_0-9a-zA-Z]+\\)"
-        (1 'font-lock-variable-name-face)))
+     (let* ((symbol "[_0-9a-zA-Z]+")
+            (symbol_ (concat "\\(?:\\$" symbol "\\|\\${" symbol "}\\)"))
+            (whitespace "[ \r\t]")
+            (whitespace+ (concat whitespace "+"))
+            (whitespace* (concat whitespace "*"))
+            (assigment "=[^=]"))
+       `((,(concat "\\(" symbol_ "\\)")
+          (1 (let ((face (plist-get (text-properties-at (1- (match-beginning 0))) 'face)) face-lst)
+               (setq face-lst (if (listp face) face (list face)))
+               (when (or (memq 'font-lock-comment-face face-lst)
+                         (memq 'font-lock-string-face  face-lst))
+                 face))
+             t))
+         (,(concat "\\(" symbol "\\)" assigment)
+          (1 'font-lock-variable-name-face))
+         (,(concat "export" whitespace+ "\\(" symbol "\\)")
+          (1 'font-lock-variable-name-face))))
      'append)))
 
 ;;; packages.el ends here

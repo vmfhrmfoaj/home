@@ -1,7 +1,3 @@
-(defface perl-sepcial-variable-name-face
-  `((t (:inherit font-lock-variable-name-face :weight normal)))
-  "Face used to font-lock CPerl special variable.")
-
 (defvar perl-indent-config--default
   '(var
     ((indent-tabs-mode nil))
