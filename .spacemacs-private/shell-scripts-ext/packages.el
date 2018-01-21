@@ -23,7 +23,7 @@
           sh-learn-basic-offset t)
     (font-lock-add-keywords
      'sh-mode
-     (let* ((symbol "[_0-9a-zA-Z]+")
+     (let* ((symbol "[@?_0-9a-zA-Z]+")
             (symbol_ (concat "\\(?:\\$" symbol "\\|\\${" symbol "}\\)"))
             (whitespace "[ \r\t]")
             (whitespace+ (concat whitespace "+"))
@@ -35,11 +35,7 @@
                (when (or (memq 'font-lock-comment-face face-lst)
                          (memq 'font-lock-string-face  face-lst))
                  face))
-             t))
-         (,(concat "\\(" symbol "\\)" assigment)
-          (1 'font-lock-variable-name-face))
-         (,(concat "export" whitespace+ "\\(" symbol "\\)")
-          (1 'font-lock-variable-name-face))))
+             t))))
      'append)))
 
 ;;; packages.el ends here
