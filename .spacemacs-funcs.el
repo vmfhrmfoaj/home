@@ -60,10 +60,10 @@
                   (with-disable-modes modes
                     (apply f args))))))
 
-(setq-default auto-indent-skip-when-open-file t)
+(setq auto-indent-skip-when-open-file t)
 
 (defun auto-indent (&rest _)
-  "auto-indent-for-evil-mode"
+  "Auto indent for `evil-mode'"
   (unless auto-indent-skip-when-open-file
     (save-match-data
       (save-mark-and-excursion
@@ -88,7 +88,9 @@
                         (point))
                     (error nil)))))
            (when (and start end)
-             (indent-region start end)))))))
+             (let ((fancy-narrow--beginning nil)
+                   (fancy-narrow--end nil))
+               (indent-region start end))))))))
   (setq-local auto-indent-skip-when-open-file nil))
 
 (defun set-window-buffer+ (set-win-buf wind buf &optional opt)
