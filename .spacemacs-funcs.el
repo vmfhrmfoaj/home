@@ -158,7 +158,8 @@
       rsync-remote-opts "-z -e \"ssh -T -o Compression=no -x\"")
 
 (defun rsync-remote-dir (&optional buf)
-  (let* ((buf (or (get-buffer buf) (current-buffer)))
+  (let* ((buf (or (and buf (get-buffer buf))
+                  (current-buffer)))
          (buf-name (buffer-name buf))
          (path (buffer-file-name buf)))
     (-when-let (root (and rsync-remote-dir path
