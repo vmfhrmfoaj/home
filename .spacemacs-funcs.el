@@ -157,7 +157,13 @@
 
 (setq rsync-retry-coutner 3
       rsync-remote-dir nil
-      rsync-remote-opts "-z -e \"ssh -T -o Compression=no -x\"")
+      rsync-remote-opts "-z"
+      rsync-remote-ssh-opts "-T -o Compression=no -x"
+      rsync-remote-notify-cmd
+      (cond ((eq system-type 'gnu/linux)
+             "notify-send Emacs ")
+            ((eq system-type 'darwin)
+             "terminal-notifier -title Emacs -message ")))
 
 (defun rsync-remote-dir (&optional buf)
   (let* ((buf (or (and buf (get-buffer buf))
@@ -176,18 +182,24 @@
           (async-start
            `(lambda ()
               (let ((err-buf-name "*err*")
-                    (cmd (concat "rsync " ,rsync-remote-opts " " ,path " " ,remote-path)))
+                    (cmd (concat "rsync "
+                                 ,rsync-remote-opts
+                                 " -e \"ssh " ,rsync-remote-ssh-opts "\" "
+                                 ,path " "
+                                 ,remote-path)))
                 (if (= 0 (shell-command cmd nil err-buf-name))
                     t
                   (concat "Error ouccurred while syncing '"
-                          ,buf-name "'; "
+                          ,buf-name "': " cmd "; "
                           (when (get-buffer err-buf-name)
                             (with-current-buffer err-buf-name
                               (goto-char (point-min))
                               (buffer-substring (point-min) (line-end-position))))))))
            `(lambda (res)
               (if (not (stringp res))
-                  (message (concat "'" ,buf-name "' sync is done!"))
+                  (message (concat "syncing '" ,buf-name "' is done!"))
                 (message res)
-                (when (<= 0 ,rsync-retry-coutner)
-                  (rsync-remote-dir ,buf-name))))))))))
+                (if (<= 0 ,rsync-retry-coutner)
+                    (rsync-remote-dir ,buf-name)
+                  (shell-command-to-string
+                   (concat rsync-remote-notify-cmd "'" res "'")))))))))))
