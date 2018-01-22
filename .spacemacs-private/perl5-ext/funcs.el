@@ -22,6 +22,3 @@
       (perl-set-vars var))
     (when offset
       (perl-set-offsets offset))))
-
-(defvar perl-defun-regex
-  "sub[ \r\t\n]+[_0-9A-Za-z]+[ \r\t\n]+{")

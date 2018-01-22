@@ -33,14 +33,28 @@
                 (setq-local beginning-of-defun-function
                             (byte-compile
                              (lambda (arg)
-                               (unless (re-search-backward perl-defun-regex nil t)
-                                 (error "Not found starting of the subroutine.")))))
+                               (let* ((cur-pos (point))
+                                      (semi-fn-regex "sub[ \r\t\n]+[_0-9A-Za-z]+")
+                                      (fn-regex (concat semi-fn-regex "[ \r\t\n]+{"))
+                                      (from-beg-of-deufn? (eq 'beginning-of-defun this-command))
+                                      (cur-line-str (buffer-substring (line-beginning-position)
+                                                                      (line-end-position))))
+                                 (when (or from-beg-of-deufn?
+                                           (not (string-match-p semi-fn-regex cur-line-str)))
+                                   (end-of-line)
+                                   (unless (re-search-backward fn-regex nil t)
+                                     (goto-char cur-pos)
+                                     (if from-beg-of-deufn?
+                                         (error "Not found starting of the subroutine.")
+                                       (while (ignore-errors (backward-up-list nil t))))))))))
                 (setq-local end-of-defun-function
-                            (lambda ()
-                              (and (re-search-forward perl-defun-regex) (up-list))))))
+                            (byte-compile
+                             (lambda ()
+                               (and (re-search-forward "{")
+                                    (up-list)))))))
     (font-lock-add-keywords
      'cperl-mode
-     (let* ((symbol "[@$%][_0-9a-zA-Z]+")
+     (let* ((symbol "[@$%]+[:_0-9a-zA-Z]+")
             (whitespace "[ \r\t\n]")
             (whitespace+ (concat whitespace "+"))
             (whitespace* (concat whitespace "*")))
