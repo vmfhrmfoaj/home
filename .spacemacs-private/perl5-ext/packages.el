@@ -22,11 +22,11 @@
     (byte-compile #'perl-set-vars)
     (byte-compile #'perl-setup-indent-config)
 
-    (add-to-list 'spacemacs-jump-handlers-cperl-mode 'dumb-jump-go)
     (let ((f (byte-compile (lambda (&rest _)))))
       (advice-add #'cperl-electric-keyword :override f)
       (advice-add #'cperl-electric-else    :override f)
       (advice-add #'cperl-electric-pod     :override f))
+    (evil-define-key 'normal 'cperl-mode-map (kbd "M-,") #'pop-tag-mark)
     (add-hook 'cperl-mode-hook
               (lambda ()
                 (perl-setup-indent-config perl-indent-config)
@@ -34,7 +34,7 @@
                             (byte-compile
                              (lambda (arg)
                                (let* ((cur-pos (point))
-                                      (semi-fn-regex "sub[ \r\t\n]+[_0-9A-Za-z]+")
+                                      (semi-fn-regex "sub[ \r\t\n]+[_0-9A-Za-z]+\\([ \r\t\n]*(\\$*)\\)?")
                                       (fn-regex (concat semi-fn-regex "[ \r\t\n]+{"))
                                       (from-beg-of-deufn? (eq 'beginning-of-defun this-command))
                                       (cur-line-str (buffer-substring (line-beginning-position)
