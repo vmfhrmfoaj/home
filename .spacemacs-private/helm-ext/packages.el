@@ -41,7 +41,10 @@
       (advice-add #'dumb-jump--result-follow :override
                   (byte-compile
                    (lambda (result &optional use-tooltip proj)
-                     (let* ((path (concat helm-dumb-jump--proj "/" (plist-get result :path)))
+                     (let* ((path (plist-get result :path))
+                            (path (if (file-name-absolute-p path)
+                                      path
+                                    (concat helm-dumb-jump--proj "/" (plist-get result :path))))
                             (line (plist-get result :line))
                             (pos (->> (plist-get result :context)
                                       (s-split helm-dumb-jump--keyword)
