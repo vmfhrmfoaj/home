@@ -694,6 +694,10 @@ before packages are loaded."
   ;; for sync
   (add-hook 'after-save-hook #'rsync-remote-dir)
 
+  ;; change the default settings of Spacemacs
+  (-update->> spacemacs-default-jump-handlers
+              (-remove-item 'evil-goto-definition))
+
   ;; for org-capture Browser extension
   (require 'org-protocol)
 
