@@ -408,7 +408,7 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
                 byte-compile-warnings nil)
 
   ;; load custom functions
-  (load "~/.spacemacs-funcs.el")
+  (load "~/.spacemacs-funcs.elc")
 
   ;; set the `custom-file' to avoid appending tail...
   (setq custom-file "~/.spacemacs-custom.el")
