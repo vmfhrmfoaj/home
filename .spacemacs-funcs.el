@@ -22,9 +22,11 @@
           (val (cadr it)))
       (setenv key val))))
 
+(defmacro -update-> (&rest thread)
+  `(setq ,(first thread) (-> ,@thread)))
 
 (defmacro -update->> (&rest thread)
-  `(setq ,(first thread) (-some->> ,@thread)))
+  `(setq ,(first thread) (->> ,@thread)))
 
 
 (defun enabled? (mode-status)
@@ -203,3 +205,18 @@
                     (rsync-remote-dir ,buf-name)
                   (shell-command-to-string
                    (concat rsync-remote-notify-cmd "'" res "'")))))))))))
+
+(setq buf-visit-time nil)
+
+(defun update-buf-visit-time (&rest _)
+  (make-local-variable 'buf-visit-time)
+  (-update->> buf-visit-time
+              (-partition 2)
+              (--filter (window-live-p (-first-item it)))
+              (-mapcat #'identity))
+  (-update-> buf-visit-time
+             (plist-put (selected-window) (current-time))))
+
+(defun buf-visit-time (&optional buf &optional win)
+  (with-current-buffer (or buf (current-buffer))
+    (plist-get buf-visit-time (or win (selected-window)))))

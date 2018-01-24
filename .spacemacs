@@ -694,9 +694,25 @@ before packages are loaded."
   ;; for sync
   (add-hook 'after-save-hook #'rsync-remote-dir)
 
-  ;; change the default settings of Spacemacs
+  ;; customize Spacemacs
   (-update->> spacemacs-default-jump-handlers
               (-remove-item 'evil-goto-definition))
+
+  (advice-add #'set-window-buffer :after #'update-buf-visit-time)
+  (advice-add #'switch-to-buffer  :after #'update-buf-visit-time)
+  (advice-add #'spacemacs/alternate-buffer :override
+              (byte-compile
+               (lambda (&optional win)
+                 (let ((cur-buf (current-buffer)))
+                   (-when-let (prev-buf (or (->> (helm-buffer-list)
+                                                 (-map #'get-buffer)
+                                                 (-remove #'minibufferp)
+                                                 (--remove-first (eq cur-buf it))
+                                                 (--sort (let ((it    (or (buf-visit-time it)    0))
+                                                               (other (or (buf-visit-time other) 0)))
+                                                           (time-less-p other it)))
+                                                 (-first-item))))
+                     (switch-to-buffer prev-buf))))))
 
   ;; for org-capture Browser extension
   (require 'org-protocol)
