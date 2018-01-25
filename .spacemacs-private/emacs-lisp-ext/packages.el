@@ -110,6 +110,7 @@
            (lambda ()
              (interactive)
              (switch-to-buffer (get-buffer-create "*emacs-lisp-REPL*"))
-             (lisp-interaction-mode)))))
+             (unless (eq 'lisp-interaction-mode major-mode)
+               (lisp-interaction-mode))))))
 
 ;;; packages.el ends here
