@@ -698,6 +698,7 @@ before packages are loaded."
   (-update->> spacemacs-default-jump-handlers
               (-remove-item 'evil-goto-definition))
 
+  ;; (add-hook 'change-major-mode-hook #'update-buf-visit-time)
   (advice-add #'set-window-buffer :after #'update-buf-visit-time)
   (advice-add #'switch-to-buffer  :after #'update-buf-visit-time)
   (advice-add #'spacemacs/alternate-buffer :override

@@ -219,4 +219,10 @@
 
 (defun buf-visit-time (&optional buf &optional win)
   (with-current-buffer (or buf (current-buffer))
-    (plist-get buf-visit-time (or win (selected-window)))))
+    (if (< 1 (length (window-list)))
+        (plist-get buf-visit-time (or win (selected-window)))
+      (-some->> buf-visit-time
+                (-partition 2)
+                (-map #'-second-item)
+                (--sort (time-less-p other it))
+                (-first-item)))))
