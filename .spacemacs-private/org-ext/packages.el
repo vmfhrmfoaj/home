@@ -213,7 +213,20 @@
     :defer t
     :config
     (setq org-clock-into-drawer t
-          org-clock-idle-time 5)
+          org-clock-idle-time nil
+          org-clock-custom-idle-time 5
+          org-clock-custom-idle-timer
+          (run-with-idle-timer (* 60 org-clock-custom-idle-time) t
+                               (lambda ()
+                                 (when (org-clocking-p)
+                                   (let* ((idle-time (seconds-to-time (* 60 org-clock-custom-idle-time)))
+                                          (at-time (time-subtract (current-time) idle-time)))
+                                     (org-clock-out nil t at-time)
+                                     (add-hook 'focus-in-hook
+                                               (defalias 'org-clock-resume
+                                                 (lambda ()
+                                                   (remove-hook 'focus-in-hook 'org-clock-resume)
+                                                   (org-clock-in-last)))))))))
     (advice-add #'org-clock-get-clocktable :filter-return
                 (byte-compile
                  (lambda (tlb)
