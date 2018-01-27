@@ -581,7 +581,7 @@ before packages are loaded."
   ;; for improving the performance
   (setq gc-cons-threshold (* 64 1024 1024)
         gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect)
-        font-lock-idle-time 0.15
+        font-lock-idle-time 0.1
         font-lock-idle-timer nil
         font-lock-idle-avoid-buf-regex (regexp-opt '("org-src-fontification")))
   (make-local-variable 'font-lock-idle-timer)
