@@ -717,7 +717,7 @@ before packages are loaded."
                                                                (other (or (buf-visit-time other) 0)))
                                                            (time-less-p other it)))
                                                  (-first-item))))
-                     (switch-to-buffer prev-buf))))))
+                     (set-window-buffer (selected-window) prev-buf))))))
 
   ;; for org-capture Browser extension
   (require 'org-protocol)
