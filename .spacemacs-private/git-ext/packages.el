@@ -29,7 +29,7 @@
                                 'magit-insert-unpushed-to-upstream))
     (if dotspacemacs-fullscreen-at-startup
         (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
-    (add-hook 'magit-mode-hook #'persp-add-buffer)
+    (add-hook 'magit-status-mode-hook #'persp-add-buffer)
     (add-hook 'magit-revision-mode-hook (lambda () (setq-local line-spacing 0)))
     (advice-add #'magit-log-propertize-keywords :after
                 (byte-compile
