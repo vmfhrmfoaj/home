@@ -212,7 +212,8 @@
   (use-package org-clock
     :defer t
     :config
-    (setq org-clock-into-drawer t)
+    (setq org-clock-into-drawer t
+          org-clock-idle-time 5)
     (advice-add #'org-clock-get-clocktable :filter-return
                 (byte-compile
                  (lambda (tlb)
@@ -225,7 +226,7 @@
   (use-package org-colview
     :defer t
     :config
-    (setq org-columns-default-format "%40ITEM %TODO %5Effort %7CLOCKSUM %TAGS")))
+    (setq org-columns-default-format "%90ITEM %9TODO %5Effort %8CLOCKSUM %TAGS")))
 
 (defun org-ext/post-init-org-agenda ()
   (use-package org-agenda
