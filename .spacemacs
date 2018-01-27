@@ -709,6 +709,7 @@ before packages are loaded."
                (lambda (&optional win)
                  (let ((cur-buf (current-buffer)))
                    (-when-let (prev-buf (or (->> (helm-buffer-list)
+                                                 (--remove (string-match-p "^\\*helm" it))
                                                  (-map #'get-buffer)
                                                  (-remove #'minibufferp)
                                                  (--remove-first (eq cur-buf it))
