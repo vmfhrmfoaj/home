@@ -218,18 +218,23 @@
 
 (defun update-buf-visit-time (&rest _)
   (ignore-errors
-    (make-local-variable 'buf-visit-time)
-    (-update->> buf-visit-time
-                (-partition 2)
-                (--filter (window-live-p (-first-item it)))
-                (-mapcat #'identity))
-    (-update-> buf-visit-time
-               (plist-put (selected-window) (current-time)))))
+    (let ((cur-win (selected-window))
+          (cur-time (current-time)))
+      (if (window-dedicated-p cur-win)
+          (setq buf-visit-time nil)
+        (make-local-variable 'buf-visit-time)
+        (-update->> buf-visit-time
+                    (-partition 2)
+                    (--filter (window-live-p (-first-item it)))
+                    (-mapcat #'identity))
+        (-update-> buf-visit-time
+                   (plist-put cur-win cur-time))))))
 
-(defun buf-visit-time (&optional buf &optional win)
+(defun buf-visit-time (&optional buf win)
   (ignore-errors
     (with-current-buffer (or buf (current-buffer))
-      (if (< 1 (length (window-list)))
+      (if (and (< 1 (length (window-list)))
+               (not (eq 'all win)))
           (plist-get buf-visit-time (or win (selected-window)))
         (-some->> buf-visit-time
                   (-partition 2)

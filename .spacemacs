@@ -701,23 +701,25 @@ before packages are loaded."
   (-update->> spacemacs-default-jump-handlers
               (-remove-item 'evil-goto-definition))
 
-  ;; (add-hook 'change-major-mode-hook #'update-buf-visit-time)
+  (advice-add #'select-frame      :after #'update-buf-visit-time)
+  (advice-add #'select-window     :after #'update-buf-visit-time)
   (advice-add #'set-window-buffer :after #'update-buf-visit-time)
   (advice-add #'switch-to-buffer  :after #'update-buf-visit-time)
   (advice-add #'spacemacs/alternate-buffer :override
               (byte-compile
                (lambda (&optional win)
-                 (let ((cur-buf (current-buffer)))
-                   (-when-let (prev-buf (or (->> (helm-buffer-list)
-                                                 (--remove (string-match-p "^\\*helm" it))
-                                                 (-map #'get-buffer)
-                                                 (-remove #'minibufferp)
-                                                 (--remove-first (eq cur-buf it))
-                                                 (--sort (let ((it    (or (buf-visit-time it)    0))
-                                                               (other (or (buf-visit-time other) 0)))
-                                                           (time-less-p other it)))
-                                                 (-first-item))))
-                     (set-window-buffer (selected-window) prev-buf))))))
+                 (unless (window-dedicated-p)
+                   (let ((cur-buf (current-buffer)))
+                     (-when-let (prev-buf (or (->> (helm-buffer-list)
+                                                   (--remove (string-match-p "^\\*helm" it))
+                                                   (-map #'get-buffer)
+                                                   (-remove #'minibufferp)
+                                                   (--remove-first (eq cur-buf it))
+                                                   (--sort (let ((it    (or (buf-visit-time it)    0))
+                                                                 (other (or (buf-visit-time other) 0)))
+                                                             (time-less-p other it)))
+                                                   (-first-item))))
+                       (set-window-buffer (selected-window) prev-buf)))))))
 
   ;; for org-capture Browser extension
   (require 'org-protocol)
