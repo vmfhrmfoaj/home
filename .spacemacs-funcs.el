@@ -1,3 +1,12 @@
+;;-*- byte-compile-dynamic: t; -*-
+
+(eval-when-compile
+  (dolist (dir '("~/.emacs.d/elpa/"
+                 "~/.emacs.d/elpa/develop"))
+    (let ((default-directory dir))
+      (normal-top-level-add-subdirs-to-load-path)))
+  (require 'dash))
+
 (defun pixel->frame-unit (pixel)
   (round (/ pixel (/ (float (frame-pixel-width)) (frame-width)))))
 
@@ -8,7 +17,7 @@
   (->> (--filter (-when-let (frames (-> (assoc 'frames it) cdr))
                    (--some? (eq (selected-frame) it) frames))
                  (display-monitor-attributes-list))
-       (first)
+       (-first-item)
        (assoc 'geometry)
        (cdr)
        (nth 2)))
@@ -23,11 +32,10 @@
       (setenv key val))))
 
 (defmacro -update-> (&rest thread)
-  `(setq ,(first thread) (-> ,@thread)))
+  `(setq ,(-first-item thread) (->  ,@thread)))
 
 (defmacro -update->> (&rest thread)
-  `(setq ,(first thread) (->> ,@thread)))
-
+  `(setq ,(-first-item thread) (->> ,@thread)))
 
 (defun enabled? (mode-status)
   (cond ((symbolp mode-status) mode-status)

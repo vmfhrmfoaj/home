@@ -408,6 +408,7 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
                 byte-compile-warnings nil)
 
   ;; load custom functions
+  ;; - emacs -batch --eval "(setq byte-compile-dynamic t)" -f batch-byte-compile ~/.spacemacs-funcs.el
   (load "~/.spacemacs-funcs.elc")
 
   ;; set the `custom-file' to avoid appending tail...
