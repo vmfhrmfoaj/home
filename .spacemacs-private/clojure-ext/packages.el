@@ -36,6 +36,7 @@
     (byte-compile #'cider-connection-type-for-cljc-buffer)
     (byte-compile #'cider-cljs-root-dirs)
     (byte-compile #'cider-switch-to-releated-repl-buffer)
+    (byte-compile #'cider-switch-to-last-clj-buf)
 
     (setq cider-repl-display-in-current-window t
           cider-repl-use-pretty-printing t
@@ -57,6 +58,7 @@
                   (persp-add-buffer (current-buffer)))))
     (advice-add #'cider-connection-type-for-buffer :before-until #'cider-connection-type-for-cljc-buffer)
     (advice-add #'cider-switch-to-repl-buffer :override #'cider-switch-to-releated-repl-buffer)
+    (advice-add #'cider-switch-to-last-clojure-buffer :override #'cider-switch-to-last-clj-buf)
     (advice-add #'cider-expected-ns :around
                 (byte-compile
                  (lambda (of &optional path)

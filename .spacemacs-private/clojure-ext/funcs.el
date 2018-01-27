@@ -62,6 +62,31 @@
                                       (-first-item all-repl-bufs))
                                   set-namespace)))
 
+(setq cider-get-buf-lst-fn #'helm-buffer-list)
+
+(defun cider-switch-to-last-clj-buf ()
+  (interactive)
+  (let* ((display-fn (if cider-repl-display-in-current-window
+                         #'pop-to-buffer-same-window
+                       #'pop-to-buffer))
+         (repl-type cider-repl-type)
+         (target-modes (if (string= "clj" repl-type)
+                           '(clojure-mode     clojurescript-mode)
+                         '(clojurescript-mode clojure-mode)))
+         (buf-lst (funcall (or cider-get-buf-lst-fn #'buffer-list))))
+    (while target-modes
+      (let ((target-mode (-first-item target-modes)))
+        (setq target-modes (cdr target-modes))
+        (when (-some->> buf-lst
+                        (--filter (with-current-buffer it
+                                    (or (eq target-mode    major-mode)
+                                        (eq 'clojurec-mode major-mode))))
+                        (--sort (let ((it    (or (buf-visit-time it    'all) 0))
+                                      (other (or (buf-visit-time other 'all) 0)))
+                                  (time-less-p other it)))
+                        (-first-item)
+                        (funcall display-fn))
+          (setq target-modes nil))))))
 
 (defun clojure--binding-regexp ()
   (concat "(" (regexp-opt clojure--binding-forms) "[ \r\t\n]+\\["))
