@@ -108,9 +108,11 @@
                        args
                      (let* ((char (nth 3 args))
                             (new-char (cond
-                                       ((= char 33554477) 95)
-                                       ((= char 33554475) 61)
-                                       ((= char 33554479) 92))))
+                                       ((= 33554474 char) 35) ;;<S-kp-multiply> => #
+                                       ((= 33554479 char) 92) ;;<S-kp-divide> => \
+                                       ((= 33554477 char) 95) ;;<S-kp-subtract> => _
+                                       ((= 33554475 char) 61) ;;<S-kp-add> => =
+                                       )))
                        (if new-char
                            (-replace-at 3 new-char args)
                          args))))))

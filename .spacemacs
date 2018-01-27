@@ -529,9 +529,11 @@ before packages are loaded."
     (set-file-name-coding-system 'utf-8-hfs))
 
   ;; HHKB keyboard
+  (global-set-key (kbd "<S-kp-multiply>") "#")
   (global-set-key (kbd "<S-kp-divide>") "\\")
   (global-set-key (kbd "<S-kp-subtract>") "_")
   (global-set-key (kbd "<S-kp-add>") "=")
+  (define-key input-decode-map (kbd "<S-kp-multiply>") "#")
   (define-key input-decode-map (kbd "<S-kp-divide>") "\\")
   (define-key input-decode-map (kbd "<S-kp-subtract>") "_")
   (define-key input-decode-map (kbd "<S-kp-add>") "=")
