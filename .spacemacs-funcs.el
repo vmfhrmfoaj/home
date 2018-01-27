@@ -217,20 +217,22 @@
 (setq buf-visit-time nil)
 
 (defun update-buf-visit-time (&rest _)
-  (make-local-variable 'buf-visit-time)
-  (-update->> buf-visit-time
-              (-partition 2)
-              (--filter (window-live-p (-first-item it)))
-              (-mapcat #'identity))
-  (-update-> buf-visit-time
-             (plist-put (selected-window) (current-time))))
+  (ignore-errors
+    (make-local-variable 'buf-visit-time)
+    (-update->> buf-visit-time
+                (-partition 2)
+                (--filter (window-live-p (-first-item it)))
+                (-mapcat #'identity))
+    (-update-> buf-visit-time
+               (plist-put (selected-window) (current-time)))))
 
 (defun buf-visit-time (&optional buf &optional win)
-  (with-current-buffer (or buf (current-buffer))
-    (if (< 1 (length (window-list)))
-        (plist-get buf-visit-time (or win (selected-window)))
-      (-some->> buf-visit-time
-                (-partition 2)
-                (-map #'-second-item)
-                (--sort (time-less-p other it))
-                (-first-item)))))
+  (ignore-errors
+    (with-current-buffer (or buf (current-buffer))
+      (if (< 1 (length (window-list)))
+          (plist-get buf-visit-time (or win (selected-window)))
+        (-some->> buf-visit-time
+                  (-partition 2)
+                  (-map #'-second-item)
+                  (--sort (time-less-p other it))
+                  (-first-item))))))
