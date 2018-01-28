@@ -76,6 +76,34 @@
                              (forward-list)
                              (point))))
                   (cons start end)))))))
+    (put 'lisp 'bounds-of-thing-at-point
+         (byte-compile
+          (lambda ()
+            (save-excursion
+              (let ((start (progn
+                             (ignore-errors
+                               (while (progn
+                                        (backward-up-list 1 t t)
+                                        (not (looking-at-p "(\\(\\(lexical-\\)?let\\*?\\|lambda\\|defun\\|defmacro\\)\\_>")))))
+                             (point)))
+                    (end (progn
+                           (forward-list)
+                           (point))))
+                (cons start end))))))
+    (put 'clojure 'bounds-of-thing-at-point
+         (byte-compile
+          (lambda ()
+            (save-excursion
+              (let ((start (progn
+                             (ignore-errors
+                               (while (progn
+                                        (backward-up-list 1 t t)
+                                        (not (looking-at-p "(\\([-0-9A-Za-z]+/\\)?\\(let\\|loop\\|fn\\|def[a-z]*\\)\\_>")))))
+                             (point)))
+                    (end (progn
+                           (forward-list)
+                           (point))))
+                (cons start end))))))
     (advice-add #'focus-move-focus :around
                 (byte-compile
                  (lambda (of)
