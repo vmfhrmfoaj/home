@@ -563,7 +563,7 @@ before packages are loaded."
           (add-to-list 'default-frame-alist (cons 'width  w))
           (add-to-list 'default-frame-alist (cons 'height h))
           (setq split-width-threshold (1+ w)
-                initial-frame-alist (list (cons 'top    (frame-char-height))
+                initial-frame-alist (list (cons 'top    (1+ (frame-char-height)))
                                           (cons 'left   l)
                                           (cons 'width  w)
                                           (cons 'height h)))))))
