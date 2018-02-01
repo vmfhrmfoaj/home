@@ -41,6 +41,7 @@
     projectile
     rainbow-delimiters
     smartparens
+    spaceline
     which-key
     (whitespace :location built-in)))
 
@@ -238,6 +239,14 @@
                                     cider-repl-mode
                                     emas-lisp-mode))
     (advice-add #'sp-newline :after #'auto-indent)))
+
+(defun spacemacs-ext/post-init-spaceline ()
+  (use-package spaceline-config
+    :defer t
+    :init
+    ;; NOTE:
+    ;;  see https://github.com/syl20bnr/spacemacs/commit/665c09b684a58279f235937b87c643598b0cd33a
+    (setq powerline-image-apple-rgb nil)))
 
 (defun spacemacs-ext/post-init-which-key ()
   (use-package which-key
