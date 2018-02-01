@@ -701,6 +701,7 @@ before packages are loaded."
   (-update->> spacemacs-default-jump-handlers
               (-remove-item 'evil-goto-definition))
 
+  (setq exclude-alt-buf-regex "^\\s-*\\*\\s-*\\([Hh]elm\\|which-key\\|NeoTree\\)")
   (advice-add #'select-frame      :after #'update-buf-visit-time)
   (advice-add #'select-window     :after #'update-buf-visit-time)
   (advice-add #'set-window-buffer :after #'update-buf-visit-time)
@@ -711,7 +712,7 @@ before packages are loaded."
                  (unless (window-dedicated-p)
                    (let ((cur-buf (current-buffer)))
                      (-when-let (prev-buf (or (->> (helm-buffer-list)
-                                                   (--remove (string-match-p "^\\*helm" it))
+                                                   (--remove (string-match-p exclude-alt-buf-regex it))
                                                    (-map #'get-buffer)
                                                    (-remove #'minibufferp)
                                                    (--remove-first (eq cur-buf it))
