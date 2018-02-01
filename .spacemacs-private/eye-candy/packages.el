@@ -239,7 +239,19 @@
     (evil-goggles-use-diff-faces)))
 
 (defun eye-candy/init-fancy-narrow ()
-  (use-package fancy-narrow))
+  (use-package fancy-narrow
+    :config
+    (advice-add #'fancy-narrow-to-region :after
+                (lambda (&rest _)
+                  (setq helm-swoop-list-cache nil)))
+    (advice-add #'fancy-widen :after
+                (lambda (&rest _)
+                  (setq helm-swoop-list-cache nil)))
+    ;; NOTE:
+    ;;  forcedly reload to load non-compiled `helm-swoop'.
+    ;;  it can cuase performance problems.
+    ;;  see http://nullprogram.com/blog/2013/01/22/
+    (load "helm-swoop.el" nil nil t)))
 
 (defun eye-candy/post-init-golden-ratio ()
   (use-package golden-ratio
