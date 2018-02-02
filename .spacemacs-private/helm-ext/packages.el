@@ -130,7 +130,13 @@
   (use-package helm-swoop
     :defer t
     :config
-    (setq helm-swoop-use-line-number-face t)))
+    (require 'dash-functional)
+    (byte-compile #'custom-helm-swoop--get-content)
+
+    (setq helm-swoop-use-line-number-face t)
+    (with-eval-after-load "helm-swoop"
+      (advice-add #'helm-swoop--get-content :override
+                  #'custom-helm-swoop--get-content))))
 
 (defun helm-ext/post-init-helm-ag ()
   (use-package helm-ag

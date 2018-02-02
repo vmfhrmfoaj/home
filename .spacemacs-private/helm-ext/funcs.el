@@ -31,3 +31,35 @@
 
 (defun helm-dump-jump--persistent-action (candidate)
   (helm-dump-jump--action #'helm-dump-jump--insert-file candidate))
+
+(defun custom-helm-swoop--get-content (buf &optional linum)
+  (let* (ret
+         (buf (or (get-buffer buf) (current-buffer)))
+         ;; NOTE:
+         ;;  a advice of the compiled fundamental functions is not working.
+         ;;  see http://nullprogram.com/blog/2013/01/22/
+         (pos-min (or fancy-narrow--beginning (point-min)))
+         (pos-max (or fancy-narrow--end (point-max)))
+         (str (helm-swoop--buffer-substring pos-min pos-max))
+         (num (line-number-at-pos pos-min))
+         (fmt (or (and (boundp 'linum-relative-format) (concat linum-relative-format " "))
+                  (and (boundp 'linum-format)          (concat linum-format " "))
+                  "%s "))
+         (colorize (lambda (it) (propertize it 'font-lock-face 'helm-swoop-line-number-face)))
+         (insert-linum (-compose #'insert
+                                 (if helm-swoop-use-line-number-face
+                                     colorize
+                                   #'identity)
+                                 (-partial #'format fmt))))
+    (with-temp-buffer
+      (insert str)
+      (goto-char (point-min))
+      (funcall insert-linum num)
+      (while (progn (forward-line) (not (eobp)))
+        (-update-> num (1+))
+        (if (and (not linum)
+                 (looking-at-p "^[0-9]+\\s-*$"))
+            (kill-line)
+          (funcall insert-linum num)))
+      (setq ret (helm-swoop--buffer-substring (point-min) (point-max))))
+    ret))

@@ -246,11 +246,7 @@
                   (setq-local helm-swoop-list-cache nil)))
     (advice-add #'fancy-widen :after
                 (lambda (&rest _)
-                  (kill-local-variable 'helm-swoop-list-cache)))
-    (require 'dash-functional)
-    (byte-compile #'custom-helm-swoop--get-content)
-    (with-eval-after-load "helm-swoop"
-      (advice-add #'helm-swoop--get-content :override #'custom-helm-swoop--get-content))))
+                  (kill-local-variable 'helm-swoop-list-cache)))))
 
 (defun eye-candy/post-init-golden-ratio ()
   (use-package golden-ratio
