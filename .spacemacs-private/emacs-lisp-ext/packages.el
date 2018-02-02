@@ -17,7 +17,7 @@
 (defun emacs-lisp-ext/post-init-emacs-lisp ()
   (font-lock-add-keywords
    'emacs-lisp-mode
-   (let* ((symbol "[-+*/=>&?:_0-9a-zA-Z]+")
+   (let* ((symbol "[-+*/=>$&?:_0-9a-zA-Z]+")
           (whitespace "[ \r\t\n]")
           (whitespace+ (concat whitespace "+"))
           (whitespace* (concat whitespace "*")))
