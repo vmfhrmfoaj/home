@@ -96,7 +96,8 @@ This function should only modify configuration layer settings."
      (focus :variables
             focus-mode-to-new-thing '((cider-repl-mode . list+)
                                       (clojure-mode    . clojure)
-                                      (emacs-lisp-mode . lisp))))
+                                      (emacs-lisp-mode . lisp)))
+     tools)
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
