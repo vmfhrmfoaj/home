@@ -394,7 +394,11 @@ It should only modify the values of Spacemacs settings."
    ;; Run `spacemacs/prettify-org-buffer' when
    ;; visiting README.org files of Spacemacs.
    ;; (default nil)
-   dotspacemacs-pretty-docs nil))
+   dotspacemacs-pretty-docs nil
+   ;; Set `gc-cons-threshold' and `gc-cons-percentage' when startup finishes.
+   ;; This is an advanced option and should not be changed unless you suspect
+   ;; performance issues due to garbage collection operations.
+   dotspacemacs-gc-cons `(,(* 64 1024 1024) 0.1)))
 
 (defun dotspacemacs/user-init ()
   "Initialization for user code:
@@ -579,9 +583,7 @@ before packages are loaded."
             'append)
 
   ;; for improving the performance
-  (setq gc-cons-threshold (* 64 1024 1024)
-        gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect)
-        font-lock-idle-time 0.1
+  (setq font-lock-idle-time 0.1
         font-lock-idle-timer nil
         font-lock-idle-avoid-buf-regex (regexp-opt '("org-src-fontification")))
   (make-local-variable 'font-lock-idle-timer)
