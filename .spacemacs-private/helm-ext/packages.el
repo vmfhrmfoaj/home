@@ -126,7 +126,11 @@
                 (byte-compile
                  (lambda (fn &rest args)
                    (let ((completion-ignore-case t))
-                     (apply fn args)))))))
+                     (apply fn args))))))
+  (use-package helm-swoop
+    :defer t
+    :config
+    (setq helm-swoop-use-line-number-face t)))
 
 (defun helm-ext/post-init-helm-ag ()
   (use-package helm-ag
