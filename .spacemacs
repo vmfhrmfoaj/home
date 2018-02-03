@@ -586,26 +586,42 @@ before packages are loaded."
   ;; for improving the performance
   (setq font-lock-idle-time 0.1
         font-lock-idle-timer nil
-        font-lock-idle-avoid-buf-regex (regexp-opt '("org-src-fontification")))
+        font-lock-idle-avoid-buf-regex (regexp-opt '("org-src-fontification"))
+        font-lock-idle-avoid-cmds '(undo undo-tree-undo)
+        font-lock-idle-start nil
+        font-lock-idle-end nil)
+  (make-local-variable 'font-lock-idle-start)
+  (make-local-variable 'font-lock-idle-end)
   (make-local-variable 'font-lock-idle-timer)
   (advice-add #'jit-lock-after-change :around
               (byte-compile
-               (lambda (fn &rest arg)
+               (lambda (fn start end old-len)
                  (if (or (not font-lock-idle-time)
-                         (string-match-p font-lock-idle-avoid-buf-regex (buffer-name)))
-                     (apply fn arg)
-                   (when font-lock-idle-timer
-                     (cancel-timer font-lock-idle-timer))
-                   (setq font-lock-idle-timer
+                         (string-match-p font-lock-idle-avoid-buf-regex (buffer-name))
+                         (-contains? font-lock-idle-avoid-cmds this-command))
+                     (funcall fn start end old-len)
+                   (when (timerp font-lock-idle-timer)
+                     (let ((timer-fn (prog1 (timer--function font-lock-idle-timer)
+                                       (cancel-timer font-lock-idle-timer)))
+                           (start_ (or font-lock-idle-start start))
+                           (end_   (or font-lock-idle-end   end)))
+                       (when (or (< start_ end_   start  end)
+                                 (< start  end    start_ end_)
+                                 (< start_ start  end_   end)
+                                 (< start  start_ end    end_))
+                         (funcall timer-fn))))
+                   (setq font-lock-idle-start start
+                         font-lock-idle-end   end
+                         font-lock-idle-timer
                          (run-with-idle-timer font-lock-idle-time nil
-                                              (lexical-let ((fn fn)
-                                                            (arg arg)
+                                              (lexical-let ((fn (-partial fn start end old-len))
                                                             (buf (current-buffer)))
-                                                (lambda ()
-                                                  (setq font-lock-idle-timer nil)
-                                                  (when (get-buffer buf)
-                                                    (with-current-buffer buf
-                                                      (apply fn arg)))))))))))
+                                                (byte-compile
+                                                 (lambda ()
+                                                   (setq font-lock-idle-timer nil)
+                                                   (when (get-buffer buf)
+                                                     (with-current-buffer buf
+                                                       (funcall fn))))))))))))
 
   ;; customize the theme.
   (custom-theme-set-faces
