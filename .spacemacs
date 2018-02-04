@@ -191,8 +191,8 @@ It should only modify the values of Spacemacs settings."
                                `("MonacoB2"
                                  :size ,(cond
                                          (linux? 12)
-                                         (t 14))
-                                 :weight medium
+                                         (t 13))
+                                 :weight normal
                                  :width normal
                                  :powerline-scale 1.15))
    ;; The leader key (default "SPC")
