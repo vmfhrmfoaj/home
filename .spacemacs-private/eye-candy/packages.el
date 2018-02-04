@@ -246,7 +246,11 @@
                   (setq-local helm-swoop-list-cache nil)))
     (advice-add #'fancy-widen :after
                 (lambda (&rest _)
-                  (kill-local-variable 'helm-swoop-list-cache)))))
+                  (kill-local-variable 'helm-swoop-list-cache)))
+    (advice-add #'save-buffer :around
+                (lambda (fn &optional arg)
+                  (let (fancy-narrow--beginning fancy-narrow--end)
+                    (funcall fn arg))))))
 
 (defun eye-candy/post-init-golden-ratio ()
   (use-package golden-ratio
