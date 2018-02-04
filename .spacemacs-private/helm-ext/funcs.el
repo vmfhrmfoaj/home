@@ -40,12 +40,17 @@
          ;;  see http://nullprogram.com/blog/2013/01/22/
          (pos-min (or fancy-narrow--beginning (point-min)))
          (pos-max (or fancy-narrow--end (point-max)))
-         (str (helm-swoop--buffer-substring pos-min pos-max))
+         (str (with-current-buffer buf
+                (buffer-substring-no-properties pos-min pos-max)))
          (num (line-number-at-pos pos-min))
-         (fmt (or (and (boundp 'linum-relative-format) (concat linum-relative-format " "))
-                  (and (boundp 'linum-format)          (concat linum-format " "))
-                  "%s "))
-         (colorize (lambda (it) (propertize it 'font-lock-face 'helm-swoop-line-number-face)))
+         (fmt (concat "%-"
+                      (-> pos-max
+                          (line-number-at-pos)
+                          (number-to-string)
+                          (length)
+                          (number-to-string))
+                      "s "))
+         (colorize (byte-compile (lambda (it) (propertize it 'font-lock-face 'helm-swoop-line-number-face))))
          (insert-linum (-compose #'insert
                                  (if helm-swoop-use-line-number-face
                                      colorize
@@ -61,5 +66,5 @@
                  (looking-at-p "^[0-9]+\\s-*$"))
             (kill-line)
           (funcall insert-linum num)))
-      (setq ret (helm-swoop--buffer-substring (point-min) (point-max))))
+      (setq ret (buffer-substring (point-min) (point-max))))
     ret))

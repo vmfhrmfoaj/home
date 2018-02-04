@@ -133,7 +133,8 @@
     (require 'dash-functional)
     (byte-compile #'custom-helm-swoop--get-content)
 
-    (setq helm-swoop-use-line-number-face t)
+    (setq helm-swoop-speed-or-color nil
+          helm-swoop-use-line-number-face t)
     (with-eval-after-load "helm-swoop"
       (advice-add #'helm-swoop--get-content :override
                   #'custom-helm-swoop--get-content))))
