@@ -619,7 +619,7 @@ before packages are loaded."
                                                 (byte-compile
                                                  (lambda ()
                                                    (setq font-lock-idle-timer nil)
-                                                   (when (get-buffer buf)
+                                                   (ignore-errors
                                                      (with-current-buffer buf
                                                        (funcall fn))))))))))))
 
