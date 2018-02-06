@@ -640,6 +640,9 @@ before packages are loaded."
                                                        (dim-color 10)
                                                        (saturate-color -15))))))
      `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
+     `(cperl-nonoverridable-face ((t (:inherit font-lock-constant-face :foreground ,(-> 'font-lock-constant-face
+                                                                                        (face-attribute :foreground)
+                                                                                        (light-color 10))))))
      `(evil-ex-lazy-highlight ((t (:inherit lazy-highlight :weight bold))))
      `(default ((t (:foreground "#c5c5c5" :background ,(face-attribute 'default :background)))))
      `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
