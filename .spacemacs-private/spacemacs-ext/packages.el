@@ -135,6 +135,7 @@
     (setq hl-todo-keywords
           (list (list (caar hl-todo-keywords)
                       `(1 (hl-todo-get-face) prepend))))
+    (remove-hook 'text-mode-hook #'hl-todo-mode)
     (advice-add #'hl-todo-get-face :filter-return
                 (byte-compile
                  (lambda (ret)
