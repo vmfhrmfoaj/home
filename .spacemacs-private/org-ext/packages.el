@@ -97,12 +97,13 @@
                     ((string-equal x " ") ,square)
                     ((string-equal x "-") ,minus-square)
                     ((string-equal x "X") ,check-square)))
-                  (list (list :family "FontAwesome"
-                              :foreground (face-attribute (if (string-equal x "X")
-                                                              'org-done 'org-todo)
-                                                          :foreground))))))
+                  (list :family "FontAwesome"
+                        :foreground (face-attribute (if (string-equal x "X")
+                                                        'org-done 'org-todo)
+                                                    :foreground)))) t)
            ("\\(\\\\\\\\\\)\\s-*$"
-            1 'shadow nil)))))
+            1 'shadow nil)))
+       'append))
     (add-hook 'org-todo-get-default-hook
               (byte-compile
                (lambda (mark _)

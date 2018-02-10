@@ -661,8 +661,7 @@ before packages are loaded."
      `(org-column ((t (:inherit bold))))
      `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
      `(org-link ((t (:inherit link))))
-     `(org-next ((t (:foreground "#dca3a3" :inherit (bold org-todo)))))
-     `(show-paren-match ((t (:inherit bold :foreground "Springgreen2" :underline t))))))
+     `(org-next ((t (:foreground "#dca3a3" :inherit (bold org-todo)))))))
   (ignore-errors
     (custom-theme-set-faces
      'twilight-bright
@@ -698,10 +697,7 @@ before packages are loaded."
      `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
      `(org-link ((t (:inherit link))))
      `(org-next ((t (:foreground "#dca3a3" :inherit (bold org-todo)))))
-     `(org-checkbox  ((t (:inherit bold))))
-     `(org-next      ((t (:foreground "#dca3a3" :inherit (bold org-todo)))))
      `(outline-4 ((t (:inherit font-lock-string-face))))
-     `(show-paren-match ((t (:foreground "Springgreen2" :underline t :inherit bold))))
      `(powerline-active1   ((t (:foreground "#85CEEB" :background "#383838" :inherit mode-line))))
      `(powerline-active2   ((t (:foreground "#85CEEB" :background "#6b6b6b" :inherit mode-line))))
      `(powerline-inactive1 ((t (:foreground "#F0F0EF" :background "#686868" :inherit mode-line-inactive))))
@@ -726,7 +722,7 @@ before packages are loaded."
      `(font-lock-variable-name-face ((t (:inherit bold :weight unspecified))))
      `(hl-line ((t (:inverse-video nil))))
      `(lisp-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
-     `(link ((t (:underline t :weight unspecified))))
+     `(link ((t (:inherit underline :weight unspecified))))
      `(linum ((t (:inherit default :underline nil :height 1.0 :distant-foreground ,(face-attribute 'linum :foreground)))))
      `(linum-relative-current-face ((t (:inherit linum))))
      `(magit-section-heading ((t (:inherit bold :foreground "DarkGoldenrod4"))))
@@ -736,7 +732,9 @@ before packages are loaded."
      `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground)))))
      `(nlinum-current-line ((t (:inherit linum))))
      `(nlinum-relative-current-face ((t (:inherit linum))))
-     `(org-agenda-date-today ((t (:inherit (bold org-agenda-date)))))))
+     `(org-agenda-date-today ((t (:inherit (bold org-agenda-date)))))
+     `(show-paren-match ((t (:inherit underline :foreground "Cyan2" :background nil))))
+     `(widget-button ((t (:inherit bold))))))
   (with-eval-after-load "magit"
     (dolist (face '(magit-branch-current magit-branch-local magit-branch-remote magit-head magit-tag))
       (set-face-attribute face nil :inherit
@@ -748,7 +746,7 @@ before packages are loaded."
     (setq goto-address-mail-face "link"))
   (with-eval-after-load "highlight-parentheses"
     (setq hl-paren-colors (--iterate (dim-color it 10)
-                                     (apply 'color-rgb-to-hex (color-name-to-rgb "Springgreen1"))
+                                     (apply 'color-rgb-to-hex (color-name-to-rgb "Springgreen"))
                                      4)))
   (with-eval-after-load "outline"
     (dolist (i (number-sequence 1 8))
