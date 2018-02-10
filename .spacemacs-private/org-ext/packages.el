@@ -82,7 +82,9 @@
               (square       (string-to-char (cdr (assoc "square" data))))
               (minus-square (string-to-char (cdr (assoc "minus-square" data))))
               (check-square (string-to-char (cdr (assoc "check-square" data)))))
-         `(("^\\s-*\\(\\([0-9]\\.\\)\\) "
+         `(("^\\s-*\\(-\\) "
+            1 'bold)
+           ("^\\s-*\\(\\([0-9]\\.\\)\\) "
             1 'bold)
            ("^\\s-*\\(?:-\\|[0-9]+\\.\\) \\(\\[\\( \\|-\\|X\\)\\]\\) "
             1 (progn
