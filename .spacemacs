@@ -590,7 +590,8 @@ before packages are loaded."
         font-lock-idle-avoid-buf-regex (regexp-opt '("org-src-fontification"))
         font-lock-idle-avoid-cmds '(undo undo-tree-undo)
         font-lock-idle-start nil
-        font-lock-idle-end nil)
+        font-lock-idle-end nil
+        gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect))
   (make-local-variable 'font-lock-idle-start)
   (make-local-variable 'font-lock-idle-end)
   (make-local-variable 'font-lock-idle-timer)
