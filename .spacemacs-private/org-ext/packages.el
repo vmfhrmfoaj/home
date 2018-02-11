@@ -211,7 +211,7 @@
     :config
     (setq org-clock-into-drawer t
           org-clock-idle-time nil
-          org-clock-custom-idle-time 5
+          org-clock-custom-idle-time 10
           org-clock-custom-idle-timer
           (run-with-idle-timer (* 60 org-clock-custom-idle-time) t
                                (lambda ()
