@@ -37,13 +37,17 @@ function setEnv () {
     java_dir=$(dirname $java_dir)
   fi
   export PATH=$java_dir/bin:$PATH
+  local jvm_opts=""
+  local java_ver=$(java -version 2>&1 | grep -o "java version \"[^\"]\+\"" | grep -o "\"[._0-9]\+" | grep -o "[._0-9]\+")
+  if [[ ! -z $(echo $java_ver | grep -c "^9") ]] then
+    jvm_opts="--add-modules java.xml.bind --add-modules java.xml.bind"
+  fi
   local mem_in_gb=0
   if   [[ "$os" == "Darwin" ]]; then
     mem_in_gb=$(($(sysctl -n hw.memsize) / 1024 / 1024 / 1024))
   elif [[ "$os" == "Linux" ]]; then
     mem_in_gb=$(($(cat /proc/meminfo | grep MemTotal | grep -o "[0-9]\+") / 1024 / 1024))
   fi
-  local jvm_opts="--add-opens java.base/java.io=ALL-UNNAMED"
   if   [[ $mem_in_gb -gt 16 ]]; then
     export JVM_OPTS="$jvm_opts -Xms2g -Xmx8g"
   elif [[ $mem_in_gb -gt  8 ]]; then
