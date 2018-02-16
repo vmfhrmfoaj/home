@@ -250,7 +250,12 @@
     (advice-add #'save-buffer :around
                 (lambda (fn &optional arg)
                   (let (fancy-narrow--beginning fancy-narrow--end)
-                    (funcall fn arg))))))
+                    (funcall fn arg))))
+    (advice-add #'jit-lock-function :around
+                (byte-compile
+                 (lambda (fn start)
+                   (let (fancy-narrow--beginning fancy-narrow--end)
+                     (funcall fn start)))))))
 
 (defun eye-candy/post-init-golden-ratio ()
   (use-package golden-ratio
