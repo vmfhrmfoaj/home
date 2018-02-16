@@ -31,15 +31,15 @@ function setEnv () {
   # react
   export REACT_EDITOR=emacsclient
 
-  # java
-  local java_dir=$(java -XshowSettings:properties -version 2>&1 | grep "java.home" | cut -d'=' -f2)
+  # java (clojure)
+  local java_dir=$(java -XshowSettings:properties -version 2>&1 | grep "java.home" | cut -d'=' -f2 | tr -d ' ')
   if [[ "$os" == "Linux" ]]; then
     java_dir=$(dirname $java_dir)
   fi
   export PATH=$java_dir/bin:$PATH
   local jvm_opts=""
   local java_ver=$(java -version 2>&1 | grep -o "java version \"[^\"]\+\"" | grep -o "\"[._0-9]\+" | grep -o "[._0-9]\+")
-  if [[ ! -z $(echo $java_ver | grep -c "^9") ]] then
+  if [[ ! -z $(echo $java_ver | grep "^9") ]] then
     jvm_opts="--add-modules java.xml.bind --add-modules java.xml.bind"
   fi
   local mem_in_gb=0
@@ -54,6 +54,17 @@ function setEnv () {
     export JVM_OPTS="$jvm_opts -Xms1g -Xmx4g"
   elif [[ $mem_in_gb -gt  4 ]]; then
     export JVM_OPTS="$jvm_opts -Xms512m -Xmx2g"
+  fi
+
+  # javascript (clojurescript)
+  if [[ -x "$(which d8 2> /dev/null)" ]]; then
+    export V8_HOME=$(which d8 | xargs dirname)
+  fi
+  if [[ -x "$(which js 2> /dev/null)" ]]; then
+    export SPIDERMONKEY_HOME=$(which js | xargs dirname)
+  fi
+  if [[ -x "$(which jjs 2> /dev/null)" ]]; then
+    export NASHORN_HOME=$(which jjs | xargs dirname)
   fi
 
   # node
