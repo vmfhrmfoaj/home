@@ -30,7 +30,8 @@
 ;;; Code:
 
 (defconst tools-packages
-  '(atomic-chrome))
+  '((atomic-chrome :location (recipe :repo "vmfhrmfoaj/atomic-chrome"
+                                     :fetcher github))))
 
 (defun tools/init-atomic-chrome ()
   (use-package atomic-chrome
