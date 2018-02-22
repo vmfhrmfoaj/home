@@ -106,7 +106,14 @@ This function should only modify configuration layer settings."
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
-   dotspacemacs-excluded-packages '(clj-refactor exec-path-from-shell evil-escape company-plsense)
+   dotspacemacs-excluded-packages '(auto-yasnippet
+                                    clj-refactor
+                                    company-plsense
+                                    evil-escape
+                                    exec-path-from-shell
+                                    helm-c-yasnippet
+                                    php-auto-yasnippets
+                                    yasnippet-snippets)
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
    ;; `used-only' installs only explicitly used packages and deletes any unused
