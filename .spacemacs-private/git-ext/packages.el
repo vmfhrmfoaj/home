@@ -31,7 +31,7 @@
         (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
     (add-hook 'magit-status-mode-hook #'persp-add-buffer)
     (add-hook 'magit-revision-mode-hook (lambda () (setq-local line-spacing 0)))
-    (advice-add #'magit-log-propertize-keywords :after
+    (advice-add #'magit-log-propertize-keywords :filter-return
                 (byte-compile
                  (lambda (msg)
                    (let ((type  "[-_/A-Za-z]+")
