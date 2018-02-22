@@ -26,6 +26,11 @@
     (byte-compile #'helm-dump-jump--actions)
     (byte-compile #'helm-dump-jump--persistent-action)
 
+    (setq dumb-jump-prefer-searcher
+          (cond
+           ((executable-find "rg") 'rg)
+           ((executable-find "ag") 'ag)
+           (t nil)))
     (with-eval-after-load "helm"
       (setq dumb-jump-git-grep-cmd "git grep --full-name")
       (defvar helm-dump-jump--actions
