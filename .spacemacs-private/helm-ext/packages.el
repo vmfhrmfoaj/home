@@ -125,6 +125,11 @@
       (add-hook 'helm-exit-minibuffer-hook f)
       (add-hook 'helm-quit-hook f))
     ;; NOTE:
+    ;; Releated issues:
+    ;;  - https://github.com/emacs-helm/helm/issues/1971
+    ;;  - https://github.com/emacs-helm/helm/issues/1973
+    ;; Commit:
+    ;;  - https://github.com/emacs-helm/helm/commit/67d149dd5c2b01ec2db8c8be9a6c3809348a9a98
     ;; Backtrace:
     ;;  > (wrong-type-argument window-live-p nil)
     ;;  > #<subr select-window>(nil norecord)
