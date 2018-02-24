@@ -18,7 +18,8 @@
   (use-package git-gutter-fringe+
     :defer t
     :config
-    (setq git-gutter-fr+-side 'left-fringe)
+    (setq git-gutter+-disabled-modes '(org-mode)
+          git-gutter-fr+-side 'left-fringe)
     (let* ((max     8)
            (prefix  2)
            (width   5)
