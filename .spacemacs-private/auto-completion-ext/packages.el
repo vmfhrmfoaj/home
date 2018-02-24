@@ -21,7 +21,8 @@
     :config
     (define-key company-active-map (kbd "C-h") nil)
     (define-key company-active-map (kbd "C-s")  #'helm-company)
-    (setq company-idle-delay 0.2)))
+    (setq company-idle-delay 0.2)
+    (global-company-mode)))
 
 (defun auto-completion-ext/post-init-helm-company ()
   (use-package helm-company
