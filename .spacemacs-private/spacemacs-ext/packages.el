@@ -143,6 +143,7 @@
 
 (defun spacemacs-ext/post-init-linum ()
   (use-package linum
+    :defer t
     :config
     (add-hook 'linum-mode-hook
               (lambda ()
@@ -150,6 +151,7 @@
 
 (defun spacemacs-ext/post-init-linum-relative ()
   (use-package linum-relative
+    :defer t
     :config
     (setq linum-delay 0.1
           linum-schedule-timer nil)

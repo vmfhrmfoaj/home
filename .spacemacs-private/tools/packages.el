@@ -35,6 +35,7 @@
 
 (defun tools/init-atomic-chrome ()
   (use-package atomic-chrome
+    :demand t
     :config
     (atomic-chrome-start-server)))
 

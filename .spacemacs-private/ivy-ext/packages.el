@@ -34,6 +34,7 @@
 
 (defun ivy-ext/post-init-ivy ()
   (use-package ivy
+    :defer t
     :config
     (setq ivy-height 25
           ivy-fixed-height-minibuffer t)))

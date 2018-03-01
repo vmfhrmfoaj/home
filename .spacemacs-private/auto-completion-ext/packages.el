@@ -26,6 +26,7 @@
 
 (defun auto-completion-ext/post-init-helm-company ()
   (use-package helm-company
+    :demand t
     :if (configuration-layer/package-usedp 'company)
     ;; Load package
     ))

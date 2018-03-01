@@ -23,7 +23,7 @@
 
 (defun focus/init-focus ()
   (use-package focus
-    :ensure t
+    :demand t
     :config
     (add-to-list 'focus-mode-to-thing '(tex-mode . tex-sentence))
     (add-to-list 'focus-mode-to-thing '(org-mode . org))

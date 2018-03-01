@@ -50,7 +50,7 @@
                    msg))))
 
   (use-package magit-blame
-    :defer
+    :defer t
     :config
     (define-key magit-blame-mode-map "n" nil)
     (define-key magit-blame-mode-map "N" nil)))
@@ -58,6 +58,7 @@
 (defun git-ext/init-magit-svn ()
   (use-package magit-svn
     :if git-enable-magit-svn-plugin
+    :after magit
     :diminish magit-svn-mode
     :config
     (add-hook 'magit-mode-hook 'magit-svn-mode)

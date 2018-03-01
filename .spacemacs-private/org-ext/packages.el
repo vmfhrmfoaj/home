@@ -149,6 +149,7 @@
     (add-hook 'org-mode-hook #'smartparens-mode))
 
   (use-package org-capture
+    :demand t
     :config
     (setq org-capture-templates
           `(("t" "Todo" entry
@@ -197,6 +198,7 @@
       "aogc" #'org-clock-jump-to-current-clock))
 
   (use-package org-protocol
+    :demand t
     :config
     (byte-compile #'org-protocol-cached-url)
     (advice-add #'org-protocol-sanitize-uri :filter-return

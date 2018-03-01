@@ -86,6 +86,7 @@
   (use-package clojure-mode
     :defer t
     :config
+    (require 'edn)
     (byte-compile #'clojure--binding-regexp)
     (byte-compile #'clojure-skip)
     (byte-compile #'clojure-forward-sexp)
@@ -722,6 +723,6 @@
 
 (defun clojure-ext/init-edn ()
   (use-package edn
-    :ensure t))
+    :defer t))
 
 ;;; packages.el ends here
