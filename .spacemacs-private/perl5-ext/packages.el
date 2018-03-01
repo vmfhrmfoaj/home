@@ -34,7 +34,7 @@
                             (byte-compile
                              (lambda (arg)
                                (let* ((cur-pos (point))
-                                      (semi-fn-regex "sub[ \r\t\n]+[_0-9A-Za-z]+\\([ \r\t\n]*(\\$*)\\)?")
+                                      (semi-fn-regex "sub[ \r\t\n]+[_0-9A-Za-z]+\\([ \r\t\n]*([@$%]*)\\)?")
                                       (fn-regex (concat semi-fn-regex "[ \r\t\n]+{"))
                                       (from-beg-of-deufn? (eq 'beginning-of-defun this-command))
                                       (cur-line-str (buffer-substring (line-beginning-position)
@@ -58,13 +58,17 @@
             (whitespace "[ \r\t\n]")
             (whitespace+ (concat whitespace "+"))
             (whitespace* (concat whitespace "*")))
-       `((,(concat "\\(" symbol "\\)")
+       `((,(concat "\\(" symbol "\\|\\(accept\\|do\\)\\s-*(\\)")
           (1 (let ((face (plist-get (text-properties-at (1- (match-beginning 0))) 'face)) face-lst)
                (setq face-lst (if (listp face) face (list face)))
-               (when (or (memq 'font-lock-comment-face face-lst)
-                         (memq 'font-lock-string-face  face-lst))
+               (when (or (memq 'font-lock-comment-face           face-lst)
+                         (memq 'font-lock-comment-delimiter-face face-lst)
+                         (memq 'font-lock-string-face            face-lst))
                  face))
              t))
+         (,(concat "^" whitespace* "\\(sub\\)" whitespace+ "\\([_0-9A-Za-z]+\\)\\(?:" whitespace* "([@$%]*)\\)?")
+          (1 'font-lock-keyword-face)
+          (2 'font-lock-function-name-face t))
          (,(concat "\\(?:my\\|local\\|our\\)" whitespace+ "\\(" symbol "\\)")
           (1 'font-lock-variable-name-face))
          (,(concat "\\(?:my\\|local\\|our\\)" whitespace+ "(" )
@@ -75,7 +79,9 @@
            nil
            (1 'font-lock-variable-name-face)))
          ("for\\(each\\)? my \\([@$%][_0-9a-zA-Z]+\\)"
-          (1 'font-lock-variable-name-face))))
+          (1 'font-lock-variable-name-face))
+         (,(concat whitespace "\\(accept\\)" whitespace* "(")
+          (1 'font-lock-type-face))))
      'append)))
 
 ;;; packages.el ends here
