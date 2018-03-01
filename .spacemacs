@@ -625,12 +625,11 @@ before packages are loaded."
                          (run-with-idle-timer font-lock-idle-time nil
                                               (lexical-let ((fn (-partial fn start end old-len))
                                                             (buf (current-buffer)))
-                                                (byte-compile
-                                                 (lambda ()
-                                                   (setq font-lock-idle-timer nil)
-                                                   (ignore-errors
-                                                     (with-current-buffer buf
-                                                       (funcall fn))))))))))))
+                                                (lambda ()
+                                                  (setq font-lock-idle-timer nil)
+                                                  (ignore-errors
+                                                    (with-current-buffer buf
+                                                      (funcall fn)))))))))))
 
   ;; customize the theme.
   (ignore-errors
