@@ -31,9 +31,11 @@
         1 'font-lock-warning-face)
        (" \\(\\?.\\)"
         1 'font-lock-string-face)
-       ;; spacemacs style function
+       ;; spacemacs style function/variable
        (,(concat "(defun\\*?" whitespace+ "\\(" symbol "\\)")
         1 'font-lock-function-name-face t)
+       (,(concat "(defvar" whitespace+ "\\(" symbol "\\)")
+        1 'font-lock-variable-name-face t)
        ;; local variables
        (,(concat "(\\(lexical-\\)?let\\*?" whitespace+ "(")
         (,(byte-compile
