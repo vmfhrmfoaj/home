@@ -623,13 +623,14 @@ before packages are loaded."
                          font-lock-idle-end   end
                          font-lock-idle-timer
                          (run-with-idle-timer font-lock-idle-time nil
-                                              (lexical-let ((fn (-partial fn start end old-len))
-                                                            (buf (current-buffer)))
+                                              (lexical-let ((args (list start end old-len))
+                                                            (buf (current-buffer))
+                                                            (fn fn))
                                                 (lambda ()
                                                   (setq font-lock-idle-timer nil)
                                                   (ignore-errors
                                                     (with-current-buffer buf
-                                                      (funcall fn)))))))))))
+                                                      (apply fn args)))))))))))
 
   ;; customize the theme.
   (ignore-errors
