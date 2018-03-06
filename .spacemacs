@@ -199,7 +199,7 @@ It should only modify the values of Spacemacs settings."
                                `("MonacoB"
                                  :size ,(cond
                                          (linux? 12)
-                                         (t 13))
+                                         (t 14))
                                  :weight bold
                                  :width normal
                                  :powerline-scale 1.15))
@@ -452,7 +452,7 @@ before packages are loaded."
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting
-  (setq-default line-spacing 0)
+  (setq-default line-spacing 1)
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
   (add-to-list 'face-font-rescale-alist '("STIXGeneral" . 0.9))
