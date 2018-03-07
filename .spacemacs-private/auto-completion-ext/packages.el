@@ -21,6 +21,7 @@
     :config
     (define-key company-active-map (kbd "C-h") nil)
     (define-key company-active-map (kbd "C-s")  #'helm-company)
+    (evil-global-set-key 'insert (kbd "C-i") #'company-indent-or-complete-common)
     (setq company-idle-delay 0.4)
     (global-company-mode)))
 
