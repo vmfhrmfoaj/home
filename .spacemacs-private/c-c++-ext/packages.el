@@ -46,6 +46,7 @@
         1 '(:inherit font-lock-keyword-face))))
     (add-hook 'c-mode-common-hook
               (lambda ()
+                (c-toggle-auto-newline -1)
                 (when (and buffer-file-name
                            (string-match-p "\\.h$" buffer-file-name)
                            (not (eq 'objc-mode major-mode)))
@@ -56,6 +57,7 @@
                 ;; NOTE
                 ;; You can apply different indent styles to each project as following:
                 ;; .dir-locals: ((c-mode . ((eval . (c-setup-indent-config c-indent-config--xxx)))))
-                (c-setup-indent-config c-indent-config)))))
+                (c-setup-indent-config c-indent-config))
+              'append)))
 
 ;;; packages.el ends here
