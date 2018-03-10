@@ -34,6 +34,7 @@
     auto-highlight-symbol
     evil
     evil-surround
+    fill-column-indicator
     hl-todo
     (linum :location built-in)
     linum-relative
@@ -127,6 +128,12 @@
                  (lambda (args)
                    (interactive (list (read-key)))
                    args)))))
+
+(defun spacemacs-ext/post-init-fill-column-indicator ()
+  (use-package fill-column-indicator
+    :defer t
+    :config
+    (setq fci-rule-column 120)))
 
 (defun spacemacs-ext/post-init-hl-todo ()
   (use-package hl-todo
