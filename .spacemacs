@@ -198,7 +198,7 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-default-font (let ((linux? (eq system-type 'gnu/linux)))
                                `("MonacoB"
                                  :size ,(cond
-                                         (linux? 12)
+                                         (linux? 13)
                                          (t 14))
                                  :weight bold
                                  :width normal
