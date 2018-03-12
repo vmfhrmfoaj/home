@@ -8,7 +8,7 @@
                                    (match-end 1)
                                    ;; The first argument to concat is a string containing a literal tab
                                    ,(concat "	" (list (decode-char 'ucs (cadr regex-char-pair)))))
-                   '((:slant normal)))
+                   '((:slant normal :weight normal)))
                  prepend)))
           (append
            '(;;                             #Xe000
@@ -86,7 +86,7 @@
              ;; +>                          #Xe13a
              ;; ("\\(\\+>\\)"                  #Xe13a)
              ;; ("\\(=:=\\)"                   #Xe13b)
-             ;; ("[^!/]\\(==\\)[^>]"           #Xe13c)
+             ("[^!/]\\(==\\)[^>]"           #Xe13c)
              ("\\(===\\)"                   #Xe13d)
              ("\\(==>\\)"                   #Xe13e)
              ("[^=]\\(=>\\)"                #Xe13f)
