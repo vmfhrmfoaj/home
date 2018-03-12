@@ -271,7 +271,8 @@
 (defun spacemacs-ext/post-init-whitespace ()
   (use-package whitespace
     :defer t
-    :init
+    :config
+    (setq whitespace-line-column 120)
     (advice-add #'whitespace-turn-on  :before
                 (lambda (&rest _)
                   (when (featurep 'nlinum-mode)
