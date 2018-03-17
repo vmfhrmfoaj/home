@@ -212,7 +212,7 @@
                         (list (point-marker) (progn (forward-sexp) (point-marker)))
                       clojure-fake-match-2))
                    t)))
-              (concat meta? symbol "\\>"))
+              (concat "(" meta? symbol "\\>"))
             (save-excursion
               (if (in-comment?)
                   (setq font-lock--skip t)
@@ -340,11 +340,8 @@
             (,(-partial
                (byte-compile
                 (lambda (symbol limit)
-                  (if (and (string-match-p "^def" (match-string-no-properties 1))
-                           (re-search-forward symbol limit t))
-                      t
-                    (set-match-data clojure-fake-match-2)
-                    nil)))
+                  (and (string-match-p "^def" clojure-oop-kw--str)
+                       (re-search-forward symbol limit t))))
                (concat "\\(" symbol "\\)"))
              (progn
                (setq clojure-oop-kw--str (match-string-no-properties 1))
@@ -716,6 +713,7 @@
                                    (str-end  (save-excursion
                                                (goto-char (nth 8 state))
                                                (forward-sexp)
+                                               (clojure-skip :comment :ignored-form)
                                                (point))))
                                (= list-end str-end)))
                         font-lock-string-face
