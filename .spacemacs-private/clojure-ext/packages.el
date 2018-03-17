@@ -554,6 +554,10 @@
            (,(concat "(" important-kw "\\(?:)\\|" whitespace "\\)")
             (1 'clojure-important-keywords-face))
            (,(concat "::\\(" symbol "\\)/" symbol "\\>")
+            (1 'font-lock-type-face))
+           (,(concat "\\(" symbol "\\(\\." symbol "\\)+\\)")
+            (1 'font-lock-type-face))
+           (,(concat "\\<\\(\\([A-Z]+[0-9a-z]+\\)+\\)\\>")
             (1 'font-lock-type-face))))))
 
     (eval-after-load "page-break-lines"
