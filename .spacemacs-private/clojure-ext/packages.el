@@ -241,7 +241,26 @@
         ;; prepend rules
         (font-lock-add-keywords
          mode
-         `(;; Binding forms
+         `(;; Meta
+           (,(concat "(" core-ns? "def[a-z]*" whitespace+ "\\^")
+            (,(byte-compile
+               (lambda (limit)
+                 (ignore-errors
+                   (when font-lock--skip
+                     (error ""))
+                   (re-search-forward "\\([-0-9A-Za-z:]+\\)" limit))))
+             (save-excursion
+               (if (in-comment?)
+                   (setq font-lock--skip t)
+                 (setq font-lock--skip nil)
+                 (setq clojure-meta---point (point))
+                 (clojure-forward-sexp)
+                 (point)))
+             (if font-lock--skip
+                 (end-of-line)
+               (goto-char clojure-meta---point))
+             (1 'clojure-meta-face)))
+           ;; Binding forms
            (,(concat "(" core-ns? (substring (clojure--binding-regexp) 1))
             ;; Normal bindings
             (,(-partial

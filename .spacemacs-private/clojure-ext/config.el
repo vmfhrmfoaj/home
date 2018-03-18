@@ -46,6 +46,9 @@
   '((t (:inherit font-lock-type-face :weight bold)))
   "TODO")
 
+(defface clojure-meta-face
+  '((t (:inherit font-lock-comment-face)))
+  "TODO")
 
 (defcustom clojure--ignore-binding-highlight-regex
   (concat "^\\("
