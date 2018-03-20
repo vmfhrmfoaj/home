@@ -12,7 +12,8 @@
 ;;; Code:
 
 (defconst perl5-ext-packages
-  '((cperl-mode :location built-in)))
+  '((cperl-mode :location built-in)
+    (perl5db-as-repl :location (recipe :repo "vmfhrmfoaj/perl5db-as-repl" :fetcher gitlab))))
 
 (defun perl5-ext/post-init-cperl-mode ()
   (use-package cperl-mode
@@ -21,6 +22,11 @@
     (byte-compile #'perl-set-offsets)
     (byte-compile #'perl-set-vars)
     (byte-compile #'perl-setup-indent-config)
+
+    (spacemacs/declare-prefix-for-mode 'cperl-mode "ms" "repl")
+    (spacemacs/set-leader-keys-for-major-mode 'cperl-mode
+      "sc" 'perl5db-as-repl/connect-repl
+      "ss" 'perl5db-as-repl/switch-to-repl)
 
     (let ((f (byte-compile (lambda (&rest _)))))
       (advice-add #'cperl-electric-keyword :override f)
@@ -84,5 +90,21 @@
          (,(concat whitespace "\\(accept\\)" whitespace* "(")
           (1 'font-lock-type-face))))
      'append)))
+
+(defun perl5-ext/init-perl5db-as-repl ()
+  (use-package perl5db-as-repl
+    :init
+    (defun perl5db-as-repl/connect-repl ()
+      (interactive)
+      (with-current-buffer (get-buffer-create "*repl5db-as-repl*")
+        (when (boundp 'perl5db-as-repl/port)
+          (perl5db-as-repl//server-stop perl5db-as-repl/port))
+        (perl5db-as-repl-mode)))
+
+    (defun perl5db-as-repl/switch-to-repl ()
+      (interactive)
+      (-if-let (buf (get-buffer "*repl5db-as-repl*"))
+          (switch-to-buffer buf)
+        (error "There is no REPL connection")))))
 
 ;;; packages.el ends here
