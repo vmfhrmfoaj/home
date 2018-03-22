@@ -195,11 +195,14 @@ It should only modify the values of Spacemacs settings."
    ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 1~3
    ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 0~16
    ;; In Linux the font hinting must not be 'full', it causes the bold font make smaller.
-   dotspacemacs-default-font (let ((linux? (eq system-type 'gnu/linux)))
+   dotspacemacs-default-font (let* ((mac? (eq 'darwin system-type))
+                                    (retina-display? (when mac?
+                                                       (alist-get 'backing-scale-factor
+                                                                  (car (mac-display-monitor-attributes-list))))))
                                `("MonacoB"
                                  :size ,(cond
-                                         (linux? 14)
-                                         (t 15))
+                                         (retina-display? 15)
+                                         (t 14))
                                  :weight bold
                                  :width normal
                                  :powerline-scale 1.15))
@@ -452,7 +455,7 @@ before packages are loaded."
         user-mail-address "vmfhrmfoaj@yahoo.com")
 
   ;; set up the addtional font setting
-  (setq-default line-spacing 1)
+  (setq-default line-spacing 0)
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
   (add-to-list 'face-font-rescale-alist '("STIXGeneral" . 0.9))
