@@ -112,6 +112,7 @@ This function should only modify configuration layer settings."
                                     evil-escape
                                     exec-path-from-shell
                                     helm-c-yasnippet
+                                    helm-flx
                                     php-auto-yasnippets
                                     yasnippet-snippets)
    ;; Defines the behaviour of Spacemacs when installing packages.
