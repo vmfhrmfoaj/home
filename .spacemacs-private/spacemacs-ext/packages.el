@@ -65,7 +65,15 @@
                 (lambda (&rest _)
                   (restore-modes ediff-exclude-modes ediff-exclude-mode-status)
                   (when (eq 'maximized (cdr (assoc 'fullscreen (frame-parameters))))
-                    (spacemacs/toggle-maximize-frame-off))))))
+                    (spacemacs/toggle-maximize-frame-off))))
+    ;; NOTE
+    ;;  This is workaround.
+    ;;  When quitting `ediff-mode', error occurred on Linux
+    (when (eq 'gnu/linux system-type)
+      (advice-add #'winner-set-conf :around
+                  (lambda (fn winconf)
+                    (ignore-errors
+                      (funcall fn winconf)))))))
 
 (defun spacemacs-ext/post-init-auto-highlight-symbol ()
   (use-package auto-highlight-symbol
