@@ -615,10 +615,12 @@ before packages are loaded."
                                        (cancel-timer font-lock-idle-timer)))
                            (start_ (or font-lock-idle-start start))
                            (end_   (or font-lock-idle-end   end)))
-                       (when (or (< start_ end_   start  end)
-                                 (< start  end    start_ end_)
-                                 (< start_ start  end_   end)
-                                 (< start  start_ end    end_))
+                       (when (= end_ start)  (setq start start_))
+                       (when (= end  start_) (setq end end_))
+                       (when (or (< end_   end)
+                                 (< end    start_)
+                                 (< start_ start  end_ end)
+                                 (< start  start_ end  end_))
                          (funcall timer-fn))))
                    (setq font-lock-idle-start start
                          font-lock-idle-end   end
