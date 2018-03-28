@@ -65,13 +65,10 @@
             (whitespace+ (concat whitespace "+"))
             (whitespace* (concat whitespace "*")))
        `((,(concat "\\(" symbol "\\|\\(accept\\|do\\)\\s-*(\\)")
-          (1 (let* ((pos (match-beginning 0))
-                    (face (plist-get (text-properties-at pos) 'face)))
-               (save-excursion
-                 (goto-char pos)
-                 (up-list 1 t)
-                 (when (looking-at-p "['\"/]")
-                   face)))
+          (1 (cond
+              ((sp-point-in-string)  'font-lock-string-face)
+              ((sp-point-in-comment) 'font-lock-comment-face)
+              (t nil))
              t))
          (,(concat "^" whitespace* "\\(sub\\)" whitespace+ "\\([_0-9A-Za-z]+\\)\\(?:" whitespace* "([@$%]*)\\)?")
           (1 'font-lock-keyword-face)

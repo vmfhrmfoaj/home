@@ -28,13 +28,10 @@
             (whitespace* (concat whitespace "*"))
             (assigment (concat whitespace* "[.+-*/]?=[^=>]")))
        `((,(concat "\\(" symbol "\\|->[_0-9a-zA-Z]+\\)")
-          (1 (let* ((pos (if (eolp) (1- (match-beginning 0)) (1+ (match-end 0))))
-                    (face (plist-get (text-properties-at pos) 'face)))
-               (save-excursion
-                 (goto-char pos)
-                 (up-list 1 t)
-                 (when (looking-at-p "['\"]")
-                   face)))
+          (1 (cond
+              ((sp-point-in-string)  'font-lock-string-face)
+              ((sp-point-in-comment) 'font-lock-comment-face)
+              (t nil))
              t))
          (,(concat "\\(" symbol "\\)\\(\\[[^]]*\\]\\)*" assigment)
           (1 'font-lock-variable-name-face))
