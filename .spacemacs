@@ -617,7 +617,7 @@ before packages are loaded."
                            (end_   (or font-lock-idle-end   end)))
                        (when (= end_ start)  (setq start start_))
                        (when (= end  start_) (setq end end_))
-                       (when (or (< end_   end)
+                       (when (or (< end_   start)
                                  (< end    start_)
                                  (< start_ start  end_ end)
                                  (< start  start_ end  end_))
