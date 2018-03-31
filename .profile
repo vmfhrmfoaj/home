@@ -32,15 +32,20 @@ function setEnv () {
   export REACT_EDITOR=emacsclient
 
   # java (clojure)
-  local java_dir=$(java -XshowSettings:properties -version 2>&1 | grep "java.home" | cut -d'=' -f2 | tr -d ' ')
-  if [[ "$os" == "Linux" ]]; then
-    java_dir=$(dirname $java_dir)
+  if   [[ "$os" == "Darwin" ]]; then
+    local java_home=$(/usr/libexec/java_home -v 9)
+    export PATH=$java_home/bin:$PATH
+  elif [[ "$os" == "Linux" ]];  then
+    local java_home=$(readlink -f $(which javac) | sed "s:/bin/javac::")
+    export PATH=$java_home/jre/bin:$PATH
   fi
-  export PATH=$java_dir/bin:$PATH
+  if [[ ! -z $java_home ]]; then
+    export JAVA_HOME=$java_home
+  fi
   local jvm_opts=""
   local java_ver=$(java -version 2>&1 | grep -o "java version \"[^\"]\+\"" | grep -o "\"[._0-9]\+" | grep -o "[._0-9]\+")
-  if [[ ! -z $(echo $java_ver | grep "^9") ]] then
-    jvm_opts="--add-modules java.xml.bind --add-modules java.xml.bind"
+  if [[ ! -z $(echo $java_ver | grep "^9") ]]; then
+    jvm_opts="$jvm_opts --add-modules java.xml.bind"
   fi
   local mem_in_gb=0
   if   [[ "$os" == "Darwin" ]]; then
