@@ -596,7 +596,7 @@ before packages are loaded."
   (setq font-lock-idle-time 0.1
         font-lock-idle-timer nil
         font-lock-idle-avoid-buf-regex (regexp-opt '("org-src-fontification"))
-        font-lock-idle-avoid-cmds '(undo undo-tree-undo)
+        font-lock-idle-avoid-cmds '(comment-dwim undo undo-tree-undo)
         font-lock-idle-start nil
         font-lock-idle-end nil
         gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect))
