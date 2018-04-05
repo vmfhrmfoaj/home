@@ -198,8 +198,8 @@ It should only modify the values of Spacemacs settings."
    ;; In Linux the font hinting must not be 'full', it causes the bold font make smaller.
    dotspacemacs-default-font (let* ((mac? (eq 'darwin system-type))
                                     (retina-display? (when mac?
-                                                       (alist-get 'backing-scale-factor
-                                                                  (car (mac-display-monitor-attributes-list))))))
+                                                       (= 2 (alist-get 'backing-scale-factor
+                                                                       (car (mac-display-monitor-attributes-list)))))))
                                `("MonacoB"
                                  :size ,(cond
                                          (retina-display? 15)
