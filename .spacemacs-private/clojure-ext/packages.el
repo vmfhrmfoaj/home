@@ -362,10 +362,11 @@
                   (and (string-match-p "^def" clojure-oop-kw--str)
                        (re-search-forward symbol limit t))))
                (concat "\\(" symbol "\\)"))
-             (progn
+             (save-excursion
                (setq clojure-oop-kw--str (match-string-no-properties 1))
                (setq clojure-oop-kw--point (point))
-               (line-end-position))
+               (clojure-forward-sexp)
+               (point))
              (goto-char clojure-oop-kw--point)
              (0 'clojure-define-type-face))
             ;; highlighting OOP fn name
