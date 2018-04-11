@@ -52,8 +52,8 @@
   (use-package magit-blame
     :defer t
     :config
-    (define-key magit-blame-mode-map "n" nil)
-    (define-key magit-blame-mode-map "N" nil)))
+    (define-key magit-blame-read-only-mode-map "n" nil)
+    (define-key magit-blame-read-only-mode-map "N" nil)))
 
 (defun git-ext/init-magit-svn ()
   (use-package magit-svn
