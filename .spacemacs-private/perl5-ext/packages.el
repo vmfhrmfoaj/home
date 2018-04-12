@@ -23,12 +23,18 @@
     (byte-compile #'perl-set-vars)
     (byte-compile #'perl-setup-indent-config)
 
+    (setq cperl-break-one-line-blocks-when-indent nil
+          cperl-fix-hanging-brace-when-indent nil
+          cperl-indent-region-fix-constructs nil
+          cperl-indent-wrt-brace nil
+          cperl-merge-trailing-else nil)
+
     (spacemacs/declare-prefix-for-mode 'cperl-mode "ms" "repl")
     (spacemacs/set-leader-keys-for-major-mode 'cperl-mode
       "sc" 'perl5db-as-repl/connect-repl
       "ss" 'perl5db-as-repl/switch-to-repl)
 
-    (let ((f (byte-compile (lambda (&rest _)))))
+    (let ((f (byte-compile (lambda (&rest _) "Do nothing" nil))))
       (advice-add #'cperl-electric-keyword :override f)
       (advice-add #'cperl-electric-else    :override f)
       (advice-add #'cperl-electric-pod     :override f))
