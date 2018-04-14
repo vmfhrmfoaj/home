@@ -1,6 +1,16 @@
 function setEnv () {
   local os=`uname`
 
+  # brew
+  if [[ ! -z $(which brew 2>/dev/null) ]]; then
+    if [[ -z $(echo $PATH | grep $(brew --prefix)/bin) ]]; then
+      export PATH=$(brew --prefix)/bin:$PATH
+    fi
+    if [[ -z $(echo $PATH | grep $(brew --prefix)/sbin) ]]; then
+      export PATH=$(brew --prefix)/sbin:$PATH
+    fi
+  fi
+
   # android
   export ANDROID_SDK=$HOME/Android_SDK
   export ANDROID_HOME=$ANDROID_SDK
