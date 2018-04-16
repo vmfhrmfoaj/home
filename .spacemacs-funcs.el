@@ -241,3 +241,19 @@
                   (-map #'-second-item)
                   (--sort (time-less-p other it))
                   (-first-item))))))
+
+(defun local-env (&optional buf)
+  (let ((buf (or buf (current-buffer))))
+    (with-current-buffer buf
+      (when (local-variable-p 'process-environment)
+        (copy-sequence process-environment)))))
+
+(defun set-local-env (env &optional buf)
+  (let ((buf (or buf (current-buffer))))
+    (with-current-buffer buf
+      (make-local-variable 'process-environment)
+      (setq process-environment env))))
+
+(defun inherit-local-env (src-buf target-buf)
+  (-when-let (env (local-env src-buf))
+    (set-local-env env target-buf)))
