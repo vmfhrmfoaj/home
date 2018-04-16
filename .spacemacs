@@ -785,6 +785,37 @@ before packages are loaded."
   ;; for sync
   (add-hook 'after-save-hook #'rsync-remote-dir)
 
+  ;; for inherit buffer-local environment variables
+  (advice-add #'generate-new-buffer :around
+              (byte-compile
+               (lambda (fn name)
+                 (let ((buf (funcall fn name)))
+                   (when (local-variable-p 'process-environment)
+                     (let ((env (copy-sequence process-environment)))
+                       (with-current-buffer buf
+                         (make-local-variable 'process-environment)
+                         (setq process-environment env))))
+                   buf))))
+  (advice-add #'helm-candidate-buffer :around
+              (byte-compile
+               (lambda (fn &rest args)
+                 (let ((buf (apply fn args)))
+                   (-when-let (env (with-current-buffer helm-current-buffer
+                                     (when (local-variable-p 'process-environment)
+                                       (copy-sequence process-environment))))
+                     (with-current-buffer buf
+                       (make-local-variable 'process-environment)
+                       (setq process-environment env)))
+                   buf))))
+  (add-hook 'helm-minibuffer-set-up-hook
+            (byte-compile
+             (lambda ()
+               (-when-let (env (with-current-buffer helm-current-buffer
+                                 (when (local-variable-p 'process-environment)
+                                   (copy-sequence process-environment))))
+                 (make-local-variable 'process-environment)
+                 (setq process-environment env)))))
+
   ;; customize Spacemacs
   (-update->> spacemacs-default-jump-handlers
               (-remove-item 'evil-goto-definition))
