@@ -24,6 +24,13 @@
     :defer t
     :config
     (setq magit-diff-refine-hunk t)
+    ;; NOTE
+    ;;  The result of `(call-process "env" nil t t)` does not contain 'HOME' variable.
+    ;;  But on vanilla Emacs (e.g. emacs -Q), it is ok.
+    ;;  I think it is a bug of package which is used by Spacemacs.
+    ;; FIXME
+    ;;  This is workaround.
+    (add-to-list 'magit-git-environment (concat "HOME=" (getenv "HOME")))
     (-update->> magit-status-sections-hook
                 (-replace-first 'magit-insert-unpushed-to-upstream-or-recent
                                 'magit-insert-unpushed-to-upstream))

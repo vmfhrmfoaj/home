@@ -1,5 +1,6 @@
 # -*- mode: gitignore; -*-
 
+# Eamcs
 *~
 \#*\#
 /.emacs.desktop
