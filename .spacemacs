@@ -439,7 +439,10 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   (add-hook 'emacs-startup-hook
             (lambda ()
               (recentf-cleanup)
-              (projectile-cleanup-known-projects))))
+              (projectile-cleanup-known-projects)))
+
+  ;; HHKB enable/disable
+  (setq happy-hacking-keyboard nil))
 
 (defun dotspacemacs/user-config ()
   "Configuration for user code:
@@ -540,14 +543,15 @@ before packages are loaded."
     (set-file-name-coding-system 'utf-8-hfs))
 
   ;; HHKB keyboard
-  (global-set-key (kbd "<S-kp-multiply>") "#")
-  (global-set-key (kbd "<S-kp-divide>") "\\")
-  (global-set-key (kbd "<S-kp-subtract>") "_")
-  (global-set-key (kbd "<S-kp-add>") "=")
-  (define-key input-decode-map (kbd "<S-kp-multiply>") "#")
-  (define-key input-decode-map (kbd "<S-kp-divide>") "\\")
-  (define-key input-decode-map (kbd "<S-kp-subtract>") "_")
-  (define-key input-decode-map (kbd "<S-kp-add>") "=")
+  (when happy-hacking-keyboard
+    (global-set-key (kbd "<S-kp-multiply>") "#")
+    (global-set-key (kbd "<S-kp-divide>") "\\")
+    (global-set-key (kbd "<S-kp-subtract>") "_")
+    (global-set-key (kbd "<S-kp-add>") "=")
+    (define-key input-decode-map (kbd "<S-kp-multiply>") "#")
+    (define-key input-decode-map (kbd "<S-kp-divide>") "\\")
+    (define-key input-decode-map (kbd "<S-kp-subtract>") "_")
+    (define-key input-decode-map (kbd "<S-kp-add>") "="))
 
   ;; multiple window
   (advice-add 'set-window-buffer :around #'set-window-buffer+)

@@ -111,31 +111,32 @@
   (use-package evil-surround
     :defer t
     :config
-    (advice-add #'evil-surround-region :filter-args
-                (byte-compile
-                 (lambda (args)
-                   (if (> 4 (length args))
-                       args
-                     (let* ((char (nth 3 args))
-                            (new-char (cond
-                                       ((= 33554474 char) 35) ;;<S-kp-multiply> => #
-                                       ((= 33554479 char) 92) ;;<S-kp-divide> => \
-                                       ((= 33554477 char) 95) ;;<S-kp-subtract> => _
-                                       ((= 33554475 char) 61) ;;<S-kp-add> => =
-                                       )))
-                       (if new-char
-                           (-replace-at 3 new-char args)
-                         args))))))
-    (advice-add #'evil-surround-change :filter-args
-                (byte-compile
-                 (lambda (args)
-                   (interactive (list (read-key)))
-                   args)))
-    (advice-add #'evil-surround-delete :filter-args
-                (byte-compile
-                 (lambda (args)
-                   (interactive (list (read-key)))
-                   args)))))
+    (when happy-hacking-keyboard
+      (advice-add #'evil-surround-region :filter-args
+                  (byte-compile
+                   (lambda (args)
+                     (if (> 4 (length args))
+                         args
+                       (let* ((char (nth 3 args))
+                              (new-char (cond
+                                         ((= 33554474 char) 35) ;;<S-kp-multiply> => #
+                                         ((= 33554479 char) 92) ;;<S-kp-divide> => \
+                                         ((= 33554477 char) 95) ;;<S-kp-subtract> => _
+                                         ((= 33554475 char) 61) ;;<S-kp-add> => =
+                                         )))
+                         (if new-char
+                             (-replace-at 3 new-char args)
+                           args))))))
+      (advice-add #'evil-surround-change :filter-args
+                  (byte-compile
+                   (lambda (args)
+                     (interactive (list (read-key)))
+                     args)))
+      (advice-add #'evil-surround-delete :filter-args
+                  (byte-compile
+                   (lambda (args)
+                     (interactive (list (read-key)))
+                     args))))))
 
 (defun spacemacs-ext/post-init-fill-column-indicator ()
   (use-package fill-column-indicator
