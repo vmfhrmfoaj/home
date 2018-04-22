@@ -588,6 +588,8 @@
     (put 'defstate 'clojure-doc-string-elt 2)
     (put-clojure-indent 'redef-state :defn) ; for expectations
     (put-clojure-indent 'fdef :defn) ; for spec
+    (put-clojure-indent 'as->  1)
+    (put-clojure-indent 'as->> 1)
     (add-hook
      'clojure-mode-hook
      (lambda ()
