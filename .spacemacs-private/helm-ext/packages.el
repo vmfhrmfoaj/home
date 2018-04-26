@@ -93,8 +93,9 @@
     (define-key helm-map (kbd "C-n") #'helm-next-source)
     (define-key helm-map (kbd "C-p") #'helm-previous-source)
     (define-key helm-comp-read-map  (kbd "C-h") #'delete-backward-char)
-    (define-key helm-find-files-map (kbd "C-h") #'delete-backward-char)
-    (define-key helm-read-file-map  (kbd "C-h") #'delete-backward-char)
+    (dolist (map (list helm-find-files-map helm-read-file-map))
+      (define-key map (kbd "C-h") #'delete-backward-char)
+      (define-key map (kbd "C-u") #'helm-find-files-up-one-level))
     (setq helm-autoresize-min-height 20
           helm-autoresize-max-height 45
           helm-truncate-lines t)
