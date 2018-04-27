@@ -16,6 +16,7 @@
     helm
     helm-ag
     helm-projectile
+    helm-man
     (minibuffer :location built-in)))
 
 (defun helm-ext/post-init-dumb-jump ()
@@ -165,6 +166,12 @@
       (kbd "C-h") #'delete-backward-char)
     (define-key (assoc 'keymap helm-source-projectile-dired-files-list)
       (kbd "C-h") #'delete-backward-char)))
+
+(defun helm-ext/post-init-helm-man ()
+  (use-package helm-man
+    :defer t
+    :config
+    (setq helm-man-or-woman-function 'woman)))
 
 (defun helm-ext/init-minibuffer ()
   (use-package minibuffer

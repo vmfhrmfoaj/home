@@ -30,7 +30,16 @@
 ;;; Code:
 
 (defconst c-c++-ext-packages
-  '(cc-mode))
+  '(autoconf
+    cc-mode))
+
+(defun c-c++-ext/init-autoconf ()
+  (use-package autoconf-mode
+    :defer t
+    :config
+    (add-hook 'autoconf-mode-hook
+              (lambda ()
+                (setq-local auto-indent-block-level 0)))))
 
 (defun c-c++-ext/post-init-cc-mode ()
   (use-package cc-mode
