@@ -836,6 +836,7 @@ before packages are loaded."
   (require 'org-protocol)
 
   ;; turn on/off the packages globally.
+  (electric-indent-mode -1)
   (spacemacs/toggle-camel-case-motion-globally-on)
   (spacemacs/toggle-mode-line-org-clock)
   (unless dotspacemacs-fullscreen-at-startup
