@@ -12,29 +12,30 @@ tramp
 .dir-locals.el
 .projectile
 
-# Org-mode
+# Emacs org-mode
 .org-id-locations
 *_archive
 
-# flymake-mode
+# Emacs flymake-mode
 *_flymake.*
 
-# eshell files
+# Emacs eshell files
 /eshell/history
 /eshell/lastdir
 
-# elpa packages
+# ELPA packages
 /elpa/
 
-# reftex files
+# RefTeX files
 *.rel
 
 # AUCTeX auto folder
 /auto/
 
-# cask packages
+# Cask packages
 .cask/
 
+# MacOS
 .DS_Store
 .AppleDouble
 .LSOverride
@@ -73,3 +74,9 @@ cscope.files
 cscope.out
 cscope.in.out
 cscope.po.out
+
+# Eclim
+.meghanada/
+.classpath
+.project
+.settings/
