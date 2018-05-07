@@ -43,7 +43,7 @@ function setEnv () {
 
   # java (clojure)
   if   [[ "$os" == "Darwin" ]]; then
-    local java_home=$(/usr/libexec/java_home -v 9)
+    local java_home=$(/usr/libexec/java_home)
     local java_bin=$java_home/bin
   elif [[ "$os" == "Linux" ]];  then
     local java_home=$(readlink -f $(which javac) | sed "s:/bin/javac::")
