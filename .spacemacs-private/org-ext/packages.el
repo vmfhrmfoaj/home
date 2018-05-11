@@ -28,6 +28,13 @@
 (defun org-ext/post-init-org ()
   (use-package org
     :defer t
+    :init
+    (add-hook 'kill-emacs-hook
+              (lambda ()
+                (ignore-errors
+                  (org-clock-goto)
+                  (org-clock-out nil t)
+                  (save-buffer))))
     :config
     (setq org-bullets-bullet-list '("■" "□" "◙" "◘" "●" "○" "◌")
           org-complete-tags-always-offer-all-agenda-tags t
@@ -213,7 +220,7 @@
     :config
     (setq org-clock-into-drawer t
           org-clock-idle-time nil
-          org-clock-custom-idle-time 10
+          org-clock-custom-idle-time 30
           org-clock-custom-idle-timer
           (run-with-idle-timer (* 60 org-clock-custom-idle-time) t
                                (lambda ()
