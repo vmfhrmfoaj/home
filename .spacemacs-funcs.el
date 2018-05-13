@@ -1,11 +1,11 @@
 ;;-*- byte-compile-dynamic: t; -*-
 
-(eval-when-compile
-  (dolist (dir '("~/.emacs.d/elpa/"
-                 "~/.emacs.d/elpa/develop"))
-    (let ((default-directory dir))
-      (normal-top-level-add-subdirs-to-load-path)))
-  (require 'dash))
+(dolist (dir '("~/.emacs.d/elpa/"
+               "~/.emacs.d/elpa/develop"))
+  (let ((default-directory dir))
+    (normal-top-level-add-subdirs-to-load-path)))
+(require 'dash)
+(require 'dash-functional)
 
 (defun pixel->frame-unit (pixel)
   (round (/ pixel (/ (float (frame-pixel-width)) (frame-width)))))
