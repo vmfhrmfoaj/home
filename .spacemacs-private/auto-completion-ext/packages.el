@@ -20,8 +20,12 @@
     :defer t
     :config
     (define-key company-active-map (kbd "C-h") nil)
-    (define-key company-active-map (kbd "C-s")  #'helm-company)
-    (setq company-idle-delay nil)))
+    (define-key company-active-map (kbd "C-s") #'helm-company)
+    (with-eval-after-load "evil"
+      (evil-global-set-key 'insert (kbd "C-i") #'helm-company))
+    (setq company-idle-delay nil)
+    (add-to-list 'company-backends 'company-capf)
+    (global-company-mode 1)))
 
 (defun auto-completion-ext/post-init-helm-company ()
   (use-package helm-company
