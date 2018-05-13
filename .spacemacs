@@ -417,12 +417,59 @@ configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
 
+  ;; common
+  (defmacro -update-> (&rest thread)
+    `(setq ,(-first-item thread) (->  ,@thread)))
+  (defmacro -update->> (&rest thread)
+    `(setq ,(-first-item thread) (->> ,@thread)))
+
+  (defun in-comment? ()
+    (comment-only-p (save-excursion
+                      (goto-char (match-beginning 0))
+                      (point-at-bol))
+                    (point)))
+
+  (defun safe-up-list-1 ()
+    (condition-case nil
+        (up-list)
+      (error (setq-local font-lock--skip t))))
+  (defun safe-down-list-1 ()
+    (condition-case nil
+        (down-list)
+      (error (setq-local font-lock--skip t))))
+
+  (defun safe-regexp? (regex)
+    (condition-case nil
+        (progn (string-match-p regex "") t)
+      (error nil)))
+
+  (defun dim-color (color p)
+    (->> color
+         (color-name-to-rgb)
+         (apply #'color-rgb-to-hsl)
+         (apply (-rpartial #'color-darken-hsl p))
+         (apply #'color-hsl-to-rgb)
+         (apply #'color-rgb-to-hex)))
+
+  (defun light-color (color p)
+    (->> color
+         (color-name-to-rgb)
+         (apply #'color-rgb-to-hsl)
+         (apply (-rpartial #'color-lighten-hsl p))
+         (apply #'color-hsl-to-rgb)
+         (apply #'color-rgb-to-hex)))
+
+  (defun saturate-color (color p)
+    (->> color
+         (color-name-to-rgb)
+         (apply #'color-rgb-to-hsl)
+         (apply (-rpartial #'color-saturate-hsl p))
+         (apply #'color-hsl-to-rgb)
+         (apply #'color-rgb-to-hex)))
+
   ;; compile settings
   (setq-default byte-compile-dynamic t
                 byte-compile-warnings nil)
-
-  ;; load custom functions
-  (load "~/.spacemacs-funcs.el")
 
   ;; set the `custom-file' to avoid appending tail...
   (setq custom-file "~/.spacemacs-custom.el")
@@ -449,6 +496,9 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+
+  ;; load custom functions
+  (load "~/.spacemacs-funcs.el")
 
   ;; user info
   (setq user-full-name "Jinseop Kim"
