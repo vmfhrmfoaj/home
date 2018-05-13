@@ -14,7 +14,6 @@
 (defconst eye-candy-packages
   '(all-the-icons
     auto-dim-other-buffers
-    company
     evil
     evil-goggles
     fancy-narrow
@@ -104,26 +103,9 @@
                      (or ret (helm-alive-p))))))
     (auto-dim-other-buffers-mode)))
 
-(defun eye-candy/post-init-company ()
-  (unless (string-equal "Fira Code" (car dotspacemacs-default-font))
-    (use-package company
-      :defer t
-      :config
-      (let ((f (lambda (cmd)
-                 (ignore-errors
-                   (cond
-                    ((eq 'post-command cmd)
-                     (with-silent-modifications
-                       (remove-text-properties (point-min) (point-max) '(composition nil))))
-                    ((eq 'hide cmd)
-                     (font-lock-flush)))))))
-        (advice-add #'company-pseudo-tooltip-frontend
-                    :before (byte-compile f))))))
-
 (defun eye-candy/post-init-evil ()
   (when (require 'evil nil 'noerr)
-    (setq composition-props nil
-          evil-replace-state-cursor '("chocolate" (hbar . 4)))))
+    (setq evil-replace-state-cursor '("chocolate" (hbar . 4)))))
 
 (defun eye-candy/init-evil-goggles ()
   (use-package evil-goggles
