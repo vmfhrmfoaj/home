@@ -8,3 +8,7 @@
   :config
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
+(use-package powerline
+  :ensure t
+  :config
+  (powerline-center-evil-theme))

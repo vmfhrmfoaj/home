@@ -8,6 +8,7 @@
 (define-key input-decode-map (kbd "<S-kp-subtract>") "_")
 (define-key input-decode-map (kbd "<S-kp-add>") "=")
 
+;; Hangul
 (global-set-key (kbd "S-SPC") #'toggle-input-method)
 (add-hook 'minibuffer-setup-hook
 	  (lambda ()
@@ -36,11 +37,17 @@
     "2" #'winum-select-window-2
     "3" #'winum-select-window-3
     "4" #'winum-select-window-4
-    "ff" #'helm-find-files
     "bb" #'helm-buffers-list
     "bd" #'evil-delete-buffer
     "bk" #'kill-buffer
+    "ff" #'helm-find-files
     "gs" #'magit-status
+    "jn" #'sp-newline
+    "jo" #'open-line
+    "pd" #'helm-projectile-find-dir
+    "pf" #'helm-projectile-find-file
+    "pp" #'helm-projectile-switch-project
+    "rl" #'helm-resume
     "qq" #'save-buffers-kill-terminal))
 
 (use-package helm-mode
@@ -60,5 +67,8 @@
   (which-key-declare-prefixes
     (concat evil-leader/leader "f") "file"
     (concat evil-leader/leader "b") "buffer"
+    (concat evil-leader/leader "j") "jump/join/split"
     (concat evil-leader/leader "g") "git"
+    (concat evil-leader/leader "p") "project"
+    (concat evil-leader/leader "r") "registers/rings/resume"
     (concat evil-leader/leader "q") "quit"))

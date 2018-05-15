@@ -35,7 +35,6 @@
 
 (use-package twilight-bright-theme
   :ensure t
-  :load-path "themes"
   :config
   (load-theme 'twilight-bright t)
   (custom-theme-set-faces

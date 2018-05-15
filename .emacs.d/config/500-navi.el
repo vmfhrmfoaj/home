@@ -7,6 +7,9 @@
   (helm-mode 1))
 
 (use-package helm-projectile
+  :ensure t)
+
+(use-package neotree
   :ensure t
   :config
-  )
+  (setq neo-theme 'icons))

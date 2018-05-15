@@ -18,6 +18,12 @@
   :ensure t
   :after magit)
 
+(use-package evil-goggles
+  :ensure t
+  :config
+  (evil-goggles-mode)
+  (evil-goggles-use-diff-faces))
+
 (use-package vi-tilde-fringe
   ;; NOTE:
   ;;  This package not included in the `MELPA'.
