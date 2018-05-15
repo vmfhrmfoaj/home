@@ -33,22 +33,57 @@
   (define-key evil-normal-state-map (kbd "SPC TAB") #'switch-to-previous-buffer)
   (evil-leader/set-key
     "<SPC>" #'helm-M-x
+    "0" #'winum-select-window-0
     "1" #'winum-select-window-1
     "2" #'winum-select-window-2
     "3" #'winum-select-window-3
     "4" #'winum-select-window-4
+    "5" #'winum-select-window-5
+    "6" #'winum-select-window-6
+    "7" #'winum-select-window-7
+    "8" #'winum-select-window-8
+    "9" #'winum-select-window-9
+
+    ;; buffer
+    "bR" #'revert-buffer
     "bb" #'helm-buffers-list
     "bd" #'evil-delete-buffer
     "bk" #'kill-buffer
+    "bs" #'get-scratch-buffer-create
+
+    ;; file
     "ff" #'helm-find-files
+
+    ;; git
     "gs" #'magit-status
+
+    ;; jump/join/split
     "jn" #'sp-newline
     "jo" #'open-line
+
+    ;; project
     "pd" #'helm-projectile-find-dir
     "pf" #'helm-projectile-find-file
     "pp" #'helm-projectile-switch-project
+
+    ;; register/rings/resume
     "rl" #'helm-resume
-    "qq" #'save-buffers-kill-terminal))
+
+    ;; search
+    "sf" #'helm-do-ag
+    "sp" #'helm-do-ag-project-root
+    "ss" #'helm-swoop
+
+    ;; quit
+    "qq" #'save-buffers-kill-terminal
+
+    ;; window
+    "wH" #'windmove-left
+    "wJ" #'windmove-down
+    "wK" #'windmove-up
+    "wL" #'windmove-right
+    "wd" #'delete-window
+    "wm" #'delete-other-windows))
 
 (use-package helm-mode
   :defer t
@@ -71,4 +106,5 @@
     (concat evil-leader/leader "g") "git"
     (concat evil-leader/leader "p") "project"
     (concat evil-leader/leader "r") "registers/rings/resume"
-    (concat evil-leader/leader "q") "quit"))
+    (concat evil-leader/leader "q") "quit"
+    (concat evil-leader/leader "w") "window"))

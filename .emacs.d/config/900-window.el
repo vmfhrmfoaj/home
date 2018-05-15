@@ -26,3 +26,9 @@
   :ensure t
   :config
   (winum-mode))
+
+(use-package zoom
+  :ensure t
+  :config
+  (setq zoom-size '(0.618 . 0.618))
+  (zoom-mode t))

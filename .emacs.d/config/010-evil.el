@@ -6,7 +6,9 @@
 (use-package evil-surround
   :ensure t
   :config
-  (global-evil-surround-mode 1))
+  (global-evil-surround-mode 1)
+  (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)
+  (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute))
 
 (use-package evil-leader
   :ensure t
