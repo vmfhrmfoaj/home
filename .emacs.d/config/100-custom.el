@@ -1,8 +1,12 @@
+(setq-default indent-tabs-mode nil
+              tab-width 2)
+
 (setq ring-bell-function 'ignore
       initial-major-mode 'org-mode
       initial-scratch-message "")
 
 (prefer-coding-system 'utf-8)
+(toggle-truncate-lines 1)
 
 (when (eq system-type 'darwin)
   (setq mac-command-modifier 'meta

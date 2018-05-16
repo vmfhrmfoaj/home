@@ -11,17 +11,12 @@
 ;; Hangul
 (global-set-key (kbd "S-SPC") #'toggle-input-method)
 (add-hook 'minibuffer-setup-hook
-	  (lambda ()
-	    (local-set-key (kbd "C-h")   #'backward-delete-char)
-	    (local-set-key (kbd "S-SPC") #'toggle-input-method)))
+          (lambda ()
+            (local-set-key (kbd "C-h")   #'backward-delete-char)
+            (local-set-key (kbd "S-SPC") #'toggle-input-method)))
 
 (use-package bind-map
   :ensure t)
-
-(use-package evil
-  :defer t
-  :config
-  (define-key evil-insert-state-map (kbd "C-h") #'backward-delete-char))
 
 (use-package which-key
   :defer t
@@ -31,10 +26,12 @@
     (concat evil-leader/leader "b") "buffer"
     (concat evil-leader/leader "j") "jump/join/split"
     (concat evil-leader/leader "g") "git"
+    (concat evil-leader/leader "k") "S-expression"
     (concat evil-leader/leader "m") "major mode keys"
     (concat evil-leader/leader "p") "project"
     (concat evil-leader/leader "r") "registers/rings/resume"
     (concat evil-leader/leader "s") "search"
+    (concat evil-leader/leader "t") "toggle"
     (concat evil-leader/leader "q") "quit"
     (concat evil-leader/leader "w") "window"))
 
@@ -73,6 +70,19 @@
     ;; jump/join/split
     "jn" #'sp-newline
     "jo" #'open-line
+    "js" #'sp-split-sexp
+
+    ;; S-expression
+    ;; - https://github.com/Fuco1/smartparens/wiki/Working-with-expressions
+    "kB" #'sp-backward-barf-sexp
+    "kE" #'sp-splice-sexp-killing-forward
+    "kR" #'sp-splice-sexp
+    "kS" #'sp-backward-slurp-sexp
+    "kb" #'sp-forward-barf-sexp
+    "ke" #'sp-splice-sexp-killing-backward
+    "kr" #'sp-splice-sexp-killing-around
+    "ks" #'sp-forward-slurp-sexp
+    "kw" #'sp-wrap-sexp
 
     ;; project
     "pd" #'helm-projectile-find-dir
@@ -86,6 +96,10 @@
     "sf" #'helm-do-ag
     "sp" #'helm-do-ag-project-root
     "ss" #'helm-swoop
+
+    ;; toggle
+    "tw" #'whitespace-mode
+    "tl" #'toggle-truncate-lines
 
     ;; quit
     "qq" #'save-buffers-kill-terminal
@@ -101,16 +115,11 @@
 
 
 ;; Key binding for the minor mode
-(use-package helm-mode
+
+(use-package evil
   :defer t
   :config
-  (global-set-key (kbd "M-x") #'helm-M-x)
-  (global-set-key (kbd "C-x C-f") #'helm-find-files)
-  (define-key helm-map (kbd "C-j") #'helm-next-line) 
-  (define-key helm-map (kbd "C-k") #'helm-previous-line)
-  (define-key helm-comp-read-map (kbd "C-h") #'delete-backward-char)
-  (define-key helm-find-files-map (kbd "TAB") #'helm-execute-persistent-action)
-  (define-key helm-find-files-map (kbd "C-u") #'helm-find-files-up-one-level))
+  (define-key evil-insert-state-map (kbd "C-h") #'backward-delete-char))
 
 (use-package company
   :defer t
@@ -119,19 +128,44 @@
   (define-key company-active-map (kbd "C-j") #'company-select-next)
   (define-key company-active-map (kbd "C-k") #'company-select-previous))
 
+(use-package helm-mode
+  :defer t
+  :config
+  (global-set-key (kbd "M-x") #'helm-M-x)
+  (global-set-key (kbd "C-x C-f") #'helm-find-files)
+  (define-key helm-map (kbd "C-j") #'helm-next-line)
+  (define-key helm-map (kbd "C-k") #'helm-previous-line)
+  (define-key helm-comp-read-map (kbd "C-h") #'delete-backward-char)
+  (define-key helm-find-files-map (kbd "TAB") #'helm-execute-persistent-action)
+  (define-key helm-find-files-map (kbd "C-u") #'helm-find-files-up-one-level))
+
 
-;; Key binding for the major mode 
+;; Key binding for the major mode
 
 (use-package elisp-mode
-  :defer t 
+  :defer t
   :config
+  (add-hook 'lisp-interaction-mode-hook
+            (lambda ()
+              (evil-local-set-key 'normal (kbd "RET")
+                                  #'eval-print-last-sexp)))
   (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
-    (evil-leader/set-key-for-mode mode
-      "mgg" #'elisp-slime-nav-find-elisp-thing-at-point)
     (which-key-declare-prefixes-for-mode mode
-      (concat evil-leader/leader "mg") "goto definition"))
-  (let ((map (cdr (assoc 'emacs-lisp-mode evil-leader--mode-maps))))
+      (concat evil-leader/leader "me") "evaluation"
+      (concat evil-leader/leader "mg") "goto definition"
+      (concat evil-leader/leader "mr") "REPL")
+    (evil-leader/set-key-for-mode mode
+      "mee" #'emacs-lisp-REPL-eval-print-this-sexp
+      "mgg" #'elisp-slime-nav-find-elisp-thing-at-point
+      "mrs" #'emacs-lisp-REPL-buffer))
+  (-when-let (map (-some->> evil-leader--mode-maps
+                            (assoc 'emacs-lisp-mode)
+                            (-drop 1)
+                            (assoc 109) ; 109 = "m"
+                            (-drop 1)))
     (bind-map map
-      :evil-keys (",")
-      :evil-states (normal motion visual)
-      )))
+      :evil-keys (evil-leader/major-leader)
+      :evil-states (normal motion visual))
+    ;; TODO
+    ;;  prefix
+    ))
