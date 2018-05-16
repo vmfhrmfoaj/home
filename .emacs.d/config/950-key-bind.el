@@ -15,22 +15,34 @@
 	    (local-set-key (kbd "C-h")   #'backward-delete-char)
 	    (local-set-key (kbd "S-SPC") #'toggle-input-method)))
 
-(use-package company
-  :defer t
-  :config
-  (define-key company-active-map (kbd "C-h") nil)
-  (define-key company-active-map (kbd "C-j") #'company-select-next)
-  (define-key company-active-map (kbd "C-k") #'company-select-previous))
+(use-package bind-map
+  :ensure t)
 
 (use-package evil
   :defer t
   :config
   (define-key evil-insert-state-map (kbd "C-h") #'backward-delete-char))
 
+(use-package which-key
+  :defer t
+  :config
+  (which-key-declare-prefixes
+    (concat evil-leader/leader "f") "file"
+    (concat evil-leader/leader "b") "buffer"
+    (concat evil-leader/leader "j") "jump/join/split"
+    (concat evil-leader/leader "g") "git"
+    (concat evil-leader/leader "m") "major mode keys"
+    (concat evil-leader/leader "p") "project"
+    (concat evil-leader/leader "r") "registers/rings/resume"
+    (concat evil-leader/leader "s") "search"
+    (concat evil-leader/leader "q") "quit"
+    (concat evil-leader/leader "w") "window"))
+
 (use-package evil-leader
   :defer t
   :config
   (define-key evil-normal-state-map (kbd "SPC TAB") #'switch-to-previous-buffer)
+  (setq evil-leader/major-leader ",")
   (evil-leader/set-key
     "<SPC>" #'helm-M-x
     "0" #'winum-select-window-0
@@ -53,6 +65,7 @@
 
     ;; file
     "ff" #'helm-find-files
+    "ft" #'neotree
 
     ;; git
     "gs" #'magit-status
@@ -83,8 +96,11 @@
     "wK" #'windmove-up
     "wL" #'windmove-right
     "wd" #'delete-window
-    "wm" #'delete-other-windows))
+    "wm" #'delete-other-windows)
+  (global-evil-leader-mode 1))
 
+
+;; Key binding for the minor mode
 (use-package helm-mode
   :defer t
   :config
@@ -96,15 +112,26 @@
   (define-key helm-find-files-map (kbd "TAB") #'helm-execute-persistent-action)
   (define-key helm-find-files-map (kbd "C-u") #'helm-find-files-up-one-level))
 
-(use-package which-key
+(use-package company
   :defer t
   :config
-  (which-key-declare-prefixes
-    (concat evil-leader/leader "f") "file"
-    (concat evil-leader/leader "b") "buffer"
-    (concat evil-leader/leader "j") "jump/join/split"
-    (concat evil-leader/leader "g") "git"
-    (concat evil-leader/leader "p") "project"
-    (concat evil-leader/leader "r") "registers/rings/resume"
-    (concat evil-leader/leader "q") "quit"
-    (concat evil-leader/leader "w") "window"))
+  (define-key company-active-map (kbd "C-h") nil)
+  (define-key company-active-map (kbd "C-j") #'company-select-next)
+  (define-key company-active-map (kbd "C-k") #'company-select-previous))
+
+
+;; Key binding for the major mode 
+
+(use-package elisp-mode
+  :defer t 
+  :config
+  (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
+    (evil-leader/set-key-for-mode mode
+      "mgg" #'elisp-slime-nav-find-elisp-thing-at-point)
+    (which-key-declare-prefixes-for-mode mode
+      (concat evil-leader/leader "mg") "goto definition"))
+  (let ((map (cdr (assoc 'emacs-lisp-mode evil-leader--mode-maps))))
+    (bind-map map
+      :evil-keys (",")
+      :evil-states (normal motion visual)
+      )))

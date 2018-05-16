@@ -217,6 +217,7 @@
   (-when-let (env (local-env src-buf))
     (set-local-env env target-buf)))
 
+
 (defun get-scratch-buffer-create ()
   (interactive)
   (pop-to-buffer (get-buffer-create "*scratch*"))

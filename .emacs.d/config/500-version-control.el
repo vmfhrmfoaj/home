@@ -1,5 +1,13 @@
 (use-package magit
-  :ensure t)
+  :ensure t
+  :config
+  ;; NOTE
+  ;;  The result of `(call-process "env" nil t t)` does not contain 'HOME' variable.
+  ;;  But on Linux or without the configuration(e.g. emacs -Q), it is ok.
+  ;;  So, I think it is a bug caused by collision between Spacemacs and latest Emacs-macport.
+  ;; FIXME
+  ;;  This is workaround.
+  (add-to-list 'magit-git-environment (concat "HOME=" (getenv "HOME"))))
 
 (use-package git-timemachine
   :ensure t)
