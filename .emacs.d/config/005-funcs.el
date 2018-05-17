@@ -1,6 +1,7 @@
 (require 'color)
 
 (defun dim-color (color p)
+  "TODO"
   (->> color
        (color-name-to-rgb)
        (apply #'color-rgb-to-hsl)
@@ -9,6 +10,7 @@
        (apply #'color-rgb-to-hex)))
 
 (defun light-color (color p)
+  "TODO"
   (->> color
        (color-name-to-rgb)
        (apply #'color-rgb-to-hsl)
@@ -17,6 +19,7 @@
        (apply #'color-rgb-to-hex)))
 
 (defun saturate-color (color p)
+  "TODO"
   (->> color
        (color-name-to-rgb)
        (apply #'color-rgb-to-hsl)
@@ -24,14 +27,45 @@
        (apply #'color-hsl-to-rgb)
        (apply #'color-rgb-to-hex)))
 
+(setq font-lock--skip nil)
+(make-local-variable 'font-lock--skip)
+
+(defun in-comment? ()
+  "TODO"
+  (comment-only-p (save-excursion
+                    (goto-char (match-beginning 0))
+                    (point-at-bol))
+                  (point)))
+
+(defun safe-up-list-1 ()
+  "TODO"
+  (condition-case nil
+      (up-list)
+    (error (setq-local font-lock--skip t))))
+
+(defun safe-down-list-1 ()
+  "TODO"
+  (condition-case nil
+      (down-list)
+    (error (setq-local font-lock--skip t))))
+
+(defun safe-regexp? (regex)
+  "TODO"
+  (condition-case nil
+      (progn (string-match-p regex "") t)
+    (error nil)))
+
 
 (defun pixel->frame-unit (pixel)
+  "TODO"
   (round (/ pixel (/ (float (frame-pixel-width)) (frame-width)))))
 
 (defun frame-unit->pixel (frame-unit)
+  "TODO"
   (round (* frame-unit (/ (float (frame-pixel-width)) (frame-width)))))
 
 (defun custom-display-pixel-width ()
+  "TODO"
   (->> (--filter (-when-let (frames (-> (assoc 'frames it) cdr))
                    (--some? (eq (selected-frame) it) frames))
                  (display-monitor-attributes-list))
@@ -42,6 +76,7 @@
 
 
 (defun include-shell-var-in (file)
+  "TODO"
   (dolist (it (->> (concat "source " file "; env")
                    (shell-command-to-string)
                    (s-lines)
@@ -50,56 +85,6 @@
           (val (cadr it)))
       (setenv key val))))
 
-
-(setq auto-indent-skip-when-open-file t)
-
-(defun auto-indent (&rest _)
-  "Auto indent for `evil-mode'"
-  (unless auto-indent-skip-when-open-file
-    (save-match-data
-      (save-mark-and-excursion
-        (when (and (derived-mode-p 'prog-mode)
-                   (not buffer-read-only)
-                   (>= auto-indent-block-level 1))
-          (let ((start
-                 (progn
-                   (condition-case nil
-                       (progn
-                         (backward-up-list 1 t)
-                         (ignore-errors
-                           (dotimes (_ (1- auto-indent-block-level))
-                             (backward-up-list 1 t)))
-                         (point))
-                     (error nil))))
-                (end
-                 (progn
-                   (condition-case nil
-                       (progn
-                         (forward-list)
-                         (point))
-                     (error nil)))))
-            (when (and start end)
-              (let ((fancy-narrow--beginning nil)
-                    (fancy-narrow--end nil))
-                (indent-region start end))))))))
-  (setq-local auto-indent-skip-when-open-file nil))
-
-(defun set-window-buffer+ (set-win-buf wind buf &optional opt)
-  (when (and (->> (window-list)
-                  (-remove (-partial #'eq (selected-window)))
-                  (-map #'window-buffer)
-                  (-some? (-partial #'eq buf)))
-             (->> this-command
-                  (format "%s")
-                  (string-match-p "quit\\|bury")
-                  (not)))
-    (funcall set-win-buf
-             (->> (window-list)
-                  (--remove (eq (selected-window) it))
-                  (--filter (eq buf (window-buffer it)))
-                  (-first-item))
-             (window-buffer wind) opt))
-  (funcall set-win-buf wind buf opt))
 
 (setq rsync-retry-coutner 3
       rsync-remote-dir nil
@@ -150,8 +135,8 @@
                   (shell-command-to-string
                    (concat rsync-remote-notify-cmd "'" res "'")))))))))))
 
-
 (setq buf-visit-time nil)
+(make-local-variable 'buf-visit-time)
 
 (defun update-buf-visit-time (&rest _)
   (ignore-errors
@@ -159,7 +144,6 @@
           (cur-time (current-time)))
       (if (window-dedicated-p cur-win)
           (setq buf-visit-time nil)
-        (make-local-variable 'buf-visit-time)
         (-update->> buf-visit-time
                     (-partition 2)
                     (--filter (window-live-p (-first-item it)))
@@ -179,11 +163,8 @@
                   (--sort (time-less-p other it))
                   (-first-item))))))
 
-(setq exclude-alt-buf-regex "^\\s-*\\*\\s-*\\([Hh]elm\\|which-key\\|NeoTree\\)")
-(advice-add #'select-frame      :after #'update-buf-visit-time)
-(advice-add #'select-window     :after #'update-buf-visit-time)
-(advice-add #'set-window-buffer :after #'update-buf-visit-time)
-(advice-add #'switch-to-buffer  :after #'update-buf-visit-time)
+
+(setq exclude-alt-buf-regex "")
 
 (defun switch-to-previous-buffer (&optional win)
   (interactive)
@@ -201,24 +182,8 @@
         (set-window-buffer (selected-window) prev-buf)))))
 
 
-(defun local-env (&optional buf)
-  (let ((buf (or buf (current-buffer))))
-    (with-current-buffer buf
-      (when (local-variable-p 'process-environment)
-        (copy-sequence process-environment)))))
-
-(defun set-local-env (env &optional buf)
-  (let ((buf (or buf (current-buffer))))
-    (with-current-buffer buf
-      (make-local-variable 'process-environment)
-      (setq process-environment env))))
-
-(defun inherit-local-env (src-buf target-buf)
-  (-when-let (env (local-env src-buf))
-    (set-local-env env target-buf)))
-
-
 (defun get-scratch-buffer-create ()
   (interactive)
   (pop-to-buffer (get-buffer-create "*scratch*"))
-  (org-mode))
+  (unless (eq 'org-mode major-mode)
+    (org-mode)))

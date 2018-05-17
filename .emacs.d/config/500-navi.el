@@ -1,17 +1,9 @@
-(use-package helm-config
-  :ensure helm
-  :config
-  (setq helm-always-two-windows t)
-  (helm-mode 1))
-
-(use-package helm-company
-  :ensure t
-  :after company
-  :config
-  (define-key company-active-map (kbd "C-s") #'helm-company))
-
 (use-package helm-projectile
-  :ensure t)
+  :ensure t
+  :defer t
+  :commands (helm-projectile-find-dir
+             helm-projectile-find-file
+             helm-projectile-switch-project))
 
 (use-package neotree
   :ensure t

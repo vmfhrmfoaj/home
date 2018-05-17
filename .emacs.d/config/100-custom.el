@@ -1,9 +1,17 @@
+(defalias 'yes-or-no-p 'y-or-n-p)
+
 (setq-default indent-tabs-mode nil
               tab-width 2)
 
-(setq ring-bell-function 'ignore
+(setq exclude-alt-buf-regex "^\\s-*\\*\\s-*\\([Hh]elm\\|which-key\\|NeoTree\\)"
       initial-major-mode 'org-mode
-      initial-scratch-message "")
+      initial-scratch-message ""
+      ring-bell-function 'ignore)
+
+(advice-add #'select-frame      :after #'update-buf-visit-time)
+(advice-add #'select-window     :after #'update-buf-visit-time)
+(advice-add #'set-window-buffer :after #'update-buf-visit-time)
+(advice-add #'switch-to-buffer  :after #'update-buf-visit-time)
 
 (prefer-coding-system 'utf-8)
 (toggle-truncate-lines 1)

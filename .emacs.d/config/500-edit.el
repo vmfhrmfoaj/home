@@ -3,6 +3,9 @@
   :config
   (global-aggressive-indent-mode 1))
 
+(use-package evil-multiedit
+  :ensure t)
+
 (use-package smartparens-config
   :ensure smartparens
   :config

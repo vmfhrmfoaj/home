@@ -16,30 +16,32 @@
             (local-set-key (kbd "S-SPC") #'toggle-input-method)))
 
 (use-package bind-map
-  :ensure t)
-
-(use-package which-key
-  :defer t
+  :ensure t
+  :after evil-leader
   :config
-  (which-key-declare-prefixes
-    (concat evil-leader/leader "f") "file"
-    (concat evil-leader/leader "b") "buffer"
-    (concat evil-leader/leader "j") "jump/join/split"
-    (concat evil-leader/leader "g") "git"
-    (concat evil-leader/leader "k") "S-expression"
-    (concat evil-leader/leader "m") "major mode keys"
-    (concat evil-leader/leader "p") "project"
-    (concat evil-leader/leader "r") "registers/rings/resume"
-    (concat evil-leader/leader "s") "search"
-    (concat evil-leader/leader "t") "toggle"
-    (concat evil-leader/leader "q") "quit"
-    (concat evil-leader/leader "w") "window"))
+  (defun evil-leader/set-leader-for-mode (leader mode &optional evil-states)
+    (let ((leaders (list leader))
+          (states (or evil-states '(normal motion visual))))
+      (-when-let (map (-some->> evil-leader--mode-maps
+                                (assoc mode)
+                                (-drop 1)
+                                (assoc 109) ; 109 = "m"
+                                (-drop 1)))
+        (eval
+         `(bind-map map
+            :evil-keys ,leaders
+            :evil-states ,states))
+        ;; TODO
+        ;;  prefix
+        )))
+
+  (byte-compile #'evil-leader/set-leader-for-mode))
 
 (use-package evil-leader
-  :defer t
+  :ensure t
   :config
-  (define-key evil-normal-state-map (kbd "SPC TAB") #'switch-to-previous-buffer)
-  (setq evil-leader/major-leader ",")
+  (evil-leader/set-leader "<SPC>")
+  (global-evil-leader-mode 1)
   (evil-leader/set-key
     "<SPC>" #'helm-M-x
     "0" #'winum-select-window-0
@@ -84,6 +86,12 @@
     "ks" #'sp-forward-slurp-sexp
     "kw" #'sp-wrap-sexp
 
+    ;; narrow
+    "nf" #'fancy-narrow-to-defun
+    "np" #'fancy-narrow-to-page
+    "nr" #'fancy-narrow-to-region
+    "nw" #'fancy-widen
+
     ;; project
     "pd" #'helm-projectile-find-dir
     "pf" #'helm-projectile-find-file
@@ -92,7 +100,8 @@
     ;; register/rings/resume
     "rl" #'helm-resume
 
-    ;; search
+    ;; search/symbol
+    "se" #'evil-multiedit-match-all
     "sf" #'helm-do-ag
     "sp" #'helm-do-ag-project-root
     "ss" #'helm-swoop
@@ -113,12 +122,32 @@
     "wm" #'delete-other-windows)
   (global-evil-leader-mode 1))
 
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode)
+  (which-key-declare-prefixes
+    (concat evil-leader/leader "f") "file"
+    (concat evil-leader/leader "b") "buffer"
+    (concat evil-leader/leader "j") "jump/join/split"
+    (concat evil-leader/leader "g") "git"
+    (concat evil-leader/leader "k") "S-expression"
+    (concat evil-leader/leader "m") "major mode keys"
+    (concat evil-leader/leader "n") "narrow"
+    (concat evil-leader/leader "p") "project"
+    (concat evil-leader/leader "r") "registers/rings/resume"
+    (concat evil-leader/leader "s") "search/symbol"
+    (concat evil-leader/leader "t") "toggle"
+    (concat evil-leader/leader "q") "quit"
+    (concat evil-leader/leader "w") "window"))
+
 
 ;; Key binding for the minor mode
 
 (use-package evil
   :defer t
   :config
+  (define-key evil-normal-state-map (kbd "SPC TAB") #'switch-to-previous-buffer)
   (define-key evil-insert-state-map (kbd "C-h") #'backward-delete-char))
 
 (use-package company
@@ -145,27 +174,28 @@
 (use-package elisp-mode
   :defer t
   :config
+  ;; emacs-lisp-mode
+  (evil-leader/set-key-for-mode 'emacs-lisp-mode
+    "mee" #'eval-last-sexp
+    "mef" #'eval-defun
+    "mgg" #'elisp-slime-nav-find-elisp-thing-at-point
+    "mrs" #'emacs-lisp-REPL-buffer)
+  (which-key-declare-prefixes-for-mode 'emacs-lisp-mode
+    (concat evil-leader/leader "me") "evaluation"
+    (concat evil-leader/leader "mg") "goto definition"
+    (concat evil-leader/leader "mr") "REPL")
+  (add-hook 'emacs-lisp-mode-hook
+            (lambda ()
+              (evil-leader/set-leader-for-mode "," 'emacs-lisp-mode)))
+
+  ;; lisp-interaction-mode
+  (evil-leader/set-key-for-mode 'lisp-interaction-mode
+    "mgg" #'elisp-slime-nav-find-elisp-thing-at-point)
+  (which-key-declare-prefixes-for-mode 'lisp-interaction-mode
+    (concat evil-leader/leader "mg") "goto definition")
   (add-hook 'lisp-interaction-mode-hook
             (lambda ()
+              (evil-leader/set-leader-for-mode "," 'lisp-interaction-mode)
               (evil-local-set-key 'normal (kbd "RET")
-                                  #'eval-print-last-sexp)))
-  (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
-    (which-key-declare-prefixes-for-mode mode
-      (concat evil-leader/leader "me") "evaluation"
-      (concat evil-leader/leader "mg") "goto definition"
-      (concat evil-leader/leader "mr") "REPL")
-    (evil-leader/set-key-for-mode mode
-      "mee" #'emacs-lisp-REPL-eval-print-this-sexp
-      "mgg" #'elisp-slime-nav-find-elisp-thing-at-point
-      "mrs" #'emacs-lisp-REPL-buffer))
-  (-when-let (map (-some->> evil-leader--mode-maps
-                            (assoc 'emacs-lisp-mode)
-                            (-drop 1)
-                            (assoc 109) ; 109 = "m"
-                            (-drop 1)))
-    (bind-map map
-      :evil-keys (evil-leader/major-leader)
-      :evil-states (normal motion visual))
-    ;; TODO
-    ;;  prefix
-    ))
+                                  #'emacs-lisp-REPL-eval-print-this-sexp))
+            'append))
