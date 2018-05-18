@@ -1,6 +1,3 @@
-;; TODO
-;;  Highlighting the number
-
 (use-package evil-goggles
   :ensure t
   :config
@@ -14,6 +11,12 @@
   :ensure t
   :config
   (add-hook 'prog-mode-hook #'highlight-parentheses-mode))
+
+(use-package highlight-numbers
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook #'highlight-numbers-mode)
+  (add-hook 'text-mode-hook #'highlight-numbers-mode))
 
 (use-package hl-line
   :config

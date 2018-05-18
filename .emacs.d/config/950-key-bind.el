@@ -29,19 +29,24 @@
                                 (-drop 1)
                                 (assoc 109) ; 109 = "m"
                                 (-drop 1)))
+        ;; for evil-leader
         (eval
          `(progn
             (defvar ,map-name ',map)
             (bind-map ,map-name
               :evil-keys ,leaders
               :evil-states ,states
-              :major-modes ,modes)))
-        which-key-replacement-alist
-
-        ;; TODO
-        ;;  prefix
-        )))
-  )
+              :major-modes ,modes))))
+      ;; for which-key
+      (-when-let ((it (assoc mode which-key-replacement-alist)))
+        (let* ((evil-leader (s-chop-prefix "<" (s-chop-suffix ">" evil-leader/leader)))
+               (its-vals (cdr it))
+               (its-new-vals
+                (--map (let ((prefix (caar it))
+                             (more (cdr it)))
+                         (cons (list (s-replace (concat evil-leader " m") leader prefix)) more))
+                       its-vals)))
+          (setcdr it (append its-vals its-new-vals)))))))
 
 (use-package evil-leader
   :ensure t
@@ -146,7 +151,7 @@
     (concat evil-leader/leader "j") "jump/join/split"
     (concat evil-leader/leader "g") "git"
     (concat evil-leader/leader "k") "S-expression"
-    (concat evil-leader/leader "m") "major mode keys"
+    (concat evil-leader/leader "m") "major-mode-keys"
     (concat evil-leader/leader "n") "narrow"
     (concat evil-leader/leader "p") "project"
     (concat evil-leader/leader "r") "registers/rings/resume"
@@ -212,7 +217,7 @@
     "mrs" #'emacs-lisp-REPL-buffer)
   (which-key-declare-prefixes-for-mode 'emacs-lisp-mode
     (concat evil-leader/leader "me") "evaluation"
-    (concat evil-leader/leader "mg") "goto definition"
+    (concat evil-leader/leader "mg") "goto-definition"
     (concat evil-leader/leader "mr") "REPL")
   (evil-leader/set-major-leader-for-mode "," 'emacs-lisp-mode)
 
@@ -220,7 +225,7 @@
   (evil-leader/set-key-for-mode 'lisp-interaction-mode
     "mgg" #'elisp-slime-nav-find-elisp-thing-at-point)
   (which-key-declare-prefixes-for-mode 'lisp-interaction-mode
-    (concat evil-leader/leader "mg") "goto definition")
+    (concat evil-leader/leader "mg") "goto-definition")
   (evil-leader/set-major-leader-for-mode "," 'lisp-interaction-mode)
   (add-hook 'lisp-interaction-mode-hook
             (lambda ()

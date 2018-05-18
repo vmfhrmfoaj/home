@@ -84,7 +84,7 @@
 
 (defun include-shell-var-in (file)
   "TODO"
-  (dolist (it (->> (concat "source " file "; env")
+  (dolist (it (->> (concat "EMACS_INIT=1 source " file "; env")
                    (shell-command-to-string)
                    (s-lines)
                    (--map (s-split "=" it))))

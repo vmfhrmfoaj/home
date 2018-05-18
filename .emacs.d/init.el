@@ -8,9 +8,9 @@
 (require 'package nil t)
 (with-eval-after-load "package"
   (setq package-archives
-	'(("gnu" . "http://elpa.gnu.org/packages/")
-	  ("melpa" . "https://melpa.org/packages/")
-	  ("melpa-stable" . "https://stable.melpa.org/packages/")))
+        '(("gnu" . "http://elpa.gnu.org/packages/")
+          ("melpa" . "https://melpa.org/packages/")
+          ("melpa-stable" . "https://stable.melpa.org/packages/")))
   (package-initialize)
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
@@ -19,4 +19,5 @@
     (use-package init-loader
       :ensure t
       :config
-      (init-loader-load "~/.emacs.d/config"))))
+      (let ((gc-cons-threshold (* 1024 1024 512)))
+        (init-loader-load "~/.emacs.d/config")))))

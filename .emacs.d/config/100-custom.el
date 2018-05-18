@@ -8,11 +8,6 @@
       initial-scratch-message ""
       ring-bell-function 'ignore)
 
-(advice-add #'select-frame      :after #'update-buf-visit-time)
-(advice-add #'select-window     :after #'update-buf-visit-time)
-(advice-add #'set-window-buffer :after #'update-buf-visit-time)
-(advice-add #'switch-to-buffer  :after #'update-buf-visit-time)
-
 (prefer-coding-system 'utf-8)
 (toggle-truncate-lines 1)
 
@@ -26,3 +21,11 @@
 
 (when window-system
   (include-shell-var-in "~/.profile"))
+
+(add-hook 'after-init-hook
+          (lambda ()
+            (setq gc-cons-threshold (* 1024 1024 64))
+            (advice-add #'select-frame      :after #'update-buf-visit-time)
+            (advice-add #'select-window     :after #'update-buf-visit-time)
+            (advice-add #'set-window-buffer :after #'update-buf-visit-time)
+            (advice-add #'switch-to-buffer  :after #'update-buf-visit-time)))
