@@ -19,23 +19,29 @@
   :ensure t
   :after evil-leader
   :config
-  (defun evil-leader/set-leader-for-mode (leader mode &optional evil-states)
+  (defun evil-leader/set-major-leader-for-mode (leader mode &optional evil-states)
     (let ((leaders (list leader))
-          (states (or evil-states '(normal motion visual))))
+          (modes (list mode))
+          (states (or evil-states '(normal motion visual)))
+          (map-name (intern (format "evil-leader-for-%s-map" mode))))
       (-when-let (map (-some->> evil-leader--mode-maps
                                 (assoc mode)
                                 (-drop 1)
                                 (assoc 109) ; 109 = "m"
                                 (-drop 1)))
         (eval
-         `(bind-map map
-            :evil-keys ,leaders
-            :evil-states ,states))
+         `(progn
+            (defvar ,map-name ',map)
+            (bind-map ,map-name
+              :evil-keys ,leaders
+              :evil-states ,states
+              :major-modes ,modes)))
+        which-key-replacement-alist
+
         ;; TODO
         ;;  prefix
         )))
-
-  (byte-compile #'evil-leader/set-leader-for-mode))
+  )
 
 (use-package evil-leader
   :ensure t
@@ -57,7 +63,7 @@
 
     ;; buffer
     "bR" #'revert-buffer
-    "bb" #'helm-buffers-list
+    "bb" #'helm-mini
     "bd" #'evil-delete-buffer
     "bk" #'kill-buffer
     "bs" #'get-scratch-buffer-create
@@ -68,6 +74,7 @@
 
     ;; git
     "gs" #'magit-status
+    "gt" #'git-timemachine
 
     ;; jump/join/split
     "jn" #'sp-newline
@@ -93,8 +100,10 @@
     "nw" #'fancy-widen
 
     ;; project
+    "pI" #'projectile-invalidate-cache
     "pd" #'helm-projectile-find-dir
     "pf" #'helm-projectile-find-file
+    "pl" #'helm-persp-create-&-switch-project
     "pp" #'helm-projectile-switch-project
 
     ;; register/rings/resume
@@ -109,6 +118,11 @@
     ;; toggle
     "tw" #'whitespace-mode
     "tl" #'toggle-truncate-lines
+
+    ;; layout
+    "lh" #'persp-switch-to-default
+    "lx" #'persp-kill-cur-persp
+    "ll" #'helm-persp
 
     ;; quit
     "qq" #'save-buffers-kill-terminal
@@ -144,18 +158,34 @@
 
 ;; Key binding for the minor mode
 
+(use-package company
+  :defer t
+  :config
+  (define-key company-active-map (kbd "C-h") nil)
+  (define-key company-active-map (kbd "C-j") #'company-select-next)
+  (define-key company-active-map (kbd "C-k") #'company-select-previous)
+  (evil-global-set-key 'insert (kbd "TAB") #'company-indent-or-complete-common))
+
 (use-package evil
   :defer t
   :config
   (define-key evil-normal-state-map (kbd "SPC TAB") #'switch-to-previous-buffer)
   (define-key evil-insert-state-map (kbd "C-h") #'backward-delete-char))
 
-(use-package company
+(use-package git-timemachine
   :defer t
   :config
-  (define-key company-active-map (kbd "C-h") nil)
-  (define-key company-active-map (kbd "C-j") #'company-select-next)
-  (define-key company-active-map (kbd "C-k") #'company-select-previous))
+  (evil-define-minor-mode-key 'normal 'git-timemachine-mode (kbd "C-j") #'git-timemachine-show-previous-revision)
+  (evil-define-minor-mode-key 'normal 'git-timemachine-mode (kbd "C-k") #'git-timemachine-show-next-revision)
+  (evil-define-minor-mode-key 'normal 'git-timemachine-mode (kbd "M-b") #'git-timemachine-blame)
+  (evil-define-minor-mode-key 'normal 'git-timemachine-mode (kbd "M-w") #'git-timemachine-kill-abbreviated-revision)
+  (evil-define-minor-mode-key 'normal 'git-timemachine-mode (kbd "M-W") #'git-timemachine-kill-revision)
+  (evil-define-minor-mode-key 'normal 'git-timemachine-mode (kbd "q")   #'git-timemachine-quit))
+
+(use-package helm-company
+  :after company
+  :config
+  (define-key company-active-map (kbd "C-s") #'helm-company))
 
 (use-package helm-mode
   :defer t
@@ -184,18 +214,16 @@
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto definition"
     (concat evil-leader/leader "mr") "REPL")
-  (add-hook 'emacs-lisp-mode-hook
-            (lambda ()
-              (evil-leader/set-leader-for-mode "," 'emacs-lisp-mode)))
+  (evil-leader/set-major-leader-for-mode "," 'emacs-lisp-mode)
 
   ;; lisp-interaction-mode
   (evil-leader/set-key-for-mode 'lisp-interaction-mode
     "mgg" #'elisp-slime-nav-find-elisp-thing-at-point)
   (which-key-declare-prefixes-for-mode 'lisp-interaction-mode
     (concat evil-leader/leader "mg") "goto definition")
+  (evil-leader/set-major-leader-for-mode "," 'lisp-interaction-mode)
   (add-hook 'lisp-interaction-mode-hook
             (lambda ()
-              (evil-leader/set-leader-for-mode "," 'lisp-interaction-mode)
               (evil-local-set-key 'normal (kbd "RET")
                                   #'emacs-lisp-REPL-eval-print-this-sexp))
             'append))

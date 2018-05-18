@@ -1,3 +1,10 @@
+(defmacro -update-> (&rest thread)
+  `(setq ,(-first-item thread) (->  ,@thread)))
+
+(defmacro -update->> (&rest thread)
+  `(setq ,(-first-item thread) (->> ,@thread)))
+
+
 (require 'color)
 
 (defun dim-color (color p)

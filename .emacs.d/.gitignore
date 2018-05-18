@@ -1,4 +1,6 @@
 /.custom.el
 /el-get
 /elpa
+/persp-confs
 /projectile*
+/recentf

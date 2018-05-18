@@ -13,12 +13,6 @@
 
 (use-package helm-config
   :ensure helm
-  :defer t
-  :commands (helm-M-x
-             helm-buffers-list
-             helm-find-files
-             helm-projectile-find-dir
-             helm-resume)
   :config
   (setq helm-always-two-windows t)
   (helm-mode 1))

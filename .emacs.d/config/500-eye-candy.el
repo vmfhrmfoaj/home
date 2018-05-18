@@ -1,3 +1,6 @@
+;; TODO
+;;  Highlighting the number
+
 (use-package evil-goggles
   :ensure t
   :config
@@ -11,6 +14,19 @@
   :ensure t
   :config
   (add-hook 'prog-mode-hook #'highlight-parentheses-mode))
+
+(use-package hl-line
+  :config
+  (global-hl-line-mode 1))
+
+(use-package hl-todo
+  :ensure t
+  :config
+  (setq hl-todo-keywords
+        (list (list (caar hl-todo-keywords)
+                    `(1 (hl-todo-get-face) prepend))))
+  (advice-add #'hl-todo-get-face :filter-return #'list)
+  (global-hl-todo-mode 1))
 
 (use-package powerline
   :ensure t

@@ -12,8 +12,9 @@
     "TODO"
     (interactive)
     (while (ignore-errors (backward-up-list) t))
-    (when (looking-at-p "\\s-*(")
-      (forward-sexp))
+    (if (looking-at-p "\\s-*(")
+        (forward-sexp)
+      (end-of-line))
     (newline)
     (let ((pos (point))
           ;; TODO
