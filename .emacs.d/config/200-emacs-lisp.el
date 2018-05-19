@@ -1,6 +1,10 @@
 (use-package elisp-mode
   :defer t
-  :config
+  :init
+  (defface lisp-local-binding-variable-name-face
+    '((t (:inherit font-lock-variable-name-face)))
+    "Face used to font-lock Lisp local binding variable name.")
+
   (defun emacs-lisp-REPL-buffer ()
     "TODO"
     (interactive)
@@ -24,20 +28,21 @@
       (goto-char pos)
       (insert ";;=> ")))
 
+  (defun emacs-lisp-evil-lookup-func ()
+    "TODO"
+    (call-interactively #'elisp-slime-nav-describe-elisp-thing-at-point)
+    (-when-let (buf (->> (window-list)
+                         (-map #'window-buffer)
+                         (--first (string-equal "*Help*" (buffer-name it)))))
+      (pop-to-buffer buf)))
+
+  :config
   (add-hook 'emacs-lisp-mode-hook
             (lambda ()
               (make-local-variable 'elisp--binding-form-point)
               (setq-local elisp-fake-match-4 (-repeat 4 (point-min-marker)))
-              (setq-local font-lock-multiline t)
-              (setq-local evil-lookup-func
-                          (byte-compile
-                           (lambda ()
-                             (call-interactively #'elisp-slime-nav-describe-elisp-thing-at-point)
-                             (pop-to-buffer (get-buffer "*Help*")))))))
-
-  (defface lisp-local-binding-variable-name-face
-    '((t (:inherit font-lock-variable-name-face)))
-    "Face used to font-lock Lisp local binding variable name.")
+              (setq-local evil-lookup-func #'emacs-lisp-evil-lookup-func)
+              (setq-local font-lock-multiline t)))
 
   (font-lock-add-keywords
    'emacs-lisp-mode

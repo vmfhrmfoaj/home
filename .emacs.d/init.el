@@ -8,7 +8,8 @@
 (require 'package nil t)
 (with-eval-after-load "package"
   (setq package-archives
-        '(("gnu" . "http://elpa.gnu.org/packages/")
+        '(("org" . "https://orgmode.org/elpa/")
+          ("gnu" . "https://elpa.gnu.org/packages/")
           ("melpa" . "https://melpa.org/packages/")
           ("melpa-stable" . "https://stable.melpa.org/packages/")))
   (package-initialize)

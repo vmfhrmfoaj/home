@@ -1,7 +1,9 @@
 (defmacro -update-> (&rest thread)
+  "TODO"
   `(setq ,(-first-item thread) (->  ,@thread)))
 
 (defmacro -update->> (&rest thread)
+  "TODO"
   `(setq ,(-first-item thread) (->> ,@thread)))
 
 
@@ -93,17 +95,27 @@
       (setenv key val))))
 
 
-(setq rsync-retry-coutner 3
-      rsync-remote-dir nil
-      rsync-remote-opts "-z"
-      rsync-remote-ssh-opts "-T -o Compression=no -x"
-      rsync-remote-notify-cmd
-      (cond ((eq system-type 'gnu/linux)
-             "notify-send Emacs ")
-            ((eq system-type 'darwin)
-             "terminal-notifier -title Emacs -message ")))
+(defvar rsync-retry-coutner 3
+  "TODO")
+
+(defvar rsync-remote-dir nil
+  "TODO")
+
+(defvar rsync-remote-opts "-z"
+  "TODO")
+
+(defvar rsync-remote-ssh-opts "-T -o Compression=no -x"
+  "TODO")
+
+(defvar rsync-remote-notify-cmd
+  (cond ((eq system-type 'gnu/linux)
+         "notify-send Emacs ")
+        ((eq system-type 'darwin)
+         "terminal-notifier -title Emacs -message "))
+  "TODO")
 
 (defun rsync-remote-dir (&optional buf)
+  "TODO"
   (let* ((buf (or (and buf (get-buffer buf))
                   (current-buffer)))
          (buf-name (buffer-name buf))
@@ -142,10 +154,12 @@
                   (shell-command-to-string
                    (concat rsync-remote-notify-cmd "'" res "'")))))))))))
 
-(setq buf-visit-time nil)
+(defvar buf-visit-time nil
+  "TODO")
 (make-local-variable 'buf-visit-time)
 
 (defun update-buf-visit-time (&rest _)
+  "TODO"
   (ignore-errors
     (let ((cur-win (selected-window))
           (cur-time (current-time)))
@@ -159,6 +173,7 @@
                    (plist-put cur-win cur-time))))))
 
 (defun buf-visit-time (&optional buf win)
+  "TODO"
   (ignore-errors
     (with-current-buffer (or buf (current-buffer))
       (if (and (< 1 (length (window-list)))
@@ -171,9 +186,11 @@
                   (-first-item))))))
 
 
-(setq exclude-alt-buf-regex "")
+(defvar exclude-alt-buf-regex ""
+  "TODO")
 
 (defun switch-to-previous-buffer (&optional win)
+  "TODO"
   (interactive)
   (unless (window-dedicated-p)
     (let ((cur-buf (current-buffer)))
@@ -190,6 +207,7 @@
 
 
 (defun get-scratch-buffer-create ()
+  "TODO"
   (interactive)
   (pop-to-buffer (get-buffer-create "*scratch*"))
   (unless (eq 'org-mode major-mode)

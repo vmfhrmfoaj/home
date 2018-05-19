@@ -29,6 +29,20 @@
 
 (use-package zoom
   :ensure t
+  :init
+  (defun zoom--update-custom ()
+    "Update the window layout in the current frame. (custom ver)"
+    (let ((zoom-mode nil)
+          (window-configuration-change-hook nil)
+          (window-combination-resize t)
+          (window-resize-pixelwise t))
+      (unless (zoom--window-ignored-p)
+        (balance-windows)
+        (zoom--resize)
+        (zoom--fix-scroll))))
+
   :config
-  (setq zoom-size '(0.618 . 0.618))
+  (setq zoom-size '(0.618 . 0.618)
+        zoom-ignored-buffer-name-regexps '("^*helm" "^helm"))
+  (advice-add #'zoom--update :override #'zoom--update-custom)
   (zoom-mode t))

@@ -6,6 +6,7 @@
 
 (use-package evil-surround
   :ensure t
+  :after evil
   :config
   (global-evil-surround-mode 1)
   (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)
@@ -14,4 +15,7 @@
 (use-package helm-config
   :ensure helm
   :config
-  (helm-mode 1))
+  (setq helm-autoresize-min-height 25
+        helm-autoresize-max-height 45)
+  (helm-mode 1)
+  (helm-autoresize-mode 1))

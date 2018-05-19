@@ -18,8 +18,9 @@
 (use-package bind-map
   :ensure t
   :after evil-leader
-  :config
+  :init
   (defun evil-leader/set-major-leader-for-mode (leader mode &optional evil-states)
+    "TODO"
     (let ((leaders (list leader))
           (modes (list mode))
           (states (or evil-states '(normal motion visual)))
@@ -38,7 +39,7 @@
               :evil-states ,states
               :major-modes ,modes))))
       ;; for which-key
-      (-when-let ((it (assoc mode which-key-replacement-alist)))
+      (-when-let (it (assoc mode which-key-replacement-alist))
         (let* ((evil-leader (s-chop-prefix "<" (s-chop-suffix ">" evil-leader/leader)))
                (its-vals (cdr it))
                (its-new-vals
@@ -65,6 +66,15 @@
     "7" #'winum-select-window-7
     "8" #'winum-select-window-8
     "9" #'winum-select-window-9
+    "u" #'universal-argument
+
+    ;; applications
+
+    ;; - org
+    "aoa" #'org-agenda-list
+    "aoct" #'org-capture-todo
+    "aocn" #'org-capture-note
+    "aocj" #'org-clock-jump-to-current-clock
 
     ;; buffer
     "bR" #'revert-buffer
@@ -146,6 +156,9 @@
   :config
   (which-key-mode)
   (which-key-declare-prefixes
+    (concat evil-leader/leader "a") "applications"
+    (concat evil-leader/leader "ao") "org"
+    (concat evil-leader/leader "aoc") "capture/clock"
     (concat evil-leader/leader "f") "file"
     (concat evil-leader/leader "b") "buffer"
     (concat evil-leader/leader "j") "jump/join/split"
@@ -199,9 +212,12 @@
   (global-set-key (kbd "C-x C-f") #'helm-find-files)
   (define-key helm-map (kbd "C-j") #'helm-next-line)
   (define-key helm-map (kbd "C-k") #'helm-previous-line)
-  (define-key helm-comp-read-map (kbd "C-h") #'delete-backward-char)
-  (define-key helm-find-files-map (kbd "TAB") #'helm-execute-persistent-action)
-  (define-key helm-find-files-map (kbd "C-u") #'helm-find-files-up-one-level))
+  (define-key helm-map (kbd "C-n") #'helm-next-source)
+  (define-key helm-map (kbd "C-p") #'helm-previous-source)
+  (dolist (map (list helm-find-files-map
+                     helm-read-file-map))
+    (define-key map (kbd "TAB") #'helm-execute-persistent-action)
+    (define-key map (kbd "C-u") #'helm-find-files-up-one-level)))
 
 
 ;; Key binding for the major mode
@@ -231,4 +247,19 @@
             (lambda ()
               (evil-local-set-key 'normal (kbd "RET")
                                   #'emacs-lisp-REPL-eval-print-this-sexp))
-            'append))
+            :append))
+
+(use-package org
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'org-mode
+    "m:" #'org-set-tags
+    "mci" #'org-clock-in
+    "mco" #'org-clock-out
+    "mtd" #'org-deadline
+    "mts" #'org-schedule
+    "mtt" #'org-todo)
+  (which-key-declare-prefixes-for-mode 'org-mode
+    (concat evil-leader/leader "mc") "clock"
+    (concat evil-leader/leader "mt") "todo/time")
+  (evil-leader/set-major-leader-for-mode "," 'org-mode))
