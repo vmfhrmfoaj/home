@@ -12,17 +12,29 @@
 (use-package org
   :ensure org-plus-contrib
   :defer t
+  :init
+  (defface org-next
+    '((t (:inherit org-todo)))
+    "TODO")
+
+  (defface org-cancelled
+    '((t (:inherit org-done)))
+    "TODO")
+
   :config
   (setq org-bullets-bullet-list '("■" "□" "◙" "◘" "●" "○" "◌")
         org-complete-tags-always-offer-all-agenda-tags t
         org-directory (concat (getenv "HOME") "/Desktop/Org")
+        org-fontify-whole-heading-line t
         org-hide-emphasis-markers t
+        org-image-actual-width nil
         org-insert-schedule-deadline t
         org-log-done 'time
         org-log-into-drawer t
         org-pretty-entities t
         org-src-fontify-natively t
         org-startup-indented t
+        org-startup-with-inline-images t
         org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
                             (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)"))
         org-todo-keyword-faces '(("TODO" . org-todo)
@@ -44,21 +56,12 @@
 
 (use-package org-agenda
   :defer t
-  :init
-  (defun org-agenda-find-files ()
-    "TODO"
-    (let ((files (shell-command-to-string (concat "find " org-directory "/" " -type f" " -name \"*.org\""))))
-      (->> files
-           (s-split "\n")
-           (--map (s-replace "//" "/" it))
-           (--remove (s-blank? it)))))
-
   :config
   (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0 :weight bold))
                                     (0.5 . '(:inherit org-upcoming-deadline :height 1.0 :weight bold))
                                     (0.0 . '(:height 1.0)))
         org-agenda-clockreport-parameter-plist '(:link t :fileskip0 t :stepskip0 t :maxlevel 5 :tcolumns 1 :narrow 70!)
-        org-agenda-files (org-agenda-find-files)
+        org-agenda-files (directory-files-recursively org-directory "\\.org$")
         org-agenda-skip-deadline-if-done t
         org-agenda-skip-scheduled-if-deadline-is-shown t
         org-agenda-skip-function-global
@@ -76,6 +79,7 @@
         org-agenda-window-setup 'current-window))
 
 (use-package org-capture
+  :defer t
   :init
   (defun org-capture-todo ()
     "TODO"
@@ -129,7 +133,12 @@
                     "%?")
            :prepend t))))
 
-(use-package org-protocol)
+(use-package org-protocol
+  :defer t
+  :init
+  (add-hook 'after-init-hook
+	    (lambda ()
+	      (require 'org-protocol))))
 
 (use-package org-clock
   :defer t

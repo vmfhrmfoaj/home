@@ -34,10 +34,13 @@
     (interactive)
     (persp-switch persp-nil-name))
 
+  (defun persp-current-name ()
+    (safe-persp-name (get-frame-persp)))
+
   (defun persp-kill-cur-persp ()
     "TODO"
     (interactive)
-    (persp-kill (safe-persp-name (get-frame-persp))))
+    (persp-kill (persp-current-name)))
 
   :config
   (setq persp-autokill-buffer-on-remove 'kill-weak

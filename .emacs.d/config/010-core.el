@@ -2,15 +2,8 @@
   :ensure t
   :config
   (setq-default evil-symbol-word-search 'thing-at-point)
+  (global-subword-mode 1)
   (evil-mode 1))
-
-(use-package evil-surround
-  :ensure t
-  :after evil
-  :config
-  (global-evil-surround-mode 1)
-  (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)
-  (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute))
 
 (use-package helm-config
   :ensure helm

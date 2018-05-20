@@ -36,7 +36,7 @@
        (apply #'color-hsl-to-rgb)
        (apply #'color-rgb-to-hex)))
 
-(setq font-lock--skip nil)
+(setq-default font-lock--skip nil)
 (make-local-variable 'font-lock--skip)
 
 (defun in-comment? ()

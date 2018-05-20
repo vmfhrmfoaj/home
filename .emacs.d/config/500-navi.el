@@ -9,3 +9,6 @@
   :ensure t
   :config
   (setq neo-theme 'icons))
+
+(use-package dumb-jump
+  :ensure t)

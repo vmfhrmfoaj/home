@@ -1,3 +1,9 @@
+(use-package atomic-chrome
+  :ensure t
+  :defer t
+  :init
+  (add-hook 'after-init-hook #'atomic-chrome-start-server))
+
 (use-package linum-relative
   :ensure t
   :init
@@ -23,5 +29,6 @@
   (save-place-mode 1))
 
 (use-package server
-  :config
+  :defer t
+  :init
   (add-hook 'after-init-hook #'server-start))

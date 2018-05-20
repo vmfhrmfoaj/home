@@ -78,10 +78,12 @@
 
     ;; buffer
     "bR" #'revert-buffer
+    "ba" #'persp-add-buffer
     "bb" #'helm-mini
     "bd" #'evil-delete-buffer
     "bk" #'kill-buffer
     "bs" #'get-scratch-buffer-create
+    "bl" #'switch-to-previous-buffer
 
     ;; file
     "ff" #'helm-find-files
@@ -143,6 +145,7 @@
     "qq" #'save-buffers-kill-terminal
 
     ;; window
+    "w-" #'split-window-vertically
     "wH" #'windmove-left
     "wJ" #'windmove-down
     "wK" #'windmove-up
@@ -179,6 +182,7 @@
 (use-package company
   :defer t
   :config
+  (define-key company-active-map [return] #'newline)
   (define-key company-active-map (kbd "C-h") nil)
   (define-key company-active-map (kbd "C-j") #'company-select-next)
   (define-key company-active-map (kbd "C-k") #'company-select-previous)
@@ -189,6 +193,12 @@
   :config
   (define-key evil-normal-state-map (kbd "SPC TAB") #'switch-to-previous-buffer)
   (define-key evil-insert-state-map (kbd "C-h") #'backward-delete-char))
+
+(use-package evil-surround
+  :defer t
+  :config
+  (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)
+  (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute))
 
 (use-package git-timemachine
   :defer t
@@ -222,6 +232,40 @@
 
 ;; Key binding for the major mode
 
+(use-package cider-repl
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'cider-repl-mode
+    "mee" #'cider-eval-last-sexp
+    "mef" #'cider-eval-defun-at-point
+    "mer" #'cider-eval-last-sexp-and-replace
+    "mgg" #'cider-find-var
+    "mrs" #'cider-switch-to-last-clj-buf
+    "mrq" #'cider-quit)
+  (which-key-declare-prefixes-for-mode 'cider-repl-mode
+    (concat evil-leader/leader "me") "evaluation"
+    (concat evil-leader/leader "mg") "goto"
+    (concat evil-leader/leader "mr") "REPL")
+  (evil-leader/set-major-leader-for-mode "," 'cider-repl-mode))
+
+(use-package clojure-mode
+  :defer t
+  :config
+  (dolist (mode '(clojure-mode clojurec-mode clojurescript-mode))
+    (evil-leader/set-key-for-mode mode
+      "mee" #'cider-eval-last-sexp
+      "mef" #'cider-eval-defun-at-point
+      "mer" #'cider-eval-last-sexp-and-replace
+      "mgg" #'cider-find-var-at-point
+      "mrc" #'cider-connect
+      "mrs" #'cider-switch-to-releated-repl-buffer
+      "mrq" #'cider-quit)
+    (which-key-declare-prefixes-for-mode mode
+      (concat evil-leader/leader "me") "evaluation"
+      (concat evil-leader/leader "mg") "goto"
+      (concat evil-leader/leader "mr") "REPL")
+    (evil-leader/set-major-leader-for-mode "," mode)))
+
 (use-package elisp-mode
   :defer t
   :config
@@ -233,7 +277,7 @@
     "mrs" #'emacs-lisp-REPL-buffer)
   (which-key-declare-prefixes-for-mode 'emacs-lisp-mode
     (concat evil-leader/leader "me") "evaluation"
-    (concat evil-leader/leader "mg") "goto-definition"
+    (concat evil-leader/leader "mg") "goto"
     (concat evil-leader/leader "mr") "REPL")
   (evil-leader/set-major-leader-for-mode "," 'emacs-lisp-mode)
 
@@ -241,7 +285,7 @@
   (evil-leader/set-key-for-mode 'lisp-interaction-mode
     "mgg" #'elisp-slime-nav-find-elisp-thing-at-point)
   (which-key-declare-prefixes-for-mode 'lisp-interaction-mode
-    (concat evil-leader/leader "mg") "goto-definition")
+    (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode "," 'lisp-interaction-mode)
   (add-hook 'lisp-interaction-mode-hook
             (lambda ()
@@ -263,3 +307,21 @@
     (concat evil-leader/leader "mc") "clock"
     (concat evil-leader/leader "mt") "todo/time")
   (evil-leader/set-major-leader-for-mode "," 'org-mode))
+
+(use-package php-mode
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'php-mode
+    "mgg" #'dumb-jump-go)
+  (which-key-declare-prefixes-for-mode 'php-mode
+    (concat evil-leader/leader "mg") "goto")
+  (evil-leader/set-major-leader-for-mode "," 'php-mode))
+
+(use-package cperl-mode
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'cperl-mode
+    "mgg" #'dumb-jump-go)
+  (which-key-declare-prefixes-for-mode 'cperl-mode
+    (concat evil-leader/leader "mg") "goto")
+  (evil-leader/set-major-leader-for-mode "," 'cperl-mode))
