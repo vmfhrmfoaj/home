@@ -63,7 +63,7 @@
   ;;:ensure t
   :init
   (unless (require 'vi-tilde-fringe nil 'noerror)
-    (el-get-bundle syl20bnr/vi-tilde-fringe))
+    (quelpa '(vi-tilde-fringe :repo "syl20bnr/vi-tilde-fringe" :fetcher github)))
 
   :config
   (global-vi-tilde-fringe-mode))

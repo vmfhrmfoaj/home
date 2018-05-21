@@ -7,6 +7,13 @@
 
 (use-package neotree
   :ensure t
+  :init
+  (defun neotree-project-dir ()
+    (interactive)
+    (let ((proj-dir projectile-project-root)
+          (buf-dir (file-name-directory (or buffer-file-name "~/"))))
+      (neotree-dir (or proj-dir buf-dir))))
+
   :config
   (setq neo-theme 'icons))
 

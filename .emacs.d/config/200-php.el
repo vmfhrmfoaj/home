@@ -4,8 +4,8 @@
   ;;  This package not included in the `MELPA'.
   ;;:ensure t
   :init
-  (unless (require 'arnested/php-extras nil 'noerror)
-    (el-get-bundle arnested/php-extras))
+  (unless (require 'php-extras nil 'noerror)
+    (quelpa '(php-extras :repo "arnested/php-extras" :fetcher github)))
 
   (defvar php-doc-buffer-name "*PHP Doc*")
 
@@ -23,8 +23,8 @@
   :defer t
   :config
   (add-hook 'php-mode-hook
-	    (lambda ()
-	      (setq-local evil-lookup-func #'php-extras-doc))))
+            (lambda ()
+              (setq-local evil-lookup-func #'php-extras-doc))))
 
 (use-package company-php
   :ensure t
@@ -32,5 +32,5 @@
   :config
   (add-hook 'php-mode-hook
             (lambda ()
-	      (make-local-variable 'company-backends)
+              (make-local-variable 'company-backends)
               (add-to-list 'company-backends #'company-ac-php-backend))))

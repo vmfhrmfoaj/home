@@ -122,6 +122,7 @@
     "pf" #'helm-projectile-find-file
     "pl" #'helm-persp-create-&-switch-project
     "pp" #'helm-projectile-switch-project
+    "pt" #'neotree-project-dir
 
     ;; register/rings/resume
     "rl" #'helm-resume
@@ -229,6 +230,11 @@
     (define-key map (kbd "TAB") #'helm-execute-persistent-action)
     (define-key map (kbd "C-u") #'helm-find-files-up-one-level)))
 
+(use-package neotree
+  :defer t
+  :config
+  (evil-define-key 'normal neotree-mode-map (kbd "q") #'evil-delete-buffer))
+
 
 ;; Key binding for the major mode
 
@@ -320,8 +326,18 @@
 (use-package cperl-mode
   :defer t
   :config
+  (evil-define-key 'normal 'cperl-mode-map (kbd "M-,") #'pop-tag-mark)
   (evil-leader/set-key-for-mode 'cperl-mode
     "mgg" #'dumb-jump-go)
   (which-key-declare-prefixes-for-mode 'cperl-mode
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode "," 'cperl-mode))
+
+(use-package cc-mode
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'cc-mode
+    "mgg" #'dumb-jump-go)
+  (which-key-declare-prefixes-for-mode 'cc-mode
+    (concat evil-leader/leader "mg") "goto")
+  (evil-leader/set-major-leader-for-mode "," 'cc-mode))

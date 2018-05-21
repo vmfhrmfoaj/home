@@ -1,8 +1,9 @@
 /.custom.el
+/bookmarks
 /el-get
 /elpa
 /persp-confs
-/projectile*
-/recentf
 /places
-/bookmarks
+/projectile*
+/quelpa
+/recentf
