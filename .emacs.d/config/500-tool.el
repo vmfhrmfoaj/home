@@ -19,8 +19,22 @@
                             (number-to-string))
                         "s")))
 
+  (defun linum-delay-schedule ()
+    (unless (eq 'self-insert-command this-command)
+      (when linum-schedule-timer
+        (cancel-timer linum-schedule-timer))
+      (let ((timer (run-with-idle-timer
+                    linum-delay nil
+                    (lambda ()
+                      (setq linum-schedule-timer nil)
+                      (linum-update-current)))))
+        (setq-local linum-schedule-timer timer))))
+
   :config
-  (setq linum-relative-current-symbol "")
+  (setq linum-delay 0.05
+        linum-relative-current-symbol ""
+        linum-schedule-timer nil)
+  (advice-add #'linum-schedule :override #'linum-delay-schedule)
   (add-hook 'find-file-hook #'set-linum-rel-fmt-for-cur-file)
   (add-hook 'prog-mode-hook #'linum-relative-on))
 

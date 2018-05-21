@@ -254,6 +254,11 @@
     (concat evil-leader/leader "mr") "REPL")
   (evil-leader/set-major-leader-for-mode "," 'cider-repl-mode))
 
+(use-package cider-stacktrace
+  :defer t
+  :config
+  (evil-define-key 'normal cider-stacktrace-mode-map (kbd "q") #'evil-delete-buffer))
+
 (use-package clojure-mode
   :defer t
   :config
@@ -261,6 +266,7 @@
     (evil-leader/set-key-for-mode mode
       "mee" #'cider-eval-last-sexp
       "mef" #'cider-eval-defun-at-point
+      "men" #'cider-eval-ns-form
       "mer" #'cider-eval-last-sexp-and-replace
       "mgg" #'cider-find-var-at-point
       "mrc" #'cider-connect
@@ -326,7 +332,8 @@
 (use-package cperl-mode
   :defer t
   :config
-  (evil-define-key 'normal 'cperl-mode-map (kbd "M-,") #'pop-tag-mark)
+  (define-key cperl-mode-map (kbd "{") nil) ; disable `cperl-electric-lbrace'
+  (evil-define-key 'normal cperl-mode-map (kbd "M-,") #'pop-tag-mark)
   (evil-leader/set-key-for-mode 'cperl-mode
     "mgg" #'dumb-jump-go)
   (which-key-declare-prefixes-for-mode 'cperl-mode

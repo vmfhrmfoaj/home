@@ -1354,6 +1354,39 @@
           1 'shadow nil)))
      :append)))
 
+(use-package cperl-mode
+  :defer t
+  :config
+  (font-lock-add-keywords
+   'cperl-mode
+   (let* ((symbol "[@$%]+[:_0-9a-zA-Z]+")
+          (whitespace "[ \r\t\n]")
+          (whitespace+ (concat whitespace "+"))
+          (whitespace* (concat whitespace "*")))
+     `((,(concat "\\(" symbol "\\|\\(accept\\|do\\)\\s-*(\\)")
+        (1 (cond
+            ((sp-point-in-string)  'font-lock-string-face)
+            ((sp-point-in-comment) 'font-lock-comment-face)
+            (t nil))
+           t))
+       (,(concat "^" whitespace* "\\(sub\\)" whitespace+ "\\([_0-9A-Za-z]+\\)\\(?:" whitespace* "([@$%]*)\\)?")
+        (1 'font-lock-keyword-face)
+        (2 'font-lock-function-name-face t))
+       (,(concat "\\(?:my\\|local\\|our\\)" whitespace+ "\\(" symbol "\\)")
+        (1 'font-lock-variable-name-face))
+       (,(concat "\\(?:my\\|local\\|our\\)" whitespace+ "(" )
+        (,(concat "\\(" symbol "\\)")
+         (save-excursion
+           (safe-up-list-1)
+           (point))
+         nil
+         (1 'font-lock-variable-name-face)))
+       ("for\\(each\\)? my \\([@$%][_0-9a-zA-Z]+\\)"
+        (1 'font-lock-variable-name-face))
+       (,(concat whitespace "\\(accept\\)" whitespace* "(")
+        (1 'font-lock-type-face))))
+   :append))
+
 (use-package php-mode
   :defer t
   :config
@@ -1384,4 +1417,24 @@
              (point)))
          nil
          (1 'font-lock-variable-name-face)))))
+   :append))
+
+(use-package sh-script
+  :defer t
+  :config
+  (font-lock-add-keywords
+   'sh-mode
+   (let* ((symbol "[@?_0-9a-zA-Z]+")
+          (symbol_ (concat "\\(?:\\$" symbol "\\|\\${" symbol "}\\)"))
+          (whitespace "[ \r\t]")
+          (whitespace+ (concat whitespace "+"))
+          (whitespace* (concat whitespace "*"))
+          (assigment "=[^=]"))
+     `((,(concat "\\(" symbol_ "\\)")
+        (1 (let ((face (plist-get (text-properties-at (1- (match-beginning 0))) 'face)) face-lst)
+             (setq face-lst (if (listp face) face (list face)))
+             (when (or (memq 'font-lock-comment-face face-lst)
+                       (memq 'font-lock-string-face  face-lst))
+               face))
+           t))))
    :append))

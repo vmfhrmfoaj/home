@@ -20,5 +20,6 @@
     (use-package init-loader
       :ensure t
       :config
-      (let ((gc-cons-threshold (* 1024 1024 512)))
+      (let ((file-name-handler-alist nil)
+            (gc-cons-threshold (* 1024 1024 512)))
         (init-loader-load "~/.emacs.d/config")))))

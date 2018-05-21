@@ -1,33 +1,27 @@
 (use-package persp-mode
   :ensure t
   :init
-  (defvar helm-persp-switch-source
-    (helm-build-in-buffer-source "*Helm Create/Switch Project Perspective*"
-      :candidates (lambda () projectile-known-projects)
-      :fuzzy-match helm-projectile-fuzzy-match
-      :action '(("Create/Switch to Project Perspective" .
-                 (lambda (proj)
-                   (let ((persp-reset-windows-on-nil-window-conf t))
-                     (persp-switch proj)
-                     (projectile-switch-project-by-name proj))))))
-    "TODO")
-
   (defun helm-persp-create-&-switch-project ()
     "TODO"
     (interactive)
-    (helm :sources helm-persp-switch-source))
-
-  (defvar helm-persp-source
-    (helm-build-in-buffer-source "*Helm Perspective*"
-      :candidates (lambda () (persp-names))
-      :fuzzy-match t
-      :action '(("Switch to Perspective" . persp-switch)))
-    "TODO")
+    (helm :sources
+          (helm-build-in-buffer-source "*Helm Create/Switch Project Perspective*"
+            :data projectile-known-projects
+            :fuzzy-match #'helm-fuzzy-match
+            :action '(("Create/Switch to Project Perspective" .
+                       (lambda (proj)
+                         (let ((persp-reset-windows-on-nil-window-conf t))
+                           (persp-switch proj)
+                           (projectile-switch-project-by-name proj))))))))
 
   (defun helm-persp ()
     "TODO"
     (interactive)
-    (helm :sources helm-persp-source))
+    (helm :sources
+          (helm-build-in-buffer-source "*Helm Perspective*"
+            :data (persp-names)
+            :fuzzy-match t
+            :action '(("Switch to Perspective" . persp-switch)))))
 
   (defun persp-switch-to-default ()
     "TODO"

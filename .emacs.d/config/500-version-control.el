@@ -17,6 +17,7 @@
   :config
   (setq git-gutter+-disabled-modes '(org-mode)
         git-gutter-fr+-side 'left-fringe)
+
   (let* ((max 8)
          (prefix 2)
          (width 5)
@@ -41,6 +42,7 @@
   :defer t
   :commands (magit-status)
   :config
+  (setq magit-diff-refine-hunk t)
   ;; NOTE
   ;;  The result of `(call-process "env" nil t t)` does not contain 'HOME' variable.
   ;;  But on Linux or without the configuration(e.g. emacs -Q), it is ok.

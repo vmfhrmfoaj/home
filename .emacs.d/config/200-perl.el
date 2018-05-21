@@ -1,6 +1,28 @@
 (use-package cperl-mode
   :defer t
+  :mode "\\.\\(p[lm]x?\\|P[LM]X?\\)\\'"
   :init
+  (defvar perl-indent-config--default
+    '(var
+      ((indent-tabs-mode nil))
+
+      offset
+      ((cperl-indent-level 2)
+       (cperl-brace-offset 0)
+       (cperl-continued-brace-offset -2)
+       (cperl-label-offset -2)
+       (cperl-continued-statement-offset 2)
+       (cperl-extra-newline-before-brace nil)
+       (cperl-extra-newline-before-brace-multiline nil)
+       (cperl-merge-trailing-else t)))
+    "TODO")
+
+  (defcustom perl-indent-config
+    perl-indent-config--default
+    "TODO"
+    :type 'list
+    :safe 'listp)
+
   (setq-default perl-offset-level 1)
 
   (defun perl-set-offsets (offsets &optional level)
@@ -68,7 +90,6 @@
               (setq-local end-of-defun-function #'cperl-end-of-defun))))
 
 (use-package perl5db-as-repl
-  :defer t
   :after cperl-mode
   ;; NOTE:
   ;;  This package not included in the `MELPA'.

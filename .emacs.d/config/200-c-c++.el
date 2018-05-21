@@ -31,7 +31,7 @@
 
   (defun woman-at-point ()
     (interactive)
-    (let ((thing (thing-at-point)))
+    (let ((thing (thing-at-point 'symbol)))
       (woman thing)))
 
   :config

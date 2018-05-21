@@ -11,6 +11,7 @@
       ring-bell-function 'ignore)
 
 (prefer-coding-system 'utf-8)
+(electric-indent-mode -1)
 
 (when (eq system-type 'darwin)
   (setq mac-command-modifier 'meta
