@@ -86,15 +86,15 @@
       (when offset
         (c-set-offsets offset))))
 
-  (defun woman-at-point ()
+  (defun man-at-point ()
     (interactive)
     (let ((thing (thing-at-point 'symbol)))
-      (woman thing)))
+      (pop-to-buffer (man thing))))
 
   :config
   (add-hook 'c-mode-common-hook
             (lambda ()
-              (setq-local evil-lookup-func #'woman-at-point)
+              (setq-local evil-lookup-func #'man-at-point)
               (c-toggle-auto-newline -1)
               (c-setup-indent-config c-indent-config))
             :append))
