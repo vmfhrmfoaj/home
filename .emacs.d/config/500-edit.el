@@ -23,12 +23,14 @@
 
   :config
   (setq sp-highlight-pair-overlay nil
-	sp-highlight-wrap-overlay nil
-	sp-highlight-wrap-tag-overlay nil)
+        sp-highlight-wrap-overlay nil
+        sp-highlight-wrap-tag-overlay nil)
   (smartparens-global-mode 1)
   (show-smartparens-global-mode 1))
 
 (use-package whitespace
   :config
-  (setq-default show-trailing-whitespace t
-                whitespace-line-column 120))
+  (setq-default whitespace-line-column 120)
+  (add-hook 'prog-mode-hook
+            (lambda ()
+              (setq-local show-trailing-whitespace t))))

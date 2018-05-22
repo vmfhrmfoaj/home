@@ -2,6 +2,31 @@
   :ensure t
   :defer t)
 
+(use-package auto-dim-other-buffers
+  :disabled t
+  :ensure t
+  :config
+  (auto-dim-other-buffers-mode 1))
+
+(use-package diminish
+  :ensure t
+  :config
+  (with-eval-after-load "autorevert"            (diminish 'auto-revert-mode           "Ⓐ"))
+  (with-eval-after-load "aggressive-indent"     (diminish 'aggressive-indent-mode     "Ⓐ"))
+  (with-eval-after-load "company"               (diminish 'company-mode               "Ⓒ"))
+  (with-eval-after-load "eldoc"                 (diminish 'eldoc-mode                 "Ⓔ"))
+  (with-eval-after-load "evil-goggles"          (diminish 'evil-goggles-mode          "Ⓔ"))
+  (with-eval-after-load "git-gutter+"           (diminish 'git-gutter+-mode           "Ⓖ"))
+  (with-eval-after-load "helm"                  (diminish 'helm-mode                  "Ⓗ"))
+  (with-eval-after-load "highlight-parentheses" (diminish 'highlight-parentheses-mode "Ⓗ"))
+  (with-eval-after-load "smartparens"           (diminish 'smartparens-mode           "Ⓢ"))
+  (with-eval-after-load "subword"               (diminish 'subword-mode               "Ⓢ"))
+  (with-eval-after-load "undo-tree"             (diminish 'undo-tree-mode             "Ⓤ"))
+  (with-eval-after-load "vi-tilde-fringe"       (diminish 'vi-tilde-fringe-mode       "Ⓥ"))
+  (with-eval-after-load "view"                  (diminish 'view-mode                  "Ⓥ"))
+  (with-eval-after-load "which-key"             (diminish 'which-key-mode             "Ⓦ"))
+  (with-eval-after-load "zoom"                  (diminish 'zoom-mode                  "Ⓩ")))
+
 (use-package evil-goggles
   :ensure t
   :after evil
@@ -16,6 +41,105 @@
              fancy-narrow-to-page
              fancy-narrow-to-region
              fancy-widen))
+
+(use-package focus
+  :ensure t
+  :init
+  (defun focus--org-thing ()
+    "TODO"
+    (if focus-mode-org-thing-lock
+        (cons 0 0)
+      (save-excursion
+        (let ((start (progn
+                       (outline-previous-heading)
+                       (point)))
+              (end   (progn
+                       (outline-next-visible-heading 1)
+                       (beginning-of-line)
+                       (point))))
+          (cons start end)))))
+
+  (defun focus--text-thing ()
+    "TODO"
+    (let* ((regx  (concat "^\\(?:[[:cntrl:]]\\)*$"))
+           (start (save-excursion
+                    (backward-char)
+                    (re-search-backward regx nil t)
+                    (point)))
+           (end   (save-excursion
+                    (forward-char)
+                    (re-search-forward regx nil t)
+                    (point))))
+      (cons start end)))
+
+  (defun focus--list+-thing ()
+    "TODO"
+    (save-excursion
+      (let ((start (progn
+                     (ignore-errors
+                       (cond ((sp-point-in-string)
+                              (save-match-data
+                                (re-search-backward "[^\\]\""))
+                              (forward-char))
+                             ((sp-point-in-comment)
+                              (beginning-of-line)))
+                       (backward-up-list 2))
+                     (point)))
+            (end (progn
+                   (forward-list)
+                   (point))))
+        (cons start end))))
+
+  (defun focus--lisp-thing ()
+    "TODO"
+    (save-excursion
+      (let ((start (progn
+                     (ignore-errors
+                       (while (progn
+                                (backward-up-list 1 t t)
+                                (not (looking-at-p "(\\(\\(lexical-\\)?let\\*?\\|lambda\\|defun\\|defmacro\\)\\_>")))))
+                     (point)))
+            (end (progn
+                   (forward-list)
+                   (point))))
+        (cons start end))))
+
+  (defun focus--clojure-thing ()
+    "TODO"
+    (save-excursion
+      (let ((start (progn
+                     (ignore-errors
+                       (while (progn
+                                (backward-up-list 1 t t)
+                                (not (looking-at-p "(\\([-0-9A-Za-z]+/\\)?\\(let\\|loop\\|fn\\|def[a-z]*\\)\\_>")))))
+                     (point)))
+            (end (progn
+                   (forward-list)
+                   (point))))
+        (cons start end))))
+
+  :config
+  (put 'org 'bounds-of-thing-at-point #'focus--org-thing)
+  (put 'tex-sentence 'bounds-of-thing-at-point #'focus--text-thing)
+  (put 'list+ 'bounds-of-thing-at-point #'focus--list+-thing)
+  (put 'lisp 'bounds-of-thing-at-point #'focus--lisp-thing)
+  (put 'clojure 'bounds-of-thing-at-point #'focus--clojure-thing)
+  (add-to-list 'focus-mode-to-thing '(clojure-mode . clojure))
+  (add-to-list 'focus-mode-to-thing '(cider-repl-mode . list+))
+  (add-to-list 'focus-mode-to-thing '(emacs-lisp-mode . lisp))
+  (add-to-list 'focus-mode-to-thing '(org-mode . org))
+  (add-to-list 'focus-mode-to-thing '(tex-mode . tex-sentence))
+  (add-hook 'evil-insert-state-entry-hook (-partial #'focus-mode 1))
+  (add-hook 'evil-insert-state-exit-hook  (-partial #'focus-mode 0))
+  (advice-add #'focus-move-focus :around
+              (byte-compile
+               (lambda (of)
+                 (condition-case nil
+                     (funcall of)
+                   (error (progn
+                            (focus-terminate)
+                            (focus-init)
+                            (funcall of))))))))
 
 (use-package highlight-parentheses
   :ensure t
@@ -33,11 +157,18 @@
 
 (use-package hl-todo
   :ensure t
+  :init
+  (defun hl-todo--re-setup ()
+    "TODO"
+    (font-lock-remove-keywords nil hl-todo--keywords)
+    (setq hl-todo--keywords
+          (list (list (caar hl-todo--keywords)
+                      `(1 (hl-todo--get-face) prepend))))
+    (font-lock-add-keywords nil hl-todo--keywords t))
+
   :config
-  (setq hl-todo-keywords
-        (list (list (caar hl-todo-keywords)
-                    `(1 (hl-todo-get-face) prepend))))
-  (advice-add #'hl-todo-get-face :filter-return #'list)
+  (advice-add #'hl-todo--get-face :filter-return #'list)
+  (advice-add #'hl-todo--setup :after #'hl-todo--re-setup)
   (global-hl-todo-mode 1))
 
 (use-package org-bullets
@@ -48,8 +179,69 @@
 
 (use-package powerline
   :ensure t
+  :init
+  (defun powerline-vim+-theme ()
+    "Setup a Vim-like mode-line."
+    (interactive)
+    (setq-default
+     mode-line-format
+		 '("%e"
+		   (:eval
+		    (let* ((active (powerline-selected-window-active))
+			         (mode-line (if active 'mode-line 'mode-line-inactive))
+               (face0 (if active 'powerline-active0 'powerline-inactive0))
+			         (face1 (if active 'powerline-active1 'powerline-inactive1))
+			         (face2 (if active 'powerline-active2 'powerline-inactive2))
+			         (separator-left (intern (format "powerline-%s-%s"
+							                                 (powerline-current-separator)
+							                                 (car powerline-default-separator-dir))))
+			         (separator-right (intern (format "powerline-%s-%s"
+							                                  (powerline-current-separator)
+							                                  (cdr powerline-default-separator-dir))))
+			         (lhs (list (powerline-buffer-id `(mode-line-buffer-id ,face0) 'l)
+				                  (powerline-raw "[" face0 'l)
+				                  (powerline-major-mode face0)
+				                  (powerline-process face0)
+				                  (powerline-raw "]" face0)
+				                  (when (buffer-modified-p)
+				                    (powerline-raw "[+]" face0))
+				                  (when buffer-read-only
+				                    (powerline-raw "[RO]" face0))
+				                  (powerline-raw "[%z]" face0)
+				                  ;; (powerline-raw (concat "[" (mode-line-eol-desc) "]") face0)
+				                  (when (and (boundp 'which-func-mode) which-func-mode)
+				                    (powerline-raw which-func-format nil 'l))
+				                  (when (and (boundp 'erc-track-minor-mode) erc-track-minor-mode)
+				                    (powerline-raw erc-modified-channels-object face1 'l))
+				                  (powerline-raw "[" face0 'l)
+				                  (powerline-minor-modes face0)
+				                  (powerline-raw "%n" face0)
+				                  (powerline-raw "]" face0)
+				                  (when (and vc-mode buffer-file-name)
+				                    (let ((backend (vc-backend buffer-file-name)))
+					                    (when backend
+					                      (concat (powerline-raw "[" face0 'l)
+						                            (powerline-raw (format "%s:%s(%.5s)" backend
+                                                               (-some-> vc-mode
+                                                                        (split-string "[-:@]")
+                                                                        (rest)
+                                                                        (-some->> (-interpose "-")
+                                                                                  (apply #'concat)))
+                                                               (vc-working-revision buffer-file-name backend))
+                                                       face0)
+						                            (powerline-raw "]" face0)))))))
+			         (rhs (list (powerline-raw '(10 "%i") face0)
+				                  (powerline-raw global-mode-string face0 'r)
+				                  (powerline-raw "%l," face0 'l)
+				                  (powerline-raw (format-mode-line '(10 "%c")) face0)
+				                  (powerline-raw (replace-regexp-in-string  "%" "%%" (format-mode-line '(-3 "%p"))) face0 'r)
+				                  (powerline-fill face0 0))))
+		      (concat (powerline-render lhs)
+			            (powerline-fill face0 (powerline-width rhs))
+			            (powerline-render rhs)))))))
+
   :config
-  (powerline-center-evil-theme))
+  (powerline-vim+-theme))
 
 (use-package rainbow-delimiters
   :ensure t

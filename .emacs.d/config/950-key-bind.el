@@ -56,6 +56,8 @@
   (global-evil-leader-mode 1)
   (evil-leader/set-key
     "<SPC>" #'helm-M-x
+    "TAB" #'switch-to-previous-buffer
+    "!" #'shell-command
     "0" #'winum-select-window-0
     "1" #'winum-select-window-1
     "2" #'winum-select-window-2
@@ -72,9 +74,10 @@
 
     ;; - org
     "aoa" #'org-agenda-list
-    "aoct" #'org-capture-todo
-    "aocn" #'org-capture-note
     "aocj" #'org-clock-jump-to-current-clock
+    "aocn" #'org-capture-note
+    "aoct" #'org-capture-todo
+    "aot" #'org-todo-list
 
     ;; buffer
     "bR" #'revert-buffer
@@ -192,24 +195,25 @@
 (use-package evil
   :defer t
   :config
-  (define-key evil-normal-state-map (kbd "SPC TAB") #'switch-to-previous-buffer)
   (define-key evil-insert-state-map (kbd "C-h") #'backward-delete-char))
 
 (use-package evil-surround
   :defer t
   :config
-  (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)
-  (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute))
+  (evil-define-key 'visual evil-surround-mode-map
+    "S" 'evil-substitute
+    "s" 'evil-surround-region))
 
 (use-package git-timemachine
   :defer t
   :config
-  (evil-define-minor-mode-key 'normal 'git-timemachine-mode (kbd "C-j") #'git-timemachine-show-previous-revision)
-  (evil-define-minor-mode-key 'normal 'git-timemachine-mode (kbd "C-k") #'git-timemachine-show-next-revision)
-  (evil-define-minor-mode-key 'normal 'git-timemachine-mode (kbd "M-b") #'git-timemachine-blame)
-  (evil-define-minor-mode-key 'normal 'git-timemachine-mode (kbd "M-w") #'git-timemachine-kill-abbreviated-revision)
-  (evil-define-minor-mode-key 'normal 'git-timemachine-mode (kbd "M-W") #'git-timemachine-kill-revision)
-  (evil-define-minor-mode-key 'normal 'git-timemachine-mode (kbd "q")   #'git-timemachine-quit))
+  (evil-define-minor-mode-key 'normal 'git-timemachine-mode
+    (kbd "C-j") #'git-timemachine-show-previous-revision
+    (kbd "C-k") #'git-timemachine-show-next-revision
+    (kbd "M-b") #'git-timemachine-blame
+    (kbd "M-w") #'git-timemachine-kill-abbreviated-revision
+    (kbd "M-W") #'git-timemachine-kill-revision
+    (kbd "q")   #'git-timemachine-quit))
 
 (use-package helm-company
   :after company
@@ -221,6 +225,7 @@
   :config
   (global-set-key (kbd "M-x") #'helm-M-x)
   (global-set-key (kbd "C-x C-f") #'helm-find-files)
+  (define-key helm-map (kbd "C-h") #'delete-backward-char)
   (define-key helm-map (kbd "C-j") #'helm-next-line)
   (define-key helm-map (kbd "C-k") #'helm-previous-line)
   (define-key helm-map (kbd "C-n") #'helm-next-source)
@@ -233,7 +238,16 @@
 (use-package neotree
   :defer t
   :config
-  (evil-define-key 'normal neotree-mode-map (kbd "q") #'evil-delete-buffer))
+  (evil-define-key 'normal neotree-mode-map
+    (kbd "C-c o") #'neotree-enter-horizontal-split
+    (kbd "C-u") #'neotree-select-up-node
+    (kbd "RET") #'neotree-enter
+    (kbd "+") #'neotree-create-node
+    (kbd "R") #'neotree-rename-node
+    (kbd "h") #'neotree-back
+    (kbd "l") #'neotree-enter
+    (kbd "x") #'neotree-delete-node
+    (kbd "q") #'evil-delete-buffer))
 
 
 ;; Key binding for the major mode
@@ -254,10 +268,20 @@
     (concat evil-leader/leader "mr") "REPL")
   (evil-leader/set-major-leader-for-mode "," 'cider-repl-mode))
 
+(use-package cc-mode
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'cc-mode
+    "mgg" #'dumb-jump-go)
+  (which-key-declare-prefixes-for-mode 'cc-mode
+    (concat evil-leader/leader "mg") "goto")
+  (evil-leader/set-major-leader-for-mode "," 'cc-mode))
+
 (use-package cider-stacktrace
   :defer t
   :config
-  (evil-define-key 'normal cider-stacktrace-mode-map (kbd "q") #'evil-delete-buffer))
+  (evil-define-key 'normal cider-stacktrace-mode-map
+    (kbd "q") #'evil-delete-buffer))
 
 (use-package clojure-mode
   :defer t
@@ -277,6 +301,17 @@
       (concat evil-leader/leader "mg") "goto"
       (concat evil-leader/leader "mr") "REPL")
     (evil-leader/set-major-leader-for-mode "," mode)))
+
+(use-package cperl-mode
+  :defer t
+  :config
+  (define-key cperl-mode-map (kbd "{") nil) ; disable `cperl-electric-lbrace'
+  (evil-define-key 'normal cperl-mode-map (kbd "M-,") #'pop-tag-mark)
+  (evil-leader/set-key-for-mode 'cperl-mode
+    "mgg" #'dumb-jump-go)
+  (which-key-declare-prefixes-for-mode 'cperl-mode
+    (concat evil-leader/leader "mg") "goto")
+  (evil-leader/set-major-leader-for-mode "," 'cperl-mode))
 
 (use-package elisp-mode
   :defer t
@@ -312,12 +347,15 @@
     "m:" #'org-set-tags
     "mci" #'org-clock-in
     "mco" #'org-clock-out
+    "mtI" #'org-time-stamp-inactive
+    "mti" #'org-time-stamp
     "mtd" #'org-deadline
     "mts" #'org-schedule
-    "mtt" #'org-todo)
+    "mTT" #'org-todo)
   (which-key-declare-prefixes-for-mode 'org-mode
+    (concat evil-leader/leader "mT") "todo"
     (concat evil-leader/leader "mc") "clock"
-    (concat evil-leader/leader "mt") "todo/time")
+    (concat evil-leader/leader "mt") "time")
   (evil-leader/set-major-leader-for-mode "," 'org-mode))
 
 (use-package php-mode
@@ -328,23 +366,3 @@
   (which-key-declare-prefixes-for-mode 'php-mode
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode "," 'php-mode))
-
-(use-package cperl-mode
-  :defer t
-  :config
-  (define-key cperl-mode-map (kbd "{") nil) ; disable `cperl-electric-lbrace'
-  (evil-define-key 'normal cperl-mode-map (kbd "M-,") #'pop-tag-mark)
-  (evil-leader/set-key-for-mode 'cperl-mode
-    "mgg" #'dumb-jump-go)
-  (which-key-declare-prefixes-for-mode 'cperl-mode
-    (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode "," 'cperl-mode))
-
-(use-package cc-mode
-  :defer t
-  :config
-  (evil-leader/set-key-for-mode 'cc-mode
-    "mgg" #'dumb-jump-go)
-  (which-key-declare-prefixes-for-mode 'cc-mode
-    (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode "," 'cc-mode))

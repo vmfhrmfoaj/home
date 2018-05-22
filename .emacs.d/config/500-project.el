@@ -1,7 +1,8 @@
 (use-package projectile
   :ensure t
   :config
-  (setq projectile-completion-system 'helm)
+  (setq projectile-completion-system 'helm
+        projectile-mode-line "Ⓟ")
   (add-hook 'after-init-hook
             (lambda ()
               (projectile-load-known-projects)

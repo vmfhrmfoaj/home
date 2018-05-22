@@ -22,6 +22,14 @@
     '((t (:inherit org-done)))
     "TODO")
 
+  (defun org-insert-schedule-&-deadline (mark &optional _)
+    "Set a schedule and deadline for NEXT."
+    (when (and org-insert-schedule-deadline
+               (string-equal mark "NEXT"))
+      (org-schedule 'overwrite "+0d")
+      (org-deadline 'overwrite)
+      nil))
+
   :config
   (setq org-bullets-bullet-list '("■" "□" "◙" "◘" "●" "○" "◌")
         org-complete-tags-always-offer-all-agenda-tags t
@@ -44,6 +52,7 @@
                                  ("CANCELLED" . org-cancelled))
         org-use-sub-superscripts nil)
 
+  (add-hook 'org-todo-get-default-hook #'org-insert-schedule-&-deadline)
   (advice-add #'org-todo :around
               (lambda (of &optional arg)
                 "If reopen the completed _TODO_, show a popup for logging."

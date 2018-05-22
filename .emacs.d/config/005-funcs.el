@@ -1,3 +1,5 @@
+(defvar null-fn (-const nil))
+
 (defmacro -update-> (&rest thread)
   "TODO"
   `(setq ,(-first-item thread) (->  ,@thread)))

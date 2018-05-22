@@ -1,5 +1,5 @@
 (when (window-system)
-  (setq-default line-spacing 2)
+  (setq-default line-spacing 1)
   (set-face-font 'default "MonacoB-15")
   (set-face-attribute 'default nil :weight 'bold)
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
