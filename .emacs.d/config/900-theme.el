@@ -1,4 +1,5 @@
-(let ((default-family (face-attribute 'default :family)))
+(let ((default-family (face-attribute 'default :family))
+      (mode-line-box-face '(:line-width 2 :color "grey75" :style released-button)))
   (custom-set-faces
    `(bold ((t (:weight bold :family "MonacoB2"))))
    `(cider-fringe-good-face ((t (:inherit success))))
@@ -25,8 +26,8 @@
    `(magit-section-heading ((t (:inherit bold :foreground "DarkGoldenrod4"))))
    `(magit-commit-log-type-face  ((t (:inherit font-lock-function-name-face :family ,default-family))))
    `(magit-commit-log-scope-face ((t (:inherit font-lock-variable-name-face :family ,default-family))))
-   `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground)))))
-   `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground)))))
+   `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground) :box ,mode-line-box-face))))
+   `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground) :box ,mode-line-box-face))))
    `(nlinum-current-line ((t (:inherit linum))))
    `(nlinum-relative-current-face ((t (:inherit linum))))
    `(org-agenda-date-today ((t (:inherit (bold org-agenda-date)))))
