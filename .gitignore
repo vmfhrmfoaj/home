@@ -1,6 +1,5 @@
 /*
 !.profile
 !.gitignore
-!.spacemacs
-!.spacemacs-private/
+!.emacs.d/
 !.lein/
