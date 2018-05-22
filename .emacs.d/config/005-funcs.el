@@ -214,3 +214,9 @@
   (pop-to-buffer (get-buffer-create "*scratch*"))
   (unless (eq 'org-mode major-mode)
     (org-mode)))
+
+(defun kill-new-buffer-file-name ()
+  "TODO"
+  (interactive)
+  (-when-let (file-name (buffer-file-name))
+    (message (kill-new file-name))))

@@ -11,7 +11,7 @@
   (defun emacs-lisp-REPL-eval-print-this-sexp ()
     "TODO"
     (interactive)
-    (while (ignore-errors (backward-up-list) t))
+    (while (ignore-errors (backward-up-list 1 t) t))
     (if (looking-at-p "\\s-*(")
         (forward-sexp)
       (end-of-line))

@@ -88,9 +88,14 @@
     "bs" #'get-scratch-buffer-create
     "bl" #'switch-to-previous-buffer
 
+    ;; error
+    "en" #'next-error
+    "ep" #'previous-error
+
     ;; file
     "ff" #'helm-find-files
     "ft" #'neotree
+    "fy" #'kill-new-buffer-file-name
 
     ;; git
     "gs" #'magit-status
@@ -166,6 +171,7 @@
     (concat evil-leader/leader "a") "applications"
     (concat evil-leader/leader "ao") "org"
     (concat evil-leader/leader "aoc") "capture/clock"
+    (concat evil-leader/leader "e") "error"
     (concat evil-leader/leader "f") "file"
     (concat evil-leader/leader "b") "buffer"
     (concat evil-leader/leader "j") "jump/join/split"
@@ -249,8 +255,22 @@
     (kbd "x") #'neotree-delete-node
     (kbd "q") #'evil-delete-buffer))
 
+(use-package magit-svn
+  :defer t
+  :config
+  (evil-magit-define-key 'normal 'magit-mode-map "~" 'magit-svn-popup))
+
 
 ;; Key binding for the major mode
+
+(use-package cc-mode
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'cc-mode
+    "mgg" #'dumb-jump-go)
+  (which-key-declare-prefixes-for-mode 'cc-mode
+    (concat evil-leader/leader "mg") "goto")
+  (evil-leader/set-major-leader-for-mode "," 'cc-mode))
 
 (use-package cider-repl
   :defer t
@@ -267,15 +287,6 @@
     (concat evil-leader/leader "mg") "goto"
     (concat evil-leader/leader "mr") "REPL")
   (evil-leader/set-major-leader-for-mode "," 'cider-repl-mode))
-
-(use-package cc-mode
-  :defer t
-  :config
-  (evil-leader/set-key-for-mode 'cc-mode
-    "mgg" #'dumb-jump-go)
-  (which-key-declare-prefixes-for-mode 'cc-mode
-    (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode "," 'cc-mode))
 
 (use-package cider-stacktrace
   :defer t

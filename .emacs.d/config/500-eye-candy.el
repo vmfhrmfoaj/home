@@ -11,14 +11,15 @@
 (use-package diminish
   :ensure t
   :config
-  (with-eval-after-load "autorevert"            (diminish 'auto-revert-mode           "Ⓐ"))
   (with-eval-after-load "aggressive-indent"     (diminish 'aggressive-indent-mode     "Ⓐ"))
+  (with-eval-after-load "autorevert"            (diminish 'auto-revert-mode           "Ⓐ"))
   (with-eval-after-load "company"               (diminish 'company-mode               "Ⓒ"))
   (with-eval-after-load "eldoc"                 (diminish 'eldoc-mode                 "Ⓔ"))
   (with-eval-after-load "evil-goggles"          (diminish 'evil-goggles-mode          "Ⓔ"))
   (with-eval-after-load "git-gutter+"           (diminish 'git-gutter+-mode           "Ⓖ"))
   (with-eval-after-load "helm"                  (diminish 'helm-mode                  "Ⓗ"))
   (with-eval-after-load "highlight-parentheses" (diminish 'highlight-parentheses-mode "Ⓗ"))
+  (with-eval-after-load "magit-svn"             (diminish 'magit-svn-mode             "Ⓜ"))
   (with-eval-after-load "smartparens"           (diminish 'smartparens-mode           "Ⓢ"))
   (with-eval-after-load "subword"               (diminish 'subword-mode               "Ⓢ"))
   (with-eval-after-load "undo-tree"             (diminish 'undo-tree-mode             "Ⓤ"))
@@ -207,12 +208,6 @@
 				                    (powerline-raw "[+]" face0))
 				                  (when buffer-read-only
 				                    (powerline-raw "[RO]" face0))
-				                  (powerline-raw "[%z]" face0)
-				                  ;; (powerline-raw (concat "[" (mode-line-eol-desc) "]") face0)
-				                  (when (and (boundp 'which-func-mode) which-func-mode)
-				                    (powerline-raw which-func-format nil 'l))
-				                  (when (and (boundp 'erc-track-minor-mode) erc-track-minor-mode)
-				                    (powerline-raw erc-modified-channels-object face1 'l))
 				                  (powerline-raw "[" face0 'l)
 				                  (powerline-minor-modes face0)
 				                  (powerline-raw "%n" face0)
@@ -222,11 +217,12 @@
 					                    (when backend
 					                      (concat (powerline-raw "[" face0 'l)
 						                            (powerline-raw (format "%s:%s(%.5s)" backend
-                                                               (-some-> vc-mode
-                                                                        (split-string "[-:@]")
-                                                                        (rest)
-                                                                        (-some->> (-interpose "-")
-                                                                                  (apply #'concat)))
+                                                               (or (-some-> vc-mode
+                                                                            (split-string "[-:@]")
+                                                                            (rest)
+                                                                            (-some->> (-interpose "-")
+                                                                                      (apply #'concat)))
+                                                                   "-")
                                                                (vc-working-revision buffer-file-name backend))
                                                        face0)
 						                            (powerline-raw "]" face0)))))))

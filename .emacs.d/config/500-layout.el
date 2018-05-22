@@ -36,12 +36,11 @@
     (interactive)
     (persp-kill (persp-current-name)))
 
-  (defun persp-safe-add-buffer (&optional buf)
+  (defun persp-add-buffer-without-switch (&optional buf)
     "TODO"
-    (save-window-excursion
-      (save-match-data
-        (save-mark-and-excursion
-          (persp-add-buffer (or buf (current-buffer)))))))
+    (persp-add-buffer (or buf (current-buffer))
+                      (get-current-persp)
+                      nil))
 
   (defun persp-add-all-proj-buffer (&rest _)
     "TODO"
@@ -53,7 +52,7 @@
         (dolist (buf (--filter (or (projectile-project-buffer-p it root_)
                                    (projectile-project-buffer-p it root))
                                (buffer-list)))
-          (persp-safe-add-buffer buf)))))
+          (persp-add-buffer-without-switch buf)))))
 
   :config
   (setq persp-autokill-buffer-on-remove 'kill-weak
@@ -70,9 +69,9 @@
         wg-morph-on nil)
 
   (advice-add #'persp-switch :after #'persp-add-all-proj-buffer)
-  (add-hook 'magit-diff-mode-hook #'persp-safe-add-buffer)
-  (add-hook 'magit-log-mode-hook #'persp-safe-add-buffer)
-  (add-hook 'magit-status-mode-hook #'persp-safe-add-buffer)
+  (add-hook 'magit-diff-mode-hook #'persp-add-buffer-without-switch)
+  (add-hook 'magit-log-mode-hook #'persp-add-buffer-without-switch)
+  (add-hook 'magit-status-mode-hook #'persp-add-buffer-without-switch)
   (add-hook 'after-init-hook
             (lambda ()
               (persp-mode 1))))

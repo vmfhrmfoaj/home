@@ -50,3 +50,9 @@
   ;; FIXME
   ;;  This is workaround.
   (add-to-list 'magit-git-environment (concat "HOME=" (getenv "HOME"))))
+
+(use-package magit-svn
+  :ensure t
+  :after magit
+  :config
+  (add-hook 'magit-mode-hook 'magit-svn-mode))
