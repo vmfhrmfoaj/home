@@ -138,6 +138,7 @@
     ;; search/symbol
     "se" #'evil-multiedit-match-all
     "sf" #'helm-do-ag
+    "sl" #'helm-resume-last-search-buffer
     "sp" #'helm-do-ag-project-root
     "ss" #'helm-swoop
 
@@ -177,6 +178,7 @@
     (concat evil-leader/leader "j") "jump/join/split"
     (concat evil-leader/leader "g") "git"
     (concat evil-leader/leader "k") "S-expression"
+    (concat evil-leader/leader "l") "layout"
     (concat evil-leader/leader "m") "major-mode-keys"
     (concat evil-leader/leader "n") "narrow"
     (concat evil-leader/leader "p") "project"
@@ -266,11 +268,12 @@
 (use-package cc-mode
   :defer t
   :config
-  (evil-leader/set-key-for-mode 'cc-mode
-    "mgg" #'dumb-jump-go)
-  (which-key-declare-prefixes-for-mode 'cc-mode
-    (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode "," 'cc-mode))
+  (dolist (mode '(c-mode c++-mode java-mode))
+    (evil-leader/set-key-for-mode mode
+      "mgg" #'dumb-jump-go)
+    (which-key-declare-prefixes-for-mode mode
+      (concat evil-leader/leader "mg") "goto")
+    (evil-leader/set-major-leader-for-mode "," mode)))
 
 (use-package cider-repl
   :defer t
