@@ -1,7 +1,13 @@
 (when (window-system)
   (setq-default line-spacing 1)
-  (set-face-font 'default "MonacoB-15")
-  (set-face-attribute 'default nil :weight 'bold)
+  (let* ((mac? (eq 'darwin system-type))
+         (font "MonacoB")
+         (height (if mac? 151 105)))
+    (set-face-font 'default font)
+    (set-face-attribute 'default nil
+                        :weight 'bold
+                        :width 'medium
+                        :height height))
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
   (add-to-list 'face-font-rescale-alist '("Free-Symbola" . 0.95))
