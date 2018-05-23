@@ -1,3 +1,5 @@
+(add-hook 'after-save-hook #'rsync-remote-dir)
+
 (use-package atomic-chrome
   :ensure t
   :defer t
