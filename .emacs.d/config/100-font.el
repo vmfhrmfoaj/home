@@ -1,5 +1,5 @@
 (when (window-system)
-  (setq-default line-spacing 1)
+  (setq-default line-spacing 0)
   (let* ((mac? (eq 'darwin system-type))
          (font "MonacoB")
          (height (if mac? 151 105)))
