@@ -127,6 +127,7 @@
     "nw" #'fancy-widen
 
     ;; project
+    "p!" #'projectile-run-shell-command-in-root
     "pI" #'projectile-invalidate-cache
     "pd" #'helm-projectile-find-dir
     "pf" #'helm-projectile-find-file
@@ -149,6 +150,7 @@
     "tl" #'toggle-truncate-lines
 
     ;; layout
+    "l TAB" #'persp-switch-to-last-selected-persp
     "lh" #'persp-switch-to-default
     "lx" #'persp-kill-cur-persp
     "ll" #'helm-persp
@@ -262,7 +264,7 @@
 (use-package magit-svn
   :defer t
   :config
-  (evil-magit-define-key 'normal 'magit-mode-map "~" 'magit-svn-popup))
+  (evil-magit-define-key 'normal 'magit-mode-map (kbd "~") #'magit-svn-popup))
 
 
 ;; Key binding for the major mode

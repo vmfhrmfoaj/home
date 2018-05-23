@@ -54,17 +54,29 @@
                                (buffer-list)))
           (persp-add-buffer-without-switch buf)))))
 
+  (defun persp-last-selected-persp-name (&rest _)
+    "TODO"
+    (setq persp-last-selected-persp-name persp-last-persp-name))
+
+  (defun persp-switch-to-last-selected-persp ()
+    "TODO"
+    (interactive)
+    (unless (eq :none (gethash "Default" *persp-hash* :none))
+      (persp-switch persp-last-selected-persp-name)))
+
   :config
   (setq persp-autokill-buffer-on-remove 'kill-weak
         persp-auto-resume-time -1
         ;; TODO
         ;;  change mode-line format for `persp-mode'
         ;; persp-lighter "Ⓟ"
+        persp-before-switch-functions #'persp-last-selected-persp-name
         persp-lighter '(:eval (format "{%s}"
                                       (->> (persp-current-name)
                                            (s-chop-suffix "/")
                                            (file-name-base))))
         persp-nil-name "Default"
+        persp-last-selected-persp-name persp-nil-name
         persp-set-ido-hooks t
         wg-morph-on nil)
 
