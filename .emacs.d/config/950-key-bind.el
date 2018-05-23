@@ -77,6 +77,7 @@
     "aocj" #'org-clock-jump-to-current-clock
     "aocn" #'org-capture-note
     "aoct" #'org-capture-todo
+    "aos" #'org-search-view
     "aot" #'org-todo-list
 
     ;; buffer
@@ -98,6 +99,7 @@
     "fy" #'kill-new-buffer-file-name
 
     ;; git
+    "gb" #'magit-blame
     "gs" #'magit-status
     "gt" #'git-timemachine
 
