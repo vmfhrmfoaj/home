@@ -12,6 +12,8 @@
 
 (prefer-coding-system 'utf-8)
 (electric-indent-mode -1)
+(menu-bar-mode -1)
+(tool-bar-mode -1)
 
 (when (eq system-type 'darwin)
   (setq mac-command-modifier 'meta
