@@ -1,5 +1,5 @@
 ;; lazy font-lock
-(defvar font-lock-idle-time 0.1
+(defvar font-lock-idle-time 0.05
   "TODO")
 
 (defvar font-lock-idle-avoid-buf-regex (regexp-opt '("org-src-fontification"))
