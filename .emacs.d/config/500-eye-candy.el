@@ -213,6 +213,14 @@
 				                    (powerline-raw "[+]" face0))
 				                  (when buffer-read-only
 				                    (powerline-raw "[RO]" face0))
+                          (concat (powerline-raw "[" face0 'l)
+                                  (powerline-raw (if (not current-input-method)
+                                                     "EN"
+                                                   (->> input-method-alist
+                                                        (assoc current-input-method)
+                                                        (nth 3)))
+                                                 face0)
+                                  (powerline-raw "]" face0))
 				                  (powerline-raw "[" face0 'l)
 				                  (powerline-minor-modes face0)
 				                  (powerline-raw "%n" face0)
