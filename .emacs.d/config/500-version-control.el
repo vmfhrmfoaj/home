@@ -41,6 +41,32 @@
   :ensure t
   :defer t
   :commands (magit-status)
+  :init
+  (defface magit-commit-log-type-face
+    `((t (:inherit font-lock-function-name-face :weight normal)))
+    "TODO")
+
+  (defface magit-commit-log-scope-face
+    `((t (:inherit font-lock-variable-name-face :weight normal)))
+    "TODO")
+
+  (defun magit-log-propertize-keywords-for-conventional-commits (msg)
+    "TODO"
+    (let ((type  "[^:()]+")
+          (scope "[^)]+"))
+      (when (and magit-log-highlight-keywords
+                 (string-match (concat "^\\(" type "\\)\\(?:(\\(" scope "\\))\\)?:") msg))
+        (put-text-property (match-beginning 1)
+                           (match-end 1)
+                           'face 'magit-commit-log-type-face
+                           msg)
+        (when (match-beginning 2)
+          (put-text-property (match-beginning 2)
+                             (match-end 2)
+                             'face 'magit-commit-log-scope-face
+                             msg))))
+    msg)
+
   :config
   (setq magit-diff-refine-hunk t)
   ;; NOTE
@@ -49,7 +75,9 @@
   ;;  So, I think it is a bug caused by collision between Spacemacs and latest Emacs-macport.
   ;; FIXME
   ;;  This is workaround.
-  (add-to-list 'magit-git-environment (concat "HOME=" (getenv "HOME"))))
+  (add-to-list 'magit-git-environment (concat "HOME=" (getenv "HOME")))
+  (advice-add #'magit-log-propertize-keywords :filter-return
+              #'magit-log-propertize-keywords-for-conventional-commits))
 
 (use-package magit-svn
   :ensure t
