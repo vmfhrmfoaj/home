@@ -84,6 +84,4 @@
   (add-hook 'magit-diff-mode-hook #'persp-add-buffer-without-switch)
   (add-hook 'magit-log-mode-hook #'persp-add-buffer-without-switch)
   (add-hook 'magit-status-mode-hook #'persp-add-buffer-without-switch)
-  (add-hook 'after-init-hook
-            (lambda ()
-              (persp-mode 1))))
+  (add-hook 'after-init-hook (-partial #'persp-mode 1)))
