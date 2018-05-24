@@ -937,7 +937,7 @@
                     (goto-char local-limit))
                   (clojure-forward-sexp)
                   t)))
-             (concat meta? "\\_<" namespace? "\\(" symbol "\\)\\>"))
+             (concat meta? "\\_<" namespace? "\\(" symbol "\\)\\_>"))
            (save-excursion
              (if (in-comment?)
                  (setq font-lock--skip t)
