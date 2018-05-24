@@ -80,6 +80,9 @@
     "aos" #'org-search-view
     "aot" #'org-todo-list
 
+    ;; - calculator
+    "ac" #'calc
+
     ;; buffer
     "bR" #'revert-buffer
     "ba" #'persp-add-buffer
