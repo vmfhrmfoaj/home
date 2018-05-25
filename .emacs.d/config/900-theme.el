@@ -31,6 +31,7 @@
    `(nlinum-current-line ((t (:inherit linum))))
    `(nlinum-relative-current-face ((t (:inherit linum))))
    `(org-agenda-date-today ((t (:inherit (bold org-agenda-date)))))
+   `(org-mode-line-clock ((t)))
    `(show-paren-match ((t (:inherit underline :foreground "Cyan2" :background nil))))
    `(widget-button ((t (:inherit bold))))))
 
