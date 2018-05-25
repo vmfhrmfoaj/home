@@ -83,6 +83,9 @@
     ;; - calculator
     "ac" #'calc
 
+    ;; - shell
+    "as" #'helm-mt
+
     ;; buffer
     "bR" #'revert-buffer
     "ba" #'persp-add-buffer
@@ -357,6 +360,19 @@
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode "," 'lisp-interaction-mode))
+
+(use-package multi-term
+  :defer t
+  :config
+  (evil-define-key 'normal term-raw-map
+    (kbd "b") #'term-send-ctrl-left
+    (kbd "h") #'term-send-left
+    (kbd "l") #'term-send-right
+    (kbd "w") #'term-send-ctrl-right
+    (kbd "x") #'term-send-del)
+  (evil-define-key 'insert term-raw-map
+    (kbd "C-h") #'term-send-backspace
+    (kbd "M-DEL") #'term-send-backward-kill-word))
 
 (use-package org
   :defer t

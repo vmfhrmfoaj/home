@@ -132,19 +132,31 @@
                    (point))))
         (cons start end))))
 
+  (defvar focus--exclude-modes '(term-mode)
+    "TODO")
+
+  (defun focus--enable ()
+    "TODO"
+    (unless (apply #'derived-mode-p focus--exclude-modes)
+      (focus-mode 1)))
+
+  (defun focus--disable ()
+    "TODO"
+    (focus-mode 0))
+
   :config
-  (put 'org 'bounds-of-thing-at-point #'focus--org-thing)
+  (put 'org          'bounds-of-thing-at-point #'focus--org-thing)
   (put 'tex-sentence 'bounds-of-thing-at-point #'focus--text-thing)
-  (put 'list+ 'bounds-of-thing-at-point #'focus--list+-thing)
-  (put 'lisp 'bounds-of-thing-at-point #'focus--lisp-thing)
-  (put 'clojure 'bounds-of-thing-at-point #'focus--clojure-thing)
+  (put 'list+        'bounds-of-thing-at-point #'focus--list+-thing)
+  (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing)
+  (put 'clojure      'bounds-of-thing-at-point #'focus--clojure-thing)
   (add-to-list 'focus-mode-to-thing '(clojure-mode . clojure))
   (add-to-list 'focus-mode-to-thing '(cider-repl-mode . list+))
   (add-to-list 'focus-mode-to-thing '(emacs-lisp-mode . lisp))
   (add-to-list 'focus-mode-to-thing '(org-mode . org))
   (add-to-list 'focus-mode-to-thing '(tex-mode . tex-sentence))
-  (add-hook 'evil-insert-state-entry-hook (-partial #'focus-mode 1))
-  (add-hook 'evil-insert-state-exit-hook  (-partial #'focus-mode 0))
+  (add-hook 'evil-insert-state-entry-hook #'focus--enable)
+  (add-hook 'evil-insert-state-exit-hook #'focus--disable)
   (advice-add #'focus-move-focus :around
               (byte-compile
                (lambda (of)
@@ -194,6 +206,18 @@
 (use-package powerline
   :ensure t
   :init
+  (defvar powerline-buffer-id-max 40
+    "TODO")
+
+  (defun powerline-ellipsis-buffer-id (&optional buf-id)
+    "TODO"
+    (let ((buf-id (or buf-id (powerline-buffer-id)))
+          (face (get-text-property 1 'face buf-id)))
+      (if (< powerline-buffer-id-max (length buf-id))
+          (concat (substring buf-id 0 powerline-buffer-id-max)
+                  (propertize "..." 'face face))
+        buf-id)))
+
   (defun powerline-vim+-theme ()
     "Setup a Vim-like mode-line."
     (interactive)
@@ -250,6 +274,7 @@
 			            (powerline-render rhs)))))))
 
   :config
+  (advice-add #'powerline-buffer-id :filter-return #'powerline-ellipsis-buffer-id)
   (powerline-vim+-theme))
 
 (use-package rainbow-delimiters

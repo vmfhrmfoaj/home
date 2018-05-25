@@ -6,6 +6,11 @@
   :init
   (add-hook 'after-init-hook #'atomic-chrome-start-server))
 
+(use-package helm-mt
+  :ensure t
+  :defer t
+  :commands (helm-mt))
+
 (use-package linum-relative
   :ensure t
   :init
@@ -48,3 +53,9 @@
   :defer t
   :init
   (add-hook 'after-init-hook #'server-start))
+
+(use-package multi-term
+  :ensure t
+  :defer t
+  :config
+  (setq multi-term-program "zsh"))
