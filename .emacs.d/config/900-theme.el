@@ -39,44 +39,46 @@
   :config
   (load-theme 'twilight-bright t)
   (custom-theme-set-faces
-     'twilight-bright
-     `(auto-dim-other-buffers-face
-       ((t :foreground  ,(-> 'default (face-attribute :foreground) (light-color 5))
-           :background  ,(-> 'default (face-attribute :background) (dim-color 3)))))
-     `(clojure-if-true-face
-       ((t (:background ,(-> 'font-lock-keyword-face
-                             (face-attribute :background)
-                             (light-color 2.5))))))
-     `(evil-ex-lazy-highlight ((t (:inherit (bold lazy-highlight)))))
-     `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
-     `(font-lock-regexp-grouping-construct ((t (:inherit bold :foreground ,(-> 'font-lock-string-face
-                                                                               (face-attribute :foreground)
-                                                                               (light-color 5)
-                                                                               (saturate-color 10))))))
-     `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1))))))
-     `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added   :background)))))
-     `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
-     `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
-     `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
-     `(hl-line ((t (:background "#eef7fd"))))
-     `(linum-relative-current-face ((t (:inherit linum :foreground ,(-> 'default
-                                                                        (face-attribute :foreground)
-                                                                        (light-color 15))))))
-     `(link ((t (:foreground "#55850f" :underline t))))
-     `(magit-diff-context-highlight ((t (:background "#f2f9fd"))))
-     `(magit-diff-hunk-heading-highlight ((t (:background "#c8e9ff"))))
-     `(magit-section-highlight ((t (:background "#eef7fd"))))
-     `(nlinum-relative-current-face ((t (:inherit linum-relative-current-face))))
-     `(org-cancelled ((t (:foreground nil :inherit org-done))))
-     `(org-column ((t (:inherit bold))))
-     `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
-     `(org-link ((t (:inherit link))))
-     `(org-next ((t (:foreground "#dca3a3" :inherit (bold org-todo)))))
-     `(outline-4 ((t (:inherit font-lock-string-face))))
-     `(powerline-active1   ((t (:foreground "#85CEEB" :background "#383838" :inherit mode-line))))
-     `(powerline-active2   ((t (:foreground "#85CEEB" :background "#6b6b6b" :inherit mode-line))))
-     `(powerline-inactive1 ((t (:foreground "#F0F0EF" :background "#686868" :inherit mode-line-inactive))))
-     `(powerline-inactive2 ((t (:foreground "#F0F0EF" :background "#A9A9A9" :inherit mode-line-inactive))))))
+   'twilight-bright
+   `(auto-dim-other-buffers-face
+     ((t :foreground  ,(-> 'default (face-attribute :foreground) (light-color 5))
+         :background  ,(-> 'default (face-attribute :background) (dim-color 3)))))
+   `(clojure-if-true-face
+     ((t (:background ,(-> 'font-lock-keyword-face
+                           (face-attribute :background)
+                           (light-color 2.5))))))
+   `(cursor ((t (:background "sky blue"))))
+   `(evil-ex-lazy-highlight ((t (:inherit (bold lazy-highlight)))))
+   `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
+   `(font-lock-regexp-grouping-construct ((t (:inherit bold :foreground ,(-> 'font-lock-string-face
+                                                                             (face-attribute :foreground)
+                                                                             (light-color 5)
+                                                                             (saturate-color 10))))))
+   `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1))))))
+   `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added   :background)))))
+   `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
+   `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
+   `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
+   `(hl-line ((t (:background "#eef7fd"))))
+   `(linum-relative-current-face ((t (:inherit linum :foreground ,(-> 'default
+                                                                      (face-attribute :foreground)
+                                                                      (light-color 15))))))
+   `(link ((t (:foreground "#55850f" :underline t))))
+   `(magit-diff-context-highlight ((t (:background "#f2f9fd"))))
+   `(magit-diff-hunk-heading-highlight ((t (:background "#c8e9ff"))))
+   `(magit-section-highlight ((t (:background "#eef7fd"))))
+   `(nlinum-relative-current-face ((t (:inherit linum-relative-current-face))))
+   `(org-cancelled ((t (:foreground nil :inherit org-done))))
+   `(org-column ((t (:inherit bold))))
+   `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
+   `(org-link ((t (:inherit link))))
+   `(org-next ((t (:foreground "#dca3a3" :inherit (bold org-todo)))))
+   `(outline-4 ((t (:inherit font-lock-string-face))))
+   `(powerline-active1   ((t (:foreground "#85CEEB" :background "#383838" :inherit mode-line))))
+   `(powerline-active2   ((t (:foreground "#85CEEB" :background "#6b6b6b" :inherit mode-line))))
+   `(powerline-inactive1 ((t (:foreground "#F0F0EF" :background "#686868" :inherit mode-line-inactive))))
+   `(powerline-inactive2 ((t (:foreground "#F0F0EF" :background "#A9A9A9" :inherit mode-line-inactive))))
+   `(trailing-whitespace ((t (:background "gray65"))))))
 
 (use-package goto-addr
   :defer t
