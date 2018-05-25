@@ -46,7 +46,15 @@
   :commands (fancy-narrow-to-defun
              fancy-narrow-to-page
              fancy-narrow-to-region
-             fancy-widen))
+             fancy-widen)
+
+  :config
+  (advice-add #'fancy-narrow-to-region :after #'helm-swoop--clear-cache)
+  (advice-add #'fancy-widen :after #'helm-swoop--clear-cache)
+  (advice-add #'save-buffer :around
+              (lambda (fn &optional arg)
+                (let (fancy-narrow--beginning fancy-narrow--end)
+                  (funcall fn arg)))))
 
 (use-package focus
   :ensure t
