@@ -351,15 +351,12 @@
 
   ;; lisp-interaction-mode
   (evil-leader/set-key-for-mode 'lisp-interaction-mode
+    "mee" #'emacs-lisp-REPL-eval-print-this-sexp
     "mgg" #'elisp-slime-nav-find-elisp-thing-at-point)
   (which-key-declare-prefixes-for-mode 'lisp-interaction-mode
+    (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode "," 'lisp-interaction-mode)
-  (add-hook 'lisp-interaction-mode-hook
-            (lambda ()
-              (evil-local-set-key 'normal (kbd "RET")
-                                  #'emacs-lisp-REPL-eval-print-this-sexp))
-            :append))
+  (evil-leader/set-major-leader-for-mode "," 'lisp-interaction-mode))
 
 (use-package org
   :defer t
