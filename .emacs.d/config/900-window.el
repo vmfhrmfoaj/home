@@ -31,13 +31,14 @@
 
   (defun winum--num-str-to-pertty-num-str (num-str)
     "TODO"
-    (let* ((num (string-to-number num-str))
+    (let* ((active? (powerline-selected-window-active))
+           (num (string-to-number num-str))
            (num-str (if (<= 0 num 20)
                         (nth num unicode-nums)
                       (number-to-string num)))
            (raise (if (<= 0 num 20) 0.05 0)))
       (propertize (concat "  " num-str)
-                  'face 'winum-face
+                  'face (if active? 'powerline-active0 'powerline-inactive0)
                   'display `(raise ,raise))))
 
   (defun winum--assign-0-to-neotree ()
