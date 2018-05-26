@@ -353,6 +353,25 @@
         font-lock-string-face
       res))
 
+  (defvar context-fn-prefix-regex (regexp-opt '("eval" "run" "exe" "execute"))
+    "TODO")
+
+  (defvar context-fn-regex (regexp-opt '("in" "on" "with"))
+    "TODO")
+
+  (defun clojure--is-context-fn? (sym)
+    "TODO"
+    (string-match-p (concat "^\\("
+                            context-fn-prefix-regex "-\\)?"
+                            context-fn-regex
+                            "\\>")
+                    sym))
+
+  (defun clojure--get-indentation (regex sym)
+    (when (or (clojure--is-context-fn? sym)
+              (and regex (string-match-p regex sym)))
+      :defn))
+
   :config
   (advice-add #'clojure-font-lock-syntactic-face-function :before
               #'clojure-font-lock-syntactic-face-function-2)
@@ -380,7 +399,7 @@
                                          (buffer-substring-no-properties (point) end)))
                                    ""))))
                     (compojure-kws '("GET" "POST" "PUT" "DELETE" "HEAD" "OPTIONS" "PATCH" "ANY" "context"))
-                    keywords)
+                    (keywords nil))
                 (cond
                  ((string-match-p "_test.clj[cs]?$" file-name)
                   (add-to-list 'keywords "async")
@@ -392,12 +411,10 @@
                                           "\\>\\)")
                                   ns-form)
                   (setq keywords (append keywords compojure-kws))))
-                (when keywords
-                  (setq-local clojure-get-indent-function
-                              (lexical-let ((keywords (regexp-opt keywords)))
-                                (byte-compile
-                                 (lambda (func-name)
-                                   (and (string-match-p keywords func-name) :defn))))))))
+                (setq-local clojure-get-indent-function
+                            (-partial #'clojure--get-indentation
+                                      (when keywords
+                                        (regexp-opt keywords 'symbols))))))
             :append))
 
 (use-package edn
