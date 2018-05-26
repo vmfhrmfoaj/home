@@ -23,14 +23,22 @@
   (defun neotree-project-dir ()
     "TODO"
     (interactive)
-    (let ((proj-dir (projectile-project-root))
-          (buf-dir (file-name-directory (or buffer-file-name "~/"))))
-      (neotree-dir (or proj-dir buf-dir))))
+    (let ((buf-file-name buffer-file-name))
+      (neotree-dir (or (projectile-project-root)
+                       (file-name-directory (or buf-file-name ""))
+                       "~/"))
+      (when (and neo-smart-open
+                 buf-file-name)
+        (neotree-find buf-file-name)
+        (recenter))))
 
   :config
   (setq neo-auto-indent-point t
         neo-keymap-style 'concise
-        neo-theme 'icons))
+        neo-show-hidden-files t
+        neo-smart-open t
+        neo-theme 'icons
+        neo-window-width 35))
 
 (use-package dumb-jump
   :ensure t
