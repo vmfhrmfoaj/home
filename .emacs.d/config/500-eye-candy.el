@@ -222,12 +222,12 @@
 
   (defun powerline-ellipsis-buffer-id (&optional buf-id)
     "TODO"
-    (let ((buf-id (or buf-id (powerline-buffer-id)))
-          (face (get-text-property 1 'face buf-id)))
-      (if (< powerline-buffer-id-max (length buf-id))
-          (concat (substring buf-id 0 powerline-buffer-id-max)
-                  (propertize "..." 'face face))
-        buf-id)))
+    (let ((buf-id (or buf-id (powerline-buffer-id))))
+      (if (<= (length buf-id) powerline-buffer-id-max)
+          buf-id
+        (let ((substr (substring buf-id 0 powerline-buffer-id-max))
+              (face (get-text-property 1 'face buf-id)))
+          (concat substr (propertize "..." 'face face))))))
 
   (defun powerline-vim+-theme ()
     "Setup a Vim-like mode-line."
