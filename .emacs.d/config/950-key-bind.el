@@ -86,6 +86,9 @@
     ;; - shell
     "as" #'helm-mt
 
+    ;; - undo-tree
+    "au" #'undo-tree-visualize
+
     ;; buffer
     "bR" #'revert-buffer
     "ba" #'persp-add-buffer
