@@ -12,17 +12,17 @@
     "TODO"
     (interactive)
     (while (ignore-errors (backward-up-list 1 t) t))
-    (if (looking-at-p "\\s-*(")
-        (forward-sexp)
-      (end-of-line))
-    (newline)
+    (if (not (looking-at-p "\\s-*("))
+        (end-of-line)
+      (forward-sexp)
+      (newline))
     (let ((pos (point))
           ;; TODO
           ;;  pretty print
           (standard-output (current-buffer)))
       (eval-last-sexp t)
-      (goto-char pos)
-      (insert ";;=> ")))
+      (newline)
+      (goto-char pos)))
 
   (defun emacs-lisp-evil-lookup-func ()
     "TODO"
