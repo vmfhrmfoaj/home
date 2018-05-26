@@ -61,76 +61,81 @@
   :init
   (defun focus--org-thing ()
     "TODO"
-    (if focus-mode-org-thing-lock
-        (cons 0 0)
-      (save-excursion
-        (let ((start (progn
-                       (outline-previous-heading)
-                       (point)))
-              (end   (progn
-                       (outline-next-visible-heading 1)
-                       (beginning-of-line)
-                       (point))))
-          (cons start end)))))
+    (ignore-errors
+      (if focus-mode-org-thing-lock
+          (cons 0 0)
+        (save-excursion
+          (let ((start (progn
+                         (outline-previous-heading)
+                         (point)))
+                (end   (progn
+                         (outline-next-visible-heading 1)
+                         (beginning-of-line)
+                         (point))))
+            (cons start end))))))
 
   (defun focus--text-thing ()
     "TODO"
-    (let* ((regx  (concat "^\\(?:[[:cntrl:]]\\)*$"))
-           (start (save-excursion
-                    (backward-char)
-                    (re-search-backward regx nil t)
-                    (point)))
-           (end   (save-excursion
-                    (forward-char)
-                    (re-search-forward regx nil t)
-                    (point))))
-      (cons start end)))
+    (ignore-errors
+      (let* ((regx  (concat "^\\(?:[[:cntrl:]]\\)*$"))
+             (start (save-excursion
+                      (backward-char)
+                      (re-search-backward regx nil t)
+                      (point)))
+             (end   (save-excursion
+                      (forward-char)
+                      (re-search-forward regx nil t)
+                      (point))))
+        (cons start end))))
 
   (defun focus--list+-thing ()
     "TODO"
-    (save-excursion
-      (let ((start (progn
-                     (ignore-errors
-                       (cond ((sp-point-in-string)
-                              (save-match-data
-                                (re-search-backward "[^\\]\""))
-                              (forward-char))
-                             ((sp-point-in-comment)
-                              (beginning-of-line)))
-                       (backward-up-list 2))
-                     (point)))
-            (end (progn
-                   (forward-list)
-                   (point))))
-        (cons start end))))
+    (ignore-errors
+      (save-excursion
+        (let ((start (progn
+                       (ignore-errors
+                         (cond ((sp-point-in-string)
+                                (save-match-data
+                                  (re-search-backward "[^\\]\""))
+                                (forward-char))
+                               ((sp-point-in-comment)
+                                (beginning-of-line)))
+                         (backward-up-list 2))
+                       (point)))
+              (end (progn
+                     (forward-list)
+                     (point))))
+          (cons start end)))))
 
   (defun focus--lisp-thing ()
     "TODO"
-    (save-excursion
-      (let ((start (progn
-                     (ignore-errors
-                       (while (progn
-                                (backward-up-list 1 t t)
-                                (not (looking-at-p "(\\(\\(lexical-\\)?let\\*?\\|lambda\\|defun\\|defmacro\\)\\_>")))))
-                     (point)))
-            (end (progn
-                   (forward-list)
-                   (point))))
-        (cons start end))))
+    (ignore-errors
+      (save-excursion
+        (let ((start (progn
+                       (ignore-errors
+                         (while (progn
+                                  (backward-up-list 1 t t)
+                                  (not (looking-at-p "(\\(\\(lexical-\\)?let\\*?\\|lambda\\|defun\\|defmacro\\)\\_>")))))
+                       (point)))
+              (end (progn
+                     (forward-list)
+                     (point))))
+          (cons start end)))))
 
   (defun focus--clojure-thing ()
     "TODO"
-    (save-excursion
-      (let ((start (progn
-                     (ignore-errors
-                       (while (progn
-                                (backward-up-list 1 t t)
-                                (not (looking-at-p "(\\([-0-9A-Za-z]+/\\)?\\(let\\|loop\\|fn\\|def[a-z]*\\)\\_>")))))
-                     (point)))
-            (end (progn
-                   (forward-list)
-                   (point))))
-        (cons start end))))
+    (ignore-errors
+      (save-excursion
+        (let ((start (progn
+                       (ignore-errors
+                         (while (progn
+                                  (backward-up-list 1 t t)
+                                  (not (looking-at-p "(\\([-0-9A-Za-z]+/\\)?\\(let\\|loop\\|fn\\|def[a-z]*\\)\\_>")))))
+                       (point)))
+              (end (progn
+                     (forward-list)
+                     (point))))
+          (cons start end)))))
 
   (defvar focus--exclude-modes '(term-mode)
     "TODO")
