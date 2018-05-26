@@ -49,12 +49,18 @@
              fancy-widen)
 
   :config
-  (advice-add #'fancy-narrow-to-region :after #'helm-swoop--clear-cache)
-  (advice-add #'fancy-widen :after #'helm-swoop--clear-cache)
+  (with-eval-after-load "helm-swoop"
+    (advice-add #'fancy-narrow-to-region :after #'helm-swoop--clear-cache)
+    (advice-add #'fancy-widen :after #'helm-swoop--clear-cache))
   (advice-add #'save-buffer :around
               (lambda (fn &optional arg)
                 (let (fancy-narrow--beginning fancy-narrow--end)
-                  (funcall fn arg)))))
+                  (funcall fn arg))))
+  (advice-add #'jit-lock-function :around
+              (byte-compile
+               (lambda (fn start)
+                 (let (fancy-narrow--beginning fancy-narrow--end)
+                   (funcall fn start))))))
 
 (use-package focus
   :ensure t
