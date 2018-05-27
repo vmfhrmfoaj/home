@@ -50,11 +50,13 @@
                                   (let (fancy-narrow--beginning fancy-narrow--end)
                                     (apply fn args)))))))))))))
 
-(defvar fake-match-2 (-repeat 2 (point-min-marker))
-  "TODO")
+(defun fake-match-2 ()
+  "TODO"
+  (-repeat 2 (point-min-marker)))
 
-(defvar fake-match-4 (-repeat 4 (point-min-marker))
-  "TODO")
+(defun fake-match-4 ()
+  "TODO"
+  (-repeat 4 (point-min-marker)))
 
 (use-package cperl-mode
   :defer t
@@ -871,7 +873,7 @@
                  (set-match-data
                   (if (looking-at-p "\"")
                       (list (point-marker) (progn (forward-sexp) (point-marker)))
-                    fake-match-2))
+                    (fake-match-2)))
                  t)))
             (concat "(" meta? symbol "\\>"))
           (save-excursion
@@ -894,7 +896,7 @@
                                        font-lock-string-face
                                        font-lock-comment-face)))
                    (when (memq face ignore-faces)
-                     (set-match-data fake-match-4))
+                     (set-match-data (fake-match-4)))
                    t))))
             (concat symbol "?\\(!+\\)\\>"))
           (1 'clojure-side-effect-face t))
@@ -939,7 +941,7 @@
                     (unless (and (re-search-forward meta?+ns?+symbol (min local-limit limit) t)
                                  (not (string-match-p clojure--ignore-binding-highlight-regex
                                                       (match-string-no-properties 1))))
-                      (set-match-data fake-match-4))
+                      (set-match-data (fake-match-4)))
                     (goto-char local-limit))
                   (clojure-forward-sexp)
                   t)))
@@ -985,7 +987,7 @@
                           ;; ignores
                           (when (string-match-p clojure--ignore-binding-highlight-regex
                                                 (match-string-no-properties 1))
-                            (set-match-data fake-match-4))
+                            (set-match-data (fake-match-4)))
                           ;; Handle default bind map
                           (when (save-excursion
                                   (backward-up-list)
@@ -998,7 +1000,7 @@
                       (clojure-forward-sexp)
                       (setq clojure-binding-form--recursive-point nil
                             clojure-binding-form--recursive-limit nil)
-                      (set-match-data fake-match-4))
+                      (set-match-data (fake-match-4)))
                     t))))
              (concat meta? "\\_<" namespace? "\\(" symbol "\\)\\>"))
            (save-excursion
@@ -1053,7 +1055,7 @@
                     (let ((local-limit (save-excursion (forward-sexp) (point))))
                       (if (re-search-forward symbol (min limit local-limit) t)
                           (add-to-list 'clojure-oop-fn-form--points (match-end 0))
-                        (set-match-data fake-match-2)))
+                        (set-match-data (fake-match-2))))
                     (up-list)
                     t))))
              (concat symbol "\\>"))
@@ -1095,8 +1097,8 @@
                                            (min limit clojure-oop-fn-recursive--limit) t)
                         (when (string-match-p clojure--ignore-binding-highlight-regex
                                               (match-string-no-properties 1))
-                          (set-match-data fake-match-4))
-                      (set-match-data fake-match-4)
+                          (set-match-data (fake-match-4)))
+                      (set-match-data (fake-match-4))
                       (setq clojure-oop-fn-recursive--point nil
                             clojure-oop-fn-recursive--limit nil))
                     t))))
@@ -1173,7 +1175,7 @@
                           ;; ignores
                           (when (string-match-p clojure--ignore-binding-highlight-regex
                                                 (match-string-no-properties 1))
-                            (set-match-data fake-match-4))
+                            (set-match-data (fake-match-4)))
                           ;; Handle default bind map
                           (when (save-excursion
                                   (backward-up-list)
@@ -1182,7 +1184,7 @@
                                          (clojure-forward-sexp -1)
                                          (looking-at-p ":or\\>"))))
                             (clojure-forward-sexp)))
-                      (set-match-data fake-match-4)
+                      (set-match-data (fake-match-4))
                       (setq clojure-fn-recursive--point nil
                             clojure-fn-recursive--limit nil))
                     t))))
@@ -1279,7 +1281,7 @@
                   (let ((local-limit (save-excursion (forward-sexp) (point))))
                     (unless (and (re-search-forward symbol+whitespace (min local-limit limit) t)
                                  (ignore-errors (forward-sexp) t))
-                      (set-match-data fake-match-4))
+                      (set-match-data (fake-match-4)))
                     (goto-char local-limit))
                   t))
               (concat "(\\(" symbol "\\)" whitespace+)))
@@ -1304,7 +1306,7 @@
                     (error ""))
                   (when (re-search-forward symbol limit t)
                     (when (string-match-p "^&" (match-string 1))
-                      (set-match-data fake-match-4))
+                      (set-match-data (fake-match-4)))
                     t)))
               (concat "\\(" symbol "\\)\\>")))
            (save-excursion
