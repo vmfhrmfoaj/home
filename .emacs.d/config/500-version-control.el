@@ -69,6 +69,9 @@
 
   :config
   (setq magit-diff-refine-hunk t)
+  (-update->> magit-status-sections-hook
+              (-replace-first 'magit-insert-unpushed-to-upstream-or-recent
+                              'magit-insert-unpushed-to-upstream))
   ;; NOTE
   ;;  The result of `(call-process "env" nil t t)` does not contain 'HOME' variable.
   ;;  But on Linux or without the configuration(e.g. emacs -Q), it is ok.
