@@ -28,7 +28,7 @@
 
 (add-hook 'after-init-hook
           (lambda ()
-            (setq gc-cons-threshold (* 1024 1024 128)
+            (setq gc-cons-threshold (* 1024 1024 64)
                   gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect))
             (advice-add #'select-frame      :after #'update-buf-visit-time)
             (advice-add #'select-window     :after #'update-buf-visit-time)
