@@ -38,8 +38,6 @@
        (apply #'color-hsl-to-rgb)
        (apply #'color-rgb-to-hex)))
 
-(setq-default font-lock--skip nil)
-(make-local-variable 'font-lock--skip)
 
 (defun in-comment? ()
   "TODO"
@@ -48,17 +46,20 @@
                     (point-at-bol))
                   (point)))
 
+(setq-default font-lock--skip nil)
+(make-local-variable 'font-lock--skip)
+
 (defun safe-up-list-1 ()
   "TODO"
   (condition-case nil
       (up-list)
-    (error (setq-local font-lock--skip t))))
+    (error (setq font-lock--skip t))))
 
 (defun safe-down-list-1 ()
   "TODO"
   (condition-case nil
       (down-list)
-    (error (setq-local font-lock--skip t))))
+    (error (setq font-lock--skip t))))
 
 (defun safe-regexp? (regex)
   "TODO"

@@ -1029,13 +1029,16 @@
           (,(-partial
              (byte-compile
               (lambda (symbol limit)
-                (and (string-match-p "^def" clojure-oop-kw--str)
-                     (re-search-forward symbol limit t))))
+                (unless font-lock--skip
+                  (and (string-match-p "^def" clojure-oop-kw--str)
+                       (re-search-forward symbol limit t)))))
              (concat "\\(" symbol "\\)"))
            (save-excursion
              (setq clojure-oop-kw--str (match-string-no-properties 1))
              (setq clojure-oop-kw--point (point))
-             (clojure-forward-sexp)
+             (condition-case nil
+                 (clojure-forward-sexp)
+               (error (setq font-lock--skip t)))
              (point))
            (goto-char clojure-oop-kw--point)
            (0 'clojure-define-type-face))
@@ -1092,8 +1095,7 @@
                         (when (string-match-p "definterface\\|defprotocol" clojure-oop-kw--str)
                           (setq clojure-oop-fn-form--points
                                 (cons clojure-oop-fn-recursive--limit
-                                      clojure-oop-fn-form--points)))
-                        )))
+                                      clojure-oop-fn-form--points))))))
                   (when clojure-oop-fn-recursive--point
                     (if (re-search-forward meta?+ns?+symbol
                                            (min limit clojure-oop-fn-recursive--limit) t)
