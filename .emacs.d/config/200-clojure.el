@@ -232,6 +232,7 @@
          (t (setq l (cdr l)))))))
 
   (defun clojure-forward-symbol (n)
+    "TODO"
     (let ((sym     (concat "^/" clojure--sym-forbidden-rest-chars))
           (not-sym (concat "/"  clojure--sym-forbidden-rest-chars))
           (skip-chars (if (< 0 n)
@@ -378,7 +379,6 @@
 
   (add-hook 'clojure-mode-hook
             (lambda ()
-              (setq-local custom-forward-symbol #'clojure-forward-symbol)
               (setq-local font-lock-extend-region-functions
                           (remove 'clojure-font-lock-extend-region-def
                                   font-lock-extend-region-functions))

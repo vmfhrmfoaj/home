@@ -1,7 +1,7 @@
 (use-package evil
   :ensure t
   :config
-  (setq-default evil-symbol-word-search 'thing-at-point)
+  (setq-default evil-symbol-word-search t)
   (global-subword-mode 1)
   (evil-mode 1))
 
