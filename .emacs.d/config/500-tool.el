@@ -6,6 +6,13 @@
   :init
   (add-hook 'after-init-hook #'atomic-chrome-start-server))
 
+(use-package expand-region
+  :ensure t
+  :defer t
+  :commands (er/expand-region)
+  :config
+  (setq expand-region-contract-fast-key "v"))
+
 (use-package helm-mt
   :ensure t
   :defer t

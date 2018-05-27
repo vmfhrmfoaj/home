@@ -216,7 +216,8 @@
 (use-package evil
   :defer t
   :config
-  (define-key evil-insert-state-map (kbd "C-h") #'backward-delete-char))
+  (evil-global-set-key 'insert (kbd "C-h") #'backward-delete-char)
+  (evil-global-set-key 'visual (kbd "v") #'er/expand-region))
 
 (use-package evil-surround
   :defer t
