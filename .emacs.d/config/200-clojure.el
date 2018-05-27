@@ -379,6 +379,7 @@
 
   (add-hook 'clojure-mode-hook
             (lambda ()
+              (setq-local evil-custom-forward-function #'clojure-forward-symbol)
               (setq-local font-lock-extend-region-functions
                           (remove 'clojure-font-lock-extend-region-def
                                   font-lock-extend-region-functions))

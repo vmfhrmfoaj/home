@@ -1,7 +1,24 @@
 (use-package evil
   :ensure t
+  :init
+  (defvar evil-custom-forward-function nil
+    "TODO")
+
+  (defun evil-forward-symbol ()
+    "TODO"
+    (save-excursion
+      (let* ((fwd-sym (or evil-custom-forward-function #'forward-symbol))
+             (point (point))
+             (end   (progn (funcall fwd-sym  1) (point)))
+             (start (progn (funcall fwd-sym -1) (point))))
+        (if (and (not (= start point end))
+                 (<= start point end))
+            (cons start end)
+          (cons point (1+ point))))))
+
   :config
   (setq-default evil-symbol-word-search t)
+  (put 'evil-symbol 'bounds-of-thing-at-point #'evil-forward-symbol)
   (global-subword-mode 1)
   (evil-mode 1))
 
