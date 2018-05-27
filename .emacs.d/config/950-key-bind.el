@@ -296,6 +296,7 @@
     "mef" #'cider-eval-defun-at-point
     "mer" #'cider-eval-last-sexp-and-replace
     "mgg" #'cider-find-var
+    "mrc" #'cider-repl-clear-buffer
     "mrs" #'cider-switch-to-last-clj-buf
     "mrq" #'cider-quit)
   (which-key-declare-prefixes-for-mode 'cider-repl-mode

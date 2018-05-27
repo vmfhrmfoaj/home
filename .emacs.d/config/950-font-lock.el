@@ -79,6 +79,9 @@
   (defface clojure-meta-face
     '((t (:inherit font-lock-comment-face)))
     "TODO")
+  (defface clojure-interop-method-face
+    '((t (:inherit font-lock-keyword-face)))
+    "TODO")
 
   (defcustom clojure--ignore-binding-highlight-regex
     (concat "^\\("
@@ -850,7 +853,11 @@
                      (set-match-data fake-match-4))
                    t))))
             (concat symbol "?\\(!+\\)\\>"))
-          (1 'clojure-side-effect-face t)))
+          (1 'clojure-side-effect-face t))
+         (,(concat "\\(" symbol "\\(\\." symbol "\\)+\\)")
+          (1 'font-lock-type-face nil))
+         (,(concat "\\<\\(\\([A-Z]+[0-9a-z]+\\)+\\)\\>")
+          (1 'font-lock-type-face nil)))
        :append)
       ;; prepend rules
       (font-lock-add-keywords
@@ -1187,10 +1194,6 @@
          (,(concat "(" important-kw "\\(?:)\\|" whitespace "\\)")
           (1 'clojure-important-keywords-face))
          (,(concat "::\\(" symbol "\\)/" symbol "\\>")
-          (1 'font-lock-type-face))
-         (,(concat "\\(" symbol "\\(\\." symbol "\\)+\\)")
-          (1 'font-lock-type-face))
-         (,(concat "\\<\\(\\([A-Z]+[0-9a-z]+\\)+\\)\\>")
           (1 'font-lock-type-face)))))))
 
 (use-package elisp-mode
