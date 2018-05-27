@@ -703,17 +703,9 @@
                 'symbols)
     "TODO")
 
-  (defcustom clojure--binding-forms
+  (defvar clojure--binding-forms
     '("binding" "doseq" "dotimes" "for" "let" "if-let" "if-some" "when-let" "when-some" "loop" "with-redefs")
-    "List of Clojure binding form."
-    :type '(repeat string)
-    :safe (lambda (value)
-            (and (listp value)
-                 (cl-every 'stringp value))))
-
-  (defun clojure--binding-regexp ()
-    "TODO"
-    (concat "(" (regexp-opt clojure--binding-forms) "[ \r\t\n]+\\["))
+    "List of Clojure binding form.")
 
   (defun clojure-forward-sexp (&optional n)
     "TODO"
@@ -932,7 +924,7 @@
              (goto-char clojure-meta---point))
            (1 'clojure-meta-face)))
          ;; Binding forms
-         (,(concat "(" core-ns? (substring (clojure--binding-regexp) 1))
+         (,(concat "(" core-ns? (regexp-opt clojure--binding-forms) "[ \r\t\n]+\\[")
           ;; Normal bindings
           (,(-partial
              (byte-compile
