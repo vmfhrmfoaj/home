@@ -647,7 +647,8 @@
                   "xml-seq"
                   "zero?"
                   "zipmap")
-                'symbols))
+                'symbols)
+    "TODO")
 
   (defcustom clojure--binding-forms
     '("binding" "doseq" "dotimes" "for" "let" "if-let" "if-some" "when-let" "when-some" "loop" "with-redefs")
@@ -658,9 +659,11 @@
                  (cl-every 'stringp value))))
 
   (defun clojure--binding-regexp ()
+    "TODO"
     (concat "(" (regexp-opt clojure--binding-forms) "[ \r\t\n]+\\["))
 
   (defun clojure-forward-sexp (&optional n)
+    "TODO"
     (or n (setq n 1))
     (while (not (zerop n))
       (if (> n 0) (clojure-skip  1 :comment :ignored-form :tagged-literal))
@@ -889,7 +892,7 @@
                     (goto-char local-limit))
                   (clojure-forward-sexp)
                   t)))
-             (concat meta? "\\_<" namespace? "\\(" symbol "\\)\\_>"))
+             (concat meta? "\\_<" namespace? "\\(" symbol "\\)"))
            (save-excursion
              (if (in-comment?)
                  (setq font-lock--skip t)
