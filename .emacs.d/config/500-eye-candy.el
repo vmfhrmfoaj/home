@@ -50,8 +50,8 @@
 
   :config
   (with-eval-after-load "helm-swoop"
-    (advice-add #'fancy-narrow-to-region :after #'helm-swoop--clear-cache)
-    (advice-add #'fancy-widen :after #'helm-swoop--clear-cache))
+    (advice-add #'fancy-narrow-to-region :after #'helm-swoop--clear-cache-hard)
+    (advice-add #'fancy-widen :after #'helm-swoop--clear-cache-hard))
   (advice-add #'save-buffer :around
               (lambda (fn &optional arg)
                 (let (fancy-narrow--beginning fancy-narrow--end)

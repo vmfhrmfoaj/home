@@ -4,14 +4,17 @@
   :commands (helm-swoop)
   :init
   (defun helm-swoop--get-content-for-fancy-narrow (buf &optional linum)
+    "TODO"
     (let* (ret
            (buf (or (get-buffer buf) (current-buffer)))
            ;; NOTE:
            ;;  a advice of the compiled fundamental functions is not working.
            ;;  see http://nullprogram.com/blog/2013/01/22/
-           (pos-min (or fancy-narrow--beginning (point-min)))
-           (pos-max (or fancy-narrow--end (point-max)))
+           (pos-min 0)
+           (pos-max 0)
            (str (with-current-buffer buf
+                  (setq pos-min (or fancy-narrow--beginning (point-min))
+                        pos-max (or fancy-narrow--end (point-max)))
                   (buffer-substring-no-properties pos-min pos-max)))
            (num (line-number-at-pos pos-min))
            (fmt (concat "%-"
@@ -39,6 +42,10 @@
             (funcall insert-linum num)))
         (setq ret (buffer-substring (point-min) (point-max))))
       ret))
+
+  (defun helm-swoop--clear-cache-hard (&rest _)
+    "TODO"
+    (kill-local-variable 'helm-swoop-list-cache))
 
   :config
   (setq helm-swoop-pre-input-function (-const "")
