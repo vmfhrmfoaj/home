@@ -6,6 +6,38 @@
   :init
   (add-hook 'after-init-hook #'atomic-chrome-start-server))
 
+(use-package ediff
+  :defer t
+  :commands (ediff-buffers
+             ediff-files)
+
+  :init
+  (defun ediff-addtional-setup (&rest _)
+    "TODO"
+    (setq ediff--exclude-mode-status (-map #'symbol-value ediff-exclude-modes)
+          ediff--win-conf (current-window-configuration))
+    (disable-modes ediff-exclude-modes)
+    (toggle-frame-maximized))
+
+  (defvar ediff--win-conf nil
+    "TODO")
+
+  (defun ediff-addtional-cleanup (&rest _)
+    "TODO"
+    (restore-modes ediff-exclude-modes ediff--exclude-mode-status)
+    (-when-let (conf ediff--win-conf)
+      (setq ediff--win-conf nil)
+      (set-window-configuration conf))
+    (toggle-frame-maximized))
+
+  :config
+  ;; NOTE
+  ;;  prevent to calculate the width of the window in `ediff-setup-windows-plain-compare' function.
+  (setq ediff-exclude-modes '(zoom-mode)
+        ediff-split-window-function #'split-window-right)
+  (advice-add #'ediff-setup :before #'ediff-addtional-setup)
+  (advice-add #'ediff-quit  :after  #'ediff-addtional-cleanup))
+
 (use-package expand-region
   :ensure t
   :defer t

@@ -221,3 +221,33 @@
   (interactive)
   (-when-let (file-name (buffer-file-name))
     (message (kill-new file-name))))
+
+
+(defun enabled? (mode-status)
+  "TODO"
+  (cond ((symbolp mode-status) mode-status)
+        ((numberp mode-status) (not (zerop mode-status)))
+        (t nil)))
+
+(defun disable-modes (modes)
+  "TODO"
+  (--map (and (symbol-value it)
+              (funcall it 0))
+         modes))
+
+(defun restore-modes (modes status)
+  "TODO"
+  (--map (and (cdr it)
+              (funcall (car it) (cdr it)))
+         (-zip modes status)))
+
+(defmacro with-disable-modes (modes &rest body)
+  "TODO"
+  `(let ((mode-status (-map #'symbol-value ,modes)))
+     (disable-modes ,modes)
+     (unwind-protect
+         (prog1 (progn ,@body)
+           (restore-modes ,modes mode-status))
+       (restore-modes ,modes mode-status))))
+
+(put 'with-disable-modes 'lisp-indent-function 'defun)
