@@ -145,6 +145,7 @@
     "pt" #'neotree-project-dir
 
     ;; register/rings/resume
+    "rk" #'helm-show-kill-ring
     "rl" #'helm-resume
 
     ;; search/symbol
@@ -155,8 +156,9 @@
     "ss" #'helm-swoop
 
     ;; toggle
-    "tw" #'whitespace-mode
     "tl" #'toggle-truncate-lines
+    "tm" #'toggle-frame-maximized
+    "tw" #'whitespace-mode
 
     ;; layout
     "l TAB" #'persp-switch-to-last-selected-persp
