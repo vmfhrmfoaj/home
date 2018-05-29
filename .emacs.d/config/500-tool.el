@@ -12,6 +12,9 @@
              ediff-files)
 
   :init
+  (defvar ediff--exclude-mode-status nil
+    "TODO")
+
   (defun ediff-addtional-setup (&rest _)
     "TODO"
     (setq ediff--exclude-mode-status (-map #'symbol-value ediff-exclude-modes)
@@ -90,8 +93,12 @@
 
 (use-package server
   :defer t
+  :commands (server-running-p)
   :init
-  (add-hook 'after-init-hook #'server-start))
+  (add-hook 'after-init-hook
+            (lambda ()
+              (unless (server-running-p)
+                (server-start)))))
 
 (use-package multi-term
   :ensure t
