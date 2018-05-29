@@ -38,6 +38,8 @@
   :config
   (setq helm-autoresize-min-height 25
         helm-autoresize-max-height 45
+        helm-split-window-inside-p t
         helm-truncate-lines t)
+  (add-to-list 'display-buffer-alist '("\\*.*[Hh]elm.*\\*" (display-buffer-in-side-window)))
   (helm-mode 1)
   (helm-autoresize-mode 1))
