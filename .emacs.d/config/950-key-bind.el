@@ -92,7 +92,7 @@
     ;; buffer
     "bR" #'revert-buffer
     "ba" #'persp-add-buffer
-    "bb" #'helm-mini
+    "bb" #'helm-buffers-list
     "bd" #'evil-delete-buffer
     "bk" #'kill-buffer
     "bs" #'get-scratch-buffer-create
