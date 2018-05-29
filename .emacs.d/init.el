@@ -8,10 +8,15 @@
 (require 'package nil t)
 (with-eval-after-load "package"
   (setq package-archives
-        '(("org" . "https://orgmode.org/elpa/")
-          ("gnu" . "https://elpa.gnu.org/packages/")
-          ("melpa" . "https://melpa.org/packages/")
-          ("melpa-stable" . "https://stable.melpa.org/packages/")))
+        '(("org"          . "https://orgmode.org/elpa/")
+          ("gnu"          . "https://elpa.gnu.org/packages/")
+          ("melpa"        . "https://melpa.org/packages/")
+          ("melpa-stable" . "https://stable.melpa.org/packages/"))
+        package-archive-priorities
+        '(("org"          . 15)
+          ("gnu"          . 10)
+          ("melpa"        .  5)
+          ("melpa-stable" .  0)))
   (package-initialize)
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
