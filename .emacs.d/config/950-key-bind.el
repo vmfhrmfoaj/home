@@ -410,3 +410,15 @@
   (which-key-declare-prefixes-for-mode 'php-mode
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode "," 'php-mode))
+
+(use-package vlf
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'vlf-mode
+    "mg" #'vlf-move-to-chunk)
+  (which-key-declare-prefixes-for-mode 'vlf-mode
+    (concat evil-leader/leader "mg") "goto")
+  (evil-leader/set-major-leader-for-mode "," 'vlf-mode)
+  (evil-define-key 'normal 'vlf-mode-map
+    (kbd "C-k") #'vlf-prev-batch
+    (kbd "C-j") #'vlf-next-batch))

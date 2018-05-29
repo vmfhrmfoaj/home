@@ -98,3 +98,6 @@
   :defer t
   :config
   (setq multi-term-program "zsh"))
+
+(use-package vlf-setup
+  :ensure vlf)
