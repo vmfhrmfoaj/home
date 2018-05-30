@@ -1,6 +1,24 @@
 (use-package all-the-icons
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (defun all-the-icons-update-data (lst lst-key &rest kvs)
+    "TODO"
+    (let* ((key-vals (-partition 2 kvs))
+           (keys (-map #'-first-item key-vals))
+           (is-in-kvs? (-compose (-partial #'-contains? keys) #'car)))
+      (when key-vals
+        (-when-let (target (assoc lst-key (symbol-value lst)))
+          (add-to-list lst
+                       (->> target
+                            (-drop 3)
+                            (-partition-all 2)
+                            (-remove is-in-kvs?)
+                            (apply #'append (-take 3 target) key-vals)))))))
+
+  :config
+  (all-the-icons-update-data 'all-the-icons-dir-icon-alist "google[ _-]drive" :height 1.0)
+  (all-the-icons-update-data 'all-the-icons-icon-alist "\\.DS_STORE$" :height 0.95 :v-adjust -0.1))
 
 (use-package auto-dim-other-buffers
   :disabled t
@@ -136,7 +154,7 @@
                        (ignore-errors
                          (while (progn
                                   (backward-up-list 1 t t)
-                                  (not (looking-at-p "(\\([-0-9A-Za-z]+/\\)?\\(let\\|loop\\|fn\\|def[a-z]*\\)\\_>")))))
+                                  (not (looking-at-p "(\\([-0-9A-Za-z]+/\\)?\\(let\\|loop\\|doseq\\|fn\\|def[a-z]*\\)\\_>")))))
                        (point)))
               (end (progn
                      (forward-list)
