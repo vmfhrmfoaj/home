@@ -124,6 +124,7 @@
     "kR" #'sp-splice-sexp
     "kS" #'sp-backward-slurp-sexp
     "kb" #'sp-forward-barf-sexp
+    "kc" #'sp-convolute-sexp
     "ke" #'sp-splice-sexp-killing-backward
     "kr" #'sp-splice-sexp-killing-around
     "ks" #'sp-forward-slurp-sexp
