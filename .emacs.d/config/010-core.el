@@ -35,11 +35,21 @@
           (t
            (message "Not found any Helm search buffer"))))
 
+  (defun helm-display-buffer-at-bottom (buffer &optional resume)
+    (let ((display-buffer-alist '(("\\*.*[Hh]elm.*\\*"
+                                   (display-buffer-in-side-window)
+                                   (inhibit-same-window . t)
+                                   (side . bottom)
+                                   (window-width  . 0.6)
+                                   (window-height . 0.4)))))
+      (helm-default-display-buffer buffer resume)))
+
   :config
   (setq helm-autoresize-min-height 25
         helm-autoresize-max-height 45
+        helm-display-header-line nil
+        helm-display-function #'helm-display-buffer-at-bottom
         helm-split-window-inside-p t
         helm-truncate-lines t)
-  (add-to-list 'display-buffer-alist '("\\*.*[Hh]elm.*\\*" (display-buffer-in-side-window)))
   (helm-mode 1)
   (helm-autoresize-mode 1))

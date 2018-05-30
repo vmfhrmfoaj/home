@@ -50,7 +50,7 @@
   :config
   (setq helm-swoop-pre-input-function (-const "")
         helm-swoop-speed-or-color nil
-        helm-swoop-split-window-function #'helm-default-display-buffer
+        helm-swoop-split-window-function #'helm-display-buffer-at-bottom
         helm-swoop-use-line-number-face t)
   (advice-add #'helm-swoop--get-content :override #'helm-swoop--get-content-for-fancy-narrow))
 

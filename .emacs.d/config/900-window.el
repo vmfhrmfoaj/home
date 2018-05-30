@@ -53,12 +53,32 @@
 (use-package zoom
   :ensure t
   :init
-  (defun zoom--update-custom ()
+  (defun zoom--on-for-helm ()
+    "TODO"
+    ;; register the zoom handler
+    ;; NOTE
+    ;;  It confilct `helm-display-buffer-at-bottom'
+    ;; (add-hook 'window-size-change-functions #'zoom--handler)
+    ;; (add-hook 'minibuffer-setup-hook #'zoom--handler)
+    (advice-add #'select-window :after #'zoom--handler)
+    ;; disable mouse resizing
+    (advice-add #'mouse-drag-mode-line :override #'ignore)
+    (advice-add #'mouse-drag-vertical-line :override #'ignore)
+    (advice-add #'mouse-drag-header-line :override #'ignore)
+    ;; update the layout once loaded
+    (dolist (frame (frame-list))
+      (with-selected-frame frame
+        (zoom--handler))))
+
+  (defun zoom--update-for-helm ()
     "Update the window layout in the current frame. (custom ver)"
     (let ((zoom-mode nil)
           (window-configuration-change-hook nil)
           (window-combination-resize t)
           (window-resize-pixelwise t))
+      ;; NOTE
+      ;;  It confilct `helm-autoresize-mode'
+      ;; (balance-windows)
       (unless (zoom--window-ignored-p)
         (balance-windows)
         (zoom--resize)
@@ -66,6 +86,7 @@
 
   :config
   (setq zoom-size '(0.618 . 0.618)
-        zoom-ignored-buffer-name-regexps '("^*helm" "^helm"))
-  (advice-add #'zoom--update :override #'zoom--update-custom)
+        zoom-ignored-buffer-name-regexps '("\\*.*[Hh]elm.*\\*"))
+  (advice-add #'zoom--on     :override #'zoom--on-for-helm)
+  (advice-add #'zoom--update :override #'zoom--update-for-helm)
   (zoom-mode t))
