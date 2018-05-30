@@ -389,18 +389,20 @@
   :config
   (evil-leader/set-key-for-mode 'org-mode
     "m:" #'org-set-tags
+    "mTT" #'org-todo
     "mci" #'org-clock-in
     "mco" #'org-clock-out
     "mtI" #'org-time-stamp-inactive
-    "mti" #'org-time-stamp
     "mtd" #'org-deadline
-    "mts" #'org-schedule
-    "mTT" #'org-todo)
+    "mti" #'org-time-stamp
+    "mts" #'org-schedule)
   (which-key-declare-prefixes-for-mode 'org-mode
     (concat evil-leader/leader "mT") "todo"
     (concat evil-leader/leader "mc") "clock"
     (concat evil-leader/leader "mt") "time")
-  (evil-leader/set-major-leader-for-mode "," 'org-mode))
+  (evil-leader/set-major-leader-for-mode "," 'org-mode)
+  (evil-define-key 'normal evil-org-mode-map
+    (kbd "RET") #'org-open-at-point))
 
 (use-package php-mode
   :defer t
