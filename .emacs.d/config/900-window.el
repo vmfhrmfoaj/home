@@ -53,12 +53,16 @@
 (use-package zoom
   :ensure t
   :init
+  (defun zoom--handler-for-helm (&optional window-or-frame norecord)
+    (unless helm-alive-p
+      (zoom--handler window-or-frame norecord)))
+
   (defun zoom--on-for-helm ()
     "TODO"
     ;; register the zoom handler
     ;; NOTE
     ;;  It confilct `helm-display-buffer-at-bottom'
-    ;; (add-hook 'window-size-change-functions #'zoom--handler)
+    (add-hook 'window-size-change-functions #'zoom--handler-for-helm)
     ;; (add-hook 'minibuffer-setup-hook #'zoom--handler)
     (advice-add #'select-window :after #'zoom--handler)
     ;; disable mouse resizing
