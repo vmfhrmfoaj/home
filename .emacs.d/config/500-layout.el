@@ -72,9 +72,11 @@
         ;; persp-lighter "Ⓟ"
         persp-before-switch-functions #'persp-last-selected-persp-name
         persp-lighter '(:eval (format "{%s}"
-                                      (->> (persp-current-name)
-                                           (s-chop-suffix "/")
-                                           (file-name-base))))
+                                      (save-match-data
+                                        (let ((cur-name (persp-current-name)))
+                                          (if (string-match "/\\([^/]+\\)/?$" cur-name)
+                                              (match-string 1 cur-name)
+                                            cur-name)))))
         persp-nil-name "Default"
         persp-last-selected-persp-name persp-nil-name
         persp-set-ido-hooks t
