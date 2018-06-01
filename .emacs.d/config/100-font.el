@@ -14,7 +14,9 @@
   (add-to-list 'face-font-rescale-alist '("STIXGeneral" . 0.9))
   (when (eq 'gnu/linux system-type)
     (add-to-list 'face-font-rescale-alist '("FontAwesome" . 0.95))
-    (add-to-list 'face-font-rescale-alist '("DejaVu Serif" . 0.95))))
+    (add-to-list 'face-font-rescale-alist '("DejaVu Serif" . 0.95))
+    (add-to-list 'face-font-rescale-alist '("all-the-icons" . 0.9))
+    (add-to-list 'face-font-rescale-alist '("file-icons" . 0.9))))
 
 ;; hangul
 (set-language-environment "Korean")
