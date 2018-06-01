@@ -168,7 +168,7 @@
     "ll" #'helm-persp
 
     ;; quit
-    "qq" #'save-buffers-kill-terminal
+    "qq" #'save-buffers-kill-emacs
 
     ;; window
     "w-" #'split-window-vertically
