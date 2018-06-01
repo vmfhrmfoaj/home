@@ -89,7 +89,7 @@
   (defun man-at-point ()
     (interactive)
     (let ((thing (thing-at-point 'symbol)))
-      (pop-to-buffer (man thing))))
+      (pop-to-buffer (man (concat thing "(3)")))))
 
   :config
   (add-hook 'c-mode-common-hook
