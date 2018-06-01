@@ -14,7 +14,7 @@
                             (-drop 3)
                             (-partition-all 2)
                             (-remove is-in-kvs?)
-                            (apply #'append (-take 3 target) key-vals)))))))
+                            (apply #'append (-take 3 target) kvs)))))))
 
   :config
   (all-the-icons-update-data 'all-the-icons-dir-icon-alist "google[ _-]drive" :height 1.0)
