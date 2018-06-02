@@ -20,12 +20,6 @@
   (all-the-icons-update-data 'all-the-icons-dir-icon-alist "google[ _-]drive" :height 1.0)
   (all-the-icons-update-data 'all-the-icons-icon-alist "\\.DS_STORE$" :height 0.95 :v-adjust -0.1))
 
-(use-package auto-dim-other-buffers
-  :disabled t
-  :ensure t
-  :config
-  (auto-dim-other-buffers-mode 1))
-
 (use-package diminish
   :ensure t
   :config
@@ -67,16 +61,18 @@
     (advice-add #'fancy-widen :after #'helm-swoop--clear-cache-hard))
   (advice-add #'save-buffer :around
               (lambda (fn &optional arg)
+                "wrap `save-buffer' to run without `fancy-narrow'."
                 (let (fancy-narrow--beginning fancy-narrow--end)
                   (funcall fn arg))))
   (advice-add #'jit-lock-function :around
-              (byte-compile
-               (lambda (fn start)
-                 (let (fancy-narrow--beginning fancy-narrow--end)
-                   (funcall fn start))))))
+              (lambda (fn start)
+                "wrap `jit-lock-function' to run without `fancy-narrow'."
+                (let (fancy-narrow--beginning fancy-narrow--end)
+                  (funcall fn start)))))
 
 (use-package focus
   :ensure t
+  :defer t
   :init
   (defun focus--org-thing ()
     "TODO"
@@ -168,47 +164,51 @@
     "TODO"
     (focus-mode 0))
 
-  :config
   (put 'org          'bounds-of-thing-at-point #'focus--org-thing)
   (put 'tex-sentence 'bounds-of-thing-at-point #'focus--text-thing)
   (put 'list+        'bounds-of-thing-at-point #'focus--list+-thing)
   (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing)
   (put 'clojure      'bounds-of-thing-at-point #'focus--clojure-thing)
+  (add-hook 'evil-insert-state-entry-hook #'focus--enable)
+  (add-hook 'evil-insert-state-exit-hook #'focus--disable)
+
+  :config
   (add-to-list 'focus-mode-to-thing '(clojure-mode . clojure))
   (add-to-list 'focus-mode-to-thing '(cider-repl-mode . list+))
   (add-to-list 'focus-mode-to-thing '(emacs-lisp-mode . lisp))
   (add-to-list 'focus-mode-to-thing '(org-mode . org))
   (add-to-list 'focus-mode-to-thing '(tex-mode . tex-sentence))
-  (add-hook 'evil-insert-state-entry-hook #'focus--enable)
-  (add-hook 'evil-insert-state-exit-hook #'focus--disable)
   (advice-add #'focus-move-focus :around
-              (byte-compile
-               (lambda (of)
-                 (condition-case nil
-                     (funcall of)
-                   (error (progn
-                            (focus-terminate)
-                            (focus-init)
-                            (funcall of))))))))
+              (lambda (fn)
+                "wrap `fcous-mode-foucs' to restart `focus' when occurring an error."
+                (condition-case nil
+                    (funcall fn)
+                  (error (progn
+                           (focus-terminate)
+                           (focus-init)
+                           (funcall of)))))))
 
 (use-package highlight-parentheses
   :ensure t
-  :config
+  :defer t
+  :init
   (add-hook 'prog-mode-hook #'highlight-parentheses-mode))
 
 (use-package highlight-numbers
   :ensure t
-  :config
+  :defer t
+  :init
   (add-hook 'prog-mode-hook #'highlight-numbers-mode))
 
 (use-package hl-line
-  :config
+  :defer t
+  :init
   (global-hl-line-mode 1))
 
 (use-package hl-todo
   :ensure t
   :init
-  (defun hl-todo--re-setup ()
+  (defun hl-todo--setup-custom ()
     "TODO"
     (font-lock-remove-keywords nil hl-todo--keywords)
     (setq hl-todo--keywords
@@ -216,14 +216,15 @@
                       `(1 (hl-todo--get-face) prepend))))
     (font-lock-add-keywords nil hl-todo--keywords t))
 
+  (global-hl-todo-mode 1)
+
   :config
   (advice-add #'hl-todo--get-face :filter-return #'list)
-  (advice-add #'hl-todo--setup :after #'hl-todo--re-setup)
-  (global-hl-todo-mode 1))
+  (advice-add #'hl-todo--setup :after #'hl-todo--setup-custom))
 
 (use-package org-bullets
   :ensure t
-  :after org
+  :defer t
   :config
   (add-hook 'org-mode-hook #'org-bullets-mode))
 
@@ -303,17 +304,16 @@
 
 (use-package rainbow-delimiters
   :ensure t
-  :config
+  :defer t
+  :init
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 (use-package vi-tilde-fringe
-  :after evil
+  :defer t
   ;; NOTE:
   ;;  This package not included in the `MELPA'.
   ;;:ensure t
   :init
-  (unless (require 'vi-tilde-fringe nil 'noerror)
-    (quelpa '(vi-tilde-fringe :repo "syl20bnr/vi-tilde-fringe" :fetcher github)))
-
-  :config
-  (global-vi-tilde-fringe-mode))
+  (if (not (require 'vi-tilde-fringe nil 'noerror))
+      (quelpa '(vi-tilde-fringe :repo "syl20bnr/vi-tilde-fringe" :fetcher github))
+    (global-vi-tilde-fringe-mode)))

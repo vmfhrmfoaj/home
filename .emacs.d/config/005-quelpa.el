@@ -1,2 +1,3 @@
 (use-package quelpa
-  :ensure t)
+  :ensure t
+  :defer t)
