@@ -202,8 +202,7 @@
   (add-hook 'prog-mode-hook #'highlight-numbers-mode))
 
 (use-package hl-line
-  :defer t
-  :init
+  :config
   (global-hl-line-mode 1))
 
 (use-package hl-todo
@@ -217,11 +216,10 @@
                       `(1 (hl-todo--get-face) prepend))))
     (font-lock-add-keywords nil hl-todo--keywords t))
 
-  (global-hl-todo-mode 1)
-
   :config
   (advice-add #'hl-todo--get-face :filter-return #'list)
-  (advice-add #'hl-todo--setup :after #'hl-todo--setup-custom))
+  (advice-add #'hl-todo--setup :after #'hl-todo--setup-custom)
+  (global-hl-todo-mode 1))
 
 (use-package org-bullets
   :ensure t
