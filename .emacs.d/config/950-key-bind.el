@@ -177,7 +177,12 @@
     "wL" #'windmove-right
     "wd" #'delete-window
     "wm" #'delete-other-windows)
-  (global-evil-leader-mode 1))
+  (global-evil-leader-mode 1)
+  ;; NOTE:
+  ;;  turn on `evil-leader-mode' for buffers already opened.
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+      (evil-leader-mode 1))))
 
 (use-package which-key
   :ensure t

@@ -38,6 +38,7 @@
            (message "Not found any Helm search buffer"))))
 
   (defun helm-display-buffer-at-bottom (buffer &optional resume)
+    "TODO"
     (let ((display-buffer-alist '(("\\*.*[Hh]elm.*\\*"
                                    (display-buffer-in-side-window)
                                    (inhibit-same-window . t)
