@@ -408,6 +408,17 @@
   (evil-define-key 'normal evil-org-mode-map
     (kbd "RET") #'org-open-at-point))
 
+(use-package package
+  :defer t
+  :config
+  (evil-set-initial-state 'package-menu-mode 'normal)
+  (evil-define-key 'normal package-menu-mode-map
+    (kbd "U") #'package-menu-mark-upgrades
+    (kbd "d") #'package-menu-mark-delete
+    (kbd "i") #'package-menu-mark-install
+    (kbd "q") #'evil-delete-buffer
+    (kbd "x") #'package-menu-execute))
+
 (use-package php-mode
   :defer t
   :config
