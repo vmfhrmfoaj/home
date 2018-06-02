@@ -22,8 +22,11 @@
   (global-subword-mode 1)
   (evil-mode 1))
 
-(use-package helm-config
-  :ensure helm
+(use-package helm
+  :ensure t
+  :defer t
+  :diminish "Ⓗ"
+  :commands (helm-make-source)
   :init
   (defun helm-resume-last-search-buffer ()
     "TODO"
@@ -45,6 +48,7 @@
       (helm-default-display-buffer buffer resume)))
 
   :config
+  (require 'helm-config)
   (setq helm-autoresize-min-height 25
         helm-autoresize-max-height 45
         helm-display-header-line nil

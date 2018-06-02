@@ -99,12 +99,6 @@
                      (length))))
       (dumb-jump-goto-file-line path line pos)))
 
-  (defvar helm-dump-jump--actions
-    (helm-make-actions
-     "Open file"              (-partial #'helm-dump-jump--action #'find-file)
-     "Open file other window" (-partial #'helm-dump-jump--action #'find-file-other-window))
-    "TODO")
-
   (defun helm-dumb-jump--prompt-user-for-choice (proj results)
     "TODO"
     (when (eq 'helm dumb-jump-selector)
@@ -129,7 +123,9 @@
         (helm :sources
               (helm-build-sync-source "Dump Jump"
                 :candidates candidates
-                :action helm-dump-jump--actions
+                :action (helm-make-actions
+                         "Open file"              (-partial #'helm-dump-jump--action #'find-file)
+                         "Open file other window" (-partial #'helm-dump-jump--action #'find-file-other-window))
                 :persistent-action #'helm-dump-jump--persistent-action)
               :buffer "*helm-dumb-jump*"))
       t))

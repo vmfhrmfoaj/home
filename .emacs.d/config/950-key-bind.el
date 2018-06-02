@@ -241,9 +241,17 @@
     (kbd "q")   #'git-timemachine-quit))
 
 (use-package helm-company
-  :after company
+  :after (company helm-mode)
   :config
   (define-key company-active-map (kbd "C-s") #'helm-company))
+
+(use-package helm-files
+  :defer t
+  :config
+  (dolist (map (list helm-find-files-map
+                     helm-read-file-map))
+    (define-key map (kbd "TAB") #'helm-execute-persistent-action)
+    (define-key map (kbd "C-u") #'helm-find-files-up-one-level)))
 
 (use-package helm-mode
   :defer t
@@ -254,11 +262,7 @@
   (define-key helm-map (kbd "C-j") #'helm-next-line)
   (define-key helm-map (kbd "C-k") #'helm-previous-line)
   (define-key helm-map (kbd "C-n") #'helm-next-source)
-  (define-key helm-map (kbd "C-p") #'helm-previous-source)
-  (dolist (map (list helm-find-files-map
-                     helm-read-file-map))
-    (define-key map (kbd "TAB") #'helm-execute-persistent-action)
-    (define-key map (kbd "C-u") #'helm-find-files-up-one-level)))
+  (define-key helm-map (kbd "C-p") #'helm-previous-source))
 
 (use-package neotree
   :defer t
