@@ -1,91 +1,101 @@
 function setEnv () {
   local os=`uname`
 
+  # brew
+  if [ -z $EMACS_INIT ] && [ "$os" = "Darwin" ]; then
+    export PATH=$(brew --prefix)/sbin:$PATH
+  fi
+
   # android
-  export ANDROID_SDK=$HOME/Android_SDK
-  export ANDROID_HOME=$ANDROID_SDK
-  export PATH=$ANDROID_SDK/tools:$ANDROID_SDK/tools/bin:$PATH
-  export PATH=$ANDROID_SDK/platform-tools:$PATH
-  if [ "$os" = "Linux" ]; then
-    function emulator {
-      local cur_dir=$PWD;
-      cd $ANDROID_SDK/tools && ./emulator $@;
-      cd $cur_dir
-    }
+  if [ -d $HOME/Android_SDK ]; then
+    export ANDROID_SDK=$HOME/Android_SDK
+    export ANDROID_HOME=$ANDROID_SDK
+    export PATH=$ANDROID_SDK/tools:$ANDROID_SDK/tools/bin:$PATH
+    export PATH=$ANDROID_SDK/platform-tools:$PATH
+    if [ "$os" = "Linux" ]; then
+      function emulator {
+        local cur_dir=$PWD;
+        cd $ANDROID_SDK/tools && ./emulator $@;
+        cd $cur_dir
+      }
+    fi
   fi
 
   # cocoapod
-  export GEM_HOME=$HOME/.gem/ruby/2.0.0
-  export PATH=$GEM_HOME/bin:$PATH
+  if [ -d $HOME/.gem/ruby/2.0.0 ]; then
+    export GEM_HOME=$HOME/.gem/ruby/2.0.0
+    export PATH=$GEM_HOME/bin:$PATH
+  fi
 
   # cask
-  export PATH=$HOME/.cask/bin:$PATH
+  if [ -d $HOME/.cask/bin ]; then
+    export PATH=$HOME/.cask/bin:$PATH
+  fi
 
   # latex
-  export PATH=/Library/TeX/texbin:$PATH
-  export GS_FONTPATH=/System/Library/Fonts/:/Library/Fonts/:$HOME/Library/Fonts/
+  if [ "$os" = "Darwin" ] && [ -d /Library/TeX/texbin ]; then
+    export PATH=/Library/TeX/texbin:$PATH
+    export GS_FONTPATH=/System/Library/Fonts/:/Library/Fonts/:$HOME/Library/Fonts/
+  fi
 
   # texinfo
-  export PATH=/usr/local/opt/texinfo/bin:$PATH
+  if [ -d /usr/local/opt/texinfo/bin ]; then
+    export PATH=/usr/local/opt/texinfo/bin:$PATH
+  fi
 
   # react
   export REACT_EDITOR=emacsclient
 
   # node
-  export NODE_PATH=/usr/local/lib/node_modules
-
-  # go lang
-  export GOROOT=$HOME/.go_lang
-  export PATH=$PATH:$GOROOT/bin
-
-  # groovy
-  if   [ "$os" = "Darwin" ]; then
-    export GROOVY_HOME=/usr/local/opt/groovy/libexec
-  elif [ "$os" = "Linux" ]; then
+  if [ -d /usr/local/lib/node_modules ]; then
+    export NODE_PATH=/usr/local/lib/node_modules
   fi
 
+  # go lang
+  if [ -d $HOME/.go_lang ]; then
+    export GOROOT=$HOME/.go_lang
+    export PATH=$PATH:$GOROOT/bin
+  fi
+
+  # perl
+  export LANG=en_US.UTF-8
+  export LC_ALL=en_US.UTF-8
+  export PERLBREW_ROOT=$HOME/.perlbrew
+  if [ -z $EMACS_INIT ] && [ -e $PERLBREW_ROOT/etc/bashrc ]; then
+    source $PERLBREW_ROOT/etc/bashrc
+  fi
+
+  # clojure
+  if   [ "$os" = "Darwin" ]; then
+    local java_home=$(/usr/libexec/java_home)
+    local java_bin=$java_home/bin
+  elif [ "$os" = "Linux" ]; then
+    local java_home=$(readlink -f $(which javac) | sed "s:/bin/javac::")
+    local java_bin=$java_home/jre/bin
+    if [ ! -d $java_bin ]; then
+      java_bin=$java_home/bin
+    fi
+  fi
+  if [ ! -z $java_home ]; then
+    export PATH=$java_bin:$PATH
+    export JAVA_HOME=$java_home
+  fi
+  local mem_in_gb=0
+  if   [ "$os" = "Darwin" ]; then
+    mem_in_gb=$(($(sysctl -n hw.memsize) / 1024 / 1024 / 1024))
+  elif [ "$os" = "Linux" ]; then
+    mem_in_gb=$(($(cat /proc/meminfo | grep MemTotal | grep -o "[0-9]\+") / 1024 / 1024))
+  fi
+  if   [ $mem_in_gb -gt 16 ]; then
+    export JVM_OPTS="-Xms2g -Xmx8g"
+  elif [ $mem_in_gb -gt  8 ]; then
+    export JVM_OPTS="-Xms1g -Xmx4g"
+  elif [ $mem_in_gb -gt  4 ]; then
+    export JVM_OPTS="-Xms512m -Xmx2g"
+  fi
+
+  # clojurescript
   if [ -z $EMACS_INIT ]; then
-    # brew
-    if [ "$os" = "Darwin" ]; then
-      export PATH=$(brew --prefix)/sbin:$PATH
-    fi
-
-    # perl
-    export LANG=en_US.UTF-8
-    export LC_ALL=en_US.UTF-8
-    export PERLBREW_ROOT=$HOME/.perlbrew
-    [ -e $PERLBREW_ROOT/etc/bashrc ] && source $PERLBREW_ROOT/etc/bashrc
-
-    # clojure
-    if   [ "$os" = "Darwin" ]; then
-      local java_home=$(/usr/libexec/java_home)
-      local java_bin=$java_home/bin
-    elif [ "$os" = "Linux" ]; then
-      local java_home=$(readlink -f $(which javac) | sed "s:/bin/javac::")
-      local java_bin=$java_home/jre/bin
-      if [ ! -d $java_bin ]; then
-        java_bin=$java_home/bin
-      fi
-    fi
-    if [ ! -z $java_home ]; then
-      export PATH=$java_bin:$PATH
-      export JAVA_HOME=$java_home
-    fi
-    local mem_in_gb=0
-    if   [ "$os" = "Darwin" ]; then
-      mem_in_gb=$(($(sysctl -n hw.memsize) / 1024 / 1024 / 1024))
-    elif [ "$os" = "Linux" ]; then
-      mem_in_gb=$(($(cat /proc/meminfo | grep MemTotal | grep -o "[0-9]\+") / 1024 / 1024))
-    fi
-    if   [ $mem_in_gb -gt 16 ]; then
-      export JVM_OPTS="-Xms2g -Xmx8g"
-    elif [ $mem_in_gb -gt  8 ]; then
-      export JVM_OPTS="-Xms1g -Xmx4g"
-    elif [ $mem_in_gb -gt  4 ]; then
-      export JVM_OPTS="-Xms512m -Xmx2g"
-    fi
-
-    # clojurescript
     if [ -x "$(which d8 2> /dev/null)" ]; then
       export V8_HOME=$(which d8 | xargs dirname)
     fi
@@ -95,8 +105,10 @@ function setEnv () {
     if [ -x "$(which jjs 2> /dev/null)" ]; then
       export NASHORN_HOME=$(which jjs | xargs dirname)
     fi
+  fi
 
-    # oh my zsh
+  # oh my zsh
+  if [ -z $EMACS_INIT ]; then
     if [ ! -z $(echo $SHELL | grep 'zsh$') ]; then
       if [ ! -z "$(echo $plugins | grep 'vi-mode')" ]; then
         bindkey -M vicmd '^r' history-incremental-search-backward
