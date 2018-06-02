@@ -1428,19 +1428,24 @@
 (use-package sh-script
   :defer t
   :config
-  (font-lock-add-keywords
-   'sh-mode
-   (let* ((symbol "[@?_0-9a-zA-Z]+")
-          (symbol_ (concat "\\(?:\\$" symbol "\\|\\${" symbol "}\\)"))
-          (whitespace "[ \r\t]")
-          (whitespace+ (concat whitespace "+"))
-          (whitespace* (concat whitespace "*"))
-          (assigment "=[^=]"))
+  (let* ((symbol "[@?_0-9a-zA-Z]+")
+         (symbol_ (concat "\\(?:\\$" symbol "\\|\\${" symbol "}\\)"))
+         (whitespace "[ \r\t]")
+         (whitespace+ (concat whitespace "+"))
+         (whitespace* (concat whitespace "*"))
+         (assigment "=[^=]"))
+    (font-lock-add-keywords
+     'sh-mode
+     `((,(concat "^" whitespace+ "\\(local\\)" whitespace+ "\\(" symbol "\\)" assigment)
+        (1 'font-lock-keyword-face)
+        (2 'font-lock-variable-name-face))))
+    (font-lock-add-keywords
+     'sh-mode
      `((,(concat "\\(" symbol_ "\\)")
-        (1 (let ((face (plist-get (text-properties-at (1- (match-beginning 0))) 'face)) face-lst)
-             (setq face-lst (if (listp face) face (list face)))
+        (1 (let* ((face (plist-get (text-properties-at (1- (match-beginning 0))) 'face))
+                  (face-lst (if (listp face) face (list face))))
              (when (or (memq 'font-lock-comment-face face-lst)
                        (memq 'font-lock-string-face  face-lst))
                face))
-           t))))
-   :append))
+           t)))
+     :append)))
