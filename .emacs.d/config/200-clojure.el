@@ -418,7 +418,8 @@
             :append))
 
 (use-package edn
-  :ensure t)
+  :ensure t
+  :defer t)
 
 (use-package helm-cider-cheatsheet
   :ensure helm-cider
