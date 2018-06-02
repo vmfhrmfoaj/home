@@ -54,7 +54,7 @@
   :ensure t
   :init
   (defun zoom--handler-for-helm (&optional window-or-frame norecord)
-    (unless helm-alive-p
+    (unless (bound-and-true-p helm-alive-p)
       (zoom--handler window-or-frame norecord)))
 
   (defun zoom--on-for-helm ()
