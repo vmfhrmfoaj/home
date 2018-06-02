@@ -8,47 +8,48 @@
 (defvar font-lock-idle-avoid-cmds '(comment-dwim undo undo-tree-undo)
   "TODO")
 
+(defun jit-lock--merge-changes (fn start end old-len)
+  "merge a change event of `font-lock-mode'
+to improve the performance on the mode that have heavy highlighting rules."
+  (ignore-errors
+    (if (or (not font-lock-idle-time)
+            (string-match-p font-lock-idle-avoid-buf-regex (buffer-name))
+            (-contains? font-lock-idle-avoid-cmds this-command))
+        (funcall fn start end old-len)
+      (when (timerp font-lock-idle-timer)
+        (let ((timer-fn (prog1 (timer--function font-lock-idle-timer)
+                          (cancel-timer font-lock-idle-timer)))
+              (start_ (or font-lock-idle-start start))
+              (end_   (or font-lock-idle-end   end)))
+          (when (= end_ start)  (setq start start_))
+          (when (= end  start_) (setq end end_))
+          (when (or (< end_   start)
+                    (< end    start_)
+                    (< start_ start  end_ end)
+                    (< start  start_ end  end_))
+            (funcall timer-fn))))
+      (setq font-lock-idle-start start
+            font-lock-idle-end   end
+            font-lock-idle-timer
+            (run-with-idle-timer
+             font-lock-idle-time nil
+             (lexical-let ((args (list start end old-len))
+                           (buf (current-buffer))
+                           (fn fn))
+               (lambda ()
+                 (setq font-lock-idle-timer nil)
+                 (ignore-errors
+                   (with-current-buffer buf
+                     (let (fancy-narrow--beginning fancy-narrow--end)
+                       (apply fn args)))))))))))
+
 (setq font-lock-idle-timer nil
       font-lock-idle-start nil
       font-lock-idle-end nil)
 (make-local-variable 'font-lock-idle-start)
 (make-local-variable 'font-lock-idle-end)
 (make-local-variable 'font-lock-idle-timer)
-(advice-add #'jit-lock-after-change :around
-            (byte-compile
-             (lambda (fn start end old-len)
-               "Run lazily highlighting text."
-               (ignore-errors
-                 (if (or (not font-lock-idle-time)
-                         (string-match-p font-lock-idle-avoid-buf-regex (buffer-name))
-                         (-contains? font-lock-idle-avoid-cmds this-command))
-                     (funcall fn start end old-len)
-                   (when (timerp font-lock-idle-timer)
-                     (let ((timer-fn (prog1 (timer--function font-lock-idle-timer)
-                                       (cancel-timer font-lock-idle-timer)))
-                           (start_ (or font-lock-idle-start start))
-                           (end_   (or font-lock-idle-end   end)))
-                       (when (= end_ start)  (setq start start_))
-                       (when (= end  start_) (setq end end_))
-                       (when (or (< end_   start)
-                                 (< end    start_)
-                                 (< start_ start  end_ end)
-                                 (< start  start_ end  end_))
-                         (funcall timer-fn))))
-                   (setq font-lock-idle-start start
-                         font-lock-idle-end   end
-                         font-lock-idle-timer
-                         (run-with-idle-timer
-                          font-lock-idle-time nil
-                          (lexical-let ((args (list start end old-len))
-                                        (buf (current-buffer))
-                                        (fn fn))
-                            (lambda ()
-                              (setq font-lock-idle-timer nil)
-                              (ignore-errors
-                                (with-current-buffer buf
-                                  (let (fancy-narrow--beginning fancy-narrow--end)
-                                    (apply fn args)))))))))))))
+(advice-add #'jit-lock-after-change :around #'jit-lock--merge-changes)
 
 (defun fake-match-2 ()
   "TODO"
