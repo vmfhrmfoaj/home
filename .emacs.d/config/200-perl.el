@@ -73,21 +73,25 @@
     (and (re-search-forward "{")
          (up-list)))
 
+  (defun cperl-mode-setup ()
+    "TODO"
+    (setq-local beginning-of-defun-function #'cperl-beginning-of-defun)
+    (setq-local end-of-defun-function #'cperl-end-of-defun)
+    (perl-setup-indent-config perl-indent-config))
+
   :config
   (setq cperl-break-one-line-blocks-when-indent nil
         cperl-fix-hanging-brace-when-indent nil
         cperl-indent-region-fix-constructs nil
         cperl-indent-wrt-brace nil
         cperl-merge-trailing-else nil)
-  (let ((f (byte-compile (lambda (&rest _) "Do nothing" nil))))
+  (-when-let (root (getenv "PERLBREW_ROOT"))
+    (include-shell-var-in (concat root "/etc/bashrc")))
+  (let ((f (-const nil)))
     (advice-add #'cperl-electric-keyword :override f)
     (advice-add #'cperl-electric-else    :override f)
     (advice-add #'cperl-electric-pod     :override f))
-  (add-hook 'cperl-mode-hook
-            (lambda ()
-              (perl-setup-indent-config perl-indent-config)
-              (setq-local beginning-of-defun-function #'cperl-beginning-of-defun)
-              (setq-local end-of-defun-function #'cperl-end-of-defun))))
+  (add-hook 'cperl-mode-hook #'cperl-mode-setup))
 
 (use-package perl5db-as-repl
   :after cperl-mode
