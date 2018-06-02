@@ -56,6 +56,7 @@
 
 (use-package linum-relative
   :ensure t
+  :defer t
   :init
   (defun set-linum-rel-fmt-for-cur-file ()
     "TODO"
@@ -70,6 +71,7 @@
                         "s")))
 
   (defun linum-delay-schedule ()
+    "TODO"
     (unless (eq 'self-insert-command this-command)
       (when linum-schedule-timer
         (cancel-timer linum-schedule-timer))
@@ -80,13 +82,16 @@
                       (linum-update-current)))))
         (setq-local linum-schedule-timer timer))))
 
+  (add-hook 'prog-mode-hook
+            (lambda ()
+              (set-linum-rel-fmt-for-cur-file)
+              (linum-relative-mode)))
+
   :config
   (setq linum-delay 0.05
         linum-relative-current-symbol ""
         linum-schedule-timer nil)
-  (advice-add #'linum-schedule :override #'linum-delay-schedule)
-  (add-hook 'find-file-hook #'set-linum-rel-fmt-for-cur-file)
-  (add-hook 'prog-mode-hook #'linum-relative-on))
+  (advice-add #'linum-schedule :override #'linum-delay-schedule))
 
 (use-package multi-term
   :ensure t

@@ -21,7 +21,6 @@
    `(hl-line ((t (:inverse-video nil))))
    `(lisp-local-binding-variable-name-face ((t (:inherit font-lock-variable-name-face :family ,default-family))))
    `(link ((t (:inherit underline :weight unspecified))))
-   `(linum ((t (:inherit default :underline nil :height 1.0 :distant-foreground ,(face-attribute 'linum :foreground)))))
    `(linum-relative-current-face ((t (:inherit linum))))
    `(magit-section-heading ((t (:inherit bold :foreground "DarkGoldenrod4"))))
    `(magit-commit-log-type-face  ((t (:inherit font-lock-function-name-face :family ,default-family))))
@@ -34,6 +33,10 @@
    `(org-mode-line-clock ((t)))
    `(show-paren-match ((t (:inherit underline :foreground "Cyan2" :background nil))))
    `(widget-button ((t (:inherit bold))))))
+
+(with-eval-after-load "linum"
+  (custom-set-faces
+   `(linum ((t (:inherit default :underline nil :height 1.0 :distant-foreground ,(face-attribute 'linum :foreground)))))))
 
 (use-package twilight-bright-theme
   :ensure t

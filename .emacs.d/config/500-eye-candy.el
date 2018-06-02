@@ -34,6 +34,7 @@
   (with-eval-after-load "git-gutter+"           (diminish 'git-gutter+-mode           "Ⓖ"))
   (with-eval-after-load "helm"                  (diminish 'helm-mode                  "Ⓗ"))
   (with-eval-after-load "highlight-parentheses" (diminish 'highlight-parentheses-mode "Ⓗ"))
+  (with-eval-after-load "linum-relative"        (diminish 'linum-relative-mode        "Ⓛ"))
   (with-eval-after-load "magit-svn"             (diminish 'magit-svn-mode             "Ⓜ"))
   (with-eval-after-load "org-indent"            (diminish 'org-indent-mode            "Ⓞ"))
   (with-eval-after-load "simple"                (diminish 'auto-fill-function         "Ⓐ"))
