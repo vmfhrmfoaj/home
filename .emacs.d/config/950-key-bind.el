@@ -330,6 +330,7 @@
       "men" #'cider-eval-ns-form
       "mer" #'cider-eval-last-sexp-and-replace
       "mgg" #'cider-find-var-at-point
+      "mhh" #'helm-cider-cheatsheet
       "mrc" #'cider-connect
       "mrs" #'cider-switch-to-releated-repl-buffer
       "mrq" #'cider-quit)
