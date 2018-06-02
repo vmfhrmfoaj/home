@@ -1,4 +1,10 @@
 (add-hook 'after-save-hook #'rsync-remote-dir)
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            "report the startup time."
+            (message "Emacs ready in %s(gc: %.2f seconds)."
+                     (emacs-init-time)
+                     (/ gc-elapsed gcs-done))))
 
 (use-package atomic-chrome
   :ensure t
