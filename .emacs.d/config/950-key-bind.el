@@ -271,7 +271,9 @@
     (kbd "C-u") #'neotree-select-up-node
     (kbd "RET") #'neotree-enter
     (kbd "+") #'neotree-create-node
+    (kbd "C") #'neotree-copy-node
     (kbd "R") #'neotree-rename-node
+    (kbd "c") #'neotree-create-node
     (kbd "h") #'neotree-back
     (kbd "l") #'neotree-enter
     (kbd "x") #'neotree-delete-node
