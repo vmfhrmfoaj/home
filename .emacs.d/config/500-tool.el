@@ -8,9 +8,6 @@
 
 (use-package ediff
   :defer t
-  :commands (ediff-buffers
-             ediff-files)
-
   :init
   (defvar ediff--exclude-mode-status nil
     "TODO")
@@ -44,14 +41,12 @@
 (use-package expand-region
   :ensure t
   :defer t
-  :commands (er/expand-region)
   :config
   (setq expand-region-contract-fast-key "v"))
 
 (use-package helm-mt
   :ensure t
-  :defer t
-  :commands (helm-mt))
+  :defer t)
 
 (use-package linum-relative
   :ensure t
@@ -87,6 +82,12 @@
   (add-hook 'find-file-hook #'set-linum-rel-fmt-for-cur-file)
   (add-hook 'prog-mode-hook #'linum-relative-on))
 
+(use-package multi-term
+  :ensure t
+  :defer t
+  :config
+  (setq multi-term-program "zsh"))
+
 (use-package saveplace
   :config
   (save-place-mode 1))
@@ -99,12 +100,6 @@
             (lambda ()
               (unless (server-running-p)
                 (server-start)))))
-
-(use-package multi-term
-  :ensure t
-  :defer t
-  :config
-  (setq multi-term-program "zsh"))
 
 (use-package vlf-setup
   :ensure vlf)

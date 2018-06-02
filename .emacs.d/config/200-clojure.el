@@ -1,7 +1,6 @@
 (use-package cider
   :ensure t
   :defer t
-  :commands (cider-connect)
   :init
   (defun cider-cljs-root-dirs ()
     "TODO"

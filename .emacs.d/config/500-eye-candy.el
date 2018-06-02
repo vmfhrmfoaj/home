@@ -61,11 +61,6 @@
 (use-package fancy-narrow
   :ensure t
   :defer t
-  :commands (fancy-narrow-to-defun
-             fancy-narrow-to-page
-             fancy-narrow-to-region
-             fancy-widen)
-
   :config
   (with-eval-after-load "helm-swoop"
     (advice-add #'fancy-narrow-to-region :after #'helm-swoop--clear-cache-hard)

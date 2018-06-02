@@ -10,8 +10,9 @@
       initial-scratch-message ""
       ring-bell-function 'ignore)
 
-(prefer-coding-system 'utf-8)
 (electric-indent-mode -1)
+(global-subword-mode 1)
+(prefer-coding-system 'utf-8)
 (when (eq 'gnu/linux system-type)
   (menu-bar-mode -1))
 

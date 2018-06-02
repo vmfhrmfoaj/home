@@ -1,7 +1,6 @@
 (use-package git-timemachine
   :ensure t
-  :defer t
-  :commands (git-timemachine))
+  :defer t)
 
 (use-package git-gutter-fringe+
   :ensure t
@@ -40,7 +39,6 @@
 (use-package magit
   :ensure t
   :defer t
-  :commands (magit-status)
   :init
   (defface magit-commit-log-type-face
     `((t (:inherit font-lock-function-name-face :weight normal)))

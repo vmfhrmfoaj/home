@@ -19,7 +19,6 @@
   :config
   (setq-default evil-symbol-word-search t)
   (put 'evil-symbol 'bounds-of-thing-at-point #'evil-forward-symbol)
-  (global-subword-mode 1)
   (evil-mode 1))
 
 (use-package helm

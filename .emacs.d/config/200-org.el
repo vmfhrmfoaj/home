@@ -152,9 +152,7 @@
 
 (use-package org-clock
   :defer t
-  :commands (org-clock-in
-             org-clock-out
-             org-clock-jump-to-current-clock)
+  :commands (org-clock-jump-to-current-clock)
 
   :init
   (defun org-clock--resume ()

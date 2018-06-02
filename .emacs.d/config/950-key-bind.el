@@ -53,7 +53,6 @@
   :ensure t
   :config
   (evil-leader/set-leader "<SPC>")
-  (global-evil-leader-mode 1)
   (evil-leader/set-key
     "<SPC>" #'helm-M-x
     "TAB" #'switch-to-previous-buffer
