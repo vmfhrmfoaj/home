@@ -41,6 +41,5 @@
 
 (use-package elisp-slime-nav
   :ensure t
-  :after emacs-lisp-mode
-  :config
+  :init
   (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode))

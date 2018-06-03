@@ -25,15 +25,15 @@
   (defvar ediff--exclude-mode-status nil
     "TODO")
 
+  (defvar ediff--win-conf nil
+    "TODO")
+
   (defun ediff-addtional-setup (&rest _)
     "TODO"
     (setq ediff--exclude-mode-status (-map #'symbol-value ediff-exclude-modes)
           ediff--win-conf (current-window-configuration))
     (disable-modes ediff-exclude-modes)
     (toggle-frame-maximized))
-
-  (defvar ediff--win-conf nil
-    "TODO")
 
   (defun ediff-addtional-cleanup (&rest _)
     "TODO"
