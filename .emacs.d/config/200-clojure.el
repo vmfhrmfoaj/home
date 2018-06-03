@@ -266,6 +266,7 @@
                  (string-match-p "^:" kw))))
 
   (defun clojure-insert-namespace ()
+    "TODO"
     (let ((cb
            (lexical-let ((cur-buf (current-buffer))
                          (file-rel-path (clojure-project-relative-path (buffer-file-name))))
@@ -384,6 +385,7 @@
                                   font-lock-extend-region-functions))
               (when (and buffer-file-name
                          (= (point-min) (point-max))
+                         (fboundp #'cider-connected-p)
                          (cider-connected-p))
                 (clojure-insert-namespace))
 
