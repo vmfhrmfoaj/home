@@ -10,7 +10,14 @@
   :ensure t
   :defer t
   :init
-  (add-hook 'after-init-hook #'atomic-chrome-start-server))
+  (defun atomic-chrome-setup ()
+    (remove-hook 'focus-out-hook #'atomic-chrome-setup)
+    (require 'atomic-chrome))
+
+  (add-hook 'focus-out-hook #'atomic-chrome-setup)
+
+  :config
+  (atomic-chrome-start-server))
 
 (use-package ediff
   :defer t
@@ -105,12 +112,16 @@
 
 (use-package server
   :defer t
-  :commands (server-running-p)
   :init
-  (add-hook 'after-init-hook
-            (lambda ()
-              (unless (server-running-p)
-                (server-start)))))
+  (defun emacs-server-setup ()
+    (remove-hook 'focus-out-hook #'emacs-server-setup)
+    (require 'server))
+
+  (add-hook 'focus-out-hook #'emacs-server-setup)
+
+  :config
+  (unless (server-running-p)
+    (server-start)))
 
 (use-package vlf-setup
   :ensure vlf)
