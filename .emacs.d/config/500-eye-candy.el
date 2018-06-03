@@ -224,8 +224,11 @@
 (use-package org-bullets
   :ensure t
   :defer t
+  :init
+  (add-hook 'org-mode-hook #'org-bullets-mode)
+
   :config
-  (add-hook 'org-mode-hook #'org-bullets-mode))
+  (setq org-bullets-bullet-list '("■" "□" "◙" "◘" "●" "○" "◌")))
 
 (use-package powerline
   :ensure t

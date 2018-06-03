@@ -31,8 +31,7 @@
       nil))
 
   :config
-  (setq org-bullets-bullet-list '("■" "□" "◙" "◘" "●" "○" "◌")
-        org-complete-tags-always-offer-all-agenda-tags t
+  (setq org-complete-tags-always-offer-all-agenda-tags t
         org-directory (concat (getenv "HOME") "/Desktop/Org")
         org-fontify-whole-heading-line t
         org-hide-emphasis-markers t
