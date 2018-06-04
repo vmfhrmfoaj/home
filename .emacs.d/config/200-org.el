@@ -145,9 +145,9 @@
 (use-package org-protocol
   :defer t
   :init
-  (add-hook 'after-init-hook
-	    (lambda ()
-	      (require 'org-protocol))))
+  (add-hook 'server-mode-hook
+            (lambda ()
+	            (require 'org-protocol))))
 
 (use-package org-clock
   :defer t
