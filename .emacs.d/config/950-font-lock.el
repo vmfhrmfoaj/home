@@ -132,7 +132,7 @@ to improve the performance on the mode that have heavy highlighting rules."
     '((t (:inherit font-lock-type-face :weight bold)))
     "TODO")
   (defface clojure-meta-face
-    '((t (:inherit font-lock-comment-face)))
+    '((t (:inherit shadow)))
     "TODO")
   (defface clojure-interop-method-face
     '((t (:inherit font-lock-keyword-face)))
@@ -741,6 +741,7 @@ to improve the performance on the mode that have heavy highlighting rules."
   (setq clojure-fn-form--multi-arity? nil)
   (setq clojure-fn-recursive--point nil)
   (setq clojure-fn-recursive--limit nil)
+  (setq clojure-meta---point nil)
   (make-local-variable 'clojure-cond-form--point)
   (make-local-variable 'clojure-if-form--point)
   (make-local-variable 'clojure-interface-form--point)
@@ -760,6 +761,7 @@ to improve the performance on the mode that have heavy highlighting rules."
   (make-local-variable 'clojure-fn-form--multi-arity?)
   (make-local-variable 'clojure-fn-recursive--point)
   (make-local-variable 'clojure-fn-recursive--limit)
+  (make-local-variable 'clojure-meta---point)
 
   (let* ((whitespace "[ \r\t\n]")
          (whitespace+ (concat whitespace "+"))
@@ -910,24 +912,30 @@ to improve the performance on the mode that have heavy highlighting rules."
       (font-lock-add-keywords
        mode
        `(;; Meta
-         (,(concat "(" core-ns? "def[a-z]*" whitespace+ "\\^")
+         (,(concat whitespace "\\^[^ \t\r\n]")
           (,(byte-compile
              (lambda (limit)
                (ignore-errors
                  (when font-lock--skip
                    (error ""))
-                 (re-search-forward "\\([-0-9A-Za-z:]+\\)" limit))))
+                 (let ((start (progn
+                                (backward-char 1)
+                                (point-marker))))
+                   (goto-char limit)
+                   (set-match-data (list start (point-marker)))
+                   t))))
            (save-excursion
              (if (in-comment?)
                  (setq font-lock--skip t)
                (setq font-lock--skip nil)
                (setq clojure-meta---point (point))
+               (backward-char 1)
                (clojure-forward-sexp)
                (point)))
            (if font-lock--skip
                (end-of-line)
              (goto-char clojure-meta---point))
-           (1 'clojure-meta-face)))
+           (0 'clojure-meta-face t)))
          ;; Binding forms
          (,(concat "(" core-ns? (regexp-opt clojure--binding-forms) "[ \r\t\n]+\\[")
           ;; Normal bindings
