@@ -335,7 +335,7 @@
                     (concat (get-in proj [:source-paths])
                             (get-in proj [:profiles " clojure-lein-profile-kw " :source-paths])))") cb))))
 
-  (defun clojure-font-lock-syntactic-face-function-2 (res)
+  (defun clojure-correct-font-lock-syntatic-face (res)
     "(def _ \"abc\")<~ It should be the string."
     (if (and (eq res font-lock-doc-face)
              (save-excursion
@@ -374,8 +374,8 @@
       :defn))
 
   :config
-  (advice-add #'clojure-font-lock-syntactic-face-function :before
-              #'clojure-font-lock-syntactic-face-function-2)
+  (advice-add #'clojure-font-lock-syntactic-face-function :filter-return
+              #'clojure-correct-font-lock-syntatic-face)
 
   (add-hook 'clojure-mode-hook
             (lambda ()
