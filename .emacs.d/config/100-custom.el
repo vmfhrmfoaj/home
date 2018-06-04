@@ -6,7 +6,7 @@
 
 (setq backup-directory-alist `(("" . ,(concat (getenv "HOME") "/.emacs.d/saves/")))
       exclude-alt-buf-regex "^\\s-*\\*\\s-*\\([Hh]elm\\|which-key\\|NeoTree\\|Org todo\\)"
-      initial-major-mode 'org-mode
+      initial-major-mode 'text-mode
       initial-scratch-message ""
       ring-bell-function 'ignore)
 
