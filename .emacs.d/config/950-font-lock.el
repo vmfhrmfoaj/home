@@ -912,7 +912,7 @@ to improve the performance on the mode that have heavy highlighting rules."
       (font-lock-add-keywords
        mode
        `(;; Meta
-         (,(concat whitespace "\\^[^ \t\r\n]")
+         (,(concat "\\(?:" whitespace "\\|[([{]\\)\\^[:A-Za-z{]")
           (,(byte-compile
              (lambda (limit)
                (ignore-errors
