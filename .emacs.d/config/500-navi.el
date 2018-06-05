@@ -32,6 +32,11 @@
         (neotree-find buf-file-name)
         (recenter))))
 
+  (defun neotree-toggle-maximize ()
+    "TODO"
+    (interactive)
+    (neo-window--zoom (if (< neo-window-width (window-width)) 'minimize 'maximize)))
+
   :config
   (setq neo-auto-indent-point t
         neo-keymap-style 'concise

@@ -275,6 +275,7 @@
     (kbd "C-c o") #'neotree-enter-horizontal-split
     (kbd "C-u") #'neotree-select-up-node
     (kbd "RET") #'neotree-enter
+    (kbd "TAB") #'neotree-toggle-maximize
     (kbd "+") #'neotree-create-node
     (kbd "C") #'neotree-copy-node
     (kbd "R") #'neotree-rename-node
