@@ -66,18 +66,9 @@ function setEnv () {
   fi
 
   # clojure
-  if   [ "$os" = "Darwin" ]; then
-    local java_home=$(/usr/libexec/java_home)
-    local java_bin=$java_home/bin
-  elif [ "$os" = "Linux" ]; then
-    local java_home=$(readlink -f $(which javac) | sed "s:/bin/javac::")
-    local java_bin=$java_home/jre/bin
-    if [ ! -d $java_bin ]; then
-      java_bin=$java_home/bin
-    fi
-  fi
-  if [ ! -z $java_home ]; then
-    export PATH=$java_bin:$PATH
+  local java_home=$HOME/.openjdk/current
+  if [ -d $java_home ]; then
+    export PATH=$java_home/bin:$PATH
     export JAVA_HOME=$java_home
   fi
   local mem_in_gb=0
