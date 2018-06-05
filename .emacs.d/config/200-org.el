@@ -145,9 +145,12 @@
 (use-package org-protocol
   :defer t
   :init
-  (add-hook 'server-mode-hook
-            (lambda ()
-	            (require 'org-protocol))))
+  (defun org-protocol-setup ()
+    "TODO"
+    (remove-hook 'focus-out-hook #'org-protocol-setup)
+    (require 'org-protocol))
+
+  (add-hook 'focus-out-hook #'org-protocol-setup))
 
 (use-package org-clock
   :defer t
