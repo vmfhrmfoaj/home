@@ -770,7 +770,7 @@ to improve the performance on the mode that have heavy highlighting rules."
          (symbol? (concat "\\(?:" symbol "\\)?"))
          (namespace (concat "\\(?:" symbol "/\\)"))
          (namespace? (concat namespace "?"))
-         (meta? "\\(?:\\(?:#\\^{[^}]*}\\|\\^:?\\sw+\\)[ \r\n\t]+\\)?")
+         (meta? "\\(?:\\(?:\\^{[^^]+}\\|\\^:?\\sw+\\)[ \r\n\t]+\\)?")
          (core-ns  (concat (regexp-opt '("clojure.core" "cljs.core" "core") nil) "/"))
          (core-ns? (concat "\\(?:" core-ns "\\)?"))
          (if-kw (regexp-opt '("if" "if-some" "if-let" "if-not")))
@@ -1029,7 +1029,7 @@ to improve the performance on the mode that have heavy highlighting rules."
                   'clojure-local-binding-variable-name-warning-face
                 'clojure-local-binding-variable-name-face))))
          ;; OOP style function forms & letfn
-         (,(concat "(" core-ns? "\\(" oop-kw whitespace+ "\\|" "letfn" whitespace+ "\\[" "\\)")
+         (,(concat "(" core-ns? "\\(" oop-kw whitespace+ meta? "\\|" "letfn" whitespace+ "\\[" "\\)")
           ;; highlighting definition type symbol
           (,(-partial
              (byte-compile
