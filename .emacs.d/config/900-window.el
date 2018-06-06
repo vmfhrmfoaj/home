@@ -43,7 +43,9 @@
 
   (defun winum--assign-0-to-neotree ()
     "winum assign function for NeoTree."
-    (when (string-match-p "\\*NeoTree\\*" (buffer-name)) 0))
+    (when (and (string-match-p "\\*NeoTree\\*" (buffer-name))
+               (not (aref (winum--get-window-vector) 0)))
+      0))
 
   :config
   (add-to-list 'winum-assign-functions #'winum--assign-0-to-neotree)
