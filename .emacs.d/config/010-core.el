@@ -42,10 +42,14 @@
     (let ((display-buffer-alist '(("\\*.*[Hh]elm.*\\*"
                                    (display-buffer-in-side-window)
                                    (inhibit-same-window . t)
-                                   (side . bottom)
-                                   (window-width  . 0.6)
-                                   (window-height . 0.4)))))
+                                   (side . bottom)))))
       (helm-default-display-buffer buffer resume)))
+
+  (defun helm-persistent-action-display-window-for-neotree (&optional _)
+    "TODO"
+    (with-helm-window
+      (when (string-match-p "\\*.*NeoTree" (buffer-name helm-current-buffer))
+        (get-buffer-window helm-current-buffer))))
 
   :config
   (require 'helm-config)
@@ -55,5 +59,7 @@
         helm-display-function #'helm-display-buffer-at-bottom
         helm-split-window-inside-p t
         helm-truncate-lines t)
+  (advice-add #'helm-persistent-action-display-window :before-until
+              #'helm-persistent-action-display-window-for-neotree)
   (helm-mode 1)
   (helm-autoresize-mode 1))
