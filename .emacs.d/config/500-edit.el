@@ -2,6 +2,7 @@
   :ensure t
   :config
   (add-to-list 'aggressive-indent-excluded-modes 'autoconf-mode)
+  (add-to-list 'aggressive-indent-excluded-modes 'cider-repl-mode)
   (global-aggressive-indent-mode 1))
 
 (use-package evil-surround
