@@ -244,8 +244,13 @@
     (kbd "M-W") #'git-timemachine-kill-revision
     (kbd "q")   #'git-timemachine-quit))
 
+(use-package helm-ag
+  :defer t
+  :config
+  (define-key helm-ag-map (kbd "C-u") #'helm-ag--up-one-level))
+
 (use-package helm-company
-  :after (company helm-mode)
+  :defer t
   :config
   (define-key company-active-map (kbd "C-s") #'helm-company))
 

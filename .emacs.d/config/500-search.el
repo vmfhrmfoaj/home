@@ -58,4 +58,5 @@
   :defer t
   :config
   (setq helm-ag-base-command "rg --no-heading"
+        helm-ag-command-option "-i"
 	      helm-ag-use-emacs-lisp-regexp t))
