@@ -4,11 +4,14 @@
               tab-width 2
               truncate-lines t)
 
-(setq backup-directory-alist `(("" . ,(concat (getenv "HOME") "/.emacs.d/saves/")))
-      exclude-alt-buf-regex "^\\s-*\\*\\s-*\\([Hh]elm\\|which-key\\|NeoTree\\|Org todo\\)"
-      initial-major-mode 'text-mode
-      initial-scratch-message ""
-      ring-bell-function 'ignore)
+(let ((backup-dir (concat (getenv "HOME") "/.emacs.d/saves/")))
+  (setq auto-save-file-name-transforms `((".*" ,backup-dir t))
+        backup-directory-alist `((".*" . ,backup-dir))
+        create-lockfiles nil
+        exclude-alt-buf-regex "^\\s-*\\*\\s-*\\([Hh]elm\\|which-key\\|NeoTree\\|Org todo\\)"
+        initial-major-mode 'text-mode
+        initial-scratch-message ""
+        ring-bell-function 'ignore))
 
 (electric-indent-mode -1)
 (global-subword-mode 1)
