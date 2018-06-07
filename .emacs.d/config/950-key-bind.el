@@ -444,6 +444,12 @@
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode "," 'php-mode))
 
+(use-package profiler
+  :defer t
+  :config
+  (evil-define-key 'normal 'profiler-report-mode-map
+    (kbd "TAB") #'profiler-report-expand-entry))
+
 (use-package vlf
   :defer t
   :config
