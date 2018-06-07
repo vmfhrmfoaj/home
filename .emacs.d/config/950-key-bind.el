@@ -247,7 +247,8 @@
 (use-package helm-ag
   :defer t
   :config
-  (define-key helm-ag-map (kbd "C-u") #'helm-ag--up-one-level))
+  (define-key helm-ag-map    (kbd "C-u") #'helm-ag--up-one-level)
+  (define-key helm-do-ag-map (kbd "C-u") #'helm-ag--do-ag-up-one-level))
 
 (use-package helm-company
   :defer t
