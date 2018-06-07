@@ -369,11 +369,44 @@
                     sym))
 
   (defun clojure--get-indentation (regex sym)
+    "TODO"
     (when (or (clojure--is-context-fn? sym)
               (and regex (string-match-p regex sym)))
       :defn))
 
+  (defun clojure-find-ns-custom ()
+    "Sometimes `clojure-find-ns' is slow due to repeatedly call `up-list' to find the top level.
+I changed clojure-namespace-name-regex to avoid to call `up-list'."
+    (save-excursion
+      (save-restriction
+        (widen)
+        (let (fancy-narrow--beginning
+              fancy-narrow--end)
+          (when (or (re-search-backward clojure-namespace-name-regex nil t)
+                    (and (goto-char (point-min))
+                         (re-search-forward clojure-namespace-name-regex nil t)))
+            (match-string-no-properties 4))))))
+
   :config
+  (setq clojure-namespace-name-regex
+        (rx line-start
+            "("
+            (zero-or-one (group (regexp "clojure.core/")))
+            (zero-or-one (submatch "in-"))
+            "ns"
+            (zero-or-one "+")
+            (one-or-more (any whitespace "\n"))
+            (zero-or-more (or (submatch (zero-or-one "#")
+                                        "^{"
+                                        (zero-or-more (not (any "}")))
+                                        "}")
+                              (zero-or-more "^:" (one-or-more (not (any whitespace)))
+                                            (one-or-more (any whitespace "\n"))))
+                          (one-or-more (any whitespace "\n")))
+            (zero-or-one (any ":'"))
+            (group (one-or-more (not (any "{}[]()\"" whitespace))) symbol-end)))
+
+  (advice-add #'clojure-find-ns :override #'clojure-find-ns-custom)
   (advice-add #'clojure-font-lock-syntactic-face-function :filter-return
               #'clojure-correct-font-lock-syntatic-face)
 
