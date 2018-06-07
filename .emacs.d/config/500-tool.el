@@ -123,5 +123,12 @@
   (unless (server-running-p)
     (server-start)))
 
+(use-package undo-tree
+  :ensure t
+  :defer t
+  :config
+  (setq undo-tree-auto-save-history t
+        undo-tree-history-directory-alist backup-directory-alist))
+
 (use-package vlf-setup
   :ensure vlf)
