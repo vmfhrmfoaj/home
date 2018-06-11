@@ -172,6 +172,7 @@
   :defer t
   :init
   (defun clojure-skip (direction-or-item &rest items)
+    "TODO"
     (let* ((direction (if (and (numberp direction-or-item) (> 0 direction-or-item)) (- 1) (+ 1)))
            (items     (if (numberp direction-or-item) items (cons direction-or-item items)))
            (l items))
@@ -230,111 +231,6 @@
             (clojure-skip :vector)))
          (t (setq l (cdr l)))))))
 
-  (defun clojure-forward-symbol (n)
-    "TODO"
-    (let ((sym     (concat "^/" clojure--sym-forbidden-rest-chars))
-          (not-sym (concat "/"  clojure--sym-forbidden-rest-chars))
-          (skip-chars (if (< 0 n)
-                          (lambda (s)
-                            (skip-chars-forward s)
-                            (skip-chars-backward "."))
-                        (lambda (s)
-                          (skip-chars-backward s)
-                          (if (looking-at-p "\\.-?")
-                              (skip-chars-forward ".-")))))
-          (n (abs n)))
-      (while (<= 1 n)
-        (setq n (1- n))
-        (funcall skip-chars not-sym)
-        (funcall skip-chars sym))))
-
-  (defcustom clojure-clj-test-declaration "[clojure.test :refer :all]"
-    "TODO"
-    :type 'stringp
-    :safe 'stringp)
-
-  (defcustom clojure-cljs-test-declaration "[cljs.test :refer-macros [async deftest is testing]]"
-    "TODO"
-    :type 'stringp
-    :safe 'stringp)
-
-  (defcustom clojure-lein-profile-kw ":dev"
-    "TODO"
-    :type 'stringp
-    :safe (lambda (kw)
-            (and (stringp kw)
-                 (string-match-p "^:" kw))))
-
-  (defun clojure-insert-namespace ()
-    "TODO"
-    (let ((cb
-           (lexical-let ((cur-buf (current-buffer))
-                         (file-rel-path (clojure-project-relative-path (buffer-file-name))))
-             (lambda (resp)
-               (let* ((paths (edn-read (nrepl-dict-get resp "value")))
-                      (src-dir (->> paths
-                                    (--map (if (string-match-p "/$" it)
-                                               it
-                                             (concat it "/")))
-                                    (--filter (string-match-p (concat "^" it) file-rel-path))
-                                    (-first-item))))
-                 (when src-dir
-                   (let ((ns (->> (file-relative-name file-rel-path src-dir)
-                                  (file-name-sans-extension)
-                                  (replace-regexp-in-string "/+" ".")
-                                  (replace-regexp-in-string "_" "-"))))
-                     (with-current-buffer cur-buf
-                       (goto-char (point-min))
-                       (insert "(ns " ns)
-                       (when (string-match-p "-test$" ns)
-                         (insert "\n")
-                         (insert "(:require [" (s-left -5 ns) " :as target]")
-                         (let* ((ext (file-name-extension file-rel-path))
-                                (clj? (string-match-p "^cljc?$" ext))
-                                (cljs? (string-match-p "^clj[cs]$" ext))
-                                (both? (string-equal "cljc" ext)))
-                           (insert "\n")
-                           (when both?
-                             (insert "#?@("))
-                           (when clj?
-                             (when both?
-                               (insert ":clj  ["))
-                             (insert clojure-clj-test-declaration)
-                             (when both?
-                               (insert "]")))
-                           (when cljs?
-                             (when both?
-                               (insert "\n")
-                               (insert ":cljs ["))
-                             (insert clojure-cljs-test-declaration)
-                             (when both?
-                               (insert "]")))
-                           (when both?
-                             (insert ")")))
-                         (insert ")"))
-                       (insert ")\n\n")
-                       (indent-region (point-min) (point-max))))))))))
-      (if (string-equal "cljs" (cider-connection-type-for-buffer))
-          (cider-tooling-eval
-           (concat "(let [builds (->> \"project.clj\"
-                                      (slurp)
-                                      (clojure.edn/read-string)
-                                      (drop 3)
-                                      (apply hash-map)
-                                      :cljsbuild :builds)]
-                      (:source-paths (cond
-                                       (map? builds) (get builds " clojure-lein-profile-kw ")
-                                       (sequential? builds) (first (filter #(= (name " clojure-lein-profile-kw ") (:id %)) builds))
-                                       :else nil)))") cb)
-        (cider-tooling-eval
-         (concat "(let [proj (->> \"project.clj\"
-                                   (slurp)
-                                   (clojure.edn/read-string)
-                                   (drop 3)
-                                   (apply hash-map))]
-                    (concat (get-in proj [:source-paths])
-                            (get-in proj [:profiles " clojure-lein-profile-kw " :source-paths])))") cb))))
-
   (defun clojure-correct-font-lock-syntatic-face (res)
     "(def _ \"abc\")<~ It should be the string."
     (if (and (eq res font-lock-doc-face)
@@ -360,97 +256,54 @@
   (defvar context-fn-regex (regexp-opt '("in" "on" "with"))
     "TODO")
 
-  (defun clojure--is-context-fn? (sym)
-    "TODO"
-    (string-match-p (concat "^\\("
-                            context-fn-prefix-regex "-\\)?"
-                            context-fn-regex
-                            "\\>")
-                    sym))
-
   (defun clojure--get-indentation (regex sym)
     "TODO"
-    (when (or (clojure--is-context-fn? sym)
-              (and regex (string-match-p regex sym)))
+    (when (or (let ((case-fold-search nil))
+                (string-match-p "[-_A-Z]+" sym))
+              (string-match-p (concat "^\\("
+                                      context-fn-prefix-regex "-\\)?"
+                                      context-fn-regex
+                                      "\\>")
+                              sym))
       :defn))
+
+  (defconst clojure-namespace-name-regex-1
+    (rx line-start "("
+        (zero-or-one (zero-or-one "clojure.") "core/")
+        (zero-or-one "in-") "ns" (zero-or-one "+")
+        (one-or-more (any whitespace "\n")))
+    "TODO")
 
   (defun clojure-find-ns-custom ()
     "Sometimes `clojure-find-ns' is slow due to repeatedly call `up-list' to find the top level.
-I changed clojure-namespace-name-regex to avoid to call `up-list'."
+This is customized version of `clojure-find-ns' to improve some performance."
     (save-excursion
       (save-restriction
         (widen)
-        (let (fancy-narrow--beginning
+        (let ((limit (line-end-position))
+              matched?
+              fancy-narrow--beginning
               fancy-narrow--end)
-          (when (or (re-search-backward clojure-namespace-name-regex nil t)
-                    (and (goto-char (point-min))
-                         (re-search-forward clojure-namespace-name-regex nil t)))
-            (match-string-no-properties 4))))))
+          (goto-char (point-min))
+          (while (re-search-forward clojure-namespace-name-regex-1 limit t)
+            (setq matched? t))
+          (when matched?
+            (goto-char (match-beginning 0))
+            (when (re-search-forward clojure-namespace-name-regex nil t)
+              (match-string-no-properties 4)))))))
+
+  (defun clojure-setup ()
+    "TODO"
+    (setq-local font-lock-extend-region-functions
+                (remove 'clojure-font-lock-extend-region-def
+                        font-lock-extend-region-functions)))
 
   :config
-  (setq clojure-namespace-name-regex
-        (rx line-start
-            "("
-            (zero-or-one (group (regexp "clojure.core/")))
-            (zero-or-one (submatch "in-"))
-            "ns"
-            (zero-or-one "+")
-            (one-or-more (any whitespace "\n"))
-            (zero-or-more (or (submatch (zero-or-one "#")
-                                        "^{"
-                                        (zero-or-more (not (any "}")))
-                                        "}")
-                              (zero-or-more "^:" (one-or-more (not (any whitespace)))
-                                            (one-or-more (any whitespace "\n"))))
-                          (one-or-more (any whitespace "\n")))
-            (zero-or-one (any ":'"))
-            (group (one-or-more (not (any "{}[]()\"" whitespace))) symbol-end)))
-
+  (setq clojure-get-indent-function #'clojure--get-indentation)
+  (add-hook 'clojure-mode-hook #'clojure-setup :append)
   (advice-add #'clojure-find-ns :override #'clojure-find-ns-custom)
   (advice-add #'clojure-font-lock-syntactic-face-function :filter-return
-              #'clojure-correct-font-lock-syntatic-face)
-
-  (add-hook 'clojure-mode-hook
-            (lambda ()
-              (setq-local evil-custom-forward-function #'clojure-forward-symbol)
-              (setq-local font-lock-extend-region-functions
-                          (remove 'clojure-font-lock-extend-region-def
-                                  font-lock-extend-region-functions))
-              (when (and buffer-file-name
-                         (= (point-min) (point-max))
-                         (fboundp #'cider-connected-p)
-                         (cider-connected-p))
-                (clojure-insert-namespace))
-
-              (let ((file-name (or (buffer-file-name) ""))
-                    (ns-form (save-match-data
-                               (save-excursion
-                                 (if (clojure-find-ns)
-                                     (progn
-                                       (goto-char (match-beginning 0))
-                                       (end-of-defun)
-                                       (let ((end (point)))
-                                         (backward-sexp 1)
-                                         (buffer-substring-no-properties (point) end)))
-                                   ""))))
-                    (compojure-kws '("GET" "POST" "PUT" "DELETE" "HEAD" "OPTIONS" "PATCH" "ANY" "context"))
-                    (keywords nil))
-                (cond
-                 ((string-match-p "_test.clj[cs]?$" file-name)
-                  (add-to-list 'keywords "async")
-                  (add-to-list 'keywords "is"))
-                 ((string-match-p (concat "compojure.core :"
-                                          "\\(?:as"
-                                          "\\|refer[ \r\t\n]\\[[^]]*"
-                                          (regexp-opt compojure-kws)
-                                          "\\>\\)")
-                                  ns-form)
-                  (setq keywords (append keywords compojure-kws))))
-                (setq-local clojure-get-indent-function
-                            (-partial #'clojure--get-indentation
-                                      (when keywords
-                                        (regexp-opt keywords 'symbols))))))
-            :append))
+              #'clojure-correct-font-lock-syntatic-face))
 
 (use-package edn
   :ensure t
