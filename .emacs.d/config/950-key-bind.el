@@ -114,7 +114,7 @@
 
     ;; jump/join/split
     "jn" #'sp-newline
-    "jo" #'open-line
+    "jo" #'split-line
     "js" #'sp-split-sexp
 
     ;; S-expression
