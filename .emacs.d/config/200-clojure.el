@@ -256,10 +256,10 @@
   (defvar context-fn-regex (regexp-opt '("in" "on" "with"))
     "TODO")
 
-  (defun clojure--get-indentation (regex sym)
+  (defun clojure--get-indentation (sym)
     "TODO"
     (when (or (let ((case-fold-search nil))
-                (string-match-p "[-_A-Z]+" sym))
+                (string-match-p "^[-_A-Z]+\\>" sym))
               (string-match-p (concat "^\\("
                                       context-fn-prefix-regex "-\\)?"
                                       context-fn-regex
