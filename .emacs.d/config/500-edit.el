@@ -1,6 +1,16 @@
 (use-package aggressive-indent
   :ensure t
   :config
+  (add-to-list 'aggressive-indent-protected-current-commands #'sp-backward-barf-sexp)
+  (add-to-list 'aggressive-indent-protected-current-commands #'sp-splice-sexp-killing-forward)
+  (add-to-list 'aggressive-indent-protected-current-commands #'sp-splice-sexp)
+  (add-to-list 'aggressive-indent-protected-current-commands #'sp-backward-slurp-sexp)
+  (add-to-list 'aggressive-indent-protected-current-commands #'sp-forward-barf-sexp)
+  (add-to-list 'aggressive-indent-protected-current-commands #'sp-convolute-sexp)
+  (add-to-list 'aggressive-indent-protected-current-commands #'sp-splice-sexp-killing-backward)
+  (add-to-list 'aggressive-indent-protected-current-commands #'sp-splice-sexp-killing-around)
+  (add-to-list 'aggressive-indent-protected-current-commands #'sp-forward-slurp-sexp)
+  (add-to-list 'aggressive-indent-protected-current-commands #'sp-wrap-sexp)
   (add-to-list 'aggressive-indent-excluded-modes 'autoconf-mode)
   (add-to-list 'aggressive-indent-excluded-modes 'cider-repl-mode)
   (global-aggressive-indent-mode 1))
@@ -45,10 +55,19 @@
     (interactive "P")
     (sp-wrap-with-pair "("))
 
+  (defun sp--indent-region-without-protection (start end &optional column)
+    "TODO"
+    ;; Don't issue "Indenting region..." message.
+    (unless (and (eq 'insert evil-state)
+                 (bound-and-true-p aggressive-indent-mode))
+      (cl-letf (((symbol-function 'message) #'ignore))
+        (indent-region start end column))))
+
   :config
   (setq sp-highlight-pair-overlay nil
         sp-highlight-wrap-overlay nil
         sp-highlight-wrap-tag-overlay nil)
+  (advice-add #'sp--indent-region :override #'sp--indent-region-without-protection)
   (smartparens-global-mode 1)
   (show-smartparens-global-mode 1))
 
