@@ -103,6 +103,7 @@
 
     ;; file
     "ff" #'helm-find-files
+    "fr" #'helm-recentf
     "ft" #'neotree
     "fy" #'kill-new-buffer-file-name
 

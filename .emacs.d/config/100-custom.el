@@ -16,6 +16,7 @@
 (electric-indent-mode -1)
 (global-subword-mode 1)
 (prefer-coding-system 'utf-8)
+(recentf-mode 1)
 (when (or (eq 'gnu/linux system-type)
           (and (not window-system)
                (eq 'darwin system-type)))
