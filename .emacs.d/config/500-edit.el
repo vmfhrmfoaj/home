@@ -1,5 +1,11 @@
 (use-package aggressive-indent
   :ensure t
+  :init
+  (defun aggressive-indent-do-indent ()
+    (interactive)
+    (while-no-input
+      (aggressive-indent--proccess-changed-list-and-indent)))
+
   :config
   (add-to-list 'aggressive-indent-protected-current-commands #'sp-backward-barf-sexp)
   (add-to-list 'aggressive-indent-protected-current-commands #'sp-splice-sexp-killing-forward)
@@ -13,6 +19,8 @@
   (add-to-list 'aggressive-indent-protected-current-commands #'sp-wrap-sexp)
   (add-to-list 'aggressive-indent-excluded-modes 'autoconf-mode)
   (add-to-list 'aggressive-indent-excluded-modes 'cider-repl-mode)
+  (add-to-list 'aggressive-indent-dont-indent-if '(not (eq 'insert evil-state)))
+  (add-hook 'evil-insert-state-exit-hook #'aggressive-indent-do-indent)
   (global-aggressive-indent-mode 1))
 
 (use-package evil-surround
@@ -57,9 +65,9 @@
 
   (defun sp--indent-region-without-protection (start end &optional column)
     "TODO"
-    ;; Don't issue "Indenting region..." message.
     (unless (and (eq 'insert evil-state)
                  (bound-and-true-p aggressive-indent-mode))
+      ;; Don't issue "Indenting region..." message.
       (cl-letf (((symbol-function 'message) #'ignore))
         (indent-region start end column))))
 

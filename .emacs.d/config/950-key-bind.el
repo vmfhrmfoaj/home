@@ -225,7 +225,9 @@
   :defer t
   :config
   (evil-global-set-key 'insert (kbd "C-h") #'backward-delete-char)
-  (evil-global-set-key 'visual (kbd "v") #'er/expand-region))
+  (evil-global-set-key 'visual (kbd "v") #'er/expand-region)
+  (evil-global-set-key 'normal (kbd "TAB") #'aggressive-indent-do-indent)
+  (evil-global-set-key 'visual (kbd "TAB") #'indent-region))
 
 (use-package evil-surround
   :defer t
