@@ -13,7 +13,6 @@
         initial-scratch-message ""
         ring-bell-function 'ignore))
 
-(electric-indent-mode -1)
 (global-subword-mode 1)
 (prefer-coding-system 'utf-8)
 (recentf-mode 1)
