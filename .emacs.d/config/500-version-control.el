@@ -77,6 +77,7 @@
   ;; FIXME
   ;;  This is workaround.
   (add-to-list 'magit-git-environment (concat "HOME=" (getenv "HOME")))
+  (add-to-list 'magit-git-environment (concat "SSH_AUTH_SOCK=" (getenv "SSH_AUTH_SOCK")))
   (advice-add #'magit-log-propertize-keywords :filter-return
               #'magit-log-propertize-keywords-for-conventional-commits))
 
