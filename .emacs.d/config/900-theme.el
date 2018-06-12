@@ -34,19 +34,56 @@
    `(show-paren-match ((t (:inherit underline :foreground "Cyan2" :background nil))))
    `(widget-button ((t (:inherit bold))))))
 
-(with-eval-after-load "linum"
-  (custom-set-faces
-   `(linum ((t (:inherit default :underline nil :height 1.0 :distant-foreground ,(face-attribute 'linum :foreground)))))))
+(use-package twilight-anti-bright-theme
+  :ensure t
+  :config
+  (load-theme 'twilight-anti-bright t)
+  (custom-theme-set-faces
+   'twilight-anti-bright
+   `(clojure-if-true-face
+     ((t (:background ,(-> 'font-lock-keyword-face
+                           (face-attribute :background)
+                           (dim-color 4.35)
+                           (saturate-color -8))))))
+   `(clojure-fn-parameter-face ((t (:foreground ,(-> 'font-lock-variable-name-face
+                                                     (face-attribute :foreground)
+                                                     (dim-color 10)
+                                                     (saturate-color -15))))))
+   `(cursor ((t (:background "deep sky blue"))))
+   `(cperl-nonoverridable-face ((t (:inherit font-lock-constant-face :foreground ,(-> 'font-lock-constant-face
+                                                                                      (face-attribute :foreground)
+                                                                                      (light-color 10))))))
+   `(evil-ex-lazy-highlight ((t (:inherit (bold lazy-highlight)))))
+   `(default ((t (:foreground "#c5c5c5" :background ,(face-attribute 'default :background)))))
+   `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
+   `(font-lock-regexp-grouping-construct ((t (:inherit bold :foreground ,(-> 'font-lock-string-face
+                                                                             (face-attribute :foreground)
+                                                                             (dim-color 5))))))
+   `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 5))))))
+   `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added   :background)))))
+   `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
+   `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
+   `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
+   `(lazy-highlight ((t :background "paleturquoise4" :foreground "paleturquoise3")))
+   `(linum ((t (:background "#000000" :foreground "#666666"))))
+   `(linum-relative-current-face ((t (:inherit (bold linum)))))
+   `(org-cancelled ((t (:foreground nil :inherit org-done))))
+   `(org-column ((t (:inherit bold))))
+   `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
+   `(org-link ((t (:inherit link))))
+   `(org-next ((t (:foreground "#dca3a3" :inherit (bold org-todo)))))
+   `(region ((t (:background ,(-> 'region
+                                  (face-attribute :background)
+                                  (light-color 10))))))
+   `(trailing-whitespace ((t (:background "gray35"))))))
 
 (use-package twilight-bright-theme
+  :disabled t
   :ensure t
   :config
   (load-theme 'twilight-bright t)
   (custom-theme-set-faces
    'twilight-bright
-   `(auto-dim-other-buffers-face
-     ((t :foreground  ,(-> 'default (face-attribute :foreground) (light-color 5))
-         :background  ,(-> 'default (face-attribute :background) (dim-color 3)))))
    `(clojure-if-true-face
      ((t (:background ,(-> 'font-lock-keyword-face
                            (face-attribute :background)
@@ -88,6 +125,12 @@
   :defer t
   :config
   (setq goto-address-mail-face "link"))
+
+(use-package linum
+  :defer t
+  :config
+  (custom-set-faces
+   `(linum ((t (:inherit default :underline nil :height 1.0 :distant-foreground ,(face-attribute 'linum :foreground)))))))
 
 (use-package magit
   :defer t
