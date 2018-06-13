@@ -1,5 +1,4 @@
-(let ((default-family (face-attribute 'default :family))
-      (mode-line-box-face '(:line-width 2 :color "grey75" :style released-button)))
+(let ((default-family (face-attribute 'default :family)))
   (custom-set-faces
    `(bold ((t (:weight bold :family "MonacoB2"))))
    `(cider-fringe-good-face ((t (:inherit success))))
@@ -25,8 +24,6 @@
    `(magit-section-heading ((t (:inherit bold :foreground "DarkGoldenrod4"))))
    `(magit-commit-log-type-face  ((t (:inherit font-lock-function-name-face :family ,default-family))))
    `(magit-commit-log-scope-face ((t (:inherit font-lock-variable-name-face :family ,default-family))))
-   `(mode-line ((t (:distant-foreground ,(face-attribute 'mode-line :foreground) :box ,mode-line-box-face))))
-   `(mode-line-inactive ((t (:distant-foreground ,(face-attribute 'mode-line-inactive :foreground) :box ,mode-line-box-face))))
    `(nlinum-current-line ((t (:inherit linum))))
    `(nlinum-relative-current-face ((t (:inherit linum))))
    `(org-agenda-date-today ((t (:inherit (bold org-agenda-date)))))
@@ -66,7 +63,7 @@
    `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
    `(lazy-highlight ((t :background "paleturquoise4" :foreground "paleturquoise3")))
    `(linum ((t (:background "#000000" :foreground "#666666"))))
-   `(linum-relative-current-face ((t (:inherit (bold linum)))))
+   `(linum-relative-current-face ((t (:inherit (bold linum) :foreground "#999999"))))
    `(org-cancelled ((t (:foreground nil :inherit org-done))))
    `(org-column ((t (:inherit bold))))
    `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
@@ -115,10 +112,6 @@
    `(org-link ((t (:inherit link))))
    `(org-next ((t (:foreground "#dca3a3" :inherit (bold org-todo)))))
    `(outline-4 ((t (:inherit font-lock-string-face))))
-   `(powerline-active1   ((t (:foreground "#85CEEB" :background "#383838" :inherit mode-line))))
-   `(powerline-active2   ((t (:foreground "#85CEEB" :background "#6b6b6b" :inherit mode-line))))
-   `(powerline-inactive1 ((t (:foreground "#F0F0EF" :background "#686868" :inherit mode-line-inactive))))
-   `(powerline-inactive2 ((t (:foreground "#F0F0EF" :background "#A9A9A9" :inherit mode-line-inactive))))
    `(trailing-whitespace ((t (:background "gray65"))))))
 
 (use-package goto-addr
