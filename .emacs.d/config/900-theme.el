@@ -72,6 +72,7 @@
    `(region ((t (:background ,(-> 'region
                                   (face-attribute :background)
                                   (light-color 10))))))
+   `(shadow ((t (:foreground "#9a9a9a"))))
    `(trailing-whitespace ((t (:background "gray35"))))))
 
 (use-package twilight-bright-theme
