@@ -56,7 +56,7 @@
    `(font-lock-regexp-grouping-construct ((t (:inherit bold :foreground ,(-> 'font-lock-string-face
                                                                              (face-attribute :foreground)
                                                                              (dim-color 5))))))
-   `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 5))))))
+   `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 2))))))
    `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added   :background)))))
    `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
    `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
