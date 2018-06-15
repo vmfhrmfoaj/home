@@ -5,6 +5,9 @@ function setEnv () {
   if [ -z $EMACS_INIT ] && [ "$os" = "Darwin" ]; then
     export PATH=$(brew --prefix)/sbin:$PATH
   fi
+  if [ -d "/usr/local/opt/llvm/bin" ]; then
+    export PATH="/usr/local/opt/llvm/bin":$PATH
+  fi
 
   # android
   if [ -d $HOME/Android_SDK ]; then
