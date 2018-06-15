@@ -316,6 +316,6 @@
   ;;  This package not included in the `MELPA'.
   ;;:ensure t
   :init
-  (if (not (require 'vi-tilde-fringe nil 'noerror))
-      (quelpa '(vi-tilde-fringe :repo "syl20bnr/vi-tilde-fringe" :fetcher github))
-    (global-vi-tilde-fringe-mode)))
+  (unless (package-installed-p 'vi-tilde-fringe)
+    (quelpa '(vi-tilde-fringe :repo "syl20bnr/vi-tilde-fringe" :fetcher github)))
+  (global-vi-tilde-fringe-mode))

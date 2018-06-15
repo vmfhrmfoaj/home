@@ -4,7 +4,7 @@
   ;;  This package not included in the `MELPA'.
   ;;:ensure t
   :init
-  (unless (require 'php-extras nil 'noerror)
+  (unless (package-installed-p 'php-extras)
     (quelpa '(php-extras :repo "arnested/php-extras" :fetcher github)))
 
   (defvar php-doc-buffer-name "*PHP Doc*")

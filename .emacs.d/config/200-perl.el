@@ -99,5 +99,5 @@
   ;;  This package not included in the `MELPA'.
   ;;:ensure t
   :init
-  (unless (require 'perl5db-as-repl nil 'noerror)
+  (unless (package-installed-p 'perl5db-as-repl)
     (quelpa '(perl5db-as-repl :repo "vmfhrmfoaj/perl5db-as-repl" :fetcher gitlab))))
