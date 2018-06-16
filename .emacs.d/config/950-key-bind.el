@@ -342,6 +342,7 @@
   (dolist (mode '(clojure-mode clojurec-mode clojurescript-mode))
     (evil-leader/set-key-for-mode mode
       "mee" #'cider-eval-last-sexp
+      "meb" #'cider-eval-buffer
       "mef" #'cider-eval-defun-at-point
       "men" #'cider-eval-ns-form
       "mer" #'cider-eval-last-sexp-and-replace
