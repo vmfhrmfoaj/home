@@ -1,5 +1,8 @@
 function setEnv () {
   local os=`uname`
+  if [ ! -z $(echo $TERM | grep -o "^eterm") ]; then
+    EMACS_INIT=1
+  fi
 
   # brew
   if [ -z $EMACS_INIT ] && [ "$os" = "Darwin" ]; then
