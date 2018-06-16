@@ -1,7 +1,7 @@
 (when (window-system)
-  (setq-default line-spacing 0)
+  (setq-default line-spacing 1)
   (let ((font "MonacoB")
-        (height (if (eq 'darwin system-type) 151 105)))
+        (height (if (eq 'darwin system-type) 141 95)))
     (set-face-font 'default font)
     (set-face-attribute 'default nil
                         :weight 'bold

@@ -24,6 +24,8 @@
    `(magit-section-heading ((t (:inherit bold :foreground "DarkGoldenrod4"))))
    `(magit-commit-log-type-face  ((t (:inherit font-lock-function-name-face :family ,default-family))))
    `(magit-commit-log-scope-face ((t (:inherit font-lock-variable-name-face :family ,default-family))))
+   `(mode-line ((t (:inherit bold))))
+   `(mode-line-inactive ((t (:inherit mode-line))))
    `(nlinum-current-line ((t (:inherit linum))))
    `(nlinum-relative-current-face ((t (:inherit linum))))
    `(org-agenda-date-today ((t (:inherit (bold org-agenda-date)))))
