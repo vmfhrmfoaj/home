@@ -250,10 +250,10 @@
         font-lock-string-face
       res))
 
-  (defvar context-fn-prefix-regex (regexp-opt '("eval" "run" "exe" "execute"))
+  (defvar clojure-context-fn-prefix-regex (regexp-opt '("eval" "run" "exe" "execute"))
     "TODO")
 
-  (defvar context-fn-regex (regexp-opt '("in" "on" "with"))
+  (defvar clojure-context-fn-regex (regexp-opt '("in" "on" "with"))
     "TODO")
 
   (defun clojure--get-indentation (sym)
@@ -261,8 +261,8 @@
     (when (or (let ((case-fold-search nil))
                 (string-match-p "^[-_A-Z]+\\>" sym))
               (string-match-p (concat "^\\("
-                                      context-fn-prefix-regex "-\\)?"
-                                      context-fn-regex
+                                      clojure-context-fn-prefix-regex "-\\)?"
+                                      clojure-context-fn-regex
                                       "\\>")
                               sym))
       :defn))
@@ -300,6 +300,7 @@ This is customized version of `clojure-find-ns' to improve some performance."
 
   :config
   (setq clojure-get-indent-function #'clojure--get-indentation)
+  (put-clojure-indent 'lazy-seq 0)
   (add-hook 'clojure-mode-hook #'clojure-setup :append)
   (advice-add #'clojure-find-ns :override #'clojure-find-ns-custom)
   (advice-add #'clojure-font-lock-syntactic-face-function :filter-return
