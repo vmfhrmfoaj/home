@@ -131,7 +131,11 @@
 (use-package magit
   :defer t
   :config
-  (dolist (face '(magit-branch-current magit-branch-local magit-branch-remote magit-head magit-tag))
+  (dolist (face '(magit-branch-current
+                  magit-branch-local
+                  magit-branch-remote
+                  magit-head
+                  magit-tag))
     (set-face-attribute face nil :inherit
                         (let ((inherit (face-attribute face :inherit)))
                           (if (listp inherit)
@@ -141,9 +145,10 @@
 (use-package highlight-parentheses
   :defer t
   :config
-  (setq hl-paren-colors (--iterate (dim-color it 10)
-                                   (apply 'color-rgb-to-hex (color-name-to-rgb "Springgreen"))
-                                   4)))
+  (setq hl-paren-colors
+        (--iterate (dim-color it 10)
+                   (apply 'color-rgb-to-hex (color-name-to-rgb "Springgreen"))
+                   4)))
 
 (use-package outline
   :defer t
