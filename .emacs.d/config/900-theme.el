@@ -37,6 +37,8 @@
   :ensure t
   :config
   (load-theme 'twilight-anti-bright t)
+  (custom-set-faces
+   `(font-lock-type-face ((t (:foreground "#bf3f1e")))))
   (custom-theme-set-faces
    'twilight-anti-bright
    `(clojure-if-true-face
