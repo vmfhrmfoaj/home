@@ -1195,6 +1195,8 @@
            (1 'clojure-interop-method-face)))
          (,(concat "(\\(\\.-?\\)" symbol)
           (1 'clojure-interop-method-face))
+         (,(concat "(" symbol "\\(\\.\\)" whitespace)
+          (1 'clojure-interop-method-face))
          (,(concat "(" important-kw "\\(?:)\\|" whitespace "\\)")
           (1 'clojure-important-keywords-face))
          (,(concat "::\\(" symbol "\\)/" symbol "\\>")
