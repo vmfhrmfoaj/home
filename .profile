@@ -11,6 +11,9 @@ function setEnv () {
   if [ -d "/usr/local/opt/llvm/bin" ]; then
     export PATH="/usr/local/opt/llvm/bin":$PATH
   fi
+  if [ -d "/Volumes/RAM_Disk" ]; then
+    export HOMEBREW_TEMP="/Volumes/RAM_Disk"
+  fi
 
   # android
   if [ -d $HOME/Android_SDK ]; then
