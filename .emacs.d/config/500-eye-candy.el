@@ -20,6 +20,19 @@
   (all-the-icons-update-data 'all-the-icons-dir-icon-alist "google[ _-]drive" :height 1.0)
   (all-the-icons-update-data 'all-the-icons-icon-alist "\\.DS_STORE$" :height 0.95 :v-adjust -0.1))
 
+(use-package company
+  :defer t
+  :config
+  (advice-add #'company-call-frontends :before
+              (lambda (cmd)
+                (ignore-errors
+                  (cond
+                   ((eq 'show cmd)
+                    (with-silent-modifications
+                      (remove-text-properties (point-min) (point-max) '(composition nil))))
+                   ((eq 'hide cmd)
+                    (font-lock-flush)))))))
+
 (use-package diminish
   :ensure t
   :config
@@ -45,6 +58,47 @@
   (with-eval-after-load "view"                  (diminish 'view-mode                  "Ⓥ"))
   (with-eval-after-load "which-key"             (diminish 'which-key-mode             "Ⓦ"))
   (with-eval-after-load "zoom"                  (diminish 'zoom-mode                  "Ⓩ")))
+
+(use-package evil
+  :defer t
+  :config
+  (add-hook 'evil-visual-state-exit-hook  #'font-lock-flush)
+  (add-hook 'evil-normal-state-entry-hook #'font-lock-flush)
+  (add-hook 'evil-visual-state-entry-hook
+            (lambda ()
+              "TODO"
+              (with-silent-modifications
+                (remove-text-properties (point-min) (point-max) '(composition nil)))))
+  (add-hook 'evil-insert-state-exit-hook
+            (lambda ()
+              "TODO"
+              (when evil-insert-vcount
+                (with-silent-modifications
+                  (remove-text-properties (point-min) (point-max) '(composition nil))))))
+  (advice-add #'evil-next-line :around
+              (lambda (fn &rest args)
+                "TODO"
+                (if (or evil-insert-vcount
+                        (eq 'visual evil-state))
+                    (apply fn args)
+                  (let ((start (line-beginning-position))
+                        (end (line-end-position 2)))
+                    (without-text-property start end 'composition
+                      (apply fn args))))))
+  (advice-add #'evil-previous-line :around
+              (lambda (fn &rest args)
+                "TODO"
+                (if (or evil-insert-vcount
+                        (eq 'visual evil-state))
+                    (apply fn args)
+                  (let ((start (line-beginning-position -1))
+                        (end (line-end-position 2)))
+                    (without-text-property start end 'composition
+                      (apply fn args))))))
+  (advice-add #'evil-delete :before
+              (lambda (&rest _)
+                "TODO"
+                (font-lock-flush))))
 
 (use-package evil-goggles
   :ensure t
@@ -187,7 +241,7 @@
                   (error (progn
                            (focus-terminate)
                            (focus-init)
-                           (funcall of)))))))
+                           (funcall fn)))))))
 
 (use-package highlight-parentheses
   :ensure t
@@ -303,6 +357,170 @@
   :config
   (advice-add #'powerline-buffer-id :filter-return #'powerline-ellipsis-buffer-id)
   (powerline-vim+-theme))
+
+(use-package prog-mode
+  :defer t
+  :init
+  ;; - https://gist.github.com/mordocai/50783defab3c3d1650e068b4d1c91495
+  (defconst fira-code-font-lock-keywords-alist
+    (mapcar (lambda (regex-char-pair)
+              `(,(car regex-char-pair)
+                (0 (prog1 ()
+                     (compose-region (match-beginning 1)
+                                     (match-end 1)
+                                     ;; The first argument to concat is a string containing a literal tab
+                                     ,(concat "	" (list (decode-char 'ucs (cadr regex-char-pair)))))))))
+            '(;;                             #Xe
+              ;;www                          #Xe
+              ("\\(www\\)"                   #Xe100)
+              ;; **                          #Xe101
+              ("[^/]\\(\\*\\*\\)[^/]"        #Xe101)
+              ("\\(\\*\\*\\*\\)"             #Xe102)
+              ;; **/                         #Xe103
+              ("\\(\\*\\*/\\)"               #Xe103)
+              ("\\(\\*>\\)"                  #Xe104)
+              ;; */                          #Xe103
+              ;; ("[^*]\\(\\*/\\)"              #Xe105)
+              ("\\(\\\\\\\\\\)"              #Xe106)
+              ("\\(\\\\\\\\\\\\\\)"          #Xe107)
+              ("\\({-\\)"                    #Xe108)
+              ("\\(::\\)"                    #Xe10a)
+              ("\\(:::\\)"                   #Xe10b)
+              ("[^=]\\(:=\\)"                #Xe10c)
+              ;; ("\\(!!\\)"                    #Xe10d)
+              ("\\(!=\\)"                    #Xe10e)
+              ("\\(!==\\)"                   #Xe10f)
+              ("\\(-}\\)"                    #Xe110)
+              ;; ("\\(--\\)"                    #Xe111)
+              ;; ("\\(---\\)"                   #Xe112)
+              ("\\(-->\\)"                   #Xe113)
+              ("[^-]\\(->\\)"                #Xe114)
+              ("\\(->>\\)"                   #Xe115)
+              ("\\(-<\\)"                    #Xe116)
+              ("\\(-<<\\)"                   #Xe117)
+              ("\\(-~\\)"                    #Xe118)
+              ;; ("\\(#{\\)"                    #Xe119)
+              ;; ("\\(#\\[\\)"                  #Xe11a)
+              ;; ("\\(##\\)"                    #Xe11b)
+              ;; ("\\(###\\)"                   #Xe11c)
+              ;; ("\\(####\\)"                  #Xe11d)
+              ;; ("\\(#(\\)"                    #Xe11e)
+              ("\\(#\\?\\)"                  #Xe11f)
+              ("\\(#_\\)"                    #Xe120)
+              ;; ("\\(#_(\\)"                   #Xe121)
+              ("\\(\\.-\\)"                  #Xe122)
+              ("\\(\\.=\\)"                  #Xe123)
+              ;; ..                          #Xe124
+              ("\\(\\.\\.\\)"                #Xe124)
+              ;; ..<                         #Xe125
+              ("\\(\\.\\.<\\)"               #Xe125)
+              ;; ...                         #Xe126
+              ("\\(\\.\\.\\.\\)"             #Xe126)
+              ;; ("\\(\\?=\\)"                  #Xe127)
+              ;; ("\\(\\?\\?\\)"                #Xe128)
+              ;; ("\\(;;\\)[^;]"                #Xe129)
+              ;; /*                          #Xe12a
+              ;; ("\\(/\\*\\)"                  #Xe12a)
+              ;; /**                         #Xe12b
+              ("\\(/\\*\\*\\)"               #Xe12b)
+              ("\\(/=\\)"                    #Xe12c)
+              ("\\(/==\\)"                   #Xe12d)
+              ;; ("\\(/>\\)"                    #Xe12e)
+              ("\\(//\\)"                    #Xe12f)
+              ("\\(///\\)"                   #Xe130)
+              ;; ("\\(&&\\)"                    #Xe131)
+              ;; ("\\(||\\)"                    #Xe132)
+              ("\\(||=\\)"                   #Xe133)
+              ("[^|]\\(|=\\)"                #Xe134)
+              ("\\(|>\\)"                    #Xe135)
+              ("\\(\\^=\\)"                  #Xe136)
+              ("\\(\\$>\\)"                  #Xe137)
+              ;; ++                          #Xe138
+              ("\\(\\+\\+\\)"                #Xe138)
+              ;; +++                         #Xe139
+              ("\\(\\+\\+\\+\\)"             #Xe139)
+              ("\\(\\+>\\)"                  #Xe13a)
+              ("\\(=:=\\)"                   #Xe13b)
+              ("[^!/]\\(==\\)[^>]"           #Xe13c)
+              ("\\(===\\)"                   #Xe13d)
+              ("\\(==>\\)"                   #Xe13e)
+              ("[^=]\\(=>\\)"                #Xe13f)
+              ("\\(=>>\\)"                   #Xe140)
+              ("\\(<=\\)"                    #Xe141)
+              ("\\(=<<\\)"                   #Xe142)
+              ("\\(=/=\\)"                   #Xe143)
+              ("\\(>-\\)"                    #Xe144)
+              ("\\(>=\\)"                    #Xe145)
+              ("\\(>=>\\)"                   #Xe146)
+              ("[^-=]\\(>>\\)"               #Xe147)
+              ("\\(>>-\\)"                   #Xe148)
+              ("\\(>>=\\)"                   #Xe149)
+              ("\\(>>>\\)"                   #Xe14a)
+              ;; <*                          #Xe
+              ("\\(<\\*\\)"                  #Xe14b)
+              ;; *>                          #Xe
+              ("\\(<\\*>\\)"                 #Xe14c)
+              ("\\(<|\\)"                    #Xe14d)
+              ("\\(<|>\\)"                   #Xe14e)
+              ("\\(<\\$\\)"                  #Xe14f)
+              ("\\(<\\$>\\)"                 #Xe150)
+              ("\\(<!--\\)"                  #Xe151)
+              ("\\(<-\\)"                    #Xe152)
+              ("\\(<--\\)"                   #Xe153)
+              ("\\(<->\\)"                   #Xe154)
+              ("\\(<\\+\\)"                  #Xe155)
+              ("\\(<\\+>\\)"                 #Xe156)
+              ("\\(<=\\)"                    #Xe157)
+              ("\\(<==\\)"                   #Xe158)
+              ("\\(<=>\\)"                   #Xe159)
+              ("\\(<=<\\)"                   #Xe15a)
+              ;; ("\\(<>\\)"                    #Xe15b)
+              ;; -<<                         #Xe
+              ;; =<<                         #Xe
+              ("[^-=]\\(<<\\)"               #Xe15c)
+              ("\\(<<-\\)"                   #Xe15d)
+              ("\\(<<=\\)"                   #Xe15e)
+              ("\\(<<<\\)"                   #Xe15f)
+              ("\\(<~\\)"                    #Xe160)
+              ("\\(<~~\\)"                   #Xe161)
+              ;; ("\\(</\\)"                    #Xe162)
+              ;; ("\\(</>\\)"                   #Xe163)
+              ;; ("\\(~@\\)"                    #Xe164)
+              ("\\(~-\\)"                    #Xe165)
+              ("\\(~=\\)"                    #Xe166)
+              ("\\(~>\\)"                    #Xe167)
+              ("[^<]\\(~~\\)"                #Xe168)
+              ("\\(~~>\\)"                   #Xe169)
+              ;; ("\\(%%\\)"                    #Xe16a)
+              ;; ("[^:=]\\(:\\)[^:=]"           #Xe16c)
+              ("[^\\+<>]\\(\\+\\)[^\\+<>]"   #Xe16d)
+              ;; (*                          #Xe
+              ("\\s(\\(\\*\\)[ \r\t\n]" #Xe16f))))
+
+  (global-prettify-symbols-mode)
+
+  :config
+  (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
+  (add-hook 'after-make-frame-functions
+            (lambda (_)
+              (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
+  (add-hook 'prog-mode-hook
+            (lambda ()
+              (font-lock-add-keywords nil fira-code-font-lock-keywords-alist)))
+  (advice-add #'current-column :around
+              (lambda (fn &rest args)
+                "TODO"
+                (let ((start (line-beginning-position))
+                      (end (line-end-position)))
+                  (without-text-property start end 'composition
+                    (apply fn args)))))
+  (dolist (fn '(indent-for-tab-command
+                indent-region
+                indent-according-to-mode))
+    (advice-add fn :around
+                (lambda (fn &rest args)
+                  (without-text-property nil nil 'composition
+                    (apply fn args))))))
 
 (use-package rainbow-delimiters
   :ensure t

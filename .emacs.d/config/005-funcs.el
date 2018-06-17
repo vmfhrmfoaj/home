@@ -251,3 +251,17 @@
        (restore-modes ,modes mode-status))))
 
 (put 'with-disable-modes 'lisp-indent-function 'defun)
+
+(defmacro without-text-property (start end property &rest body)
+  "TODO"
+  `(progn
+     (with-silent-modifications
+       (remove-text-properties (or ,start (point-min))
+                               (or ,end   (point-max))
+                               (list ,property nil)))
+     (unwind-protect
+         (prog1 (progn ,@body)
+           (font-lock-flush (or ,start (point-min)) (or ,end (point-max))))
+       (font-lock-flush))))
+
+(put 'without-text-property 'lisp-indent-function 'defun)
