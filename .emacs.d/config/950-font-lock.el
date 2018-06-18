@@ -798,7 +798,13 @@
           (whitespace+ (concat whitespace "+"))
           (whitespace* (concat whitespace "*"))
           (assigment (concat whitespace* "[.+-*/]?=[^=>]")))
-     `((,(concat "\\(" symbol "\\|->[_0-9a-zA-Z]+\\)")
+     `((,(concat "\\(" symbol "\\)")
+        (1 (cond
+            ((sp-point-in-string)  'font-lock-string-face)
+            ((sp-point-in-comment) 'font-lock-comment-face)
+            (t nil))
+           t))
+       ("->\\([_0-9a-zA-Z]+\\)"
         (1 (cond
             ((sp-point-in-string)  'font-lock-string-face)
             ((sp-point-in-comment) 'font-lock-comment-face)
