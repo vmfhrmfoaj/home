@@ -20,6 +20,17 @@
   :config
   (atomic-chrome-start-server))
 
+(use-package display-line-numbers
+  :disabled t
+  :defer t
+  :init
+  (add-hook 'prog-mode-hook #'display-line-numbers--turn-on)
+
+  :config
+  (setq display-line-numbers-type 'relative
+        display-line-numbers-width 3
+        display-line-numbers-width-start t))
+
 (use-package ediff
   :defer t
   :init
