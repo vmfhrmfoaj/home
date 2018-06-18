@@ -763,13 +763,19 @@
                   ((string-equal x " ") ,square)
                   ((string-equal x "-") ,minus-square)
                   ((string-equal x "X") ,check-square)))
-                (when (eq 'gnu/linux system-type)
-                  (put-text-property s e 'display '(raise 0.1)))
+                (cond
+                 ((eq 'gnu/linux system-type)
+                  (put-text-property s e 'display '(raise  0.1)))
+                 ((eq 'darwin    system-type)
+                  (put-text-property s e 'display '(raise -0.1))))
                 (list :family "FontAwesome"
                       :foreground (face-attribute (if (string-equal x "X")
                                                       'org-done 'org-todo)
                                                   :foreground)
-                      :height (if (eq 'gnu/linux system-type) 0.95 1))))
+                      :height (cond
+                               ((eq 'gnu/linux system-type) 0.95)
+                               ((eq 'darwin system-type) 1.1)
+                               (t 1.0)))))
           t)
          ("\\(\\\\\\\\\\)\\s-*$"
           1 'shadow nil)))
