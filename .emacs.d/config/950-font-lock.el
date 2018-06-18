@@ -635,6 +635,39 @@
          (,(concat "::\\(" symbol "\\)/" symbol "\\>")
           (1 'font-lock-type-face)))))))
 
+(use-package cperl-mode
+  :defer t
+  :config
+  (font-lock-add-keywords
+   'cperl-mode
+   (let* ((symbol "[@$%]+[:_0-9a-zA-Z]+")
+          (whitespace "[ \r\t\n]")
+          (whitespace+ (concat whitespace "+"))
+          (whitespace* (concat whitespace "*")))
+     `((,(concat "\\(" symbol "\\|\\(accept\\|do\\)\\s-*(\\)")
+        (1 (cond
+            ((sp-point-in-string)  'font-lock-string-face)
+            ((sp-point-in-comment) 'font-lock-comment-face)
+            (t nil))
+           t))
+       (,(concat "^" whitespace* "\\(sub\\)" whitespace+ "\\([_0-9A-Za-z]+\\)\\(?:" whitespace* "([@$%]*)\\)?")
+        (1 'font-lock-keyword-face)
+        (2 'font-lock-function-name-face t))
+       (,(concat "\\(?:my\\|local\\|our\\)" whitespace+ "\\(" symbol "\\)")
+        (1 'font-lock-variable-name-face))
+       (,(concat "\\(?:my\\|local\\|our\\)" whitespace+ "(" )
+        (,(concat "\\(" symbol "\\)")
+         (save-excursion
+           (safe-up-list-1)
+           (point))
+         nil
+         (1 'font-lock-variable-name-face)))
+       ("for\\(each\\)? my \\([@$%][_0-9a-zA-Z]+\\)"
+        (1 'font-lock-variable-name-face))
+       (,(concat whitespace "\\(accept\\)" whitespace* "(")
+        (1 'font-lock-type-face))))
+   :append))
+
 (use-package elisp-mode
   :defer t
   :init
@@ -754,39 +787,6 @@
          ("\\(\\\\\\\\\\)\\s-*$"
           1 'shadow nil)))
      :append)))
-
-(use-package cperl-mode
-  :defer t
-  :config
-  (font-lock-add-keywords
-   'cperl-mode
-   (let* ((symbol "[@$%]+[:_0-9a-zA-Z]+")
-          (whitespace "[ \r\t\n]")
-          (whitespace+ (concat whitespace "+"))
-          (whitespace* (concat whitespace "*")))
-     `((,(concat "\\(" symbol "\\|\\(accept\\|do\\)\\s-*(\\)")
-        (1 (cond
-            ((sp-point-in-string)  'font-lock-string-face)
-            ((sp-point-in-comment) 'font-lock-comment-face)
-            (t nil))
-           t))
-       (,(concat "^" whitespace* "\\(sub\\)" whitespace+ "\\([_0-9A-Za-z]+\\)\\(?:" whitespace* "([@$%]*)\\)?")
-        (1 'font-lock-keyword-face)
-        (2 'font-lock-function-name-face t))
-       (,(concat "\\(?:my\\|local\\|our\\)" whitespace+ "\\(" symbol "\\)")
-        (1 'font-lock-variable-name-face))
-       (,(concat "\\(?:my\\|local\\|our\\)" whitespace+ "(" )
-        (,(concat "\\(" symbol "\\)")
-         (save-excursion
-           (safe-up-list-1)
-           (point))
-         nil
-         (1 'font-lock-variable-name-face)))
-       ("for\\(each\\)? my \\([@$%][_0-9a-zA-Z]+\\)"
-        (1 'font-lock-variable-name-face))
-       (,(concat whitespace "\\(accept\\)" whitespace* "(")
-        (1 'font-lock-type-face))))
-   :append))
 
 (use-package php-mode
   :defer t
