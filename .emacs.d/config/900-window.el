@@ -8,7 +8,7 @@
 (when window-system
   (let ((w 150)
         (char-height (float (frame-char-height)))
-        (titlebar-height 22))
+        (titlebar-height (if (eq 'gnu/linux system-type) 28 22)))
     (setq org-tags-column (+ (- w) 5))
     (let* ((h (floor (- (/ (display-pixel-height) char-height)
                         (/ titlebar-height char-height)
@@ -22,7 +22,7 @@
       (add-to-list 'default-frame-alist (cons 'width  w))
       (add-to-list 'default-frame-alist (cons 'height h))
       (setq split-width-threshold (1+ w)
-            initial-frame-alist (list (cons 'top    titlebar-height)
+            initial-frame-alist (list (cons 'top    (frame-char-height))
                                       (cons 'left   l)
                                       (cons 'width  w)
                                       (cons 'height h))))))
