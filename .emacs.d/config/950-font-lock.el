@@ -819,14 +819,17 @@
   ;; - https://gist.github.com/mordocai/50783defab3c3d1650e068b4d1c91495
   (defconst fira-code-font-lock-keywords-alist
     (mapcar (lambda (regex-char-pair)
-              `(,(car regex-char-pair)
-                (1 (progn
-                     (compose-region (match-beginning 1)
-                                     (match-end 1)
-                                     ;; The first argument to concat is a string containing a literal tab
-                                     ,(concat "	" (list (decode-char 'ucs (cadr regex-char-pair)))))
-                     '((:slant normal :weight normal)))
-                   prepend)))
+              (let ((face (if (eq 'gnu/linux system-type)
+                              '((:slant normal :weight normal))
+                            '((:slant normal)))))
+                `(,(car regex-char-pair)
+                  (1 (progn
+                       (compose-region (match-beginning 1)
+                                       (match-end 1)
+                                       ;; The first argument to concat is a string containing a literal tab
+                                       ,(concat "	" (list (decode-char 'ucs (cadr regex-char-pair)))))
+                       ',face)
+                     prepend))))
             '(;;                             #Xe
               ;;www                          #Xe
               ("\\(www\\)"                   #Xe100)
@@ -838,12 +841,14 @@
               ("\\(\\*>\\)"                  #Xe104)
               ;; */                          #Xe103
               ;; ("[^*]\\(\\*/\\)"              #Xe105)
+              ;; \\                          #Xe
               ("\\(\\\\\\\\\\)"              #Xe106)
+              ;; \\\                         #Xe
               ("\\(\\\\\\\\\\\\\\)"          #Xe107)
               ("\\({-\\)"                    #Xe108)
               ("\\(::\\)"                    #Xe10a)
               ("\\(:::\\)"                   #Xe10b)
-              ("[^=]\\(:=\\)"                #Xe10c)
+              ;; ("[^=]\\(:=\\)"                #Xe10c)
               ;; ("\\(!!\\)"                    #Xe10d)
               ("\\(!=\\)"                    #Xe10e)
               ("\\(!==\\)"                   #Xe10f)
@@ -891,12 +896,12 @@
               ("[^|]\\(|=\\)"                #Xe134)
               ("\\(|>\\)"                    #Xe135)
               ("\\(\\^=\\)"                  #Xe136)
-              ("\\(\\$>\\)"                  #Xe137)
+              ;; ("\\(\\$>\\)"                  #Xe137)
               ;; ++                          #Xe138
               ("\\(\\+\\+\\)"                #Xe138)
               ;; +++                         #Xe139
               ("\\(\\+\\+\\+\\)"             #Xe139)
-              ("\\(\\+>\\)"                  #Xe13a)
+              ;; ("\\(\\+>\\)"                  #Xe13a)
               ("\\(=:=\\)"                   #Xe13b)
               ("[^!/]\\(==\\)[^>]"           #Xe13c)
               ("\\(===\\)"                   #Xe13d)
@@ -919,14 +924,14 @@
               ("\\(<\\*>\\)"                 #Xe14c)
               ("\\(<|\\)"                    #Xe14d)
               ("\\(<|>\\)"                   #Xe14e)
-              ("\\(<\\$\\)"                  #Xe14f)
-              ("\\(<\\$>\\)"                 #Xe150)
-              ("\\(<!--\\)"                  #Xe151)
+              ;; ("\\(<\\$\\)"                  #Xe14f)
+              ;; ("\\(<\\$>\\)"                 #Xe150)
+              ;; ("\\(<!--\\)"                  #Xe151)
               ("\\(<-\\)"                    #Xe152)
               ("\\(<--\\)"                   #Xe153)
               ("\\(<->\\)"                   #Xe154)
-              ("\\(<\\+\\)"                  #Xe155)
-              ("\\(<\\+>\\)"                 #Xe156)
+              ;; ("\\(<\\+\\)"                  #Xe155)
+              ;; ("\\(<\\+>\\)"                 #Xe156)
               ("\\(<=\\)"                    #Xe157)
               ("\\(<==\\)"                   #Xe158)
               ("\\(<=>\\)"                   #Xe159)
@@ -934,7 +939,7 @@
               ;; ("\\(<>\\)"                    #Xe15b)
               ;; -<<                         #Xe
               ;; =<<                         #Xe
-              ("[^-=]\\(<<\\)"               #Xe15c)
+              ;; ("[^-=]\\(<<\\)"               #Xe15c)
               ("\\(<<-\\)"                   #Xe15d)
               ("\\(<<=\\)"                   #Xe15e)
               ("\\(<<<\\)"                   #Xe15f)
@@ -950,18 +955,22 @@
               ("\\(~~>\\)"                   #Xe169)
               ;; ("\\(%%\\)"                    #Xe16a)
               ;; ("[^:=]\\(:\\)[^:=]"           #Xe16c)
-              ("[^\\+<>]\\(\\+\\)[^\\+<>]"   #Xe16d)
+              ;; ("[^\\+<>]\\(\\+\\)[^\\+<>]"   #Xe16d)
               ;; (*                          #Xe
-              ("\\s(\\(\\*\\)[ \r\t\n]" #Xe16f))))
+              ("\\s(\\(\\*\\)[ \r\t\n]"      #Xe16f))))
 
   :config
   (add-hook 'prog-mode-hook
             (lambda ()
-              (font-lock-add-keywords nil fira-code-font-lock-keywords-alist)
-              (font-lock-add-keywords
-               nil
-               '(("[ \t]\\([-+]?=\\)[ \t]"
-                  (1 '((:weight normal)) prepend)))))
+              (font-lock-add-keywords nil fira-code-font-lock-keywords-alist t)
+              (when (eq 'gnu/linux system-type)
+                (font-lock-add-keywords
+                 nil
+                 '(("[ \t]\\([-+]?=\\)[ \t]"
+                    (1 '((:weight normal)) prepend))
+                   ("\\s(\\(=\\)[ \t]"
+                    (1 '((:weight normal)) prepend)))
+                 t)))
             :append))
 
 (use-package sh-script
