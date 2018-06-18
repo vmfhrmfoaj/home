@@ -20,7 +20,11 @@
   (add-to-list 'aggressive-indent-excluded-modes 'autoconf-mode)
   (add-to-list 'aggressive-indent-excluded-modes 'cider-repl-mode)
   (add-to-list 'aggressive-indent-dont-indent-if '(not (eq 'insert evil-state)))
-  (add-hook 'evil-insert-state-exit-hook #'aggressive-indent-do-indent)
+  (add-to-list 'aggressive-indent-dont-indent-if 'evil-insert-vcount)
+  (add-hook 'evil-insert-state-exit-hook
+            (lambda ()
+              (unless evil-insert-vcount
+                (aggressive-indent-do-indent))))
   (global-aggressive-indent-mode 1))
 
 (use-package evil-surround

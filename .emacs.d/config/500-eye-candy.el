@@ -62,19 +62,12 @@
 (use-package evil
   :defer t
   :config
-  (add-hook 'evil-visual-state-exit-hook  #'font-lock-flush)
   (add-hook 'evil-normal-state-entry-hook #'font-lock-flush)
   (add-hook 'evil-visual-state-entry-hook
             (lambda ()
               "TODO"
               (with-silent-modifications
                 (remove-text-properties (point-min) (point-max) '(composition nil)))))
-  (add-hook 'evil-insert-state-exit-hook
-            (lambda ()
-              "TODO"
-              (when evil-insert-vcount
-                (with-silent-modifications
-                  (remove-text-properties (point-min) (point-max) '(composition nil))))))
   (advice-add #'evil-next-line :around
               (lambda (fn &rest args)
                 "TODO"
@@ -94,11 +87,7 @@
                   (let ((start (line-beginning-position -1))
                         (end (line-end-position 2)))
                     (without-text-property start end 'composition
-                      (apply fn args))))))
-  (advice-add #'evil-delete :before
-              (lambda (&rest _)
-                "TODO"
-                (font-lock-flush))))
+                      (apply fn args)))))))
 
 (use-package evil-goggles
   :ensure t
