@@ -349,9 +349,6 @@
 
 (use-package prog-mode
   :defer t
-  :init
-  (global-prettify-symbols-mode)
-
   :config
   (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
   (add-hook 'after-make-frame-functions
