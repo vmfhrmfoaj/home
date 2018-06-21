@@ -260,8 +260,8 @@
                                (or ,end   (point-max))
                                (list ,property nil)))
      (unwind-protect
-         (prog1 (progn ,@body)
-           (font-lock-flush (or ,start (point-min)) (or ,end (point-max))))
-       (font-lock-flush))))
+         (progn
+           ,@body)
+       (font-lock-flush (or ,start (point-min)) (or ,end (point-max))))))
 
 (put 'without-text-property 'lisp-indent-function 'defun)
