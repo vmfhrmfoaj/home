@@ -13,6 +13,7 @@
     (interactive)
     (-when-let (doc (php-extras-get-function-property (php-get-pattern) 'documentation))
       (pop-to-buffer (get-buffer-create php-doc-buffer-name))
+      (evil-local-set-key 'normal (kbd "q") #'evil-delete-buffer)
       (kill-region (point-min) (point-max))
       (goto-char (point-min))
       (insert doc)
