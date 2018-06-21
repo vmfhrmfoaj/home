@@ -25,7 +25,9 @@
   :config
   (add-hook 'php-mode-hook
             (lambda ()
-              (setq-local evil-lookup-func #'php-extras-doc))))
+              (setq-local evil-lookup-func #'php-extras-doc)
+              (make-local-variable 'font-lock-extend-region-functions)
+              (add-to-list 'font-lock-extend-region-functions #'font-lock-extend-region-wholelines))))
 
 (use-package company-php
   :ensure t

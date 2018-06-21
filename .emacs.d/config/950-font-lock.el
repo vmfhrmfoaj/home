@@ -757,7 +757,7 @@
           (whitespace "[ \r\t\n]")
           (whitespace+ (concat whitespace "+"))
           (whitespace* (concat whitespace "*"))
-          (assigment (concat whitespace* "[.+-*/]?=[^=>]")))
+          (assigment (concat whitespace* "[-+/*.]?=[^=>]")))
      `((,(concat "\\(" symbol "\\)")
         (1 (cond
             ((sp-point-in-string)  'font-lock-string-face)
