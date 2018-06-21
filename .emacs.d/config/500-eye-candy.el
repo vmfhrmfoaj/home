@@ -20,19 +20,6 @@
   (all-the-icons-update-data 'all-the-icons-dir-icon-alist "google[ _-]drive" :height 1.0)
   (all-the-icons-update-data 'all-the-icons-icon-alist "\\.DS_STORE$" :height 0.95 :v-adjust -0.1))
 
-(use-package company
-  :defer t
-  :config
-  (advice-add #'company-call-frontends :before
-              (lambda (cmd)
-                (ignore-errors
-                  (cond
-                   ((eq 'show cmd)
-                    (with-silent-modifications
-                      (remove-text-properties (point-min) (point-max) '(composition nil))))
-                   ((eq 'hide cmd)
-                    (font-lock-flush)))))))
-
 (use-package diminish
   :ensure t
   :config
@@ -58,36 +45,6 @@
   (with-eval-after-load "view"                  (diminish 'view-mode                  "Ⓥ"))
   (with-eval-after-load "which-key"             (diminish 'which-key-mode             "Ⓦ"))
   (with-eval-after-load "zoom"                  (diminish 'zoom-mode                  "Ⓩ")))
-
-(use-package evil
-  :defer t
-  :config
-  (add-hook 'evil-normal-state-entry-hook #'font-lock-flush)
-  (add-hook 'evil-visual-state-entry-hook
-            (lambda ()
-              "TODO"
-              (with-silent-modifications
-                (remove-text-properties (point-min) (point-max) '(composition nil)))))
-  (advice-add #'evil-next-line :around
-              (lambda (fn &rest args)
-                "TODO"
-                (if (or evil-insert-vcount
-                        (eq 'visual evil-state))
-                    (apply fn args)
-                  (let ((start (line-beginning-position))
-                        (end (line-end-position 2)))
-                    (without-text-property start end 'composition
-                      (apply fn args))))))
-  (advice-add #'evil-previous-line :around
-              (lambda (fn &rest args)
-                "TODO"
-                (if (or evil-insert-vcount
-                        (eq 'visual evil-state))
-                    (apply fn args)
-                  (let ((start (line-beginning-position -1))
-                        (end (line-end-position 2)))
-                    (without-text-property start end 'composition
-                      (apply fn args)))))))
 
 (use-package evil-goggles
   :ensure t
@@ -346,28 +303,6 @@
   :config
   (advice-add #'powerline-buffer-id :filter-return #'powerline-ellipsis-buffer-id)
   (powerline-vim+-theme))
-
-(use-package prog-mode
-  :defer t
-  :config
-  (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
-  (add-hook 'after-make-frame-functions
-            (lambda (_)
-              (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
-  (advice-add #'current-column :around
-              (lambda (fn &rest args)
-                "TODO"
-                (let ((start (line-beginning-position))
-                      (end (line-end-position)))
-                  (without-text-property start end 'composition
-                    (apply fn args)))))
-  (dolist (fn '(indent-for-tab-command
-                indent-region
-                indent-according-to-mode))
-    (advice-add fn :around
-                (lambda (fn &rest args)
-                  (without-text-property nil nil 'composition
-                    (apply fn args))))))
 
 (use-package rainbow-delimiters
   :ensure t
