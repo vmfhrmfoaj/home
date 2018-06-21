@@ -38,7 +38,8 @@
   :config
   (load-theme 'twilight-anti-bright t)
   (custom-set-faces
-   `(font-lock-type-face ((t (:foreground "#bf3f1e")))))
+   `(font-lock-type-face ((t (:foreground "#bf3f1e"))))
+   `(mode-line-inactive ((t (:background ,(face-attribute 'mode-line :background))))))
   (custom-theme-set-faces
    'twilight-anti-bright
    `(clojure-if-true-face
