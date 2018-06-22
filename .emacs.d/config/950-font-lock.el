@@ -180,15 +180,16 @@
        mode
        `(;; Highlight condtions in `cond' form.
          (,(concat "(" core-ns? "\\(cond\\(?:->>?\\)?\\)[ \r\t\n]+")
-          (,(lambda (limit)
-              (ignore-errors
-                (when font-lock--skip
-                  (error ""))
-                (when (> limit (point))
-                  (clojure-skip :comment :ignored-form)
-                  (set-match-data (list (point-marker) (progn (forward-sexp) (point-marker))))
-                  (clojure-forward-sexp)
-                  t)))
+          (,(byte-compile
+             (lambda (limit)
+               (ignore-errors
+                 (when font-lock--skip
+                   (error ""))
+                 (when (> limit (point))
+                   (clojure-skip :comment :ignored-form)
+                   (set-match-data (list (point-marker) (progn (forward-sexp) (point-marker))))
+                   (clojure-forward-sexp)
+                   t))))
            (prog1 (save-excursion
                     (if (in-comment?)
                         (setq font-lock--skip t)
@@ -205,16 +206,17 @@
              (goto-char clojure-cond-form--point))
            (0 'clojure-cond-condtion-face prepend)))
          (,(concat "(" core-ns? if-kw "[ \r\t\n]+")
-          (,(lambda (limit)
-              (ignore-errors
-                (when font-lock--skip
-                  (error ""))
-                (when (> limit (point))
-                  (clojure-forward-sexp)
-                  (set-match-data (list (progn (clojure-skip :comment :ignored-form) (point-marker))
-                                        (progn (clojure-forward-sexp) (point-marker))))
-                  (clojure-forward-sexp)
-                  t)))
+          (,(byte-compile
+             (lambda (limit)
+               (ignore-errors
+                 (when font-lock--skip
+                   (error ""))
+                 (when (> limit (point))
+                   (clojure-forward-sexp)
+                   (set-match-data (list (progn (clojure-skip :comment :ignored-form) (point-marker))
+                                         (progn (clojure-forward-sexp) (point-marker))))
+                   (clojure-forward-sexp)
+                   t))))
            (save-excursion
              (if (in-comment?)
                  (setq font-lock--skip t)
@@ -256,17 +258,18 @@
          ;; Improve docstring
          (,(concat "(defprotocol" whitespace+ symbol "\\>")
           ,(-partial
-            (lambda (meta?+symbol limit)
-              (ignore-errors
-                (when font-lock--skip
-                  (error ""))
-                (re-search-forward meta?+symbol limit)
-                (clojure-skip :vector)
-                (set-match-data
-                 (if (looking-at-p "\"")
-                     (list (point-marker) (progn (forward-sexp) (point-marker)))
-                   (fake-match-2)))
-                t))
+            (byte-compile
+             (lambda (meta?+symbol limit)
+               (ignore-errors
+                 (when font-lock--skip
+                   (error ""))
+                 (re-search-forward meta?+symbol limit)
+                 (clojure-skip :vector)
+                 (set-match-data
+                  (if (looking-at-p "\"")
+                      (list (point-marker) (progn (forward-sexp) (point-marker)))
+                    (fake-match-2)))
+                 t)))
             (concat "(" meta? symbol "\\>"))
           (save-excursion
             (if (in-comment?)
@@ -280,15 +283,16 @@
             (goto-char clojure-interface-form--point))
           (0 'font-lock-doc-face t))
          (,(-partial
-            (lambda (symbol+alter-mark limit)
-              (when (re-search-forward symbol+alter-mark limit 'no-err)
-                (let ((face (plist-get (text-properties-at (match-beginning 1)) 'face))
-                      (ignore-faces '(font-lock-doc-face
-                                      font-lock-string-face
-                                      font-lock-comment-face)))
-                  (when (memq face ignore-faces)
-                    (set-match-data (fake-match-4)))
-                  t)))
+            (byte-compile
+             (lambda (symbol+alter-mark limit)
+               (when (re-search-forward symbol+alter-mark limit 'no-err)
+                 (let ((face (plist-get (text-properties-at (match-beginning 1)) 'face))
+                       (ignore-faces '(font-lock-doc-face
+                                       font-lock-string-face
+                                       font-lock-comment-face)))
+                   (when (memq face ignore-faces)
+                     (set-match-data (fake-match-4)))
+                   t))))
             (concat symbol "?\\(!+\\)\\>"))
           (1 'clojure-side-effect-face t))
          (,(concat "\\(" symbol "\\(\\." symbol "\\)+\\)")
@@ -301,16 +305,17 @@
        mode
        `(;; Meta
          (,(concat "\\(?:" whitespace "\\|[([{]\\)\\^[:A-Za-z{]")
-          (,(lambda (limit)
-              (ignore-errors
-                (when font-lock--skip
-                  (error ""))
-                (let ((start (progn
-                               (backward-char 1)
-                               (point-marker))))
-                  (goto-char limit)
-                  (set-match-data (list start (point-marker)))
-                  t)))
+          (,(byte-compile
+             (lambda (limit)
+               (ignore-errors
+                 (when font-lock--skip
+                   (error ""))
+                 (let ((start (progn
+                                (backward-char 1)
+                                (point-marker))))
+                   (goto-char limit)
+                   (set-match-data (list start (point-marker)))
+                   t))))
            (save-excursion
              (if (in-comment?)
                  (setq font-lock--skip t)
@@ -327,19 +332,20 @@
          (,(concat "(" core-ns? (regexp-opt clojure--binding-forms) "[ \r\t\n]+\\[")
           ;; Normal bindings
           (,(-partial
-             (lambda (meta?+ns?+symbol limit)
-               (ignore-errors
-                 (when font-lock--skip
-                   (error ""))
-                 (clojure-skip :comment :ignored-form :type-hint :destructuring-bind)
-                 (let ((local-limit (save-excursion (forward-sexp) (point))))
-                   (unless (and (re-search-forward meta?+ns?+symbol (min local-limit limit) t)
-                                (not (string-match-p clojure--ignore-binding-highlight-regex
-                                                     (match-string-no-properties 1))))
-                     (set-match-data (fake-match-4)))
-                   (goto-char local-limit))
-                 (clojure-forward-sexp)
-                 t))
+             (byte-compile
+              (lambda (meta?+ns?+symbol limit)
+                (ignore-errors
+                  (when font-lock--skip
+                    (error ""))
+                  (clojure-skip :comment :ignored-form :type-hint :destructuring-bind)
+                  (let ((local-limit (save-excursion (forward-sexp) (point))))
+                    (unless (and (re-search-forward meta?+ns?+symbol (min local-limit limit) t)
+                                 (not (string-match-p clojure--ignore-binding-highlight-regex
+                                                      (match-string-no-properties 1))))
+                      (set-match-data (fake-match-4)))
+                    (goto-char local-limit))
+                  (clojure-forward-sexp)
+                  t)))
              (concat meta? "\\_<" namespace? "\\(" symbol "\\)"))
            (save-excursion
              (if (in-comment?)
@@ -354,45 +360,46 @@
            (1 'clojure-local-binding-variable-name-face))
           ;; Destructuring bindings
           (,(-partial
-             (lambda (meta?+ns?+symbol limit)
-               ;; NOTE
-               ;; We need to iterate to search symbols in the destructuring form,
-               ;; but anchored-matcher does not support recursion.
-               (ignore-errors
-                 (when font-lock--skip
-                   (error ""))
-                 (unless clojure-binding-form--recursive-point
-                   (while (and (> limit (point))
-                               (prog1 t (clojure-skip :comment :ignored-form :type-hint))
-                               ;; skip normal bind?
-                               (not (looking-at-p "[ \r\t\n]*\\(?:{\\|\\[\\)"))
-                               (prog1 t (clojure-forward-sexp 2))))
-                   (when (looking-at-p "[ \r\t\n]*\\(?:{\\|\\[\\)")
-                     (setq clojure-binding-form--recursive-point (progn (down-list) (point))
-                           clojure-binding-form--recursive-limit (save-excursion (up-list) (point)))))
-                 (when clojure-binding-form--recursive-point
-                   (clojure-skip :comment :ignored-form :type-hint)
-                   (if (re-search-forward meta?+ns?+symbol
-                                          (min limit clojure-binding-form--recursive-limit) t)
-                       (progn
-                         ;; ignores
-                         (when (string-match-p clojure--ignore-binding-highlight-regex
-                                               (match-string-no-properties 1))
-                           (set-match-data (fake-match-4)))
-                         ;; Handle default bind map
-                         (when (save-excursion
-                                 (backward-up-list)
-                                 (and (char-equal ?{ (char-after))
-                                      (ignore-errors
-                                        (clojure-forward-sexp -1)
-                                        (looking-at-p ":or\\>"))))
-                           (clojure-forward-sexp)))
-                     (goto-char clojure-binding-form--recursive-limit)
-                     (clojure-forward-sexp)
-                     (setq clojure-binding-form--recursive-point nil
-                           clojure-binding-form--recursive-limit nil)
-                     (set-match-data (fake-match-4)))
-                   t)))
+             (byte-compile
+              (lambda (meta?+ns?+symbol limit)
+                ;; NOTE
+                ;; We need to iterate to search symbols in the destructuring form,
+                ;; but anchored-matcher does not support recursion.
+                (ignore-errors
+                  (when font-lock--skip
+                    (error ""))
+                  (unless clojure-binding-form--recursive-point
+                    (while (and (> limit (point))
+                                (prog1 t (clojure-skip :comment :ignored-form :type-hint))
+                                ;; skip normal bind?
+                                (not (looking-at-p "[ \r\t\n]*\\(?:{\\|\\[\\)"))
+                                (prog1 t (clojure-forward-sexp 2))))
+                    (when (looking-at-p "[ \r\t\n]*\\(?:{\\|\\[\\)")
+                      (setq clojure-binding-form--recursive-point (progn (down-list) (point))
+                            clojure-binding-form--recursive-limit (save-excursion (up-list) (point)))))
+                  (when clojure-binding-form--recursive-point
+                    (clojure-skip :comment :ignored-form :type-hint)
+                    (if (re-search-forward meta?+ns?+symbol
+                                           (min limit clojure-binding-form--recursive-limit) t)
+                        (progn
+                          ;; ignores
+                          (when (string-match-p clojure--ignore-binding-highlight-regex
+                                                (match-string-no-properties 1))
+                            (set-match-data (fake-match-4)))
+                          ;; Handle default bind map
+                          (when (save-excursion
+                                  (backward-up-list)
+                                  (and (char-equal ?{ (char-after))
+                                       (ignore-errors
+                                         (clojure-forward-sexp -1)
+                                         (looking-at-p ":or\\>"))))
+                            (clojure-forward-sexp)))
+                      (goto-char clojure-binding-form--recursive-limit)
+                      (clojure-forward-sexp)
+                      (setq clojure-binding-form--recursive-point nil
+                            clojure-binding-form--recursive-limit nil)
+                      (set-match-data (fake-match-4)))
+                    t))))
              (concat meta? "\\_<" namespace? "\\(" symbol "\\)\\>"))
            (save-excursion
              (if (in-comment?)
@@ -411,10 +418,11 @@
          (,(concat "(" core-ns? "\\(" oop-kw whitespace+ meta? "\\|" "letfn" whitespace+ "\\[" "\\)")
           ;; highlighting definition type symbol
           (,(-partial
-             (lambda (symbol limit)
-               (unless font-lock--skip
-                 (and (string-match-p "^def" clojure-oop-kw--str)
-                      (re-search-forward symbol limit t))))
+             (byte-compile
+              (lambda (symbol limit)
+                (unless font-lock--skip
+                  (and (string-match-p "^def" clojure-oop-kw--str)
+                       (re-search-forward symbol limit t)))))
              (concat "\\(" symbol "\\)"))
            (save-excursion
              (setq clojure-oop-kw--str (match-string-no-properties 1))
@@ -427,23 +435,24 @@
            (0 'clojure-define-type-face))
           ;; highlighting OOP fn name
           (,(-partial
-             (lambda (symbol limit)
-               (ignore-errors
-                 (when font-lock--skip
-                   (error ""))
-                 (while (and (> limit (point))
-                             (prog1 t (clojure-skip :comment :ignored-form))
-                             (not (looking-at-p "[ \r\t\n]*("))
-                             (prog1 t (forward-sexp))))
-                 (when (looking-at-p "[ \r\t\n]*(")
-                   (down-list)
-                   (clojure-skip :type-hint :ignored-form)
-                   (let ((local-limit (save-excursion (forward-sexp) (point))))
-                     (if (re-search-forward symbol (min limit local-limit) t)
-                         (add-to-list 'clojure-oop-fn-form--points (match-end 0))
-                       (set-match-data (fake-match-2))))
-                   (up-list)
-                   t)))
+             (byte-compile
+              (lambda (symbol limit)
+                (ignore-errors
+                  (when font-lock--skip
+                    (error ""))
+                  (while (and (> limit (point))
+                              (prog1 t (clojure-skip :comment :ignored-form))
+                              (not (looking-at-p "[ \r\t\n]*("))
+                              (prog1 t (forward-sexp))))
+                  (when (looking-at-p "[ \r\t\n]*(")
+                    (down-list)
+                    (clojure-skip :type-hint :ignored-form)
+                    (let ((local-limit (save-excursion (forward-sexp) (point))))
+                      (if (re-search-forward symbol (min limit local-limit) t)
+                          (add-to-list 'clojure-oop-fn-form--points (match-end 0))
+                        (set-match-data (fake-match-2))))
+                    (up-list)
+                    t))))
              (concat symbol "\\>"))
            (save-excursion
              (setq clojure-oop-fn-form--points nil)
@@ -459,34 +468,35 @@
            (0 'clojure-semi-function-name-face))
           ;; highlighting OOP fn parameters
           (,(-partial
-             (lambda (meta?+ns?+symbol limit)
-               (ignore-errors
-                 (when font-lock--skip
-                   (error ""))
-                 (while (and (not clojure-oop-fn-recursive--point)
-                             clojure-oop-fn-form--points)
-                   (-when-let (point (car clojure-oop-fn-form--points))
-                     (setq clojure-oop-fn-form--points (cdr clojure-oop-fn-form--points))
-                     (goto-char point)
-                     (when (re-search-forward "\\[" limit 'noerr)
-                       (setq clojure-oop-fn-recursive--point (point)
-                             clojure-oop-fn-recursive--limit (save-excursion
-                                                               (up-list)
-                                                               (point)))
-                       (when (string-match-p "definterface\\|defprotocol" clojure-oop-kw--str)
-                         (setq clojure-oop-fn-form--points
-                               (cons clojure-oop-fn-recursive--limit
-                                     clojure-oop-fn-form--points))))))
-                 (when clojure-oop-fn-recursive--point
-                   (if (re-search-forward meta?+ns?+symbol
-                                          (min limit clojure-oop-fn-recursive--limit) t)
-                       (when (string-match-p clojure--ignore-binding-highlight-regex
-                                             (match-string-no-properties 1))
-                         (set-match-data (fake-match-4)))
-                     (set-match-data (fake-match-4))
-                     (setq clojure-oop-fn-recursive--point nil
-                           clojure-oop-fn-recursive--limit nil))
-                   t)))
+             (byte-compile
+              (lambda (meta?+ns?+symbol limit)
+                (ignore-errors
+                  (when font-lock--skip
+                    (error ""))
+                  (while (and (not clojure-oop-fn-recursive--point)
+                              clojure-oop-fn-form--points)
+                    (-when-let (point (car clojure-oop-fn-form--points))
+                      (setq clojure-oop-fn-form--points (cdr clojure-oop-fn-form--points))
+                      (goto-char point)
+                      (when (re-search-forward "\\[" limit 'noerr)
+                        (setq clojure-oop-fn-recursive--point (point)
+                              clojure-oop-fn-recursive--limit (save-excursion
+                                                                (up-list)
+                                                                (point)))
+                        (when (string-match-p "definterface\\|defprotocol" clojure-oop-kw--str)
+                          (setq clojure-oop-fn-form--points
+                                (cons clojure-oop-fn-recursive--limit
+                                      clojure-oop-fn-form--points))))))
+                  (when clojure-oop-fn-recursive--point
+                    (if (re-search-forward meta?+ns?+symbol
+                                           (min limit clojure-oop-fn-recursive--limit) t)
+                        (when (string-match-p clojure--ignore-binding-highlight-regex
+                                              (match-string-no-properties 1))
+                          (set-match-data (fake-match-4)))
+                      (set-match-data (fake-match-4))
+                      (setq clojure-oop-fn-recursive--point nil
+                            clojure-oop-fn-recursive--limit nil))
+                    t))))
              (concat meta? "\\_<" namespace? "\\(" symbol "\\)\\>"))
            (save-excursion
              (if (in-comment?)
@@ -527,48 +537,49 @@
               (t 'font-lock-variable-name-face)))
           ;; fn parameters highlight
           (,(-partial
-             (lambda (meta?+ns?+symbol limit)
-               (ignore-errors
-                 (when font-lock--skip
-                   (error ""))
-                 (unless clojure-fn-recursive--point
-                   (when clojure-fn-form--multi-arity?
-                     (up-list 2))
-                   (while (progn
-                            (clojure-skip :comment :ignored-form :string :map)
-                            (when clojure-fn-form--method?
-                              (setq clojure-fn-form--method? nil)
-                              (clojure-forward-sexp)
-                              t)))
-                   (when (looking-at "(")
-                     (setq clojure-fn-form--multi-arity? t)
-                     (down-list))
-                   (when (looking-at "\\[")
-                     (down-list)
-                     (setq clojure-fn-recursive--point (point)
-                           clojure-fn-recursive--limit (save-excursion
-                                                         (up-list)
-                                                         (1- (point))))))
-                 (when clojure-fn-recursive--point
-                   (if (re-search-forward meta?+ns?+symbol
-                                          (min limit clojure-fn-recursive--limit) t)
-                       (progn
-                         ;; ignores
-                         (when (string-match-p clojure--ignore-binding-highlight-regex
-                                               (match-string-no-properties 1))
-                           (set-match-data (fake-match-4)))
-                         ;; Handle default bind map
-                         (when (save-excursion
-                                 (backward-up-list)
-                                 (and (char-equal ?{ (char-after))
-                                      (ignore-errors
-                                        (clojure-forward-sexp -1)
-                                        (looking-at-p ":or\\>"))))
-                           (clojure-forward-sexp)))
-                     (set-match-data (fake-match-4))
-                     (setq clojure-fn-recursive--point nil
-                           clojure-fn-recursive--limit nil))
-                   t)))
+             (byte-compile
+              (lambda (meta?+ns?+symbol limit)
+                (ignore-errors
+                  (when font-lock--skip
+                    (error ""))
+                  (unless clojure-fn-recursive--point
+                    (when clojure-fn-form--multi-arity?
+                      (up-list 2))
+                    (while (progn
+                             (clojure-skip :comment :ignored-form :string :map)
+                             (when clojure-fn-form--method?
+                               (setq clojure-fn-form--method? nil)
+                               (clojure-forward-sexp)
+                               t)))
+                    (when (looking-at "(")
+                      (setq clojure-fn-form--multi-arity? t)
+                      (down-list))
+                    (when (looking-at "\\[")
+                      (down-list)
+                      (setq clojure-fn-recursive--point (point)
+                            clojure-fn-recursive--limit (save-excursion
+                                                          (up-list)
+                                                          (1- (point))))))
+                  (when clojure-fn-recursive--point
+                    (if (re-search-forward meta?+ns?+symbol
+                                           (min limit clojure-fn-recursive--limit) t)
+                        (progn
+                          ;; ignores
+                          (when (string-match-p clojure--ignore-binding-highlight-regex
+                                                (match-string-no-properties 1))
+                            (set-match-data (fake-match-4)))
+                          ;; Handle default bind map
+                          (when (save-excursion
+                                  (backward-up-list)
+                                  (and (char-equal ?{ (char-after))
+                                       (ignore-errors
+                                         (clojure-forward-sexp -1)
+                                         (looking-at-p ":or\\>"))))
+                            (clojure-forward-sexp)))
+                      (set-match-data (fake-match-4))
+                      (setq clojure-fn-recursive--point nil
+                            clojure-fn-recursive--limit nil))
+                    t))))
              (concat meta? "\\_<" namespace? "\\(" symbol "\\)\\>"))
            (if (in-comment?)
                (setq font-lock--skip t)
@@ -652,17 +663,18 @@
          ;; local variables
          (,(concat "(\\(lexical-\\)?let\\*?" whitespace+ "(")
           (,(-partial
-             (lambda (symbol+whitespace limit)
-               (ignore-errors
-                 (when font-lock--skip
-                   (error ""))
-                 (comment-forward (point-max))
-                 (let ((local-limit (save-excursion (forward-sexp) (point))))
-                   (unless (and (re-search-forward symbol+whitespace (min local-limit limit) t)
-                                (ignore-errors (forward-sexp) t))
-                     (set-match-data (fake-match-4)))
-                   (goto-char local-limit))
-                 t))
+             (byte-compile
+              (lambda (symbol+whitespace limit)
+                (ignore-errors
+                  (when font-lock--skip
+                    (error ""))
+                  (comment-forward (point-max))
+                  (let ((local-limit (save-excursion (forward-sexp) (point))))
+                    (unless (and (re-search-forward symbol+whitespace (min local-limit limit) t)
+                                 (ignore-errors (forward-sexp) t))
+                      (set-match-data (fake-match-4)))
+                    (goto-char local-limit))
+                  t)))
              (concat "(\\(" symbol "\\)" whitespace+))
            (save-excursion
              (if (in-comment?)
@@ -678,14 +690,15 @@
          ;; function arguments
          (,(concat "\\(defun\\|lambda\\)" whitespace+ "\\(" symbol whitespace+ "\\)?(")
           (,(-partial
-             (lambda (symbol limit)
-               (ignore-errors
-                 (when font-lock--skip
-                   (error ""))
-                 (when (re-search-forward symbol limit t)
-                   (when (string-match-p "^&" (match-string 1))
-                     (set-match-data (fake-match-4)))
-                   t)))
+             (byte-compile
+              (lambda (symbol limit)
+                (ignore-errors
+                  (when font-lock--skip
+                    (error ""))
+                  (when (re-search-forward symbol limit t)
+                    (when (string-match-p "^&" (match-string 1))
+                      (set-match-data (fake-match-4)))
+                    t))))
              (concat "\\(" symbol "\\)\\>"))
            (save-excursion
              (if (in-comment?)
@@ -785,6 +798,172 @@
          nil
          (1 'font-lock-variable-name-face)))))
    :append))
+
+(use-package prog-mode
+  :defer t
+  :init
+  ;; - https://gist.github.com/mordocai/50783defab3c3d1650e068b4d1c91495
+  (defconst fira-code-font-lock-keywords-alist
+    (mapcar (lambda (regex-char-pair)
+              (let ((face (if (eq 'gnu/linux system-type)
+                              '((:slant normal :weight normal))
+                            '((:slant normal)))))
+                `(,(car regex-char-pair)
+                  (1 (progn
+                       (compose-region (match-beginning 1)
+                                       (match-end 1)
+                                       ;; The first argument to concat is a string containing a literal tab
+                                       ,(concat "	" (list (decode-char 'ucs (cadr regex-char-pair)))))
+                       ',face)
+                     prepend))))
+            '(;;                             #Xe
+              ;;www                          #Xe
+              ;; ("\\(www\\)"                   #Xe100)
+              ;; **                          #Xe101
+              ;; ("[^/]\\(\\*\\*\\)[^/]"        #Xe101)
+              ;; ***                         #Xe
+              ;; ("\\(\\*\\*\\*\\)"             #Xe102)
+              ;; **/                         #Xe103
+              ;; ("\\(\\*\\*/\\)"               #Xe103)
+              ("\\(\\*>\\)"                  #Xe104)
+              ;; */                          #Xe103
+              ;; ("[^*]\\(\\*/\\)"              #Xe105)
+              ;; \\                          #Xe
+              ("\\(\\\\\\\\\\)"              #Xe106)
+              ;; \\\                         #Xe
+              ("\\(\\\\\\\\\\\\\\)"          #Xe107)
+              ("\\({-\\)"                    #Xe108)
+              ("\\(::\\)"                    #Xe10a)
+              ("\\(:::\\)"                   #Xe10b)
+              ;; ("[^=]\\(:=\\)"                #Xe10c)
+              ;; ("\\(!!\\)"                    #Xe10d)
+              ("\\(!=\\)"                    #Xe10e)
+              ("\\(!==\\)"                   #Xe10f)
+              ("\\(-}\\)"                    #Xe110)
+              ;; ("\\(--\\)"                    #Xe111)
+              ;; ("\\(---\\)"                   #Xe112)
+              ("\\(-->\\)"                   #Xe113)
+              ("[^-]\\(->\\)"                #Xe114)
+              ("\\(->>\\)"                   #Xe115)
+              ("\\(-<\\)"                    #Xe116)
+              ("\\(-<<\\)"                   #Xe117)
+              ("\\(-~\\)"                    #Xe118)
+              ;; ("\\(#{\\)"                    #Xe119)
+              ;; ("\\(#\\[\\)"                  #Xe11a)
+              ;; ("\\(##\\)"                    #Xe11b)
+              ;; ("\\(###\\)"                   #Xe11c)
+              ;; ("\\(####\\)"                  #Xe11d)
+              ;; ("\\(#(\\)"                    #Xe11e)
+              ("\\(#\\?\\)"                  #Xe11f)
+              ("\\(#_\\)"                    #Xe120)
+              ;; ("\\(#_(\\)"                   #Xe121)
+              ("\\(\\.-\\)"                  #Xe122)
+              ("\\(\\.=\\)"                  #Xe123)
+              ;; ..                          #Xe124
+              ("\\(\\.\\.\\)"                #Xe124)
+              ;; ..<                         #Xe125
+              ("\\(\\.\\.<\\)"               #Xe125)
+              ;; ...                         #Xe126
+              ("\\(\\.\\.\\.\\)"             #Xe126)
+              ;; ("\\(\\?=\\)"                  #Xe127)
+              ;; ("\\(\\?\\?\\)"                #Xe128)
+              ;; ("\\(;;\\)[^;]"                #Xe129)
+              ;; /*                          #Xe12a
+              ;; ("\\(/\\*\\)"                  #Xe12a)
+              ;; /**                         #Xe12b
+              ("\\(/\\*\\*\\)"               #Xe12b)
+              ("\\(/=\\)"                    #Xe12c)
+              ("\\(/==\\)"                   #Xe12d)
+              ;; ("\\(/>\\)"                    #Xe12e)
+              ("\\(//\\)"                    #Xe12f)
+              ("\\(///\\)"                   #Xe130)
+              ;; ("\\(&&\\)"                    #Xe131)
+              ;; ("\\(||\\)"                    #Xe132)
+              ("\\(||=\\)"                   #Xe133)
+              ("[^|]\\(|=\\)"                #Xe134)
+              ("\\(|>\\)"                    #Xe135)
+              ("\\(\\^=\\)"                  #Xe136)
+              ;; ("\\(\\$>\\)"                  #Xe137)
+              ;; ++                          #Xe138
+              ("\\(\\+\\+\\)"                #Xe138)
+              ;; +++                         #Xe139
+              ;; ("\\(\\+\\+\\+\\)"             #Xe139)
+              ;; ("\\(\\+>\\)"                  #Xe13a)
+              ("\\(=:=\\)"                   #Xe13b)
+              ("[^!/]\\(==\\)[^>]"           #Xe13c)
+              ("\\(===\\)"                   #Xe13d)
+              ("\\(==>\\)"                   #Xe13e)
+              ("[^=]\\(=>\\)"                #Xe13f)
+              ("\\(=>>\\)"                   #Xe140)
+              ("\\(<=\\)"                    #Xe141)
+              ("\\(=<<\\)"                   #Xe142)
+              ("\\(=/=\\)"                   #Xe143)
+              ("\\(>-\\)"                    #Xe144)
+              ("\\(>=\\)"                    #Xe145)
+              ("\\(>=>\\)"                   #Xe146)
+              ("[^-=]\\(>>\\)"               #Xe147)
+              ("\\(>>-\\)"                   #Xe148)
+              ("\\(>>=\\)"                   #Xe149)
+              ("\\(>>>\\)"                   #Xe14a)
+              ;; <*                          #Xe
+              ("\\(<\\*\\)"                  #Xe14b)
+              ;; *>                          #Xe
+              ("\\(<\\*>\\)"                 #Xe14c)
+              ("\\(<|\\)"                    #Xe14d)
+              ("\\(<|>\\)"                   #Xe14e)
+              ;; ("\\(<\\$\\)"                  #Xe14f)
+              ;; ("\\(<\\$>\\)"                 #Xe150)
+              ;; ("\\(<!--\\)"                  #Xe151)
+              ("\\(<-\\)"                    #Xe152)
+              ("\\(<--\\)"                   #Xe153)
+              ("\\(<->\\)"                   #Xe154)
+              ;; ("\\(<\\+\\)"                  #Xe155)
+              ;; ("\\(<\\+>\\)"                 #Xe156)
+              ("\\(<=\\)"                    #Xe157)
+              ("\\(<==\\)"                   #Xe158)
+              ("\\(<=>\\)"                   #Xe159)
+              ("\\(<=<\\)"                   #Xe15a)
+              ;; ("\\(<>\\)"                    #Xe15b)
+              ;; -<<                         #Xe
+              ;; =<<                         #Xe
+              ;; ("[^-=]\\(<<\\)"               #Xe15c)
+              ("\\(<<-\\)"                   #Xe15d)
+              ("\\(<<=\\)"                   #Xe15e)
+              ("\\(<<<\\)"                   #Xe15f)
+              ("\\(<~\\)"                    #Xe160)
+              ("\\(<~~\\)"                   #Xe161)
+              ;; ("\\(</\\)"                    #Xe162)
+              ;; ("\\(</>\\)"                   #Xe163)
+              ;; ("\\(~@\\)"                    #Xe164)
+              ("\\(~-\\)"                    #Xe165)
+              ("\\(~=\\)"                    #Xe166)
+              ("\\(~>\\)"                    #Xe167)
+              ("[^<]\\(~~\\)"                #Xe168)
+              ("\\(~~>\\)"                   #Xe169)
+              ;; ("\\(%%\\)"                    #Xe16a)
+              ;; ("[^:=]\\(:\\)[^:=]"           #Xe16c)
+              ;; ("[^\\+<>]\\(\\+\\)[^\\+<>]"   #Xe16d)
+              ;; (*                          #Xe
+              ("\\s(\\(\\*\\)[ \r\t\n]"      #Xe16f))))
+
+  (font-lock-set-defaults)
+
+  (defconst fira-code-font-lock-compild-keywords
+    (font-lock-compile-keywords fira-code-font-lock-keywords-alist))
+
+  :config
+  (add-hook 'prog-mode-hook
+            (lambda ()
+              (font-lock-add-keywords nil fira-code-font-lock-keywords-alist t)
+              (when (eq 'gnu/linux system-type)
+                (font-lock-add-keywords
+                 nil
+                 '(("[ \t]\\([-+]?=\\)[ \t]"
+                    (1 '((:weight normal)) prepend))
+                   ("\\s(\\(=\\)[ \t]"
+                    (1 '((:weight normal)) prepend)))
+                 t)))
+            :append))
 
 (use-package sh-script
   :defer t

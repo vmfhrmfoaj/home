@@ -20,6 +20,19 @@
   (all-the-icons-update-data 'all-the-icons-dir-icon-alist "google[ _-]drive" :height 1.0)
   (all-the-icons-update-data 'all-the-icons-icon-alist "\\.DS_STORE$" :height 0.95 :v-adjust -0.1))
 
+(use-package company
+  :defer t
+  :config
+  (advice-add #'company-call-frontends :before
+              (lambda (cmd)
+                (ignore-errors
+                  (cond
+                   ((eq 'show cmd)
+                    (with-silent-modifications
+                      (remove-text-properties (point-min) (point-max) '(composition nil))))
+                   ((eq 'hide cmd)
+                    (fira-code-fontify (point-min) (point-max))))))))
+
 (use-package diminish
   :ensure t
   :config
@@ -46,6 +59,39 @@
   (with-eval-after-load "which-key"             (diminish 'which-key-mode             "Ⓦ"))
   (with-eval-after-load "zoom"                  (diminish 'zoom-mode                  "Ⓩ")))
 
+(use-package evil
+  :defer t
+  :config
+  (add-hook 'evil-normal-state-entry-hook
+            (lambda ()
+              "TODO"
+              (fira-code-fontify (point-min) (point-max))))
+  (add-hook 'evil-visual-state-entry-hook
+            (lambda ()
+              "TODO"
+              (with-silent-modifications
+                (remove-text-properties (point-min) (point-max) '(composition nil)))))
+  (advice-add #'evil-next-line :around
+              (lambda (fn &rest args)
+                "TODO"
+                (if (or evil-insert-vcount
+                        (eq 'visual evil-state))
+                    (apply fn args)
+                  (let ((beg (line-beginning-position))
+                        (end (line-end-position 2)))
+                    (without-fira-code-composition beg end
+                      (apply fn args))))))
+  (advice-add #'evil-previous-line :around
+              (lambda (fn &rest args)
+                "TODO"
+                (if (or evil-insert-vcount
+                        (eq 'visual evil-state))
+                    (apply fn args)
+                  (let ((beg (line-beginning-position 0))
+                        (end (line-end-position)))
+                    (without-fira-code-composition beg end
+                      (apply fn args)))))))
+
 (use-package evil-goggles
   :ensure t
   :after evil
@@ -66,10 +112,10 @@
                 (let (fancy-narrow--beginning fancy-narrow--end)
                   (funcall fn arg))))
   (advice-add #'jit-lock-function :around
-              (lambda (fn start)
+              (lambda (fn beg)
                 "wrap `jit-lock-function' to run without `fancy-narrow'."
                 (let (fancy-narrow--beginning fancy-narrow--end)
-                  (funcall fn start)))))
+                  (funcall fn beg)))))
 
 (use-package focus
   :ensure t
@@ -81,77 +127,77 @@
       (if focus-mode-org-thing-lock
           (cons 0 0)
         (save-excursion
-          (let ((start (progn
-                         (outline-previous-heading)
-                         (point)))
+          (let ((beg (progn
+                       (outline-previous-heading)
+                       (point)))
                 (end   (progn
                          (outline-next-visible-heading 1)
                          (beginning-of-line)
                          (point))))
-            (cons start end))))))
+            (cons beg end))))))
 
   (defun focus--text-thing ()
     "TODO"
     (ignore-errors
       (let* ((regx  (concat "^\\(?:[[:cntrl:]]\\)*$"))
-             (start (save-excursion
-                      (backward-char)
-                      (re-search-backward regx nil t)
-                      (point)))
+             (beg (save-excursion
+                    (backward-char)
+                    (re-search-backward regx nil t)
+                    (point)))
              (end   (save-excursion
                       (forward-char)
                       (re-search-forward regx nil t)
                       (point))))
-        (cons start end))))
+        (cons beg end))))
 
   (defun focus--list+-thing ()
     "TODO"
     (ignore-errors
       (save-excursion
-        (let ((start (progn
-                       (ignore-errors
-                         (cond ((sp-point-in-string)
-                                (save-match-data
-                                  (re-search-backward "[^\\]\""))
-                                (forward-char))
-                               ((sp-point-in-comment)
-                                (beginning-of-line)))
-                         (backward-up-list 2))
-                       (point)))
+        (let ((beg (progn
+                     (ignore-errors
+                       (cond ((sp-point-in-string)
+                              (save-match-data
+                                (re-search-backward "[^\\]\""))
+                              (forward-char))
+                             ((sp-point-in-comment)
+                              (beginning-of-line)))
+                       (backward-up-list 2))
+                     (point)))
               (end (progn
                      (forward-list)
                      (point))))
-          (cons start end)))))
+          (cons beg end)))))
 
   (defun focus--lisp-thing ()
     "TODO"
     (ignore-errors
       (save-excursion
-        (let ((start (progn
-                       (ignore-errors
-                         (while (progn
-                                  (backward-up-list 1 t t)
-                                  (not (looking-at-p "(\\(\\(lexical-\\)?let\\*?\\|lambda\\|defun\\|defmacro\\)\\_>")))))
-                       (point)))
+        (let ((beg (progn
+                     (ignore-errors
+                       (while (progn
+                                (backward-up-list 1 t t)
+                                (not (looking-at-p "(\\(\\(lexical-\\)?let\\*?\\|lambda\\|defun\\|defmacro\\)\\_>")))))
+                     (point)))
               (end (progn
                      (forward-list)
                      (point))))
-          (cons start end)))))
+          (cons beg end)))))
 
   (defun focus--clojure-thing ()
     "TODO"
     (ignore-errors
       (save-excursion
-        (let ((start (progn
-                       (ignore-errors
-                         (while (progn
-                                  (backward-up-list 1 t t)
-                                  (not (looking-at-p "(\\([-0-9A-Za-z]+/\\)?\\(let\\|loop\\|doseq\\|fn\\|def[a-z]*\\)\\_>")))))
-                       (point)))
+        (let ((beg (progn
+                     (ignore-errors
+                       (while (progn
+                                (backward-up-list 1 t t)
+                                (not (looking-at-p "(\\([-0-9A-Za-z]+/\\)?\\(let\\|loop\\|doseq\\|fn\\|def[a-z]*\\)\\_>")))))
+                     (point)))
               (end (progn
                      (forward-list)
                      (point))))
-          (cons start end)))))
+          (cons beg end)))))
 
   (defvar focus--exclude-modes '(term-mode)
     "TODO")
@@ -303,6 +349,31 @@
   :config
   (advice-add #'powerline-buffer-id :filter-return #'powerline-ellipsis-buffer-id)
   (powerline-vim+-theme))
+
+(use-package prog-mode
+  :defer t
+  :config
+  (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
+  (add-hook 'after-make-frame-functions
+            (lambda (_)
+              (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
+  (advice-add #'current-column :around
+              (lambda (fn &rest args)
+                "TODO"
+                (let ((beg (line-beginning-position))
+                      (end (line-end-position)))
+                  (without-fira-code-composition beg end
+                    (apply fn args)))))
+  (advice-add #'indent-region :around
+              (lambda (fn beg end &optional column)
+                "TODO"
+                (without-fira-code-composition beg end
+                  (apply fn beg end column))))
+  (dolist (fn '(indent-for-tab-command indent-according-to-mode))
+    (advice-add fn :around
+                (lambda (fn &rest args)
+                  (without-fira-code-composition nil nil 'composition
+                    (apply fn args))))))
 
 (use-package rainbow-delimiters
   :ensure t

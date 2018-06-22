@@ -252,16 +252,21 @@
 
 (put 'with-disable-modes 'lisp-indent-function 'defun)
 
-(defmacro without-text-property (start end property &rest body)
-  "TODO"
-  `(progn
-     (with-silent-modifications
-       (remove-text-properties (or ,start (point-min))
-                               (or ,end   (point-max))
-                               (list ,property nil)))
-     (unwind-protect
-         (progn
-           ,@body)
-       (font-lock-flush (or ,start (point-min)) (or ,end (point-max))))))
+(defun fira-code-fontify (beg end)
+  (with-silent-modifications
+    (save-excursion
+      (unwind-protect
+          (let ((font-lock-keywords fira-code-font-lock-compild-keywords))
+            (font-lock-fontify-keywords-region beg end))))))
 
-(put 'without-text-property 'lisp-indent-function 'defun)
+(defmacro without-fira-code-composition (beg end &rest body)
+  "TODO"
+  `(let ((beg (or ,beg (point-min)))
+         (end (or ,end (point-max))))
+     (with-silent-modifications
+       (remove-text-properties beg end '(composition nil)))
+     (progn
+       ,@body)
+     (fira-code-fontify beg end)))
+
+(put 'without-fira-code-composition 'lisp-indent-function 'defun)
