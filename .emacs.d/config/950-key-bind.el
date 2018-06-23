@@ -446,7 +446,8 @@
     "mgg" #'dumb-jump-go)
   (which-key-declare-prefixes-for-mode 'php-mode
     (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode "," 'php-mode))
+  (evil-leader/set-major-leader-for-mode "," 'php-mode)
+  (define-key php-mode-map [tab] nil))
 
 (use-package profiler
   :defer t
