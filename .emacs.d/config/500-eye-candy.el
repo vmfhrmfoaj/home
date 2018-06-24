@@ -267,15 +267,6 @@
   (advice-add #'hl-todo--setup :after #'hl-todo--setup-custom)
   (global-hl-todo-mode 1))
 
-(use-package org-bullets
-  :ensure t
-  :defer t
-  :init
-  (add-hook 'org-mode-hook #'org-bullets-mode)
-
-  :config
-  (setq org-bullets-bullet-list '("■" "□" "◙" "◘" "●" "○" "◌")))
-
 (use-package powerline
   :ensure t
   :init

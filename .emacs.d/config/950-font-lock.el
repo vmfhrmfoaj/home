@@ -724,39 +724,12 @@
             (square       (string-to-char (cdr (assoc "square" data))))
             (minus-square (string-to-char (cdr (assoc "minus-square" data))))
             (check-square (string-to-char (cdr (assoc "check-square" data)))))
-       `(("^\\s-*\\(-\\) "
-          1 (progn
-              (let ((s (match-beginning 1))
-                    (e (match-end 1)))
-                (compose-region s e ?╺))
-              'bold))
+       `(("^\\s-*\\(?:-\\|[0-9]+\\.\\)[ \t]\\(\\[\\( \\|-\\|X\\)\\]\\) "
+          1 (if (string-equal (match-string 2) "X") 'org-done 'org-todo) t)
+         ("^\\s-*\\(-\\) "
+          1 'bold)
          ("^\\s-*\\(\\([0-9]\\.\\)\\) "
           1 'bold)
-         ("^\\s-*\\(?:-\\|[0-9]+\\.\\) \\(\\[\\( \\|-\\|X\\)\\]\\) "
-          1 (progn
-              (let ((x (match-string 2))
-                    (s (match-beginning 1))
-                    (e (match-end 1)))
-                (compose-region
-                 s e
-                 (cond
-                  ((string-equal x " ") ,square)
-                  ((string-equal x "-") ,minus-square)
-                  ((string-equal x "X") ,check-square)))
-                (cond
-                 ((eq 'gnu/linux system-type)
-                  (put-text-property s e 'display '(raise  0.1)))
-                 ((eq 'darwin    system-type)
-                  (put-text-property s e 'display '(raise -0.1))))
-                (list :family "FontAwesome"
-                      :foreground (face-attribute (if (string-equal x "X")
-                                                      'org-done 'org-todo)
-                                                  :foreground)
-                      :height (cond
-                               ((eq 'gnu/linux system-type) 0.95)
-                               ((eq 'darwin system-type) 1.1)
-                               (t 1.0)))))
-          t)
          ("\\(\\\\\\\\\\)\\s-*$"
           1 'shadow nil)))
      :append)))
