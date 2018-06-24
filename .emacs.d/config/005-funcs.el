@@ -206,7 +206,7 @@
                                                   (other (or (buf-visit-time other) 0)))
                                               (time-less-p other it)))
                                     (-first-item))))
-        (set-window-buffer (selected-window) prev-buf)))))
+        (switch-to-buffer prev-buf nil t)))))
 
 
 (defun get-scratch-buffer-create ()

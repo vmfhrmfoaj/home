@@ -20,6 +20,12 @@
   (all-the-icons-update-data 'all-the-icons-dir-icon-alist "google[ _-]drive" :height 1.0)
   (all-the-icons-update-data 'all-the-icons-icon-alist "\\.DS_STORE$" :height 0.95 :v-adjust -0.1))
 
+(use-package auto-dim-other-buffers
+  :ensure t
+  :config
+  (advice-add #'adob--never-dim-p :before-until #'helm-bufferp)
+  (auto-dim-other-buffers-mode))
+
 (use-package company
   :defer t
   :config
@@ -36,28 +42,29 @@
 (use-package diminish
   :ensure t
   :config
-  (with-eval-after-load "abbrev"                (diminish 'abbrev-mode                "Ⓐ"))
-  (with-eval-after-load "aggressive-indent"     (diminish 'aggressive-indent-mode     "Ⓐ"))
-  (with-eval-after-load "autorevert"            (diminish 'auto-revert-mode           "Ⓐ"))
-  (with-eval-after-load "company"               (diminish 'company-mode               "Ⓒ"))
-  (with-eval-after-load "eldoc"                 (diminish 'eldoc-mode                 "Ⓔ"))
-  (with-eval-after-load "elisp-slime-nav"       (diminish 'elisp-slime-nav-mode       "Ⓔ"))
-  (with-eval-after-load "evil-goggles"          (diminish 'evil-goggles-mode          "Ⓔ"))
-  (with-eval-after-load "evil-org"              (diminish 'evil-org-mode              "Ⓔ"))
-  (with-eval-after-load "git-gutter+"           (diminish 'git-gutter+-mode           "Ⓖ"))
-  (with-eval-after-load "helm"                  (diminish 'helm-mode                  "Ⓗ"))
-  (with-eval-after-load "highlight-parentheses" (diminish 'highlight-parentheses-mode "Ⓗ"))
-  (with-eval-after-load "linum-relative"        (diminish 'linum-relative-mode        "Ⓛ"))
-  (with-eval-after-load "magit-svn"             (diminish 'magit-svn-mode             "Ⓜ"))
-  (with-eval-after-load "org-indent"            (diminish 'org-indent-mode            "Ⓞ"))
-  (with-eval-after-load "simple"                (diminish 'auto-fill-function         "Ⓐ"))
-  (with-eval-after-load "smartparens"           (diminish 'smartparens-mode           "Ⓢ"))
-  (with-eval-after-load "subword"               (diminish 'subword-mode               "Ⓢ"))
-  (with-eval-after-load "undo-tree"             (diminish 'undo-tree-mode             "Ⓤ"))
-  (with-eval-after-load "vi-tilde-fringe"       (diminish 'vi-tilde-fringe-mode       "Ⓥ"))
-  (with-eval-after-load "view"                  (diminish 'view-mode                  "Ⓥ"))
-  (with-eval-after-load "which-key"             (diminish 'which-key-mode             "Ⓦ"))
-  (with-eval-after-load "zoom"                  (diminish 'zoom-mode                  "Ⓩ")))
+  (with-eval-after-load "auto-dim-other-buffers") (diminish 'auto-dim-other-buffers-mode "Ⓐ")
+  (with-eval-after-load "abbrev"                  (diminish 'abbrev-mode                 "Ⓐ"))
+  (with-eval-after-load "aggressive-indent"       (diminish 'aggressive-indent-mode      "Ⓐ"))
+  (with-eval-after-load "autorevert"              (diminish 'auto-revert-mode            "Ⓐ"))
+  (with-eval-after-load "company"                 (diminish 'company-mode                "Ⓒ"))
+  (with-eval-after-load "eldoc"                   (diminish 'eldoc-mode                  "Ⓔ"))
+  (with-eval-after-load "elisp-slime-nav"         (diminish 'elisp-slime-nav-mode        "Ⓔ"))
+  (with-eval-after-load "evil-goggles"            (diminish 'evil-goggles-mode           "Ⓔ"))
+  (with-eval-after-load "evil-org"                (diminish 'evil-org-mode               "Ⓔ"))
+  (with-eval-after-load "git-gutter+"             (diminish 'git-gutter+-mode            "Ⓖ"))
+  (with-eval-after-load "helm"                    (diminish 'helm-mode                   "Ⓗ"))
+  (with-eval-after-load "highlight-parentheses"   (diminish 'highlight-parentheses-mode  "Ⓗ"))
+  (with-eval-after-load "linum-relative"          (diminish 'linum-relative-mode         "Ⓛ"))
+  (with-eval-after-load "magit-svn"               (diminish 'magit-svn-mode              "Ⓜ"))
+  (with-eval-after-load "org-indent"              (diminish 'org-indent-mode             "Ⓞ"))
+  (with-eval-after-load "simple"                  (diminish 'auto-fill-function          "Ⓐ"))
+  (with-eval-after-load "smartparens"             (diminish 'smartparens-mode            "Ⓢ"))
+  (with-eval-after-load "subword"                 (diminish 'subword-mode                "Ⓢ"))
+  (with-eval-after-load "undo-tree"               (diminish 'undo-tree-mode              "Ⓤ"))
+  (with-eval-after-load "vi-tilde-fringe"         (diminish 'vi-tilde-fringe-mode        "Ⓥ"))
+  (with-eval-after-load "view"                    (diminish 'view-mode                   "Ⓥ"))
+  (with-eval-after-load "which-key"               (diminish 'which-key-mode              "Ⓦ"))
+  (with-eval-after-load "zoom"                    (diminish 'zoom-mode                   "Ⓩ")))
 
 (use-package evil
   :defer t

@@ -10,6 +10,11 @@
   :diminish "Ⓗ"
   :commands (helm-make-source)
   :init
+  (defun helm-bufferp (buf)
+    (when (and (bufferp buf)
+               (string-match-p "\\*.*[Hh]elm.*\\*" (buffer-name buf)))
+      t))
+
   (defun helm-resume-last-search-buffer ()
     "TODO"
     (interactive)

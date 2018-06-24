@@ -42,6 +42,9 @@
    `(mode-line-inactive ((t (:background ,(face-attribute 'mode-line :background))))))
   (custom-theme-set-faces
    'twilight-anti-bright
+   `(auto-dim-other-buffers-face
+     ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 17))
+         :background ,(-> 'default (face-attribute :background) (light-color 2)))))
    `(clojure-if-true-face
      ((t (:background ,(-> 'font-lock-keyword-face
                            (face-attribute :background)
@@ -87,6 +90,9 @@
   (load-theme 'twilight-bright t)
   (custom-theme-set-faces
    'twilight-bright
+   `(auto-dim-other-buffers-face
+     ((t :foreground ,(-> 'default (face-attribute :foreground) (light-color 4))
+         :background ,(-> 'default (face-attribute :background) (dim-color 2)))))
    `(clojure-if-true-face
      ((t (:background ,(-> 'font-lock-keyword-face
                            (face-attribute :background)
