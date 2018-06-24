@@ -292,11 +292,84 @@ This is customized version of `clojure-find-ns' to improve some performance."
             (when (re-search-forward clojure-namespace-name-regex nil t)
               (match-string-no-properties 4)))))))
 
+  (defcustom clojure-clj-spec-reqs
+    '([clojure.spec.alpha :as spec])
+    "TODO")
+
+  (defcustom clojure-cljs-spec-reqs
+    '([cljs.spec.alpha :as spec])
+    "TODO")
+
+  (defcustom clojure-clj-test-reqs
+    '([clojure.test :refer :all])
+    "TODO")
+
+  (defcustom clojure-cljs-test-reqs
+    '([cljs.test :refer-macros [async deftest is testing]])
+    "TODO")
+
+  (defcustom clojure-cljs-test-ns-meta
+    '(^:figwheel-load)
+    "TODO")
+
+  (defun clojure-insert-namespace ()
+    (interactive)
+    (let* ((ns (if buffer-file-name
+                   (if (fboundp 'cider-expected-ns)
+                       (cider-expected-ns)
+                     (clojure-expected-ns))
+                 "user.ns"))
+           (buf-file-name (or buffer-file-name ""))
+           (test-file? (string-match-p "_test\\.clj[cs]?$" buf-file-name))
+           (spec-file? (string-match-p "_spec\\.clj[cs]?$" buf-file-name))
+           (cljc-file? (string-match-p "\\.cljc$" buf-file-name))
+           (cljs-file? (string-match-p "\\.cljs$" buf-file-name))
+           (req-vecs (lambda (reqs)
+                       (-interpose '(edn-raw . "\n")
+                                   (if test-file?
+                                       (cons (vector (make-symbol (s-replace-regexp "-test$" "" ns)) :as 'target) reqs)
+                                     reqs))))
+           (clj-spec-reqs  (funcall req-vecs clojure-clj-spec-reqs))
+           (clj-test-reqs  (funcall req-vecs clojure-clj-test-reqs))
+           (cljs-spec-reqs (funcall req-vecs clojure-cljs-spec-reqs))
+           (cljs-test-reqs (funcall req-vecs clojure-cljs-test-reqs)))
+      (goto-char (point-min))
+      (insert
+       (edn-print-string
+        `(ns ,@(when (and test-file? cljs-file?)
+                 clojure-cljs-test-ns-meta)
+             ,(make-symbol ns)
+             ,@(when (or test-file?
+                         spec-file?)
+                 `((edn-raw . "\n")
+                   (:require
+                    ,@(cond
+                       (test-file?
+                        (cond
+                         (cljc-file? `((edn-reader-macro
+                                        "#?@" (:clj (edn-raw . "") [,@clj-test-reqs]
+                                                    (edn-raw . "\n") :cljs [,@cljs-test-reqs]))))
+                         (cljs-file? cljs-test-reqs)
+                         (t clj-test-reqs)))
+                       (spec-file?
+                        (cond
+                         (cljc-file? `((edn-reader-macro
+                                        "#?@" (:clj (edn-raw . "") [,@clj-spec-reqs]
+                                                    (edn-raw . "\n") :cljs [,@cljs-spec-reqs]))))
+                         (cljs-file? cljs-spec-reqs)
+                         (t clj-spec-reqs)))))))))
+       "\n")
+      (delete-trailing-whitespace (point-min) (point))
+      (when buffer-file-name
+        (save-buffer))))
+
   (defun clojure-setup ()
     "TODO"
     (setq-local font-lock-extend-region-functions
                 (remove 'clojure-font-lock-extend-region-def
-                        font-lock-extend-region-functions)))
+                        font-lock-extend-region-functions))
+    (when (and buffer-file-name (= (point-min) (point-max)))
+      (clojure-insert-namespace)))
 
   :config
   (setq clojure-get-indent-function #'clojure--get-indentation)
@@ -308,7 +381,26 @@ This is customized version of `clojure-find-ns' to improve some performance."
 
 (use-package edn
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (defun edn-raw-p (raw)
+    (and (consp raw)
+         (eq 'edn-raw (car raw))))
+
+  (defun edn-raw (raw)
+    (format "%s" (cdr raw)))
+
+  (defun edn-reader-macro-p (reader-macro)
+    (and (listp reader-macro)
+         (eq 'edn-reader-macro (car reader-macro))))
+
+  (defun edn-reader-macro (reader-macro)
+    (let ((reader-macro (cadr reader-macro))
+          (form (caddr reader-macro)))
+      (concat reader-macro (edn-print-string form))))
+
+  (edn-add-writer #'edn-raw-p #'edn-raw)
+  (edn-add-writer #'edn-reader-macro-p #'edn-reader-macro))
 
 (use-package helm-cider-cheatsheet
   :ensure helm-cider
