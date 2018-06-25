@@ -74,6 +74,9 @@
    `(linum-relative-current-face ((t (:inherit (bold linum) :foreground "#999999"))))
    `(org-cancelled ((t (:foreground nil :inherit org-done))))
    `(org-column ((t (:inherit bold))))
+   `(org-block
+     ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 15))
+         :background ,(-> 'default (face-attribute :background) (dim-color 1)))))
    `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
    `(org-link ((t (:inherit link))))
    `(org-next ((t (:foreground "#dca3a3" :inherit (bold org-todo)))))
