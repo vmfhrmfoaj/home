@@ -59,4 +59,6 @@
   :config
   (setq helm-ag-base-command "rg --no-heading"
         helm-ag-command-option "-i"
-	      helm-ag-use-emacs-lisp-regexp t))
+	      helm-ag-use-emacs-lisp-regexp t)
+  (with-eval-after-load "projectile"
+    (advice-add #'helm-ag--project-root :override #'projectile-project-root)))
