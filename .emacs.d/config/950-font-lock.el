@@ -778,17 +778,14 @@
   ;; - https://gist.github.com/mordocai/50783defab3c3d1650e068b4d1c91495
   (defconst fira-code-font-lock-keywords-alist
     (mapcar (lambda (regex-char-pair)
-              (let ((face (if (eq 'gnu/linux system-type)
-                              '((:slant normal :weight normal))
-                            '((:slant normal)))))
-                `(,(car regex-char-pair)
-                  (1 (progn
-                       (compose-region (match-beginning 1)
-                                       (match-end 1)
-                                       ;; The first argument to concat is a string containing a literal tab
-                                       ,(concat "	" (list (decode-char 'ucs (cadr regex-char-pair)))))
-                       ',face)
-                     prepend))))
+              `(,(car regex-char-pair)
+                (1 (progn
+                     (compose-region (match-beginning 1)
+                                     (match-end 1)
+                                     ;; The first argument to concat is a string containing a literal tab
+                                     ,(concat "	" (list (decode-char 'ucs (cadr regex-char-pair)))))
+                     ''((:slant normal :weight normal)))
+                   prepend)))
             '(;;                             #Xe
               ;;www                          #Xe
               ;; ("\\(www\\)"                   #Xe100)
@@ -927,15 +924,7 @@
   :config
   (add-hook 'prog-mode-hook
             (lambda ()
-              (font-lock-add-keywords nil fira-code-font-lock-keywords-alist t)
-              (when (eq 'gnu/linux system-type)
-                (font-lock-add-keywords
-                 nil
-                 '(("[ \t]\\([-+]?=\\)[ \t]"
-                    (1 '((:weight normal)) prepend))
-                   ("\\s(\\(=\\)[ \t]"
-                    (1 '((:weight normal)) prepend)))
-                 t)))
+              (font-lock-add-keywords nil fira-code-font-lock-keywords-alist t))
             :append))
 
 (use-package sh-script

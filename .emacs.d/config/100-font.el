@@ -1,10 +1,14 @@
 (when (window-system)
   (setq-default line-spacing 0)
+  ;; Options(only available on macOS):
+  ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 0~3
+  ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 0~16
+  ;; In Linux the font hinting must not be 'full', it causes the bold font make smaller.
   (let ((font "MonacoB")
         (height (if (eq 'darwin system-type) 141 90)))
     (set-face-font 'default font)
     (set-face-attribute 'default nil
-                        :weight 'bold
+                        :weight 'medium
                         :width 'medium
                         :height height))
   (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))

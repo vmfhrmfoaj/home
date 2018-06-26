@@ -43,8 +43,8 @@
   (custom-theme-set-faces
    'twilight-anti-bright
    `(auto-dim-other-buffers-face
-     ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 17))
-         :background ,(-> 'default (face-attribute :background) (light-color 2)))))
+     ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 10))
+         :background ,(-> 'default (face-attribute :background) (light-color 1)))))
    `(clojure-if-true-face
      ((t (:background ,(-> 'font-lock-keyword-face
                            (face-attribute :background)
@@ -59,7 +59,6 @@
                                                                                       (face-attribute :foreground)
                                                                                       (light-color 10))))))
    `(evil-ex-lazy-highlight ((t (:inherit (bold lazy-highlight)))))
-   `(default ((t (:foreground "#c5c5c5" :background ,(face-attribute 'default :background)))))
    `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
    `(font-lock-regexp-grouping-construct ((t (:inherit bold :foreground ,(-> 'font-lock-string-face
                                                                              (face-attribute :foreground)
