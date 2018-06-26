@@ -67,6 +67,7 @@
   (with-eval-after-load "zoom"                    (diminish 'zoom-mode                   "Ⓩ")))
 
 (use-package evil
+  :disabled t
   :defer t
   :config
   (add-hook 'evil-normal-state-entry-hook
@@ -367,10 +368,17 @@
                 "TODO"
                 (without-fira-code-composition beg end
                   (apply fn beg end column))))
-  (dolist (fn '(indent-for-tab-command indent-according-to-mode))
-    (advice-add fn :around
-                (lambda (fn &rest args)
-                  (without-fira-code-composition nil nil 'composition
+  (advice-add #'indent-according-to-mode :around
+              (lambda (fn &rest args)
+                ;; FIXME
+                ;;  this is workaround to aovid hanging on the large buffer.
+                (let ((beg (save-excursion
+                             (beginning-of-defun)
+                             (point)))
+                      (end (save-excursion
+                             (end-of-defun)
+                             (point))))
+                  (without-fira-code-composition beg end 'composition
                     (apply fn args))))))
 
 (use-package rainbow-delimiters

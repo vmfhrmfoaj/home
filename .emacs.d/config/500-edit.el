@@ -23,6 +23,7 @@
   (add-to-list 'aggressive-indent-dont-indent-if 'evil-insert-vcount)
   (add-hook 'evil-insert-state-exit-hook
             (lambda ()
+              "TODO"
               (unless evil-insert-vcount
                 (aggressive-indent-do-indent))))
   (global-aggressive-indent-mode 1))
