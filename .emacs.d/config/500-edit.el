@@ -3,8 +3,9 @@
   :init
   (defun aggressive-indent-do-indent ()
     (interactive)
-    (while-no-input
-      (aggressive-indent--proccess-changed-list-and-indent)))
+    (when aggressive-indent-mode
+      (while-no-input
+        (aggressive-indent--proccess-changed-list-and-indent))))
 
   :config
   (add-to-list 'aggressive-indent-protected-current-commands #'sp-backward-barf-sexp)
