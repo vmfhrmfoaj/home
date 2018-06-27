@@ -35,9 +35,9 @@
                   (cond
                    ((eq 'show cmd)
                     (with-silent-modifications
-                      (remove-text-properties (point-min) (point-max) '(composition nil))))
+                      (remove-text-properties (window-start) (window-end) '(composition nil))))
                    ((eq 'hide cmd)
-                    (fira-code-fontify (point-min) (point-max))))))))
+                    (fira-code-fontify (window-start) (window-end))))))))
 
 (use-package diminish
   :ensure t
