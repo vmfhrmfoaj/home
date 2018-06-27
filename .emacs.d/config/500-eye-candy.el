@@ -67,18 +67,33 @@
   (with-eval-after-load "zoom"                    (diminish 'zoom-mode                   "Ⓩ")))
 
 (use-package evil
-  :disabled t
   :defer t
   :config
-  (add-hook 'evil-normal-state-entry-hook
+  (add-hook 'evil-visual-state-exit-hook
             (lambda ()
               "TODO"
-              (fira-code-fontify (point-min) (point-max))))
+              (save-excursion
+                (let* ((beg (progn
+                              (beginning-of-defun)
+                              (point)))
+                       (end (progn
+                              (goto-char beg)
+                              (end-of-defun)
+                              (point))))
+                  (fira-code-fontify beg end)))))
   (add-hook 'evil-visual-state-entry-hook
             (lambda ()
               "TODO"
-              (with-silent-modifications
-                (remove-text-properties (point-min) (point-max) '(composition nil)))))
+              (save-excursion
+                (let* ((beg (progn
+                              (beginning-of-defun)
+                              (point)))
+                       (end (progn
+                              (goto-char beg)
+                              (end-of-defun)
+                              (point))))
+                  (with-silent-modifications
+                    (remove-text-properties beg end '(composition nil)))))))
   (advice-add #'evil-next-line :around
               (lambda (fn &rest args)
                 "TODO"
