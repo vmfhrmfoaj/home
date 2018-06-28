@@ -118,6 +118,11 @@
   :config
   (setq multi-term-program "zsh"))
 
+(use-package osx-dictionary
+  :if (eq 'darwin system-type)
+  :ensure t
+  :defer t)
+
 (use-package saveplace
   :config
   (save-place-mode 1))

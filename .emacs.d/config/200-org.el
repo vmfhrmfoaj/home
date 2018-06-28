@@ -30,6 +30,12 @@
       (org-deadline 'overwrite)
       nil))
 
+  (defun org-dic-at-point ()
+    "TODO"
+    (interactive)
+    (when (fboundp #'osx-dictionary-search-pointer)
+      (osx-dictionary-search-pointer)))
+
   :config
   (setq org-complete-tags-always-offer-all-agenda-tags t
         org-directory (concat (getenv "HOME") "/Desktop/Org")
@@ -52,6 +58,10 @@
         org-use-sub-superscripts nil)
 
   (add-hook 'org-todo-get-default-hook #'org-insert-schedule-&-deadline)
+  (add-hook 'org-mode-hook
+            (lambda ()
+              "TODO"
+              (setq-local evil-lookup-func #'org-dic-at-point)))
   (advice-add #'org-todo :around
               (lambda (of &optional arg)
                 "If reopen the completed _TODO_, show a popup for logging."

@@ -178,6 +178,11 @@
     "wL" #'windmove-right
     "wd" #'delete-window
     "wm" #'delete-other-windows)
+  (when (eq 'darwin system-type)
+    (evil-leader/set-key
+      ;; apllication
+      ;; - dictionary
+      "ad" #'osx-dictionary-search-input))
   (global-evil-leader-mode 1)
   ;; NOTE:
   ;;  turn on `evil-leader-mode' for buffers already opened.
@@ -427,6 +432,16 @@
   (evil-leader/set-major-leader-for-mode "," 'org-mode)
   (evil-define-key 'normal evil-org-mode-map
     (kbd "RET") #'org-open-at-point))
+
+(use-package osx-dictionary
+  :if (eq 'darwin system-type)
+  :defer t
+  :config
+  (evil-define-key 'normal osx-dictionary-mode-map
+    (kbd "o") #'osx-dictionary-open-dictionary.app
+    (kbd "q") #'osx-dictionary-quit
+    (kbd "r") #'osx-dictionary-read-word
+    (kbd "s") #'osx-dictionary-search-input))
 
 (use-package package
   :defer t
