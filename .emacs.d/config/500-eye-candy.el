@@ -94,26 +94,15 @@
                               (point))))
                   (with-silent-modifications
                     (remove-text-properties beg end '(composition nil)))))))
-  (advice-add #'evil-next-line :around
-              (lambda (fn &rest args)
+  (advice-add #'evil-line-move :around
+              (lambda (fn count &optional noerror)
                 "TODO"
-                (if (or evil-insert-vcount
-                        (eq 'visual evil-state))
-                    (apply fn args)
-                  (let ((beg (line-beginning-position))
-                        (end (line-end-position 2)))
+                (if (eq 'visual evil-state)
+                    (funcall fn count noerror)
+                  (let ((beg (line-beginning-position (when (< count 0) 0)))
+                        (end (line-end-position (when (< 0 count) 2))))
                     (without-fira-code-composition beg end
-                      (apply fn args))))))
-  (advice-add #'evil-previous-line :around
-              (lambda (fn &rest args)
-                "TODO"
-                (if (or evil-insert-vcount
-                        (eq 'visual evil-state))
-                    (apply fn args)
-                  (let ((beg (line-beginning-position 0))
-                        (end (line-end-position)))
-                    (without-fira-code-composition beg end
-                      (apply fn args)))))))
+                      (funcall fn count noerror)))))))
 
 (use-package evil-goggles
   :ensure t
@@ -384,17 +373,12 @@
                 (without-fira-code-composition beg end
                   (apply fn beg end column))))
   (advice-add #'indent-according-to-mode :around
-              (lambda (fn &rest args)
-                ;; FIXME
-                ;;  this is workaround to aovid hanging on the large buffer.
-                (let ((beg (save-excursion
-                             (beginning-of-defun)
-                             (point)))
-                      (end (save-excursion
-                             (end-of-defun)
-                             (point))))
+              (lambda (fn)
+                "TODO"
+                (let ((beg (line-beginning-position 0))
+                      (end (line-end-position)))
                   (without-fira-code-composition beg end 'composition
-                    (apply fn args))))))
+                    (funcall fn))))))
 
 (use-package rainbow-delimiters
   :ensure t
