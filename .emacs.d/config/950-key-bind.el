@@ -286,7 +286,7 @@
     (kbd "C-u") #'neotree-select-up-node
     (kbd "RET") #'neotree-enter
     (kbd "TAB") #'neotree-toggle-maximize
-    (kbd "+") #'neotree-create-node
+    (kbd "+") #'neotree-create-dir
     (kbd "C") #'neotree-copy-node
     (kbd "R") #'neotree-rename-node
     (kbd "c") #'neotree-create-node

@@ -37,6 +37,11 @@
     (interactive)
     (neo-window--zoom (if (< neo-window-width (window-width)) 'minimize 'maximize)))
 
+  (defun neotree-create-dir (&optional dir)
+    "TODO"
+    (interactive "f")
+    (neotree-create-node (concat dir "/")))
+
   :config
   (setq neo-auto-indent-point t
         neo-keymap-style 'concise
