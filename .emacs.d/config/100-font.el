@@ -4,7 +4,7 @@
   ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 0~3
   ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 0~16
   ;; In Linux the font hinting must not be 'full', it causes the bold font make smaller.
-  (let ((font "MonacoB")
+  (let ((font "MonacoB2")
         (height (if (eq 'darwin system-type) 141 90)))
     (set-face-font 'default font)
     (set-face-attribute 'default nil
