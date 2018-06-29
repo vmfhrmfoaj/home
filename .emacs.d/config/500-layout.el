@@ -61,8 +61,13 @@
   (defun persp-switch-to-last-selected-persp ()
     "TODO"
     (interactive)
-    (unless (eq :none (gethash "Default" *persp-hash* :none))
-      (persp-switch persp-last-selected-persp-name)))
+    (if (member persp-last-selected-persp-name (persp-names))
+        (persp-switch persp-last-selected-persp-name)
+      (let ((is-cur-persp? (-partial #'string-equal (persp-current-name))))
+        (-when-let (name (->> (persp-names)
+                              (-remove-first is-cur-persp?)
+                              (-first-item)))
+          (persp-switch name)))))
 
   :config
   (setq persp-autokill-buffer-on-remove 'kill-weak
