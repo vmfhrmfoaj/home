@@ -361,12 +361,12 @@
             (lambda (_)
               (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
   (advice-add #'current-column :around
-              (lambda (fn &rest args)
+              (lambda (fn)
                 "TODO"
                 (let ((beg (line-beginning-position))
                       (end (line-end-position)))
                   (without-fira-code-composition beg end
-                    (apply fn args)))))
+                    (funcall fn)))))
   (advice-add #'indent-region :around
               (lambda (fn beg end &optional column)
                 "TODO"
