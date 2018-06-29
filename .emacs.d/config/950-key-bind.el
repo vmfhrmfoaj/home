@@ -8,12 +8,10 @@
 (define-key input-decode-map (kbd "<S-kp-subtract>") "_")
 (define-key input-decode-map (kbd "<S-kp-add>") "=")
 
-;; Hangul
-(global-set-key (kbd "S-SPC") #'toggle-input-method)
+;; minibuffer
 (add-hook 'minibuffer-setup-hook
           (lambda ()
-            (local-set-key (kbd "C-h")   #'backward-delete-char)
-            (local-set-key (kbd "S-SPC") #'toggle-input-method)))
+            (local-set-key (kbd "C-h") #'backward-delete-char)))
 
 (use-package bind-map
   :ensure t

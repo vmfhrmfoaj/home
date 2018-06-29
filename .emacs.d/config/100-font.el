@@ -43,7 +43,6 @@
         (dolist (char-regexp alist)
           (set-char-table-range composition-function-table (car char-regexp)
                                 `([,(cdr char-regexp) 0 font-shape-gstring]))))))
-  (set-fontset-font t 'hangul (font-spec :name "Nanum Gothic"))
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
   (add-to-list 'face-font-rescale-alist '("Free-Symbola" . 0.95))
   (add-to-list 'face-font-rescale-alist '("Nanum Gothic" . 0.95))
@@ -53,6 +52,4 @@
     (add-to-list 'face-font-rescale-alist '("all-the-icons" . 0.9))
     (add-to-list 'face-font-rescale-alist '("file-icons" . 0.9))))
 
-;; hangul
-(set-language-environment "Korean")
 (prefer-coding-system 'utf-8)
