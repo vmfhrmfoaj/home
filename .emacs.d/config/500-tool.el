@@ -107,7 +107,7 @@
               (linum-relative-mode)))
 
   :config
-  (setq linum-delay 0.05
+  (setq linum-delay 0.1
         linum-relative-current-symbol ""
         linum-schedule-timer nil)
   (advice-add #'linum-schedule :override #'linum-delay-schedule))

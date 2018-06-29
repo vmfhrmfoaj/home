@@ -8,6 +8,7 @@
         (aggressive-indent--proccess-changed-list-and-indent))))
 
   :config
+  (setq aggressive-indent-sit-for-time 0.1)
   (add-to-list 'aggressive-indent-protected-current-commands #'sp-backward-barf-sexp)
   (add-to-list 'aggressive-indent-protected-current-commands #'sp-splice-sexp-killing-forward)
   (add-to-list 'aggressive-indent-protected-current-commands #'sp-splice-sexp)
