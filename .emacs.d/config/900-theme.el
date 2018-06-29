@@ -21,6 +21,7 @@
  `(link ((t (:inherit underline :weight unspecified))))
  `(linum-relative-current-face ((t (:inherit linum))))
  `(magit-section-heading ((t (:inherit bold :foreground "DarkGoldenrod4"))))
+ `(magit-diff-file-heading ((t (:weight medium))))
  `(magit-commit-log-type-face  ((t (:inherit font-lock-function-name-face :weight medium))))
  `(magit-commit-log-scope-face ((t (:inherit font-lock-variable-name-face :weight medium))))
  `(mode-line ((t (:weight medium))))

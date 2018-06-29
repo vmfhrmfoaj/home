@@ -26,19 +26,6 @@
   (advice-add #'adob--never-dim-p :before-until #'helm-bufferp)
   (auto-dim-other-buffers-mode))
 
-(use-package company
-  :defer t
-  :config
-  (advice-add #'company-call-frontends :before
-              (lambda (cmd)
-                (ignore-errors
-                  (cond
-                   ((eq 'show cmd)
-                    (with-silent-modifications
-                      (remove-text-properties (window-start) (window-end) '(composition nil))))
-                   ((eq 'hide cmd)
-                    (fira-code-fontify (window-start) (window-end))))))))
-
 (use-package diminish
   :ensure t
   :config
@@ -65,44 +52,6 @@
   (with-eval-after-load "view"                    (diminish 'view-mode                   "Ⓥ"))
   (with-eval-after-load "which-key"               (diminish 'which-key-mode              "Ⓦ"))
   (with-eval-after-load "zoom"                    (diminish 'zoom-mode                   "Ⓩ")))
-
-(use-package evil
-  :defer t
-  :config
-  (add-hook 'evil-visual-state-exit-hook
-            (lambda ()
-              "TODO"
-              (save-excursion
-                (let* ((beg (progn
-                              (beginning-of-defun)
-                              (point)))
-                       (end (progn
-                              (goto-char beg)
-                              (end-of-defun)
-                              (point))))
-                  (fira-code-fontify beg end)))))
-  (add-hook 'evil-visual-state-entry-hook
-            (lambda ()
-              "TODO"
-              (save-excursion
-                (let* ((beg (progn
-                              (beginning-of-defun)
-                              (point)))
-                       (end (progn
-                              (goto-char beg)
-                              (end-of-defun)
-                              (point))))
-                  (with-silent-modifications
-                    (remove-text-properties beg end '(composition nil)))))))
-  (advice-add #'evil-line-move :around
-              (lambda (fn count &optional noerror)
-                "TODO"
-                (if (eq 'visual evil-state)
-                    (funcall fn count noerror)
-                  (let ((beg (line-beginning-position (when (< count 0) 0)))
-                        (end (line-end-position (when (< 0 count) 2))))
-                    (without-fira-code-composition beg end
-                      (funcall fn count noerror)))))))
 
 (use-package evil-goggles
   :ensure t
@@ -352,33 +301,6 @@
   :config
   (advice-add #'powerline-buffer-id :filter-return #'powerline-ellipsis-buffer-id)
   (powerline-vim+-theme))
-
-(use-package prog-mode
-  :defer t
-  :config
-  (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
-  (add-hook 'after-make-frame-functions
-            (lambda (_)
-              (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
-  (advice-add #'current-column :around
-              (lambda (fn)
-                "TODO"
-                (let ((beg (line-beginning-position))
-                      (end (line-end-position)))
-                  (without-fira-code-composition beg end
-                    (funcall fn)))))
-  (advice-add #'indent-region :around
-              (lambda (fn beg end &optional column)
-                "TODO"
-                (without-fira-code-composition beg end
-                  (apply fn beg end column))))
-  (advice-add #'indent-according-to-mode :around
-              (lambda (fn)
-                "TODO"
-                (let ((beg (line-beginning-position 0))
-                      (end (line-end-position)))
-                  (without-fira-code-composition beg end 'composition
-                    (funcall fn))))))
 
 (use-package rainbow-delimiters
   :ensure t
