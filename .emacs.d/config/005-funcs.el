@@ -117,13 +117,18 @@
          "terminal-notifier -title Emacs -message "))
   "TODO")
 
+(defvar rsync-ignore-patterns '(".git" ".svn")
+  "TODO")
+
 (defun rsync-remote-dir (&optional buf)
   "TODO"
   (let* ((buf (or (and buf (get-buffer buf))
                   (current-buffer)))
          (buf-name (buffer-name buf))
-         (path (buffer-file-name buf)))
+         (path (buffer-file-name buf))
+         (ignore-regex (concat "/" (regexp-opt rsync-ignore-patterns) "\\(/\\|$\\)")))
     (-when-let (root (and rsync-remote-dir path
+                          (not (string-match-p ignore-regex path))
                           (car (dir-locals-find-file path))))
       (let* ((remote-root (s-chop-suffix "/" rsync-remote-dir))
              (remote-path (->> root
@@ -135,7 +140,8 @@
           (async-start
            `(lambda ()
               (let ((err-buf-name "*err*")
-                    (cmd (concat "rsync "
+                    (cmd (concat "SSH_AUTH_SOCK=" ,(getenv "SSH_AUTH_SOCK") " "
+                                 "rsync "
                                  ,rsync-remote-opts
                                  " -e \"ssh " ,rsync-remote-ssh-opts "\" "
                                  ,path " "
