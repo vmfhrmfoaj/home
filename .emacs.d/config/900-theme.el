@@ -24,7 +24,7 @@
    `(magit-section-heading ((t (:inherit bold :foreground "DarkGoldenrod4"))))
    `(magit-commit-log-type-face  ((t (:inherit font-lock-function-name-face :family ,default-family))))
    `(magit-commit-log-scope-face ((t (:inherit font-lock-variable-name-face :family ,default-family))))
-   `(mode-line ((t (:inherit bold))))
+   `(mode-line ((t (:weight medium))))
    `(mode-line-inactive ((t (:inherit mode-line))))
    `(nlinum-current-line ((t (:inherit linum))))
    `(nlinum-relative-current-face ((t (:inherit linum))))
@@ -70,7 +70,7 @@
    `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
    `(lazy-highlight ((t :background "paleturquoise4" :foreground "paleturquoise3")))
    `(linum ((t (:background "#000000" :foreground "#666666"))))
-   `(linum-relative-current-face ((t (:inherit (bold linum) :foreground "#999999"))))
+   `(linum-relative-current-face ((t (:inherit linum :foreground "#aaaaaa"))))
    `(org-cancelled ((t (:foreground nil :inherit org-done))))
    `(org-column ((t (:inherit bold))))
    `(org-block
