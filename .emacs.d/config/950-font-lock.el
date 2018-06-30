@@ -282,19 +282,8 @@
               (end-of-line)
             (goto-char clojure-interface-form--point))
           (0 'font-lock-doc-face t))
-         (,(-partial
-            (byte-compile
-             (lambda (symbol+alter-mark limit)
-               (when (re-search-forward symbol+alter-mark limit 'no-err)
-                 (let ((face (plist-get (text-properties-at (match-beginning 1)) 'face))
-                       (ignore-faces '(font-lock-doc-face
-                                       font-lock-string-face
-                                       font-lock-comment-face)))
-                   (when (memq face ignore-faces)
-                     (set-match-data (fake-match-4)))
-                   t))))
-            (concat symbol "?\\(!+\\)\\>"))
-          (1 'clojure-side-effect-face t))
+         (,(concat symbol "?\\(!+\\)\\>")
+          (1 'clojure-side-effect-face append))
          (,(concat "\\(" symbol "\\(\\." symbol "\\)+\\)")
           (1 'font-lock-type-face nil))
          (,(concat "\\<\\(\\([A-Z]+[0-9a-z]+\\)+\\)\\>")
@@ -524,7 +513,7 @@
                    "::?" namespace? "\\(" symbol "\\)\\>")
           (1 'font-lock-keyword-face)
           (2 'clojure-defining-spec-face))
-         (,(concat "(" core-ns? def-kw "\\>" whitespace+ meta? "\\(" symbol? "\\)")
+         (,(concat "(" core-ns? def-kw "\\>" whitespace+ meta? "\\(" symbol "*?\\)\\(!*\\)\\>")
           (1 'font-lock-keyword-face)
           ;; NOTE
           ;; Clojure is a Lisp-1.
@@ -535,6 +524,7 @@
               ((string-match-p "defmacro\\|^fn" (match-string 1))
                'font-lock-function-name-face)
               (t 'font-lock-variable-name-face)))
+          (3 'clojure-side-effect-face t)
           ;; fn parameters highlight
           (,(-partial
              (byte-compile
