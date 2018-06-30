@@ -1,11 +1,15 @@
 (when (window-system)
   (setq-default line-spacing 1)
+  ;; In Linux the font hinting must not be 'full', it causes the bold font make smaller.
   ;; Options(only available on macOS):
   ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 0~3
   ;; - defaults write org.gnu.Emacs AppleAntiAliasingThreshold -int 0~16
-  ;; In Linux the font hinting must not be 'full', it causes the bold font make smaller.
+  ;; Options(x11):
+  ;; - .Xresource:
+  ;;   Xft.embolden: true
+  ;;   Emacs.fontBackend: xft
   (let ((font "Fira Code")
-        (height (if (eq 'darwin system-type) 141 90)))
+        (height (if (eq 'darwin system-type) 141 98)))
     (set-face-font 'default font)
     (set-face-attribute 'default nil
                         :weight 'medium
@@ -21,6 +25,7 @@
                       ( 42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*>]\\)") ; '*/' was deleted.
                       ( 43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
                       ( 45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
+                      ( 46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
                       ( 47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[/=]\\)") ; '/*' and '/>' were deleted.
                       ( 48 . ".\\(?:x[a-zA-Z]\\)")
                       ( 58 . ".\\(?:::\\|[:=]\\)")
@@ -28,7 +33,6 @@
                       ( 60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~<=>|-]\\)") ; '</' is deleted.
                       ( 61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
                       ( 62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
-                      ( 63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
                       ( 91 . ".\\(?:]\\)")
                       ( 92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
                       ( 94 . ".\\(?:=\\)")
@@ -38,8 +42,8 @@
                       (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)"))
                     (when (functionp 'mac-auto-operator-composition-mode)
                       ;; NOTE
-                      ;; It causes freezing when opening the popup of `helm', except `emacs-mac'.
-                      '((46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)"))))))
+                      ;;  It causes freezing when opening the popup of `helm', except `emacs-mac'.
+                      '((63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)"))))))
         (dolist (char-regexp alist)
           (set-char-table-range composition-function-table (car char-regexp)
                                 `([,(cdr char-regexp) 0 font-shape-gstring]))))))
