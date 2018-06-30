@@ -6,7 +6,7 @@
   :init
   (unless (package-installed-p 'php-extras)
     (quelpa '(php-extras :repo "arnested/php-extras" :fetcher github))
-    (php-extras-generate-eldoc))
+    (php-extras-generate-eldoc-1 t))
 
   (defvar php-doc-buffer-name "*PHP Doc*")
 
