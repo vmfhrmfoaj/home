@@ -2,10 +2,14 @@
   :ensure t
   :init
   (defun aggressive-indent-do-indent ()
+    "TODO"
     (interactive)
     (when aggressive-indent-mode
-      (while-no-input
-        (aggressive-indent--proccess-changed-list-and-indent))))
+      (save-excursion
+        (save-selected-window
+          (let (aggressive-indent-dont-indent-if
+                aggressive-indent-protected-current-commands)
+            (aggressive-indent--proccess-changed-list-and-indent))))))
 
   :config
   (setq aggressive-indent-sit-for-time 0.1)
@@ -35,6 +39,7 @@
   :after evil
   :init
   (defun evil-surround-region-for-hkkb (args)
+    "TODO"
     (if (> 4 (length args))
         args
       (let* ((char (nth 3 args))
