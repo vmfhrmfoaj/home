@@ -159,7 +159,7 @@
                           #'font-lock-default-fontify-region)
               (eldoc-mode 1))))
 
-(use-package cider-repl-mode
+(use-package cider-repl
   :defer t
   :config
   (add-hook 'cider-repl-mode-hook

@@ -323,7 +323,7 @@
     "mee" #'cider-eval-last-sexp
     "mef" #'cider-eval-defun-at-point
     "mer" #'cider-eval-last-sexp-and-replace
-    "mgg" #'cider-find-var
+    "mgg" #'cider-find-var-at-point
     "mrc" #'cider-repl-clear-buffer
     "mrs" #'cider-switch-to-last-clj-buf
     "mrq" #'cider-quit)
