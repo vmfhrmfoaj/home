@@ -9,7 +9,7 @@
   ;;   Xft.embolden: true
   ;;   Emacs.fontBackend: xft
   (let ((font "Fira Code")
-        (height (if (eq 'darwin system-type) 141 98)))
+        (height (if (eq 'darwin system-type) 141 85)))
     (set-face-font 'default font)
     (set-face-attribute 'default nil
                         :weight 'medium
