@@ -1,4 +1,5 @@
 (add-hook 'after-save-hook #'rsync-remote-dir)
+(add-hook 'after-revert-hook #'rsync-remote-dir)
 (add-hook 'emacs-startup-hook
           (lambda ()
             "report the startup time."
