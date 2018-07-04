@@ -300,7 +300,7 @@
     (kbd "q") #'evil-delete-buffer))
 
 (use-package magit-svn
-  :defer t
+  :after evil-magit
   :config
   (evil-magit-define-key 'normal 'magit-mode-map (kbd "~") #'magit-svn-popup))
 
