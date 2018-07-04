@@ -150,6 +150,7 @@
     ;; search/symbol
     "se" #'evil-multiedit-match-all
     "sf" #'helm-do-ag
+    "sg" #'helm-do-grep-ag
     "sl" #'helm-resume-last-search-buffer
     "sp" #'helm-do-ag-project-root
     "ss" #'helm-swoop

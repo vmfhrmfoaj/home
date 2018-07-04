@@ -8,7 +8,7 @@
   :ensure t
   :defer t
   :diminish "Ⓗ"
-  :commands (helm-make-source)
+  :commands (helm-make-source helm-do-grep-ag)
   :init
   (defun helm-bufferp (buf)
     (when (and (bufferp buf)
