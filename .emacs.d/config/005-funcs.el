@@ -102,7 +102,7 @@
   "TODO")
 
 (defvar rsync-remote-dir nil
-  "TODO")
+  "e.g, user@192.168.0.1:~/")
 
 (defvar rsync-remote-opts "-z"
   "TODO")
