@@ -15,21 +15,6 @@ function setEnv () {
     export HOMEBREW_TEMP="/Volumes/RAM_Disk"
   fi
 
-  # android
-  if [ -d $HOME/Android_SDK ]; then
-    export ANDROID_SDK=$HOME/Android_SDK
-    export ANDROID_HOME=$ANDROID_SDK
-    export PATH=$ANDROID_SDK/tools:$ANDROID_SDK/tools/bin:$PATH
-    export PATH=$ANDROID_SDK/platform-tools:$PATH
-    if [ "$os" = "Linux" ]; then
-      function emulator {
-        local cur_dir=$PWD;
-        cd $ANDROID_SDK/tools && ./emulator $@;
-        cd $cur_dir
-      }
-    fi
-  fi
-
   # cocoapod
   if [ -d $HOME/.gem/ruby/2.0.0 ]; then
     export GEM_HOME=$HOME/.gem/ruby/2.0.0
