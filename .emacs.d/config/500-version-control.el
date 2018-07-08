@@ -1,3 +1,7 @@
+(use-package evil-magit
+  :ensure t
+  :after magit)
+
 (use-package git-timemachine
   :ensure t
   :defer t)
@@ -32,9 +36,9 @@
     (define-fringe-bitmap 'git-gutter-fr+-modified fr-vec nil nil nil))
   (add-hook 'find-file-hook #'git-gutter+-mode))
 
-(use-package evil-magit
+(use-package gitignore-mode
   :ensure t
-  :after magit)
+  :defer t)
 
 (use-package magit
   :ensure t
