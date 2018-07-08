@@ -1,5 +1,5 @@
 (when (window-system)
-  (setq-default line-spacing 1)
+  (setq-default line-spacing 0)
   ;; In Linux the font hinting must not be 'full', it causes the bold font make smaller.
   ;; Options(only available on macOS):
   ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 0~3
@@ -9,7 +9,7 @@
   ;;   Xft.embolden: true
   ;;   Emacs.fontBackend: xft
   (let ((font "Fira Code")
-        (height (if (eq 'darwin system-type) 141 85)))
+        (height (if (eq 'darwin system-type) 130 85)))
     (set-face-font 'default font)
     (set-face-attribute 'default nil
                         :weight 'medium
