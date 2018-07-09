@@ -1,3 +1,19 @@
+(use-package browse-url
+  :defer t
+  :init
+  (defun browse-url-custom-xdg-open (url &optional ignored)
+    "Pass the specified URL to the \"xdg-open\" command.
+xdg-open is a desktop utility that calls your preferred web browser.
+The optional argument IGNORED is not used."
+    (interactive (browse-url-interactive-arg "URL: "))
+    (let ((process-environment (concat "XDG_CURRENT_DESKTOP=" (getenv "XDG_CURRENT_DESKTOP")))
+          (cmd (concat "XDG_CURRENT_DESKTOP=" (getenv "XDG_CURRENT_DESKTOP") " xdg-open " url)))
+      (shell-command-to-string cmd)))
+
+  :config
+  (when (eq 'gnu/linux system-type)
+    (setq browse-url-browser-function 'browse-url-custom-xdg-open)))
+
 (use-package evil-org
   :ensure t
   :after org
