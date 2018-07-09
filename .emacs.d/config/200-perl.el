@@ -2,6 +2,12 @@
   :defer t
   :mode "\\.\\(p[lm]x?\\|P[LM]X?\\)\\'"
   :init
+  (setq auto-mode-alist (rassq-delete-all 'perl-mode auto-mode-alist))
+  (setq interpreter-mode-alist (rassq-delete-all 'perl-mode interpreter-mode-alist))
+  (add-to-list 'interpreter-mode-alist '("perl"  . cperl-mode))
+  (add-to-list 'interpreter-mode-alist '("perl5" . cperl-mode))
+  (add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
+
   (defvar perl-indent-config--default
     '(var
       ((indent-tabs-mode nil))
