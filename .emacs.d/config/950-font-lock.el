@@ -36,7 +36,9 @@
        ("for\\(each\\)? my \\([@$%][_0-9a-zA-Z]+\\)"
         (1 'font-lock-variable-name-face))
        (,(concat whitespace "\\(accept\\)" whitespace* "(")
-        (1 'font-lock-type-face))))
+        (1 'font-lock-type-face))
+       ("\\([@$%]+\\)[:_0-9a-zA-Z]"
+        (1 'shadow))))
    :append))
 
 (use-package clojure-mode
@@ -780,7 +782,9 @@
              (safe-up-list-1)
              (point)))
          nil
-         (1 'font-lock-variable-name-face)))))
+         (1 'font-lock-variable-name-face)))
+       ("\\(\\$\\)[_0-9a-zA-Z]"
+        (1 'shadow))))
    :append))
 
 (use-package prog-mode
@@ -791,15 +795,11 @@
               "TODO"
               (font-lock-add-keywords
                nil
-               '(("\\('\\|`\\|,\\|@\\|#\\|~\\|\\^\\|_\\|\\s(\\|\\s)\\|[{}]\\)"
-                  1 'shadow)
-                 ("[\[ \r\t\n]\\(&\\)[ \r\t\n]"
-                  1 'shadow))
-               t)
-              (font-lock-add-keywords
-               nil
-               '(("[0-9A-Za-z]\\(/\\)[<>0-9A-Za-z]"
-                  1 'shadow))))
+               '(("\\('\\|`\\|,\\|;$\\)"
+                  (1 'shadow))
+                 ("[0-9A-Za-z]\\(/\\)[*<>0-9A-Za-z]"
+                  (1 'shadow)))
+               :append))
             :append))
 
 (use-package sh-script
@@ -824,5 +824,7 @@
              (when (or (memq 'font-lock-comment-face face-lst)
                        (memq 'font-lock-string-face  face-lst))
                face))
-           t)))
+           t))
+       ("\\(\\$\\)[(_0-9a-zA-Z]"
+        (1 'shadow)))
      :append)))
