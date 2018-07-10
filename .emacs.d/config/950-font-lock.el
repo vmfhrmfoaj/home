@@ -38,7 +38,7 @@
        (,(concat whitespace "\\(accept\\)" whitespace* "(")
         (1 'font-lock-type-face))
        ("\\([@$%]+\\)[:_0-9a-zA-Z]"
-        (1 'shadow))))
+        (1 'shallow-shadow-face))))
    :append))
 
 (use-package clojure-mode
@@ -784,11 +784,16 @@
          nil
          (1 'font-lock-variable-name-face)))
        ("\\(\\$\\)[_0-9a-zA-Z]"
-        (1 'shadow))))
+        (1 'shallow-shadow-face))))
    :append))
 
 (use-package prog-mode
   :defer t
+  :init
+  (defface shallow-shadow-face
+    '((t (:inherit shadow)))
+    "TODO")
+
   :config
   (add-hook 'prog-mode-hook
             (lambda ()
@@ -797,8 +802,8 @@
                nil
                '(("\\('\\|`\\|,\\|;$\\)"
                   (1 'shadow))
-                 ("[0-9A-Za-z]\\(/\\)[*<>0-9A-Za-z]"
-                  (1 'shadow)))
+                 ("[0-9A-Za-z]\\(\\(?:/\\|_\\|-\\)+\\)[*<>0-9A-Za-z]"
+                  (1 'shallow-shadow-face)))
                :append))
             :append))
 
@@ -826,5 +831,5 @@
                face))
            t))
        ("\\(\\$\\)[(_0-9a-zA-Z]"
-        (1 'shadow)))
+        (1 'shallow-shadow-face)))
      :append)))

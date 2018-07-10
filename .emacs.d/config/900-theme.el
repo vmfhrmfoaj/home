@@ -78,6 +78,7 @@
                                   (face-attribute :background)
                                   (light-color 10))))))
    `(shadow ((t (:foreground "#9a9a9a"))))
+   `(shallow-shadow-face ((t (:foreground "#b0b0b0"))))
    `(trailing-whitespace ((t (:background "gray35"))))))
 
 (use-package twilight-bright-theme
