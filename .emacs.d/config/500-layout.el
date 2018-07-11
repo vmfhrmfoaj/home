@@ -54,20 +54,29 @@
                                (buffer-list)))
           (persp-add-buffer-without-switch buf)))))
 
-  (defun persp-last-selected-persp-name (&rest _)
+  (defvar persp-sorted-names nil
+    "TODO")
+
+  (defun persp-update-sorted-names (&rest _)
     "TODO"
-    (setq persp-last-selected-persp-name persp-last-persp-name))
+    (let ((cur (persp-current-name)))
+      (-update->> persp-sorted-names
+                  (remove cur)
+                  (cons cur))))
 
   (defun persp-switch-to-last-selected-persp ()
     "TODO"
     (interactive)
-    (if (member persp-last-selected-persp-name (persp-names))
-        (persp-switch persp-last-selected-persp-name)
-      (let ((is-cur-persp? (-partial #'string-equal (persp-current-name))))
-        (-when-let (name (->> (persp-names)
-                              (-remove-first is-cur-persp?)
-                              (-first-item)))
-          (persp-switch name)))))
+    (let (last-persp)
+      (while (and (not last-persp)
+                  persp-sorted-names)
+        (let ((it (car persp-sorted-names)))
+          (if (and (member it (persp-names))
+                   (not (string-equal it (persp-current-name))))
+              (setq last-persp it)
+            (setq persp-sorted-names (cdr persp-sorted-names)))))
+      (when last-persp
+        (persp-switch last-persp))))
 
   :config
   (setq persp-autokill-buffer-on-remove 'kill-weak
@@ -75,7 +84,7 @@
         ;; TODO
         ;;  change mode-line format for `persp-mode'
         ;; persp-lighter "Ⓟ"
-        persp-before-switch-functions #'persp-last-selected-persp-name
+        persp-before-switch-functions #'persp-update-sorted-names
         persp-lighter '(:eval (format "{%s}"
                                       (save-match-data
                                         (let ((cur-name (persp-current-name)))
