@@ -192,6 +192,7 @@
 (use-package which-key
   :ensure t
   :config
+  (setq which-key-idle-delay 0.5)
   (which-key-mode)
   (which-key-declare-prefixes
     (concat evil-leader/leader "a") "applications"
