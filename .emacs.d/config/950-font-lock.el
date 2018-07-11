@@ -81,7 +81,7 @@
     '((t (:inherit font-lock-type-face :weight bold)))
     "TODO")
   (defface clojure-meta-face
-    '((t (:inherit shadow)))
+    '((t (:inherit shallow-shadow-face)))
     "TODO")
   (defface clojure-interop-method-face
     '((t (:inherit font-lock-keyword-face)))
@@ -802,7 +802,7 @@
                nil
                '(("\\('\\|`\\|,\\|;$\\)"
                   (1 'shadow))
-                 ("[0-9A-Za-z]\\(\\(?:/\\|_\\|-\\)+\\)[*<>0-9A-Za-z]"
+                 ("[0-9A-Za-z]\\(/\\)[*<>0-9A-Za-z]"
                   (1 'shallow-shadow-face)))
                :append))
             :append))
