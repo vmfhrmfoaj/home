@@ -316,7 +316,26 @@
   :ensure t
   :defer t
   :init
-  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+  (defvar rainbow-delimiters--prefix-str (concat "@" "?" "#" "_" "'" "`")
+    "TODO")
+
+  (defun rainbow-delimiters--apply-color-for-fira-code (loc depth match)
+    "TODO"
+    (-when-let (face (funcall rainbow-delimiters-pick-face-function depth match loc))
+      (font-lock-prepend-text-property (save-excursion
+                                         (goto-char loc)
+                                         (when (looking-at-p "\\s(")
+                                           (skip-chars-backward rainbow-delimiters--prefix-str))
+                                         (point))
+                                       (1+ loc)
+                                       'face face)))
+
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+
+  :config
+  (when (eq 'darwin system-type)
+    (advice-add #'rainbow-delimiters--apply-color :override
+                #'rainbow-delimiters--apply-color-for-fira-code)))
 
 (use-package vi-tilde-fringe
   :defer t

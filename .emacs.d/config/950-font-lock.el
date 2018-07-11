@@ -800,7 +800,7 @@
               "TODO"
               (font-lock-add-keywords
                nil
-               '(("\\('\\|`\\|,\\|;$\\)"
+               '(("\\(#?'\\|`\\|,\\|;$\\)"
                   (1 'shadow))
                  ("[0-9A-Za-z]\\(/\\)[*<>0-9A-Za-z]"
                   (1 'shallow-shadow-face)))
