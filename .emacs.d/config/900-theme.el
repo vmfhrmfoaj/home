@@ -49,6 +49,7 @@
                            (face-attribute :background)
                            (dim-color 4.35)
                            (saturate-color -8))))))
+   `(clojure-meta-face ((t (:foreground "#b0b0b0"))))
    `(cursor ((t (:background "deep sky blue"))))
    `(cperl-nonoverridable-face ((t (:inherit font-lock-constant-face :foreground ,(-> 'font-lock-constant-face
                                                                                       (face-attribute :foreground)
@@ -78,7 +79,6 @@
                                   (face-attribute :background)
                                   (light-color 10))))))
    `(shadow ((t (:foreground "#9a9a9a"))))
-   `(shallow-shadow-face ((t (:foreground "#b0b0b0"))))
    `(trailing-whitespace ((t (:background "gray35"))))))
 
 (use-package twilight-bright-theme

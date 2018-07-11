@@ -37,8 +37,10 @@
         (1 'font-lock-variable-name-face))
        (,(concat whitespace "\\(accept\\)" whitespace* "(")
         (1 'font-lock-type-face))
-       ("\\([@$%]+\\)[:_0-9a-zA-Z]"
-        (1 'shallow-shadow-face))))
+       ("[_0-9a-zA-Z]\\(['\"]?\\s)\\)?\\(::\\|->\\)\\(\\s(['\"]?\\)?[_0-9a-zA-Z]"
+        (2 'shadow))
+       ("\\([*@$%]+\\)[:_0-9a-zA-Z]"
+        (1 'shadow))))
    :append))
 
 (use-package clojure-mode
@@ -81,7 +83,7 @@
     '((t (:inherit font-lock-type-face :weight bold)))
     "TODO")
   (defface clojure-meta-face
-    '((t (:inherit shallow-shadow-face)))
+    '((t (:inherit shadow)))
     "TODO")
   (defface clojure-interop-method-face
     '((t (:inherit font-lock-keyword-face)))
@@ -284,17 +286,7 @@
               (end-of-line)
             (goto-char clojure-interface-form--point))
           (0 'font-lock-doc-face t))
-         (,(concat symbol "?\\(!+\\)\\>")
-          (1 'clojure-side-effect-face append))
-         (,(concat "\\(" symbol "\\(\\." symbol "\\)+\\)")
-          (1 'font-lock-type-face nil))
-         (,(concat "\\<\\(\\([A-Z]+[0-9a-z]+\\)+\\)\\>")
-          (1 'font-lock-type-face nil)))
-       :append)
-      ;; prepend rules
-      (font-lock-add-keywords
-       mode
-       `(;; Meta
+         ;; Meta
          (,(concat "\\(?:" whitespace "\\|[([{]\\)\\^[:A-Za-z{]")
           (,(byte-compile
              (lambda (limit)
@@ -319,7 +311,17 @@
                (end-of-line)
              (goto-char clojure-meta---point))
            (0 'clojure-meta-face t)))
-         ;; Binding forms
+         (,(concat symbol "?\\(!+\\)\\>")
+          (1 'clojure-side-effect-face append))
+         (,(concat "\\(" symbol "\\(\\." symbol "\\)+\\)")
+          (1 'font-lock-type-face nil))
+         (,(concat "\\<\\(\\([A-Z]+[0-9a-z]+\\)+\\)\\>")
+          (1 'font-lock-type-face nil)))
+       :append)
+      ;; prepend rules
+      (font-lock-add-keywords
+       mode
+       `(;; Binding forms
          (,(concat "(" core-ns? (regexp-opt clojure--binding-forms) "[ \r\t\n]+\\[")
           ;; Normal bindings
           (,(-partial
@@ -625,7 +627,13 @@
          (,(concat "(" important-kw "\\(?:)\\|" whitespace "\\)")
           (1 'clojure-important-keywords-face))
          (,(concat "::\\(" symbol "\\)/" symbol "\\>")
-          (1 'font-lock-type-face)))))))
+          (1 'font-lock-type-face))
+         (,(concat "[0-9A-Za-z?]\\(#\\)")
+          (1 'shadow))
+         (,(concat "\\(~\\|@\\)[*0-9A-Za-z]")
+          (1 'shadow))
+         (,(concat "\\(_\\)")
+          (1 'shadow)))))))
 
 (use-package elisp-mode
   :defer t
@@ -784,13 +792,13 @@
          nil
          (1 'font-lock-variable-name-face)))
        ("\\(\\$\\)[_0-9a-zA-Z]"
-        (1 'shallow-shadow-face))))
+        (1 'shadow))))
    :append))
 
 (use-package prog-mode
   :defer t
   :init
-  (defface shallow-shadow-face
+  (defface shadow
     '((t (:inherit shadow)))
     "TODO")
 
@@ -803,8 +811,7 @@
                '(("\\(#?'\\|`\\|,\\|;$\\)"
                   (1 'shadow))
                  ("[0-9A-Za-z]\\(/\\)[*<>0-9A-Za-z]"
-                  (1 'shallow-shadow-face)))
-               :append))
+                  (1 'shadow)))))
             :append))
 
 (use-package sh-script
@@ -831,5 +838,5 @@
                face))
            t))
        ("\\(\\$\\)[(_0-9a-zA-Z]"
-        (1 'shallow-shadow-face)))
+        (1 'shadow)))
      :append)))
