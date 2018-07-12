@@ -67,19 +67,19 @@
   (defun persp-switch-to-last-selected-persp ()
     "TODO"
     (interactive)
-    (let (last-persp)
-      (while (and (not last-persp)
-                  persp-sorted-names)
-        (let ((it (car persp-sorted-names)))
+    (let ((names persp-sorted-names)
+          (last-persp nil))
+      (while (and names (not last-persp))
+        (let ((it (car names)))
           (if (and (member it (persp-names))
                    (not (string-equal it (persp-current-name))))
               (setq last-persp it)
-            (setq persp-sorted-names (cdr persp-sorted-names)))))
+            (setq names (cdr names)))))
       (when last-persp
         (persp-switch last-persp))))
 
   :config
-  (setq persp-autokill-buffer-on-remove 'kill-weak
+  (setq persp-autokill-buffer-on-remove #'kill-weak
         persp-auto-resume-time -1
         ;; TODO
         ;;  change mode-line format for `persp-mode'
