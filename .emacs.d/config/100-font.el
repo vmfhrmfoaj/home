@@ -8,14 +8,17 @@
   ;; - .Xresource:
   ;;   Xft.embolden: true
   ;;   Emacs.fontBackend: xft
-  (let ((font "Fira Code")
-        (height (if (eq 'darwin system-type) 130 85)))
+  (let* ((font "Monoid")
+         (height (cond
+                  ((eq 'darwin system-type) 141)
+                  ((eq 'gnu/linux system-type) 83))))
     (set-face-font 'default font)
     (set-face-attribute 'default nil
                         :weight 'medium
                         :width 'medium
                         :height height)
-    (when (string-equal "Fira Code" font)
+    (when (or (string-equal "Monoid" font)
+              (string-equal "Fira Code" font))
       (let ((alist (append
                     '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
                       ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
@@ -47,14 +50,13 @@
         (dolist (char-regexp alist)
           (set-char-table-range composition-function-table (car char-regexp)
                                 `([,(cdr char-regexp) 0 font-shape-gstring]))))))
-  (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
-  (add-to-list 'face-font-rescale-alist '("Free-Symbola" . 0.95))
-  (add-to-list 'face-font-rescale-alist '("Nanum Gothic" . 0.95))
-  (add-to-list 'face-font-rescale-alist '("STIXGeneral" . 0.9))
-  (add-to-list 'face-font-rescale-alist '("all-the-icons" . 0.9))
-  (add-to-list 'face-font-rescale-alist '("file-icons" . 0.9))
-  (add-to-list 'face-font-rescale-alist '("FontAwesome" . 0.9))
-  (add-to-list 'face-font-rescale-alist '("github-octicons" . 0.85))
+  ;; (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
+  ;; (add-to-list 'face-font-rescale-alist '("Free-Symbola" . 0.95))
+  ;; (add-to-list 'face-font-rescale-alist '("STIXGeneral" . 0.9))
+  ;; (add-to-list 'face-font-rescale-alist '("all-the-icons" . 0.9))
+  ;; (add-to-list 'face-font-rescale-alist '("file-icons" . 0.9))
+  ;; (add-to-list 'face-font-rescale-alist '("FontAwesome" . 0.9))
+  ;; (add-to-list 'face-font-rescale-alist '("github-octicons" . 0.85))
   ;; (add-to-list 'face-font-rescale-alist '("Weather Icons" . 0.9))
   ;; (add-to-list 'face-font-rescale-alist '("Material Icons" . 0.9))
   )
