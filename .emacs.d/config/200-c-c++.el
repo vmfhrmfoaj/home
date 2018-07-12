@@ -94,7 +94,13 @@
   :config
   (add-hook 'c-mode-common-hook
             (lambda ()
+              "TODO"
               (setq-local evil-lookup-func #'man-at-point)
               (c-toggle-auto-newline -1)
               (c-setup-indent-config c-indent-config))
-            :append))
+            :append)
+  (add-hook 'java-mode-hook
+            (lambda ()
+              "TODO"
+              (make-local-variable 'font-lock-extend-region-functions)
+              (add-to-list 'font-lock-extend-region-functions #'font-lock-extend-region-wholelines))))
