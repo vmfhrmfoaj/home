@@ -10,7 +10,7 @@
   ;;   Emacs.fontBackend: xft
   (let* ((font "Monoid")
          (height (cond
-                  ((eq 'darwin system-type) 141)
+                  ((eq 'darwin system-type) 131)
                   ((eq 'gnu/linux system-type) 83))))
     (set-face-font 'default font)
     (set-face-attribute 'default nil
