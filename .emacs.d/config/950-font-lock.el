@@ -6,6 +6,16 @@
   "TODO"
   (-repeat 4 (point-min-marker)))
 
+(use-package cc-mode
+  :defer t
+  :config
+  (font-lock-add-keywords
+   'java-mode
+   `(("\\(;\\)"
+      (1 'shadow))
+     ("\\([_0-9a-zA-Z]\\|\\s)\\)\\(\\.\\)\\([_0-9a-zA-Z]\\|\\s(\\)"
+      (2 'shadow)))))
+
 (use-package cperl-mode
   :defer t
   :config
@@ -40,6 +50,8 @@
        ("[_0-9a-zA-Z]\\(['\"]?\\s)\\)?\\(::\\|->\\)\\(\\s(['\"]?\\)?[_0-9a-zA-Z]"
         (2 'shadow))
        ("\\([*@$%]+\\)[:_0-9a-zA-Z]"
+        (1 'shadow))
+       ("\\(;\\)"
         (1 'shadow))))
    :append))
 
@@ -792,6 +804,8 @@
          nil
          (1 'font-lock-variable-name-face)))
        ("\\(\\$\\)[_0-9a-zA-Z]"
+        (1 'shadow))
+       ("\\(;\\)"
         (1 'shadow))))
    :append))
 
@@ -808,7 +822,7 @@
               "TODO"
               (font-lock-add-keywords
                nil
-               '(("\\(#?'\\|`\\|,\\|;$\\)"
+               '(("\\(#?'\\|`\\|,\\)"
                   (1 'shadow))
                  ("[0-9A-Za-z]\\(/\\)[*<>0-9A-Za-z]"
                   (1 'shadow)))))
