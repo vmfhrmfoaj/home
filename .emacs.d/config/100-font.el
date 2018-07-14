@@ -8,57 +8,23 @@
   ;; - .Xresource:
   ;;   Xft.embolden: true
   ;;   Emacs.fontBackend: xft
-  (let* ((font "Monoid")
+  (let* ((font "Fantasque Sans Mono")
          (height (cond
-                  ((eq 'darwin system-type) 131)
+                  ((eq 'darwin system-type) 161)
                   ((eq 'gnu/linux system-type) 83))))
     (set-face-font 'default font)
     (set-face-attribute 'default nil
                         :weight 'medium
                         :width 'medium
-                        :height height)
-    (when (or (string-equal "Monoid" font)
-              (string-equal "Fira Code" font))
-      (let ((alist (append
-                    '(( 33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
-                      ( 35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
-                      ( 36 . ".\\(?:>\\)")
-                      ( 37 . ".\\(?:\\(?:%%\\)\\|%\\)")
-                      ( 38 . ".\\(?:\\(?:&&\\)\\|&\\)")
-                      ( 42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*>]\\)") ; '*/' was deleted.
-                      ( 43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
-                      ( 45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
-                      ( 46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
-                      ( 47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[/=]\\)") ; '/*' and '/>' were deleted.
-                      ( 48 . ".\\(?:x[a-zA-Z]\\)")
-                      ( 58 . ".\\(?:::\\|[:=]\\)")
-                      ( 59 . ".\\(?:;;\\|;\\)")
-                      ( 60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~<=>|-]\\)") ; '</' is deleted.
-                      ( 61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
-                      ( 62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
-                      ( 91 . ".\\(?:]\\)")
-                      ( 92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
-                      ( 94 . ".\\(?:=\\)")
-                      (119 . ".\\(?:ww\\)")
-                      (123 . ".\\(?:-\\)")
-                      (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
-                      (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)"))
-                    (when (functionp 'mac-auto-operator-composition-mode)
-                      ;; NOTE
-                      ;;  It causes freezing when opening the popup of `helm', except `emacs-mac'.
-                      '((63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)"))))))
-        (dolist (char-regexp alist)
-          (set-char-table-range composition-function-table (car char-regexp)
-                                `([,(cdr char-regexp) 0 font-shape-gstring]))))))
-  ;; (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
-  ;; (add-to-list 'face-font-rescale-alist '("Free-Symbola" . 0.95))
-  ;; (add-to-list 'face-font-rescale-alist '("STIXGeneral" . 0.9))
-  ;; (add-to-list 'face-font-rescale-alist '("all-the-icons" . 0.9))
-  ;; (add-to-list 'face-font-rescale-alist '("file-icons" . 0.9))
-  ;; (add-to-list 'face-font-rescale-alist '("FontAwesome" . 0.9))
-  ;; (add-to-list 'face-font-rescale-alist '("github-octicons" . 0.85))
-  ;; (add-to-list 'face-font-rescale-alist '("Weather Icons" . 0.9))
-  ;; (add-to-list 'face-font-rescale-alist '("Material Icons" . 0.9))
-  )
+                        :height height))
+  (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.9))
+  (add-to-list 'face-font-rescale-alist '("Free-Symbola"     . 0.9))
+  (add-to-list 'face-font-rescale-alist '("STIXGeneral"      . 0.9))
+  (add-to-list 'face-font-rescale-alist '("all-the-icons"    . 0.85))
+  (add-to-list 'face-font-rescale-alist '("file-icons"       . 0.85))
+  (add-to-list 'face-font-rescale-alist '("FontAwesome"      . 0.85))
+  (add-to-list 'face-font-rescale-alist '("github-octicons"  . 0.85))
+  (add-to-list 'face-font-rescale-alist '("Weather Icons"    . 0.9))
+  (add-to-list 'face-font-rescale-alist '("Material Icons"   . 0.9)))
 
 (prefer-coding-system 'utf-8)
