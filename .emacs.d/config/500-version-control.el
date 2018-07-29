@@ -21,15 +21,16 @@
   (setq git-gutter+-disabled-modes '(org-mode)
         git-gutter-fr+-side 'left-fringe)
 
-  (let* ((max 8)
-         (prefix 2)
-         (width 5)
-         (width (min width (- max prefix)))
-         (postfix (- max prefix width))
+  (let* ((max (cond
+               ((numberp fringe-mode) fringe-mode)
+               ((consp fringe-mode) (car fringe-mode))
+               (t 8)))
+         (padding 2)
+         (width (- max (* 2 padding)))
          (bitmap (-repeat (+ (1- (line-pixel-height)) line-spacing)
-                          (apply #'concat (append (-repeat prefix  ".")
+                          (apply #'concat (append (-repeat padding ".")
                                                   (-repeat width   "X")
-                                                  (-repeat postfix ".")))))
+                                                  (-repeat padding ".")))))
          (fr-vec (apply #'fringe-helper-convert bitmap)))
     (define-fringe-bitmap 'git-gutter-fr+-added    fr-vec nil nil nil)
     (define-fringe-bitmap 'git-gutter-fr+-deleted  fr-vec nil nil nil)
@@ -80,8 +81,8 @@
   ;;  So, I think it is a bug caused by collision between Spacemacs and latest Emacs-macport.
   ;; FIXME
   ;;  This is workaround.
-  (add-to-list 'magit-git-environment (concat "HOME=" (getenv "HOME")))
-  (add-to-list 'magit-git-environment (concat "SSH_AUTH_SOCK=" (getenv "SSH_AUTH_SOCK")))
+  ;; (add-to-list 'magit-git-environment (concat "HOME=" (getenv "HOME")))
+  ;; (add-to-list 'magit-git-environment (concat "SSH_AUTH_SOCK=" (getenv "SSH_AUTH_SOCK")))
   (advice-add #'magit-log-propertize-keywords :filter-return
               #'magit-log-propertize-keywords-for-conventional-commits))
 

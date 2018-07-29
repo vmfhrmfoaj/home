@@ -157,7 +157,7 @@
 
     ;; toggle
     "tl" #'toggle-truncate-lines
-    "tm" #'toggle-frame-maximized
+    "tm" #'toggle-frame-fullscreen
     "tw" #'whitespace-mode
 
     ;; layout

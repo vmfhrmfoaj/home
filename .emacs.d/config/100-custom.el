@@ -27,9 +27,6 @@
   (require 'ucs-normalize)
   (set-file-name-coding-system 'utf-8-hfs))
 
-(when window-system
-  (include-shell-var-in "~/.profile"))
-
 (add-hook 'after-init-hook
           (lambda ()
             (advice-add #'select-frame      :after #'update-buf-visit-time)
@@ -37,5 +34,6 @@
             (advice-add #'set-window-buffer :after #'update-buf-visit-time)
             (advice-add #'switch-to-buffer  :after #'update-buf-visit-time)
             (setq gc-cons-threshold (* 1024 1024 128)
-                  gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect)))
+                  gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect))
+            (fringe-mode 15))
           :append)

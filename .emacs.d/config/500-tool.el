@@ -46,7 +46,7 @@
     (setq ediff--exclude-mode-status (-map #'symbol-value ediff-exclude-modes)
           ediff--win-conf (current-window-configuration))
     (disable-modes ediff-exclude-modes)
-    (toggle-frame-maximized))
+    (toggle-frame-fullscreen))
 
   (defun ediff-addtional-cleanup (&rest _)
     "TODO"
@@ -54,7 +54,7 @@
     (-when-let (conf ediff--win-conf)
       (setq ediff--win-conf nil)
       (set-window-configuration conf))
-    (toggle-frame-maximized))
+    (toggle-frame-fullscreen))
 
   :config
   ;; NOTE

@@ -1,4 +1,8 @@
-(defvar null-fn (-const nil))
+(defvar hostname (s-trim (shell-command-to-string "hostname"))
+  "TODO")
+
+(defvar null-fn (-const nil)
+  "TODO")
 
 (defmacro -update-> (&rest thread)
   "TODO"
@@ -85,18 +89,6 @@
        (assoc 'geometry)
        (cdr)
        (nth 2)))
-
-
-(defun include-shell-var-in (file)
-  "TODO"
-  (dolist (it (->> (concat "EMACS_INIT=1 source " file "; env")
-                   (shell-command-to-string)
-                   (s-lines)
-                   (--map (s-split "=" it))))
-    (let ((key (car it))
-          (val (cadr it)))
-      (setenv key val))))
-
 
 (defvar rsync-retry-coutner 3
   "TODO")

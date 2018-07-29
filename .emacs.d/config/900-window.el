@@ -8,7 +8,7 @@
 (when window-system
   (let ((w 150)
         (char-height (float (frame-char-height)))
-        (titlebar-height (if (eq 'gnu/linux system-type) 28 22)))
+        (titlebar-height (if (string-equal "gnome-imac" hostname) 56 28)))
     (setq org-tags-column (+ (- w) 5))
     (let* ((h (floor (- (/ (display-pixel-height) char-height)
                         (/ titlebar-height char-height)
@@ -41,7 +41,7 @@
            (num-str (if (<= 0 num 20)
                         (nth num unicode-nums)
                       (number-to-string num)))
-           (raise (if (<= 0 num 20) 0.05 0)))
+           (raise (if (<= 0 num 20) -0.1 0)))
       (propertize (concat "  " num-str)
                   'face (if active? 'powerline-active0 'powerline-inactive0)
                   'display `(raise ,raise))))

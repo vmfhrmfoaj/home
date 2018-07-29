@@ -91,8 +91,9 @@
         cperl-indent-region-fix-constructs nil
         cperl-indent-wrt-brace nil
         cperl-merge-trailing-else nil)
-  (-when-let (root (getenv "PERLBREW_ROOT"))
-    (include-shell-var-in (concat root "/etc/bashrc")))
+  ;; FIXME
+  ;; (-when-let (root (getenv "PERLBREW_ROOT"))
+  ;;   (include-shell-var-in (concat root "/etc/bashrc")))
   (let ((f (-const nil)))
     (advice-add #'cperl-electric-keyword :override f)
     (advice-add #'cperl-electric-else    :override f)
