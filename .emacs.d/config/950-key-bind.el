@@ -433,6 +433,12 @@
   (evil-define-key 'normal evil-org-mode-map
     (kbd "RET") #'org-open-at-point))
 
+(use-package org-agenda
+  :defer t
+  :config
+  (evil-define-key '(normal motion) org-agenda-mode-map
+    (kbd "RET") #'org-agenda-switch-to))
+
 (use-package osx-dictionary
   :if (eq 'darwin system-type)
   :defer t
