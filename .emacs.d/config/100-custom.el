@@ -35,5 +35,6 @@
             (advice-add #'switch-to-buffer  :after #'update-buf-visit-time)
             (setq gc-cons-threshold (* 1024 1024 128)
                   gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect))
-            (fringe-mode 15))
+            (when (string-equal "gnome-imac" hostname)
+              (fringe-mode 15)))
           :append)
