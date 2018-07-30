@@ -155,6 +155,25 @@
                   (shell-command-to-string
                    (concat rsync-remote-notify-cmd "'" res "'")))))))))))
 
+(defvar google-drive-opts '(("-depth" "0") ("-retry-count" "0") ("-ignore-checksum"))
+  "TODO")
+
+(defun sync-google-drive (file)
+  "TODO"
+  (async-start
+   `(lambda ()
+      (call-process "drive" nil nil nil "push" "-quiet" ,@(-flatten google-drive-opts) ,file))
+   `(lambda (status)
+      (cond
+       ((= 19 status)
+        ;; FIXME
+        ;;  ediff-files
+        (message (concat "syncing '" ,file "' is failed: there are conflicts.")))
+       ((= 0 status)
+        (message (concat "syncing '" ,file "' is done!")))
+       (t
+        (message (concat "syncing '" ,file "' is failed:" (number-to-string status))))))))
+
 (defvar buf-visit-time nil
   "TODO")
 (make-local-variable 'buf-visit-time)
