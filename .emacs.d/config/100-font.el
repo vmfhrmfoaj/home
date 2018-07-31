@@ -27,8 +27,8 @@
   (add-to-list 'face-font-rescale-alist '("STIXGeneral"      . 0.9))
   (add-to-list 'face-font-rescale-alist '("Unifont"          . 0.95))
   (add-to-list 'face-font-rescale-alist '("Weather Icons"    . 0.9))
-  (add-to-list 'face-font-rescale-alist '("all-the-icons"    . 0.85))
-  (add-to-list 'face-font-rescale-alist '("file-icons"       . 0.85))
-  (add-to-list 'face-font-rescale-alist '("github-octicons"  . 0.85)))
+  (add-to-list 'face-font-rescale-alist '("all-the-icons"    . 0.8))
+  (add-to-list 'face-font-rescale-alist '("file-icons"       . 0.8))
+  (add-to-list 'face-font-rescale-alist '("github-octicons"  . 0.8)))
 
 (prefer-coding-system 'utf-8)
