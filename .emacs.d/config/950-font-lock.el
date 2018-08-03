@@ -749,7 +749,7 @@
                   ((string-equal x "X") ,check-square)))
                 (cond
                  ((eq 'gnu/linux system-type)
-                  (put-text-property s e 'display '(raise  0.1))))
+                  (put-text-property s e 'display '(raise  0.05))))
                 (list :family "FontAwesome"
                       :foreground (face-attribute (if (string-equal x "X")
                                                       'org-done 'org-todo)
