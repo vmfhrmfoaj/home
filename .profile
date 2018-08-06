@@ -1,6 +1,10 @@
 function setEnv () {
   local os=`uname`
 
+  # lang
+  export LANG=en_US.UTF-8
+  export LC_ALL=en_US.UTF-8
+
   # ~/.bin
   if [ -d $HOME/.bin ]; then
     export PATH=$HOME/.bin:$PATH
