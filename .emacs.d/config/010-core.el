@@ -7,7 +7,7 @@
 (use-package helm
   :ensure t
   :defer t
-  :diminish "Ⓗ"
+  :diminish ""
   :commands (helm-make-source helm-do-grep-ag)
   :init
   (defun helm-bufferp (buf)

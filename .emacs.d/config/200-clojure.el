@@ -150,8 +150,7 @@
         cider-font-lock-dynamically nil
         cider-font-lock-reader-conditionals nil
         cider-mode-line '(:eval (when (cider-connected-p)
-                                  "Ⓡ" ; (R)ELP
-                                  )))
+                                  (format " cider(%s)" (cider--modeline-info)))))
   (add-hook 'cider-mode-hook
             (lambda ()
               (setq-local evil-lookup-func #'cider-doc-at-point)

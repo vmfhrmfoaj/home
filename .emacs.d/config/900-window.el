@@ -30,21 +30,20 @@
 (use-package winum
   :ensure t
   :init
-  (defvar unicode-nums
-    '("⓪" "①" "②" "③" "④" "⑤" "⑥" "⑦" "⑧" "⑨"
-      "⑩" "⑪" "⑫" "⑬" "⑭" "⑮" "⑯" "⑰" "⑱" "⑲" "⑳"))
+  (defvar winum-num-strs
+    '("(0)" "(1)" "(2)" "(3)" "(4)" "(5)" "(6)" "(7)" "(8)" "(9)" "(10)" "(11)" "(12)" "(13)" "(14)" "(15)" "(16)" "(17)" "(18)" "(19)" "(20)"))
 
   (defun winum--num-str-to-pertty-num-str (num-str)
     "TODO"
     (let* ((active? (powerline-selected-window-active))
            (num (string-to-number num-str))
            (num-str (if (<= 0 num 20)
-                        (nth num unicode-nums)
-                      (number-to-string num)))
-           (raise (if (<= 0 num 20) -0.1 0)))
+                        (nth num winum-num-strs)
+                      (number-to-string num))))
       (propertize (concat "  " num-str)
-                  'face (if active? 'powerline-active0 'powerline-inactive0)
-                  'display `(raise ,raise))))
+                  'face (if active?
+                            'powerline-active0
+                          'powerline-inactive0))))
 
   (defun winum--assign-0-to-neotree ()
     "winum assign function for NeoTree."
