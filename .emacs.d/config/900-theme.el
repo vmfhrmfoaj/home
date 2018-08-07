@@ -91,6 +91,7 @@
    `(auto-dim-other-buffers-face
      ((t :foreground ,(-> 'default (face-attribute :foreground) (light-color 4))
          :background ,(-> 'default (face-attribute :background) (dim-color 2)))))
+   `(diff-refine-changed ((t (:weight bold :background ,(face-attribute 'diff-refine-changed :background)))))
    `(clojure-if-true-face
      ((t (:background ,(-> 'font-lock-keyword-face
                            (face-attribute :background)
