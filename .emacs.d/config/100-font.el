@@ -10,8 +10,8 @@
   ;;   Emacs.fontBackend: xft
   (let ((font "Fantasque Sans Mono")
         (height (cond
-                 ((string-equal "gnome-imac" hostname) 98)
                  ((string-equal "gnome-macbookair" hostname) 110)
+                 ((string-equal "gnome-imac" hostname) 110) ; for HiDPI=2 and Scaling Factor=0.9
                  (t 102))))
     (set-face-font 'default font)
     (set-fontset-font t 'unicode "symbola")
