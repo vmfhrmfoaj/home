@@ -77,15 +77,7 @@
   :ensure org-plus-contrib
   :defer t
   :init
-  (async-start
-   `(lambda ()
-      (call-process "drive" nil nil nil "pull" "-quiet" (concat (getenv "HOME") "/Google Drive/Org")))
-   `(lambda (status)
-      (cond
-       ((= 0 status)
-        (message (concat "syncing '~/Google Drive/Org' is done!")))
-       (t
-        (message (concat "syncing '~/Google Drive/Org' is failed:" (number-to-string status)))))))
+  (pull-to-google-drive (concat (getenv "HOME") "/Google Drive/Org"))
 
   :config
   (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0 :weight bold))

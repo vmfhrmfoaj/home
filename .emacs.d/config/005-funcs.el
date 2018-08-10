@@ -155,24 +155,40 @@
                   (shell-command-to-string
                    (concat rsync-remote-notify-cmd "'" res "'")))))))))))
 
-(defvar google-drive-opts '(("-depth" "0") ("-retry-count" "0") ("-ignore-checksum"))
+(defvar google-drive-exec nil
   "TODO")
 
-(defun sync-google-drive (file)
+(defvar google-drive-opts '("-hidden" "-quiet")
+  "TODO")
+
+(defun sync-google-drive (path &rest args)
   "TODO"
   (async-start
    `(lambda ()
-      (call-process "drive" nil nil nil "push" "-quiet" ,@(-flatten google-drive-opts) ,file))
+      (call-process (or ,google-drive-exec "drive") nil nil nil
+                    ,@args ,@google-drive-opts ,path))
    `(lambda (status)
       (cond
        ((= 19 status)
         ;; FIXME
         ;;  ediff-files
-        (message (concat "syncing '" ,file "' is failed: there are conflicts.")))
+        (message (concat "syncing '" ,path "' is failed: there are conflicts.")))
        ((= 0 status)
-        (message (concat "syncing '" ,file "' is done!")))
+        (message (concat "syncing '" ,path "' is done!")))
        (t
-        (message (concat "syncing '" ,file "' is failed:" (number-to-string status))))))))
+        (message (concat "syncing '" ,path "' is failed:" (number-to-string status))))))))
+
+(defvar google-drive-push-opts '(("push") ("-depth" "0") ("-retry-count" "0") ("-ignore-checksum"))
+  "TODO")
+
+(defun push-to-google-drive (path)
+  (apply #'sync-google-drive path (-flatten google-drive-push-opts)))
+
+(defvar google-drive-pull-opts '(("pull"))
+  "TODO")
+
+(defun pull-to-google-drive (path)
+  (apply #'sync-google-drive path (-flatten google-drive-pull-opts)))
 
 (defvar buf-visit-time nil
   "TODO")
