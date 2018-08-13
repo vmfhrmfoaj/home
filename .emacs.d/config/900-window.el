@@ -7,11 +7,14 @@
 
 (when window-system
   (let ((w 150)
-        (char-height (float (frame-char-height))))
+        (char-height (float (frame-char-height)))
+        (titlebar-height-in-char 2)
+        (top-bottom-padding (if (string-equal "gnome-macbookair" hostname) 2 3))
+        (top-offset (if (string-equal "gnome-imac" hostname) 5 0)))
     (setq org-tags-column (+ (- w) 5))
     (let* ((h (floor (- (/ (display-pixel-height) char-height)
-                        (if (string-equal "gnome-imac" hostname)
-                            5 4))))
+                        titlebar-height-in-char
+                        top-bottom-padding)))
            (l (/ (custom-display-pixel-width) 2.0))
            (l (floor (- l (* (frame-unit->pixel w) 0.45))))
            (l (if (< 0 (- (custom-display-pixel-width)
@@ -21,9 +24,7 @@
       (add-to-list 'default-frame-alist (cons 'width  w))
       (add-to-list 'default-frame-alist (cons 'height h))
       (setq split-width-threshold (1+ w)
-            initial-frame-alist (list (cons 'top (+ (frame-char-height)
-                                                    (if (string-equal "gnome-imac" hostname)
-                                                        5 0)))
+            initial-frame-alist (list (cons 'top (+ (frame-char-height) top-offset))
                                       (cons 'left   l)
                                       (cons 'width  w)
                                       (cons 'height h))))))
