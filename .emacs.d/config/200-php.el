@@ -1,3 +1,12 @@
+(use-package company-php
+  :ensure t
+  :after php-mode
+  :config
+  (add-hook 'php-mode-hook
+            (lambda ()
+              (make-local-variable 'company-backends)
+              (add-to-list 'company-backends #'company-ac-php-backend))))
+
 (use-package php-extras
   :defer t
   ;; NOTE:
@@ -31,12 +40,3 @@
               (make-local-variable 'font-lock-extend-region-functions)
               (add-to-list 'font-lock-extend-region-functions #'font-lock-extend-region-wholelines)
               (aggressive-indent-mode 1))))
-
-(use-package company-php
-  :ensure t
-  :after php-mode
-  :config
-  (add-hook 'php-mode-hook
-            (lambda ()
-              (make-local-variable 'company-backends)
-              (add-to-list 'company-backends #'company-ac-php-backend))))
