@@ -27,6 +27,9 @@
   (require 'ucs-normalize)
   (set-file-name-coding-system 'utf-8-hfs))
 
+(when (string-equal "gnome-imac" hostname)
+  (fringe-mode 15))
+
 (add-hook 'after-init-hook
           (lambda ()
             (advice-add #'select-frame      :after #'update-buf-visit-time)
@@ -34,7 +37,5 @@
             (advice-add #'set-window-buffer :after #'update-buf-visit-time)
             (advice-add #'switch-to-buffer  :after #'update-buf-visit-time)
             (setq gc-cons-threshold (* 1024 1024 128)
-                  gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect))
-            (when (string-equal "gnome-imac" hostname)
-              (fringe-mode 15)))
+                  gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect)))
           :append)
