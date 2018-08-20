@@ -161,13 +161,15 @@
 (defvar google-drive-opts '("-hidden" "-quiet")
   "TODO")
 
-(defun sync-google-drive (path &rest args)
+(defun sync-google-drive (path cb &rest args)
   "TODO"
   (async-start
    `(lambda ()
       (call-process (or ,google-drive-exec "drive") nil nil nil
                     ,@args ,@google-drive-opts ,path))
    `(lambda (status)
+      (when ,cb
+        (funcall ,cb status))
       (cond
        ((= 19 status)
         ;; FIXME
@@ -181,14 +183,14 @@
 (defvar google-drive-push-opts '(("push") ("-depth" "0") ("-retry-count" "0") ("-ignore-checksum"))
   "TODO")
 
-(defun push-to-google-drive (path)
-  (apply #'sync-google-drive path (-flatten google-drive-push-opts)))
+(defun push-to-google-drive (path &optional cb)
+  (apply #'sync-google-drive path cb (-flatten google-drive-push-opts)))
 
 (defvar google-drive-pull-opts '(("pull"))
   "TODO")
 
-(defun pull-to-google-drive (path)
-  (apply #'sync-google-drive path (-flatten google-drive-pull-opts)))
+(defun pull-to-google-drive (path &optional cb)
+  (apply #'sync-google-drive path cb (-flatten google-drive-pull-opts)))
 
 (defvar buf-visit-time nil
   "TODO")

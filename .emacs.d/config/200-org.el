@@ -77,7 +77,13 @@
   :ensure org-plus-contrib
   :defer t
   :init
-  (pull-to-google-drive (concat (getenv "HOME") "/Google Drive/Org"))
+  (when window-system
+    (add-hook 'emacs-startup-hook #'org-agenda-list)
+    (pull-to-google-drive (concat (getenv "HOME") "/Google Drive/Org")
+                          (lambda (_)
+                            (when org-agenda-buffer
+                              (with-current-buffer org-agenda-buffer
+                                (org-agenda-redo-all))))))
 
   :config
   (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0 :weight bold))
