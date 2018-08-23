@@ -58,7 +58,7 @@
   :defer t
   :config
   (setq helm-ag-base-command "rg"
-        helm-ag-command-option "--no-heading -i --hidden"
+        helm-ag-command-option "--no-heading -i"
 	      helm-ag-use-emacs-lisp-regexp t)
   (with-eval-after-load "projectile"
     (advice-add #'helm-ag--project-root :override #'projectile-project-root)))
