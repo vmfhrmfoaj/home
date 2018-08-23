@@ -75,6 +75,7 @@
     "aocn" #'org-capture-note
     "aoct" #'org-capture-todo
     "aos" #'org-search-view
+    "aom" #'org-tags-view
     "aot" #'org-todo-list
 
     ;; - calculator
