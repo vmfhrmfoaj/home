@@ -83,8 +83,8 @@
                           (lambda (_)
                             (when org-agenda-buffer
                               (dolist (file org-agenda-files)
-                                (find-file file)
-                                (revert-buffer nil t))
+                                (flet ((yes-or-no-p (&rest args) t))
+                                  (find-file file)))
                               (org-agenda-list)))))
 
   :config
