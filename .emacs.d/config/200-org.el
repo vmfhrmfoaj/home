@@ -37,6 +37,7 @@
       (osx-dictionary-search-pointer)))
 
   :config
+  (require 'helm-org nil t)
   (setq org-complete-tags-always-offer-all-agenda-tags t
         org-directory (concat (getenv "HOME") "/Desktop/Org")
         org-fontify-whole-heading-line t
