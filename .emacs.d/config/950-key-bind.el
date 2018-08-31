@@ -147,6 +147,7 @@
     ;; register/rings/resume
     "rk" #'helm-show-kill-ring
     "rl" #'helm-resume
+    "ro" #'org-agenda-resume
 
     ;; search/symbol
     "se" #'evil-multiedit-match-all

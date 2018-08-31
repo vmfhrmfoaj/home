@@ -78,6 +78,11 @@
   :ensure org-plus-contrib
   :defer t
   :init
+  (defun org-agenda-resume ()
+    (interactive)
+    (when org-agenda-buffer
+      (switch-to-buffer org-agenda-buffer)))
+
   (when window-system
     (add-hook 'emacs-startup-hook #'org-agenda-list)
     (pull-to-google-drive (concat (getenv "HOME") "/Google Drive/Org")
@@ -99,7 +104,7 @@
         org-agenda-skip-function-global
         (byte-compile
          (lambda ()
-           (and (eq (car org-agenda-redo-command) 'org-agenda-list)
+           (and (string-match-p "(a)" org-agenda-buffer-name)
                 (org-agenda-skip-subtree-if 'todo '("HOLD" "WAITING"))
                 (org-agenda-skip-subtree-if 'scheduled)
                 (org-agenda-skip-subtree-if 'notdeadline))))
@@ -107,6 +112,7 @@
                                       (todo   todo-state-down priority-down category-keep)
                                       (tags   priority-down category-keep)
                                       (search category-keep))
+        org-agenda-sticky t
         org-agenda-tags-column org-tags-column
         org-agenda-window-setup 'current-window))
 
