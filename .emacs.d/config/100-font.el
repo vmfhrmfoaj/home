@@ -11,7 +11,7 @@
   (let ((font "Fantasque Sans Mono")
         (height (cond
                  ((string-equal "gnome-macbookair" hostname) 110)
-                 ((string-equal "gnome-imac" hostname) 110) ; for HiDPI=2 and Scaling Factor=0.9
+                 ((string-equal "gnome-imac" hostname) 105) ; for HiDPI=2 and Scaling Factor=0.9
                  (t 102))))
     (set-face-font 'default font)
     (set-fontset-font t 'unicode "symbola")
