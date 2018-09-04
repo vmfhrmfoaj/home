@@ -90,8 +90,9 @@
                             (when org-agenda-buffer
                               (dolist (file org-agenda-files)
                                 (flet ((yes-or-no-p (&rest args) t))
-                                  (find-file file)))
-                              (org-agenda-list)))))
+                                  (find-file-noselect file)))
+                              (with-current-buffer org-agenda-buffer
+                                (org-agenda-redo))))))
 
   :config
   (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0 :weight bold))
