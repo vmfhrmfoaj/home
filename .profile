@@ -25,4 +25,11 @@ function setEnv () {
   fi
 }
 
+function into () {
+  chroot=${1}
+  if [ ! -z "${chroot}" ]; then
+    schroot -c "${chroot}" -u root -- zsh
+  fi
+}
+
 setEnv
