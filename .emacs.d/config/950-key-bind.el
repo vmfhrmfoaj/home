@@ -218,6 +218,10 @@
 
 ;; Key binding for the minor mode
 
+(use-package alchemist
+  :defer t
+  :config)
+
 (use-package company
   :defer t
   :config
@@ -226,6 +230,29 @@
   (define-key company-active-map (kbd "C-j") #'company-select-next)
   (define-key company-active-map (kbd "C-k") #'company-select-previous)
   (evil-global-set-key 'insert (kbd "TAB") #'company-indent-or-complete-common))
+
+(use-package cider-repl
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'cider-repl-mode
+    "mee" #'cider-eval-last-sexp
+    "mef" #'cider-eval-defun-at-point
+    "mer" #'cider-eval-last-sexp-and-replace
+    "mgg" #'cider-find-var-at-point
+    "mrc" #'cider-repl-clear-buffer
+    "mrs" #'cider-switch-to-last-clj-buf
+    "mrq" #'cider-quit)
+  (which-key-declare-prefixes-for-mode 'cider-repl-mode
+    (concat evil-leader/leader "me") "evaluation"
+    (concat evil-leader/leader "mg") "goto"
+    (concat evil-leader/leader "mr") "REPL")
+  (evil-leader/set-major-leader-for-mode "," 'cider-repl-mode))
+
+(use-package cider-stacktrace
+  :defer t
+  :config
+  (evil-define-key 'normal cider-stacktrace-mode-map
+    (kbd "q") #'evil-delete-buffer))
 
 (use-package evil
   :defer t
@@ -319,28 +346,14 @@
       (concat evil-leader/leader "mg") "goto")
     (evil-leader/set-major-leader-for-mode "," mode)))
 
-(use-package cider-repl
+(use-package elixir-mode
   :defer t
   :config
-  (evil-leader/set-key-for-mode 'cider-repl-mode
-    "mee" #'cider-eval-last-sexp
-    "mef" #'cider-eval-defun-at-point
-    "mer" #'cider-eval-last-sexp-and-replace
-    "mgg" #'cider-find-var-at-point
-    "mrc" #'cider-repl-clear-buffer
-    "mrs" #'cider-switch-to-last-clj-buf
-    "mrq" #'cider-quit)
-  (which-key-declare-prefixes-for-mode 'cider-repl-mode
-    (concat evil-leader/leader "me") "evaluation"
-    (concat evil-leader/leader "mg") "goto"
-    (concat evil-leader/leader "mr") "REPL")
-  (evil-leader/set-major-leader-for-mode "," 'cider-repl-mode))
-
-(use-package cider-stacktrace
-  :defer t
-  :config
-  (evil-define-key 'normal cider-stacktrace-mode-map
-    (kbd "q") #'evil-delete-buffer))
+  (evil-leader/set-key-for-mode 'elixir-mode
+    "mgg" #'alchemist-goto-definition-at-point)
+  (which-key-declare-prefixes-for-mode 'elixir-mode
+    (concat evil-leader/leader "mg") "goto")
+  (evil-leader/set-major-leader-for-mode "," 'elixir-mode))
 
 (use-package clojure-mode
   :defer t
