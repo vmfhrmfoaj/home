@@ -23,12 +23,11 @@ function setEnv () {
       bindkey '^d' delete-char
     fi
   fi
-}
 
-function into () {
-  chroot=${1}
-  if [ ! -z "${chroot}" ]; then
-    schroot -c "${chroot}" -u root -- zsh
+  if [ ! -z $SCHROOT_CHROOT_NAME ]; then
+    local NEWLINE=$'\n'
+    local PS1_PREFIX='%{$fg[magenta]%}($SCHROOT_CHROOT_NAME)%{$reset_color%}'
+    export PS1="${PS1_PREFIX}${NEWLINE}$PS1"
   fi
 }
 
