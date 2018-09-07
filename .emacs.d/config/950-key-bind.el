@@ -350,9 +350,13 @@
   :defer t
   :config
   (evil-leader/set-key-for-mode 'elixir-mode
-    "mgg" #'alchemist-goto-definition-at-point)
+    "mgg" #'alchemist-goto-definition-at-point
+    "mrs" #'alchemist-iex-run
+    "mrS" #'alchemist-iex-project-run)
   (which-key-declare-prefixes-for-mode 'elixir-mode
-    (concat evil-leader/leader "mg") "goto")
+    (concat evil-leader/leader "me") "evaluation"
+    (concat evil-leader/leader "mg") "goto"
+    (concat evil-leader/leader "mr") "REPL")
   (evil-leader/set-major-leader-for-mode "," 'elixir-mode))
 
 (use-package clojure-mode

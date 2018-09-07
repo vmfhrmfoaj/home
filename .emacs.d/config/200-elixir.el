@@ -13,4 +13,7 @@
         alchemist-mix-command      "schroot -c elixir -- mix"
         alchemist-iex-program-name "schroot -c elixir -- iex"
         alchemist-execute-command  "schroot -c elixir -- elixir"
-        alchemist-compile-command  "schroot -c elixir -- elixirc"))
+        alchemist-compile-command  "schroot -c elixir -- elixirc")
+  (add-hook 'alchemist-mode-hook
+            (lambda ()
+              (setq-local evil-lookup-func #'alchemist-help-search-at-point))))
