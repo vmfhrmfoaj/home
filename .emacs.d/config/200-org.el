@@ -87,6 +87,8 @@
     (add-hook 'emacs-startup-hook #'org-agenda-list)
     (pull-to-google-drive (concat (getenv "HOME") "/Google Drive/Org")
                           (lambda (_)
+                            (when helm-current-buffer
+                              (helm-keyboard-quit))
                             (when org-agenda-buffer
                               (dolist (file org-agenda-files)
                                 (flet ((yes-or-no-p (&rest args) t))
