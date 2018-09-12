@@ -94,6 +94,7 @@
                               (dolist (file org-agenda-files)
                                 (flet ((yes-or-no-p (&rest args) t))
                                   (find-file-noselect file)))
+                              (kill-buffer org-agenda-buffer)
                               (org-agenda-list)))))
 
   :config
