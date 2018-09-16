@@ -338,6 +338,12 @@
 
 ;; Key binding for the major mode
 
+(use-package alchemist-help
+  :defer t
+  :config
+  (evil-define-key 'normal alchemist-help-minor-mode-map
+    (kbd "q") #'evil-delete-buffer))
+
 (use-package cc-mode
   :defer t
   :config
