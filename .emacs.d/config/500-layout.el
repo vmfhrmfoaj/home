@@ -91,7 +91,7 @@
                                           (if (string-match "/\\([^/]+\\)/?$" cur-name)
                                               (match-string 1 cur-name)
                                             cur-name)))))
-        persp-nil-name "-"
+        persp-nil-name "~/"
         persp-last-selected-persp-name persp-nil-name
         persp-set-ido-hooks t
         wg-morph-on nil)
