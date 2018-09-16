@@ -1,5 +1,11 @@
 (use-package company
   :ensure t
+  :init
+  (defun company-complete-selection-and-insert-space ()
+    (interactive)
+    (company-complete-selection)
+    (execute-kbd-macro (kbd "SPC")))
+
   :config
   (setq company-idle-delay 0.2
         company-selection-wrap-around t
