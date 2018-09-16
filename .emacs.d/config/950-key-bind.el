@@ -165,8 +165,10 @@
     ;; layout
     "l TAB" #'persp-switch-to-last-selected-persp
     "lh" #'persp-switch-to-default
-    "lx" #'persp-kill-cur-persp
     "ll" #'helm-persp
+    "lr" #'persp-load-state-from-file
+    "ls" #'persp-save-state-to-file
+    "lx" #'persp-kill-cur-persp
 
     ;; quit
     "qq" #'save-buffers-kill-emacs
