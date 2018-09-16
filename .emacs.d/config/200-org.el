@@ -89,6 +89,7 @@
                           (lambda (_)
                             (when helm-current-buffer
                               (ignore-errors
+                                (which-key-abort)
                                 (helm-keyboard-quit)))
                             (when org-agenda-buffer
                               (dolist (file org-agenda-files)
