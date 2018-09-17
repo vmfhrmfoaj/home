@@ -3,7 +3,7 @@
   :init
   (defun company-complete-selection-and-insert-space ()
     (interactive)
-    (company-complete-selection)
+    (company-abort)
     (execute-kbd-macro (kbd "SPC")))
 
   :config
