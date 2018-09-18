@@ -81,7 +81,14 @@
   (defun org-agenda-resume ()
     (interactive)
     (when org-agenda-buffer
-      (switch-to-buffer org-agenda-buffer)))
+      (switch-to-buffer org-agenda-buffer)
+      (call-interactively #'org-agenda-redo)
+      t))
+
+  (defun org-agenda-show-list ()
+    (interactive)
+    (unless (org-agenda-resume)
+      (org-agenda-list)))
 
   (when window-system
     (add-hook 'emacs-startup-hook #'org-agenda-list)
@@ -95,8 +102,8 @@
                               (dolist (file org-agenda-files)
                                 (flet ((yes-or-no-p (&rest args) t))
                                   (find-file-noselect file)))
-                              (kill-buffer org-agenda-buffer)
-                              (org-agenda-list)))))
+                              (with-current-buffer org-agenda-buffer
+                                (call-interactively #'org-agenda-redo))))))
 
   :config
   (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0 :weight bold))

@@ -70,7 +70,7 @@
     ;; applications
 
     ;; - org
-    "aoa" #'org-agenda-list
+    "aoa" #'org-agenda-show-list
     "aocj" #'org-clock-jump-to-current-clock
     "aocn" #'org-capture-note
     "aoct" #'org-capture-todo
