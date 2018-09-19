@@ -36,6 +36,15 @@ function setEnv () {
     local PS1_PREFIX='%{$fg[magenta]%}($SCHROOT_CHROOT_NAME)%{$reset_color%}'
     export PS1="${PS1_PREFIX}${NEWLINE}$PS1"
   fi
+
+  # google cloud
+  local GOOGLE_COULD="$HOME/.local/google-cloud-sdk"
+  if [  -f "$GOOGLE_COULD/path.zsh.inc" ]; then
+    source "$GOOGLE_COULD/path.zsh.inc"
+  fi
+  if [  -f "$GOOGLE_COULD/completion.zsh.inc" ]; then
+    source "$GOOGLE_COULD/completion.zsh.inc"
+  fi
 }
 
 setEnv
