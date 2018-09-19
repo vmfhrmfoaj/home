@@ -137,6 +137,8 @@
 
     ;; project
     "p!" #'projectile-run-shell-command-in-root
+    "pA" #'projectile-add-known-project
+    "pD" #'projectile-remove-known-project
     "pI" #'projectile-invalidate-cache
     "pd" #'helm-projectile-find-dir
     "pf" #'helm-projectile-find-file
@@ -147,7 +149,6 @@
     ;; register/rings/resume
     "rk" #'helm-show-kill-ring
     "rl" #'helm-resume
-    "ro" #'org-agenda-resume
 
     ;; search/symbol
     "se" #'evil-multiedit-match-all
