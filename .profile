@@ -1,7 +1,7 @@
 function setEnv () {
   local os=`uname`
 
-  # lang
+  # locale
   export LANG=en_US.UTF-8
   export LC_ALL=en_US.UTF-8
 
@@ -24,6 +24,13 @@ function setEnv () {
     fi
   fi
 
+  # elixir
+  if [ 'elixir' = "$SCHROOT_CHROOT_NAME" ]; then
+    export HEX_HTTP_CONCURRENCY=1
+    export HEX_HTTP_TIMEOUT=30
+  fi
+
+  # schroot
   if [ ! -z $SCHROOT_CHROOT_NAME ]; then
     local NEWLINE=$'\n'
     local PS1_PREFIX='%{$fg[magenta]%}($SCHROOT_CHROOT_NAME)%{$reset_color%}'
