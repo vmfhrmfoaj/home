@@ -10,7 +10,7 @@ function setEnv () {
     export PATH=$HOME/.bin:$PATH
   fi
 
-  # oh my zsh
+  # Oh My Zsh
   if [ ! -z $ZSH ]; then
     if [ ! -z "$(echo $plugins | grep 'vi-mode')" ]; then
       bindkey -M vicmd '^r' history-incremental-search-backward
@@ -24,26 +24,44 @@ function setEnv () {
     fi
   fi
 
-  # elixir
+  # Elixir
   if [ 'elixir' = "$SCHROOT_CHROOT_NAME" ]; then
     export HEX_HTTP_CONCURRENCY=1
     export HEX_HTTP_TIMEOUT=30
   fi
 
-  # schroot
+  # Clojure
+  if [ 'clojure' = "$SCHROOT_CHROOT_NAME" ]; then
+    local mem_in_gb=$(($(cat /proc/meminfo | grep MemTotal | grep -o "[0-9]\+") / 1024 / 1024))
+    if   [ "$mem_in_gb" -gt 16 ]; then
+      export JVM_OPTS="-Xms2g -Xmx8g"
+    elif [ "$mem_in_gb" -gt  8 ]; then
+      export JVM_OPTS="-Xms1g -Xmx4g"
+    elif [ "$mem_in_gb" -gt  4 ]; then
+      export JVM_OPTS="-Xms512m -Xmx2g"
+    fi
+  fi
+
+  # Schroot
   if [ ! -z $SCHROOT_CHROOT_NAME ]; then
     local NEWLINE=$'\n'
     local PS1_PREFIX='%{$fg[magenta]%}($SCHROOT_CHROOT_NAME)%{$reset_color%}'
     export PS1="${PS1_PREFIX}${NEWLINE}$PS1"
   fi
 
-  # google cloud
+  # Google Cloud Platform
   local GOOGLE_COULD="$HOME/.local/google-cloud-sdk"
   if [  -f "$GOOGLE_COULD/path.zsh.inc" ]; then
     source "$GOOGLE_COULD/path.zsh.inc"
   fi
   if [  -f "$GOOGLE_COULD/completion.zsh.inc" ]; then
     source "$GOOGLE_COULD/completion.zsh.inc"
+  fi
+
+  # Heroku
+  local HEROKU="$HOME/.local/heroku"
+  if [ -d "$HEROKU/bin/" ]; then
+    export PATH="$HEROKU/bin/":$PATH
   fi
 }
 
