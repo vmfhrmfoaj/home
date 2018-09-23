@@ -80,7 +80,8 @@
   :init
   (defun org-agenda-resume ()
     (interactive)
-    (when org-agenda-buffer
+    (when (and (bufferp org-agenda-buffer)
+               (buffer-live-p org-agenda-buffer))
       (switch-to-buffer org-agenda-buffer)
       (call-interactively #'org-agenda-redo)
       t))
