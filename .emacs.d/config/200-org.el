@@ -78,18 +78,10 @@
   :ensure org-plus-contrib
   :defer t
   :init
-  (defun org-agenda-resume ()
-    (interactive)
-    (when (and (bufferp org-agenda-buffer)
-               (buffer-live-p org-agenda-buffer))
-      (switch-to-buffer org-agenda-buffer)
-      (call-interactively #'org-agenda-redo)
-      t))
-
   (defun org-agenda-show-list ()
     (interactive)
-    (unless (org-agenda-resume)
-      (org-agenda-list)))
+    (org-agenda-list)
+    (call-interactively #'org-agenda-redo))
 
   (when window-system
     (add-hook 'emacs-startup-hook #'org-agenda-list)
