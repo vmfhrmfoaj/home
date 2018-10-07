@@ -33,6 +33,7 @@
  `(widget-button ((t (:inherit bold)))))
 
 (use-package twilight-anti-bright-theme
+  :disabled t
   :ensure t
   :config
   (load-theme 'twilight-anti-bright t)
@@ -82,7 +83,6 @@
    `(trailing-whitespace ((t (:background "gray35"))))))
 
 (use-package twilight-bright-theme
-  :disabled t
   :ensure t
   :config
   (load-theme 'twilight-bright t)
