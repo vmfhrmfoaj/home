@@ -1,3 +1,5 @@
+#!/bin/bash
+
 function setEnv () {
   local os=`uname`
 
@@ -65,7 +67,7 @@ function setEnv () {
   fi
 }
 
-zle-keymap-select () {
+function zle-keymap-select () {
   local CURSOR_BOX='\e[2 q'
   local CURSOR_UNDERBAR='\e[4 q'
   local CURSOR_LINE='\e[6 q'
