@@ -65,4 +65,20 @@ function setEnv () {
   fi
 }
 
+zle-keymap-select () {
+  local CURSOR_BOX='\e[2 q'
+  local CURSOR_UNDERBAR='\e[4 q'
+  local CURSOR_LINE='\e[6 q'
+  if [ "$TERM" = "xterm-256color" ]; then
+    if [ "$KEYMAP" = 'vicmd' ]; then
+      # the command mode for vi
+      echo -ne $CURSOR_BOX
+    else
+      # the insert mode for vi
+      echo -ne $CURSOR_LINE
+    fi
+  fi
+}
+
+zle-keymap-select
 setEnv
