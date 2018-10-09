@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 function setEnv () {
   local os=`uname`
@@ -15,14 +15,12 @@ function setEnv () {
   # Oh My Zsh
   if [ ! -z $ZSH ]; then
     if [ ! -z "$(echo $plugins | grep 'vi-mode')" ]; then
-      bindkey -M vicmd '^r' history-incremental-search-backward
-      bindkey -M vicmd '^a' beginning-of-line
-      bindkey -M vicmd '^e' end-of-line
-      bindkey -M vicmd '^b' backward-char
-      bindkey -M vicmd '^f' forward-char
-      bindkey '^b' backward-char
-      bindkey '^f' forward-char
-      bindkey '^d' delete-char
+      # NOTE
+      #  You should change 'backspace key generates' option to control-h on the Gnome terminal.
+      bindkey -M viins '^?' backward-kill-word
+      bindkey -M viins '^b' backward-char
+      bindkey -M viins '^f' forward-char
+      bindkey -M viins '^d' delete-char
     fi
   fi
 
@@ -66,13 +64,15 @@ function setEnv () {
     export PATH="$HEROKU/bin/":$PATH
   fi
 }
+setEnv
+
+CURSOR_BOX='\e[2 q'
+CURSOR_UNDERBAR='\e[4 q'
+CURSOR_LINE='\e[6 q'
 
 function zle-keymap-select () {
-  local CURSOR_BOX='\e[2 q'
-  local CURSOR_UNDERBAR='\e[4 q'
-  local CURSOR_LINE='\e[6 q'
   if [ "$TERM" = "xterm-256color" ]; then
-    if [ "$KEYMAP" = 'vicmd' ]; then
+    if [ "$KEYMAP" = vicmd ]; then
       # the command mode for vi
       echo -ne $CURSOR_BOX
     else
@@ -80,7 +80,13 @@ function zle-keymap-select () {
       echo -ne $CURSOR_LINE
     fi
   fi
+  # for Oh My Zsh
+  zle reset-prompt
+  zle -R
 }
+zle -N zle-keymap-select
 
-zle-keymap-select
-setEnv
+function preexec() {
+  echo -ne $CURSOR_LINE
+}
+preexec
