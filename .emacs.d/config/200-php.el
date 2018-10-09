@@ -33,10 +33,20 @@
 (use-package php-mode
   :ensure t
   :defer t
+  :init
+  (defun php-font-lock-extend-region ()
+    (let ((changed nil))
+      (goto-char font-lock-beg)
+      (when (re-search-backward "<\\?php[ \t\r\n]" nil t)
+        (setq font-lock-beg (point)
+              changed t))
+      changed))
+
   :config
   (add-hook 'php-mode-hook
             (lambda ()
               (setq-local evil-lookup-func #'php-extras-doc)
               (make-local-variable 'font-lock-extend-region-functions)
               (add-to-list 'font-lock-extend-region-functions #'font-lock-extend-region-wholelines)
+              (add-to-list 'font-lock-extend-region-functions #'php-font-lock-extend-region)
               (aggressive-indent-mode 1))))
