@@ -735,7 +735,9 @@
      (let* ((data (all-the-icons-faicon-data))
             (square       (string-to-char (cdr (assoc "square" data))))
             (minus-square (string-to-char (cdr (assoc "minus-square" data))))
-            (check-square (string-to-char (cdr (assoc "check-square" data)))))
+            (check-square (string-to-char (cdr (assoc "check-square" data))))
+            (org-done-face (face-attribute 'org-done :foreground))
+            (org-todo-face (face-attribute 'org-todo :foreground)))
        `(("^\\s-*\\(?:-\\|[0-9]+\\.\\) \\(\\[\\( \\|-\\|X\\)\\]\\) "
           1 (progn
               (let ((x (match-string 2))
@@ -751,9 +753,9 @@
                  ((eq 'gnu/linux system-type)
                   (put-text-property s e 'display '(raise  0.05))))
                 (list :family "FontAwesome"
-                      :foreground (face-attribute (if (string-equal x "X")
-                                                      'org-done 'org-todo)
-                                                  :foreground)
+                      :foreground (if (string-equal x "X")
+                                      ,org-done-face
+                                    ,org-todo-face)
                       :height (cond
                                ((eq 'gnu/linux system-type) 0.95)
                                ((eq 'darwin system-type) 1.1)
