@@ -302,7 +302,8 @@
   (define-key helm-map (kbd "TAB") #'helm-execute-persistent-action)
   (dolist (map (list helm-find-files-map
                      helm-read-file-map))
-    (define-key map (kbd "C-u") #'helm-find-files-up-one-level)))
+    (define-key map (kbd "C-u") #'helm-find-files-up-one-level)
+    (define-key map [C-backspace] #'backward-kill-word)))
 
 (use-package helm-mode
   :defer t
