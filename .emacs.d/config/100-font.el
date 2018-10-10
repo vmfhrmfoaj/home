@@ -8,7 +8,7 @@
   ;; - .Xresource:
   ;;   Xft.embolden: true
   ;;   Emacs.fontBackend: xft
-  (let ((font "Fantasque Sans Mono")
+  (let ((font "inconsolata")
         (height (cond
                  ((string-equal "gnome-macbookair" hostname) 110)
                  ((string-equal "gnome-imac" hostname) 109) ; for HiDPI=2 and Scaling Factor=0.9
