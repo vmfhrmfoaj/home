@@ -777,125 +777,74 @@
     "TODO")
 
   (setq-local font-lock--anchor-beg-point nil)
-  (defconst php-font-lock-keywords-3
-    (let* ((symbol "\\$[_0-9a-zA-Z]+")
-           (whitespace "[ \r\t\n]")
-           (whitespace+ (concat whitespace "+"))
-           (whitespace* (concat whitespace "*"))
-           (assigment (concat whitespace* "[^-+/*.=]=[^=>]"))
-           (pre  `(progn
-                    (setq font-lock--anchor-beg-point (point))
-                    (save-match-data
-                      (if (re-search-forward (concat ,whitespace+ "\\?>") nil t)
-                          (prog1 (point)
-                            (goto-char font-lock--anchor-beg-point))
-                        (point-max)))))
-           (post '(goto-char font-lock--anchor-beg-point)))
-      `((,(concat "\\(<\\?php\\)" whitespace+)
-         (1 'font-lock-keyword-face)
-         (,(caar php-phpdoc-font-lock-keywords)
-          ,pre
-          ,post)
-         (,(concat "\\(" symbol "\\)\\(\\[[^]]*\\]\\)*" assigment)
-          ,pre
-          ,post
-          (1 'font-lock-variable-name-face))
-         (,(concat symbol "->\\([_0-9a-zA-Z]+\\)\\(\\[[^]]*\\]\\)*" assigment)
-          ,pre
-          ,post
-          (1 'font-lock-variable-name-face))
-         ("$\\(this\\|that\\)\\_>"
-          ,pre
-          ,post
-          (1 'php-$this))
-         ("\\<function\\s-+&?\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*("
-          ,pre
-          ,post
-          (1 'php-function-name))
-         ("\\b\\(array\\|callable\\)\\s-+&?\\$"
-          ,pre
-          ,post
-          (1 font-lock-type-face))
-         (")\\s-*:\\s-*\\??\\(array\\|callable\\)\\b"
-          ,pre
-          ,post
-          (1 font-lock-type-face))
-         ("(\\(array\\))"
-          ,pre
-          ,post
-          (1 font-lock-type-face))
-         ("\\(\\([a-zA-Z0-9_]+\\\\\\)+[a-zA-Z0-9_]+\\|\\(\\\\[a-zA-Z0-9_]+\\)+\\)[^:a-zA-Z0-9_\\\\]"
-          ,pre
-          ,post
-          (1 'font-lock-type-face))
-         ("\\(\\([a-zA-Z0-9_]+\\\\\\)+[a-zA-Z0-9_]+\\|\\(\\\\[a-zA-Z0-9_]+\\)+\\)::"
-          ,pre
-          ,post
-          (1 'php-constant))
-         ("\\sw+\\(::\\)\\(class\\)\\b"
-          ,pre
-          ,post
-          (1 'php-paamayim-nekudotayim)
-          (2 'php-constant))
-         ,@(--map (progn
-                    (let* ((match (if (listp it) (car it) it))
-                           (match (if (or (stringp match)
-                                          (and (not (and (symbolp match)
-                                                         (eq match 'eval)))
-                                               (functionp match)))
-                                      match
-                                    (prog1 (caddr it)
-                                      (setq it (cddr it)))))
-                           (faces (when (listp it)
-                                    (if (listp (cadr it))
-                                        (cdr it)
-                                      (list (cdr it))))))
-                      (append (list match
-                                    pre
-                                    post)
-                              faces)))
-                  (c-lang-const c-matchers-3 php))
-         (,(concat "function" whitespace+ "\\sw+" whitespace* "(\\(?:\\(" symbol "\\),?\\)+)")
-          ,pre
-          ,post
-          (1 'php-passive-assign-variable-face t))
-         ("\\<\\([A-Z_][A-Z0-9_]+\\)\\>"
-          ,pre
-          ,post
-          (1 'php-constant))
-         ("\\(\\sw+\\)\\(::\\)"
-          ,pre
-          ,post
-          (1 'php-constant)
-          (2 'php-paamayim-nekudotayim))
-         (,(concat "\\<as\\s-+\\(" symbol "\\)\\_>")
-          ,pre
-          ,post
-          (1 'php-passive-assign-variable-face))
-         (,(concat (regexp-opt (c-lang-const c-class-decl-kwds php)) " \\(\\sw+\\)")
-          ,pre
-          ,post
-          (1 font-lock-type-face))
-         ("function.+:\\s-*\\(\\?\\)\\(?:\\sw\\|\\s_\\|\\\\\\)+"
-          ,pre
-          ,post
-          (1 font-lock-type-face))
-         (")\\s-*:\\s-*\\(\\?\\)\\(?:\\sw\\|\\s_\\|\\\\\\)+\\s-*\\(?:\{\\|;\\)"
-          ,pre
-          ,post
-          (1 font-lock-type-face))
-         ("\\?\\(\\(:?\\sw\\|\\s_\\)+\\)\\s-+\\$"
-          ,pre
-          ,post
-          (1 font-lock-type-face))
-         ("function.+:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)"
-          ,pre
-          ,post
-          (1 font-lock-type-face))
-         (")\\s-*:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*\\(?:\{\\|;\\)"
-          ,pre
-          ,post
-          (1 font-lock-type-face))))))
+  (let* ((symbol "\\$[_0-9a-zA-Z]+")
+         (whitespace "[ \r\t\n]")
+         (whitespace+ (concat whitespace "+"))
+         (whitespace* (concat whitespace "*"))
+         (assigment (concat whitespace* "[^-+/*.=]=[^=>]"))
+         (pre  `(progn
+                  (setq font-lock--anchor-beg-point (point))
+                  (save-match-data
+                    (if (re-search-forward (concat ,whitespace+ "\\?>") nil t)
+                        (prog1 (point)
+                          (goto-char font-lock--anchor-beg-point))
+                      (point-max)))))
+         (post '(goto-char font-lock--anchor-beg-point)))
+    (defconst php-font-lock-keywords-3
+      `((,(concat whitespace+ "\\(\\?>\\)")
+         (1 font-lock-keyword-face))
+        (,(concat "\\(<\\?php\\)" whitespace+)
+         (1 font-lock-keyword-face))
+        (,(caar php-phpdoc-font-lock-keywords))
+        (,(concat "\\<function" whitespace+ "[_0-9a-z-A-Z]*" whitespace* "(")
+         (,(concat "\\(" symbol "\\)")
+          (save-excursion
+            (setq font-lock--anchor-beg-point (point))
+            (up-list)
+            (point))
+          (goto-char font-lock--anchor-beg-point)
+          (1 'php-passive-assign-variable-face t)))
+        (,(concat "\\(" symbol "\\)\\(\\[[^]]*\\]\\)*" assigment)
+         (1 font-lock-variable-name-face t))
+        (,(concat symbol "->\\([_0-9a-zA-Z]+\\)\\(\\[[^]]*\\]\\)*" assigment)
+         (1 font-lock-variable-name-face t))
+        ("$\\(this\\|that\\)\\_>"
+         (1 'php-$this))
+        ("\\<function\\s-+&?\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*("
+         (1 'php-function-name))
+        ("\\b\\(array\\|callable\\)\\s-+&?\\$"
+         (1 font-lock-type-face))
+        (")\\s-*:\\s-*\\??\\(array\\|callable\\)\\b"
+         (1 font-lock-type-face))
+        ("(\\(array\\))"
+         (1 font-lock-type-face))
+        ("\\(\\([a-zA-Z0-9_]+\\\\\\)+[a-zA-Z0-9_]+\\|\\(\\\\[a-zA-Z0-9_]+\\)+\\)[^:a-zA-Z0-9_\\\\]"
+         (1 'font-lock-type-face))
+        ("\\(\\([a-zA-Z0-9_]+\\\\\\)+[a-zA-Z0-9_]+\\|\\(\\\\[a-zA-Z0-9_]+\\)+\\)::"
+         (1 'php-constant))
+        ("\\sw+\\(::\\)\\(class\\)\\b"
+         (1 'php-paamayim-nekudotayim)
+         (2 'php-constant))
+        ,@(c-lang-const c-matchers-3 php)
+        ("\\<\\([A-Z_][A-Z0-9_]+\\)\\>"
+         (1 'php-constant))
+        ("\\(\\sw+\\)\\(::\\)"
+         (1 'php-constant)
+         (2 'php-paamayim-nekudotayim))
+        (,(concat "\\<as\\s-+\\(" symbol "\\)\\_>")
+         (1 'php-passive-assign-variable-face))
+        (,(concat (regexp-opt (c-lang-const c-class-decl-kwds php)) " \\(\\sw+\\)")
+         (1 font-lock-type-face))
+        ("function.+:\\s-*\\(\\?\\)\\(?:\\sw\\|\\s_\\|\\\\\\)+"
+         (1 font-lock-type-face))
+        (")\\s-*:\\s-*\\(\\?\\)\\(?:\\sw\\|\\s_\\|\\\\\\)+\\s-*\\(?:\{\\|;\\)"
+         (1 font-lock-type-face))
+        ("\\?\\(\\(:?\\sw\\|\\s_\\)+\\)\\s-+\\$"
+         (1 font-lock-type-face))
+        ("function.+:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)"
+         (1 font-lock-type-face))
+        (")\\s-*:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*\\(?:\{\\|;\\)"
+         (1 font-lock-type-face)))))
   (setq php-font-lock-keywords php-font-lock-keywords-3))
 
 (use-package prog-mode
