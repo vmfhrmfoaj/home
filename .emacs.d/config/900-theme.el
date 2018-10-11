@@ -17,19 +17,12 @@
  `(font-lock-variable-name-face ((t (:inherit bold))))
  `(hl-line ((t (:inverse-video nil))))
  `(lisp-local-binding-variable-name-face ((t (:inherit font-lock-variable-name-face :weight medium))))
- `(link ((t (:inherit underline :weight normal))))
- `(linum-relative-current-face ((t (:inherit linum))))
- `(magit-section-heading ((t (:inherit bold :foreground "DarkGoldenrod4"))))
- `(magit-diff-file-heading ((t (:weight medium))))
- `(magit-commit-log-type-face  ((t (:inherit font-lock-function-name-face :weight medium))))
- `(magit-commit-log-scope-face ((t (:inherit font-lock-variable-name-face :weight medium))))
  `(mode-line ((t (:weight medium))))
  `(mode-line-inactive ((t (:inherit mode-line))))
  `(nlinum-current-line ((t (:inherit linum))))
  `(nlinum-relative-current-face ((t (:inherit linum))))
  `(org-agenda-date-today ((t (:inherit (bold org-agenda-date)))))
  `(org-mode-line-clock ((t)))
- `(show-paren-match ((t (:inherit underline :foreground "Cyan2" :background nil))))
  `(widget-button ((t (:inherit bold)))))
 
 (use-package twilight-anti-bright-theme
@@ -37,6 +30,14 @@
   :ensure t
   :config
   (load-theme 'twilight-anti-bright t)
+  (custom-set-faces
+   `(link ((t (:inherit underline :weight normal))))
+   `(linum-relative-current-face ((t (:inherit linum))))
+   `(magit-section-heading ((t (:inherit bold :foreground "DarkGoldenrod4"))))
+   `(magit-diff-file-heading ((t (:weight medium))))
+   `(magit-commit-log-type-face  ((t (:inherit font-lock-function-name-face :weight medium))))
+   `(magit-commit-log-scope-face ((t (:inherit font-lock-variable-name-face :weight medium))))
+   `(show-paren-match ((t (:inherit underline :foreground "Cyan2" :background nil)))))
   (custom-set-faces
    `(font-lock-type-face ((t (:foreground "#bf3f1e"))))
    `(mode-line-inactive ((t (:background ,(face-attribute 'mode-line :background))))))
@@ -83,9 +84,18 @@
    `(trailing-whitespace ((t (:background "gray35"))))))
 
 (use-package twilight-bright-theme
+  :disabled t
   :ensure t
   :config
   (load-theme 'twilight-bright t)
+  (custom-set-faces
+   `(link ((t (:inherit underline :weight normal))))
+   `(linum-relative-current-face ((t (:inherit linum))))
+   `(magit-section-heading ((t (:inherit bold :foreground "DarkGoldenrod4"))))
+   `(magit-diff-file-heading ((t (:weight medium))))
+   `(magit-commit-log-type-face  ((t (:inherit font-lock-function-name-face :weight medium))))
+   `(magit-commit-log-scope-face ((t (:inherit font-lock-variable-name-face :weight medium))))
+   `(show-paren-match ((t (:inherit underline :foreground "Cyan2" :background nil)))))
   (custom-theme-set-faces
    'twilight-bright
    `(auto-dim-other-buffers-face
@@ -124,6 +134,22 @@
    `(org-next ((t (:foreground "#dca3a3" :inherit (bold org-todo)))))
    `(outline-4 ((t (:inherit font-lock-string-face))))
    `(trailing-whitespace ((t (:background "gray65"))))))
+
+(use-package plan9-theme
+  :ensure t
+  :config
+  (let ((fg-5  (-> 'default (face-attribute :foreground) (light-color  5)))
+        (fg-10 (-> 'default (face-attribute :foreground) (light-color 10))))
+    (custom-theme-set-faces
+     'plan9
+     `(font-lock-function-name-face ((t (:inherit default :weight bold :foreground ,fg-5))))
+     `(font-lock-builtin-face ((t (:inherit default :weight bold :foreground ,fg-10))))
+     `(diff-refine-added ((t (:inherit diff-added :weight bold :background ,(-> 'diff-refine-added
+                                                                                (face-attribute :background)
+                                                                                (dim-color 10))))))
+     `(diff-refine-removed ((t (:inherit diff-removed :weight bold :background ,(-> 'diff-refine-removed
+                                                                                    (face-attribute :background)
+                                                                                    (dim-color 10)))))))))
 
 (use-package goto-addr
   :defer t

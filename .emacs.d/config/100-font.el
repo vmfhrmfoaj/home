@@ -1,5 +1,5 @@
 (when (window-system)
-  (setq-default line-spacing 1)
+  (setq-default line-spacing 0)
   ;; In Linux the font hinting must not be 'full', it causes the bold font make smaller.
   ;; Options(only available on macOS):
   ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 0~3
@@ -8,11 +8,11 @@
   ;; - .Xresource:
   ;;   Xft.embolden: true
   ;;   Emacs.fontBackend: xft
-  (let ((font "inconsolata")
+  (let ((font "Fantasque Sans Mono")
         (height (cond
                  ((string-equal "gnome-macbookair" hostname) 110)
                  ((string-equal "gnome-imac" hostname) 109) ; for HiDPI=2 and Scaling Factor=0.9
-                 (t 90))))
+                 (t 102))))
     (set-face-font 'default font)
     (set-fontset-font t 'unicode "symbola")
     (set-face-attribute 'default nil
