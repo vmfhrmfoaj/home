@@ -781,7 +781,7 @@
          (whitespace "[ \r\t\n]")
          (whitespace+ (concat whitespace "+"))
          (whitespace* (concat whitespace "*"))
-         (assigment (concat whitespace* "[^-+/*.=]=[^=>]"))
+         (assigment (concat whitespace* "[^!-+/*.=]=[^=>]"))
          (pre  `(progn
                   (setq font-lock--anchor-beg-point (point))
                   (save-match-data

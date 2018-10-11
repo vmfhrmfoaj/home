@@ -181,7 +181,10 @@
     "wK" #'windmove-up
     "wL" #'windmove-right
     "wd" #'delete-window
-    "wm" #'delete-other-windows)
+    "wm" #'delete-other-windows
+
+    ;; text
+    "xr" #'align-regexp)
   (when (eq 'darwin system-type)
     (evil-leader/set-key
       ;; apllication
