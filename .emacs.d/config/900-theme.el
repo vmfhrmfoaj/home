@@ -138,18 +138,23 @@
 (use-package plan9-theme
   :ensure t
   :config
-  (let ((fg-5  (-> 'default (face-attribute :foreground) (light-color  5)))
-        (fg-10 (-> 'default (face-attribute :foreground) (light-color 10))))
-    (custom-theme-set-faces
-     'plan9
-     `(font-lock-function-name-face ((t (:inherit default :weight bold :foreground ,fg-5))))
-     `(font-lock-builtin-face ((t (:inherit default :weight bold :foreground ,fg-10))))
-     `(diff-refine-added ((t (:inherit diff-added :weight bold :background ,(-> 'diff-refine-added
-                                                                                (face-attribute :background)
-                                                                                (dim-color 10))))))
-     `(diff-refine-removed ((t (:inherit diff-removed :weight bold :background ,(-> 'diff-refine-removed
-                                                                                    (face-attribute :background)
-                                                                                    (dim-color 10)))))))))
+  (custom-set-faces
+   `(show-paren-match ((t (:foreground "Blue4")))))
+  (custom-theme-set-faces
+   'plan9
+   `(diff-refine-added ((t (:inherit diff-added :weight bold :background ,(-> 'diff-refine-added
+                                                                              (face-attribute :background)
+                                                                              (dim-color 10))))))
+   `(diff-refine-removed ((t (:inherit diff-removed :weight bold :background ,(-> 'diff-refine-removed
+                                                                                  (face-attribute :background)
+                                                                                  (dim-color 10))))))
+   `(evil-goggles-yank-face ((t (:inherit evil-goggles-default-face))))
+   `(font-lock-function-name-face ((t (:inherit default :weight bold :foreground ,(-> 'default
+                                                                                      (face-attribute :foreground)
+                                                                                      (light-color 5))))))
+   `(font-lock-builtin-face ((t (:inherit default :weight bold :foreground ,(-> 'default
+                                                                                (face-attribute :foreground)
+                                                                                (light-color 10))))))))
 
 (use-package goto-addr
   :defer t
@@ -183,6 +188,34 @@
         (--iterate (dim-color it 10)
                    (apply 'color-rgb-to-hex (color-name-to-rgb "Springgreen"))
                    4)))
+
+(use-package org
+  :defer t
+  :after plan9-theme
+  :config
+  (dolist (i (number-sequence 1 8))
+    (let ((face (intern (concat "org-level-" (number-to-string i))))
+          (outline-face (intern (concat "outline-" (number-to-string i)))))
+      (set-face-attribute face nil
+                          :background 'unspecified
+                          :box nil
+                          :height (if (<= i 1)
+                                      1.1
+                                    1.0)
+                          :overline nil
+                          :underline nil
+                          :inherit outline-face))))
+
+(use-package rainbow-delimiters
+  :defer t
+  :after plan9-theme
+  :config
+  (dolist (i (number-sequence 1 9))
+    (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
+      (set-face-attribute face nil :foreground
+                          (-> face
+                              (face-attribute :foreground)
+                              (saturate-color -10))))))
 
 (use-package outline
   :defer t
