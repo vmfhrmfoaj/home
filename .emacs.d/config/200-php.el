@@ -58,15 +58,17 @@
     "TODO")
 
   (defun php-unhilight-no-php-code ()
-    (save-excursion
-      (goto-char (point-min))
-      (while (< (point) (point-max))
-        (let* ((block (php-no-php-code-region))
-               (beg (car block))
-               (end (cdr block)))
-          (when (< beg end)
-            (overlay-put (make-overlay beg end) 'face 'php-unhilight-face))
-          (php-goto-end-of-php-code-block)))))
+    (let ((fancy-narrow--beginning nil)
+          (fancy-narrow--end nil))
+      (save-excursion
+        (goto-char (point-min))
+        (while (< (point) (point-max))
+          (let* ((block (php-no-php-code-region))
+                 (beg (car block))
+                 (end (cdr block)))
+            (when (< beg end)
+              (overlay-put (make-overlay beg end) 'face 'php-unhilight-face))
+            (php-goto-end-of-php-code-block))))))
 
   :config
   (add-hook 'php-mode-hook
