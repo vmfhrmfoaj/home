@@ -22,6 +22,13 @@ function setEnv () {
       bindkey -M viins '^f' forward-char
       bindkey -M viins '^d' delete-char
     fi
+    if [ -z $SCHROOT_CHROOT_NAME ]; then
+      local PS1_PREFIX='%{$fg[magenta]%}($(hostname))%{$reset_color%}'
+    else
+      local PS1_PREFIX='%{$fg[magenta]%}($(hostname) :: $SCHROOT_CHROOT_NAME)%{$reset_color%}'
+    fi
+    local NEWLINE=$'\n'
+    export PS1="${PS1_PREFIX}${NEWLINE}$PS1"
   fi
 
   # Elixir
@@ -40,13 +47,6 @@ function setEnv () {
     elif [ "$mem_in_gb" -gt  4 ]; then
       export JVM_OPTS="-Xms512m -Xmx2g"
     fi
-  fi
-
-  # Schroot
-  if [ ! -z $SCHROOT_CHROOT_NAME ]; then
-    local NEWLINE=$'\n'
-    local PS1_PREFIX='%{$fg[magenta]%}($SCHROOT_CHROOT_NAME)%{$reset_color%}'
-    export PS1="${PS1_PREFIX}${NEWLINE}$PS1"
   fi
 
   # Google Cloud Platform
