@@ -44,8 +44,8 @@
   (custom-theme-set-faces
    'twilight-anti-bright
    `(auto-dim-other-buffers-face
-     ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 10))
-         :background ,(-> 'default (face-attribute :background) (light-color 1)))))
+     ((t :foreground ,(color-from 'default :foreground -10)
+         :background ,(color-from 'default :background +1))))
    `(clojure-if-true-face
      ((t (:background ,(-> 'font-lock-keyword-face
                            (face-attribute :background)
@@ -53,15 +53,11 @@
                            (saturate-color -8))))))
    `(clojure-meta-face ((t (:foreground "#b0b0b0"))))
    `(cursor ((t (:background "deep sky blue"))))
-   `(cperl-nonoverridable-face ((t (:inherit font-lock-constant-face :foreground ,(-> 'font-lock-constant-face
-                                                                                      (face-attribute :foreground)
-                                                                                      (light-color 10))))))
+   `(cperl-nonoverridable-face ((t (:inherit font-lock-constant-face :foreground ,(color-from 'font-lock-constant-face :foreground +10)))))
    `(evil-ex-lazy-highlight ((t (:inherit (bold lazy-highlight)))))
    `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
-   `(font-lock-regexp-grouping-construct ((t (:inherit bold :foreground ,(-> 'font-lock-string-face
-                                                                             (face-attribute :foreground)
-                                                                             (dim-color 5))))))
-   `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 2))))))
+   `(font-lock-regexp-grouping-construct ((t (:inherit bold :foreground ,(color-from 'font-lock-string-face :foreground -5)))))
+   `(fringe ((t (:background ,(color-from 'default :background -2)))))
    `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added   :background)))))
    `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
    `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
@@ -72,14 +68,12 @@
    `(org-cancelled ((t (:foreground nil :inherit org-done))))
    `(org-column ((t (:inherit bold))))
    `(org-block
-     ((t :foreground ,(-> 'default (face-attribute :foreground) (dim-color 15))
-         :background ,(-> 'default (face-attribute :background) (dim-color 1)))))
+     ((t :foreground ,(color-from 'default :foreground -15)
+         :background ,(color-from 'default :background -5))))
    `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
    `(org-link ((t (:inherit link))))
    `(org-next ((t (:foreground "#dca3a3" :inherit (bold org-todo)))))
-   `(region ((t (:background ,(-> 'region
-                                  (face-attribute :background)
-                                  (light-color 10))))))
+   `(region ((t (:background ,(color-from 'region :background +10)))))
    `(shadow ((t (:foreground "#9a9a9a"))))
    `(trailing-whitespace ((t (:background "gray35"))))))
 
@@ -99,13 +93,11 @@
   (custom-theme-set-faces
    'twilight-bright
    `(auto-dim-other-buffers-face
-     ((t :foreground ,(-> 'default (face-attribute :foreground) (light-color 4))
-         :background ,(-> 'default (face-attribute :background) (dim-color 2)))))
+     ((t :foreground ,(color-from 'default :foreground +4)
+         :background ,(color-from 'default :background -2))))
    `(diff-refine-changed ((t (:weight bold :background ,(face-attribute 'diff-refine-changed :background)))))
    `(clojure-if-true-face
-     ((t (:background ,(-> 'font-lock-keyword-face
-                           (face-attribute :background)
-                           (light-color 2.5))))))
+     ((t (:background ,(color-from 'font-lock-keyword-face :background +2.5)))))
    `(cursor ((t (:background "sky blue"))))
    `(evil-ex-lazy-highlight ((t (:inherit (bold lazy-highlight)))))
    `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
@@ -113,15 +105,13 @@
                                                                              (face-attribute :foreground)
                                                                              (light-color 5)
                                                                              (saturate-color 10))))))
-   `(fringe ((t (:background ,(-> 'default (face-attribute :background) (dim-color 1))))))
+   `(fringe ((t (:background ,(color-from 'default :background -1)))))
    `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added   :background)))))
    `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
    `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
    `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
    `(hl-line ((t (:background "#eef7fd"))))
-   `(linum-relative-current-face ((t (:inherit linum :foreground ,(-> 'default
-                                                                      (face-attribute :foreground)
-                                                                      (light-color 15))))))
+   `(linum-relative-current-face ((t (:inherit linum :foreground ,(color-from 'default :foreground +15)))))
    `(link ((t (:foreground "#55850f" :underline t))))
    `(magit-diff-context-highlight ((t (:background "#f2f9fd"))))
    `(magit-diff-hunk-heading-highlight ((t (:background "#c8e9ff"))))
@@ -142,19 +132,12 @@
    `(show-paren-match ((t (:foreground "Blue4")))))
   (custom-theme-set-faces
    'plan9
-   `(diff-refine-added ((t (:inherit diff-added :weight bold :background ,(-> 'diff-refine-added
-                                                                              (face-attribute :background)
-                                                                              (dim-color 10))))))
-   `(diff-refine-removed ((t (:inherit diff-removed :weight bold :background ,(-> 'diff-refine-removed
-                                                                                  (face-attribute :background)
-                                                                                  (dim-color 10))))))
+   `(diff-refine-added   ((t (:inherit diff-added   :weight bold :background ,(color-from 'diff-refine-added   :background -10)))))
+   `(diff-refine-removed ((t (:inherit diff-removed :weight bold :background ,(color-from 'diff-refine-removed :background -10)))))
+   `(elixir-atom-face ((t (:inherit font-lock-builtin-face))))
    `(evil-goggles-yank-face ((t (:inherit evil-goggles-default-face))))
-   `(font-lock-function-name-face ((t (:inherit default :weight bold :foreground ,(-> 'default
-                                                                                      (face-attribute :foreground)
-                                                                                      (light-color 5))))))
-   `(font-lock-builtin-face ((t (:inherit default :weight bold :foreground ,(-> 'default
-                                                                                (face-attribute :foreground)
-                                                                                (light-color 10))))))))
+   `(font-lock-builtin-face       ((t (:inherit default :weight bold :foreground ,(color-from 'default :foreground +13)))))
+   `(font-lock-function-name-face ((t (:inherit default :weight bold :foreground ,(color-from 'default :foreground +5)))))))
 
 (use-package goto-addr
   :defer t
@@ -190,7 +173,6 @@
                    4)))
 
 (use-package org
-  :defer t
   :after plan9-theme
   :config
   (dolist (i (number-sequence 1 8))
@@ -207,7 +189,6 @@
                           :inherit outline-face))))
 
 (use-package rainbow-delimiters
-  :defer t
   :after plan9-theme
   :config
   (dolist (i (number-sequence 1 9))

@@ -42,6 +42,13 @@
        (apply #'color-hsl-to-rgb)
        (apply #'color-rgb-to-hex)))
 
+(defun color-from (face attr p)
+  (let ((fn (cond
+             ((< 0 p) #'light-color)
+             ((< p 0) #'dim-color)
+             ((= p 0) #'identity))))
+    (funcall fn (face-attribute face attr) p)))
+
 
 (defun in-comment? ()
   "TODO"
