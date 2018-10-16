@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+alias aplay='mpv --no-video --ytdl-format=bestaudio --volume=70'
+
 function setEnv () {
   local os=`uname`
 
