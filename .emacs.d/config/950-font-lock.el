@@ -791,10 +791,10 @@
                       (point-max)))))
          (post '(goto-char font-lock--anchor-beg-point)))
     (defconst php-font-lock-keywords-3
-      `((,(concat whitespace+ "\\(\\?>\\)")
-         (1 font-lock-keyword-face))
+      `((,(concat "\\(?:^\\|" whitespace+ "\\)\\(\\?>\\)")
+         (1 'php-php-tag))
         (,(concat "\\(<\\?php\\)" whitespace+)
-         (1 font-lock-keyword-face))
+         (1 'php-php-tag))
         (,(caar php-phpdoc-font-lock-keywords))
         (,(concat "\\<function" whitespace+ "[_0-9a-z-A-Z]*" whitespace* "(")
          (,(concat "\\(" symbol "\\)")
