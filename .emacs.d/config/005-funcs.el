@@ -46,7 +46,7 @@
   (let ((fn (cond
              ((< 0 p) #'light-color)
              ((< p 0) #'dim-color)
-             ((= p 0) #'identity))))
+             ((= p 0) (lambda (color _) color)))))
     (funcall fn (face-attribute face attr) p)))
 
 
