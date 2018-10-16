@@ -394,6 +394,15 @@
       (concat evil-leader/leader "mr") "REPL")
     (evil-leader/set-major-leader-for-mode "," mode)))
 
+(use-package ediff
+  :defer t
+  :config
+  (advice-add #'ediff-setup-keymap :after
+              (lambda ()
+                (define-key ediff-mode-map (kbd "N") #'ediff-next-difference)
+                (define-key ediff-mode-map (kbd "C-k") #'ediff-previous-difference)
+                (define-key ediff-mode-map (kbd "C-j") #'ediff-next-difference))))
+
 (use-package cperl-mode
   :defer t
   :config
