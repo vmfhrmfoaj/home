@@ -505,9 +505,12 @@
   :defer t
   :config
   (evil-leader/set-key-for-mode 'php-mode
-    "mgg" #'dumb-jump-go)
+    "mgg" #'dumb-jump-go
+    "mrr" #'psysh
+    "mrR" #'psysh-restart)
   (which-key-declare-prefixes-for-mode 'php-mode
-    (concat evil-leader/leader "mg") "goto")
+    (concat evil-leader/leader "mg") "goto"
+    (concat evil-leader/leader "mr") "REPL")
   (evil-leader/set-major-leader-for-mode "," 'php-mode)
   (define-key php-mode-map [tab] nil))
 
@@ -516,6 +519,13 @@
   :config
   (evil-define-key 'normal 'profiler-report-mode-map
     (kbd "TAB") #'profiler-report-expand-entry))
+
+(use-package psysh
+  :defer t
+  :config
+  (evil-define-key 'normal 'psysh-mode-map
+    (kbd "C-k") #'comint-previous-input
+    (kbd "C-j") #'comint-next-input))
 
 (use-package vlf
   :defer t
