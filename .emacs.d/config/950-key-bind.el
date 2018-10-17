@@ -365,8 +365,8 @@
   :config
   (evil-leader/set-key-for-mode 'elixir-mode
     "mgg" #'alchemist-goto-definition-at-point
-    "mrs" #'alchemist-iex-run
-    "mrS" #'alchemist-iex-project-run)
+    "mrr" #'alchemist-iex-run
+    "mrR" #'alchemist-iex-project-run)
   (which-key-declare-prefixes-for-mode 'elixir-mode
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto"
