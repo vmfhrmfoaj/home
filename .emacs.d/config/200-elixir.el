@@ -2,7 +2,19 @@
   :ensure t
   :defer t
   :init
-  (add-hook 'elixir-mode-hook #'alchemist-mode))
+  (add-hook 'elixir-mode-hook #'alchemist-mode)
+
+  :config
+  (sp-local-pair 'elixir-mode
+                 "defmacro" "end"
+                 :when '(("SPC" "RET" "<evil-ret>"))
+                 :post-handlers '(sp-elixir-do-block-post-handler)
+                 :unless '(sp-in-comment-p sp-in-string-p))
+  (sp-local-pair 'elixir-mode
+                 "quote" "end"
+                 :when '(("SPC" "RET" "<evil-ret>"))
+                 :post-handlers '(sp-elixir-do-block-post-handler-2)
+                 :unless '(sp-in-comment-p sp-in-string-p)))
 
 (use-package alchemist
   :ensure t

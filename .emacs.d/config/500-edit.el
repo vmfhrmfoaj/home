@@ -83,6 +83,18 @@
       (cl-letf (((symbol-function 'message) #'ignore))
         (indent-region start end column))))
 
+  (defun sp-elixir-do-block-post-handler-2 (_id action _context)
+    "Insert \"do\" keyword and indent the new block.
+ID, ACTION, CONTEXT."
+    (when (eq action 'insert)
+      (let ((pos (point)))
+        (insert "do")
+        (newline)
+        (save-excursion
+          (newline)
+          (indent-region pos (line-end-position)))
+        (indent-for-tab-command))))
+
   :config
   (setq sp-highlight-pair-overlay nil
         sp-highlight-wrap-overlay nil
