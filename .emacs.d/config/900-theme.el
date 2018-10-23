@@ -19,7 +19,7 @@
    `(helm-match ((t (:inherit lazy-highlight))))
    `(helm-selection ((t (:inherit isearch))))
    `(hl-line ((t (:weight bold))))
-   `(font-lock-negation-char-face ((t (:inherit font-lock-warning-face))))))
+   `(font-lock-negation-char-face ((t (:inherit font-lock-warning-face :weight medium))))))
 
 (use-package linum
   :defer t
