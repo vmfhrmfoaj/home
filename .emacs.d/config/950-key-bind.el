@@ -507,7 +507,8 @@
   (evil-leader/set-key-for-mode 'php-mode
     "mgg" #'dumb-jump-go
     "mrr" #'psysh
-    "mrR" #'psysh-restart)
+    "mrR" #'psysh-restart
+    "mrs" #'psysh-show)
   (which-key-declare-prefixes-for-mode 'php-mode
     (concat evil-leader/leader "mg") "goto"
     (concat evil-leader/leader "mr") "REPL")

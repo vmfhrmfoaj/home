@@ -86,7 +86,14 @@
   :init
   (defvar psysh-schroot-session nil)
 
+  (defun psysh-show ()
+    (interactive)
+    (-when-let (buf (get-buffer (concat "*" (car (psysh--detect-buffer)) "*")))
+      (switch-to-buffer buf)))
+
   :config
+  (advice-add #'psysh-restart :before #'psysh-show)
+
   (unless psysh-schroot-session
     (setq psysh-schroot-session
           (->> (shell-command-to-string "schroot -c chroot:php --begin-session")
