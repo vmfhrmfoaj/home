@@ -11,6 +11,8 @@
 ;; minibuffer
 (add-hook 'minibuffer-setup-hook
           (lambda ()
+            (local-set-key (kbd "C-a") #'beginning-of-line)
+            (local-set-key (kbd "C-b") #'backward-char)
             (local-set-key (kbd "C-h") #'backward-delete-char)))
 
 (use-package bind-map
