@@ -74,8 +74,9 @@
     "aocj" #'org-clock-jump-to-current-clock
     "aocn" #'org-capture-note
     "aoct" #'org-capture-todo
-    "aos" #'org-search-view
     "aom" #'org-tags-view
+    "aor" #'org-agenda-resume
+    "aos" #'org-search-view
     "aot" #'org-todo-list
 
     ;; - calculator

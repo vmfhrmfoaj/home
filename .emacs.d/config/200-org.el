@@ -78,6 +78,14 @@
   :ensure org-plus-contrib
   :defer t
   :init
+  (defun org-agenda-resume ()
+    (interactive)
+    (when (and (bufferp org-agenda-buffer)
+               (buffer-live-p org-agenda-buffer))
+      (switch-to-buffer org-agenda-buffer)
+      (call-interactively #'org-agenda-redo)
+      t))
+
   (defun org-agenda-show-list ()
     (interactive)
     (org-agenda-list)
