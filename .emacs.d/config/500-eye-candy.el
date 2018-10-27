@@ -235,7 +235,7 @@
   (add-hook 'org-mode-hook #'org-bullets-mode)
 
   :config
-  (setq org-bullets-bullet-list '("■" "□" "◙" "◘" "●" "○" "◌")))
+  (setq org-bullets-bullet-list '("■" "□" "●" "○" "◌")))
 
 (use-package powerline
   :ensure t
