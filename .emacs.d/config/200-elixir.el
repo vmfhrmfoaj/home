@@ -5,16 +5,18 @@
   (add-hook 'elixir-mode-hook #'alchemist-mode)
 
   :config
-  (sp-local-pair 'elixir-mode
-                 "defmacro" "end"
-                 :when '(("SPC" "RET" "<evil-ret>"))
-                 :post-handlers '(sp-elixir-do-block-post-handler)
-                 :unless '(sp-in-comment-p sp-in-string-p))
-  (sp-local-pair 'elixir-mode
-                 "quote" "end"
-                 :when '(("SPC" "RET" "<evil-ret>"))
-                 :post-handlers '(sp-elixir-do-block-post-handler-2)
-                 :unless '(sp-in-comment-p sp-in-string-p)))
+  (sp-with-modes 'elixir-mode
+    (sp-local-pair "defp" "end"
+                   :unless '(:add sp-elixir-single-line-do-p)
+                   :skip-match 'sp-elixir-skip-single-line-do-p)
+    (sp-local-pair "defmacro" "end"
+                   :when '(("SPC" "RET" "<evil-ret>"))
+                   :post-handlers '(sp-elixir-do-block-post-handler)
+                   :unless '(sp-in-comment-p sp-in-string-p))
+    (sp-local-pair "quote" "end"
+                   :when '(("SPC" "RET" "<evil-ret>"))
+                   :post-handlers '(sp-elixir-do-block-post-handler-2)
+                   :unless '(sp-in-comment-p sp-in-string-p))))
 
 (use-package alchemist
   :ensure t

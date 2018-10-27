@@ -95,6 +95,20 @@ ID, ACTION, CONTEXT."
           (indent-region pos (line-end-position)))
         (indent-for-tab-command))))
 
+  (defun sp-elixir-skip-single-line-do-p (_ms mb _me)
+    "TODO"
+    (save-match-data
+      (save-excursion
+        (goto-char mb)
+        (and (re-search-forward "\\_<do:" (line-end-position) t) t))))
+
+  (defun sp-elixir-single-line-do-p (_id _action _context)
+    "TODO"
+    (save-match-data
+      (save-excursion
+        (print (buffer-substring-no-properties (point) (line-end-position)))
+        (and (re-search-forward "\\_<do:" (line-end-position) t) t))))
+
   :config
   (setq sp-highlight-pair-overlay nil
         sp-highlight-wrap-overlay nil
