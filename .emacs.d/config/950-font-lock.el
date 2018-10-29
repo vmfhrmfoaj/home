@@ -757,9 +757,8 @@
                                       ,org-done-face
                                     ,org-todo-face)
                       :height (cond
-                               ((eq 'gnu/linux system-type) 0.95)
-                               ((eq 'darwin system-type) 1.1)
-                               (t 1.0)))))
+                               ((string-equal "gnome-imac" hostname) 0.95)
+                               (t 1.1)))))
           t)
          ("^\\s-*\\(-\\) "
           1 'bold)
