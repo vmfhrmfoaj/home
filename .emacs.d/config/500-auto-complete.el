@@ -7,6 +7,7 @@
     (execute-kbd-macro (kbd "SPC")))
 
   :config
+  (add-hook 'evil-normal-state-entry-hook #'company-abort)
   (setq company-idle-delay 0.2
         company-selection-wrap-around t
         company-dabbrev-downcase nil)
