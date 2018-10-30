@@ -4,6 +4,11 @@
   (defun persp-current-name ()
     (safe-persp-name (get-frame-persp)))
 
+  (defun persp-current-project ()
+    (let ((persp-name (persp-current-name)))
+      (when (file-exists-p persp-name)
+        persp-name)))
+
   (defun helm-persp-create-&-switch-project ()
     "TODO"
     (interactive)
