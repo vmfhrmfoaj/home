@@ -106,8 +106,22 @@ ID, ACTION, CONTEXT."
     "TODO"
     (save-match-data
       (save-excursion
-        (print (buffer-substring-no-properties (point) (line-end-position)))
         (and (re-search-forward "\\_<do:" (line-end-position) t) t))))
+
+  (defun sp-org-checkbox-p (_id _action _context)
+    "TODO"
+    (save-match-data
+      (save-excursion
+        (beginning-of-line)
+        (and (re-search-forward "^\\s-*\\(?:-\\|[0-9]+\\.\\) \\[" (line-end-position) t) t))))
+
+  (defun sp-org-checkbox-handler (id action context)
+    (when (and (string-equal id "[")
+               (eq action 'insert)
+               (sp-org-checkbox-p id action context))
+      (insert " ")
+      (skip-chars-forward "[^[]")
+      (insert " ")))
 
   :config
   (setq sp-highlight-pair-overlay nil
