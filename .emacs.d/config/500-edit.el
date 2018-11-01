@@ -113,7 +113,7 @@ ID, ACTION, CONTEXT."
     (save-match-data
       (save-excursion
         (beginning-of-line)
-        (and (re-search-forward "^\\s-*\\(?:-\\|[0-9]+\\.\\) \\[" (line-end-position) t) t))))
+        (and (re-search-forward "^\\s-*\\(?:-\\|[0-9]+\\.\\) \\[\\(?:\\]\\|$\\)" (line-end-position) t) t))))
 
   (defun sp-org-checkbox-handler (id action context)
     (when (and (string-equal id "[")
