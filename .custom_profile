@@ -10,8 +10,13 @@ function setEnv () {
   export LC_ALL=en_US.UTF-8
 
   # ~/.bin
-  if [ -d $HOME/.bin ]; then
-    export PATH=$HOME/.bin:$PATH
+  if [ -d "$HOME/.bin" ]; then
+    export PATH="$HOME/.bin:$PATH"
+  fi
+
+  # Cask
+  if [ -d "$HOME/.cask/bin" ]; then
+    export PATH="$HOME/.cask/bin:$PATH"
   fi
 
   # Oh My Zsh
@@ -63,7 +68,7 @@ function setEnv () {
   # Heroku
   local HEROKU="$HOME/.local/heroku"
   if [ -d "$HEROKU/bin/" ]; then
-    export PATH="$HEROKU/bin/":$PATH
+    export PATH="$HEROKU/bin/:$PATH"
   fi
 }
 setEnv
