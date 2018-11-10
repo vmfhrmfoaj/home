@@ -1,4 +1,5 @@
 /*
-!.profile
-!.gitignore
 !.emacs.d/
+!.bin/
+!.custom_profile
+!.gitignore
