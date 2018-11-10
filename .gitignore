@@ -2,4 +2,5 @@
 !.emacs.d/
 !.bin/
 !.custom_profile
+!.vimrc
 !.gitignore
