@@ -271,7 +271,10 @@
   (evil-global-set-key 'insert (kbd "C-e") #'end-of-line)
   (evil-global-set-key 'visual (kbd "v") #'er/expand-region)
   (evil-global-set-key 'normal (kbd "TAB") #'aggressive-indent-do-indent)
-  (evil-global-set-key 'visual (kbd "TAB") #'indent-region))
+  (evil-global-set-key 'visual (kbd "TAB") #'indent-region)
+  (dolist (state '(normal visual))
+    (evil-global-set-key state (kbd "M-n") #'evil-forward-paragraph)
+    (evil-global-set-key state (kbd "M-p") #'evil-backward-paragraph)))
 
 (use-package evil-surround
   :defer t
