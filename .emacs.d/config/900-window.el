@@ -13,7 +13,7 @@
     (setq org-tags-column (+ (- w) 5))
     (let* ((h (floor (- (/ (float (display-pixel-height)) h-char) h-titlebar-in-char)))
            (l (/ (custom-display-pixel-width) 2.0))
-           (l (floor (- l (* (frame-unit->pixel w) 0.45))))
+           (l (floor (- l (* (frame-unit->pixel w) 0.4))))
            (l (if (< 0 (- (custom-display-pixel-width)
                           (+ l (frame-unit->pixel w))))
                   l

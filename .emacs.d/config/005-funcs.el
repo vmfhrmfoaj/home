@@ -15,6 +15,9 @@
 
 (require 'color)
 
+(defun color-rgb-to-hex-2-dig (R G B)
+  (color-rgb-to-hex R G B 2))
+
 (defun dim-color (color p)
   "TODO"
   (->> color
@@ -22,7 +25,7 @@
        (apply #'color-rgb-to-hsl)
        (apply (-rpartial #'color-darken-hsl p))
        (apply #'color-hsl-to-rgb)
-       (apply #'color-rgb-to-hex)))
+       (apply #'color-rgb-to-hex-2-dig)))
 
 (defun light-color (color p)
   "TODO"
@@ -31,7 +34,7 @@
        (apply #'color-rgb-to-hsl)
        (apply (-rpartial #'color-lighten-hsl p))
        (apply #'color-hsl-to-rgb)
-       (apply #'color-rgb-to-hex)))
+       (apply #'color-rgb-to-hex-2-dig)))
 
 (defun saturate-color (color p)
   "TODO"
@@ -40,13 +43,14 @@
        (apply #'color-rgb-to-hsl)
        (apply (-rpartial #'color-saturate-hsl p))
        (apply #'color-hsl-to-rgb)
-       (apply #'color-rgb-to-hex)))
+       (apply #'color-rgb-to-hex-2-dig)))
 
 (defun color-from (face attr p)
   (let ((fn (cond
              ((< 0 p) #'light-color)
              ((< p 0) #'dim-color)
-             ((= p 0) (lambda (color _) color)))))
+             ((= p 0) (lambda (color _) color))))
+        (p (abs p)))
     (funcall fn (face-attribute face attr) p)))
 
 
