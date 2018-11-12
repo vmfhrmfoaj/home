@@ -6,8 +6,7 @@
 
   (defun persp-current-project ()
     (let ((persp-name (persp-current-name)))
-      (when (and (file-exists-p persp-name)
-                 (not (string-equal persp-name persp-nil-name)))
+      (when (file-exists-p persp-name)
         persp-name)))
 
   (defun helm-persp-create-&-switch-project ()
