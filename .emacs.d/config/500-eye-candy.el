@@ -215,7 +215,6 @@
   (add-hook 'prog-mode-hook #'highlight-numbers-mode))
 
 (use-package hl-line
-  :disabled t
   :config
   (global-hl-line-mode 1))
 

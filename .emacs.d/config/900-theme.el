@@ -1,42 +1,60 @@
-(use-package solarized-theme
+(use-package zenburn-theme
   :ensure t
   :config
-  (setq solarized-distinct-fringe-background t
-        solarized-high-contrast-mode-line t
-        solarized-scale-org-headlines nil
-        solarized-use-more-italic t)
-  (load-theme 'solarized-light t)
-  (let ((local-var-fg-color (saturate-color (color-from 'font-lock-variable-name-face :foreground 10) -20)))
-    (custom-theme-set-faces
-     'solarized-light
-     '(variable-pitch ((t (:font-family "Monospace"))))
-     `(lisp-local-binding-variable-name-face ((t (:foreground ,local-var-fg-color))))
-     `(php-passive-assign-variable-face ((t (:foreground ,local-var-fg-color)))))))
-
-(use-package company
-  :defer t
-  :config
-  (custom-set-faces
-   `(company-tooltip-selection ((t (:background ,(color-from 'company-tooltip :background -3)))))))
+  (load-theme 'zenburn t)
+  (custom-theme-set-faces
+   'zenburn
+   `(variable-pitch ((t (:font-family "Monospace"))))
+   `(lisp-local-binding-variable-name-face ((t (:foreground ,(color-from 'font-lock-variable-name-face :foreground 5)))))))
 
 (use-package elixir-mode
   :defer t
   :config
   (custom-set-faces
-   '(elixir-atom-face ((t (:inherit 'font-lock-builtin-face))))))
+   `(elixir-atom-face ((t (:inherit 'font-lock-builtin-face))))))
 
 (use-package evil-goggles
   :defer t
   :config
   (custom-set-faces
-   '(evil-goggles-change-face ((t (:inherit diff-refine-changed))))
-   '(evil-goggles-delete-face ((t (:inherit diff-refine-removed))))
-   '(evil-goggles-paste-face  ((t (:inherit diff-refine-added))))
-   '(evil-goggles-yank-face   ((t (:inherit diff-refine-added))))))
+   `(evil-goggles-change-face ((t (:inherit diff-refine-changed))))
+   `(evil-goggles-delete-face ((t (:inherit diff-refine-removed))))
+   `(evil-goggles-paste-face  ((t (:inherit diff-refine-added))))
+   `(evil-goggles-yank-face   ((t (:inherit diff-refine-added))))))
+
+(use-package git-gutter-fringe+
+  :defer t
+  :config
+  (custom-set-faces
+   `(git-gutter+-added    ((t (:foreground ,(color-from 'diff-refine-added   :background 0)))))
+   `(git-gutter+-modified ((t (:foreground ,(color-from 'diff-refine-changed :background 0)))))
+   `(git-gutter+-deleted  ((t (:foreground ,(color-from 'diff-refine-removed :background 0)))))))
+
+(use-package org
+  :defer t
+  :config
+  (dolist (i (number-sequence 1 8))
+    (let ((face (intern (concat "org-level-" (number-to-string i)))))
+      (set-face-attribute face nil :inherit 'variable-pitch))))
+
+(use-package php-mode
+  :defer t
+  :config
+  (custom-set-faces
+   `(php-passive-assign-variable-face ((t (:foreground ,(color-from 'font-lock-variable-name-face :foreground 5)))))))
 
 (use-package linum-relative
   :defer t
   :config
   (custom-set-faces
+   `(linum
+     ((t (:inherit default :underline nil :height 1.0 :background ,(color-from 'fringe :background 0)))))
    `(linum-relative-current-face
-     ((t (:weight bold :foreground ,(color-from 'linum :foreground -10)))))))
+     ((t (:inherit linum :weight bold :foreground ,(color-from 'linum :foreground 5)))))))
+
+(use-package magit
+  :defer t
+  :config
+  (custom-set-faces
+   `(magit-diff-added-highlight   ((t (:background ,(saturate-color (color-from 'diff-refine-added   :background -5) -10)))))
+   `(magit-diff-removed-highlight ((t (:background ,(saturate-color (color-from 'diff-refine-removed :background -5) -10)))))))
