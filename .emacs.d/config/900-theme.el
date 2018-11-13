@@ -5,6 +5,7 @@
   (custom-theme-set-faces
    'zenburn
    `(variable-pitch ((t (:font-family "Monospace"))))
+   `(hl-line ((t (:background ,(light-color "#383838" 1.5)))))
    `(lisp-local-binding-variable-name-face ((t (:foreground ,(color-from 'font-lock-variable-name-face :foreground 5)))))))
 
 (use-package elixir-mode
