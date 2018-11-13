@@ -10,7 +10,7 @@ function setEnv () {
   export LC_ALL=en_US.UTF-8
 
   # ~/.bin
-  if [ -d "$HOME/.bin" ]; then
+  if [ -d "$HOME/.bin" ] && [ -z $SCHROOT_CHROOT_NAME ]; then
     export PATH="$HOME/.bin:$PATH"
   fi
 
