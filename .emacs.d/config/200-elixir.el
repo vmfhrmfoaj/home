@@ -6,6 +6,9 @@
 
   :config
   (sp-with-modes 'elixir-mode
+    (sp-local-pair "def" "end"
+                   :unless '(:add sp-elixir-single-line-do-p)
+                   :skip-match 'sp-elixir-skip-single-line-do-p)
     (sp-local-pair "defp" "end"
                    :unless '(:add sp-elixir-single-line-do-p)
                    :skip-match 'sp-elixir-skip-single-line-do-p)
