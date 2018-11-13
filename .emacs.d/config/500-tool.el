@@ -111,6 +111,7 @@
   (setq linum-delay 0.1
         linum-relative-current-symbol ""
         linum-schedule-timer nil)
+  (add-hook 'evil-insert-state-entry-hook #'linum-update-current)
   (advice-add #'linum-schedule :override #'linum-delay-schedule))
 
 (use-package multi-term
