@@ -2,11 +2,11 @@
   :ensure t
   :config
   (setq solarized-distinct-fringe-background t
+        solarized-high-contrast-mode-line t
         solarized-scale-org-headlines nil
-        solarized-use-more-italic t
-        x-underline-at-descent-line t)
+        solarized-use-more-italic t)
   (load-theme 'solarized-light t)
-  (let ((local-var-fg-color (saturate-color (color-from 'font-lock-variable-name-face :foreground 10) -15)))
+  (let ((local-var-fg-color (saturate-color (color-from 'font-lock-variable-name-face :foreground 10) -20)))
     (custom-theme-set-faces
      'solarized-light
      '(variable-pitch ((t (:font-family "Monospace"))))
@@ -38,5 +38,5 @@
   :defer t
   :config
   (custom-set-faces
-   `(linum-relative-current-face ((t (:weight bold :foreground ,(color-from 'linum :foreground -10)))))))
-
+   `(linum-relative-current-face
+     ((t (:weight bold :foreground ,(color-from 'linum :foreground -10)))))))
