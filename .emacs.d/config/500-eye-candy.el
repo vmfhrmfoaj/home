@@ -21,6 +21,7 @@
   (all-the-icons-update-data 'all-the-icons-icon-alist "\\.DS_STORE$" :height 0.95 :v-adjust -0.1))
 
 (use-package auto-dim-other-buffers
+  :disabled t
   :ensure t
   :config
   (advice-add #'adob--never-dim-p :before-until #'helm-bufferp)
@@ -209,6 +210,7 @@
   (add-hook 'prog-mode-hook #'highlight-numbers-mode))
 
 (use-package hl-line
+  :disabled t
   :config
   (global-hl-line-mode 1))
 
