@@ -18,7 +18,12 @@
 
   :config
   (all-the-icons-update-data 'all-the-icons-dir-icon-alist "google[ _-]drive" :height 1.0)
-  (all-the-icons-update-data 'all-the-icons-icon-alist "\\.DS_STORE$" :height 0.95 :v-adjust -0.1))
+  (all-the-icons-update-data 'all-the-icons-icon-alist "\\.DS_STORE$" :height 0.95 :v-adjust -0.1)
+  (advice-add #'all-the-icons-icon-for-dir :filter-args
+              (lambda (args)
+                (let* ((dir (car args))
+                       (dir (s-chop-suffix "/" dir)))
+                  (push dir (-drop 1 args))))))
 
 (use-package auto-dim-other-buffers
   :disabled t
