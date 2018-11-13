@@ -1,5 +1,5 @@
 (when (window-system)
-  (setq-default line-spacing 1)
+  (setq-default line-spacing 2)
   ;; In Linux the font hinting must not be 'full', it causes the bold font make smaller.
   ;; Options(only available on macOS):
   ;; - defaults write org.gnu.Emacs AppleFontSmoothing -int 0~3
