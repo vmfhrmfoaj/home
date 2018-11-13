@@ -10,7 +10,7 @@
   ;;   Emacs.fontBackend: xft
   (let ((font "Fantasque Sans Mono")
         (height (cond
-                 ((string-equal "gnome-macbookair" hostname) 110)
+                 ((string-equal "gnome-macbookair" hostname) 120)
                  ((string-equal "gnome-imac" hostname) 109) ; for HiDPI=2 and Scaling Factor=0.9
                  (t 113))))
     (set-face-font 'default font)
