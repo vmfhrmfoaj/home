@@ -23,7 +23,10 @@
               (lambda (args)
                 (let* ((dir (car args))
                        (dir (s-chop-suffix "/" dir)))
-                  (push dir (-drop 1 args))))))
+                  (push (if (string-empty-p dir)
+                            "/"
+                          dir)
+                        (-drop 1 args))))))
 
 (use-package auto-dim-other-buffers
   :disabled t
