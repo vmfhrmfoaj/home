@@ -1,12 +1,18 @@
 (use-package zenburn-theme
   :ensure t
   :config
+  (defvar local-variable-name-fg-color
+    (color-from 'font-lock-variable-name-face :foreground 5)
+    "TODO")
   (load-theme 'zenburn t)
   (custom-theme-set-faces
    'zenburn
-   `(variable-pitch ((t (:font-family "Monospace"))))
    `(hl-line ((t (:background ,(light-color "#383838" 1.5)))))
-   `(lisp-local-binding-variable-name-face ((t (:foreground ,(color-from 'font-lock-variable-name-face :foreground 5)))))))
+   `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color))))
+   `(trailing-whitespace ((t (:underline "#CC9393"))))
+   `(whitespace-trailing ((t (:underline "#CC9393"))))
+   `(whitespace-tab      ((t (:underline "#CC9393"))))
+   `(whitespace-space ((t (:foreground "#5F5F5F"))))))
 
 (use-package elixir-mode
   :defer t
@@ -34,6 +40,8 @@
 (use-package org
   :defer t
   :config
+  (custom-set-faces
+   `(variable-pitch ((t (:font-family "Monospace")))))
   (dolist (i (number-sequence 1 8))
     (let ((face (intern (concat "org-level-" (number-to-string i)))))
       (set-face-attribute face nil :inherit 'variable-pitch))))
@@ -42,7 +50,41 @@
   :defer t
   :config
   (custom-set-faces
-   `(php-passive-assign-variable-face ((t (:foreground ,(color-from 'font-lock-variable-name-face :foreground 5)))))))
+   `(php-passive-assign-variable-face ((t (:foreground ,local-variable-name-fg-color))))))
+
+(use-package highlight-parentheses
+  :defer t
+  :config
+  (setq hl-paren-colors
+        (--iterate (dim-color it 10)
+                   (apply 'color-rgb-to-hex-2-dig (color-name-to-rgb "Springgreen"))
+                   4)))
+
+(use-package paren
+  :defer t
+  :config
+  (custom-set-faces
+   `(show-paren-match ((t (:background unspecified :foreground "Springgreen" :underline "Springgreen"))))
+   `(show-paren-mismatch ((t (:background unspecified :foreground "Springgreen" :underline "Springgreen" :weight bold))))))
+
+(use-package smartparens
+  :defer t
+  :config
+  (custom-set-faces
+   `(sp-show-pair-match-face ((t (:background unspecified :foreground "Springgreen" :underline "Springgreen"))))
+   `(sp-show-pair-mismatch-face ((t (:background unspecified :foreground "Springgreen" :underline "Springgreen" :weight bold))))))
+
+(use-package rainbow-delimiters
+  :defer t
+  :config
+  (custom-set-faces
+   `(rainbow-delimiters-unmatched-face ((t (:foreground "white" :background "#a21f20" :weight bold)))))
+  (dolist (i (number-sequence 1 9))
+    (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
+      (set-face-attribute face nil :foreground
+                          (-> face
+                              (face-attribute :foreground)
+                              (saturate-color -10))))))
 
 (use-package linum-relative
   :defer t
