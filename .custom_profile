@@ -84,7 +84,7 @@ function zle-keymap-select () {
       echo -ne $CURSOR_BOX
     else
       # the insert mode for vi
-      echo -ne $CURSOR_LINE
+      echo -ne $CURSOR_UNDERBAR
     fi
   fi
   # for Oh My Zsh
@@ -94,7 +94,7 @@ function zle-keymap-select () {
 zle -N zle-keymap-select
 
 function preexec() {
-  echo -ne $CURSOR_LINE
+  echo -ne $CURSOR_UNDERBAR
 }
 preexec
 

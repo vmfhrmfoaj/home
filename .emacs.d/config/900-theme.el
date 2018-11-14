@@ -20,6 +20,20 @@
   (custom-set-faces
    `(elixir-atom-face ((t (:inherit 'font-lock-builtin-face))))))
 
+(use-package evil
+  :defer t
+  :config
+  (let ((hbar-height (max line-spacing 1)))
+    (setq cursor-type 'box
+          evil-normal-state-cursor   `(box "#DCDCCC")
+          evil-insert-state-cursor   `((hbar . ,hbar-height))
+          evil-visual-state-cursor   `(box "#777777")
+          evil-replace-state-cursor  `((hbar . ,hbar-height) "#DD9393")
+          evil-operator-state-cursor `(hollow "#A6E5E7"))
+    (with-eval-after-load 'evil-multiedit
+      (setq evil-multiedit-normal-state-cursor `(box "#DCDCCC")
+            evil-multiedit-insert-state-cursor `((hbar . ,hbar-height))))))
+
 (use-package evil-goggles
   :defer t
   :config
