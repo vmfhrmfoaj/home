@@ -8,8 +8,7 @@
 
   :config
   (add-hook 'evil-normal-state-entry-hook #'company-abort)
-  (setq company-idle-delay 0.4
-        company-selection-wrap-around t
+  (setq company-selection-wrap-around t
         company-dabbrev-downcase nil)
   (global-company-mode 1))
 
