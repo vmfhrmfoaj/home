@@ -6,6 +6,11 @@
 
   :config
   (sp-with-modes 'elixir-mode
+    (sp-local-pair "do" "end"
+                   :unless '(:add sp-elixir-single-line-do-p)
+                   :skip-match (lambda (ms mb me)
+                                 (or (sp-elixir-skip-def-p ms mb me)
+                                     (sp-elixir-skip-single-line-do-p ms mb me))))
     (sp-local-pair "def" "end"
                    :unless '(:add sp-elixir-single-line-do-p)
                    :skip-match 'sp-elixir-skip-single-line-do-p)
@@ -15,11 +20,13 @@
     (sp-local-pair "defmacro" "end"
                    :when '(("SPC" "RET" "<evil-ret>"))
                    :post-handlers '(sp-elixir-do-block-post-handler)
-                   :unless '(sp-in-comment-p sp-in-string-p))
+                   :unless '(sp-in-comment-p sp-in-string-p sp-elixir-single-line-do-p)
+                   :skip-match 'sp-elixir-skip-single-line-do-p)
     (sp-local-pair "quote" "end"
                    :when '(("SPC" "RET" "<evil-ret>"))
                    :post-handlers '(sp-elixir-do-block-post-handler-2)
-                   :unless '(sp-in-comment-p sp-in-string-p))))
+                   :unless '(sp-in-comment-p sp-in-string-p sp-elixir-single-line-do-p)
+                   :skip-match 'sp-elixir-skip-single-line-do-p)))
 
 (use-package alchemist
   :ensure t
