@@ -91,7 +91,6 @@
           (overlay-put (make-overlay beg end) 'face 'php-unhilight-face)))))
 
   :config
-  (require 'psysh nil t)
   (add-hook 'php-mode-hook
             (lambda ()
               (php-unhilight-no-php-code)
@@ -101,6 +100,7 @@
               (aggressive-indent-mode 1))))
 
 (use-package psysh
+  :disabled t
   :ensure t
   :defer t
   :init
