@@ -23,7 +23,10 @@
 (use-package evil
   :defer t
   :config
-  (let ((hbar-height (max line-spacing 1)))
+  (let* ((hbar-height (max line-spacing 1))
+         (hbar-height (if (string-equal "gnome-imac" hostname)
+                          (* 2 hbar-height) ; for HiDPI
+                        hbar-height)))
     (setq cursor-type 'box
           evil-normal-state-cursor   `(box "#DCDCCC")
           evil-insert-state-cursor   `((hbar . ,hbar-height))
