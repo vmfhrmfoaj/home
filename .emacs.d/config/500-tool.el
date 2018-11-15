@@ -95,12 +95,14 @@
     (unless (eq 'self-insert-command this-command)
       (when linum-schedule-timer
         (cancel-timer linum-schedule-timer))
-      (let ((timer (run-with-idle-timer
-                    linum-delay nil
-                    (lambda ()
-                      (setq linum-schedule-timer nil)
-                      (linum-update-current)))))
-        (setq-local linum-schedule-timer timer))))
+      (if (eq 'insert evil-state)
+          (linum-update-current)
+        (let ((timer (run-with-idle-timer
+                      linum-delay nil
+                      (lambda ()
+                        (setq linum-schedule-timer nil)
+                        (linum-update-current)))))
+          (setq-local linum-schedule-timer timer)))))
 
   (add-hook 'prog-mode-hook
             (lambda ()
