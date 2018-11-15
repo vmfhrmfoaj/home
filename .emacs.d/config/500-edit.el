@@ -1,4 +1,5 @@
 (use-package aggressive-indent
+  :disabled t
   :ensure t
   :init
   (defun aggressive-indent-do-indent ()

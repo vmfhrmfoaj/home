@@ -96,8 +96,7 @@
               (php-unhilight-no-php-code)
               (setq-local evil-lookup-func #'php-extras-doc)
               (make-local-variable 'font-lock-extend-region-functions)
-              (add-to-list 'font-lock-extend-region-functions #'font-lock-extend-region-wholelines)
-              (aggressive-indent-mode 1))))
+              (add-to-list 'font-lock-extend-region-functions #'font-lock-extend-region-wholelines))))
 
 (use-package psysh
   :disabled t
