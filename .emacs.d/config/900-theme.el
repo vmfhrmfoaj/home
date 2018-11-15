@@ -12,7 +12,9 @@
    `(trailing-whitespace ((t (:underline "#CC9393"))))
    `(whitespace-trailing ((t (:underline "#CC9393"))))
    `(whitespace-tab      ((t (:underline "#CC9393"))))
-   `(whitespace-space ((t (:foreground "#5F5F5F"))))))
+   `(whitespace-space ((t (:foreground "#5F5F5F")))))
+  (custom-set-faces
+   `(lazy-highlight ((t (:background ,(color-from 'hl-line :background -3)))))))
 
 (use-package elixir-mode
   :defer t
