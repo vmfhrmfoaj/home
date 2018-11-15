@@ -227,14 +227,11 @@
 
 ;; Key binding for the minor mode
 
-(use-package alchemist
-  :defer t
-  :config)
-
 (use-package company
   :defer t
   :config
-  (define-key company-active-map [return] #'newline)
+  (define-key company-active-map [return] #'company-complete-selection)
+  (define-key company-active-map (kbd "C-m") #'newline)
   (define-key company-active-map (kbd "C-h") nil)
   (define-key company-active-map (kbd "C-j") #'company-select-next)
   (define-key company-active-map (kbd "C-k") #'company-select-previous)
