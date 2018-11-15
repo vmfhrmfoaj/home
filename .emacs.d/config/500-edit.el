@@ -96,18 +96,18 @@ ID, ACTION, CONTEXT."
           (indent-region pos (line-end-position)))
         (indent-for-tab-command))))
 
-  (defun sp-elixir-skip-single-line-do-p (_ms mb _me)
+  (defun sp-elixir-skip-symbol-p (ms mb _me)
     "TODO"
-    (save-match-data
-      (save-excursion
-        (goto-char mb)
-        (and (re-search-forward "\\_<do:" (line-end-position) t) t))))
+    (save-excursion
+      (goto-char mb)
+      (let* ((regex (concat ms "[ \t\r\n" (when (string-equal "end" ms) ")") "]"))
+             (regex (concat regex (when (string-match-p "^def" ms) "+[_a-z]"))))
+        (unless (looking-at-p regex) t))))
 
-  (defun sp-elixir-single-line-do-p (_id _action _context)
+  (defun sp-elixir-skip-for-do-end (ms mb me)
     "TODO"
-    (save-match-data
-      (save-excursion
-        (and (re-search-forward "\\_<do:" (line-end-position) t) t))))
+    (or (sp-elixir-skip-symbol-p ms mb me)
+        (sp-elixir-skip-def-p ms mb me)))
 
   (defun sp-org-checkbox-p (_id _action _context)
     "TODO"
