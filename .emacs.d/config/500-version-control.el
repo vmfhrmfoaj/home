@@ -8,19 +8,9 @@
 
 (use-package git-gutter-fringe+
   :ensure t
-  :defer t
-  :init
-  (defun setup--git-gutter-fringe-plus ()
-    (remove-hook 'find-file-hook #'setup--git-gutter-fringe-plus)
-    (require 'git-gutter-fringe+)
-    (git-gutter+-mode 1))
-
-  (add-hook 'find-file-hook #'setup--git-gutter-fringe-plus)
-
   :config
   (setq git-gutter+-disabled-modes '(org-mode)
         git-gutter-fr+-side 'left-fringe)
-
   (let* ((max (cond
                ((numberp fringe-mode) fringe-mode)
                ((consp fringe-mode) (car fringe-mode))
@@ -35,7 +25,7 @@
     (define-fringe-bitmap 'git-gutter-fr+-added    fr-vec nil nil nil)
     (define-fringe-bitmap 'git-gutter-fr+-deleted  fr-vec nil nil nil)
     (define-fringe-bitmap 'git-gutter-fr+-modified fr-vec nil nil nil))
-  (add-hook 'find-file-hook #'git-gutter+-mode))
+  (global-git-gutter+-mode 1))
 
 (use-package gitignore-mode
   :ensure t
