@@ -30,9 +30,9 @@ function setEnv () {
       bindkey -M viins '^d' delete-char
     fi
     if [ -z $SCHROOT_CHROOT_NAME ]; then
-      local PS1_PREFIX='%{$fg[magenta]%}($(hostname))%{$reset_color%}'
+      local PS1_PREFIX='%{$fg[magenta]%}(%M)%{$reset_color%}'
     else
-      local PS1_PREFIX='%{$fg[magenta]%}($(hostname) :: $SCHROOT_CHROOT_NAME)%{$reset_color%}'
+      local PS1_PREFIX='%{$fg[magenta]%}(%M :: $SCHROOT_CHROOT_NAME)%{$reset_color%}'
     fi
     local NEWLINE=$'\n'
     export PS1="${PS1_PREFIX}${NEWLINE}$PS1"
@@ -93,7 +93,23 @@ function zle-keymap-select () {
 }
 zle -N zle-keymap-select
 
+export DISABLE_AUTO_TITLE="true"
+function precmd {
+  local TABNAME="%n@%M"
+  if [ ! -z $SCHROOT_CHROOT_NAME ]; then
+    local TABNAME="$TABNAME :: $SCHROOT_CHROOT_NAME"
+  fi
+  local TABNAME="$TABNAME:%~"
+  title $TABNAME $TABNAME
+}
+
 function preexec() {
+  local TABNAME="%n@%M"
+  if [ ! -z $SCHROOT_CHROOT_NAME ]; then
+    local TABNAME="$TABNAME :: $SCHROOT_CHROOT_NAME"
+  fi
+  local TABNAME="$TABNAME:%~: ${2:gs/%/%%}"
+  title $TABNAME $TABNAME
   echo -ne $CURSOR_UNDERBAR
 }
 preexec
