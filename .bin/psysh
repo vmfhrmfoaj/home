@@ -1,0 +1,3 @@
+#!/bin/bash
+
+exec schroot -c chroot:php -- bash -c "LC_ALL=en_US.UTF-8 psysh $*"
