@@ -104,10 +104,22 @@ ID, ACTION, CONTEXT."
              (regex (concat regex (when (string-match-p "^def" ms) "+[_a-z]"))))
         (unless (looking-at-p regex) t))))
 
+  (defun sp-elixir-skip-single-line-do-p (_ms mb _me)
+    "TODO"
+    (save-match-data
+      (save-excursion
+        (goto-char mb)
+        (and (re-search-forward "[ \t\r\n]do:" (line-end-position) t) t))))
+
   (defun sp-elixir-skip-for-do-end (ms mb me)
     "TODO"
     (or (sp-elixir-skip-symbol-p ms mb me)
         (sp-elixir-skip-def-p ms mb me)))
+
+  (defun sp-elixir-skip-for-*-end (ms mb me)
+    "TODO"
+    (or (sp-elixir-skip-symbol-p ms mb me)
+        (sp-elixir-skip-single-line-do-p ms mb me)))
 
   (defun sp-org-checkbox-p (_id _action _context)
     "TODO"
