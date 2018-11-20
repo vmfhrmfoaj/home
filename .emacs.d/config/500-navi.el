@@ -148,6 +148,12 @@
                                    (t nil))
         dumb-jump-selector 'helm)
 
+  (add-to-list 'dumb-jump-find-rules
+               (list :type "function"
+                     :supports '("ag" "grep" "rg" "git-grep")
+                     :language "perl"
+                     :regex "sub\\s*JJJ\\j"))
+
   (advice-add #'dumb-jump-get-results :filter-return #'helm-dumb-jump--after-get-results)
   (advice-add #'dumb-jump--result-follow :override #'helm-dumb-jump--result-follow)
   (advice-add #'dumb-jump-prompt-user-for-choice :before-until
