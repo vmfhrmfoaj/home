@@ -113,6 +113,8 @@
     "gb" #'magit-blame
     "gs" #'magit-status
     "gt" #'git-timemachine
+    "gn" #'git-gutter+-next-hunk
+    "gp" #'git-gutter+-previous-hunk
 
     ;; jump/join/split
     "jn" #'sp-newline
