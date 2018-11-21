@@ -4,6 +4,7 @@
   (defvar local-variable-name-fg-color
     (color-from 'font-lock-variable-name-face :foreground 5)
     "TODO")
+  (setq x-underline-at-descent-line t)
   (custom-set-faces
    `(bold ((t (:weight bold))))
    `(cider-fringe-good-face ((t (:inherit success))))
@@ -17,13 +18,15 @@
    `(hl-line ((t (:underline unspecified))))
    `(isearch ((t (:underline unspecified))))
    `(lazy-highlight ((t (:weight bold))))
-   `(lisp-local-binding-variable-name-face ((t (:inherit font-lock-variable-name-face :weight medium)))))
+   `(lisp-local-binding-variable-name-face ((t (:inherit font-lock-variable-name-face :weight medium))))
+   `(org-date ((t (:underline unspecified :slant italic)))))
   (custom-theme-set-faces
    'leuven
    `(helm-swoop-target-word-face ((t (:inherit lazy-highlight))))
    `(helm-match ((t (:inherit lazy-highlight))))
    `(helm-selection ((t (:inherit isearch))))
-   `(font-lock-negation-char-face ((t (:inherit font-lock-warning-face :weight medium))))))
+   `(font-lock-negation-char-face ((t (:inherit font-lock-warning-face :weight medium))))
+   `(underline ((t (:underline (:color foreground-color :style wave)))))))
 
 (use-package elixir-mode
   :defer t
@@ -75,15 +78,15 @@
   :defer t
   :config
   (custom-set-faces
-   `(show-paren-match    ((t (:background unspecified :foreground "Springgreen3" :underline t))))
-   `(show-paren-mismatch ((t (:background unspecified :foreground "Springgreen3" :underline t :weight bold))))))
+   `(show-paren-match    ((t (:foreground "Springgreen3" :wiehgt bold :underline (:color "orange red" :style line)))))
+   `(show-paren-mismatch ((t (:weight bold))))))
 
 (use-package smartparens
   :defer t
   :config
   (custom-set-faces
-   `(sp-show-pair-match-face    ((t (:background unspecified :foreground "Springgreen3" :underline t))))
-   `(sp-show-pair-mismatch-face ((t (:background unspecified :foreground "Springgreen3" :underline t :weight bold))))))
+   `(sp-show-pair-match-face    ((t (:foreground "Springgreen3" :wiehgt bold :underline (:color "orange red" :style line)))))
+   `(sp-show-pair-mismatch-face ((t (:weight bold))))))
 
 (use-package linum
   :defer t
