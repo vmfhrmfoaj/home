@@ -231,9 +231,23 @@
 
 (use-package company
   :defer t
+  :init
+  (defun company-complete-selection-and-esc ()
+    "TODO"
+    (interactive)
+    (company-complete-selection)
+    (evil-normal-state))
+
+  (defun company-abort-and-newline ()
+    "TODO"
+    (interactive)
+    (company-abort)
+    (newline-and-indent))
+
   :config
-  (define-key company-active-map [return] #'company-complete-selection)
-  (define-key company-active-map (kbd "C-m") #'newline)
+  (define-key company-active-map (kbd "<return>") #'company-complete-selection)
+  (define-key company-active-map (kbd "<C-return>") #'company-complete-selection-and-esc)
+  (define-key company-active-map (kbd "C-m") #'company-abort-and-newline)
   (define-key company-active-map (kbd "C-h") nil)
   (define-key company-active-map (kbd "C-j") #'company-select-next)
   (define-key company-active-map (kbd "C-k") #'company-select-previous)

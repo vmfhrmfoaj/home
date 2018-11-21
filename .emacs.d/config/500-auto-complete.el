@@ -9,7 +9,10 @@
   :config
   (add-hook 'evil-normal-state-entry-hook #'company-abort)
   (setq company-selection-wrap-around t
-        company-dabbrev-downcase nil)
+        company-dabbrev-downcase nil
+        company-dabbrev-ignore-case t
+        company-dabbrev-code-ignore-case t
+        company-etags-ignore-case t)
   (global-company-mode 1))
 
 (use-package helm-company
