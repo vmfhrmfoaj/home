@@ -35,11 +35,10 @@
   (defun helm-company-complete-common ()
     "TODO"
     (interactive)
-    (when (company-manual-begin)
-      (if (and (not (cdr company-candidates))
-               (equal company-common (car company-candidates)))
-          (helm-company-plus)
-        (company--insert-candidate company-common))))
+    (if (and (not (cdr company-candidates))
+             (equal company-common (car company-candidates)))
+        (helm-company-plus)
+      (company--insert-candidate company-common)))
 
   (defun company-indent-or-helm-company ()
     "TODO"
