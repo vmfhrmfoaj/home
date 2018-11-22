@@ -264,6 +264,7 @@
   :defer t
   :config
   (evil-global-set-key 'insert (kbd "C-h") #'backward-delete-char)
+  (evil-global-set-key 'insert (kbd "C-a") #'beginning-of-line-text)
   (evil-global-set-key 'insert (kbd "C-e") #'end-of-line)
   (evil-global-set-key 'visual (kbd "v") #'er/expand-region)
   (evil-global-set-key 'normal (kbd "TAB") #'indent-for-tab-command)
