@@ -17,7 +17,8 @@
   (defun neotree-back ()
     "TODO"
     (interactive)
-    (neotree-select-up-node)
+    (unless (neo-buffer--expanded-node-p (neo-buffer--get-filename-current-line))
+      (neotree-select-up-node))
     (neo-buffer--execute nil null-fn #'neo-buffer--back))
 
   (defun neotree-project-dir ()
