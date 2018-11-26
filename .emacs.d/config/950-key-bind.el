@@ -367,19 +367,6 @@
       (concat evil-leader/leader "mg") "goto")
     (evil-leader/set-major-leader-for-mode "," mode)))
 
-(use-package elixir-mode
-  :defer t
-  :config
-  (evil-leader/set-key-for-mode 'elixir-mode
-    "mgg" #'alchemist-goto-definition-at-point
-    "mrr" #'alchemist-iex-run
-    "mrR" #'alchemist-iex-project-run)
-  (which-key-declare-prefixes-for-mode 'elixir-mode
-    (concat evil-leader/leader "me") "evaluation"
-    (concat evil-leader/leader "mg") "goto"
-    (concat evil-leader/leader "mr") "REPL")
-  (evil-leader/set-major-leader-for-mode "," 'elixir-mode))
-
 (use-package clojure-mode
   :defer t
   :config
@@ -401,15 +388,6 @@
       (concat evil-leader/leader "mr") "REPL")
     (evil-leader/set-major-leader-for-mode "," mode)))
 
-(use-package ediff
-  :defer t
-  :config
-  (advice-add #'ediff-setup-keymap :after
-              (lambda ()
-                (define-key ediff-mode-map (kbd "N") #'ediff-next-difference)
-                (define-key ediff-mode-map (kbd "C-k") #'ediff-previous-difference)
-                (define-key ediff-mode-map (kbd "C-j") #'ediff-next-difference))))
-
 (use-package cperl-mode
   :defer t
   :config
@@ -420,6 +398,16 @@
   (which-key-declare-prefixes-for-mode 'cperl-mode
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode "," 'cperl-mode))
+
+
+(use-package ediff
+  :defer t
+  :config
+  (advice-add #'ediff-setup-keymap :after
+              (lambda ()
+                (define-key ediff-mode-map (kbd "N") #'ediff-next-difference)
+                (define-key ediff-mode-map (kbd "C-k") #'ediff-previous-difference)
+                (define-key ediff-mode-map (kbd "C-j") #'ediff-next-difference))))
 
 (use-package elisp-mode
   :defer t
@@ -447,6 +435,19 @@
     (concat evil-leader/leader "mg") "goto"
     (concat evil-leader/leader "mr") "REPL")
   (evil-leader/set-major-leader-for-mode "," 'lisp-interaction-mode))
+
+(use-package elixir-mode
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'elixir-mode
+    "mgg" #'alchemist-goto-definition-at-point
+    "mrr" #'alchemist-iex-run
+    "mrR" #'alchemist-iex-project-run)
+  (which-key-declare-prefixes-for-mode 'elixir-mode
+    (concat evil-leader/leader "me") "evaluation"
+    (concat evil-leader/leader "mg") "goto"
+    (concat evil-leader/leader "mr") "REPL")
+  (evil-leader/set-major-leader-for-mode "," 'elixir-mode))
 
 (use-package multi-term
   :defer t
