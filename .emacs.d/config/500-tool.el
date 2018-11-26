@@ -153,3 +153,7 @@
 
 (use-package vlf-setup
   :ensure vlf)
+
+(use-package ztree
+  :ensure t
+  :defer t)

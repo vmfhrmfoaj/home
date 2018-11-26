@@ -547,3 +547,36 @@
   (evil-define-key 'normal 'vlf-mode-map
     (kbd "C-k") #'vlf-prev-batch
     (kbd "C-j") #'vlf-next-batch))
+
+(use-package ztree-view
+  :defer t
+  :init
+  (defun ztree-back-node (&optional node)
+    (interactive)
+    (let ((line (line-number-at-pos)))
+      (-when-let (node (or node (ztree-find-node-in-line line)))
+        (if (funcall ztree-node-is-expandable-fun node)
+            (when (ztree-is-expanded-node node)
+              (ztree-do-toggle-expand-state node nil))
+          (setq line (ztree-get-parent-for-line line))
+          (ztree-do-toggle-expand-state (ztree-find-node-in-line line) nil))
+        (ztree-refresh-buffer line))))
+
+  (defun ztree-enter-node (&optional node)
+    (interactive)
+    (let ((line (line-number-at-pos)))
+      (-when-let (node (or node (ztree-find-node-in-line line)))
+        (if (funcall ztree-node-is-expandable-fun node)
+            (progn
+              (ztree-do-toggle-expand-state node t)
+              (ztree-refresh-buffer line))
+          (when ztree-node-action-fun
+            (funcall ztree-node-action-fun node t))))))
+
+  :config
+  (add-hook 'ztreediff-mode-hook
+            (lambda ()
+              (evil-local-set-key 'normal (kbd "RET") #'ztree-perform-action)
+              (evil-local-set-key 'normal (kbd "l") #'ztree-enter-node)
+              (evil-local-set-key 'normal (kbd "h") #'ztree-back-node)
+              (evil-local-set-key 'normal (kbd "q") #'evil-delete-buffer))))
