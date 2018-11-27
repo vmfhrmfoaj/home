@@ -536,6 +536,23 @@
     (kbd "C-k") #'comint-previous-input
     (kbd "C-j") #'comint-next-input))
 
+(use-package smartparens
+  :defer t
+  :config
+  (setq sp-navigate-interactive-always-progress-point t)
+  (global-set-key (kbd "C-M-f") #'sp-next-sexp)
+  (global-set-key (kbd "C-M-b") #'sp-backward-sexp)
+  (global-set-key (kbd "C-M-d") #'sp-down-sexp)
+  (global-set-key (kbd "C-M-u") #'sp-backward-up-sexp)
+  (advice-add #'sp-backward-sexp :before
+              (lambda (&optional _)
+                (when (region-active-p)
+                  (let ((cur (point)))
+                    (beginning-of-line)
+                    (when (= cur (point))
+                      (previous-line)
+                      (end-of-visual-line)))))))
+
 (use-package vlf
   :defer t
   :config
