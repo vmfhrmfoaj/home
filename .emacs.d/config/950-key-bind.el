@@ -440,14 +440,19 @@
   :defer t
   :config
   (evil-leader/set-key-for-mode 'elixir-mode
-    "mgg" #'alchemist-goto-definition-at-point
-    "mrr" #'alchemist-iex-run
-    "mrR" #'alchemist-iex-project-run)
+    "mgg" #'dumb-jump-go)
   (which-key-declare-prefixes-for-mode 'elixir-mode
-    (concat evil-leader/leader "me") "evaluation"
-    (concat evil-leader/leader "mg") "goto"
-    (concat evil-leader/leader "mr") "REPL")
+    (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode "," 'elixir-mode))
+
+(use-package elm-mode
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'elm-mode
+    "mgg" #'dumb-jump-go)
+  (which-key-declare-prefixes-for-mode 'elm-mode
+    (concat evil-leader/leader "mg") "goto")
+  (evil-leader/set-major-leader-for-mode "," 'elm-mode))
 
 (use-package multi-term
   :defer t
