@@ -15,6 +15,7 @@
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
    `(clojure-side-effect-face   ((t (:inherit (bold italic font-lock-warning-face)))))
    `(clojure-special-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
+   `(fringe ((t (:background "#FEFEFE"))))
    `(hl-line ((t (:underline unspecified))))
    `(isearch ((t (:underline unspecified))))
    `(lazy-highlight ((t (:weight bold))))
