@@ -29,6 +29,9 @@
    `(font-lock-negation-char-face ((t (:inherit font-lock-warning-face :weight medium))))
    `(underline ((t (:underline (:color foreground-color :style wave)))))))
 
+
+;; -- major/minor modes
+
 (use-package elixir-mode
   :defer t
   :config
@@ -52,6 +55,20 @@
       (setq evil-multiedit-state-cursor `(box ,(color-from 'cursor :background 0))
             evil-multiedit-insert-state-cursor `((hbar . ,hbar-height))))))
 
+(use-package highlight-parentheses
+  :defer t
+  :config
+  (setq hl-paren-colors
+        (--iterate (dim-color it 10)
+                   (apply 'color-rgb-to-hex-2-dig (color-name-to-rgb "Springgreen3"))
+                   4)))
+
+(use-package linum
+  :defer t
+  :config
+  (custom-set-faces
+   `(linum ((t (:inherit default))))))
+
 (use-package org
   :defer t
   :config
@@ -61,20 +78,6 @@
     (let ((face (intern (concat "org-level-" (number-to-string i)))))
       (set-face-attribute face nil :inherit 'variable-pitch))))
 
-(use-package php-mode
-  :defer t
-  :config
-  (custom-set-faces
-   `(php-passive-assign-variable-face ((t (:foreground ,local-variable-name-fg-color))))))
-
-(use-package highlight-parentheses
-  :defer t
-  :config
-  (setq hl-paren-colors
-        (--iterate (dim-color it 10)
-                   (apply 'color-rgb-to-hex-2-dig (color-name-to-rgb "Springgreen3"))
-                   4)))
-
 (use-package paren
   :defer t
   :config
@@ -82,15 +85,15 @@
    `(show-paren-match    ((t (:foreground "Springgreen3" :wiehgt bold :underline (:color "orange red" :style line)))))
    `(show-paren-mismatch ((t (:weight bold))))))
 
+(use-package php-mode
+  :defer t
+  :config
+  (custom-set-faces
+   `(php-passive-assign-variable-face ((t (:foreground ,local-variable-name-fg-color))))))
+
 (use-package smartparens
   :defer t
   :config
   (custom-set-faces
    `(sp-show-pair-match-face    ((t (:foreground "Springgreen3" :wiehgt bold :underline (:color "orange red" :style line)))))
    `(sp-show-pair-mismatch-face ((t (:weight bold))))))
-
-(use-package linum
-  :defer t
-  :config
-  (custom-set-faces
-   `(linum ((t (:inherit default))))))
