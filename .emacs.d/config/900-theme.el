@@ -97,3 +97,15 @@
   (custom-set-faces
    `(sp-show-pair-match-face    ((t (:foreground "Springgreen3" :wiehgt bold :underline (:color "orange red" :style line)))))
    `(sp-show-pair-mismatch-face ((t (:weight bold))))))
+
+(use-package web-mode
+  :defer t
+  :config
+  (let ((tag-face       `(:foreground ,(-> "#AE1B9A" (light-color 15) (saturate-color -40))))
+        (attr-name-face `(:foreground ,(-> "#F36335" (light-color 15) (saturate-color -40))))
+        (attr-var-face  `(:foreground ,(-> "green4"  (light-color 15) (saturate-color -40)))))
+   (custom-set-faces
+    `(web-mode-html-tag-bracket-face ((t ,tag-face)))
+    `(web-mode-html-tag-face ((t ,tag-face)))
+    `(web-mode-html-attr-name-face ((t ,attr-name-face)))
+    `(web-mode-html-attr-value-face ((t ,attr-var-face))))))

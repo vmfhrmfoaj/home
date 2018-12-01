@@ -891,3 +891,27 @@
        ("\\(\\$\\)[(_0-9a-zA-Z]"
         (1 'shadow)))
      :append)))
+
+(use-package web-mode
+  :defer t
+  :config
+  (let* ((pairs (->> web-mode-engines-auto-pairs
+                     (-filter (-compose #'stringp #'car))
+                     (-mapcat #'cdr)))
+         (begin-re (->> pairs (-map #'car) (regexp-opt)))
+         (end-re   (->> pairs (-map #'cdr) (regexp-opt)))
+         (text-re "\\([-_.0-9A-Za-z]+\\)"))
+    (font-lock-add-keywords
+     'web-mode
+     `((,begin-re
+        (,text-re
+         (save-match-data
+           (save-excursion
+             (setq-local font-lock--web-mode-anchor-start-pos (point))
+             (re-search-forward ,end-re (point-max))
+             (match-string 0)))
+         (goto-char font-lock--web-mode-anchor-start-pos)
+         (1 'default)))
+       (,text-re
+        (1 'shadow)))
+     :append)))
