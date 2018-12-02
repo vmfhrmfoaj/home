@@ -59,8 +59,9 @@
   :config
   (add-hook 'helm-cleanup-hook
             (lambda ()
-             (with-helm-current-buffer
-               (evil-force-normal-state))))
+              (with-helm-current-buffer
+                (unless (minibufferp)
+                  (evil-force-normal-state)))))
   ;; NOTE
   ;;  Turn company popup off completely.
   (remove-hook 'pre-command-hook 'company-pre-command)
