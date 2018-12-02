@@ -16,6 +16,14 @@
      ("\\([_0-9a-zA-Z]\\|\\s)\\)\\(\\.\\)\\([_0-9a-zA-Z]\\|\\s(\\)"
       (2 'shadow)))))
 
+(use-package elixir-mode
+  :defer t
+  :config
+  (font-lock-add-keywords
+   'elixir-mode
+   `(("\\([.,]\\)"
+      (1 'shadow)))))
+
 (use-package cperl-mode
   :defer t
   :config
@@ -899,12 +907,11 @@
                      (-filter (-compose #'stringp #'car))
                      (-mapcat #'cdr)))
          (begin-re (->> pairs (-map #'car) (regexp-opt)))
-         (end-re   (->> pairs (-map #'cdr) (regexp-opt)))
-         (text-re "\\([-_.0-9A-Za-z]+\\)"))
+         (end-re   (->> pairs (-map #'cdr) (regexp-opt))))
     (font-lock-add-keywords
      'web-mode
      `((,begin-re
-        (,text-re
+        ("\\([-_0-9A-Za-z]+\\)"
          (save-match-data
            (save-excursion
              (setq-local font-lock--web-mode-anchor-start-pos (point))
@@ -912,6 +919,6 @@
              (match-string 0)))
          (goto-char font-lock--web-mode-anchor-start-pos)
          (1 'default)))
-       (,text-re
-        (1 'shadow)))
+       ("."
+        (0 'shadow)))
      :append)))
