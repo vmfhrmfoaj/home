@@ -16,7 +16,6 @@
    `(clojure-side-effect-face   ((t (:inherit (bold italic font-lock-warning-face)))))
    `(clojure-special-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
    `(fringe ((t (:background "#FEFEFE"))))
-   `(hl-line ((t (:underline unspecified))))
    `(isearch ((t (:underline unspecified))))
    `(lazy-highlight ((t (:weight bold))))
    `(lisp-local-binding-variable-name-face ((t (:inherit font-lock-variable-name-face :weight medium))))
@@ -25,7 +24,8 @@
    'leuven
    `(helm-swoop-target-word-face ((t (:inherit lazy-highlight))))
    `(helm-match ((t (:inherit lazy-highlight))))
-   `(helm-selection ((t (:inherit isearch))))
+   `(helm-selection ((t (:inherit isearch :weight bold))))
+   `(hl-line ((t (:weight bold))))
    `(font-lock-negation-char-face ((t (:inherit font-lock-warning-face :weight medium))))
    `(underline ((t (:underline (:color foreground-color :style wave)))))))
 
