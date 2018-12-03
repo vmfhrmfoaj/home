@@ -61,7 +61,8 @@
             (lambda ()
               (with-helm-current-buffer
                 (unless (minibufferp)
-                  (evil-force-normal-state)))))
+                  (company-abort)))))
+
   ;; NOTE
   ;;  Turn company popup off completely.
   (remove-hook 'pre-command-hook 'company-pre-command)
