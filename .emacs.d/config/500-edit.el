@@ -84,17 +84,45 @@
       (cl-letf (((symbol-function 'message) #'ignore))
         (indent-region start end column))))
 
-  (defun sp-elixir-do-block-post-handler-2 (_id action _context)
+  (defun sp-elixir-custom-do-block-post-handler (id action context)
+    "Insert \"def\", \"defp\", so on keywords and indent the new block.
+ID, ACTION, CONTEXT."
+    (when (and (eq 'insert action)
+               (eq 'code context))
+      (let ((m (make-marker))
+            (single-line-p (looking-back (concat id "[ \t]+"))))
+        (save-excursion
+          (when single-line-p
+            (newline))
+          (forward-word) ;; over the "end"
+          (move-marker m (point)))
+        (if single-line-p
+            (save-excursion (insert " do"))
+          (skip-chars-backward " \t\r\n")
+          (insert " ")
+          (save-excursion (insert " do")))
+        (indent-region (line-beginning-position) m)
+        (move-marker m nil nil))))
+
+  (defun sp-elixir-pure-do-block-post-handler (id action context)
     "Insert \"do\" keyword and indent the new block.
 ID, ACTION, CONTEXT."
-    (when (eq action 'insert)
-      (let ((pos (point)))
-        (insert "do")
-        (newline)
+    (when (and (eq 'insert action)
+               (eq 'code context))
+      (let ((m (make-marker))
+            (single-line-p (looking-back (concat id "[ \t]+"))))
         (save-excursion
-          (newline)
-          (indent-region pos (line-end-position)))
-        (indent-for-tab-command))))
+          (when single-line-p
+            (newline))
+          (forward-word) ;; over the "end"
+          (move-marker m (point)))
+        (if (not single-line-p)
+            (split-line)
+          (skip-chars-backward " \t")
+          (newline))
+        (indent-region (line-beginning-position) m)
+        (move-marker m nil nil)
+        (end-of-line))))
 
   (defun sp-elixir-skip-symbol-p (ms mb _me)
     "TODO"
@@ -141,6 +169,7 @@ ID, ACTION, CONTEXT."
         sp-highlight-wrap-overlay nil
         sp-highlight-wrap-tag-overlay nil)
   (advice-add #'sp--indent-region :override #'sp--indent-region-without-protection)
+  (advice-add #'sp-elixir-do-block-post-handler :override #'sp-elixir-custom-do-block-post-handler)
   (smartparens-global-mode 1)
   (show-smartparens-global-mode 1))
 
