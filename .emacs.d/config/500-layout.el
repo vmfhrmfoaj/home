@@ -81,7 +81,8 @@
               (setq last-persp it)
             (setq names (cdr names)))))
       (when last-persp
-        (persp-switch last-persp))))
+        (persp-switch last-persp)
+        (hl-line-mode 1))))
 
   :config
   (setq persp-autokill-buffer-on-remove #'kill-weak
