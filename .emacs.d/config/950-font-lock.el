@@ -873,6 +873,14 @@
                   (1 'shadow)))))
             :append))
 
+(use-package js
+  :defer t
+  :config
+  (font-lock-add-keywords
+   'js-mode
+   `(("export\\s-+function\\s-+\\([_0-9A-Za-z]+\\)\\>"
+      (1 'font-lock-function-name-face)))))
+
 (use-package sh-script
   :defer t
   :config

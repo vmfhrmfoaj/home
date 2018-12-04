@@ -1,3 +1,8 @@
+(use-package js
+  :defer t
+  :config
+  (setq-default js-indent-level 2))
+
 (use-package js2-mode
   :ensure t
   :defer t
