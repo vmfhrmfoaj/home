@@ -910,6 +910,18 @@
          (end-re   (->> pairs (-map #'cdr) (regexp-opt))))
     (font-lock-add-keywords
      'web-mode
+     `((,(regexp-quote "<%= ")
+        ("\\<\\(case\\|cond\\)\\>"
+         (save-match-data
+           (save-excursion
+             (setq-local font-lock--web-mode-anchor-start-pos (point))
+             (re-search-forward ,(regexp-quote " %>") (point-max))
+             (match-string 0)))
+         (goto-char font-lock--web-mode-anchor-start-pos)
+         (1 'web-mode-keyword-face))))
+     :append)
+    (font-lock-add-keywords
+     'web-mode
      `((,begin-re
         ("\\([-_0-9A-Za-z]+\\)"
          (save-match-data
