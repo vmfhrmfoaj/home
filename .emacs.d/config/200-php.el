@@ -93,7 +93,6 @@
   :config
   (add-hook 'php-mode-hook
             (lambda ()
-              (php-unhilight-no-php-code)
               (setq-local evil-lookup-func #'php-extras-doc)
               (make-local-variable 'font-lock-extend-region-functions)
               (add-to-list 'font-lock-extend-region-functions #'font-lock-extend-region-wholelines))))
