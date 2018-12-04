@@ -19,7 +19,8 @@
    `(isearch ((t (:underline unspecified))))
    `(lazy-highlight ((t (:weight bold))))
    `(lisp-local-binding-variable-name-face ((t (:inherit font-lock-variable-name-face :weight medium))))
-   `(org-date ((t (:underline unspecified :slant italic)))))
+   `(org-date ((t (:underline unspecified :slant italic))))
+   `(org-link ((t (:inherit underline :underline unspecified)))))
   (custom-theme-set-faces
    'leuven
    `(bold ((t (:weight bold))))
