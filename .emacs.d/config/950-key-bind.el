@@ -170,6 +170,7 @@
 
     ;; layout
     "l TAB" #'persp-switch-to-last-selected-persp
+    "l@" #'persp-switch-to-org
     "lh" #'persp-switch-to-default
     "ll" #'helm-persp
     "lr" #'persp-load-state-from-file

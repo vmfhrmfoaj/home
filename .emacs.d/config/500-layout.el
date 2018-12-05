@@ -84,6 +84,23 @@
         (persp-switch last-persp)
         (hl-line-mode 1))))
 
+  (defvar persp-org-name "@Org")
+
+  (defun persp-add-new-for-org ()
+    "TODO"
+    (let ((layout (persp-add-new persp-org-name)))
+      (dolist (buf (append (->> org-agenda-files (-map #'find-file-noselect))
+                           (->> (buffer-list) (--filter (with-current-buffer it
+                                                          (derived-mode-p 'org-agenda-mode))))))
+        (persp-add-buffer buf layout))))
+
+  (defun persp-switch-to-org ()
+    "TODO"
+    (interactive)
+    (unless (persp-get-by-name persp-org-name)
+      (persp-add-new-for-org persp-org-name))
+    (persp-switch persp-org-name))
+
   :config
   (setq persp-autokill-buffer-on-remove #'kill-weak
         persp-auto-resume-time -1

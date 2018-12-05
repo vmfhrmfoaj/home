@@ -92,7 +92,11 @@
     (call-interactively #'org-agenda-redo))
 
   (when window-system
-    (add-hook 'emacs-startup-hook #'org-agenda-list)
+    (add-hook 'emacs-startup-hook
+              (lambda ()
+                (org-agenda-list)
+                (when (fboundp #'persp-add-new-for-org)
+                  (persp-add-new-for-org))))
     (pull-to-google-drive (concat (getenv "HOME") "/Google Drive/Org")
                           (lambda (_)
                             (when helm-current-buffer
@@ -127,7 +131,12 @@
                                       (search category-keep))
         org-agenda-sticky t
         org-agenda-tags-column org-tags-column
-        org-agenda-window-setup 'current-window))
+        org-agenda-window-setup 'current-window)
+  (with-eval-after-load "persp-mode"
+    (add-hook 'org-agenda-mode-hook
+              (lambda ()
+                (when (string-equal persp-org-name (persp-current-name))
+                  (persp-add-buffer-without-switch))))))
 
 (use-package org-capture
   :defer t
@@ -135,11 +144,15 @@
   (defun org-capture-todo ()
     "TODO"
     (interactive)
+    (when (fboundp #'persp-switch-to-org)
+      (persp-switch-to-org))
     (org-capture nil "t"))
 
   (defun org-capture-note ()
     "TODO"
     (interactive)
+    (when (fboundp #'persp-switch-to-org)
+      (persp-switch-to-org))
     (org-capture nil "n"))
 
   :config
