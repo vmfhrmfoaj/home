@@ -830,14 +830,14 @@
         ("\\(\\([a-zA-Z0-9_]+\\\\\\)+[a-zA-Z0-9_]+\\|\\(\\\\[a-zA-Z0-9_]+\\)+\\)::"
          (1 'php-constant))
         ("\\sw+\\(::\\)\\(class\\)\\b"
-         (1 'php-paamayim-nekudotayim)
+         (1 'shadow)
          (2 'php-constant))
         ,@(c-lang-const c-matchers-3 php)
         ("\\<\\([A-Z_][A-Z0-9_]+\\)\\>"
          (1 'php-constant))
         ("\\(\\sw+\\)\\(::\\)"
          (1 'php-constant)
-         (2 'php-paamayim-nekudotayim))
+         (2 'shadow))
         (,(concat "\\<as\\s-+\\(" symbol "\\)\\_>")
          (1 'php-passive-assign-variable-face))
         (,(concat (regexp-opt (c-lang-const c-class-decl-kwds php)) " \\(\\sw+\\)")
