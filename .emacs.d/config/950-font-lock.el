@@ -21,8 +21,9 @@
   :config
   (font-lock-add-keywords
    'elixir-mode
-   `(("\\([.,]\\)"
-      (1 'shadow)))))
+   `(("\\([.,]\\||>\\)"
+      (1 'shadow)))
+   :append))
 
 (use-package cperl-mode
   :defer t
