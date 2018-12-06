@@ -53,7 +53,7 @@
           evil-visual-state-cursor `(box ,(color-from 'cursor :background -15))
           evil-replace-state-cursor `((hbar . ,hbar-height) "#DD9393")
           evil-operator-state-cursor `(box "#A155E7"))
-    (with-eval-after-load 'evil-multiedit
+    (with-eval-after-load "evil-multiedit"
       (setq evil-multiedit-state-cursor `(box ,(color-from 'cursor :background 0))
             evil-multiedit-insert-state-cursor `((hbar . ,hbar-height))))))
 

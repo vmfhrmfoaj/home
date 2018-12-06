@@ -5,7 +5,7 @@
   (add-hook 'elixir-mode-hook #'alchemist-mode)
 
   :config
-  (with-eval-after-load 'smartparens-elixir
+  (with-eval-after-load "smartparens-elixir"
     (sp-with-modes 'elixir-mode
       (sp-local-pair  "def" "end" :skip-match #'sp-elixir-skip-for-*-end)
       (sp-local-pair "defp" "end" :skip-match #'sp-elixir-skip-for-*-end)

@@ -91,7 +91,7 @@
         cperl-indent-region-fix-constructs nil
         cperl-indent-wrt-brace nil
         cperl-merge-trailing-else nil)
-  (with-eval-after-load 'smartparens
+  (with-eval-after-load "smartparens"
     (add-to-list 'sp-sexp-prefix '(cperl-mode regexp "\\(?:qw\\)")))
   (let ((f (-const nil)))
     (advice-add #'cperl-electric-keyword :override f)
