@@ -2,7 +2,7 @@
   :ensure t
   :config
   (defvar local-variable-name-fg-color
-    (color-from 'font-lock-variable-name-face :foreground 5)
+    (saturate-color (color-from 'font-lock-variable-name-face :foreground 5) -20)
     "TODO")
   (setq x-underline-at-descent-line t)
   (custom-set-faces
@@ -10,7 +10,7 @@
    `(cider-fringe-good-face ((t (:inherit success))))
    `(clojure-define-type-face   ((t (:inherit (bold font-lock-type-face)))))
    `(clojure-defining-spec-face ((t (:inherit (bold clojure-keyword-face)))))
-   `(clojure-fn-parameter-face  ((t (:inherit font-lock-variable-name-face :weight medium))))
+   `(clojure-fn-parameter-face  ((t (:foreground ,local-variable-name-fg-color :weight medium))))
    `(clojure-keyword-face       ((t (:inherit font-lock-builtin-face))))
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
    `(clojure-side-effect-face   ((t (:inherit (bold italic font-lock-warning-face)))))
@@ -18,7 +18,7 @@
    `(fringe ((t (:background "#FEFEFE"))))
    `(isearch ((t (:underline unspecified))))
    `(lazy-highlight ((t (:weight bold))))
-   `(lisp-local-binding-variable-name-face ((t (:inherit font-lock-variable-name-face :weight medium))))
+   `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
    `(org-date ((t (:underline unspecified :slant italic))))
    `(org-link ((t (:inherit underline :underline unspecified)))))
   (custom-theme-set-faces
