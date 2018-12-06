@@ -89,6 +89,7 @@
   (defun persp-add-new-for-org ()
     "TODO"
     (let ((layout (persp-add-new persp-org-name)))
+      (org-agenda-list)
       (dolist (buf (append (->> org-agenda-files (-map #'find-file-noselect))
                            (->> (buffer-list) (--filter (with-current-buffer it
                                                           (derived-mode-p 'org-agenda-mode))))))
@@ -97,8 +98,8 @@
   (defun persp-switch-to-org ()
     "TODO"
     (interactive)
-    (unless (persp-get-by-name persp-org-name)
-      (persp-add-new-for-org persp-org-name))
+    (unless (persp-get-by-name persp-org-name *persp-hash* nil)
+      (persp-add-new-for-org))
     (persp-switch persp-org-name))
 
   :config

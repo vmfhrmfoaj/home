@@ -80,6 +80,8 @@
   :init
   (defun org-agenda-resume ()
     (interactive)
+    (when (fboundp #'persp-switch-to-org)
+      (persp-switch-to-org))
     (when (and (bufferp org-agenda-buffer)
                (buffer-live-p org-agenda-buffer))
       (switch-to-buffer org-agenda-buffer)
@@ -92,18 +94,9 @@
     (call-interactively #'org-agenda-redo))
 
   (when window-system
-    (add-hook 'emacs-startup-hook
-              (lambda ()
-                (org-agenda-list)
-                (when (fboundp #'persp-add-new-for-org)
-                  (persp-add-new-for-org))))
     (pull-to-google-drive (concat (getenv "HOME") "/Google Drive/Org")
                           (lambda (_)
-                            (when helm-current-buffer
-                              (ignore-errors
-                                (which-key-abort)
-                                (helm-keyboard-quit)))
-                            (when org-agenda-buffer
+                            (when (and (boundp 'org-agenda-buffer) org-agenda-buffer)
                               (dolist (file org-agenda-files)
                                 (flet ((yes-or-no-p (&rest args) t))
                                   (find-file-noselect file)))
