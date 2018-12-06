@@ -57,7 +57,8 @@
                                  ("DONE" . org-done)
                                  ("CANCELLED" . org-cancelled))
         org-use-sub-superscripts nil)
-  (sp-local-pair 'org-mode "[" "]" :post-handlers '(:add sp-org-checkbox-handler))
+  (with-eval-after-load "smartparens"
+    (sp-local-pair 'org-mode "[" "]" :post-handlers '(:add sp-org-checkbox-handler)))
   (add-hook 'org-todo-get-default-hook #'org-insert-schedule-&-deadline)
   (add-hook 'org-mode-hook
             (lambda ()
