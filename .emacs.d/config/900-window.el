@@ -1,10 +1,3 @@
-(tool-bar-mode   -1)
-(scroll-bar-mode -1)
-(when (or (eq 'gnu/linux system-type)
-          (and (not window-system)
-               (eq 'darwin system-type)))
-  (menu-bar-mode -1))
-
 (when window-system
   (let ((w 150)
         (h-char (frame-char-height))

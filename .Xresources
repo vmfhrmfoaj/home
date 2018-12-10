@@ -3,3 +3,7 @@ Xft.hinting: 1
 Xft.hintstyle: hintfull
 Xft.embolden: true
 Emacs.fontBackend: xft
+Emacs*menuBar: off
+Emacs*toolBar: off
+Emacs*scrollBar: off
+Emacs*verticalScrollBars: off

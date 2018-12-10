@@ -8,6 +8,15 @@
 
 (use-package git-gutter-fringe+
   :ensure t
+  :defer t
+  :init
+  (defun git-gutter-fringe+-setup ()
+    (remove-hook 'find-file-hook #'git-gutter-fringe+-setup)
+    (require 'git-gutter-fringe+)
+    (git-gutter+-mode 1))
+
+  (add-hook 'find-file-hook #'git-gutter-fringe+-setup)
+
   :config
   (setq git-gutter+-disabled-modes '(org-mode)
         git-gutter-fr+-side 'left-fringe)
