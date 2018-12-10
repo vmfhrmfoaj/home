@@ -60,6 +60,12 @@
                              msg))))
     msg)
 
+  (defun magit-setup ()
+    (remove-hook 'magit-mode-hook #'magit-setup)
+    (require 'helm nil t))
+
+  (add-hook 'magit-mode-hook #'magit-setup)
+
   :config
   (setq magit-diff-refine-hunk t)
   (-update->> magit-status-sections-hook
