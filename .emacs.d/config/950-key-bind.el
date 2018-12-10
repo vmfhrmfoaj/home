@@ -110,7 +110,7 @@
     "fy" #'kill-new-buffer-file-name
 
     ;; git
-    "gb" #'magit-blame
+    "gb" #'magit-blame-addition
     "gs" #'magit-status
     "gt" #'git-timemachine
     "gn" #'git-gutter+-next-hunk
