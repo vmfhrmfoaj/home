@@ -27,7 +27,6 @@
    `(helm-swoop-target-word-face ((t (:inherit lazy-highlight))))
    `(helm-match ((t (:inherit lazy-highlight))))
    `(helm-selection ((t (:inherit isearch :weight bold))))
-   `(hl-line ((t (:weight bold))))
    `(font-lock-negation-char-face ((t (:inherit font-lock-warning-face :weight medium))))
    `(underline ((t (:underline (:color foreground-color :style wave)))))))
 
