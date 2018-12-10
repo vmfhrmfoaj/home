@@ -91,6 +91,8 @@
 
   (defun org-agenda-show-list ()
     (interactive)
+    (when (fboundp #'persp-switch-to-org)
+      (persp-switch-to-org))
     (org-agenda-list)
     (call-interactively #'org-agenda-redo))
 
