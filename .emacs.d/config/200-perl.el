@@ -86,6 +86,7 @@
     (perl-setup-indent-config perl-indent-config))
 
   :config
+  (modify-syntax-entry ?: "." cperl-mode-syntax-table)
   (setq cperl-break-one-line-blocks-when-indent nil
         cperl-fix-hanging-brace-when-indent nil
         cperl-indent-region-fix-constructs nil
