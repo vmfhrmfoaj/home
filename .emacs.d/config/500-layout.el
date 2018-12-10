@@ -80,9 +80,9 @@
                    (not (string-equal it (persp-current-name))))
               (setq last-persp it)
             (setq names (cdr names)))))
-      (when global-hl-line-mode
-        (when last-persp
-          (persp-switch last-persp)
+      (when last-persp
+        (persp-switch last-persp)
+        (when global-hl-line-mode
           (hl-line-mode 1)))))
 
   (defvar persp-org-name "@Org")
