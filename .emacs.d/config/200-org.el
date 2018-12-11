@@ -36,10 +36,11 @@
     (when (fboundp #'osx-dictionary-search-pointer)
       (osx-dictionary-search-pointer)))
 
+  (setq org-directory (concat (getenv "HOME") "/Desktop/Org"))
+
   :config
   (require 'helm-org nil t)
   (setq org-complete-tags-always-offer-all-agenda-tags t
-        org-directory (concat (getenv "HOME") "/Desktop/Org")
         org-fontify-whole-heading-line t
         org-hide-emphasis-markers t
         org-image-actual-width nil
@@ -106,12 +107,13 @@
                               (with-current-buffer org-agenda-buffer
                                 (call-interactively #'org-agenda-redo))))))
 
+  (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
+
   :config
   (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0 :weight bold))
                                     (0.5 . '(:inherit org-upcoming-deadline :height 1.0 :weight bold))
                                     (0.0 . '(:height 1.0)))
         org-agenda-clockreport-parameter-plist '(:link t :fileskip0 t :stepskip0 t :maxlevel 5 :tcolumns 1 :narrow 70!)
-        org-agenda-files (directory-files-recursively org-directory "\\.org$")
         org-agenda-skip-deadline-if-done t
         org-agenda-skip-scheduled-if-deadline-is-shown t
         org-agenda-skip-function-global
