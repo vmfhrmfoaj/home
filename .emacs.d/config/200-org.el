@@ -129,6 +129,12 @@
         org-agenda-tags-column org-tags-column
         org-agenda-window-setup 'current-window)
   (with-eval-after-load "persp-mode"
+    (let ((f (lambda (&rest _)
+               (persp-switch-to-org))))
+      (advice-add #'org-clock-jump-to-current-clock :before f)
+      (advice-add #'org-search-view :before f)
+      (advice-add #'org-tags-view :before f)
+      (advice-add #'org-todo-list :before f))
     (add-hook 'org-agenda-mode-hook
               (lambda ()
                 (when (string-equal persp-org-name (persp-current-name))
