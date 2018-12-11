@@ -13,4 +13,4 @@
   (setq web-mode-markup-indent-offset 2
         web-mode-css-indent-offset 2
         web-mode-code-indent-offset 2)
-  (add-to-list 'web-mode-engines-alist '("elixir" . "\\.eex$\\'")))
+  (add-to-list 'web-mode-engines-alist '("elixir" . "\\.eex\\'")))
