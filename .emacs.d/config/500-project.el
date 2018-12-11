@@ -1,5 +1,6 @@
 (use-package projectile
   :ensure t
+  :defer t
   :diminish ""
   :config
   (advice-add #'projectile-project-root :before-until (lambda (&optional _) (persp-current-project)))

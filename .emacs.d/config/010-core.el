@@ -6,6 +6,7 @@
 
 (use-package helm
   :ensure t
+  :defer t
   :diminish ""
   :commands (helm-make-source helm-do-grep-ag)
   :init
