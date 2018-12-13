@@ -25,8 +25,9 @@
   (defun helm-persp ()
     "TODO"
     (interactive)
-    (helm :sources
-          (helm-build-in-buffer-source (format "*Helm Perspective: %s*" (persp-current-name))
+    (helm :preselect (persp-current-name)
+          :sources
+          (helm-build-in-buffer-source (format "*Helm Perspective*: %s" (persp-current-name))
             :data (persp-names)
             :fuzzy-match t
             :action '(("Switch to Perspective" . persp-switch)))))
