@@ -9,6 +9,13 @@
       (when (file-exists-p persp-name)
         persp-name)))
 
+  (defun helm-persp-do-create-&-switch-project (proj)
+    "TODO"
+    (interactive)
+    (let ((persp-reset-windows-on-nil-window-conf t))
+      (persp-switch proj)
+      (projectile-switch-project-by-name proj)))
+
   (defun helm-persp-create-&-switch-project ()
     "TODO"
     (interactive)
@@ -16,12 +23,7 @@
           (helm-build-in-buffer-source "*Helm Create/Switch Project Perspective*"
             :data projectile-known-projects
             :fuzzy-match helm-projectile-fuzzy-match
-            :action '(("Create/Switch to Project Perspective" .
-                       (byte-compile
-                        (lambda (proj)
-                          (let ((persp-reset-windows-on-nil-window-conf t))
-                            (persp-switch proj)
-                            (projectile-switch-project-by-name proj)))))))))
+            :action '(("Create/Switch to Project Perspective" . helm-persp-do-create-&-switch-project)))))
 
   (defun helm-persp ()
     "TODO"
