@@ -90,6 +90,11 @@
                             (number-to-string))
                         "s")))
 
+  (defun linum-delay-schedule-timeout ()
+    "TODO"
+    (setq linum-schedule-timer nil)
+    (linum-update-current))
+
   (defun linum-delay-schedule ()
     "TODO"
     (unless (eq 'self-insert-command this-command)
@@ -97,11 +102,7 @@
         (cancel-timer linum-schedule-timer))
       (if (eq 'insert evil-state)
           (linum-update-current)
-        (let ((timer (run-with-idle-timer
-                      linum-delay nil
-                      (lambda ()
-                        (setq linum-schedule-timer nil)
-                        (linum-update-current)))))
+        (let ((timer (run-with-idle-timer linum-delay nil #'linum-delay-schedule-timeout)))
           (setq-local linum-schedule-timer timer)))))
 
   (add-hook 'prog-mode-hook

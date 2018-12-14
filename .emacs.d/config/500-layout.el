@@ -17,10 +17,11 @@
             :data projectile-known-projects
             :fuzzy-match helm-projectile-fuzzy-match
             :action '(("Create/Switch to Project Perspective" .
-                       (lambda (proj)
-                         (let ((persp-reset-windows-on-nil-window-conf t))
-                           (persp-switch proj)
-                           (projectile-switch-project-by-name proj))))))))
+                       (byte-compile
+                        (lambda (proj)
+                          (let ((persp-reset-windows-on-nil-window-conf t))
+                            (persp-switch proj)
+                            (projectile-switch-project-by-name proj)))))))))
 
   (defun helm-persp ()
     "TODO"

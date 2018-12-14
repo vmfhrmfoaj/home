@@ -68,6 +68,7 @@
   (remove-hook 'pre-command-hook 'company-pre-command)
   (remove-hook 'post-command-hook 'company-post-command)
   (advice-add #'company-mode-on :after
-              (lambda ()
-                (remove-hook 'pre-command-hook 'company-pre-command t)
-                (remove-hook 'post-command-hook 'company-post-command t))))
+              (byte-compile
+               (lambda ()
+                 (remove-hook 'pre-command-hook 'company-pre-command t)
+                 (remove-hook 'post-command-hook 'company-post-command t)))))

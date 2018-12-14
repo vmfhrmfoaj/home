@@ -66,15 +66,16 @@
               "TODO"
               (setq-local evil-lookup-func #'org-dic-at-point)))
   (advice-add #'org-todo :around
-              (lambda (of &optional arg)
-                "If reopen the completed _TODO_, show a popup for logging."
-                (let* ((is-done? (member (org-get-todo-state) org-done-keywords))
-                       (org-todo-log-states (if is-done?
-                                                (append '(("TODO" note time)
-                                                          ("NEXT" note time))
-                                                        org-todo-log-states)
-                                              org-todo-log-states)))
-                  (funcall of arg)))))
+              (byte-compile
+               (lambda (of &optional arg)
+                 "If reopen the completed _TODO_, show a popup for logging."
+                 (let* ((is-done? (member (org-get-todo-state) org-done-keywords))
+                        (org-todo-log-states (if is-done?
+                                                 (append '(("TODO" note time)
+                                                           ("NEXT" note time))
+                                                         org-todo-log-states)
+                                               org-todo-log-states)))
+                   (funcall of arg))))))
 
 (use-package org-agenda
   :ensure org-plus-contrib
@@ -131,8 +132,9 @@
         org-agenda-tags-column org-tags-column
         org-agenda-window-setup 'current-window)
   (with-eval-after-load "persp-mode"
-    (let ((f (lambda (&rest _)
-               (persp-switch-to-org))))
+    (let ((f (byte-compile
+              (lambda (&rest _)
+                (persp-switch-to-org)))))
       (advice-add #'org-clock-jump-to-current-clock :before f)
       (advice-add #'org-search-view :before f)
       (advice-add #'org-tags-view :before f)
