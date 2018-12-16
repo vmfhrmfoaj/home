@@ -405,11 +405,10 @@
   :defer t
   :config
   (advice-add #'ediff-setup-keymap :after
-              (byte-compile
-               (lambda ()
-                 (define-key ediff-mode-map (kbd "N") #'ediff-next-difference)
-                 (define-key ediff-mode-map (kbd "C-k") #'ediff-previous-difference)
-                 (define-key ediff-mode-map (kbd "C-j") #'ediff-next-difference)))))
+              (lambda ()
+                (define-key ediff-mode-map (kbd "N") #'ediff-next-difference)
+                (define-key ediff-mode-map (kbd "C-k") #'ediff-previous-difference)
+                (define-key ediff-mode-map (kbd "C-j") #'ediff-next-difference))))
 
 (use-package elisp-mode
   :defer t
@@ -552,14 +551,13 @@
   (global-set-key (kbd "C-M-d") #'sp-down-sexp)
   (global-set-key (kbd "C-M-u") #'sp-backward-up-sexp)
   (advice-add #'sp-backward-sexp :before
-              (byte-compile
-               (lambda (&optional _)
-                 (when (region-active-p)
-                   (let ((cur (point)))
-                     (beginning-of-line)
-                     (when (= cur (point))
-                       (previous-line)
-                       (end-of-visual-line))))))))
+              (lambda (&optional _)
+                (when (region-active-p)
+                  (let ((cur (point)))
+                    (beginning-of-line)
+                    (when (= cur (point))
+                      (previous-line)
+                      (end-of-visual-line)))))))
 
 (use-package vlf
   :defer t

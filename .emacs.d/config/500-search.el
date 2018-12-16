@@ -2,6 +2,9 @@
   :ensure t
   :defer t
   :init
+  (defun helm-swoop--colorize (it)
+    (propertize it 'font-lock-face 'helm-swoop-line-number-face))
+
   (defun helm-swoop--get-content-for-fancy-narrow (buf &optional linum)
     "TODO"
     (let* (ret
@@ -23,10 +26,9 @@
                             (length)
                             (number-to-string))
                         "s "))
-           (colorize (byte-compile (lambda (it) (propertize it 'font-lock-face 'helm-swoop-line-number-face))))
            (insert-linum (-compose #'insert
                                    (if helm-swoop-use-line-number-face
-                                       colorize
+                                       #'helm-swoop--colorize
                                      #'identity)
                                    (-partial #'format fmt))))
       (with-temp-buffer

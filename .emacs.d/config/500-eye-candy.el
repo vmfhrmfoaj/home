@@ -20,14 +20,13 @@
   (all-the-icons-update-data 'all-the-icons-dir-icon-alist "google[ _-]drive" :height 1.0)
   (all-the-icons-update-data 'all-the-icons-icon-alist "\\.DS_STORE$" :height 0.95 :v-adjust -0.1)
   (advice-add #'all-the-icons-icon-for-dir :filter-args
-              (byte-compile
-               (lambda (args)
-                 (let* ((dir (car args))
-                        (dir (s-chop-suffix "/" dir)))
-                   (push (if (string-empty-p dir)
-                             "/"
-                           dir)
-                         (-drop 1 args)))))))
+              (lambda (args)
+                (let* ((dir (car args))
+                       (dir (s-chop-suffix "/" dir)))
+                  (push (if (string-empty-p dir)
+                            "/"
+                          dir)
+                        (-drop 1 args))))))
 
 (use-package auto-dim-other-buffers
   :disabled t
@@ -78,17 +77,15 @@
     (advice-add #'fancy-narrow-to-region :after #'helm-swoop--clear-cache-hard)
     (advice-add #'fancy-widen :after #'helm-swoop--clear-cache-hard))
   (advice-add #'save-buffer :around
-              (byte-compile
-               (lambda (fn &optional arg)
-                 "wrap `save-buffer' to run without `fancy-narrow'."
-                 (let (fancy-narrow--beginning fancy-narrow--end)
-                   (funcall fn arg)))))
+              (lambda (fn &optional arg)
+                "wrap `save-buffer' to run without `fancy-narrow'."
+                (let (fancy-narrow--beginning fancy-narrow--end)
+                  (funcall fn arg))))
   (advice-add #'jit-lock-function :around
-              (byte-compile
-               (lambda (fn beg)
-                 "wrap `jit-lock-function' to run without `fancy-narrow'."
-                 (let (fancy-narrow--beginning fancy-narrow--end)
-                   (funcall fn beg))))))
+              (lambda (fn beg)
+                "wrap `jit-lock-function' to run without `fancy-narrow'."
+                (let (fancy-narrow--beginning fancy-narrow--end)
+                  (funcall fn beg)))))
 
 (use-package focus
   :ensure t
@@ -199,15 +196,14 @@
   (add-to-list 'focus-mode-to-thing '(org-mode . org))
   (add-to-list 'focus-mode-to-thing '(tex-mode . tex-sentence))
   (advice-add #'focus-move-focus :around
-              (byte-compile
-               (lambda (fn)
-                 "wrap `fcous-mode-foucs' to restart `focus' when occurring an error."
-                 (condition-case nil
-                     (funcall fn)
-                   (error (progn
-                            (focus-terminate)
-                            (focus-init)
-                            (funcall fn))))))))
+              (lambda (fn)
+                "wrap `fcous-mode-foucs' to restart `focus' when occurring an error."
+                (condition-case nil
+                    (funcall fn)
+                  (error (progn
+                           (focus-terminate)
+                           (focus-init)
+                           (funcall fn)))))))
 
 (use-package highlight-parentheses
   :ensure t

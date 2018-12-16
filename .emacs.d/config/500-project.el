@@ -7,7 +7,7 @@
   (projectile-load-known-projects)
 
   :config
-  (advice-add #'projectile-project-root :before-until (byte-compile (lambda (&optional _) (persp-current-project))))
+  (advice-add #'projectile-project-root :before-until (lambda (&optional _) (persp-current-project)))
   (setq projectile-completion-system 'helm
         projectile-enable-cachig t)
   (projectile-cleanup-known-projects)

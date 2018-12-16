@@ -66,16 +66,15 @@
               "TODO"
               (setq-local evil-lookup-func #'org-dic-at-point)))
   (advice-add #'org-todo :around
-              (byte-compile
-               (lambda (of &optional arg)
-                 "If reopen the completed _TODO_, show a popup for logging."
-                 (let* ((is-done? (member (org-get-todo-state) org-done-keywords))
-                        (org-todo-log-states (if is-done?
-                                                 (append '(("TODO" note time)
-                                                           ("NEXT" note time))
-                                                         org-todo-log-states)
-                                               org-todo-log-states)))
-                   (funcall of arg))))))
+              (lambda (of &optional arg)
+                "If reopen the completed _TODO_, show a popup for logging."
+                (let* ((is-done? (member (org-get-todo-state) org-done-keywords))
+                       (org-todo-log-states (if is-done?
+                                                (append '(("TODO" note time)
+                                                          ("NEXT" note time))
+                                                        org-todo-log-states)
+                                              org-todo-log-states)))
+                  (funcall of arg)))))
 
 (use-package org-agenda
   :ensure org-plus-contrib
@@ -118,12 +117,11 @@
         org-agenda-skip-deadline-if-done t
         org-agenda-skip-scheduled-if-deadline-is-shown t
         org-agenda-skip-function-global
-        (byte-compile
-         (lambda ()
-           (and (string-match-p "(a)" org-agenda-buffer-name)
-                (org-agenda-skip-subtree-if 'todo '("HOLD" "WAITING"))
-                (org-agenda-skip-subtree-if 'scheduled)
-                (org-agenda-skip-subtree-if 'notdeadline))))
+        (lambda ()
+          (and (string-match-p "(a)" org-agenda-buffer-name)
+               (org-agenda-skip-subtree-if 'todo '("HOLD" "WAITING"))
+               (org-agenda-skip-subtree-if 'scheduled)
+               (org-agenda-skip-subtree-if 'notdeadline)))
         org-agenda-sorting-strategy '((agenda habit-down time-up priority-down category-keep)
                                       (todo   todo-state-down priority-down category-keep)
                                       (tags   priority-down category-keep)
@@ -132,9 +130,8 @@
         org-agenda-tags-column org-tags-column
         org-agenda-window-setup 'current-window)
   (with-eval-after-load "persp-mode"
-    (let ((f (byte-compile
-              (lambda (&rest _)
-                (persp-switch-to-org)))))
+    (let ((f (lambda (&rest _)
+               (persp-switch-to-org))))
       (advice-add #'org-clock-jump-to-current-clock :before f)
       (advice-add #'org-search-view :before f)
       (advice-add #'org-tags-view :before f)
