@@ -69,85 +69,15 @@
   :after evil)
 
 (use-package smartparens-config
-  :ensure smartparens
+  ;; :ensure smartparens
   :init
+  (unless (package-installed-p 'smartparens)
+    (quelpa '(smartparens :repo "vmfhrmfoaj/smartparens" :fetcher github)))
+
   (defun sp-wrap-sexp (&optional arg)
     "TODO"
     (interactive "P")
     (sp-wrap-with-pair "("))
-
-  (defun sp--indent-region-without-protection (start end &optional column)
-    "TODO"
-    (unless (and (eq 'insert evil-state)
-                 (bound-and-true-p aggressive-indent-mode))
-      ;; Don't issue "Indenting region..." message.
-      (cl-letf (((symbol-function 'message) #'ignore))
-        (indent-region start end column))))
-
-  (defun sp-elixir-custom-do-block-post-handler (id action context)
-    "Insert \"def\", \"defp\", so on keywords and indent the new block.
-ID, ACTION, CONTEXT."
-    (when (and (eq 'insert action)
-               (eq 'code context))
-      (let ((m (make-marker))
-            (single-line-p (looking-back (concat id "[ \t]+"))))
-        (save-excursion
-          (when single-line-p
-            (newline))
-          (forward-word) ;; over the "end"
-          (move-marker m (point)))
-        (if single-line-p
-            (save-excursion (insert " do"))
-          (skip-chars-backward " \t\r\n")
-          (insert " ")
-          (save-excursion (insert " do")))
-        (indent-region (line-beginning-position) m)
-        (move-marker m nil nil))))
-
-  (defun sp-elixir-pure-do-block-post-handler (id action context)
-    "Insert \"do\" keyword and indent the new block.
-ID, ACTION, CONTEXT."
-    (when (and (eq 'insert action)
-               (eq 'code context))
-      (let ((m (make-marker))
-            (single-line-p (looking-back (concat id "[ \t]+"))))
-        (save-excursion
-          (when single-line-p
-            (newline))
-          (forward-word) ;; over the "end"
-          (move-marker m (point)))
-        (if (not single-line-p)
-            (split-line)
-          (skip-chars-backward " \t")
-          (newline))
-        (indent-region (line-beginning-position) m)
-        (move-marker m nil nil)
-        (end-of-line))))
-
-  (defun sp-elixir-skip-symbol-p (ms mb _me)
-    "TODO"
-    (save-excursion
-      (goto-char mb)
-      (let* ((regex (concat ms "[ \t\r\n" (when (string-equal "end" ms) ")") "]"))
-             (regex (concat regex (when (string-match-p "^def" ms) "+[_a-z]"))))
-        (unless (looking-at-p regex) t))))
-
-  (defun sp-elixir-skip-single-line-do-p (_ms mb _me)
-    "TODO"
-    (save-match-data
-      (save-excursion
-        (goto-char mb)
-        (and (re-search-forward "[ \t\r\n]do:" (line-end-position) t) t))))
-
-  (defun sp-elixir-skip-for-do-end (ms mb me)
-    "TODO"
-    (or (sp-elixir-skip-symbol-p ms mb me)
-        (sp-elixir-skip-def-p ms mb me)))
-
-  (defun sp-elixir-skip-for-*-end (ms mb me)
-    "TODO"
-    (or (sp-elixir-skip-symbol-p ms mb me)
-        (sp-elixir-skip-single-line-do-p ms mb me)))
 
   (defun sp-org-checkbox-p (_id _action _context)
     "TODO"
@@ -157,6 +87,7 @@ ID, ACTION, CONTEXT."
         (and (re-search-forward "^\\s-*\\(?:-\\|[0-9]+\\.\\) \\[\\(?:\\]\\|$\\)" (line-end-position) t) t))))
 
   (defun sp-org-checkbox-handler (id action context)
+    "TODO"
     (when (and (string-equal id "[")
                (eq action 'insert)
                (sp-org-checkbox-p id action context))
@@ -168,8 +99,8 @@ ID, ACTION, CONTEXT."
   (setq sp-highlight-pair-overlay nil
         sp-highlight-wrap-overlay nil
         sp-highlight-wrap-tag-overlay nil)
-  (advice-add #'sp--indent-region :override #'sp--indent-region-without-protection)
-  (advice-add #'sp-elixir-do-block-post-handler :override #'sp-elixir-custom-do-block-post-handler)
+  (with-eval-after-load "org"
+    (sp-local-pair 'org-mode "[" "]" :post-handlers '(:add sp-org-checkbox-handler)))
   (smartparens-global-mode 1)
   (show-smartparens-global-mode 1))
 

@@ -1,27 +1,6 @@
 (use-package elixir-mode
   :ensure t
-  :defer t
-  :init
-  (add-hook 'elixir-mode-hook #'alchemist-mode)
-
-  :config
-  (with-eval-after-load "smartparens-elixir"
-    (sp-with-modes 'elixir-mode
-      (sp-local-pair  "def" "end" :skip-match #'sp-elixir-skip-for-*-end)
-      (sp-local-pair "defp" "end" :skip-match #'sp-elixir-skip-for-*-end)
-      (sp-local-pair "case" "end" :skip-match #'sp-elixir-skip-for-*-end)
-      (sp-local-pair "do" "end" :skip-match #'sp-elixir-skip-for-do-end
-                     :post-handlers '(:add sp-elixir-pure-do-block-post-handler))
-      (sp-local-pair "defmacro" "end"
-                     :when '(("SPC" "RET" "<evil-ret>"))
-                     :post-handlers '(sp-elixir-do-block-post-handler)
-                     :unless '(sp-in-comment-p sp-in-string-p)
-                     :skip-match #'sp-elixir-skip-for-*-end)
-      (sp-local-pair "quote" "end"
-                     :when '(("SPC" "RET" "<evil-ret>"))
-                     :post-handlers '(sp-elixir-do-block-post-handler)
-                     :unless '(sp-in-comment-p sp-in-string-p)
-                     :skip-match #'sp-elixir-skip-for-*-end))))
+  :defer t)
 
 (use-package alchemist
   :ensure t
