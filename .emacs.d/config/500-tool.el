@@ -3,9 +3,10 @@
 (add-hook 'emacs-startup-hook
           (lambda ()
             "report the startup time."
-            (message "Emacs ready in %s(gc: %.2f seconds)."
+            (message "Emacs ready in %s(gc: %d times, gc-time: %.3f seconds)."
                      (emacs-init-time)
-                     (/ gc-elapsed gcs-done)))
+                     gcs-done
+                     gc-elapsed))
           :append)
 
 (use-package atomic-chrome
