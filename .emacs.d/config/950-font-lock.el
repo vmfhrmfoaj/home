@@ -801,19 +801,19 @@
           (goto-char font-lock--anchor-beg-point)
           (1 'php-passive-assign-variable-face t)))
         (,(concat "\\(" symbol "\\)\\(\\[[^]]*\\]\\)*" assigment)
-         (1 font-lock-variable-name-face t))
+         (1 'font-lock-variable-name-face t))
         (,(concat symbol "->\\([_0-9a-zA-Z]+\\)\\(\\[[^]]*\\]\\)*" assigment)
-         (1 font-lock-variable-name-face t))
+         (1 'font-lock-variable-name-face t))
         ("$\\(this\\|that\\)\\_>"
          (1 'php-$this))
         ("\\<function\\s-+&?\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*("
          (1 'php-function-name))
         ("\\b\\(array\\|callable\\)\\s-+&?\\$"
-         (1 font-lock-type-face))
+         (1 'font-lock-type-face))
         (")\\s-*:\\s-*\\??\\(array\\|callable\\)\\b"
-         (1 font-lock-type-face))
+         (1 'font-lock-type-face))
         ("(\\(array\\))"
-         (1 font-lock-type-face))
+         (1 'font-lock-type-face))
         ("\\(\\([a-zA-Z0-9_]+\\\\\\)+[a-zA-Z0-9_]+\\|\\(\\\\[a-zA-Z0-9_]+\\)+\\)[^:a-zA-Z0-9_\\\\]"
          (1 'font-lock-type-face))
         ("\\(\\([a-zA-Z0-9_]+\\\\\\)+[a-zA-Z0-9_]+\\|\\(\\\\[a-zA-Z0-9_]+\\)+\\)::"
@@ -830,17 +830,17 @@
         (,(concat "\\<as\\s-+\\(" symbol "\\)\\_>")
          (1 'php-passive-assign-variable-face))
         (,(concat (regexp-opt (c-lang-const c-class-decl-kwds php)) " \\(\\sw+\\)")
-         (1 font-lock-type-face))
+         (1 'font-lock-type-face))
         ("function.+:\\s-*\\(\\?\\)\\(?:\\sw\\|\\s_\\|\\\\\\)+"
-         (1 font-lock-type-face))
+         (1 'font-lock-type-face))
         (")\\s-*:\\s-*\\(\\?\\)\\(?:\\sw\\|\\s_\\|\\\\\\)+\\s-*\\(?:\{\\|;\\)"
-         (1 font-lock-type-face))
+         (1 'font-lock-type-face))
         ("\\?\\(\\(:?\\sw\\|\\s_\\)+\\)\\s-+\\$"
-         (1 font-lock-type-face))
+         (1 'font-lock-type-face))
         ("function.+:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)"
-         (1 font-lock-type-face))
+         (1 'font-lock-type-face))
         (")\\s-*:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*\\(?:\{\\|;\\)"
-         (1 font-lock-type-face)))))
+         (1 'font-lock-type-face)))))
   (setq php-font-lock-keywords php-font-lock-keywords-3)
   (font-lock-add-keywords
    'php-mode
