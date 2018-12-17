@@ -2,6 +2,17 @@
   :ensure t
   :config
   (setq-default evil-symbol-word-search t)
+  (with-eval-after-load "smartparens"
+    (advice-add #'evil-jump-item :before-until
+                (lambda (&optional _count)
+                  "Using `show-smartparens-mode'"
+                  (let ((pair (sp-get-thing)))
+                    (when pair
+                      (sp-get pair
+                        (if (<= :beg (point) :beg-in)
+                            (goto-char :end-in)
+                          (goto-char :beg)))
+                      t)))))
   (evil-mode 1))
 
 (use-package helm
