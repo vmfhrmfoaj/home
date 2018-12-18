@@ -322,6 +322,7 @@
   (powerline-vim+-theme))
 
 (use-package rainbow-delimiters
+  :disabled t
   :ensure t
   :defer t
   :init

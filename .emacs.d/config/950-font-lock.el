@@ -21,10 +21,8 @@
   :config
   (font-lock-add-keywords
    'elixir-mode
-   `(("\\([.,]\\||>\\)"
-      (1 'shadow))
-     ("\\_<\\(\\?.\\)\\_>"
-      1 'font-lock-string-face))
+   `(("\\(|>\\)"
+      (1 'shadow)))
    :append))
 
 (use-package cperl-mode
@@ -666,13 +664,11 @@
             (whitespace+ (concat whitespace "+"))
             (whitespace* (concat whitespace "*")))
        `(("\\s(\\(\\(?:-as\\|-some\\)?->>?\\|and\\|or\\)\\_>"
-          1 'default nil)
+          (1 'default nil))
          ("\\(?:\\s-+\\|\\s(\\)\\<\\(nil\\|t\\)\\>"
-          1 'font-lock-constant-face)
+          (1 'font-lock-constant-face))
          ("(\\(assert\\)"
-          1 'font-lock-variable-name-face)
-         ("\\_<\\(\\?\\\\?.\\)\\_>"
-          1 'font-lock-string-face)
+          (1 'font-lock-variable-name-face))
          ;; local variables
          (,(concat "(\\(lexical-\\)?let\\*?" whitespace+ "(")
           (,(-partial
@@ -723,7 +719,12 @@
              (goto-char elisp--binding-form-point))
            (1 'lisp-local-binding-variable-name-face)))
          (,(concat "(-\\(?:when\\|if\\)-let\\*?" whitespace+ "(\\(" symbol "\\)" whitespace)
-          (1 'lisp-local-binding-variable-name-face)))))))
+          (1 'lisp-local-binding-variable-name-face)))))
+    (font-lock-add-keywords
+     mode
+     `(("\\_<\\(\\?.\\)"
+        (1 'font-lock-string-face)))
+     :append)))
 
 (use-package org
   :defer t
@@ -863,7 +864,7 @@
               "TODO"
               (font-lock-add-keywords
                nil
-               '(("\\(#?'\\|`\\|,\\)"
+               '(("\\(#?'\\|[.,`{}]\\|\\s(\\|\\s)\\)"
                   (1 'shadow))
                  ("[0-9A-Za-z]\\(/\\)[*<>0-9A-Za-z]"
                   (1 'shadow)))))
