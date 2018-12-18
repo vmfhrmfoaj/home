@@ -8,11 +8,16 @@
                   "Using `show-smartparens-mode'"
                   (let ((pair (sp-get-thing)))
                     (when pair
-                      (sp-get pair
-                        (if (<= :beg (point) :beg-in)
-                            (goto-char :end-in)
-                          (goto-char :beg)))
-                      t)))))
+                      (when (s-blank? (plist-get pair :op))
+                        (save-excursion
+                          (skip-chars-backward "0-9A-Za-z")
+                          (setq pair (sp-get-thing))))
+                      (unless (s-blank? (plist-get pair :op))
+                        (sp-get pair
+                          (if (<= :beg (point) :beg-in)
+                              (goto-char :end-in)
+                            (goto-char :beg)))
+                        t))))))
   (evil-mode 1))
 
 (use-package helm
