@@ -22,7 +22,9 @@
   (font-lock-add-keywords
    'elixir-mode
    `(("\\([.,]\\||>\\)"
-      (1 'shadow)))
+      (1 'shadow))
+     ("\\_<\\(\\?.\\)\\_>"
+      1 'font-lock-string-face))
    :append))
 
 (use-package cperl-mode
@@ -669,7 +671,7 @@
           1 'font-lock-constant-face)
          ("(\\(assert\\)"
           1 'font-lock-variable-name-face)
-         ("\\s-\\(\\?[A-Za-z]\\)\\>"
+         ("\\_<\\(\\?\\\\?.\\)\\_>"
           1 'font-lock-string-face)
          ;; local variables
          (,(concat "(\\(lexical-\\)?let\\*?" whitespace+ "(")
