@@ -57,6 +57,30 @@
       (set-window-configuration conf))
     (toggle-frame-fullscreen))
 
+  (defun ediff-reset-text-size ()
+    "TODO"
+    (interactive)
+    (ediff-barf-if-not-control-buffer)
+    (dolist (buf (-filter #'identity (list ediff-buffer-A ediff-buffer-B ediff-buffer-C)))
+      (with-current-buffer buf
+        (text-scale-increase 0))))
+
+  (defun ediff-increase-text-size ()
+    "TODO"
+    (interactive)
+    (ediff-barf-if-not-control-buffer)
+    (dolist (buf (-filter #'identity (list ediff-buffer-A ediff-buffer-B ediff-buffer-C)))
+      (with-current-buffer buf
+        (text-scale-increase 0.5))))
+
+  (defun ediff-decrease-text-size ()
+    "TODO"
+    (interactive)
+    (ediff-barf-if-not-control-buffer)
+    (dolist (buf (-filter #'identity (list ediff-buffer-A ediff-buffer-B ediff-buffer-C)))
+      (with-current-buffer buf
+        (text-scale-decrease 0.5))))
+
   :config
   ;; NOTE
   ;;  prevent to calculate the width of the window in `ediff-setup-windows-plain-compare' function.

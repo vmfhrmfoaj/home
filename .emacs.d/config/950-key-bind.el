@@ -408,7 +408,10 @@
               (lambda ()
                 (define-key ediff-mode-map (kbd "N") #'ediff-next-difference)
                 (define-key ediff-mode-map (kbd "C-k") #'ediff-previous-difference)
-                (define-key ediff-mode-map (kbd "C-j") #'ediff-next-difference))))
+                (define-key ediff-mode-map (kbd "C-j") #'ediff-next-difference)
+                (define-key ediff-mode-map (kbd "0") #'ediff-reset-text-size)
+                (define-key ediff-mode-map (kbd "+") #'ediff-increase-text-size)
+                (define-key ediff-mode-map (kbd "-") #'ediff-decrease-text-size))))
 
 (use-package elisp-mode
   :defer t
