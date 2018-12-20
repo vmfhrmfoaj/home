@@ -191,24 +191,30 @@
 
   :config
   (setq focus-update-idle-time 0.2
-        focus--udpate-timer nil)
-  (make-local-variable 'focus--udpate-timer)
+        focus--update-timer nil)
+  (make-local-variable 'focus--update-timer)
   (add-to-list 'focus-mode-to-thing '(clojure-mode . clojure))
   (add-to-list 'focus-mode-to-thing '(cider-repl-mode . list+))
   (add-to-list 'focus-mode-to-thing '(emacs-lisp-mode . lisp))
   (add-to-list 'focus-mode-to-thing '(org-mode . org))
   (add-to-list 'focus-mode-to-thing '(tex-mode . tex-sentence))
+  (advice-add #'focus-terminate :after
+              (lambda ()
+                "Clear `focus--update-timer`."
+                (when focus--update-timer
+                  (cancel-timer focus--update-timer)
+                  (setq focus--update-timer nil))))
   (advice-add #'focus-move-focus :around
               (lambda (fn)
-                "wrap `fcous-mode-foucs' to restart `focus' when occurring an error."
-                (when focus--udpate-timer
-                  (cancel-timer focus--udpate-timer))
-                (setq focus--udpate-timer
+                "Delay to update `focus-pre-overlay' and `focus-post-overlay'."
+                (when focus--update-timer
+                  (cancel-timer focus--update-timer))
+                (setq focus--update-timer
                  (run-with-idle-timer
                   focus-update-idle-time
                   nil
                   (lambda (fn)
-                    (setq focus--udpate-timer nil)
+                    (setq focus--update-timer nil)
                     (condition-case nil
                         (funcall fn)
                       (error (progn
