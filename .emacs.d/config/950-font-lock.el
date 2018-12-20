@@ -30,6 +30,10 @@
   :config
   (font-lock-add-keywords
    'cperl-mode
+   `(("\\_<\\(defined\\|exists\\)\\_>"
+      (1 'default))))
+  (font-lock-add-keywords
+   'cperl-mode
    (let* ((symbol "[@$%]+[:_0-9a-zA-Z]+")
           (whitespace "[ \r\t\n]")
           (whitespace+ (concat whitespace "+"))
