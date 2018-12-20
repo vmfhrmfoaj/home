@@ -190,6 +190,9 @@
   (add-hook 'evil-insert-state-exit-hook #'focus--disable)
 
   :config
+  (setq focus-update-idle-time 0.2
+        focus--udpate-timer nil)
+  (make-local-variable 'focus--udpate-timer)
   (add-to-list 'focus-mode-to-thing '(clojure-mode . clojure))
   (add-to-list 'focus-mode-to-thing '(cider-repl-mode . list+))
   (add-to-list 'focus-mode-to-thing '(emacs-lisp-mode . lisp))
@@ -198,12 +201,21 @@
   (advice-add #'focus-move-focus :around
               (lambda (fn)
                 "wrap `fcous-mode-foucs' to restart `focus' when occurring an error."
-                (condition-case nil
-                    (funcall fn)
-                  (error (progn
-                           (focus-terminate)
-                           (focus-init)
-                           (funcall fn)))))))
+                (when focus--udpate-timer
+                  (cancel-timer focus--udpate-timer))
+                (setq focus--udpate-timer
+                 (run-with-idle-timer
+                  focus-update-idle-time
+                  nil
+                  (lambda (fn)
+                    (setq focus--udpate-timer nil)
+                    (condition-case nil
+                        (funcall fn)
+                      (error (progn
+                               (focus-terminate)
+                               (focus-init)
+                               (funcall fn)))))
+                  fn)))))
 
 (use-package highlight-parentheses
   :disabled t
