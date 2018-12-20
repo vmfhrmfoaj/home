@@ -10,7 +10,7 @@
                     (when pair
                       (when (s-blank? (plist-get pair :op))
                         (save-excursion
-                          (skip-chars-backward "0-9A-Za-z")
+                          (skip-chars-backward "-_0-9A-Za-z")
                           (setq pair (sp-get-thing))))
                       (unless (s-blank? (plist-get pair :op))
                         (sp-get pair
