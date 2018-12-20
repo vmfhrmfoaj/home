@@ -16,21 +16,25 @@
    `(clojure-side-effect-face   ((t (:inherit (bold italic font-lock-warning-face)))))
    `(clojure-special-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
    `(fringe ((t (:background "#FEFEFE"))))
+   `(hl-line ((t (:underline unspecified :inverse-video nil))))
    `(isearch ((t (:underline unspecified))))
    `(lazy-highlight ((t (:weight bold))))
    `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
    `(org-date ((t (:underline unspecified :slant italic))))
    `(org-link ((t (:inherit underline :underline unspecified)))))
-  (custom-theme-set-faces
-   'leuven
-   `(bold ((t (:weight bold))))
-   `(helm-swoop-target-word-face ((t (:inherit lazy-highlight))))
-   `(helm-match ((t (:inherit lazy-highlight))))
-   `(helm-selection ((t (:inherit isearch :weight bold))))
-   `(font-lock-doc-face ((t (:inherit font-lock-string-face :slant italic))))
-   `(font-lock-negation-char-face ((t (:inherit font-lock-warning-face :weight medium))))
-   `(underline ((t (:underline (:color foreground-color :style wave)))))))
-
+  (let ((selection-face `((t (:background ,(color-from 'isearch :background 27) :weight bold :inverse-video nil))))
+        (match-face `((t (:background "black" :foreground ,(color-from 'lazy-highlight :background 0) :weight bold :inverse-video t)))))
+   (custom-theme-set-faces
+    'leuven
+    `(bold ((t (:weight bold))))
+    `(magit-section-highlight ,selection-face)
+    `(helm-selection ,selection-face)
+    `(helm-grep-match ,match-face)
+    `(helm-match ,match-face)
+    `(helm-swoop-target-word-face ,match-face)
+    `(font-lock-doc-face ((t (:inherit font-lock-string-face :slant italic))))
+    `(font-lock-negation-char-face ((t (:inherit font-lock-warning-face :weight medium))))
+    `(underline ((t (:underline (:color foreground-color :style wave))))))))
 
 ;; -- major/minor modes
 
