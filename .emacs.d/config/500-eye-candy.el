@@ -172,10 +172,13 @@
   (defvar focus--exclude-modes '(term-mode)
     "TODO")
 
+  (defalias 'focus-move-focus-internal 'focus-move-focus)
+
   (defun focus--enable ()
     "TODO"
     (unless (apply #'derived-mode-p focus--exclude-modes)
-      (focus-mode 1)))
+      (focus-mode 1)
+      (focus-move-focus-internal)))
 
   (defun focus--disable ()
     "TODO"
