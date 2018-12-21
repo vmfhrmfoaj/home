@@ -22,7 +22,9 @@
   (font-lock-add-keywords
    'elixir-mode
    `(("\\(|>\\)"
-      (1 'shadow)))
+      (1 'shadow))
+     ("\\(\\?.\\)"
+      (1 'font-lock-negation-char-face)))
    :append))
 
 (use-package cperl-mode
