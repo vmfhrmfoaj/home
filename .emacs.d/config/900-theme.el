@@ -22,7 +22,7 @@
    `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
    `(org-date ((t (:underline unspecified :slant italic))))
    `(org-link ((t (:inherit underline :underline unspecified)))))
-  (let ((selection-face `((t (:background ,(color-from 'isearch :background 27) :weight bold :inverse-video nil))))
+  (let ((selection-face `((t (:background ,(color-from 'isearch :background 20) :distant-foreground "black" :weight bold :inverse-video nil))))
         (match-face `((t (:background "black" :foreground ,(color-from 'lazy-highlight :background 0) :weight bold :inverse-video t)))))
    (custom-theme-set-faces
     'leuven
