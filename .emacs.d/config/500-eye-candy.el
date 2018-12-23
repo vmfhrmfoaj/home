@@ -106,7 +106,7 @@
                          (point))))
             (cons beg end))))))
 
-  (defun focus--text-thing ()
+  (defun focus--tex-thing ()
     "TODO"
     (ignore-errors
       (let* ((regx  (concat "^\\(?:[[:cntrl:]]\\)*$"))
@@ -119,6 +119,18 @@
                       (re-search-forward regx nil t)
                       (point))))
         (cons beg end))))
+
+  (defun focus--text-thing ()
+    "TODO"
+    (ignore-errors
+      (save-excursion
+        (let ((beg (progn
+                     (backward-paragraph)
+                     (point)))
+              (end (progn
+                     (forward-paragraph)
+                     (point))))
+          (cons beg end)))))
 
   (defun focus--list+-thing ()
     "TODO"
@@ -185,7 +197,8 @@
     (focus-mode 0))
 
   (put 'org          'bounds-of-thing-at-point #'focus--org-thing)
-  (put 'tex-sentence 'bounds-of-thing-at-point #'focus--text-thing)
+  (put 'tex-sentence 'bounds-of-thing-at-point #'focus--tex-thing)
+  (put 'sentence+    'bounds-of-thing-at-point #'focus--text-thing)
   (put 'list+        'bounds-of-thing-at-point #'focus--list+-thing)
   (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing)
   (put 'clojure      'bounds-of-thing-at-point #'focus--clojure-thing)
@@ -201,6 +214,7 @@
   (add-to-list 'focus-mode-to-thing '(emacs-lisp-mode . lisp))
   (add-to-list 'focus-mode-to-thing '(org-mode . org))
   (add-to-list 'focus-mode-to-thing '(tex-mode . tex-sentence))
+  (add-to-list 'focus-mode-to-thing '(text-mode . sentence+))
   (advice-add #'focus-terminate :after
               (lambda ()
                 "Clear `focus--update-timer`."
