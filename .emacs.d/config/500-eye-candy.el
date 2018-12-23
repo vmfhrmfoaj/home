@@ -227,7 +227,6 @@
                   fn)))))
 
 (use-package highlight-parentheses
-  :disabled t
   :ensure t
   :defer t
   :init

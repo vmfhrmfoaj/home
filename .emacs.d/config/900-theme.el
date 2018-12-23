@@ -1,10 +1,11 @@
-(use-package leuven-theme
+(use-package zenburn-theme
   :ensure t
   :config
   (defvar local-variable-name-fg-color
-    (saturate-color (color-from 'font-lock-variable-name-face :foreground 5) -20)
+    (color-from 'font-lock-variable-name-face :foreground 10)
     "TODO")
   (setq x-underline-at-descent-line t)
+  (load-theme 'zenburn t)
   (custom-set-faces
    `(bold ((t (:weight bold))))
    `(cider-fringe-good-face ((t (:inherit success))))
@@ -15,28 +16,17 @@
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
    `(clojure-side-effect-face   ((t (:inherit (bold italic font-lock-warning-face)))))
    `(clojure-special-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
-   `(fringe ((t (:background "#FEFEFE"))))
-   `(hl-line ((t (:underline unspecified :inverse-video nil))))
-   `(isearch ((t (:underline unspecified))))
-   `(lazy-highlight ((t (:weight bold))))
-   `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
-   `(org-date ((t (:underline unspecified :slant italic))))
-   `(org-link ((t (:inherit underline :underline unspecified)))))
-  (let ((selection-face `((t (:background ,(color-from 'isearch :background 20) :distant-foreground "black" :weight bold :inverse-video nil))))
-        (match-face `((t (:background "black" :foreground ,(color-from 'lazy-highlight :background 0) :weight bold :inverse-video t)))))
-   (custom-theme-set-faces
-    'leuven
-    `(bold ((t (:weight bold))))
-    `(magit-section-highlight ,selection-face)
-    `(helm-selection ,selection-face)
-    `(helm-grep-match ,match-face)
-    `(helm-match ,match-face)
-    `(helm-swoop-target-word-face ,match-face)
-    `(font-lock-doc-face ((t (:inherit font-lock-string-face :slant italic))))
-    `(font-lock-negation-char-face ((t (:inherit font-lock-warning-face :weight medium))))
-    `(underline ((t (:underline (:color foreground-color :style wave))))))))
-
-;; -- major/minor modes
+   `(helm-selection ((t (:weight bold :underline unspecified))))
+   `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color))))
+   `(org-done ((t (:underline t))))
+   `(org-todo ((t (:underline t)))))
+  (custom-theme-set-faces
+   'zenburn
+   `(helm-swoop-target-word-face ((t (:inherit helm-match))))
+   `(trailing-whitespace ((t (:underline "#CC9393"))))
+   `(whitespace-trailing ((t (:underline "#CC9393"))))
+   `(whitespace-tab   ((t (:foreground "#5F5F5F"))))
+   `(whitespace-space ((t (:foreground "#5F5F5F"))))))
 
 (use-package elixir-mode
   :defer t
@@ -50,23 +40,28 @@
   (let* ((hbar-height (max line-spacing 1))
          (hbar-height (if (string-equal "gnome-imac" hostname)
                           (* 2 hbar-height) ; for HiDPI
-                        hbar-height)))
+                        hbar-height))
+         (default-color "#DCDCCC")
+         (visual-color "#777777")
+         (operator-color "#B967FF")
+         (replace-color "#B967FF"))
     (setq cursor-type 'box
-          evil-normal-state-cursor `(box ,(color-from 'cursor :background 0))
-          evil-insert-state-cursor `((hbar . ,hbar-height))
-          evil-visual-state-cursor `(box ,(color-from 'cursor :background -15))
-          evil-replace-state-cursor `((hbar . ,hbar-height) "#DD9393")
-          evil-operator-state-cursor `(box "#A155E7"))
-    (with-eval-after-load "evil-multiedit"
-      (setq evil-multiedit-state-cursor `(box ,(color-from 'cursor :background 0))
-            evil-multiedit-insert-state-cursor `((hbar . ,hbar-height))))))
+          evil-normal-state-cursor   `(box ,default-color)
+          evil-visual-state-cursor   `(box ,visual-color)
+          evil-operator-state-cursor `(box ,operator-color))
+          evil-insert-state-cursor  `((hbar . ,hbar-height) ,default-color)
+          evil-replace-state-cursor `((hbar . ,hbar-height) ,replace-color)
+    (with-eval-after-load 'evil-multiedit
+      (setq evil-multiedit-normal-state-cursor `(box ,default-color)
+            evil-multiedit-insert-state-cursor `((hbar . ,hbar-height) ,default-color)))))
 
 (use-package highlight-parentheses
   :defer t
   :config
-  (setq hl-paren-colors
-        (--iterate (dim-color it 10)
-                   (apply 'color-rgb-to-hex-2-dig (color-name-to-rgb "Springgreen3"))
+  (setq hl-paren-base-color "Springgreen1"
+        hl-paren-colors
+        (--iterate (dim-color it 7)
+                   (apply 'color-rgb-to-hex-2-dig (color-name-to-rgb hl-paren-base-color))
                    4)))
 
 (use-package linum
@@ -85,10 +80,10 @@
       (set-face-attribute face nil :inherit 'variable-pitch))))
 
 (use-package paren
-  :defer t
+  :after highlight-parentheses
   :config
   (custom-set-faces
-   `(show-paren-match    ((t (:foreground "Springgreen3" :wiehgt bold :underline (:color "orange red" :style line)))))
+   `(show-paren-match    ((t (:foreground ,hl-paren-base-color :wiehgt bold))))
    `(show-paren-mismatch ((t (:weight bold))))))
 
 (use-package php-mode
@@ -98,13 +93,14 @@
    `(php-passive-assign-variable-face ((t (:foreground ,local-variable-name-fg-color))))))
 
 (use-package smartparens
-  :defer t
+  :after highlight-parentheses
   :config
   (custom-set-faces
-   `(sp-show-pair-match-face    ((t (:foreground "Springgreen3" :wiehgt bold :underline (:color "orange red" :style line)))))
+   `(sp-show-pair-match-face    ((t (:foreground ,hl-paren-base-color :wiehgt bold))))
    `(sp-show-pair-mismatch-face ((t (:weight bold))))))
 
 (use-package web-mode
+  :disabled t
   :defer t
   :config
   (let ((tag-face       `(:foreground ,(-> "#AE1B9A" (light-color 15) (saturate-color -40))))
