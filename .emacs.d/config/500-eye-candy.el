@@ -50,6 +50,7 @@
   (with-eval-after-load "git-gutter+"             (diminish 'git-gutter+-mode            ""))
   (with-eval-after-load "helm"                    (diminish 'helm-mode                   ""))
   (with-eval-after-load "highlight-parentheses"   (diminish 'highlight-parentheses-mode  ""))
+  (with-eval-after-load "highlight-symbol"        (diminish 'highlight-symbol-mode       ""))
   (with-eval-after-load "linum-relative"          (diminish 'linum-relative-mode         ""))
   (with-eval-after-load "magit-svn"               (diminish 'magit-svn-mode              ""))
   (with-eval-after-load "org-indent"              (diminish 'org-indent-mode             ""))
@@ -251,6 +252,11 @@
   :defer t
   :init
   (add-hook 'prog-mode-hook #'highlight-numbers-mode))
+
+(use-package highlight-symbol
+  :ensure t
+  :init
+  (add-hook 'prog-mode-hook #'highlight-symbol-mode))
 
 (use-package hl-line
   :disabled t
