@@ -20,13 +20,33 @@
    `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color))))
    `(org-done ((t (:underline t))))
    `(org-todo ((t (:underline t)))))
-  (custom-theme-set-faces
-   'zenburn
-   `(helm-swoop-target-word-face ((t (:inherit helm-match))))
-   `(trailing-whitespace ((t (:underline "#CC9393"))))
-   `(whitespace-trailing ((t (:underline "#CC9393"))))
-   `(whitespace-tab   ((t (:foreground "#5F5F5F"))))
-   `(whitespace-space ((t (:foreground "#5F5F5F"))))))
+  (let ((diff-added-bg+5    (color-from 'diff-added   :background  5))
+        (diff-added-fg+5    (color-from 'diff-added   :foreground  5))
+        (diff-removed-bg+5  (color-from 'diff-removed :background  5))
+        (diff-removed-fg+5  (color-from 'diff-removed :foreground  5))
+        (diff-changed-bg+5  (color-from 'diff-changed :background  5))
+        (diff-changed-fg+5  (color-from 'diff-changed :foreground  5))
+        (diff-added-bg+15   (color-from 'diff-added   :background 15))
+        (diff-added-fg+15   (color-from 'diff-added   :foreground 15))
+        (diff-removed-bg+15 (color-from 'diff-removed :background 15))
+        (diff-removed-fg+15 (color-from 'diff-removed :foreground 15))
+        (diff-changed-bg+15 (color-from 'diff-changed :background 15))
+        (diff-changed-fg+15 (color-from 'diff-changed :foreground 15)))
+   (custom-theme-set-faces
+    'zenburn
+    `(diff-refine-added   ((t (:inherit diff-added   :background ,diff-added-bg+15 :foreground ,diff-added-fg+15))))
+    `(diff-refine-removed ((t (:inherit diff-removed :background ,diff-removed-bg+15 :foreground ,diff-removed-fg+15))))
+    `(diff-refine-changed ((t (:inherit diff-removed :background ,diff-changed-bg+15 :foreground ,diff-changed-fg+15))))
+    `(evil-goggles-yank-face   ((t (:inherit diff-refine-changed))))
+    `(evil-goggles-paste-face  ((t (:inherit diff-refine-added))))
+    `(evil-goggles-delete-face ((t (:inherit diff-refine-removed))))
+    `(helm-swoop-target-word-face ((t (:inherit helm-match))))
+    `(magit-diff-added-highlight   ((t (:inherit diff-added   :background ,diff-added-bg+5 :foreground ,diff-added-fg+5))))
+    `(magit-diff-removed-highlight ((t (:inherit diff-removed :background ,diff-removed-bg+5 :foreground ,diff-removed-fg+5))))
+    `(trailing-whitespace ((t (:underline "#CC9393"))))
+    `(whitespace-trailing ((t (:underline "#CC9393"))))
+    `(whitespace-tab   ((t (:foreground "#5F5F5F"))))
+    `(whitespace-space ((t (:foreground "#5F5F5F")))))))
 
 (use-package elixir-mode
   :defer t
