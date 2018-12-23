@@ -1,3 +1,0 @@
-#!/bin/bash
-
-exec schroot -c chroot:elixir -- bash -c "LC_ALL=en_US.UTF-8 /usr/local/lib/elixir/bin/mix $*"
