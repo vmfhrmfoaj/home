@@ -538,12 +538,7 @@
           ;; NOTE
           ;; Clojure is a Lisp-1.
           ;; It is mean the symbol of the variable and the function are no different.
-          (2 (cond
-              ((string-match-p "defrecord\\|deftype" (match-string 1))
-               'clojure-define-type-face)
-              ((string-match-p "defmacro\\|^fn" (match-string 1))
-               'font-lock-function-name-face)
-              (t 'font-lock-variable-name-face)))
+          (2 'font-lock-function-name-face)
           (3 'clojure-side-effect-face t)
           ;; fn parameters highlight
           (,(-partial
