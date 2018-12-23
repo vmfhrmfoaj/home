@@ -1,12 +1,13 @@
 ;; for HHKB
-(global-set-key (kbd "<S-kp-multiply>") "#")
-(global-set-key (kbd "<S-kp-divide>") "\\")
-(global-set-key (kbd "<S-kp-subtract>") "_")
-(global-set-key (kbd "<S-kp-add>") "=")
-(define-key input-decode-map (kbd "<S-kp-multiply>") "#")
-(define-key input-decode-map (kbd "<S-kp-divide>") "\\")
-(define-key input-decode-map (kbd "<S-kp-subtract>") "_")
-(define-key input-decode-map (kbd "<S-kp-add>") "=")
+(when HHKB?
+  (global-set-key (kbd "<S-kp-multiply>") "#")
+  (global-set-key (kbd "<S-kp-divide>") "\\")
+  (global-set-key (kbd "<S-kp-subtract>") "_")
+  (global-set-key (kbd "<S-kp-add>") "=")
+  (define-key input-decode-map (kbd "<S-kp-multiply>") "#")
+  (define-key input-decode-map (kbd "<S-kp-divide>") "\\")
+  (define-key input-decode-map (kbd "<S-kp-subtract>") "_")
+  (define-key input-decode-map (kbd "<S-kp-add>") "="))
 
 ;; minibuffer
 (add-hook 'minibuffer-setup-hook
