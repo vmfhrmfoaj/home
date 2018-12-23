@@ -1,5 +1,5 @@
 (when window-system
-  (let ((w 150)
+  (let ((w 142)
         (h-char (frame-char-height))
         (h-titlebar-in-char 2)
         (top-offset (if (string-equal "gnome-imac" hostname) 5 0)))

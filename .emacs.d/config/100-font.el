@@ -10,7 +10,7 @@
   ;;   Emacs.fontBackend: xft
   (let ((font "Inconsolata")
         (height (cond
-                 ((string-equal "gnome-macbookair" hostname) 128)
+                 ((string-equal "gnome-macbookair" hostname) 143)
                  ((string-equal "gnome-imac" hostname) 130) ; for HiDPI=2 and Scaling Factor=0.9
                  (t 120))))
     (set-face-font 'default font)
