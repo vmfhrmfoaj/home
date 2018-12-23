@@ -185,13 +185,12 @@
   (defvar focus--exclude-modes '(term-mode)
     "TODO")
 
-  (defalias 'focus-move-focus-internal 'focus-move-focus)
-
   (defun focus--enable ()
     "TODO"
     (unless (apply #'derived-mode-p focus--exclude-modes)
       (focus-mode 1)
-      (focus-move-focus-internal)))
+      (let ((focus-update-idle-time nil))
+        (focus-move-focus))))
 
   (defun focus--disable ()
     "TODO"
@@ -227,19 +226,21 @@
                 "Delay to update `focus-pre-overlay' and `focus-post-overlay'."
                 (when focus--update-timer
                   (cancel-timer focus--update-timer))
-                (setq focus--update-timer
-                 (run-with-idle-timer
-                  focus-update-idle-time
-                  nil
-                  (lambda (fn)
-                    (setq focus--update-timer nil)
-                    (condition-case nil
-                        (funcall fn)
-                      (error (progn
-                               (focus-terminate)
-                               (focus-init)
-                               (funcall fn)))))
-                  fn)))))
+                (if (not focus-update-idle-time)
+                    (funcall fn)
+                  (setq focus--update-timer
+                        (run-with-idle-timer
+                         focus-update-idle-time
+                         nil
+                         (lambda (fn)
+                           (setq focus--update-timer nil)
+                           (condition-case nil
+                               (funcall fn)
+                             (error (progn
+                                      (focus-terminate)
+                                      (focus-init)
+                                      (funcall fn)))))
+                         fn))))))
 
 (use-package highlight-parentheses
   :ensure t
