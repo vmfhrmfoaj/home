@@ -70,11 +70,8 @@
   :after evil)
 
 (use-package smartparens-config
-  ;; :ensure smartparens
+  :ensure smartparens
   :init
-  (unless (package-installed-p 'smartparens)
-    (quelpa '(smartparens :repo "vmfhrmfoaj/smartparens" :fetcher github)))
-
   (defun sp-wrap-sexp (&optional arg)
     "TODO"
     (interactive "P")
