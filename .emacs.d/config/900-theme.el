@@ -18,6 +18,7 @@
    `(clojure-special-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
    `(helm-selection ((t (:weight bold :underline unspecified))))
    `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color))))
+   `(region ((t (:background "#5F5F5F"))))
    `(org-done ((t (:underline t))))
    `(org-todo ((t (:underline t)))))
   (let ((diff-added-bg+5    (color-from 'diff-added   :background  5))
@@ -62,12 +63,11 @@
                           (* 2 hbar-height) ; for HiDPI
                         hbar-height))
          (default-color "#DCDCCC")
-         (visual-color "#777777")
          (operator-color "#B967FF")
          (replace-color "#B967FF"))
     (setq cursor-type 'box
           evil-normal-state-cursor   `(box ,default-color)
-          evil-visual-state-cursor   `(box ,visual-color)
+          evil-visual-state-cursor   `(box ,default-color)
           evil-operator-state-cursor `(box ,operator-color))
           evil-insert-state-cursor  `((hbar . ,hbar-height) ,default-color)
           evil-replace-state-cursor `((hbar . ,hbar-height) ,replace-color)
