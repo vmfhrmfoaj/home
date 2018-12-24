@@ -255,6 +255,7 @@
   (add-hook 'prog-mode-hook #'highlight-numbers-mode))
 
 (use-package highlight-symbol
+  :disabled t
   :ensure t
   :init
   (add-hook 'prog-mode-hook #'highlight-symbol-mode)

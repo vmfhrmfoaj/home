@@ -2,7 +2,7 @@
   :ensure t
   :config
   (defvar local-variable-name-fg-color
-    (color-from 'font-lock-variable-name-face :foreground 10)
+    (color-from 'font-lock-variable-name-face :foreground 0)
     "TODO")
   (setq x-underline-at-descent-line t)
   (load-theme 'zenburn t)
@@ -16,8 +16,10 @@
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
    `(clojure-side-effect-face   ((t (:inherit (bold italic font-lock-warning-face)))))
    `(clojure-special-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
+   `(font-lock-function-name-face ((t (:weight bold))))
+   `(font-lock-variable-name-face ((t (:weight bold))))
    `(helm-selection ((t (:weight bold :underline unspecified))))
-   `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color))))
+   `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
    `(region ((t (:background "#5F5F5F"))))
    `(org-done ((t (:underline t))))
    `(org-todo ((t (:underline t)))))
@@ -44,6 +46,7 @@
     `(helm-swoop-target-word-face ((t (:inherit helm-match))))
     `(magit-diff-added-highlight   ((t (:inherit diff-added   :background ,diff-added-bg+5 :foreground ,diff-added-fg+5))))
     `(magit-diff-removed-highlight ((t (:inherit diff-removed :background ,diff-removed-bg+5 :foreground ,diff-removed-fg+5))))
+    `(org-scheduled-previously ((t (:inherit default))))
     `(trailing-whitespace ((t (:underline "#CC9393"))))
     `(whitespace-trailing ((t (:underline "#CC9393"))))
     `(whitespace-tab   ((t (:foreground "#5F5F5F"))))
