@@ -5,6 +5,7 @@
                   [lein-project-version "0.1.0"]
                   [lein-dev-helper  "0.2.0"]
                   [lein-test-helper "0.1.3"]]
+        :middleware [lein-dev-helper.plugin/middleware]
         :repl-options {:init (do
                                (set! *print-level* 8)
                                (set! *print-length* 30))}}}
