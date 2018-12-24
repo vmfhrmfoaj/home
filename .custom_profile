@@ -1,22 +1,21 @@
 #!/bin/zsh
 
-alias aplay='mpv --no-video --ytdl-format=bestaudio --volume=70'
-
 function setEnv () {
-  local os=`uname`
-
   # locale
   export LANG=en_US.UTF-8
   export LC_ALL=en_US.UTF-8
 
-  # ~/.bin
-  if [ -d "$HOME/.bin" ] && [ -z $SCHROOT_CHROOT_NAME ]; then
-    export PATH="$HOME/.bin:$PATH"
+  # PATH
+  if [ 0 = $(echo ${PATH} | grep -c '/sbin') ]; then
+    export PATH="/sbin:/usr/sbin:${PATH}"
+  fi
+  if [ -d "${HOME}/.bin" ] && [ 0 = $(echo ${PATH} | grep -c "${HOME}/.bin") ]; then
+    export PATH="${HOME}/.bin:${PATH}"
   fi
 
   # Cask
-  if [ -d "$HOME/.cask/bin" ]; then
-    export PATH="$HOME/.cask/bin:$PATH"
+  if [ -d "${HOME}/.cask/bin" ]; then
+    export PATH="${HOME}/.cask/bin:${PATH}"
   fi
 
   # Oh My Zsh
@@ -29,46 +28,42 @@ function setEnv () {
       bindkey -M viins '^f' forward-char
       bindkey -M viins '^d' delete-char
     fi
-    if [ -z $SCHROOT_CHROOT_NAME ]; then
-      local PS1_PREFIX='%{$fg[magenta]%}(%M)%{$reset_color%}'
-    else
-      local PS1_PREFIX='%{$fg[magenta]%}(%M :: $SCHROOT_CHROOT_NAME)%{$reset_color%}'
-    fi
     local NEWLINE=$'\n'
-    export PS1="${PS1_PREFIX}${NEWLINE}$PS1"
-  fi
-
-  # Elixir
-  if [ 'elixir' = "$SCHROOT_CHROOT_NAME" ]; then
-    export HEX_HTTP_CONCURRENCY=1
-    export HEX_HTTP_TIMEOUT=30
-  fi
-
-  # Clojure
-  if [ 'clojure' = "$SCHROOT_CHROOT_NAME" ]; then
-    local mem_in_gb=$(($(cat /proc/meminfo | grep MemTotal | grep -o "[0-9]\+") / 1024 / 1024))
-    if   [ "$mem_in_gb" -gt 16 ]; then
-      export JVM_OPTS="-Xms2g -Xmx8g"
-    elif [ "$mem_in_gb" -gt  8 ]; then
-      export JVM_OPTS="-Xms1g -Xmx4g"
-    elif [ "$mem_in_gb" -gt  4 ]; then
-      export JVM_OPTS="-Xms512m -Xmx2g"
-    fi
-  fi
-
-  # Google Cloud Platform
-  local GOOGLE_COULD="$HOME/.local/google-cloud-sdk"
-  if [  -f "$GOOGLE_COULD/path.zsh.inc" ]; then
-    source "$GOOGLE_COULD/path.zsh.inc"
-  fi
-  if [  -f "$GOOGLE_COULD/completion.zsh.inc" ]; then
-    source "$GOOGLE_COULD/completion.zsh.inc"
+    local PS1_PREFIX='%{$fg[magenta]%}(%n@%M)%{$reset_color%}'
+    export PS1="${PS1_PREFIX}${NEWLINE}${PS1}"
   fi
 
   # Heroku
-  local HEROKU="$HOME/.local/heroku"
-  if [ -d "$HEROKU/bin/" ]; then
-    export PATH="$HEROKU/bin/:$PATH"
+  local HEROKU="${HOME}/.local/heroku"
+  if [ -d "${HEROKU}/bin/" ] && [ 0 = $(echo ${PATH} | grep -c "${HEROKU}/bin") ]; then
+    export PATH="${HEROKU}/bin/:${PATH}"
+  fi
+
+  #
+  # Docker container for development environment
+  #
+
+  # PATH
+  local dev_tool_dir="${HOME}/Desktop/Tools/my-dev-env"
+  if [ -d ${dev_tool_dir} ] && [ 0 = $(echo ${PATH} | grep -c "${dev_tool_dir}/bin") ]; then
+    PATH="${dev_tool_dir}/bin:${PATH}"
+  fi
+
+  # Android
+  if [ ! -z ${ANDROID_HOME} ] && [ -d ${ANDROID_HOME} ] && [ 0 = $(echo ${PATH} | grep -c "${ANDROID_HOME}") ]; then
+    export PATH="${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools:${PATH}"
+  fi
+
+  # Clojure
+  if [ ! -z ${GRAALVM_ROOT} ] && [ -d ${GRAALVM_ROOT} ] && [ 0 = $(echo ${PATH} | grep -c "${GRAALVM_ROOT}/bin") ]; then
+    export PATH="${PATH}:${GRAALVM_ROOT}/bin"
+  fi
+
+  # Perl
+  if [ ! -z ${PERLBREW_ROOT} ]; then
+    if [ -f "${PERLBREW_ROOT}/etc/bashrc" ]; then
+      source "${PERLBREW_ROOT}/etc/bashrc"
+    fi
   fi
 }
 setEnv
@@ -95,20 +90,13 @@ zle -N zle-keymap-select
 
 export DISABLE_AUTO_TITLE="true"
 function precmd {
-  local TABNAME="%n@%M"
-  if [ ! -z $SCHROOT_CHROOT_NAME ]; then
-    local TABNAME="$TABNAME :: $SCHROOT_CHROOT_NAME"
-  fi
-  local TABNAME="$TABNAME:%~"
+  local TABNAME="%n@%M: %~"
   title $TABNAME $TABNAME
 }
 
 function preexec() {
   local TABNAME="%n@%M"
-  if [ ! -z $SCHROOT_CHROOT_NAME ]; then
-    local TABNAME="$TABNAME :: $SCHROOT_CHROOT_NAME"
-  fi
-  local TABNAME="$TABNAME:%~: ${2:gs/%/%%}"
+  local TABNAME="$TABNAME: %~: ${2:gs/%/%%}"
   title $TABNAME $TABNAME
   echo -ne $CURSOR_UNDERBAR
 }
