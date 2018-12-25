@@ -57,6 +57,10 @@ function setEnv () {
 }
 
 function zle-keymap-select () {
+  local CURSOR_BOX='\e[2 q'
+  local CURSOR_UNDERBAR='\e[4 q'
+  local CURSOR_LINE='\e[6 q'
+
   if [ "$TERM" = "xterm-256color" ]; then
     if [ "$KEYMAP" = vicmd ]; then
       # the command mode for vi
@@ -77,6 +81,9 @@ function precmd {
 }
 
 function preexec() {
+  local CURSOR_BOX='\e[2 q'
+  local CURSOR_UNDERBAR='\e[4 q'
+  local CURSOR_LINE='\e[6 q'
   local TABNAME="%n@%M"
   local TABNAME="$TABNAME: %~: ${2:gs/%/%%}"
   title $TABNAME $TABNAME
@@ -85,10 +92,6 @@ function preexec() {
 
 if [ -t 1 ] && [ ! -z ${ZSH_NAME} ]; then
   setEnv
-
-  CURSOR_BOX='\e[2 q'
-  CURSOR_UNDERBAR='\e[4 q'
-  CURSOR_LINE='\e[6 q'
 
   zle -N zle-keymap-select
 
