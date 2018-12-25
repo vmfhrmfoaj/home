@@ -79,7 +79,7 @@ function zle-keymap-select () {
       echo -ne $CURSOR_BOX
     else
       # the insert mode for vi
-      echo -ne $CURSOR_UNDERBAR
+      echo -ne $CURSOR_LINE
     fi
   fi
   # for Oh My Zsh
@@ -98,7 +98,7 @@ function preexec() {
   local TABNAME="%n@%M"
   local TABNAME="$TABNAME: %~: ${2:gs/%/%%}"
   title $TABNAME $TABNAME
-  echo -ne $CURSOR_UNDERBAR
+  echo -ne $CURSOR_LINE
 }
 preexec
 

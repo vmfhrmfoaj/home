@@ -66,17 +66,18 @@
                           (* 2 hbar-height) ; for HiDPI
                         hbar-height))
          (default-color "#DCDCCC")
+         (visual-color "#000000")
          (operator-color "#B967FF")
          (replace-color "#B967FF"))
     (setq cursor-type 'box
           evil-normal-state-cursor   `(box ,default-color)
-          evil-visual-state-cursor   `(box ,default-color)
-          evil-operator-state-cursor `(box ,operator-color))
-          evil-insert-state-cursor  `((hbar . ,hbar-height) ,default-color)
-          evil-replace-state-cursor `((hbar . ,hbar-height) ,replace-color)
+          evil-visual-state-cursor   `(hollow ,visual-color)
+          evil-operator-state-cursor `(box ,operator-color)
+          evil-insert-state-cursor   `(bar ,default-color)
+          evil-replace-state-cursor  `(bar ,replace-color))
     (with-eval-after-load 'evil-multiedit
       (setq evil-multiedit-normal-state-cursor `(box ,default-color)
-            evil-multiedit-insert-state-cursor `((hbar . ,hbar-height) ,default-color)))))
+            evil-multiedit-insert-state-cursor `(bar ,default-color)))))
 
 (use-package highlight-parentheses
   :defer t

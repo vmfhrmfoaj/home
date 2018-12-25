@@ -1,3 +1,6 @@
+(with-eval-after-load "frame"
+  (blink-cursor-mode 0))
+
 (use-package aggressive-indent
   :disabled t
   :ensure t
