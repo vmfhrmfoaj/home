@@ -72,40 +72,40 @@
   :defer t
   :init
   (defface clojure-defining-spec-face
-    `((t (:inherit clojure-keyword-face :weight bold)))
+    `((t (:inherit (bold clojure-keyword-face))))
     "Face used to font-lock Clojure defining Spec")
   (defface clojure-side-effect-face
-    `((t (:inherit font-lock-variable-name-face :slant italic :weight bold)))
+    `((t (:inherit (italic bold font-lock-variable-name-face))))
     "Face used to font-lock Clojure side-effect indicator.")
   (defface clojure-important-keywords-face
-    '((t (:inherit font-lock-keyword-face :slant italic)))
+    '((t (:inherit (italic font-lock-keyword-face))))
     "Face used to font-lock Clojure important keywords.")
   (defface clojure-special-variable-name-face
-    '((t (:inherit font-lock-variable-name-face :weight normal)))
+    '((t (:inherit font-lock-variable-name-face :weight medium)))
     "Face used to font-lock Clojure special variable name.")
   (defface clojure-local-binding-variable-name-face
-    '((t (:inherit font-lock-variable-name-face :weight normal)))
+    '((t (:inherit font-lock-variable-name-face :weight medium)))
     "Face used to font-lock Clojure local binding variable name.")
   (defface clojure-local-binding-variable-name-warning-face
-    '((t (:inherit clojure-local-binding-variable-name-face :slant italic)))
+    '((t (:inherit (italic clojure-local-binding-variable-name-face))))
     "TODO")
   (defface clojure-fn-parameter-face
-    '((t (:inherit font-lock-variable-name-face :weight normal)))
+    '((t (:inherit font-lock-variable-name-face :weight medium)))
     "Face used to font-lock Clojure parameter.")
   (defface clojure-fn-parameter-warning-face
-    '((t (:inherit clojure-fn-parameter-face :slant italic)))
+    '((t (:inherit (italic clojure-fn-parameter-face))))
     "TODO")
   (defface clojure-semi-function-name-face
-    '((t (:inherit font-lock-function-name-face :weight normal)))
+    '((t (:inherit font-lock-function-name-face :weight medium)))
     "Face used to font-lock Clojure OOP style functions.")
   (defface clojure-cond-condtion-face
-    '((t (:slant italic)))
+    '((t (:inherit italic)))
     "Face used to font-lock Clojure conditions in `cond' form.")
   (defface clojure-if-true-face
     '((t (:inherit default)))
     "Face used to font-lock Clojure `if' true form.")
   (defface clojure-define-type-face
-    '((t (:inherit font-lock-type-face :weight bold)))
+    '((t (:inherit (bold font-lock-type-face))))
     "TODO")
   (defface clojure-meta-face
     '((t (:inherit shadow)))
@@ -182,7 +182,7 @@
          (no-kw-kw (regexp-opt '("->" "->>" "as->" "as->>" "some->" "some->>" "and" "or") t))
          (clj-kw (regexp-opt '("go-loop" "with-hard-redefs") t))
          (important-kw (regexp-opt '("case" "cond" "condp" "cond->" "cond->>" "for" "if" "if-let" "if-not" "recur" "throw" "when"
-                                     "when-let" "when-not" "while") t)))
+                                     "loop" "when-let" "when-not" "while") t)))
     ;; TODO
     ;;  refactoring
     (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
