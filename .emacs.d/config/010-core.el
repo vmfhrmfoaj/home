@@ -27,6 +27,7 @@
   :commands (helm-make-source helm-do-grep-ag)
   :init
   (defun helm-bufferp (buf)
+    "TODO"
     (when (and (bufferp buf)
                (string-match-p "\\*.*[Hh]elm.*\\*" (buffer-name buf)))
       t))
@@ -55,6 +56,37 @@
       (when (string-match-p "\\*.*NeoTree" (buffer-name helm-current-buffer))
         (get-buffer-window helm-current-buffer))))
 
+  (defface helm-match-selection
+    `((t (:inherit helm-match)))
+    "TODO"
+    :group 'helm-faces)
+
+  (defvar helm-match-selection-overlays nil
+    "TODO")
+
+  (make-local-variable 'helm-match-selection-overlays)
+
+  (defun helm-custom-initialize-overlays (_buffer)
+    "TODO"
+    (dolist (ov helm-match-selection-overlays)
+      (delete-overlay ov))
+    (setq helm-match-selection-overlays nil))
+
+  (defun helm-custom-mark-current-line (&optional _resumep _nomouse)
+    "TODO"
+    (when (not (s-blank? helm-pattern))
+      (dolist (ov helm-match-selection-overlays)
+        (delete-overlay ov))
+      (setq helm-match-selection-overlays nil)
+      (save-excursion
+        (beginning-of-line)
+        (while (re-search-forward (helm--maybe-get-migemo-pattern helm-pattern)
+                                  (line-end-position) t)
+          (let ((ov (make-overlay (match-beginning 0) (match-end 0))))
+            (add-to-list 'helm-match-selection-overlays ov)
+            (overlay-put ov 'face 'helm-match-selection)
+            (overlay-put ov 'priority 2))))))
+
   :config
   (require 'helm-config)
   (setq helm-autoresize-min-height 25
@@ -65,5 +97,7 @@
         helm-truncate-lines t)
   (advice-add #'helm-persistent-action-display-window :before-until
               #'helm-persistent-action-display-window-for-neotree)
+  (advice-add #'helm-initialize-overlays :after #'helm-custom-initialize-overlays)
+  (advice-add #'helm-mark-current-line   :after #'helm-custom-mark-current-line)
   (helm-mode 1)
   (helm-autoresize-mode 1))
