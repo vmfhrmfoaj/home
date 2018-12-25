@@ -20,7 +20,7 @@
    `(font-lock-variable-name-face ((t (:weight bold))))
    `(helm-selection ((t (:weight bold :underline unspecified))))
    `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
-   `(region ((t (:background "#5F5F5F"))))
+   `(region ((t (:background "#DCDCCC" :foreground "#3F3F3F" :distant-foreground "#3F3F3F" :weight medium :underline nil :box nil :overline nil :slant normal :inverse-video nil))))
    `(org-done ((t (:underline t))))
    `(org-todo ((t (:underline t)))))
   (let ((diff-added-bg+5    (color-from 'diff-added   :background  5))
