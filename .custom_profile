@@ -14,51 +14,47 @@ function setEnv () {
   fi
 
   # Cask
-  if [ -d "${HOME}/.cask/bin" ]; then
-    export PATH="${HOME}/.cask/bin:${PATH}"
+  if [ ! -d "${HOME}/.cask/bin" ]; then
+    curl -fsSL 'https://raw.githubusercontent.com/cask/cask/master/go' | python
   fi
+  export PATH="${HOME}/.cask/bin:${PATH}"
 
   # Oh My Zsh
-  if [ ! -z $ZSH ]; then
-    if [ ! -z "$(echo $plugins | grep 'vi-mode')" ]; then
-      # NOTE
-      #  You should change 'backspace key generates' option to control-h on the Gnome terminal.
-      bindkey -M viins '^?' backward-kill-word
-      bindkey -M viins '^b' backward-char
-      bindkey -M viins '^f' forward-char
-      bindkey -M viins '^d' delete-char
-    fi
-    local NEWLINE=$'\n'
-    local PS1_PREFIX='%{$fg[magenta]%}(%n@%M)%{$reset_color%}'
-    export PS1="${PS1_PREFIX}${NEWLINE}${PS1}"
+  if [ 0 != $(echo $plugins | grep -c 'vi-mode') ]; then
+    # NOTE
+    #  You should change 'backspace key generates' option to control-h on the Gnome terminal.
+    bindkey -M viins '^?' backward-kill-word
+    bindkey -M viins '^b' backward-char
+    bindkey -M viins '^f' forward-char
+    bindkey -M viins '^d' delete-char
   fi
+  local NEWLINE=$'\n'
+  local PS1_PREFIX='%{$fg[magenta]%}(%n@%M)%{$reset_color%}'
+  export PS1="${PS1_PREFIX}${NEWLINE}${PS1}"
 
   # Heroku
   local HEROKU="${HOME}/.local/heroku"
-  if [ -d "${HEROKU}/bin/" ] && [ 0 = $(echo ${PATH} | grep -c "${HEROKU}/bin") ]; then
+  if [ -d "${HEROKU}" ]; then
+    curl -fsSL 'https://cli-assets.heroku.com/install.sh' | sh
+  fi
+  if [ 0 = $(echo ${PATH} | grep -c "${HEROKU}/bin") ]; then
     export PATH="${HEROKU}/bin/:${PATH}"
   fi
 
   # .asdf
-  if [ -d "${HOME}/.asdf" ]; then
-    source "${HOME}/.asdf/asdf.sh"
-    source "${HOME}/.asdf/completions/asdf.bash"
+  if [ ! -d "${HOME}/.asdf" ]; then
+    git clone 'https://github.com/asdf-vm/asdf.git' ~/.asdf --branch v0.6.2
   fi
+  source "${HOME}/.asdf/asdf.sh"
+  source "${HOME}/.asdf/completions/asdf.bash"
 
   # perlbrew
-  if [ ! -z ${PERLBREW_ROOT} ]; then
-    if [ -f "${PERLBREW_ROOT}/etc/bashrc" ]; then
-      source "${PERLBREW_ROOT}/etc/bashrc"
-    fi
+  export PERLBREW_ROOT="${HOME}/.perlbrew"
+  if [ ! -d ${PERLBREW_ROOT} ]; then
+    curl -fsSL 'https://install.perlbrew.pl' | bash
   fi
+  source "${PERLBREW_ROOT}/etc/bashrc"
 }
-if [ ! -z ${ZSH_NAME} ]; then
-  setEnv
-fi
-
-CURSOR_BOX='\e[2 q'
-CURSOR_UNDERBAR='\e[4 q'
-CURSOR_LINE='\e[6 q'
 
 function zle-keymap-select () {
   if [ "$TERM" = "xterm-256color" ]; then
@@ -74,9 +70,7 @@ function zle-keymap-select () {
   zle reset-prompt
   zle -R
 }
-zle -N zle-keymap-select
 
-export DISABLE_AUTO_TITLE="true"
 function precmd {
   local TABNAME="%n@%M: %~"
   title $TABNAME $TABNAME
@@ -88,9 +82,21 @@ function preexec() {
   title $TABNAME $TABNAME
   echo -ne $CURSOR_LINE
 }
-preexec
 
-which numlockx 2>&1 > /dev/null
-if [ $? -eq 0 ]; then
-  numlockx on
+if [ -t 1 ] && [ ! -z ${ZSH_NAME} ]; then
+  setEnv
+
+  CURSOR_BOX='\e[2 q'
+  CURSOR_UNDERBAR='\e[4 q'
+  CURSOR_LINE='\e[6 q'
+
+  zle -N zle-keymap-select
+
+  export DISABLE_AUTO_TITLE="true"
+  preexec
+
+  which numlockx 2>&1 > /dev/null
+  if [ $? -eq 0 ]; then
+    numlockx on
+  fi
 fi
