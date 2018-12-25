@@ -16,41 +16,49 @@
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
    `(clojure-side-effect-face   ((t (:inherit (bold italic font-lock-warning-face)))))
    `(clojure-special-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
+   `(font-lock-doc-face ((t (:slant italic))))
    `(font-lock-function-name-face ((t (:weight bold))))
    `(font-lock-variable-name-face ((t (:weight bold))))
    `(helm-selection ((t (:weight bold :underline unspecified))))
+   `(lazy-highlight ((t (:background "#333333"))))
    `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
-   `(region ((t (:background "#DCDCCC" :foreground "#3F3F3F" :distant-foreground "#3F3F3F" :weight medium :underline nil :box nil :overline nil :slant normal :inverse-video nil))))
    `(org-done ((t (:underline t))))
-   `(org-todo ((t (:underline t)))))
+   `(org-todo ((t (:underline t))))
+   `(region ((t (:background "#DCDCCC" :foreground "#3F3F3F" :distant-foreground "#3F3F3F" :weight medium :underline nil :box nil :overline nil :slant normal :inverse-video nil)))))
   (let ((diff-added-bg+5    (color-from 'diff-added   :background  5))
+        (diff-added-bg+15   (color-from 'diff-added   :background 15))
         (diff-added-fg+5    (color-from 'diff-added   :foreground  5))
+        (diff-added-fg+15   (color-from 'diff-added   :foreground 15))
         (diff-removed-bg+5  (color-from 'diff-removed :background  5))
         (diff-removed-fg+5  (color-from 'diff-removed :foreground  5))
-        (diff-changed-bg+5  (color-from 'diff-changed :background  5))
-        (diff-changed-fg+5  (color-from 'diff-changed :foreground  5))
-        (diff-added-bg+15   (color-from 'diff-added   :background 15))
-        (diff-added-fg+15   (color-from 'diff-added   :foreground 15))
         (diff-removed-bg+15 (color-from 'diff-removed :background 15))
         (diff-removed-fg+15 (color-from 'diff-removed :foreground 15))
+        (diff-changed-bg+5  (color-from 'diff-changed :background  5))
         (diff-changed-bg+15 (color-from 'diff-changed :background 15))
+        (diff-changed-fg+5  (color-from 'diff-changed :foreground  5))
         (diff-changed-fg+15 (color-from 'diff-changed :foreground 15)))
    (custom-theme-set-faces
     'zenburn
     `(diff-refine-added   ((t (:inherit diff-added   :background ,diff-added-bg+15 :foreground ,diff-added-fg+15))))
-    `(diff-refine-removed ((t (:inherit diff-removed :background ,diff-removed-bg+15 :foreground ,diff-removed-fg+15))))
     `(diff-refine-changed ((t (:inherit diff-removed :background ,diff-changed-bg+15 :foreground ,diff-changed-fg+15))))
-    `(evil-goggles-yank-face   ((t (:inherit diff-refine-changed))))
-    `(evil-goggles-paste-face  ((t (:inherit diff-refine-added))))
+    `(diff-refine-removed ((t (:inherit diff-removed :background ,diff-removed-bg+15 :foreground ,diff-removed-fg+15))))
     `(evil-goggles-delete-face ((t (:inherit diff-refine-removed))))
+    `(evil-goggles-paste-face  ((t (:inherit diff-refine-added))))
+    `(evil-goggles-yank-face   ((t (:inherit diff-refine-changed))))
+    `(helm-match ((t (:inherit lazy-highlight))))
+    `(helm-match-selection ((t (:inherit isearch))))
+    `(helm-selection ((t (:background "#5F5F5F"))))
+    `(helm-swoop-target-line-face ((t (:inherit isearch))))
     `(helm-swoop-target-word-face ((t (:inherit helm-match))))
+    `(isearch ((t (:foreground "#DCCFAB" :background "#1F1F1F"))))
     `(magit-diff-added-highlight   ((t (:inherit diff-added   :background ,diff-added-bg+5 :foreground ,diff-added-fg+5))))
+    `(magit-diff-file-heading-highlight ((t (:background "#5F5F5F"))))
     `(magit-diff-removed-highlight ((t (:inherit diff-removed :background ,diff-removed-bg+5 :foreground ,diff-removed-fg+5))))
     `(org-scheduled-previously ((t (:inherit default))))
     `(trailing-whitespace ((t (:underline "#CC9393"))))
-    `(whitespace-trailing ((t (:underline "#CC9393"))))
+    `(whitespace-space ((t (:foreground "#5F5F5F")))))
     `(whitespace-tab   ((t (:foreground "#5F5F5F"))))
-    `(whitespace-space ((t (:foreground "#5F5F5F")))))))
+    `(whitespace-trailing ((t (:underline "#CC9393"))))))
 
 (use-package elixir-mode
   :defer t
@@ -115,6 +123,17 @@
   :config
   (custom-set-faces
    `(php-passive-assign-variable-face ((t (:foreground ,local-variable-name-fg-color))))))
+
+(use-package rainbow-delimiters
+  :defer t
+  :config
+  (dolist (i (number-sequence 1 9))
+    (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
+      (set-face-attribute face nil :foreground
+                          (-> face
+                              (face-attribute :foreground)
+                              (dim-color 10)
+                              (saturate-color -20))))))
 
 (use-package smartparens
   :after highlight-parentheses
