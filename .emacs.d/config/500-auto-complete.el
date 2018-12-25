@@ -29,7 +29,7 @@
       (when company-point
         (helm :sources 'helm-source-company
               :buffer  "*helm company*"
-              :input (propertize company-prefix 'read-only t 'intangible t 'rear-nonsticky '(read-only intangible))
+              :input (propertize (concat company-prefix " ") 'read-only t 'intangible t 'rear-nonsticky '(read-only intangible))
               :candidate-number-limit helm-company-candidate-number-limit))))
 
   (defun helm-company-complete-common ()
