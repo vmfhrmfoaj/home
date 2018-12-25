@@ -39,34 +39,22 @@ function setEnv () {
     export PATH="${HEROKU}/bin/:${PATH}"
   fi
 
-  #
-  # Docker container for development environment
-  #
-
-  # PATH
-  local dev_tool_dir="${HOME}/Desktop/Tools/my-dev-env"
-  if [ -d ${dev_tool_dir} ] && [ 0 = $(echo ${PATH} | grep -c "${dev_tool_dir}/bin") ]; then
-    PATH="${dev_tool_dir}/bin:${PATH}"
+  # .asdf
+  if [ -d "${HOME}/.asdf" ]; then
+    source "${HOME}/.asdf/asdf.sh"
+    source "${HOME}/.asdf/completions/asdf.bash"
   fi
 
-  # Android
-  if [ ! -z ${ANDROID_HOME} ] && [ -d ${ANDROID_HOME} ] && [ 0 = $(echo ${PATH} | grep -c "${ANDROID_HOME}") ]; then
-    export PATH="${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools:${PATH}"
-  fi
-
-  # Clojure
-  if [ ! -z ${GRAALVM_ROOT} ] && [ -d ${GRAALVM_ROOT} ] && [ 0 = $(echo ${PATH} | grep -c "${GRAALVM_ROOT}/bin") ]; then
-    export PATH="${PATH}:${GRAALVM_ROOT}/bin"
-  fi
-
-  # Perl
+  # perlbrew
   if [ ! -z ${PERLBREW_ROOT} ]; then
     if [ -f "${PERLBREW_ROOT}/etc/bashrc" ]; then
       source "${PERLBREW_ROOT}/etc/bashrc"
     fi
   fi
 }
-setEnv
+if [ ! -z ${ZSH_NAME} ]; then
+  setEnv
+fi
 
 CURSOR_BOX='\e[2 q'
 CURSOR_UNDERBAR='\e[4 q'
