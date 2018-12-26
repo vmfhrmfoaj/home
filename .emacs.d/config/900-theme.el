@@ -9,12 +9,12 @@
   (custom-set-faces
    `(bold ((t (:weight bold))))
    `(cider-fringe-good-face ((t (:inherit success))))
-   `(clojure-define-type-face   ((t (:inherit (bold font-lock-type-face)))))
+   `(clojure-define-type-face ((t (:inherit (bold font-lock-type-face)))))
    `(clojure-defining-spec-face ((t (:inherit (bold font-lock-variable-name-face)))))
-   `(clojure-fn-parameter-face  ((t (:foreground ,local-variable-name-fg-color :weight medium))))
-   `(clojure-keyword-face       ((t (:inherit font-lock-builtin-face))))
+   `(clojure-fn-parameter-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
+   `(clojure-keyword-face ((t (:inherit font-lock-builtin-face))))
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
-   `(clojure-side-effect-face   ((t (:inherit (bold italic font-lock-warning-face)))))
+   `(clojure-side-effect-face ((t (:inherit (bold italic font-lock-warning-face)))))
    `(clojure-special-variable-name-face ((t (:inherit font-lock-constant-face))))
    `(font-lock-doc-face ((t (:slant italic))))
    `(font-lock-function-name-face ((t (:weight bold))))
@@ -43,6 +43,7 @@
     `(diff-refine-added   ((t (:inherit diff-added   :background ,diff-added-bg+15   :foreground ,diff-added-fg+15))))
     `(diff-refine-changed ((t (:inherit diff-removed :background ,diff-changed-bg+15 :foreground ,diff-changed-fg+15))))
     `(diff-refine-removed ((t (:inherit diff-removed :background ,diff-removed-bg+15 :foreground ,diff-removed-fg+15))))
+    `(font-lock-builtin-face ((t (:foreground ,(saturate-color (color-from 'font-lock-keyword-face :foreground -5) -30)))))
     `(evil-goggles-delete-face ((t (:inherit diff-refine-removed))))
     `(evil-goggles-paste-face  ((t (:inherit diff-refine-added))))
     `(evil-goggles-yank-face   ((t (:inherit diff-refine-changed))))
@@ -72,7 +73,7 @@
 (use-package evil
   :defer t
   :config
-  (let* ((hbar-height (max line-spacing 1))
+  (let* ((hbar-height (max line-spacing 2))
          (hbar-height (if (string-equal "gnome-imac" hostname)
                           (* 2 hbar-height) ; for HiDPI
                         hbar-height))
@@ -85,7 +86,7 @@
           evil-visual-state-cursor   `(hollow ,visual-color)
           evil-operator-state-cursor `(box ,operator-color)
           evil-insert-state-cursor   `(bar ,default-color)
-          evil-replace-state-cursor  `(bar ,replace-color))
+          evil-replace-state-cursor  `((hbar . ,hbar-height) ,replace-color))
     (with-eval-after-load 'evil-multiedit
       (setq evil-multiedit-normal-state-cursor `(box ,default-color)
             evil-multiedit-insert-state-cursor `(bar ,default-color)))))
