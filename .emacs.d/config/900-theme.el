@@ -15,7 +15,7 @@
    `(clojure-keyword-face       ((t (:inherit font-lock-builtin-face))))
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
    `(clojure-side-effect-face   ((t (:inherit (bold italic font-lock-warning-face)))))
-   `(clojure-special-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
+   `(clojure-special-variable-name-face ((t (:inherit font-lock-constant-face))))
    `(font-lock-doc-face ((t (:slant italic))))
    `(font-lock-function-name-face ((t (:weight bold))))
    `(font-lock-variable-name-face ((t (:weight bold))))
