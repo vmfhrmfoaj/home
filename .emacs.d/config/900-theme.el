@@ -10,7 +10,7 @@
    `(bold ((t (:weight bold))))
    `(cider-fringe-good-face ((t (:inherit success))))
    `(clojure-define-type-face   ((t (:inherit (bold font-lock-type-face)))))
-   `(clojure-defining-spec-face ((t (:inherit (bold clojure-keyword-face)))))
+   `(clojure-defining-spec-face ((t (:inherit (bold font-lock-variable-name-face)))))
    `(clojure-fn-parameter-face  ((t (:foreground ,local-variable-name-fg-color :weight medium))))
    `(clojure-keyword-face       ((t (:inherit font-lock-builtin-face))))
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
