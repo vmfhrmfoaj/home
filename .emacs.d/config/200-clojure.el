@@ -138,7 +138,7 @@
   (advice-add #'cider-connection-type-for-buffer :before-until #'cider-conn-type-for-cljc-buffer)
   (advice-add #'cider-switch-to-repl-buffer :override #'cider-switch-to-releated-repl-buffer)
   (advice-add #'cider-switch-to-last-clojure-buffer :override #'cider-switch-to-last-clj-buf)
-  (advice-add #'cider-expected-ns :around #'cider-expected-ns-for-cljs)
+  (advice-add #'cider-expected-ns :before-until #'cider-expected-ns-for-cljs)
   (add-hook 'cider-connected-hook
             (lambda ()
               (setq-local evil-lookup-func #'cider-doc-at-point))))
