@@ -1,6 +1,11 @@
 (use-package elixir-mode
-  :ensure t
-  :defer t)
+  ;; :ensure t
+  :defer t
+  :init
+  (unless (package-installed-p 'elixir-mode)
+    (quelpa '(elixir-mode :repo "vmfhrmfoaj/emacs-elixir" :fetcher github)))
+
+  (add-hook 'elixir-mode-hook #'alchemist-mode))
 
 (use-package alchemist
   :ensure t
