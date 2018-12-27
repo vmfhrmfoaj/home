@@ -11,7 +11,7 @@
   (let ((font "Liberation Mono")
         (height (cond
                  ((string-equal "gnome-macbookair" hostname) 120)
-                 ((string-equal "gnome-imac" hostname) 117) ; for HiDPI=2 and Scaling Factor=0.9
+                 ((string-equal "gnome-imac" hostname) 109) ; for HiDPI=2 and Scaling Factor=0.9
                  (t 113))))
     (set-face-font 'default font)
     (set-fontset-font t 'unicode "symbola")
