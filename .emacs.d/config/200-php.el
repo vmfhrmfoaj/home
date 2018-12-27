@@ -102,26 +102,10 @@
   :ensure t
   :defer t
   :init
-  (defvar psysh-schroot-session nil)
-
   (defun psysh-show ()
     (interactive)
     (-when-let (buf (get-buffer (concat "*" (car (psysh--detect-buffer)) "*")))
       (switch-to-buffer buf)))
 
   :config
-  (advice-add #'psysh-restart :before #'psysh-show)
-
-  (unless psysh-schroot-session
-    (setq psysh-schroot-session
-          (->> (shell-command-to-string "schroot -c chroot:php --begin-session")
-               (s-trim-right)
-               (concat "session:")))
-    (add-hook 'kill-emacs-hook
-              (lambda ()
-                (shell-command-to-string (concat "schroot -c " psysh-schroot-session " --end-session")))))
-  ;; NOTE:
-  ;;  See, http://gernotklingler.com/blog/use-chroot-jail-software-development
-  (setq-default psysh-comint-buffer-process
-                `("psysh" "schroot" nil "-c" ,psysh-schroot-session "-r" "--"
-                  ,(concat (getenv "HOME") "/.composer/vendor/bin/psysh"))))
+  (advice-add #'psysh-restart :before #'psysh-show))
