@@ -59,25 +59,29 @@
 
   (defun cperl-beginning-of-defun ()
     "TODO"
-    (let* ((cur-pos (point))
-           (semi-fn-regex "sub[ \r\t\n]+[_0-9A-Za-z]+\\([ \r\t\n]*([@$%]*)\\)?")
-           (fn-regex (concat semi-fn-regex "[ \r\t\n]+{"))
-           (from-beg-of-deufn? (eq 'beginning-of-defun this-command))
-           (cur-line-str (buffer-substring (line-beginning-position)
-                                           (line-end-position))))
-      (when (or from-beg-of-deufn?
-                (not (string-match-p semi-fn-regex cur-line-str)))
-        (end-of-line)
-        (unless (re-search-backward fn-regex nil t)
+    (let ((cur-pos (point))
+          (beg-pos (line-beginning-position))
+          (end-pos (line-end-position))
+          (regex "^\\s-*sub\\s-*[_0-9A-Za-z]+\\(?:\\s-*([ $@%]+)\\)?"))
+      (if (and (string-match-p regex (buffer-substring beg-pos end-pos))
+               (not (= beg-pos cur-pos)))
+          (beginning-of-line)
+        (unless (re-search-backward (concat regex "[ \t\r\n]*{") nil t)
           (goto-char cur-pos)
-          (if from-beg-of-deufn?
-              (error "Not found starting of the subroutine.")
-            (while (ignore-errors (backward-up-list nil t))))))))
+          (error "Not found starting of the subroutine.")))))
 
   (defun cperl-end-of-defun ()
     "TODO"
-    (and (re-search-forward "{")
-         (up-list)))
+    (let ((cur-pos (point))
+          (beg-pos (line-beginning-position))
+          (end-pos (line-end-position))
+          (regex "^\\s-*sub\\s-*[_0-9A-Za-z]+\\(?:\\s-*([ $@%]+)\\)?"))
+      (if (string-match-p regex (buffer-substring beg-pos end-pos))
+          (progn
+            (beginning-of-line)
+            (and (re-search-forward "[ \t\r\n]*{")
+                 (up-list)))
+        (re-search-forward regex nil t))))
 
   (defun cperl-mode-setup ()
     "TODO"

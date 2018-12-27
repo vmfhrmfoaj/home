@@ -32,7 +32,7 @@
   :config
   (font-lock-add-keywords
    'cperl-mode
-   `(("\\_<\\(defined\\|exists\\|lc\\|ref\\|bless\\|join\\|push\\|splice\\)\\_>"
+   `(("\\_<\\(defined\\|exists\\|lc\\|ref\\|bless\\|join\\|push\\|splice\\|grep\\|map\\)\\_>"
       (1 'default))))
   (font-lock-add-keywords
    'cperl-mode
