@@ -1,3 +1,6 @@
+(setq font-lock--anchor-beg-point nil)
+(make-local-variable 'font-lock--anchor-beg-point)
+
 (defun fake-match-2 ()
   "TODO"
   (-repeat 2 (point-min-marker)))
@@ -19,13 +22,39 @@
 (use-package elixir-mode
   :defer t
   :config
-  (font-lock-add-keywords
-   'elixir-mode
-   `(("\\(|>\\)"
-      (1 'shadow))
-     ("\\(\\?.\\)"
-      (1 'font-lock-negation-char-face)))
-   :append))
+  (defface elixir-argument-name-face
+    '((t (:inherit font-lock-variable-name-face :weight medium)))
+    "TODO")
+
+  (let* ((symbol "[_0-9a-zA-Z?!]+"))
+    (font-lock-add-keywords
+     'elixir-mode
+     `(("\\(|>\\|&\\)"
+        (1 'shadow))
+       ("\\(/\\)[0-9]"
+        (1 'shadow))
+       ("\\(?:\\_<\\|\\s(\\)\\(\\?.\\)"
+        (1 'font-lock-negation-char-face))
+       (,(concat "\\<\\(?:fn\\)\\s-*(")
+        (,(concat "\\(" symbol "\\)")
+         (save-excursion
+           (setq font-lock--anchor-beg-point (point))
+           (up-list)
+           (point))
+         (goto-char font-lock--anchor-beg-point)
+         (1 'elixir-argument-name-face)))
+       (,(concat "\\<\\(?:def\\|defmacro\\)p?\\s-+" symbol "\\s-*(")
+        (,(concat "\\(" symbol "\\)")
+         (save-excursion
+           (setq font-lock--anchor-beg-point (point))
+           (up-list)
+           (point))
+         (goto-char font-lock--anchor-beg-point)
+         (1 'elixir-argument-name-face)))
+       ;; TODO
+       ;;  for n <- xxx
+       )
+     :append)))
 
 (use-package cperl-mode
   :defer t
@@ -143,7 +172,7 @@
       (setq n (funcall (if (< 0 n) '1- '1+) n))))
 
   :config
-  (setq clojure-font-lock--point nil)
+  (setq font-lock--anchor-beg-point nil)
   (setq clojure-binding-form--recursive-point nil)
   (setq clojure-binding-form--recursive-limit nil)
   (setq clojure-oop-kw--str nil)
@@ -154,7 +183,6 @@
   (setq clojure-fn-form--multi-arity? nil)
   (setq clojure-fn-recursive--point nil)
   (setq clojure-fn-recursive--limit nil)
-  (make-local-variable 'clojure-font-lock--point)
   (make-local-variable 'clojure-binding-form--recursive-point)
   (make-local-variable 'clojure-binding-form--recursive-limit)
   (make-local-variable 'clojure-oop-kw--str)
@@ -207,12 +235,12 @@
             (if (in-comment?)
                 (setq font-lock--skip t)
               (setq font-lock--skip nil)
-              (setq clojure-font-lock--point (point))
+              (setq font-lock--anchor-beg-point (point))
               (safe-up-list-1)
               (point)))
           (if font-lock--skip
               (end-of-line)
-            (goto-char clojure-font-lock--point))
+            (goto-char font-lock--anchor-beg-point))
           (1 'clojure-local-binding-variable-name-face))
 
          ;; Destructuring bindings
@@ -261,14 +289,14 @@
             (if (in-comment?)
                 (setq font-lock--skip t)
               (setq font-lock--skip nil)
-              (setq clojure-font-lock--point (point))
+              (setq font-lock--anchor-beg-point (point))
               (setq clojure-binding-form--recursive-point nil)
               (setq clojure-binding-form--recursive-limit nil)
               (safe-up-list-1)
               (point)))
           (if font-lock--skip
               (end-of-line)
-            (goto-char clojure-font-lock--point))
+            (goto-char font-lock--anchor-beg-point))
           (1 'clojure-local-binding-variable-name-face)))
 
         ;; OOP style function forms & letfn
@@ -282,12 +310,12 @@
             (concat "\\(" symbol "\\)"))
           (save-excursion
             (setq clojure-oop-kw--str (match-string-no-properties 1))
-            (setq clojure-font-lock--point (point))
+            (setq font-lock--anchor-beg-point (point))
             (condition-case nil
                 (clojure-forward-sexp)
               (error (setq font-lock--skip t)))
             (point))
-          (goto-char clojure-font-lock--point)
+          (goto-char font-lock--anchor-beg-point)
           (0 'clojure-define-type-face))
          ;; highlighting OOP fn name
          (,(-partial
@@ -314,12 +342,12 @@
             (if (in-comment?)
                 (setq font-lock--skip t)
               (setq font-lock--skip nil)
-              (setq clojure-font-lock--point (point))
+              (setq font-lock--anchor-beg-point (point))
               (safe-up-list-1)
               (point)))
           (if font-lock--skip
               (end-of-line)
-            (goto-char clojure-font-lock--point))
+            (goto-char font-lock--anchor-beg-point))
           (0 'clojure-semi-function-name-face))
 
          ;; Highlighting OOP fn parameters
@@ -357,14 +385,14 @@
             (if (in-comment?)
                 (setq font-lock--skip t)
               (setq font-lock--skip nil)
-              (setq clojure-font-lock--point (point))
+              (setq font-lock--anchor-beg-point (point))
               (setq clojure-oop-fn-recursive--point nil)
               (setq clojure-oop-fn-recursive--limit nil)
               (safe-up-list-1)
               (point)))
           (if font-lock--skip
               (end-of-line)
-            (goto-char clojure-font-lock--point))
+            (goto-char font-lock--anchor-beg-point))
           (1 'clojure-fn-parameter-face)))
 
         ;; Clojure definition keywords - (DEFINITION-KEYWORD symbol ...)
@@ -421,7 +449,7 @@
           (if (in-comment?)
               (setq font-lock--skip t)
             (setq font-lock--skip nil)
-            (setq clojure-font-lock--point (point))
+            (setq font-lock--anchor-beg-point (point))
             (setq clojure-fn-form--method? (string-match-p "defmethod" (match-string 1)))
             (setq clojure-fn-form--multi-arity? nil)
             (setq clojure-fn-recursive--point nil)
@@ -431,7 +459,7 @@
               (point)))
           (if font-lock--skip
               (end-of-line)
-            (goto-char clojure-font-lock--point))
+            (goto-char font-lock--anchor-beg-point))
           (1 'clojure-fn-parameter-face)))
 
         ;; %
@@ -639,7 +667,7 @@
                    (if (in-comment?)
                        (setq font-lock--skip t)
                      (setq font-lock--skip nil)
-                     (setq clojure-font-lock--point (point))
+                     (setq font-lock--anchor-beg-point (point))
                      (safe-up-list-1)
                      (point)))
             (when (string-match-p "->>?" (match-string 1))
@@ -648,7 +676,7 @@
                 (error (setq font-lock--skip t)))))
           (if font-lock--skip
               (end-of-line)
-            (goto-char clojure-font-lock--point))
+            (goto-char font-lock--anchor-beg-point))
           (0 'clojure-cond-condtion-face prepend)))
 
         ;; Highlight 'true' clause in `if' form.
@@ -667,12 +695,12 @@
             (if (in-comment?)
                 (setq font-lock--skip t)
               (setq font-lock--skip nil)
-              (setq clojure-font-lock--point (point))
+              (setq font-lock--anchor-beg-point (point))
               (safe-up-list-1)
               (point)))
           (if font-lock--skip
               (end-of-line)
-            (goto-char clojure-font-lock--point))
+            (goto-char font-lock--anchor-beg-point))
           (0 'clojure-if-true-face append)))
 
         ;; CSS
@@ -721,12 +749,12 @@
            (if (in-comment?)
                (setq font-lock--skip t)
              (setq font-lock--skip nil)
-             (setq clojure-font-lock--point (point))
+             (setq font-lock--anchor-beg-point (point))
              (safe-up-list-1)
              (point)))
          (if font-lock--skip
              (end-of-line)
-           (goto-char clojure-font-lock--point))
+           (goto-char font-lock--anchor-beg-point))
          (0 'font-lock-doc-face t))
 
         ;; Metadata
@@ -745,13 +773,13 @@
             (if (in-comment?)
                 (setq font-lock--skip t)
               (setq font-lock--skip nil)
-              (setq clojure-font-lock--point (point))
+              (setq font-lock--anchor-beg-point (point))
               (backward-char 1)
               (clojure-forward-sexp)
               (point)))
           (if font-lock--skip
               (end-of-line)
-            (goto-char clojure-font-lock--point))
+            (goto-char font-lock--anchor-beg-point))
           (0 'clojure-meta-face t)))
 
         ;; side-effect
@@ -898,7 +926,6 @@
     '((t (:inherit font-lock-variable-name-face :weight normal)))
     "TODO")
 
-  (setq-local font-lock--anchor-beg-point nil)
   (let* ((symbol "\\$[_0-9a-zA-Z]+")
          (whitespace "[ \r\t\n]")
          (whitespace+ (concat whitespace "+"))
