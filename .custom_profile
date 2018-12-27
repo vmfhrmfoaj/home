@@ -52,6 +52,11 @@ function setEnv () {
   export PERLBREW_ROOT="${HOME}/.perlbrew"
   if [ ! -d ${PERLBREW_ROOT} ]; then
     curl -fsSL 'https://install.perlbrew.pl' | bash
+    if [ ! -f "${HOME}/.oh-my-zsh/custom/plugins/perlbrew/_perlbrew" ]; then
+      mkdir -p "${HOME}/.oh-my-zsh/custom/plugins/perlbrew/"
+      curl -fsSL -o "${HOME}/.oh-my-zsh/custom/plugins/perlbrew/_perlbrew" \
+           'https://gist.githubusercontent.com/vmfhrmfoaj/5d638cca74fa0c4ea0420457cae831b2/raw/3eb92bee4b2efa4508cbaea91b80bafd6d6c5f0c/_perlbrew'
+    fi
   fi
   source "${PERLBREW_ROOT}/etc/bashrc"
 }
