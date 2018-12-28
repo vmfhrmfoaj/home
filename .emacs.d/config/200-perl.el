@@ -62,13 +62,19 @@
     (let ((cur-pos (point))
           (beg-pos (line-beginning-position))
           (end-pos (line-end-position))
-          (regex "^\\s-*sub\\s-*[_0-9A-Za-z]+\\(?:\\s-*([ $@%]+)\\)?"))
+          (regex "^\\s-*sub\\s-*[_0-9A-Za-z]+\\(?:\\s-*([ $@%]+)\\)?")
+          (n 0))
       (if (and (string-match-p regex (buffer-substring beg-pos end-pos))
                (not (= beg-pos cur-pos)))
           (beginning-of-line)
         (unless (re-search-backward (concat regex "[ \t\r\n]*{") nil t)
           (goto-char cur-pos)
-          (error "Not found starting of the subroutine.")))))
+          (condition-case nil
+              (while (backward-up-list) (setq n (1+ n)))
+            ;; the indentation function of `cperl-mode' seems to used `beginning-of-line' function.
+            (error
+             (and (zerop n)
+                  (message "Not found starting of the subroutine."))))))))
 
   (defun cperl-end-of-defun ()
     "TODO"
