@@ -35,15 +35,16 @@
         (1 'shadow))
        ("\\(?:\\_<\\|\\s(\\)\\(\\?.\\)"
         (1 'font-lock-negation-char-face))
-       (,(concat "\\<\\(?:fn\\)\\s-*(")
+       ;; Highlighting pattern matching variable
+       (,(concat "\\(?:^\\|(\\)\\s-*\\(?:\\[\\|%?{\\)[^=]+\\(?:\\]\\|}\\)[ \t\r\n]*=")
         (,(concat "\\(" symbol "\\)")
-         (save-excursion
-           (setq font-lock--anchor-beg-point (point))
-           (up-list)
-           (point))
+         (progn
+           (goto-char (setq font-lock--anchor-beg-point (match-beginning 0)))
+           (match-end 0))
          (goto-char font-lock--anchor-beg-point)
-         (1 'elixir-argument-name-face)))
-       (,(concat "\\<\\(?:def\\|defmacro\\)p?\\s-+" symbol "\\s-*(")
+         (1 'font-lock-variable-name-face)))
+       ;; Highlighting arguments
+       (,(concat "\\<\\(?:defp?\\|defmacrop?\\|fn\\)\\(?:\\s-+" symbol "\\)?\\s-*(")
         (,(concat "\\(" symbol "\\)")
          (save-excursion
            (setq font-lock--anchor-beg-point (point))
