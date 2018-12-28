@@ -16,7 +16,7 @@
    `(clojure-side-effect-face   ((t (:inherit (bold italic font-lock-warning-face)))))
    `(clojure-special-variable-name-face ((t (:inherit font-lock-constant-face))))
    `(elixir-argument-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
-   `(fringe ((t (:background "#FEFEFE"))))
+   `(fringe ((t (:background "#FBFBFB"))))
    `(hl-line ((t (:underline unspecified :inverse-video nil))))
    `(hl-paren-face ((t (:weight bold))))
    `(isearch ((t (:underline unspecified :weight bold))))
@@ -26,6 +26,7 @@
   (custom-theme-set-faces
    'leuven
    `(bold ((t (:weight bold))))
+   `(italic ((t (:slant italic))))
    `(font-lock-doc-face ((t (:inherit font-lock-string-face :foreground "PaleGreen4"))))
    `(font-lock-negation-char-face ((t (:inherit font-lock-warning-face :weight medium))))
    `(helm-swoop-target-word-face ((t (:inherit lazy-highlight))))

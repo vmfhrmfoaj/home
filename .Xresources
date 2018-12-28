@@ -1,5 +1,6 @@
-Xft.antialias: 1
-Xft.hinting: 1
+Xft.antialias: true
+Xft.rgba: rgb
+Xft.hinting: true
 Xft.hintstyle: hintfull
 Xft.embolden: true
 Emacs.fontBackend: xft
