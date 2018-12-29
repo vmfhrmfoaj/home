@@ -81,7 +81,8 @@
         (while (re-search-forward (->> helm-pattern
                                        (s-trim)
                                        (s-split " ")
-                                       (regexp-opt)
+                                       (-interpose "\\|")
+                                       (apply #'concat)
                                        (helm--maybe-get-migemo-pattern))
                                   (line-end-position) t)
           (let ((ov (make-overlay (match-beginning 0) (match-end 0))))
