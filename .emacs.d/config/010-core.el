@@ -72,13 +72,17 @@
 
   (defun helm-custom-mark-current-line (&optional _resumep _nomouse)
     "TODO"
+    (dolist (ov helm-match-selection-overlays)
+      (delete-overlay ov))
+    (setq helm-match-selection-overlays nil)
     (when (not (s-blank? helm-pattern))
-      (dolist (ov helm-match-selection-overlays)
-        (delete-overlay ov))
-      (setq helm-match-selection-overlays nil)
       (save-excursion
         (beginning-of-line)
-        (while (re-search-forward (helm--maybe-get-migemo-pattern helm-pattern)
+        (while (re-search-forward (->> helm-pattern
+                                       (s-trim)
+                                       (s-split " ")
+                                       (regexp-opt)
+                                       (helm--maybe-get-migemo-pattern))
                                   (line-end-position) t)
           (let ((ov (make-overlay (match-beginning 0) (match-end 0))))
             (add-to-list 'helm-match-selection-overlays ov)
