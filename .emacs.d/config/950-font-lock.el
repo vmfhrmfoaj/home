@@ -28,9 +28,15 @@
 
   (let* ((symbol-chars "_0-9a-zA-Z?!")
          (symbol (concat "[" symbol-chars "]+")))
+    ;; prepend rules
     (font-lock-add-keywords
      'elixir-mode
-     `(("\\(|>\\|&\\)"
+     `(("::[ ]?binary"
+        (0 'font-lock-builtin-face))))
+    ;; append rules
+    (font-lock-add-keywords
+     'elixir-mode
+     `(("\\(|>?\\|&\\|<<\\|>>\\)"
         (1 'shadow))
        ("\\(/\\)[0-9]"
         (1 'shadow))
@@ -45,7 +51,7 @@
            (match-end 1))
          (goto-char font-lock--anchor-beg-point)
          (1 'font-lock-variable-name-face)))
-       (,(concat "\\(?:for\\|with\\|^\\)\\s-*\\([^-<>\n]+\\)\\(?:\\s-+when\\s-+[^-<>]+\\s-+\\)?\\s-*\\(?:<-\\|->\\)")
+       (,(concat "\\(?:for\\|with\\|^\\)\\s-*\\([^-<>\n]+\\)\\(?:\\s-+when\\s-+[^<-]+\\s-+\\)?\\s-*<-")
         (,(concat "\\(" symbol "\\)")
          (progn
            (goto-char (setq font-lock--anchor-beg-point (match-beginning 0)))
