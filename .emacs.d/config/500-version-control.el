@@ -54,7 +54,7 @@
 
   (defun magit-log-propertize-keywords-for-conventional-commits (msg)
     "TODO"
-    (let ((type  "[^:()]+")
+    (let ((type  "[^:() ]+")
           (scope "[^)]+"))
       (when (and magit-log-highlight-keywords
                  (string-match (concat "^\\(" type "\\)\\(?:(\\(" scope "\\))\\)?:") msg))
