@@ -15,10 +15,11 @@
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
    `(clojure-side-effect-face   ((t (:inherit (bold italic font-lock-warning-face)))))
    `(clojure-special-variable-name-face ((t (:inherit font-lock-constant-face))))
+   `(default ((t (:background "#FCFCFC"))))
    `(elixir-argument-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
-   `(fringe ((t (:background "#FBFBFB"))))
+   '(font-lock-comment-face ((t (:slant normal))))
+   `(fringe ((t (:background "#F9F9F9"))))
    `(hl-line ((t (:underline unspecified :inverse-video nil))))
-   `(hl-paren-face ((t (:weight bold))))
    `(isearch ((t (:underline unspecified :weight bold))))
    `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
    `(org-date ((t (:underline unspecified :slant italic))))
@@ -54,7 +55,7 @@
          (replace-color  "#DD9393"))
     (setq cursor-type 'box
           evil-normal-state-cursor   `(box ,default-color)
-          evil-visual-state-cursor   `(hollow ,visual-color)
+          evil-visual-state-cursor   `(box ,visual-color)
           evil-operator-state-cursor `(box ,operator-color)
           evil-insert-state-cursor   `(bar ,default-color)
           evil-replace-state-cursor  `((hbar . ,hbar-height) ,replace-color))
@@ -87,11 +88,11 @@
       (set-face-attribute face nil :inherit 'variable-pitch))))
 
 (use-package paren
-  :after highlight-parentheses
+  :defer t
   :config
   (custom-set-faces
-   `(show-paren-match    ((t (:foreground ,hl-paren-base-color :weight bold :underline (:color "#D0372D")))))
-   `(show-paren-mismatch ((t (:weight bold))))))
+   `(show-paren-match    ((t (:background "#FF753B" :foreground ,(color-from 'default :background 0)))))
+   `(show-paren-mismatch ((t (:inherit font-lock-warning-face :weight bold))))))
 
 (use-package php-mode
   :defer t
@@ -111,11 +112,11 @@
                               (saturate-color -20))))))
 
 (use-package smartparens
-  :after highlight-parentheses
+  :defer t
   :config
   (custom-set-faces
-   `(sp-show-pair-match-face    ((t (:foreground ,hl-paren-base-color :weight bold :underline (:color "#D0372D")))))
-   `(sp-show-pair-mismatch-face ((t (:weight bold))))))
+   `(sp-show-pair-match-face    ((t (:background "#7237FF" :foreground ,(color-from 'default :background 0) :weight bold))))
+   `(sp-show-pair-mismatch-face ((t (:inherit font-lock-warning-face :weight bold))))))
 
 (use-package web-mode
   :disabled t
