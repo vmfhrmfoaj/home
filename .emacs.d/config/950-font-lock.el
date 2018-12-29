@@ -43,7 +43,7 @@
        ("\\(?:\\_<\\|\\s(\\)\\(\\?.\\)"
         (1 'font-lock-negation-char-face))
        ;; Highlighting pattern matching variables
-       (,(concat "\\(?:(\\|^\\)\\s-*\\(\\(?:\\[\\|%?{\\)[^=\n]+\\(?:\\]\\|}\\)\\)\\s-*=")
+       (,(concat "\\(?:(\\|^\\)\\s-*\\(\\(?:\\[\\|%?{\\)[^=\n]+?\\(?:\\]\\|}\\)\\)\\s-*=")
         (,(concat "\\(" symbol "\\)")
          (progn
            (goto-char (setq font-lock--anchor-beg-point (match-beginning 0)))
@@ -51,7 +51,7 @@
            (match-end 1))
          (goto-char font-lock--anchor-beg-point)
          (1 'font-lock-variable-name-face)))
-       (,(concat "\\(?:for\\|with\\|^\\)\\s-*\\([^-<>\n]+\\)\\(?:\\s-+when\\s-+[^<-]+\\s-+\\)?\\s-*<-")
+       (,(concat "\\(?:for\\|with\\|^\\)\\s-*\\([^-<>\n]+?\\)\\(?:\\s-+when\\s-+[^<-]+?\\s-+\\)?\\s-*<-")
         (,(concat "\\(" symbol "\\)")
          (progn
            (goto-char (setq font-lock--anchor-beg-point (match-beginning 0)))
