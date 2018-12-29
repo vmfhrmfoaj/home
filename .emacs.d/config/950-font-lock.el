@@ -26,7 +26,8 @@
     '((t (:inherit font-lock-variable-name-face :weight medium)))
     "TODO")
 
-  (let* ((symbol "[_0-9a-zA-Z?!]+"))
+  (let* ((symbol-chars "_0-9a-zA-Z?!")
+         (symbol (concat "[" symbol-chars "]+")))
     (font-lock-add-keywords
      'elixir-mode
      `(("\\(|>\\|&\\)"
@@ -35,16 +36,33 @@
         (1 'shadow))
        ("\\(?:\\_<\\|\\s(\\)\\(\\?.\\)"
         (1 'font-lock-negation-char-face))
-       ;; Highlighting pattern matching variable
-       (,(concat "\\(?:^\\|(\\)\\s-*\\(?:\\[\\|%?{\\)[^=]+\\(?:\\]\\|}\\)[ \t\r\n]*=")
+       ;; Highlighting pattern matching variables
+       (,(concat "\\(?:(\\|^\\)\\s-*\\(\\(?:\\[\\|%?{\\)[^=\n]+\\(?:\\]\\|}\\)\\)\\s-*=")
         (,(concat "\\(" symbol "\\)")
          (progn
            (goto-char (setq font-lock--anchor-beg-point (match-beginning 0)))
-           (match-end 0))
+           (goto-char (match-beginning 1))
+           (match-end 1))
          (goto-char font-lock--anchor-beg-point)
          (1 'font-lock-variable-name-face)))
-       ;; Highlighting arguments
-       (,(concat "\\<\\(?:defp?\\|defmacrop?\\|fn\\)\\(?:\\s-+" symbol "\\)?\\s-*(")
+       (,(concat "\\(?:for\\|with\\|^\\)\\s-*\\([^-<>\n]+\\)\\(?:\\s-+when\\s-+[^-<>]+\\s-+\\)?\\s-*\\(?:<-\\|->\\)")
+        (,(concat "\\(" symbol "\\)")
+         (progn
+           (goto-char (setq font-lock--anchor-beg-point (match-beginning 0)))
+           (goto-char (match-beginning 1))
+           (match-end 1))
+         (goto-char font-lock--anchor-beg-point)
+         (1 'font-lock-variable-name-face)))
+       ;; Highlighting argument variables
+       (,(concat "\\<\\(?:fn\\)\\s-+\\([" symbol-chars ", ]+\\)\\s-+->")
+        (,(concat "\\(" symbol "\\)")
+         (progn
+           (setq font-lock--anchor-beg-point (match-beginning 0))
+           (goto-char (match-beginning 1))
+           (match-end 1))
+         (goto-char font-lock--anchor-beg-point)
+         (1 'elixir-argument-name-face)))
+       (,(concat "\\<\\(?:defp?\\|defmacrop?\\)\\s-+" symbol "\\s-*(")
         (,(concat "\\(" symbol "\\)")
          (save-excursion
            (setq font-lock--anchor-beg-point (point))
