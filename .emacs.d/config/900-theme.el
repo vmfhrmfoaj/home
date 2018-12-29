@@ -17,7 +17,8 @@
    `(clojure-special-variable-name-face ((t (:inherit font-lock-constant-face))))
    `(default ((t (:background "#FCFCFC"))))
    `(elixir-argument-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
-   '(font-lock-comment-face ((t (:slant normal))))
+   `(font-lock-comment-face ((t (:slant normal))))
+   `(font-lock-function-name-face ((t (:weight bold))))
    `(fringe ((t (:background "#F9F9F9"))))
    `(hl-line ((t (:underline unspecified :inverse-video nil))))
    `(isearch ((t (:underline unspecified :weight bold))))
@@ -34,7 +35,8 @@
    `(helm-match ((t (:inherit lazy-highlight))))
    `(helm-match-selection ((t (:inherit isearch))))
    `(helm-selection ((t (:background ,(color-from 'isearch :background 30) :distant-foreground "black" :weight medium))))
-   `(underline ((t (:underline (:color foreground-color :style wave)))))))
+   `(underline ((t (:underline (:color foreground-color :style wave)))))
+   `(variable-pitch ((t (:family "DejaVu Serif"))))))
 
 (use-package elixir-mode
   :defer t
@@ -77,15 +79,6 @@
   :config
   (custom-set-faces
    `(linum ((t (:inherit default))))))
-
-(use-package org
-  :defer t
-  :config
-  (custom-set-faces
-   `(variable-pitch ((t (:font-family "Monospace")))))
-  (dolist (i (number-sequence 1 8))
-    (let ((face (intern (concat "org-level-" (number-to-string i)))))
-      (set-face-attribute face nil :inherit 'variable-pitch))))
 
 (use-package paren
   :defer t
