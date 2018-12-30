@@ -42,6 +42,7 @@
   (require 'helm-org nil t)
   (setq org-complete-tags-always-offer-all-agenda-tags t
         org-fontify-whole-heading-line t
+        org-fontify-quote-and-verse-blocks t
         org-hide-emphasis-markers t
         org-image-actual-width nil
         org-insert-schedule-deadline t

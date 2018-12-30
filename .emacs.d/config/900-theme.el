@@ -24,7 +24,8 @@
    `(isearch ((t (:underline unspecified :weight bold))))
    `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
    `(org-date ((t (:underline unspecified :slant italic))))
-   `(org-link ((t (:inherit underline :underline unspecified)))))
+   `(org-link ((t (:inherit underline :underline unspecified))))
+   `(org-quote ((t (:slant normal)))))
   (custom-theme-set-faces
    'leuven
    `(bold ((t (:weight bold))))
