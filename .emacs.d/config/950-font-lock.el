@@ -26,8 +26,7 @@
     '((t (:inherit font-lock-variable-name-face :weight medium)))
     "TODO")
 
-  (let* ((symbol-chars "_0-9a-zA-Z?!")
-         (symbol (concat "[" symbol-chars "]+")))
+  (let* ((symbol "[_0-9a-zA-Z?!]+"))
     ;; prepend rules
     (font-lock-add-keywords
      'elixir-mode
@@ -47,15 +46,15 @@
         (1 'font-lock-variable-name-face))
        ;; Highlighting pattern matching variables
        (,(concat "\\(\\(?:\\[\\|%?{\\)[^=\n]+?\\(?:\\]\\|}\\)\\)\\s-*=")
-        (,(concat "\\(" symbol "\\)")
+        (,(concat "\\(?:^\\|[^\\^\r\n]\\)\\_<\\(" symbol "\\)\\_>")
          (progn
            (goto-char (setq font-lock--anchor-beg-point (match-beginning 0)))
            (goto-char (match-beginning 1))
            (match-end 1))
          (goto-char font-lock--anchor-beg-point)
          (1 'font-lock-variable-name-face)))
-       (,(concat "\\(\\(?:\\[\\|%?{\\)[^-<>\n]+?\\(?:\\]\\|}\\)\\)\\(?:\\s-+when\\s-+[^-<>]+?\\s-+\\)?\\s-*\\(<-\\|->\\)")
-        (,(concat "\\(" symbol "\\)")
+       (,(concat "\\(\\(?:\\[\\|%?{\\)[^-<>\n]+?\\(?:\\]\\|}\\)\\)\\(?:\\s-+when\\s-+[^-]+?\\s-+\\)?\\s-*\\(<-\\|->\\)")
+        (,(concat "\\(?:^\\|[^\\^\r\n]\\)\\_<\\(" symbol "\\)\\_>")
          (progn
            (goto-char (setq font-lock--anchor-beg-point (match-beginning 0)))
            (goto-char (match-beginning 1))
@@ -63,7 +62,7 @@
          (goto-char font-lock--anchor-beg-point)
          (1 'font-lock-variable-name-face)))
        ;; Highlighting argument variables
-       (,(concat "\\<\\(?:fn\\)\\s-+\\([" symbol-chars ", ]+\\)\\s-+->")
+       (,(concat "\\<\\(?:fn\\)\\s-+\\([^-\n]+\\)\\s-+->")
         (,(concat "\\(" symbol "\\)")
          (progn
            (setq font-lock--anchor-beg-point (match-beginning 0))
@@ -78,10 +77,7 @@
            (up-list)
            (point))
          (goto-char font-lock--anchor-beg-point)
-         (1 'elixir-argument-name-face)))
-       ;; TODO
-       ;;  for n <- xxx
-       )
+         (1 'elixir-argument-name-face))))
      :append)))
 
 (use-package cperl-mode
