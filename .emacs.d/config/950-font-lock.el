@@ -83,10 +83,11 @@
 (use-package cperl-mode
   :defer t
   :config
-  (font-lock-add-keywords
-   'cperl-mode
-   `(("\\_<\\(defined\\|exists\\|lc\\|ref\\|bless\\|join\\|push\\|splice\\|grep\\|map\\)\\_>"
-      (1 'default))))
+  (let ((unimportant-kws '("bless" "defined" "delete" "exists" "grep" "join" "lc" "map" "push" "ref" "splice")))
+   (font-lock-add-keywords
+    'cperl-mode
+    `((,(regexp-opt unimportant-kws 'symbols)
+       (1 'default)))))
   (font-lock-add-keywords
    'cperl-mode
    (let* ((symbol "[@$%]+[:_0-9a-zA-Z]+")
