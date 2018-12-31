@@ -81,6 +81,7 @@
         (while (re-search-forward (->> helm-pattern
                                        (s-trim)
                                        (s-split " ")
+                                       (--sort (< (length other) (length it)))
                                        (-interpose "\\|")
                                        (apply #'concat)
                                        (helm--maybe-get-migemo-pattern))
