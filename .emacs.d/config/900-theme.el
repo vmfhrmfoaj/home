@@ -35,7 +35,7 @@
    `(helm-swoop-target-word-face ((t (:inherit lazy-highlight))))
    `(helm-match ((t (:inherit lazy-highlight))))
    `(helm-match-selection ((t (:inherit isearch))))
-   `(helm-selection ((t (:background ,(color-from 'isearch :background 30) :distant-foreground "black" :weight medium))))
+   `(helm-selection ((t (:background ,(color-from 'isearch :background 30) :distant-foreground "black"))))
    `(variable-pitch ((t (:family "DejaVu Serif"))))))
 
 (use-package elixir-mode
