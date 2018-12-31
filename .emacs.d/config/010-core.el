@@ -96,6 +96,7 @@
         helm-autoresize-max-height 45
         helm-display-header-line nil
         helm-display-function #'helm-display-buffer-at-bottom
+        helm-ff-fuzzy-matching nil
         helm-split-window-inside-p t
         helm-truncate-lines t)
   (advice-add #'helm-persistent-action-display-window :before-until
