@@ -45,7 +45,7 @@
        (,(concat "\\(" symbol "\\)\\s-+\\(?:<-\\|->\\)")
         (1 'font-lock-variable-name-face))
        ;; Highlighting pattern matching variables
-       (,(concat "\\(\\(?:\\[\\|%?{\\)[^=\n]+?\\(?:\\]\\|}\\)\\)\\s-*=")
+       ("\\(\\(?:\\[\\|%?{\\)[^=\r\n]+?\\(?:\\]\\|}\\)\\)\\s-*="
         (,(concat "\\(?:^\\|[^\\^\r\n]\\)\\_<\\(" symbol "\\)\\_>")
          (progn
            (goto-char (setq font-lock--anchor-beg-point (match-beginning 0)))
@@ -53,7 +53,7 @@
            (match-end 1))
          (goto-char font-lock--anchor-beg-point)
          (1 'font-lock-variable-name-face)))
-       (,(concat "\\(\\(?:\\[\\|%?{\\)[^-<>\n]+?\\(?:\\]\\|}\\)\\)\\(?:\\s-+when\\s-+[^-]+?\\s-+\\)?\\s-*\\(<-\\|->\\)")
+       ("\\(\\(?:\\[\\|%?{\\)[^-<>\r\n]+?\\(?:\\]\\|}\\)\\)[^-<>]+?\\s-*\\(?:<-\\|->\\)"
         (,(concat "\\(?:^\\|[^\\^\r\n]\\)\\_<\\(" symbol "\\)\\_>")
          (progn
            (goto-char (setq font-lock--anchor-beg-point (match-beginning 0)))
@@ -62,7 +62,7 @@
          (goto-char font-lock--anchor-beg-point)
          (1 'font-lock-variable-name-face)))
        ;; Highlighting argument variables
-       (,(concat "\\<\\(?:fn\\)\\s-+\\([^-\n]+\\)\\s-+->")
+       ("\\<\\(?:fn\\)\\s-+\\([^-\n]+\\)\\s-+->"
         (,(concat "\\(" symbol "\\)")
          (progn
            (setq font-lock--anchor-beg-point (match-beginning 0))
