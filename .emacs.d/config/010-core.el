@@ -70,11 +70,15 @@
       (delete-overlay ov))
     (setq helm-match-selection-overlays nil))
 
-  (defun helm-custom-mark-current-line (&optional _resumep _nomouse)
+  (defun helm--remove-custom-overlays ()
     "TODO"
     (dolist (ov helm-match-selection-overlays)
       (delete-overlay ov))
-    (setq helm-match-selection-overlays nil)
+    (setq helm-match-selection-overlays nil))
+
+  (defun helm-custom-mark-current-line (&optional _resumep _nomouse)
+    "TODO"
+    (helm--remove-custom-overlays)
     (let ((pattern (if (let ((case-fold-search t))
                          (->> (helm-get-current-source)
                               (assoc 'name)
@@ -92,11 +96,13 @@
                             (--sort (< (length other) (length it)))
                             (-interpose "\\|")
                             (apply #'concat))))
-            (while (re-search-forward regex (line-end-position) t)
-              (let ((ov (make-overlay (match-beginning 0) (match-end 0))))
-                (add-to-list 'helm-match-selection-overlays ov)
-                (overlay-put ov 'face 'helm-match-selection)
-                (overlay-put ov 'priority 2))))))))
+            (condition-case nil
+                (while (re-search-forward regex (line-end-position) t)
+                  (let ((ov (make-overlay (match-beginning 0) (match-end 0))))
+                    (add-to-list 'helm-match-selection-overlays ov)
+                    (overlay-put ov 'face 'helm-match-selection)
+                    (overlay-put ov 'priority 2)))
+              (error (helm--remove-custom-overlays))))))))
 
   :config
   (require 'helm-config)
