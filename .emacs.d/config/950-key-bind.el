@@ -323,6 +323,7 @@
   :config
   (global-set-key (kbd "M-x") #'helm-M-x)
   (global-set-key (kbd "C-x C-f") #'helm-find-files)
+  (define-key helm-map (kbd "<escape>") #'helm-keyboard-quit)
   (define-key helm-map (kbd "C-h") #'delete-backward-char)
   (define-key helm-map (kbd "C-j") #'helm-next-line)
   (define-key helm-map (kbd "C-k") #'helm-previous-line)
