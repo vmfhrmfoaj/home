@@ -35,17 +35,12 @@
     ;; append rules
     (font-lock-add-keywords
      'elixir-mode
-     `(("\\(|>?\\|&\\|<<\\|>>\\)"
-        (1 'shadow))
-       ("\\(/\\)[0-9]"
-        (1 'shadow))
-       ("\\(?:\\_<\\|\\s(\\)\\(\\?.\\)"
-        (1 'font-lock-negation-char-face))
-       ;; Highlighting variables
-       (,(concat "\\(" symbol "\\)\\s-+\\(?:<-\\|->\\)")
-        (1 'font-lock-variable-name-face))
+     `(;; Highlighting variables
+       (,(concat "\\(?:^\\s-*\\|\\(?:for\\|with\\)\\s-+\\)\\(" symbol "\\)\\s-+\\(<-\\|->\\)")
+        (1 'font-lock-variable-name-face)
+        (2 'shadow))
        ;; Highlighting pattern matching variables
-       ("\\(\\(?:\\[\\|%?{\\)[^=\r\n]+?\\(?:\\]\\|}\\)\\)\\s-*="
+       ("\\(\\(?:\\[\\|%?{\\).+?\\(?:\\]\\|}\\)\\)\\s-*="
         (,(concat "\\(?:^\\|[^\\^\r\n]\\)\\_<\\(" symbol "\\)\\_>")
          (progn
            (goto-char (setq font-lock--anchor-beg-point (match-beginning 0)))
@@ -53,7 +48,8 @@
            (match-end 1))
          (goto-char font-lock--anchor-beg-point)
          (1 'font-lock-variable-name-face)))
-       ("\\(\\(?:\\[\\|%?{\\)[^-<>\r\n]+?\\(?:\\]\\|}\\)\\)[^-<>]+?\\s-*\\(?:<-\\|->\\)"
+       ("\\(\\(?:\\[\\|%?{\\).+?\\(?:\\]\\|}\\)\\)\\(?:[ \t\r\n]+when\\s-+.+\\)?\\s-*\\(<-\\|->\\)"
+        (2 'shadow)
         (,(concat "\\(?:^\\|[^\\^\r\n]\\)\\_<\\(" symbol "\\)\\_>")
          (progn
            (goto-char (setq font-lock--anchor-beg-point (match-beginning 0)))
@@ -62,7 +58,7 @@
          (goto-char font-lock--anchor-beg-point)
          (1 'font-lock-variable-name-face)))
        ;; Highlighting argument variables
-       ("\\<\\(?:fn\\)\\s-+\\([^-\n]+\\)\\s-+->"
+       ("\\<\\(?:fn\\)\\s-+\\(.+\\)\\s-+->"
         (,(concat "\\(" symbol "\\)")
          (progn
            (setq font-lock--anchor-beg-point (match-beginning 0))
@@ -77,7 +73,13 @@
            (up-list)
            (point))
          (goto-char font-lock--anchor-beg-point)
-         (1 'elixir-argument-name-face))))
+         (1 'elixir-argument-name-face)))
+       ("\\(?:\\_<\\|\\s(\\)\\(\\?.\\)"
+        (1 'font-lock-negation-char-face))
+       ("\\(|>?\\|&\\|<<\\|>>\\|[.,]\\|\\s(\\|\\s)\\)"
+        (1 'shadow))
+       ("\\(/\\)[0-9]"
+        (1 'shadow)))
      :append)))
 
 (use-package cperl-mode
