@@ -80,6 +80,7 @@
   :defer t
   :init
   (defun org-agenda-resume ()
+    "TODO"
     (interactive)
     (when (fboundp #'persp-switch-to-org)
       (persp-switch-to-org))
@@ -90,21 +91,27 @@
       t))
 
   (defun org-agenda-show-list ()
+    "TODO"
     (interactive)
     (when (fboundp #'persp-switch-to-org)
       (persp-switch-to-org))
     (org-agenda-list)
     (call-interactively #'org-agenda-redo))
 
-  (when window-system
-    (pull-to-google-drive (concat (getenv "HOME") "/Google Drive/Org")
-                          (lambda (_)
-                            (when (and (boundp 'org-agenda-buffer) org-agenda-buffer)
-                              (dolist (file org-agenda-files)
-                                (flet ((yes-or-no-p (&rest args) t))
-                                  (find-file-noselect file)))
-                              (with-current-buffer org-agenda-buffer
-                                (call-interactively #'org-agenda-redo))))))
+  (defun org-sync-cloud ()
+    "TODO"
+    (interactive)
+    (let ((dir (concat (getenv "HOME") "/Google Drive/Org")))
+      (message (concat "Updating " dir "..."))
+      (pull-to-google-drive
+       dir
+       (lambda (_)
+         (when (and (boundp 'org-agenda-buffer) org-agenda-buffer)
+           (dolist (file org-agenda-files)
+             (flet ((yes-or-no-p (&rest args) t))
+               (find-file-noselect file)))
+           (with-current-buffer org-agenda-buffer
+             (call-interactively #'org-agenda-redo)))))))
 
   (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
 
@@ -128,6 +135,8 @@
         org-agenda-sticky t
         org-agenda-tags-column org-tags-column
         org-agenda-window-setup 'current-window)
+  (when window-system
+    (org-sync-cloud))
   (with-eval-after-load "persp-mode"
     (let ((f (lambda (&rest _)
                (persp-switch-to-org))))

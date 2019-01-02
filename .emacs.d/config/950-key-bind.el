@@ -73,14 +73,15 @@
     ;; applications
 
     ;; - org
+    "aoS" #'org-sync-cloud
+    "aoT" #'org-todo-list
     "aoa" #'org-agenda-show-list
     "aocj" #'org-clock-jump-to-current-clock
     "aocn" #'org-capture-note
     "aoct" #'org-capture-todo
-    "aom" #'org-tags-view
     "aor" #'org-agenda-resume
     "aos" #'org-search-view
-    "aot" #'org-todo-list
+    "aot" #'org-tags-view
 
     ;; - calculator
     "ac" #'calc
