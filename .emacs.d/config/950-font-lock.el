@@ -1025,11 +1025,6 @@
 
 (use-package prog-mode
   :defer t
-  :init
-  (defface shadow
-    '((t (:inherit shadow)))
-    "TODO")
-
   :config
   (add-hook 'prog-mode-hook
             (lambda ()
