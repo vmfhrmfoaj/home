@@ -255,13 +255,23 @@
   (add-hook 'prog-mode-hook #'highlight-numbers-mode))
 
 (use-package highlight-symbol
-  :disabled t
   :ensure t
   :init
-  (add-hook 'prog-mode-hook #'highlight-symbol-mode)
+  (defvar highlight-symbol-exclude-modes
+    '(magit-mode diff-mode ediff-mode)
+    "TODO")
+
+  (add-hook 'evil-normal-state-entry-hook
+            (lambda ()
+              (unless (-some #'derived-mode-p highlight-symbol-exclude-modes)
+                (highlight-symbol-mode  1))))
+
+  (add-hook 'evil-normal-state-exit-hook
+            (lambda ()
+              (highlight-symbol-mode -1)))
 
   :config
-  (setq highlight-symbol-idle-delay 0.5))
+  (setq highlight-symbol-idle-delay 0.1))
 
 (use-package hl-line
   :disabled t

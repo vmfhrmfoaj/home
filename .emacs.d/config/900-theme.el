@@ -17,6 +17,7 @@
    `(clojure-special-variable-name-face ((t (:inherit font-lock-constant-face))))
    `(default ((t (:background "#FCFCFC"))))
    `(elixir-argument-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
+   `(highlight-symbol-face ((t (:background "#FFFFCF"))))
    `(font-lock-comment-face ((t (:slant normal))))
    `(font-lock-function-name-face ((t (:weight bold))))
    `(fringe ((t (:background "#F9F9F9"))))
