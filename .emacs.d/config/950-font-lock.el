@@ -128,10 +128,10 @@
   :defer t
   :init
   (defface clojure-defining-spec-face
-    `((t (:inherit (bold clojure-keyword-face))))
+    `((t (:inherit (clojure-keyword-face))))
     "Face used to font-lock Clojure defining Spec")
   (defface clojure-side-effect-face
-    `((t (:inherit (italic bold font-lock-variable-name-face))))
+    `((t (:inherit (italic font-lock-variable-name-face))))
     "Face used to font-lock Clojure side-effect indicator.")
   (defface clojure-important-keywords-face
     '((t (:inherit (italic font-lock-keyword-face))))
@@ -158,10 +158,10 @@
     '((t (:inherit italic)))
     "Face used to font-lock Clojure conditions in `cond' form.")
   (defface clojure-if-true-face
-    '((t (:inherit default)))
+    '((t (:inherit italic)))
     "Face used to font-lock Clojure `if' true form.")
   (defface clojure-define-type-face
-    '((t (:inherit (bold font-lock-type-face))))
+    '((t (:inherit (font-lock-type-face))))
     "TODO")
   (defface clojure-meta-face
     '((t (:inherit shadow)))
@@ -1034,7 +1034,7 @@
                '(("\\(?:\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\)"
                   (1 'shadow))
                  ("\\(#?'\\|[.,`{}]\\|\\s(\\|\\s)\\)"
-                  (1 'shadow)))
+                  (1 'shadow append)))
                :append))
             :append))
 

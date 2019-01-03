@@ -1,10 +1,10 @@
 (when (window-system)
-  (setq-default line-spacing 2)
-  (let ((font "Ubuntu Mono")
+  (setq-default line-spacing 5)
+  (let ((font "DejaVu Sans Mono")
         (height (cond
-                 ((string-equal "gnome-macbookair" hostname) 143)
-                 ((string-equal "gnome-imac" hostname) 130) ; for HiDPI=2 and Scaling Factor=0.9
-                 (t 120))))
+                 ((string-equal "gnome-macbookair" hostname) 128)
+                 ((string-equal "gnome-imac" hostname) 113) ; for HiDPI=2 and Scaling Factor=0.9
+                 (t 109))))
     (set-face-font 'default font)
     (set-fontset-font t 'unicode "symbola")
     (set-face-attribute 'default nil

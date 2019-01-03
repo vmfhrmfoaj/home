@@ -274,7 +274,6 @@
   (setq highlight-symbol-idle-delay 0.1))
 
 (use-package hl-line
-  :disabled t
   :config
   (global-hl-line-mode 1))
 

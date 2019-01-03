@@ -1,1 +1,1 @@
-(setq HHKB? nil)
+(setq HHKB? t)

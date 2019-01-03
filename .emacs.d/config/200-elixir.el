@@ -5,7 +5,8 @@
   (unless (package-installed-p 'elixir-mode)
     (quelpa '(elixir-mode :repo "vmfhrmfoaj/emacs-elixir" :fetcher github)))
 
-  (add-hook 'elixir-mode-hook #'alchemist-mode))
+  (add-hook 'elixir-mode-hook #'alchemist-mode)
+  (add-hook 'elixir-mode-hook #'highlight-numbers-mode))
 
 (use-package alchemist
   :ensure t

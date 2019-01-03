@@ -8,8 +8,8 @@
   (custom-set-faces
    `(bold ((t (:weight bold))))
    `(cider-fringe-good-face ((t (:inherit success))))
-   `(clojure-define-type-face   ((t (:inherit (bold font-lock-type-face)))))
-   `(clojure-defining-spec-face ((t (:inherit (bold clojure-keyword-face)))))
+   `(clojure-define-type-face   ((t (:inherit (font-lock-type-face)))))
+   `(clojure-defining-spec-face ((t (:inherit (clojure-keyword-face)))))
    `(clojure-fn-parameter-face  ((t (:foreground ,local-variable-name-fg-color :weight medium))))
    `(clojure-keyword-face       ((t (:inherit font-lock-builtin-face))))
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
@@ -19,7 +19,6 @@
    `(elixir-argument-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
    `(highlight-symbol-face ((t (:background "#FFFFCF"))))
    `(font-lock-comment-face ((t (:slant normal))))
-   `(font-lock-function-name-face ((t (:weight bold))))
    `(fringe ((t (:background "#F9F9F9"))))
    `(hl-line ((t (:underline unspecified :inverse-video nil))))
    `(isearch ((t (:underline unspecified :weight bold))))
@@ -36,7 +35,9 @@
    `(helm-swoop-target-word-face ((t (:inherit lazy-highlight))))
    `(helm-match ((t (:inherit lazy-highlight))))
    `(helm-match-selection ((t (:inherit isearch))))
-   `(helm-selection ((t (:background ,(color-from 'isearch :background 30) :distant-foreground "black"))))
+   `(helm-selection ((t (:background ,(color-from 'hl-line :background -5) :distant-foreground "black"))))
+   `(magit-diff-context-highlight ((t (:background ,(color-from 'hl-line :background 7) :foreground ,(color-from 'hl-line :background -55)))))
+   `(magit-section-highlight ((t (:inherit hl-line))))
    `(variable-pitch ((t (:family "DejaVu Serif"))))))
 
 (use-package elixir-mode
@@ -56,14 +57,14 @@
          (visual-color  (color-from 'cursor :background -15))
          (operator-color "#A155E7")
          (replace-color  "#DD9393"))
-    (setq cursor-type 'box
-          evil-normal-state-cursor   `(box ,default-color)
-          evil-visual-state-cursor   `(box ,visual-color)
-          evil-operator-state-cursor `(box ,operator-color)
+    (setq cursor-type `(hbar . ,hbar-height)
+          evil-normal-state-cursor   `((hbar . ,hbar-height) ,default-color)
+          evil-visual-state-cursor   `((hbar . ,hbar-height) ,visual-color)
+          evil-operator-state-cursor `((hbar . ,hbar-height) ,operator-color)
           evil-insert-state-cursor   `(bar ,default-color)
           evil-replace-state-cursor  `((hbar . ,hbar-height) ,replace-color))
     (with-eval-after-load 'evil-multiedit
-      (setq evil-multiedit-normal-state-cursor `(box ,default-color)
+      (setq evil-multiedit-normal-state-cursor `((hbar . ,hbar-height) ,default-color)
             evil-multiedit-insert-state-cursor `(bar ,default-color)))))
 
 (use-package highlight-parentheses
