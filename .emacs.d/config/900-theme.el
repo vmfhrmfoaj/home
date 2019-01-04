@@ -36,8 +36,9 @@
    `(helm-match ((t (:inherit lazy-highlight))))
    `(helm-match-selection ((t (:inherit isearch))))
    `(helm-selection ((t (:background ,(color-from 'hl-line :background -5) :distant-foreground "black"))))
-   `(magit-diff-context-highlight ((t (:background ,(color-from 'hl-line :background 7) :foreground ,(color-from 'hl-line :background -55)))))
-   `(magit-section-highlight ((t (:inherit hl-line))))
+   `(magit-diff-context-highlight ((t (:background ,(color-from 'hl-line :background 8) :foreground ,(color-from 'hl-line :background -50)))))
+   `(magit-section-highlight ((t (:background ,(color-from 'hl-line :background -5)))))
+   `(underline ((t (:underline (:color foreground-color :style wave)))))
    `(variable-pitch ((t (:family "DejaVu Serif"))))))
 
 (use-package elixir-mode
@@ -55,8 +56,8 @@
                         hbar-height))
          (default-color (color-from 'cursor :background   0))
          (visual-color  (color-from 'cursor :background -15))
-         (operator-color "#A155E7")
-         (replace-color  "#DD9393"))
+         (operator-color (color-from 'font-lock-keyword-face :foreground 0))
+         (replace-color  (color-from 'font-lock-warning-face :foreground 0)))
     (setq cursor-type `(hbar . ,hbar-height)
           evil-normal-state-cursor   `((hbar . ,hbar-height) ,default-color)
           evil-visual-state-cursor   `((hbar . ,hbar-height) ,visual-color)
@@ -69,9 +70,11 @@
 
 (use-package highlight-parentheses
   :defer t
+  :init
+  (setq hl-paren-base-color "light sea green")
+
   :config
-  (setq hl-paren-base-color "light sea green"
-        hl-paren-colors
+  (setq hl-paren-colors
         (--iterate (dim-color it 6)
                    (apply 'color-rgb-to-hex-2-dig (color-name-to-rgb hl-paren-base-color))
                    4)))
@@ -86,7 +89,7 @@
   :defer t
   :config
   (custom-set-faces
-   `(show-paren-match    ((t (:background "#FF753B" :foreground ,(color-from 'default :background 0)))))
+   `(show-paren-match    ((t (:foreground ,(light-color hl-paren-base-color 5) :weight bold :underline t))))
    `(show-paren-mismatch ((t (:inherit font-lock-warning-face :weight bold))))))
 
 (use-package php-mode
@@ -110,7 +113,7 @@
   :defer t
   :config
   (custom-set-faces
-   `(sp-show-pair-match-face    ((t (:background "#7237FF" :foreground ,(color-from 'default :background 0) :weight bold))))
+   `(sp-show-pair-match-face    ((t (:foreground ,(light-color hl-paren-base-color 5) :weight bold :underline t))))
    `(sp-show-pair-mismatch-face ((t (:inherit font-lock-warning-face :weight bold))))))
 
 (use-package web-mode
