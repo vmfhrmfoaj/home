@@ -4,7 +4,7 @@
         (height (cond
                  ((string-equal "gnome-macbookair" hostname) 128)
                  ((string-equal "gnome-imac" hostname) 113) ; for HiDPI=2 and Scaling Factor=0.9
-                 (t 109))))
+                 (t 105))))
     (set-face-font 'default font)
     (set-fontset-font t 'unicode "symbola")
     (set-face-attribute 'default nil
