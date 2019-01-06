@@ -23,6 +23,8 @@
    `(hl-line ((t (:underline unspecified :inverse-video nil))))
    `(isearch ((t (:underline unspecified :weight bold))))
    `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
+   `(org-block-begin-line ((t (:underline unspecified))))
+   `(org-block-end-line ((t (:overline unspecified))))
    `(org-date ((t (:underline unspecified :slant italic))))
    `(org-link ((t (:inherit underline :underline unspecified))))
    `(org-quote ((t (:slant normal)))))
@@ -37,7 +39,7 @@
    `(helm-match-selection ((t (:inherit isearch))))
    `(helm-selection ((t (:background ,(color-from 'hl-line :background -5) :distant-foreground "black"))))
    `(magit-diff-context-highlight ((t (:background ,(color-from 'hl-line :background 8) :foreground ,(color-from 'hl-line :background -50)))))
-   `(magit-section-highlight ((t (:background ,(color-from 'hl-line :background -5)))))
+   `(magit-section-highlight ((t (:background ,(color-from 'hl-line :background -1)))))
    `(underline ((t (:underline (:color foreground-color :style wave)))))
    `(variable-pitch ((t (:family "DejaVu Serif"))))))
 

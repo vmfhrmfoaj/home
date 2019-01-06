@@ -6,6 +6,7 @@
     (quelpa '(elixir-mode :repo "vmfhrmfoaj/emacs-elixir" :fetcher github)))
 
   (add-hook 'elixir-mode-hook #'alchemist-mode)
+  (add-hook 'elixir-mode-hook #'aggressive-indent-mode)
   (add-hook 'elixir-mode-hook #'highlight-numbers-mode))
 
 (use-package alchemist

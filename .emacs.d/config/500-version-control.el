@@ -76,7 +76,8 @@
   (add-hook 'magit-mode-hook #'magit-setup)
 
   :config
-  (setq magit-diff-refine-hunk t)
+  (setq magit-diff-refine-hunk t
+        magit-bury-buffer-function #'magit-mode-quit-window)
   (-update->> magit-status-sections-hook
               (-replace-first 'magit-insert-unpushed-to-upstream-or-recent
                               'magit-insert-unpushed-to-upstream))

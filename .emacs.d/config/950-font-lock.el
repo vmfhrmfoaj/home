@@ -37,8 +37,7 @@
      'elixir-mode
      `(;; Highlighting variables
        (,(concat "\\(?:^\\s-*\\|\\(?:for\\|with\\)\\s-+\\)\\(" symbol "\\)\\s-+\\(<-\\|->\\)")
-        (1 'font-lock-variable-name-face)
-        (2 'shadow))
+        (1 'font-lock-variable-name-face))
        ;; Highlighting pattern matching variables
        ("\\(\\(?:\\[\\|%?{\\).+?\\(?:\\]\\|}\\)\\)\\s-*="
         (,(concat "\\(?:^\\|[^\\^\r\n]\\)\\_<\\(" symbol "\\)\\_>")
@@ -49,7 +48,6 @@
          (goto-char font-lock--anchor-beg-point)
          (1 'font-lock-variable-name-face)))
        ("\\(\\(?:\\[\\|%?{\\).+?\\(?:\\]\\|}\\)\\)\\(?:[ \t\r\n]+when\\s-+.+\\)?\\s-*\\(<-\\|->\\)"
-        (2 'shadow)
         (,(concat "\\(?:^\\|[^\\^\r\n]\\)\\_<\\(" symbol "\\)\\_>")
          (progn
            (goto-char (setq font-lock--anchor-beg-point (match-beginning 0)))
@@ -595,7 +593,7 @@
            "(" core-ns?
            (regexp-opt '("letfn" "case" "cond" "cond->" "cond->>" "condp"
                          "for" "when" "when-not" "when-let" "when-first" "when-some"
-                         ".." "doto" 
+                         ".." "doto"
                          "dosync" "doseq" "dotimes" "dorun" "doall"
                          "ns" "in-ns"
                          "with-open" "with-local-vars" "binding"

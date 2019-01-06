@@ -2,8 +2,8 @@
   (blink-cursor-mode 0))
 
 (use-package aggressive-indent
-  :disabled t
   :ensure t
+  :defer t
   :init
   (defun aggressive-indent-do-indent ()
     "TODO"
@@ -35,8 +35,7 @@
             (lambda ()
               "TODO"
               (unless evil-insert-vcount
-                (aggressive-indent-do-indent))))
-  (global-aggressive-indent-mode 1))
+                (aggressive-indent-do-indent)))))
 
 (use-package evil-surround
   :ensure t
