@@ -116,6 +116,8 @@
         (1 'font-lock-variable-name-face))
        (,(concat whitespace "\\(accept\\)" whitespace* "(")
         (1 'font-lock-type-face))
+       ("\\(?:\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\)"
+        (1 'shadow))
        ("\\([*@$%]+\\)\\(?:[:_0-9a-zA-Z]\\|\\s(\\)"
         (1 'shadow))
        ("\\(;\\)"
@@ -1018,7 +1020,9 @@
         ("function.+:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)"
          (1 'font-lock-type-face))
         (")\\s-*:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*\\(?:\{\\|;\\)"
-         (1 'font-lock-type-face)))))
+         (1 'font-lock-type-face))
+       ("\\(?:\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\)"
+        (1 'shadow)))))
   (setq php-font-lock-keywords php-font-lock-keywords-3))
 
 (use-package prog-mode
@@ -1029,9 +1033,7 @@
               "TODO"
               (font-lock-add-keywords
                nil
-               '(("\\(?:\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\)"
-                  (1 'shadow))
-                 ("\\(#?'\\|[.,`{}]\\|\\s(\\|\\s)\\)"
+               '(("\\(#?'\\|[.,`{}]\\|\\s(\\|\\s)\\)"
                   (1 'shadow append)))
                :append))
             :append))
