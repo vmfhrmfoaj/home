@@ -15,11 +15,10 @@
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
    `(clojure-side-effect-face   ((t (:inherit (bold italic font-lock-warning-face)))))
    `(clojure-special-variable-name-face ((t (:inherit font-lock-constant-face))))
-   `(default ((t (:background "#FCFCFC"))))
    `(elixir-argument-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
    `(highlight-symbol-face ((t (:background "#FFFFCF"))))
    `(font-lock-comment-face ((t (:slant normal))))
-   `(fringe ((t (:background "#F9F9F9"))))
+   `(fringe ((t (:background "#FAFAFA"))))
    `(hl-line ((t (:underline unspecified :inverse-video nil))))
    `(isearch ((t (:underline unspecified :weight bold))))
    `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
@@ -28,6 +27,10 @@
    `(org-date ((t (:underline unspecified :slant italic))))
    `(org-link ((t (:inherit underline :underline unspecified))))
    `(org-quote ((t (:slant normal)))))
+  (cond
+   ((string-equal "gnome-macbookair" hostname)
+    (custom-set-faces
+     `(hl-line ((t (:background "#F5FECA" :underline unspecified :inverse-video nil)))))))
   (custom-theme-set-faces
    'leuven
    `(bold ((t (:weight bold))))
