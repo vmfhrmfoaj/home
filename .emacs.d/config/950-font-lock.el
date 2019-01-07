@@ -26,7 +26,16 @@
     '((t (:inherit font-lock-variable-name-face :weight medium)))
     "TODO")
 
-  (let* ((symbol "[_0-9a-zA-Z?!]+"))
+  (let* ((symbol "[_0-9a-zA-Z?!]+")
+         (symbol-fn (-partial
+                     (lambda (symbol limit)
+                       (let ((found-p nil))
+                         (while (and (re-search-forward (concat "\\_<\\(" symbol "\\)\\_>") limit t)
+                                     (not found-p))
+                           (unless (equal ?^ (char-before (match-beginning 1)))
+                             (setq found-p t)))
+                         found-p))
+                     symbol)))
     ;; prepend rules
     (font-lock-add-keywords
      'elixir-mode
@@ -35,12 +44,14 @@
     ;; append rules
     (font-lock-add-keywords
      'elixir-mode
-     `(;; Highlighting variables
+     `(("\\(?:\\_<\\|\\s(\\)\\(\\?.\\)"
+        (1 'font-lock-negation-char-face))
+       ;; Highlighting variables
        (,(concat "\\(?:^\\s-*\\|\\(?:for\\|with\\)\\s-+\\)\\(" symbol "\\)\\s-+\\(<-\\|->\\)")
         (1 'font-lock-variable-name-face))
        ;; Highlighting pattern matching variables
        ("\\(\\(?:\\[\\|%?{\\).+?\\(?:\\]\\|}\\)\\)\\s-*="
-        (,(concat "\\(?:^\\|[^\\^\r\n]\\)\\_<\\(" symbol "\\)\\_>")
+        (,symbol-fn
          (progn
            (goto-char (setq font-lock--anchor-beg-point (match-beginning 0)))
            (goto-char (match-beginning 1))
@@ -48,7 +59,7 @@
          (goto-char font-lock--anchor-beg-point)
          (1 'font-lock-variable-name-face)))
        ("\\(\\(?:\\[\\|%?{\\).+?\\(?:\\]\\|}\\)\\)\\(?:[ \t\r\n]+when\\s-+.+\\)?\\s-*\\(<-\\|->\\)"
-        (,(concat "\\(?:^\\|[^\\^\r\n]\\)\\_<\\(" symbol "\\)\\_>")
+        (,symbol-fn
          (progn
            (goto-char (setq font-lock--anchor-beg-point (match-beginning 0)))
            (goto-char (match-beginning 1))
@@ -57,7 +68,7 @@
          (1 'font-lock-variable-name-face)))
        ;; Highlighting argument variables
        ("\\<\\(?:fn\\)\\s-+\\(.+\\)\\s-+->"
-        (,(concat "\\(" symbol "\\)")
+        (,symbol-fn
          (progn
            (setq font-lock--anchor-beg-point (match-beginning 0))
            (goto-char (match-beginning 1))
@@ -65,16 +76,14 @@
          (goto-char font-lock--anchor-beg-point)
          (1 'elixir-argument-name-face)))
        (,(concat "\\<\\(?:defp?\\|defmacrop?\\)\\s-+" symbol "\\s-*(")
-        (,(concat "\\(" symbol "\\)")
+        (,symbol-fn
          (save-excursion
            (setq font-lock--anchor-beg-point (point))
            (up-list)
            (point))
          (goto-char font-lock--anchor-beg-point)
          (1 'elixir-argument-name-face)))
-       ("\\(?:\\_<\\|\\s(\\)\\(\\?.\\)"
-        (1 'font-lock-negation-char-face))
-       ("\\(|>?\\|&\\|<<\\|>>\\|[.,]\\|\\s(\\|\\s)\\)"
+       ("\\(|>?\\|<<\\|>>\\|[.,&%]\\|\\s(\\|\\s)\\)"
         (1 'shadow))
        ("\\(/\\)[0-9]"
         (1 'shadow)))
