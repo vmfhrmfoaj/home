@@ -91,8 +91,8 @@
           (beginning-of-line)
           (let ((regex (->> pattern
                             (s-replace "\\ " "\\s-")
-                            (s-trim)
                             (s-split " ")
+                            (-remove #'s-blank-str?)
                             (--sort (< (length other) (length it)))
                             (-interpose "\\|")
                             (apply #'concat))))
