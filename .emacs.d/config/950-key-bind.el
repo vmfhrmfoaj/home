@@ -478,7 +478,7 @@
   :defer t
   :config
   (evil-leader/set-key-for-mode 'org-mode
-    "m:" #'org-set-tags
+    "m:" #'org-set-tags-command
     "mTT" #'org-todo
     "mci" #'org-clock-in
     "mco" #'org-clock-out

@@ -59,6 +59,7 @@
                                  ("DONE" . org-done)
                                  ("CANCELLED" . org-cancelled))
         org-use-sub-superscripts nil)
+  (add-to-list 'helm-completing-read-handlers-alist '(org-set-tags-command . helm-org-completing-read-tags))
   (add-hook 'org-todo-get-default-hook #'org-insert-schedule-&-deadline)
   (add-hook 'org-mode-hook
             (lambda ()
