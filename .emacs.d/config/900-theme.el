@@ -7,30 +7,10 @@
   (setq x-underline-at-descent-line t)
   (custom-set-faces
    `(bold ((t (:weight bold))))
-   `(cider-fringe-good-face ((t (:inherit success))))
-   `(clojure-define-type-face   ((t (:inherit (font-lock-type-face)))))
-   `(clojure-defining-spec-face ((t (:inherit (clojure-keyword-face)))))
-   `(clojure-fn-parameter-face  ((t (:foreground ,local-variable-name-fg-color :weight medium))))
-   `(clojure-keyword-face       ((t (:inherit font-lock-builtin-face))))
-   `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
-   `(clojure-side-effect-face   ((t (:inherit (bold italic font-lock-warning-face)))))
-   `(clojure-special-variable-name-face ((t (:inherit font-lock-constant-face))))
-   `(elixir-argument-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
-   `(highlight-symbol-face ((t (:background "#FFFFCF"))))
    `(font-lock-comment-face ((t (:slant normal))))
    `(fringe ((t (:background "#FAFAFA"))))
-   `(hl-line ((t (:underline unspecified :inverse-video nil))))
    `(isearch ((t (:underline unspecified :weight bold))))
-   `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
-   `(org-block-begin-line ((t (:underline unspecified))))
-   `(org-block-end-line ((t (:overline unspecified))))
-   `(org-date ((t (:underline unspecified :slant italic))))
-   `(org-link ((t (:inherit underline :underline unspecified))))
-   `(org-quote ((t (:slant normal)))))
-  (cond
-   ((string-equal "gnome-macbookair" hostname)
-    (custom-set-faces
-     `(hl-line ((t (:background "#F5FECA" :underline unspecified :inverse-video nil)))))))
+   `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium)))))
   (custom-theme-set-faces
    'leuven
    `(bold ((t (:weight bold))))
@@ -40,16 +20,28 @@
    `(helm-swoop-target-word-face ((t (:inherit lazy-highlight))))
    `(helm-match ((t (:inherit lazy-highlight))))
    `(helm-match-selection ((t (:inherit isearch))))
-   `(helm-selection ((t (:background ,(color-from 'hl-line :background -5) :distant-foreground "black"))))
-   `(magit-diff-context-highlight ((t (:background ,(color-from 'hl-line :background 8) :foreground ,(color-from 'hl-line :background -50)))))
-   `(magit-section-highlight ((t (:background ,(color-from 'hl-line :background -1)))))
+   `(helm-selection ((t (:background ,(color-from 'isearch :background 35) :distant-foreground "black"))))
    `(underline ((t (:underline (:color foreground-color :style wave)))))
    `(variable-pitch ((t (:family "DejaVu Serif"))))))
+
+(use-package clojure-mode
+  :defer t
+  :config
+  (custom-set-faces
+   `(cider-fringe-good-face ((t (:inherit success))))
+   `(clojure-define-type-face   ((t (:inherit (font-lock-type-face)))))
+   `(clojure-defining-spec-face ((t (:inherit (clojure-keyword-face)))))
+   `(clojure-fn-parameter-face  ((t (:foreground ,local-variable-name-fg-color :weight medium))))
+   `(clojure-keyword-face       ((t (:inherit font-lock-builtin-face))))
+   `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
+   `(clojure-side-effect-face   ((t (:inherit (bold italic font-lock-warning-face)))))
+   `(clojure-special-variable-name-face ((t (:inherit font-lock-constant-face))))))
 
 (use-package elixir-mode
   :defer t
   :config
   (custom-set-faces
+   `(elixir-argument-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
    `(elixir-atom-face ((t (:inherit 'font-lock-builtin-face))))))
 
 (use-package evil
@@ -63,8 +55,8 @@
          (visual-color  (color-from 'cursor :background -15))
          (operator-color (color-from 'font-lock-keyword-face :foreground 0))
          (replace-color  (color-from 'font-lock-warning-face :foreground 0)))
-    (setq cursor-type `(hbar . ,hbar-height)
-          evil-normal-state-cursor   `((hbar . ,hbar-height) ,default-color)
+    (setq-default cursor-type `(hbar . ,hbar-height))
+    (setq evil-normal-state-cursor   `((hbar . ,hbar-height) ,default-color)
           evil-visual-state-cursor   `((hbar . ,hbar-height) ,visual-color)
           evil-operator-state-cursor `((hbar . ,hbar-height) ,operator-color)
           evil-insert-state-cursor   `(bar ,default-color)
@@ -84,11 +76,50 @@
                    (apply 'color-rgb-to-hex-2-dig (color-name-to-rgb hl-paren-base-color))
                    4)))
 
+(use-package highlight-symbol
+  :defer t
+  :config
+  (custom-theme-set-faces
+   'leuven
+   `(highlight-symbol-face ((t (:background "#FFFFCF"))))))
+
+(use-package hl-line
+  :defer t
+  :config
+  (custom-set-faces
+   `(hl-line ((t (:underline unspecified :inverse-video nil)))))
+  (cond
+   ((string-equal "gnome-macbookair" hostname)
+    (custom-set-faces
+     `(hl-line ((t (:background "#F5FECA" :underline unspecified :inverse-video nil)))))))
+  (custom-theme-set-faces
+   'leuven
+   `(helm-selection ((t (:background ,(color-from 'hl-line :background -5) :distant-foreground "black"))))
+   `(magit-diff-context-highlight ((t (:background ,(color-from 'hl-line :background 6) :foreground ,(color-from 'hl-line :background -50)))))))
+
 (use-package linum
   :defer t
   :config
   (custom-set-faces
    `(linum ((t (:inherit default))))))
+
+(use-package magit
+  :defer t
+  :config
+  (custom-theme-set-faces
+   'leuven
+   `(magit-section-highlight ((t (:background ,(color-from 'isearch :background 35) :distant-foreground "black"))))))
+
+(use-package org
+  :defer t
+  :config
+  (custom-set-faces
+   `(org-block-begin-line ((t (:underline unspecified))))
+   `(org-block-end-line ((t (:overline unspecified))))
+   `(org-date ((t (:underline unspecified :slant italic))))
+   `(org-link ((t (:inherit underline :underline unspecified))))
+   `(org-quote ((t (:slant normal))))
+   `(org-tag-faces ((t (:background unspecified))))))
 
 (use-package paren
   :defer t
