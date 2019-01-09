@@ -8,7 +8,7 @@
   (custom-set-faces
    `(bold ((t (:weight bold))))
    `(font-lock-comment-face ((t (:slant normal))))
-   `(fringe ((t (:background "#FAFAFA"))))
+   `(fringe ((t (:background "#F8F8F8"))))
    `(isearch ((t (:underline unspecified :weight bold))))
    `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium)))))
   (custom-theme-set-faces
@@ -23,6 +23,11 @@
    `(helm-selection ((t (:background ,(color-from 'isearch :background 35) :distant-foreground "black"))))
    `(underline ((t (:underline (:color foreground-color :style wave)))))
    `(variable-pitch ((t (:family "DejaVu Serif"))))))
+
+(use-package auto-dim-other-buffers
+  :config
+  (custom-set-faces
+   `(auto-dim-other-buffers-face ((t (:background "#FAFAFA"))))))
 
 (use-package clojure-mode
   :defer t
@@ -91,11 +96,8 @@
   (cond
    ((string-equal "gnome-macbookair" hostname)
     (custom-set-faces
-     `(hl-line ((t (:background "#F5FECA" :underline unspecified :inverse-video nil)))))))
-  (custom-theme-set-faces
-   'leuven
-   `(helm-selection ((t (:background ,(color-from 'hl-line :background -5) :distant-foreground "black"))))
-   `(magit-diff-context-highlight ((t (:background ,(color-from 'hl-line :background 6) :foreground ,(color-from 'hl-line :background -50)))))))
+     `(hl-line ((t (:background "#F5FECA" :underline unspecified :inverse-video nil))))
+     `(magit-diff-context-highlight ((t (:background ,(color-from 'hl-line :background 6) :foreground ,(color-from 'hl-line :background -50)))))))))
 
 (use-package linum
   :defer t
@@ -106,8 +108,7 @@
 (use-package magit
   :defer t
   :config
-  (custom-theme-set-faces
-   'leuven
+  (custom-set-faces
    `(magit-section-highlight ((t (:background ,(color-from 'isearch :background 35) :distant-foreground "black"))))))
 
 (use-package org
@@ -119,7 +120,7 @@
    `(org-date ((t (:underline unspecified :slant italic))))
    `(org-link ((t (:inherit underline :underline unspecified))))
    `(org-quote ((t (:slant normal))))
-   `(org-tag-faces ((t (:background unspecified))))))
+   `(org-tag ((t (:background unspecified))))))
 
 (use-package paren
   :defer t
