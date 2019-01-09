@@ -29,7 +29,6 @@
                         (-drop 1 args))))))
 
 (use-package auto-dim-other-buffers
-  :disabled t
   :ensure t
   :config
   (advice-add #'adob--never-dim-p :before-until #'helm-bufferp)
