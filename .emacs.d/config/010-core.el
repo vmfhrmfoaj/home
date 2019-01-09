@@ -1,23 +1,46 @@
 (use-package evil
   :ensure t
+  :init
+  (defvar evil--auto-indent-region nil
+    "TODO")
+
+  (make-local-variable 'evil--auto-indent-region)
+
+  (defun evil--auto-indent-region ()
+    evil--auto-indent-region)
+
+  (defun evil--auto-indent-save-pos ()
+    "TODO"
+    (setq evil--auto-indent-region
+          (list
+           (save-excursion
+             (sp-backward-up-sexp)
+             (point))
+           (save-excursion
+             (sp-up-sexp)
+             (point)))))
+
+  (defun evil-jump-item-with-smartparens (&optional _count)
+    "Improve `evil-jump-item-with' by using `show-smartparens-mode'"
+    (let ((pair (sp-get-thing)))
+      (when pair
+        (when (s-blank? (plist-get pair :op))
+          (save-excursion
+            (skip-chars-backward "-_0-9A-Za-z")
+            (setq pair (sp-get-thing))))
+        (unless (s-blank? (plist-get pair :op))
+          (sp-get pair
+            (if (<= :beg (point) :beg-in)
+                (goto-char :end-in)
+              (goto-char :beg)))
+          t))))
+
   :config
   (setq-default evil-symbol-word-search t)
   (with-eval-after-load "smartparens"
-    (advice-add #'evil-jump-item :before-until
-                (lambda (&optional _count)
-                  "Using `show-smartparens-mode'"
-                  (let ((pair (sp-get-thing)))
-                    (when pair
-                      (when (s-blank? (plist-get pair :op))
-                        (save-excursion
-                          (skip-chars-backward "-_0-9A-Za-z")
-                          (setq pair (sp-get-thing))))
-                      (unless (s-blank? (plist-get pair :op))
-                        (sp-get pair
-                          (if (<= :beg (point) :beg-in)
-                              (goto-char :end-in)
-                            (goto-char :beg)))
-                        t))))))
+    (add-hook 'evil-insert-state-entry-hook #'evil--auto-indent-save-pos)
+    (add-hook 'evil-insert-state-exit-hook (-compose (-partial #'apply #'indent-region) #'evil--auto-indent-region))
+    (advice-add #'evil-jump-item :before-until #'evil-jump-item-with-smartparens))
   (evil-mode 1))
 
 (use-package helm
