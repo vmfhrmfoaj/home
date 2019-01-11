@@ -29,6 +29,28 @@
           t))))
 
   :config
+  (evil-define-text-object evil-inner-sexp (count &optional beg end type)
+    "Select a sp-sexp."
+    :extend-selection nil
+    (let ((beg (save-excursion
+                 (sp-backward-up-sexp)
+                 (sp-down-sexp)
+                 (point)))
+          (end (save-excursion
+                 (sp-end-of-sexp)
+                 (1- (point)))))
+      (list beg end type)))
+
+  (evil-define-text-object evil-a-sexp (count &optional beg end type)
+    "Select a sp-sexp."
+    (let ((beg (save-excursion
+                 (sp-backward-up-sexp)
+                 (point)))
+          (end (save-excursion
+                 (sp-up-sexp)
+                 (point))))
+      (list beg end type :expanded t)))
+
   (setq-default evil-symbol-word-search t)
   (advice-add #'evil-insert :after #'evil-insert-state-auto-indent)
   (add-hook 'evil-insert-state-exit-hook

@@ -266,6 +266,8 @@
 (use-package evil
   :defer t
   :config
+  (define-key evil-outer-text-objects-map "U" 'evil-a-sexp)
+  (define-key evil-inner-text-objects-map "U" 'evil-inner-sexp)
   (evil-global-set-key 'insert (kbd "C-h") #'backward-delete-char)
   (evil-global-set-key 'insert (kbd "C-a") #'beginning-of-line-text)
   (evil-global-set-key 'insert (kbd "C-e") #'end-of-line)
