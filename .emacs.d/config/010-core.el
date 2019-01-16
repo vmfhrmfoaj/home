@@ -1,17 +1,30 @@
 (use-package evil
   :ensure t
   :init
-  (defun evil-insert-state-auto-indent-for-first-input (&rest _)
-    "TODO"
-    (remove-hook 'after-change-functions #'evil-insert-state-auto-indent-for-first-input)
-    (indent-for-tab-command))
+  (defvar evil--auto-indent-region nil
+    "TODO")
 
-  (defun evil-insert-state-auto-indent (&rest _)
+  (make-local-variable 'evil--auto-indent-region)
+
+  (defun evil--auto-indent-region ()
+    evil--auto-indent-region)
+
+  (defun evil--auto-indent-save-pos ()
     "TODO"
-    (when (and (looking-at "\\s-*$")
-               (looking-back "^\\s-*" (line-beginning-position)))
-      (indent-for-tab-command)
-      (add-hook 'after-change-functions #'evil-insert-state-auto-indent-for-first-input)))
+    (setq evil--auto-indent-region
+          (list
+           (save-excursion
+             (sp-backward-up-sexp)
+             (point))
+           (save-excursion
+             (sp-up-sexp)
+             (point)))))
+
+  (defun evil--auto-indent ()
+    "TODO"
+    (let ((m (make-marker)))
+      (apply #'indent-region evil--auto-indent-region)
+      (move-marker m nil nil)))
 
   (defun evil-jump-item-with-smartparens (&optional _count)
     "Improve `evil-jump-item-with' by using `show-smartparens-mode'"
@@ -52,11 +65,9 @@
       (list beg end type :expanded t)))
 
   (setq-default evil-symbol-word-search t)
-  (advice-add #'evil-insert :after #'evil-insert-state-auto-indent)
-  (add-hook 'evil-insert-state-exit-hook
-            (-partial #'remove-hook 'after-change-functions
-                      #'evil-insert-state-auto-indent-for-first-input))
   (with-eval-after-load "smartparens"
+    (add-hook 'evil-insert-state-entry-hook #'evil--auto-indent-save-pos)
+    (add-hook 'evil-insert-state-exit-hook #'evil--auto-indent)
     (advice-add #'evil-jump-item :before-until #'evil-jump-item-with-smartparens))
   (evil-mode 1))
 
