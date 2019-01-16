@@ -140,6 +140,10 @@
       (when (not (s-blank-str? pattern))
         (save-excursion
           (beginning-of-line)
+          (while (-intersection '(helm-swoop-line-number-face helm-moccur-buffer helm-grep-file helm-grep-lineno)
+                                (-concat (-list (get-text-property (point) 'face))
+                                         (-list (get-text-property (point) 'font-lock-face))))
+            (forward-char 1))
           (let ((regex (->> pattern
                             (s-replace "\\ " "\\s-")
                             (s-split " ")
