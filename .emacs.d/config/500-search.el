@@ -48,11 +48,28 @@
     "TODO"
     (kill-local-variable 'helm-swoop-list-cache))
 
+  (defun helm-swoop--refine-candidate (str &optional pattern)
+    (list (-last-item (s-split-up-to "[0-9]+" str 1))
+          (or pattern helm-pattern)))
+
   :config
   (setq helm-swoop-pre-input-function (-const "")
         helm-swoop-speed-or-color nil
         helm-swoop-split-window-function #'helm-display-buffer-at-bottom
-        helm-swoop-use-line-number-face t)
+        helm-swoop-use-line-number-face t
+        helm-c-source-swoop-match-functions
+        (->> '(helm-mm-exact-match
+               helm-mm-match
+               helm-mm-3-migemo-match)
+             (--map (-partial #'apply it))
+             (--map (-compose it #'helm-swoop--refine-candidate)))
+        helm-c-source-swoop-search-functions
+        (->> '(helm-mm-exact-search
+               helm-mm-search
+               helm-candidates-in-buffer-search-default-fn
+               helm-mm-3-migemo-search)
+             (--map (-partial #'apply it))
+             (--map (-compose it #'helm-swoop--refine-candidate))))
   (advice-add #'helm-swoop--get-content :override #'helm-swoop--get-content-for-fancy-narrow))
 
 (use-package helm-ag
