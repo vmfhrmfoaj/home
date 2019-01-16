@@ -52,6 +52,7 @@
 (use-package evil
   :defer t
   :config
+  (setq-default cursor-in-non-selected-windows nil)
   (let* ((hbar-height (max line-spacing 2))
          (hbar-height (if (string-equal "gnome-imac" hostname)
                           (* 2 hbar-height) ; for HiDPI
