@@ -97,8 +97,7 @@
   (cond
    ((string-equal "gnome-macbookair" hostname)
     (custom-set-faces
-     `(hl-line ((t (:background "#F5FECA" :underline unspecified :inverse-video nil))))
-     `(magit-diff-context-highlight ((t (:background ,(color-from 'hl-line :background 6) :foreground ,(color-from 'hl-line :background -50)))))))))
+     `(hl-line ((t (:background "#F5FECA" :underline unspecified :inverse-video nil))))))))
 
 (use-package linum
   :defer t
@@ -110,7 +109,10 @@
   :defer t
   :config
   (custom-set-faces
-   `(magit-section-highlight ((t (:background ,(color-from 'isearch :background 35) :distant-foreground "black"))))))
+   `(magit-section-highlight ((t (:background ,(color-from 'isearch :background 35) :distant-foreground "black")))))
+  (with-eval-after-load "hl-line"
+    (custom-set-faces
+     `(magit-diff-context-highlight ((t (:background ,(color-from 'hl-line :background 7) :foreground ,(color-from 'hl-line :background -50))))))))
 
 (use-package org
   :defer t
