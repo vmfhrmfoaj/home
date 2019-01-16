@@ -1,12 +1,8 @@
 (use-package elixir-mode
-  ;; :ensure t
+  :ensure t
   :defer t
   :init
-  (unless (package-installed-p 'elixir-mode)
-    (quelpa '(elixir-mode :repo "vmfhrmfoaj/emacs-elixir" :fetcher github)))
-
   (add-hook 'elixir-mode-hook #'alchemist-mode)
-  (add-hook 'elixir-mode-hook #'aggressive-indent-mode)
   (add-hook 'elixir-mode-hook #'highlight-numbers-mode))
 
 (use-package alchemist
