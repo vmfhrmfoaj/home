@@ -7,18 +7,36 @@
   (make-local-variable 'evil--auto-indent-region)
 
   (defun evil--auto-indent-region ()
-    evil--auto-indent-region)
+    "TODO"
+    (cond
+     ((derived-mode-p 'prog-mode)
+      (list (save-excursion
+              (sp-backward-up-sexp)
+              (point))
+            (save-excursion
+              (sp-up-sexp)
+              (point))))
+     ((derived-mode-p 'org-mode)
+      (list (save-excursion
+              (org-backward-element)
+              (point))
+            (save-excursion
+              (org-forward-element)
+              (point))))
+     ((derived-mode-p 'text-mode)
+      (list (save-excursion
+              (backward-paragraph)
+              (point))
+            (save-excursion
+              (forward-paragraph)
+              (point))))
+     (t
+      (list (line-beginning-position)
+            (line-end-position)))))
 
   (defun evil--auto-indent-save-pos ()
     "TODO"
-    (setq evil--auto-indent-region
-          (list
-           (save-excursion
-             (sp-backward-up-sexp)
-             (point))
-           (save-excursion
-             (sp-up-sexp)
-             (point)))))
+    (setq evil--auto-indent-region (evil--auto-indent-region)))
 
   (defun evil--auto-indent ()
     "TODO"
