@@ -1,9 +1,9 @@
-(when window-system
-  (let ((w 142)
-        (h-char (frame-char-height))
-        (h-titlebar-in-char 2)
-        (top-offset (if (string-equal "gnome-imac" hostname) 5 0)))
-    (setq org-tags-column (+ (- w) 5))
+(let ((w 142)
+      (h-char (frame-char-height))
+      (h-titlebar-in-char 2)
+      (top-offset (if (string-equal "gnome-imac" hostname) 5 0)))
+  (setq org-tags-column (+ (- w) 5))
+  (when window-system
     (let* ((h (floor (- (/ (float (display-pixel-height)) h-char) h-titlebar-in-char)))
            (l (/ (custom-display-pixel-width) 2.0))
            (l (floor (- l (* (frame-unit->pixel w) 0.4))))
@@ -13,11 +13,13 @@
                 (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w))))))
       (add-to-list 'default-frame-alist (cons 'width  w))
       (add-to-list 'default-frame-alist (cons 'height h))
-      (setq split-width-threshold (1+ w)
+      (setq split-width-threshold (display-pixel-width)
             initial-frame-alist (list (cons 'top    0)
                                       (cons 'left   l)
                                       (cons 'width  w)
-                                      (cons 'height h))))))
+                                      (cons 'height h))))
+    (when (<= (display-pixel-width) 1440)
+      (set-frame-parameter nil 'fullscreen 'maximized))))
 
 (use-package winum
   :ensure t
