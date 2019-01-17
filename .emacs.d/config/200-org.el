@@ -52,11 +52,12 @@
         org-src-fontify-natively t
         org-startup-indented t
         org-startup-with-inline-images t
-        org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+        org-todo-keywords '((sequence "TODO(t)" "PLANNING" "NEXT(n)" "|" "DONE(d)")
                             (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)"))
-        org-todo-keyword-faces '(("TODO" . org-todo)
-                                 ("NEXT" . org-next)
-                                 ("DONE" . org-done)
+        org-todo-keyword-faces '(("TODO"      . org-todo)
+                                 ("PLANNING"  . org-next)
+                                 ("NEXT"      . org-next)
+                                 ("DONE"      . org-done)
                                  ("CANCELLED" . org-cancelled))
         org-use-sub-superscripts nil)
   (add-to-list 'helm-completing-read-handlers-alist '(org-set-tags-command . helm-org-completing-read-tags))
@@ -174,10 +175,10 @@
         `(("t" "Todo" entry
            (file+headline ,(concat org-directory "/todos/" (format-time-string "%Y") ".org")
                           ,(format-time-string "%b"))
-           ,(concat "* TODO %^{Task}"                                                  "\n"
-                    ":PROPERTIES:"                                                     "\n"
-                    ":Effort: %^{Effort|1:00|3:00|6:00|1d|3d|1w|2w|3w|1m|3m|6m|9m|1y}" "\n"
-                    ":END:"                                                            "\n"
+           ,(concat "* TODO %^{Task}"                                                    "\n"
+                    ":PROPERTIES:"                                                       "\n"
+                    ":Effort:   %^{Effort|1:00|3:00|6:00|1d|3d|1w|2w|3w|1m|3m|6m|9m|1y}" "\n"
+                    ":END:"                                                              "\n"
                     "\n"
                     "%?")
            :prepend t)
@@ -210,18 +211,6 @@
                     "- %a" "\n"
                     "%?")
            :prepend t))))
-
-(use-package org-protocol
-  :ensure org-plus-contrib
-  :defer t
-  :init
-  (defun org-protocol-setup ()
-    "TODO"
-    (remove-hook 'focus-out-hook #'org-protocol-setup)
-    (require 'org-capture)
-    (require 'org-protocol))
-
-  (add-hook 'focus-out-hook #'org-protocol-setup))
 
 (use-package org-clock
   :defer t
@@ -260,3 +249,27 @@
         org-clock-custom-idle-time 30
         org-clock-custom-idle-timer (org-clock--start-idle-timer))
   (advice-add #'org-clock--mode-line-heading :override (-const "CLOCK-IN")))
+
+(use-package org-protocol
+  :ensure org-plus-contrib
+  :defer t
+  :init
+  (defun org-protocol-setup ()
+    "TODO"
+    (remove-hook 'focus-out-hook #'org-protocol-setup)
+    (require 'org-capture)
+    (require 'org-protocol))
+
+  (add-hook 'focus-out-hook #'org-protocol-setup))
+
+(use-package org-trello
+  :ensure t
+  :defer t
+  :init
+  (setq org-trello-current-prefix-keybinding "SPC m x")
+
+  :config
+  (setq org-trello-files (-> org-directory
+                             (concat "/trello")
+                             (directory-files-recursively "\\.org$"))
+        org-trello-input-completion-mechanism 'helm))

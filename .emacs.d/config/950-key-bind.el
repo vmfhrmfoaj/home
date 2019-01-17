@@ -500,7 +500,8 @@
   :defer t
   :config
   (evil-define-key '(normal motion) org-agenda-mode-map
-    (kbd "RET") #'org-agenda-switch-to))
+    (kbd "RET") #'org-agenda-switch-to
+    (kbd "q") #'org-agenda-quit))
 
 (use-package osx-dictionary
   :if (eq 'darwin system-type)
