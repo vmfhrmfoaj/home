@@ -10,6 +10,8 @@
    `(font-lock-comment-face ((t (:slant normal))))
    `(fringe ((t (:background "#F8F8F8"))))
    `(isearch ((t (:underline unspecified :weight bold))))
+   `(link ((t (:inherit underline :underline unspecified))))
+   `(link-visited ((t (:inherit underline :underline unspecified))))
    `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium)))))
   (custom-theme-set-faces
    'leuven
@@ -120,8 +122,8 @@
   (custom-set-faces
    `(org-block-begin-line ((t (:underline unspecified))))
    `(org-block-end-line ((t (:overline unspecified))))
-   `(org-date ((t (:underline unspecified :slant italic))))
-   `(org-link ((t (:inherit underline :underline unspecified))))
+   `(org-date ((t (:inherit italic :underline unspecified))))
+   `(org-link ((t (:inherit link :underline unspecified))))
    `(org-quote ((t (:slant normal))))
    `(org-tag ((t (:background unspecified))))))
 
