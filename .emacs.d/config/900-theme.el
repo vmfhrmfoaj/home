@@ -17,7 +17,7 @@
    'leuven
    `(bold ((t (:weight bold))))
    `(italic ((t (:slant italic))))
-   `(font-lock-doc-face ((t (:inherit font-lock-string-face :foreground "PaleGreen4"))))
+   `(font-lock-doc-face ((t (:inherit font-lock-string-face :foreground "#7F7F7F"))))
    `(font-lock-negation-char-face ((t (:inherit font-lock-warning-face :weight medium))))
    `(helm-swoop-target-word-face ((t (:inherit lazy-highlight))))
    `(helm-match ((t (:inherit lazy-highlight))))
