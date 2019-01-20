@@ -107,13 +107,17 @@
       (message (concat "Updating " dir "..."))
       (pull-to-google-drive
        dir
-       (lambda (_)
-         (when (and (boundp 'org-agenda-buffer) org-agenda-buffer)
-           (dolist (file org-agenda-files)
-             (flet ((yes-or-no-p (&rest args) t))
-               (find-file-noselect file)))
-           (with-current-buffer org-agenda-buffer
-             (call-interactively #'org-agenda-redo)))))))
+       (-partial
+        (lambda (cur-win _)
+          (when (and (boundp 'org-agenda-buffer)
+                     (buffer-live-p org-agenda-buffer))
+            (flet ((yes-or-no-p (&rest args) t))
+              (dolist (file org-agenda-files)
+                (find-file-noselect file)))
+            (with-selected-window cur-win
+              (with-current-buffer org-agenda-buffer
+                (call-interactively #'org-agenda-redo)))))
+        (selected-window)))))
 
   (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
 

@@ -18,10 +18,10 @@
               (point))))
      ((derived-mode-p 'org-mode)
       (list (save-excursion
-              (org-backward-element)
+              (org-previous-visible-heading 1)
               (point))
             (save-excursion
-              (org-forward-element)
+              (org-next-visible-heading 1)
               (point))))
      ((derived-mode-p 'text-mode)
       (list (save-excursion
