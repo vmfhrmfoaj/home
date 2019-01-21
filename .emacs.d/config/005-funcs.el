@@ -45,7 +45,22 @@
        (apply #'color-hsl-to-rgb)
        (apply #'color-rgb-to-hex-2-dig)))
 
+(defun mix-color (color-a color-b)
+  "TODO"
+  (let ((rgb-a (color-name-to-rgb color-a))
+        (rgb-b (color-name-to-rgb color-b)))
+    (->> (-zip-with #'+ rgb-a rgb-b)
+         (--map (/ it 2))
+         (apply #'color-rgb-to-hex-2-dig))))
+
+(defun mix-colors (color &rest colors)
+  "TODO"
+  (if (not colors)
+      color
+    (-reduce-from #'mix-color color colors)))
+
 (defun color-from (face attr p)
+  "TODO"
   (let ((fn (cond
              ((< 0 p) #'light-color)
              ((< p 0) #'dim-color)

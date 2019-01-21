@@ -73,6 +73,15 @@
       (setq evil-multiedit-normal-state-cursor `((hbar . ,hbar-height) ,default-color)
             evil-multiedit-insert-state-cursor `(bar ,default-color)))))
 
+(use-package php-mode
+  :defer t
+  :config
+  (custom-set-faces
+   `(php-variable-name ((t (:foreground ,(-> 'font-lock-variable-name-face
+                                             (color-from :foreground 30)
+                                             (saturate-color 10)
+                                             (mix-color (color-from 'font-lock-string-face :foreground -30)))))))))
+
 (use-package highlight-parentheses
   :defer t
   :init
