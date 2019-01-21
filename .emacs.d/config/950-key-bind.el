@@ -501,6 +501,7 @@
   :config
   (evil-define-key '(normal motion) org-agenda-mode-map
     (kbd "RET") #'org-agenda-switch-to
+    (kbd "r") #'org-agenda-redo
     (kbd "q") #'org-agenda-quit))
 
 (use-package osx-dictionary
