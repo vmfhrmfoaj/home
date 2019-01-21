@@ -966,14 +966,14 @@
          (whitespace "[ \r\t\n]")
          (whitespace+ (concat whitespace "+"))
          (whitespace* (concat whitespace "*"))
-         (assigment (concat whitespace* "[^!-+/*.=]=[^=>]"))
-         (pre  `(progn
-                  (setq font-lock--anchor-beg-point (point))
-                  (save-match-data
-                    (if (re-search-forward (concat ,whitespace+ "\\?>") nil t)
-                        (prog1 (point)
-                          (goto-char font-lock--anchor-beg-point))
-                      (point-max)))))
+         (assigment (concat whitespace* "\\s-=\\s-"))
+         (pre `(progn
+                 (setq font-lock--anchor-beg-point (point))
+                 (save-match-data
+                   (if (re-search-forward (concat ,whitespace+ "\\?>") nil t)
+                       (prog1 (point)
+                         (goto-char font-lock--anchor-beg-point))
+                     (point-max)))))
          (post '(goto-char font-lock--anchor-beg-point)))
     (defconst php-font-lock-keywords-3
       `((,(concat "\\(?:^\\|" whitespace+ "\\)\\(\\?>\\)")
@@ -989,9 +989,9 @@
             (point))
           (goto-char font-lock--anchor-beg-point)
           (1 'php-passive-assign-variable-face t)))
-        (,(concat "\\(" symbol "\\)\\(\\[[^]]*\\]\\)*" assigment)
+        (,(concat "\\(" symbol "\\)\\(\\[[^\\]]*\\]\\)*" assigment)
          (1 'font-lock-variable-name-face t))
-        (,(concat symbol "->\\([_0-9a-zA-Z]+\\)\\(\\[[^]]*\\]\\)*" assigment)
+        (,(concat symbol "->\\([_0-9a-zA-Z]+\\)\\(\\[[^\\]]*\\]\\)*" assigment)
          (1 'font-lock-variable-name-face t))
         ("$\\(this\\|that\\)\\_>"
          (1 'php-$this))
