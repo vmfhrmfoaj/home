@@ -24,7 +24,7 @@
 
   (defun evil--auto-indent ()
     "TODO"
-    (unless (or evil-insert-vcount (not evil--auto-indent-region))
+    (unless (or evil-insert-vcount (null evil--auto-indent-region))
       (let ((m (make-marker)))
         (apply #'indent-region evil--auto-indent-region)
         (move-marker m nil nil))
