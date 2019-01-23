@@ -256,13 +256,24 @@
 (use-package highlight-symbol
   :ensure t
   :init
-  (defvar highlight-symbol-exclude-modes
-    '(magit-mode diff-mode ediff-mode)
+  (defun highlight-symbol--custom-get-symbol ()
+    "Return a regular expression identifying the symbol at point.
+This is customized for the normal state of `evil-mode'."
+    (-let (((beg . end) (bounds-of-thing-at-point 'symbol)))
+      (when (and beg end (< (point) end))
+        (let ((symbol (buffer-substring-no-properties beg end)))
+          (when (not (--some (string-match-p it symbol) highlight-symbol-ignore-list))
+            (concat (car highlight-symbol-border-pattern)
+                    (regexp-quote symbol)
+                    (cdr highlight-symbol-border-pattern)))))))
+
+  (defvar highlight-symbol-enable-modes
+    '(prog-mode)
     "TODO")
 
   (add-hook 'evil-normal-state-entry-hook
             (lambda ()
-              (unless (-some #'derived-mode-p highlight-symbol-exclude-modes)
+              (when (-some #'derived-mode-p highlight-symbol-enable-modes)
                 (highlight-symbol-mode  1))))
 
   (add-hook 'evil-normal-state-exit-hook
@@ -270,7 +281,8 @@
               (highlight-symbol-mode -1)))
 
   :config
-  (setq highlight-symbol-idle-delay 0.1))
+  (setq highlight-symbol-idle-delay 0.1)
+  (advice-add #'highlight-symbol-get-symbol :override #'highlight-symbol--custom-get-symbol))
 
 (use-package hl-line
   :config
