@@ -16,23 +16,7 @@
             (save-excursion
               (sp-up-sexp)
               (point))))
-     ((derived-mode-p 'org-mode)
-      (list (save-excursion
-              (org-previous-visible-heading 1)
-              (point))
-            (save-excursion
-              (org-next-visible-heading 1)
-              (point))))
-     ((derived-mode-p 'text-mode)
-      (list (save-excursion
-              (backward-paragraph)
-              (point))
-            (save-excursion
-              (forward-paragraph)
-              (point))))
-     (t
-      (list (line-beginning-position)
-            (line-end-position)))))
+     (t nil)))
 
   (defun evil--auto-indent-save-pos ()
     "TODO"
@@ -40,9 +24,11 @@
 
   (defun evil--auto-indent ()
     "TODO"
-    (let ((m (make-marker)))
-      (apply #'indent-region evil--auto-indent-region)
-      (move-marker m nil nil)))
+    (unless (or evil-insert-vcount (not evil--auto-indent-region))
+      (let ((m (make-marker)))
+        (apply #'indent-region evil--auto-indent-region)
+        (move-marker m nil nil))
+      (setq evil--auto-indent-region nil)))
 
   (defun evil-jump-item-with-smartparens (&optional _count)
     "Improve `evil-jump-item-with' by using `show-smartparens-mode'"
@@ -170,7 +156,8 @@
                             (-interpose "\\|")
                             (apply #'concat))))
             (condition-case nil
-                (while (re-search-forward regex (line-end-position) t)
+                (while (and (re-search-forward regex (line-end-position) t)
+                            (not (= (match-beginning 0) (match-end 0))))
                   (let ((ov (make-overlay (match-beginning 0) (match-end 0))))
                     (add-to-list 'helm-match-selection-overlays ov)
                     (overlay-put ov 'face 'helm-match-selection)
