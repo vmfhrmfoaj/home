@@ -24,10 +24,16 @@
 
   (defun org-insert-schedule-&-deadline (mark &optional _)
     "Set a schedule and deadline for NEXT."
-    (when (and org-insert-schedule-deadline
-               (string-equal mark "NEXT"))
-      (org-schedule 'overwrite "+0d")
-      (org-deadline 'overwrite)
+    (when org-insert-schedule-deadline
+      (cond
+       ((or (string-equal mark "TODO")
+            (string-equal mark "PLANNING"))
+        (org-remove-timestamp-with-keyword "CLOSED:")
+        (org-remove-timestamp-with-keyword "DEADLINE:")
+        (org-remove-timestamp-with-keyword "SCHEDULED:"))
+       ((string-equal mark "NEXT")
+        (org-schedule 'overwrite "+0d")
+        (org-deadline 'overwrite)))
       nil))
 
   (defun org-tags-completion-function-for-case-insensitive (string _predicate &optional flag)
