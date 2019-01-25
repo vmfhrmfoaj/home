@@ -63,7 +63,7 @@
          (visual-color  (color-from 'cursor :background -15))
          (operator-color (color-from 'font-lock-keyword-face :foreground 0))
          (replace-color  (color-from 'font-lock-warning-face :foreground 0)))
-    (setq-default cursor-type `(hbar . ,hbar-height))
+    (setq-default cursor-type 'bar)
     (setq evil-normal-state-cursor   `((hbar . ,hbar-height) ,default-color)
           evil-visual-state-cursor   `((hbar . ,hbar-height) ,visual-color)
           evil-operator-state-cursor `((hbar . ,hbar-height) ,operator-color)
