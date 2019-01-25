@@ -101,6 +101,11 @@
     "bs" #'get-scratch-buffer-create
     "bl" #'switch-to-previous-buffer
 
+    ;; display
+    "dj" #'evil-show-jumps
+    "dm" #'evil-show-marks
+    "dr" #'evil-show-registers
+
     ;; error
     "en" #'next-error
     "ep" #'previous-error
@@ -115,8 +120,8 @@
     "gb" #'magit-blame-addition
     "gs" #'magit-status
     "gt" #'git-timemachine
-    "gn" #'git-gutter+-next-hunk
-    "gp" #'git-gutter+-previous-hunk
+    "gj" #'git-gutter+-next-hunk
+    "gk" #'git-gutter+-previous-hunk
 
     ;; jump/join/split
     "jn" #'sp-newline
@@ -161,7 +166,7 @@
     "se" #'evil-multiedit-match-all
     "sf" #'helm-do-ag
     "sg" #'helm-do-grep-ag
-    "sl" #'helm-resume-last-search-buffer
+    "sr" #'helm-resume-last-search-buffer
     "sp" #'helm-do-ag-project-root
     "ss" #'helm-swoop
 
@@ -213,6 +218,7 @@
     (concat evil-leader/leader "a") "applications"
     (concat evil-leader/leader "ao") "org"
     (concat evil-leader/leader "aoc") "capture/clock"
+    (concat evil-leader/leader "d") "display"
     (concat evil-leader/leader "e") "error"
     (concat evil-leader/leader "f") "file"
     (concat evil-leader/leader "b") "buffer"
