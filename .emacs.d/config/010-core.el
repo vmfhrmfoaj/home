@@ -85,15 +85,27 @@
                (string-match-p "\\*.*[Hh]elm.*\\*" (buffer-name buf)))
       t))
 
+  (defvar helm-search-buffer-regex "\\*\\(?:helm-ag\\|Helm Swoop\\)\\*"
+    "TODO")
+
+  (defvar helm-last-search-buffer nil
+    "TODO")
+
+  (defun helm--update-last-search-buffer (&rest _)
+    "TODO"
+    (interactive)
+    (when (string-match-p helm-search-buffer-regex helm-last-buffer)
+      (setq helm-last-search-buffer helm-last-buffer)))
+
   (defun helm-resume-last-search-buffer ()
     "TODO"
     (interactive)
-    (cond ((get-buffer "*helm ag results*")
-           (switch-to-buffer-other-window "*helm ag results*"))
-          ((get-buffer "*helm-ag*")
-           (helm-resume "*helm-ag*"))
-          (t
-           (message "Not found any Helm search buffer"))))
+    ;; NOTE
+    ;; (helm-resume helm-last-search-buffer)
+    ;;  for `helm-swoop-resume' advice function:
+    (when (get-buffer helm-last-search-buffer)
+      (setq helm-last-buffer helm-last-search-buffer)
+      (call-interactively #'helm-resume)))
 
   (defun helm-display-buffer-at-bottom (buffer &optional resume)
     "TODO"
@@ -176,5 +188,6 @@
               #'helm-persistent-action-display-window-for-neotree)
   (advice-add #'helm-initialize-overlays :after #'helm-custom-initialize-overlays)
   (advice-add #'helm-mark-current-line   :after #'helm-custom-mark-current-line)
+  (advice-add #'helm-initialize :after #'helm--update-last-search-buffer)
   (helm-mode 1)
   (helm-autoresize-mode 1))
