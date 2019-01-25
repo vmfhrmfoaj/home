@@ -94,7 +94,8 @@
   (defun helm--update-last-search-buffer (&rest _)
     "TODO"
     (interactive)
-    (when (string-match-p helm-search-buffer-regex helm-last-buffer)
+    (when (and (stringp helm-last-buffer)
+               (string-match-p helm-search-buffer-regex helm-last-buffer))
       (setq helm-last-search-buffer helm-last-buffer)))
 
   (defun helm-resume-last-search-buffer ()
