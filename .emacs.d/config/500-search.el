@@ -77,7 +77,7 @@
   :defer t
   :config
   (setq helm-ag-base-command "rg"
-        helm-ag-command-option "--no-messages --no-heading -S"
+        helm-ag-command-option "--mmap --no-messages --no-heading -S"
 	      helm-ag-use-emacs-lisp-regexp t)
   (with-eval-after-load "projectile"
     (advice-add #'helm-ag--project-root :override #'projectile-project-root)))
