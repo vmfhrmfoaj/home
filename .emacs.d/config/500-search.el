@@ -75,9 +75,32 @@
 (use-package helm-ag
   :ensure t
   :defer t
+  :init
+  (defun helm-ag--custom-do-ag-candidate-process ()
+    (let* ((non-essential nil)
+           (default-directory (or helm-ag--default-directory
+                                  helm-ag--last-default-directory
+                                  default-directory))
+           (cmd-args (helm-ag--construct-do-ag-command helm-pattern)))
+      (when cmd-args
+        (let ((proc (apply #'start-file-process "helm-do-ag" nil cmd-args)))
+          (setq helm-ag--last-query helm-pattern
+                helm-ag--last-command cmd-args
+                helm-ag--ignore-case (helm-ag--ignore-case-p cmd-args helm-pattern)
+                helm-ag--last-default-directory default-directory)
+          (prog1 proc
+            (set-process-sentinel
+             proc
+             (lambda (process event)
+               (helm-process-deferred-sentinel-hook
+                process event (helm-default-directory))
+               (when (string-match-p "^\\(finished\\|exited\\|failed\\)" event)
+                 (helm-ag--do-ag-propertize helm-input)))))))))
+
   :config
   (setq helm-ag-base-command "rg"
         helm-ag-command-option "--mmap --no-messages --no-heading -S"
 	      helm-ag-use-emacs-lisp-regexp t)
+  (advice-add #'helm-ag--do-ag-candidate-process :override #'helm-ag--custom-do-ag-candidate-process)
   (with-eval-after-load "projectile"
     (advice-add #'helm-ag--project-root :override #'projectile-project-root)))
