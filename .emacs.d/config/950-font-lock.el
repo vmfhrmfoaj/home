@@ -913,6 +913,36 @@
         (1 'font-lock-string-face)))
      :append)))
 
+(use-package go-mode
+  :defer t
+  :config
+  (font-lock-add-keywords
+   'go-mode
+   (let* ((assign ":=")
+          (symbol "\\_<[_A-Za-z][_0-9A-Za-z]*\\_>")
+          (type "\\_<\\(?:\\[\\]\\|map\\[[_.0-9A-Za-z]+\\]\\)?[_.0-9A-Za-z]*\\_>")
+          (whitespace "[ \t\r\n]")
+          (whitespace* (concat whitespace "*"))
+          (whitespace+ (concat whitespace "+")))
+     `((,(concat "type" whitespace+ symbol whitespace+ "struct" whitespace+ "{")
+        (,(-partial
+           (lambda (symbol type whitespace* whitespace+ limit)
+             (while (and (re-search-forward (concat symbol "\\(,\\)?" whitespace+) limit t)
+                         (string= "," (match-string 1))))
+             (if (match-string 0)
+                 (re-search-forward (concat whitespace* "\\(" type "\\)"))
+               (fake-match-4))
+             (comment-forward))
+           symbol type whitespace* whitespace+)
+         (save-excursion
+           (setq font-lock--anchor-beg-point (point))
+           (up-list)
+           (point))
+         (goto-char font-lock--anchor-beg-point)
+         (1 'font-lock-type-face)))
+       (,(concat "\\(" symbol "\\)" whitespace* assign)
+        (1 'font-lock-variable-name-face))))))
+
 (use-package org
   :defer t
   :config

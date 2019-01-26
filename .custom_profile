@@ -59,6 +59,12 @@ function setEnv () {
     fi
   fi
   source "${PERLBREW_ROOT}/etc/bashrc"
+
+  # Golang
+  export GOPATH=~/.golang
+  if [ -d "${GOPATH}/bin" ]; then
+    export PATH="${GOPATH}/bin:${PATH}"
+  fi
 }
 
 function zle-keymap-select () {
