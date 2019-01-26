@@ -73,6 +73,12 @@
       (setq evil-multiedit-normal-state-cursor `((hbar . ,hbar-height) ,default-color)
             evil-multiedit-insert-state-cursor `(bar ,default-color)))))
 
+(use-package go-mode
+  :defer t
+  :config
+  (custom-set-faces
+   `(go-argument-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))))
+
 (use-package php-mode
   :defer t
   :config
