@@ -95,12 +95,18 @@
                (helm-process-deferred-sentinel-hook
                 process event (helm-default-directory))
                (when (string-match-p "^\\(finished\\|exited\\|failed\\)" event)
-                 (helm-ag--do-ag-propertize helm-input)))))))))
+                 (ignore-errors
+                   (helm-ag--do-ag-propertize helm-input))))))))))
+
+  (defun helm-do-ag-wrap (fn &optional basedir targets)
+    "Wrap `helm-do-ag' to change `helm-input-idle-delay' in the `helm-do-ag' context."
+    (let ((helm-input-idle-delay 0.2))
+      (funcall fn basedir targets)))
 
   :config
-  (setq helm-ag-base-command "rg"
-        helm-ag-command-option "--mmap --no-messages --no-heading -S"
-	      helm-ag-use-emacs-lisp-regexp t)
-  (advice-add #'helm-ag--do-ag-candidate-process :override #'helm-ag--custom-do-ag-candidate-process)
+  (setq helm-ag-use-emacs-lisp-regexp t)
+  (advice-add #'helm-ag--do-ag-candidate-process :override
+              #'helm-ag--custom-do-ag-candidate-process)
+  (advice-add #'helm-do-ag :around #'helm-do-ag-wrap)
   (with-eval-after-load "projectile"
     (advice-add #'helm-ag--project-root :override #'projectile-project-root)))
