@@ -304,6 +304,16 @@
     (kbd "M-W") #'git-timemachine-kill-revision
     (kbd "q")   #'git-timemachine-quit))
 
+(use-package go-mode
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'go-mode
+    "mgg" #'go-guru-definition
+    "mgG" #'go-guru-definition-other-window)
+  (which-key-declare-prefixes-for-mode 'go-mode
+    (concat evil-leader/leader "mg") "goto")
+  (evil-leader/set-major-leader-for-mode "," 'go-mode))
+
 (use-package helm-ag
   :defer t
   :config

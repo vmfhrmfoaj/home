@@ -62,7 +62,7 @@ function setEnv () {
   source "${PERLBREW_ROOT}/etc/bashrc"
 
   # Golang
-  export GOPATH=~/.golang
+  export GOPATH="${HOME}/Desktop/Go_Projects"
   if [ -d "${GOPATH}/bin" ]; then
     export PATH="${GOPATH}/bin:${PATH}"
   fi

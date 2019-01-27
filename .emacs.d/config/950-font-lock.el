@@ -925,14 +925,17 @@
   ;; prepend
   (font-lock-add-keywords
    'go-mode
-   (let* ((symbol "\\_<[_A-Za-z][_0-9A-Za-z]*\\_>")
-          (type-prefix "\\(?:\\[\\]\\|map\\[[_.0-9A-Za-z]+\\]\\)?\\*?")
-          (types (regexp-opt '("bool" "string"
-                               "int" "int8" "int16" "int32" "int64"
-                               "uint" "uint8" "uint16" "uint32" "uint64"
-                               "byte" "rune" "uintptr"
-                               "float32" "float64"
-                               "complex64" "complex128")))
+   (let* ((symbol  "\\_<[_A-Za-z][_0-9A-Za-z]*\\_>")
+          (type-prefix "\\(?:\\(?:\\[\\]\\|map\\[[_.0-9A-Za-z]+\\]\\)\\*?\\)")
+          (type-suffix "\\(?:{[^}\r\n]*}\\)")
+          (user-type "[_.0-9A-Za-z]+")
+          (system-type (regexp-opt '("bool" "string"
+                                     "int" "int8" "int16" "int32" "int64"
+                                     "uint" "uint8" "uint16" "uint32" "uint64"
+                                     "byte" "rune" "uintptr"
+                                     "float32" "float64"
+                                     "complex64" "complex128")))
+          (type (concat type-prefix "?\\(?:" user-type "\\|" system-type "\\)" type-suffix "?"))
           (whitespace "[ \t]")
           (whitespace* (concat whitespace "*"))
           (whitespace+ (concat whitespace "+")))
@@ -943,7 +946,7 @@
              (comment-forward (point-max))
              (while (and (re-search-forward (concat symbol "\\(,\\)?" whitespace+) limit t)
                          (string= "," (match-string 1))))
-             (re-search-forward (concat whitespace* type-prefix "\\(" symbol "\\)") limit t))
+             (re-search-forward (concat whitespace* type-prefix "?\\(" symbol "\\)") limit t))
            symbol type-prefix whitespace* whitespace+)
          (save-excursion
            (setq font-lock--anchor-beg-point (point))
@@ -952,7 +955,7 @@
          (goto-char font-lock--anchor-beg-point)
          (1 'font-lock-type-face)))
        ;; highlight variables
-       (,(concat "\\_<var" whitespace+ "\\(" symbol "\\)" whitespace+ type-prefix "\\(" symbol "\\)")
+       (,(concat "\\_<var" whitespace+ "\\(" symbol "\\)" whitespace+ type-prefix "?\\(" symbol "\\)")
         (1 'font-lock-variable-name-face)
         (2 'font-lock-type-face))
        (,(concat "\\_<var" whitespace+ "\\(" symbol "\\)")
@@ -965,9 +968,9 @@
          (goto-char font-lock--anchor-beg-point)
          (0 'font-lock-variable-name-face)))
        ;; highlight arguments
-       (,(concat "\\(\\_<func\\>\\)[^{]+?{")
+       (,(concat "\\(\\_<func\\>\\)" whitespace* "\\(([^()]+)\\)?" whitespace* symbol whitespace* "\\(([^()]+)\\)?")
         (,(-partial
-           (lambda (symbol types limit)
+           (lambda (symbol type limit)
              (when (null font-lock--local-limit)
                (skip-chars-forward "^(" limit)
                (when (< (point) limit)
@@ -976,15 +979,13 @@
                    (up-list)
                    (setq font-lock--local-limit (point)))))
              (when (and font-lock--local-limit
-                        (re-search-forward symbol font-lock--local-limit t))
-               (when (and (looking-at-p ",\\|\\s)")
-                          (string-match-p (concat "^" types "$") (match-string 0)))
-                 (set-match-data (fake-match-2)))
-               (skip-chars-forward "^," font-lock--local-limit)
-               (when (<= font-lock--local-limit (point))
-                 (setq font-lock--local-limit nil))
+                        (re-search-forward type font-lock--local-limit t))
+               (unless (looking-at-p ",\\|\\s)")
+                 (skip-chars-forward "^," font-lock--local-limit)
+                 (when (<= font-lock--local-limit (point))
+                   (setq font-lock--local-limit nil)))
                t))
-           symbol types)
+           symbol type)
          (progn
            (setq font-lock--anchor-beg-point (match-end 1)
                  font-lock--local-limit nil)
