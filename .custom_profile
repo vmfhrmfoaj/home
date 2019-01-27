@@ -34,8 +34,9 @@ function setEnv () {
 
   # Heroku
   local HEROKU="${HOME}/.local/heroku"
-  if [ -d "${HEROKU}" ]; then
-    curl -fsSL 'https://cli-assets.heroku.com/install.sh' | sh
+  if [ ! -d "${HEROKU}" ]; then
+    wget -qO - 'https://cli-assets.heroku.com/heroku-linux-x64.tar.gz' | tar -C $(dirname "${HEROKU}") -xzf -
+    yes | "${HEROKU}/bin/heroku" autocomplete
   fi
   if [ 0 = $(echo ${PATH} | grep -c "${HEROKU}/bin") ]; then
     export PATH="${HEROKU}/bin/:${PATH}"
