@@ -338,6 +338,16 @@
   (define-key helm-map (kbd "C-n") #'helm-next-source)
   (define-key helm-map (kbd "C-p") #'helm-previous-source))
 
+(use-package help-mode
+  :defer t
+  :config
+  (evil-set-initial-state 'help-mode 'normal)
+  (evil-define-key 'normal help-mode-map
+    (kbd "TAB")   #'forward-button
+    (kbd "S-TAB") #'backward-button
+    (kbd "M-,") #'help-go-back
+    (kbd "q") #'quit-window))
+
 (use-package neotree
   :defer t
   :config
@@ -505,6 +515,7 @@
 (use-package org-agenda
   :defer t
   :config
+  (evil-set-initial-state 'org-agenda-mode 'normal)
   (evil-define-key '(normal motion) org-agenda-mode-map
     (kbd "RET") #'org-agenda-switch-to
     (kbd "r") #'org-agenda-redo

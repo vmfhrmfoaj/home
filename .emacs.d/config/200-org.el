@@ -176,7 +176,6 @@ which see."
         org-agenda-window-setup 'current-window)
   (when window-system
     (org-sync-cloud))
-  (evil-set-initial-state 'org-agenda-mode 'normal)
   (with-eval-after-load "persp-mode"
     (let ((f (lambda (&rest _)
                (persp-switch-to-org))))
