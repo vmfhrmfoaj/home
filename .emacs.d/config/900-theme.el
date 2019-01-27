@@ -48,7 +48,7 @@
   :defer t
   :config
   (custom-set-faces
-   `(elixir-argument-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))
+   `(elixir-argument-name-face ((t (:inherit font-lock-variable-name-face))))
    `(elixir-atom-face ((t (:inherit 'font-lock-builtin-face))))))
 
 (use-package evil
@@ -77,16 +77,7 @@
   :defer t
   :config
   (custom-set-faces
-   `(go-argument-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))))
-
-(use-package php-mode
-  :defer t
-  :config
-  (custom-set-faces
-   `(php-variable-name ((t (:foreground ,(-> 'font-lock-variable-name-face
-                                             (color-from :foreground 30)
-                                             (saturate-color 10)
-                                             (mix-color (color-from 'font-lock-string-face :foreground -30)))))))))
+   `(go-argument-name-face ((t (:inherit font-lock-variable-name-face))))))
 
 (use-package highlight-parentheses
   :defer t
@@ -153,7 +144,11 @@
   :defer t
   :config
   (custom-set-faces
-   `(php-passive-assign-variable-face ((t (:foreground ,local-variable-name-fg-color))))))
+   `(php-passive-assign-variable-face ((t (:inherit font-lock-variable-name-face))))
+   `(php-variable-name ((t (:foreground ,(-> 'font-lock-variable-name-face
+                                             (color-from :foreground 30)
+                                             (saturate-color 10)
+                                             (mix-color (color-from 'font-lock-string-face :foreground -30)))))))))
 
 (use-package rainbow-delimiters
   :defer t

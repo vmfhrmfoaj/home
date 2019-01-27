@@ -25,7 +25,7 @@
   :defer t
   :config
   (defface elixir-argument-name-face
-    '((t (:inherit font-lock-variable-name-face :weight medium)))
+    '((t (:inherit font-lock-variable-name-face)))
     "TODO")
 
   (let* ((symbol "[_0-9a-zA-Z?!]+")
@@ -157,7 +157,7 @@
     '((t (:inherit (italic clojure-local-binding-variable-name-face))))
     "TODO")
   (defface clojure-fn-parameter-face
-    '((t (:inherit font-lock-variable-name-face :weight medium)))
+    '((t (:inherit font-lock-variable-name-face)))
     "Face used to font-lock Clojure parameter.")
   (defface clojure-fn-parameter-warning-face
     '((t (:inherit (italic clojure-fn-parameter-face))))
@@ -919,7 +919,7 @@
   :defer t
   :config
   (defface go-argument-name-face
-    '((t (:inherit font-lock-variable-name-face :weight medium)))
+    '((t (:inherit font-lock-variable-name-face)))
     "TODO")
 
   ;; prepend
@@ -1048,7 +1048,7 @@
   :defer t
   :config
   (defface php-passive-assign-variable-face
-    '((t (:inherit font-lock-variable-name-face :weight normal)))
+    '((t (:inherit font-lock-variable-name-face)))
     "TODO")
 
   (let* ((symbol "\\$[_0-9a-zA-Z]+")
