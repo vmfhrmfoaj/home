@@ -166,8 +166,7 @@
                             (s-split " ")
                             (-remove #'s-blank-str?)
                             (--sort (< (length other) (length it)))
-                            (-interpose "\\|")
-                            (apply #'concat))))
+                            (regexp-opt))))
             (condition-case nil
                 (while (and (re-search-forward regex (line-end-position) t)
                             (not (= (match-beginning 0) (match-end 0))))
