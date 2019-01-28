@@ -259,13 +259,15 @@
   (defun highlight-symbol--custom-get-symbol ()
     "Return a regular expression identifying the symbol at point.
 This is customized for the normal state of `evil-mode'."
-    (-let (((beg . end) (bounds-of-thing-at-point 'symbol)))
-      (when (and beg end (< (point) end))
-        (let ((symbol (buffer-substring-no-properties beg end)))
-          (when (not (--some (string-match-p it symbol) highlight-symbol-ignore-list))
-            (concat (car highlight-symbol-border-pattern)
-                    (regexp-quote symbol)
-                    (cdr highlight-symbol-border-pattern)))))))
+    (-when-let (bound (bounds-of-thing-at-point 'symbol))
+      (let ((beg (car bound))
+            (end (cdr bound)))
+        (when (< (point) end)
+          (let ((symbol (buffer-substring beg end)))
+            (unless (--some (string-match-p it symbol) highlight-symbol-ignore-list)
+              (concat (car highlight-symbol-border-pattern)
+                      (regexp-quote symbol)
+                      (cdr highlight-symbol-border-pattern))))))))
 
   (defvar highlight-symbol-enable-modes
     '(prog-mode)
