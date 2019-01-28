@@ -256,6 +256,23 @@
 (use-package highlight-symbol
   :ensure t
   :init
+  (defun highlight-symbol--custom-update-timer (value)
+    "TODO"
+    (when highlight-symbol-timer
+      (cancel-timer highlight-symbol-timer))
+    (setq highlight-symbol-timer
+          (run-with-idle-timer (min 0.1 value) nil #'highlight-symbol-temp-highlight)))
+
+  (defun highlight-symbol-mode--custom-post-command ()
+    "After a command, change the temporary highlighting.
+Remove the temporary symbol highlighting and, unless a timeout is specified,
+create the new one."
+    (if (eq this-command 'highlight-symbol-jump)
+        (when highlight-symbol-on-navigation-p
+          (highlight-symbol-temp-highlight))
+      (highlight-symbol-mode-remove-temp)
+      (highlight-symbol--custom-update-timer highlight-symbol-idle-delay)))
+
   (defun highlight-symbol--custom-get-symbol ()
     "Return a regular expression identifying the symbol at point.
 This is customized for the normal state of `evil-mode'."
@@ -283,7 +300,9 @@ This is customized for the normal state of `evil-mode'."
               (highlight-symbol-mode -1)))
 
   :config
-  (setq highlight-symbol-idle-delay 0.1)
+  (setq highlight-symbol-idle-delay 0.2)
+  (advice-add #'highlight-symbol-update-timer :override #'highlight-symbol--custom-update-timer)
+  (advice-add #'highlight-symbol-mode-post-command :override #'highlight-symbol-mode--custom-post-command)
   (advice-add #'highlight-symbol-get-symbol :override #'highlight-symbol--custom-get-symbol))
 
 (use-package hl-line
