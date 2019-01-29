@@ -359,16 +359,6 @@
     (kbd "M-,") #'help-go-back
     (kbd "q") #'quit-window))
 
-(use-package rust-mode
-  :defer t
-  :config
-  (evil-leader/set-key-for-mode 'rust-mode
-    "mgg" #'racer-find-definition
-    "mgG" #'racer-find-definition-other-window)
-  (which-key-declare-prefixes-for-mode 'rust-mode
-    (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode "," 'rust-mode))
-
 (use-package neotree
   :defer t
   :config
@@ -589,6 +579,22 @@
   (evil-define-key 'normal 'psysh-mode-map
     (kbd "C-k") #'comint-previous-input
     (kbd "C-j") #'comint-next-input))
+
+(use-package racer-help-mode
+  :defer t
+  :config
+  (evil-define-key 'normal 'racer-help-mode-map
+    (kbd "q") #'quit-window))
+
+(use-package rust-mode
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'rust-mode
+    "mgg" #'racer-find-definition
+    "mgG" #'racer-find-definition-other-window)
+  (which-key-declare-prefixes-for-mode 'rust-mode
+    (concat evil-leader/leader "mg") "goto")
+  (evil-leader/set-major-leader-for-mode "," 'rust-mode))
 
 (use-package smartparens
   :defer t

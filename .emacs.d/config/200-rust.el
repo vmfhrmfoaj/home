@@ -38,4 +38,7 @@
   :ensure t
   :defer t
   :init
-  (add-hook 'rust-mode-hook #'racer-mode))
+  (add-hook 'rust-mode-hook
+            (lambda ()
+              (setq-local evil-lookup-func #'racer-describe)
+              (racer-mode 1))))

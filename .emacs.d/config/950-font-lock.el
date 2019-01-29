@@ -1002,6 +1002,14 @@
       (0 'shadow)))
    :append))
 
+(use-package js
+  :defer t
+  :config
+  (font-lock-add-keywords
+   'js-mode
+   `(("export\\s-+function\\s-+\\([_0-9A-Za-z]+\\)\\>"
+      (1 'font-lock-function-name-face)))))
+
 (use-package org
   :defer t
   :config
@@ -1043,6 +1051,7 @@
          ("\\(\\\\\\\\\\)\\s-*$"
           1 'shadow nil)))
      :append)))
+
 
 (use-package php-mode
   :defer t
@@ -1136,13 +1145,14 @@
                :append))
             :append))
 
-(use-package js
+(use-package rust-mode
   :defer t
   :config
   (font-lock-add-keywords
-   'js-mode
-   `(("export\\s-+function\\s-+\\([_0-9A-Za-z]+\\)\\>"
-      (1 'font-lock-function-name-face)))))
+   'rust-mode
+   `(("::"
+      (0 'shadow)))
+   :append))
 
 (use-package sh-script
   :defer t
