@@ -10,12 +10,26 @@
     "TODO"
     (cond
      ((derived-mode-p 'prog-mode)
-      (list (save-excursion
-              (sp-backward-up-sexp)
-              (point))
-            (save-excursion
-              (sp-up-sexp)
-              (point))))
+      (let ((cnt 3)
+            (beg (save-excursion
+                   (sp-backward-up-sexp)
+                   (point)))
+            (end (save-excursion
+                   (sp-up-sexp)
+                   (point))))
+        (while (and (< 0 cnt)
+                    (= (line-number-at-pos beg)
+                       (line-number-at-pos end)))
+          (save-excursion
+            (goto-char beg)
+            (setq cnt (1- cnt)
+                  beg (save-excursion
+                        (sp-backward-up-sexp)
+                        (point))
+                  end (save-excursion
+                        (sp-up-sexp)
+                        (point)))))
+        (list beg end)))
      (t nil)))
 
   (defun evil--auto-indent-save-pos ()
