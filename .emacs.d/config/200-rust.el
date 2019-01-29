@@ -10,6 +10,13 @@
   :init
   (add-hook 'racer-mode-hook #'eldoc-mode)
 
+  (defun racer-eldoc--customized ()
+    "Sometime `racer-eldoc' very slow."
+    (-when-let (describe (-> 'symbol
+                             (thing-at-point)
+                             (racer--describe-at-point)))
+      (racer--syntax-highlight (plist-get describe :signature))))
+
   :config
   (let ((asdf (concat (getenv "HOME") "/.asdf/bin/asdf"))
         (rust-src (concat (getenv "HOME") "/Desktop/Open_Sources/rust/src")))
@@ -24,7 +31,8 @@
                        (s-trim)
                        (concat "/bin/racer"))))
         (when (file-executable-p recer)
-          (setq racer-cmd recer))))))
+          (setq racer-cmd recer)))))
+  (advice-add 'racer-eldoc :override #'racer-eldoc--customized))
 
 (use-package rust-mode
   :ensure t
