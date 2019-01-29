@@ -104,7 +104,9 @@
       (funcall fn basedir targets)))
 
   :config
-  (setq helm-ag-use-emacs-lisp-regexp t)
+  (setq helm-ag-base-command "rg"
+        helm-ag-command-option "--no-messages --no-heading -S"
+        helm-ag-use-emacs-lisp-regexp t)
   (advice-add #'helm-ag--do-ag-candidate-process :override
               #'helm-ag--custom-do-ag-candidate-process)
   (advice-add #'helm-do-ag :around #'helm-do-ag-wrap)
