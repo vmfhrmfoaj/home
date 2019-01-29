@@ -273,6 +273,10 @@ create the new one."
       (highlight-symbol-mode-remove-temp)
       (highlight-symbol--custom-update-timer highlight-symbol-idle-delay)))
 
+  (defvar highlight-symbol-ignore-face-list
+    '(font-lock-doc-face font-lock-comment-face font-lock-string-face php-string)
+    "TODO")
+
   (defun highlight-symbol--custom-get-symbol ()
     "Return a regular expression identifying the symbol at point.
 This is customized for the normal state of `evil-mode'."
@@ -281,7 +285,8 @@ This is customized for the normal state of `evil-mode'."
             (end (cdr bound)))
         (when (< (point) end)
           (let ((symbol (buffer-substring beg end)))
-            (unless (--some (string-match-p it symbol) highlight-symbol-ignore-list)
+            (unless (or (-intersection (-list (get-text-property beg 'face)) highlight-symbol-ignore-face-list)
+                        (--some (string-match-p it symbol) highlight-symbol-ignore-list))
               (concat (car highlight-symbol-border-pattern)
                       (regexp-quote symbol)
                       (cdr highlight-symbol-border-pattern))))))))
