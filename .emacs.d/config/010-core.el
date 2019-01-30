@@ -8,29 +8,36 @@
 
   (defun evil--auto-indent-region ()
     "TODO"
-    (cond
-     ((derived-mode-p 'prog-mode)
-      (let ((cnt 3)
-            (beg (save-excursion
-                   (sp-backward-up-sexp)
-                   (point)))
-            (end (save-excursion
-                   (sp-up-sexp)
-                   (point))))
-        (while (and (< 0 cnt)
-                    (= (line-number-at-pos beg)
-                       (line-number-at-pos end)))
-          (save-excursion
-            (goto-char beg)
-            (setq cnt (1- cnt)
-                  beg (save-excursion
-                        (sp-backward-up-sexp)
-                        (point))
-                  end (save-excursion
-                        (sp-up-sexp)
-                        (point)))))
-        (list beg end)))
-     (t nil)))
+    (unless evil-insert-vcount
+      (cond
+       ((derived-mode-p 'prog-mode)
+        (let ((cnt 3)
+              (beg (save-excursion
+                     (sp-backward-up-sexp)
+                     (point)))
+              (end (save-excursion
+                     (sp-up-sexp)
+                     (point))))
+          (while (and (< 0 cnt)
+                      (/= beg end)
+                      (= (line-number-at-pos beg)
+                         (line-number-at-pos end)))
+            (save-excursion
+              (goto-char beg)
+              (setq cnt (1- cnt)
+                    beg (save-excursion
+                          (sp-backward-up-sexp)
+                          (point))
+                    end (save-excursion
+                          (sp-up-sexp)
+                          (point)))))
+          (unless (= beg end)
+            (let ((beg-marker (make-marker))
+                  (end-marker (make-marker)))
+              (move-marker beg-marker beg)
+              (move-marker end-marker end)
+              (cons beg-marker end-marker)))))
+       (t nil))))
 
   (defun evil--auto-indent-save-pos ()
     "TODO"
@@ -38,10 +45,14 @@
 
   (defun evil--auto-indent ()
     "TODO"
-    (unless (or evil-insert-vcount (null evil--auto-indent-region))
-      (let ((m (make-marker)))
-        (apply #'indent-region evil--auto-indent-region)
-        (move-marker m nil nil))
+    (when (and (null evil-insert-vcount)
+               evil--auto-indent-region)
+      (-let* (((beg-marker . end-marker) evil--auto-indent-region)
+              (beg (marker-position beg-marker))
+              (end (marker-position end-marker)))
+        (ignore-errors (indent-region beg end))
+        (move-marker beg-marker nil)
+        (move-marker end-marker nil))
       (setq evil--auto-indent-region nil)))
 
   (defun evil-jump-item-with-smartparens (&optional _count)
