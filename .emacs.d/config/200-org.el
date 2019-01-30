@@ -150,7 +150,8 @@ which see."
                 (find-file-noselect file)))
             (with-selected-window cur-win
               (with-current-buffer org-agenda-buffer
-                (call-interactively #'org-agenda-redo)))))
+                (ignore-errors
+                  (call-interactively #'org-agenda-redo))))))
         (selected-window)))))
 
   (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
