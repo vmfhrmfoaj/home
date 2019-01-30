@@ -27,8 +27,11 @@
   (require 'ucs-normalize)
   (set-file-name-coding-system 'utf-8-hfs))
 
-(when (string-equal "gnome-imac" hostname)
-  (fringe-mode 15))
+(cond
+ ((string-equal "gnome-macbookair" hostname)
+  (setq x-super-keysym 'meta))
+ ((string-equal "gnome-imac" hostname)
+  (fringe-mode 15)))
 
 (add-hook 'after-init-hook
           (lambda ()
