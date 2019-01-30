@@ -282,10 +282,7 @@
   (evil-global-set-key 'normal (kbd "TAB") #'indent-for-tab-command)
   (with-eval-after-load 'aggressive-indent-mode
     (evil-global-set-key 'normal (kbd "TAB") #'aggressive-indent-do-indent))
-  (evil-global-set-key 'visual (kbd "TAB") #'indent-region)
-  (dolist (state '(normal visual))
-    (evil-global-set-key state (kbd "M-n") #'evil-forward-paragraph)
-    (evil-global-set-key state (kbd "M-p") #'evil-backward-paragraph)))
+  (evil-global-set-key 'visual (kbd "TAB") #'indent-region))
 
 (use-package evil-surround
   :defer t
