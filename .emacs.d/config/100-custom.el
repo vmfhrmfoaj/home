@@ -39,6 +39,5 @@
             (advice-add #'select-window     :after #'update-buf-visit-time)
             (advice-add #'set-window-buffer :after #'update-buf-visit-time)
             (advice-add #'switch-to-buffer  :after #'update-buf-visit-time)
-            (setq gc-cons-threshold (* 1024 1024 128)
-                  gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect)))
+            (setq gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect)))
           :append)
