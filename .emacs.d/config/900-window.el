@@ -17,9 +17,12 @@
             initial-frame-alist (list (cons 'top    0)
                                       (cons 'left   l)
                                       (cons 'width  w)
-                                      (cons 'height h))
-            frame-title-format `(multiple-frames "%b" ("" invocation-name "@" system-name
-                                                       ,(-reduce #'concat (-repeat (pixel->frame-unit l) " "))))))))
+                                      (cons 'height h)))
+      (if (<= (display-pixel-width) 1440)
+          (set-frame-parameter nil 'fullscreen 'maximized)
+        (setq frame-title-format
+              `(multiple-frames "%b" ("" invocation-name "@" system-name
+                                      ,(-reduce #'concat (-repeat (pixel->frame-unit l) " ")))))))))
 
 (use-package winum
   :ensure t
