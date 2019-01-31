@@ -43,11 +43,12 @@ function setEnv () {
   fi
 
   # .asdf
-  if [ ! -d "${HOME}/.asdf" ]; then
+  local asdf_home="${HOME}/.asdf"
+  if [ ! -d "${asdf_home}" ]; then
     git clone 'https://github.com/asdf-vm/asdf.git' ~/.asdf --branch v0.6.2
   fi
-  source "${HOME}/.asdf/asdf.sh"
-  source "${HOME}/.asdf/completions/asdf.bash"
+  source "${asdf_home}/asdf.sh"
+  source "${asdf_home}/completions/asdf.bash"
 
   # perlbrew
   export PERLBREW_ROOT="${HOME}/.perlbrew"
@@ -63,8 +64,25 @@ function setEnv () {
 
   # Golang
   export GOPATH="${HOME}/Desktop/Go_Projects"
-  if [ -d "${GOPATH}/bin" ]; then
-    export PATH="${GOPATH}/bin:${PATH}"
+  local go_bin="${GOPATH}/bin"
+  if [ -d "${go_bin}" ]; then
+    if [ 0 = $(echo ${PATH} | grep -c "${go_bin}") ]; then
+      export PATH="${go_bin}:${PATH}"
+    fi
+  fi
+
+  # Rust lang
+  if [ ! -d "${HOME}/.cargo" ]; then
+    # see, https://github.com/rust-lang/rustup.rs/issues/953#issuecomment-318650338
+    curl https://sh.rustup.rs -sSf | RUSTUP_INIT_SKIP_PATH_CHECK=yes sh -s -- --no-modify-path --default-toolchain nightly
+    source "${HOME}/.cargo/env"
+    rustup toolchain add stable
+    rustup default stable
+    rustup toolchain add nightly
+    cargo +nightly install racer
+  fi
+  if [ -f "${HOME}/.cargo/env" ]; then
+    source "${HOME}/.cargo/env"
   fi
 }
 

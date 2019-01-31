@@ -10,28 +10,39 @@
   :init
   (add-hook 'racer-mode-hook #'eldoc-mode)
 
+  (defun racer--signature-at-point (name)
+    "Customize `racer--describe-at-point' to avoid popup the helm buffer to select one of multiple matching."
+    (let* ((output-lines (save-excursion
+                           ;; Move to the end of the current symbol, to
+                           ;; increase racer accuracy.
+                           (skip-syntax-forward "w_")
+                           (racer--call-at-point "complete-with-snippet")))
+           (all-matches (--map (when (s-starts-with-p "MATCH " it)
+                                 (racer--split-snippet-match it))
+                               output-lines))
+           (relevant-matches (--filter (equal (plist-get it :name) name) all-matches))
+           (signatures (--map (plist-get it :signature) relevant-matches))
+           (signature (unless (< 1 (length signatures))
+                        (-first-item signatures))))
+      (when (and signature (not (s-starts-with-p "/" signature)))
+        signature)))
+
   (defun racer-eldoc--customized ()
     "Sometime `racer-eldoc' very slow."
-    (-when-let (describe (-> 'symbol
-                             (thing-at-point)
-                             (racer--describe-at-point)))
-      (racer--syntax-highlight (plist-get describe :signature))))
+    (-when-let (signature (-some-> 'symbol
+                                   (thing-at-point)
+                                   (racer--signature-at-point)))
+      (racer--syntax-highlight signature)))
 
   :config
-  (let ((asdf (concat (getenv "HOME") "/.asdf/bin/asdf"))
+  (let ((racer-path (concat (getenv "HOME") "/.cargo/bin/racer"))
         (rust-src (concat (getenv "HOME") "/Desktop/Open_Sources/rust/src")))
     (when (file-exists-p rust-src)
       (setq racer-rust-src-path rust-src)
       (setenv "RUST_SRC_PATH" rust-src)
       (add-to-list 'process-environment (concat "RUST_SRC_PATH=" rust-src)))
-    (when (file-executable-p asdf)
-      (let ((recer (-> asdf
-                       (concat " where rust")
-                       (shell-command-to-string)
-                       (s-trim)
-                       (concat "/bin/racer"))))
-        (when (file-executable-p recer)
-          (setq racer-cmd recer)))))
+    (when (file-executable-p racer-path)
+      (setq racer-cmd racer-path)))
   (advice-add 'racer-eldoc :override #'racer-eldoc--customized))
 
 (use-package rust-mode
@@ -41,4 +52,8 @@
   (add-hook 'rust-mode-hook
             (lambda ()
               (setq-local evil-lookup-func #'racer-describe)
-              (racer-mode 1))))
+              (racer-mode 1)))
+
+  :config
+  (defvar cargo-home (or (getenv "CARGO_HOME")
+                         (concat (getenv "HOME") "/.cargo"))))
