@@ -114,10 +114,14 @@ function preexec() {
   local CURSOR_BOX='\e[2 q'
   local CURSOR_UNDERBAR='\e[4 q'
   local CURSOR_LINE='\e[6 q'
-  local TABNAME="%n@%M"
-  local TABNAME="$TABNAME: %~: ${2:gs/%/%%}"
+  local TABNAME="${2:gs/%/%%}"
   title $TABNAME $TABNAME
   echo -ne $CURSOR_LINE
+}
+
+function postexec() {
+  local TABNAME="%n@%M"
+  title $TABNAME $TABNAME
 }
 
 if [ -t 1 ] && [ ! -z ${ZSH_NAME} ]; then
