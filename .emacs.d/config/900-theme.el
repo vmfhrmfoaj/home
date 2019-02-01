@@ -126,9 +126,13 @@
   :defer t
   :config
   (custom-set-faces
+   `(org-agenda-date ((t (:height 1.3))))
+   `(org-agenda-date-today ((t (:height 1.3))))
+   `(org-agenda-date-weekend ((t (:height 1.3))))
    `(org-block-begin-line ((t (:underline unspecified))))
    `(org-block-end-line ((t (:overline unspecified))))
    `(org-date ((t (:inherit italic :underline unspecified))))
+   `(org-level-1 ((t (:height 1.0))))
    `(org-link ((t (:inherit link :underline unspecified))))
    `(org-quote ((t (:slant normal))))
    `(org-tag ((t (:background unspecified))))))
