@@ -1,75 +1,5 @@
 (use-package evil
   :ensure t
-  :init
-  (defvar evil--auto-indent-region nil
-    "TODO")
-
-  (make-local-variable 'evil--auto-indent-region)
-
-  (defun evil--auto-indent-region ()
-    "TODO"
-    (unless evil-insert-vcount
-      (cond
-       ((derived-mode-p 'prog-mode)
-        (let ((cnt 3)
-              (beg (save-excursion
-                     (sp-backward-up-sexp)
-                     (point)))
-              (end (save-excursion
-                     (sp-up-sexp)
-                     (point))))
-          (while (and (< 0 cnt)
-                      (/= beg end)
-                      (= (line-number-at-pos beg)
-                         (line-number-at-pos end)))
-            (save-excursion
-              (goto-char beg)
-              (setq cnt (1- cnt)
-                    beg (save-excursion
-                          (sp-backward-up-sexp)
-                          (point))
-                    end (save-excursion
-                          (sp-up-sexp)
-                          (point)))))
-          (unless (= beg end)
-            (let ((beg-marker (make-marker))
-                  (end-marker (make-marker)))
-              (move-marker beg-marker beg)
-              (move-marker end-marker end)
-              (cons beg-marker end-marker)))))
-       (t nil))))
-
-  (defun evil--auto-indent-save-pos ()
-    "TODO"
-    (setq evil--auto-indent-region (evil--auto-indent-region)))
-
-  (defun evil--auto-indent ()
-    "TODO"
-    (when (and (null evil-insert-vcount)
-               evil--auto-indent-region)
-      (-let* (((beg-marker . end-marker) evil--auto-indent-region)
-              (beg (marker-position beg-marker))
-              (end (marker-position end-marker)))
-        (ignore-errors (indent-region beg end))
-        (move-marker beg-marker nil)
-        (move-marker end-marker nil))
-      (setq evil--auto-indent-region nil)))
-
-  (defun evil-jump-item-with-smartparens (&optional _count)
-    "Improve `evil-jump-item-with' by using `show-smartparens-mode'"
-    (let ((pair (sp-get-thing)))
-      (when pair
-        (when (s-blank? (plist-get pair :op))
-          (save-excursion
-            (skip-chars-backward "-_0-9A-Za-z")
-            (setq pair (sp-get-thing))))
-        (unless (s-blank? (plist-get pair :op))
-          (sp-get pair
-            (if (<= :beg (point) :beg-in)
-                (goto-char :end-in)
-              (goto-char :beg)))
-          t))))
-
   :config
   (evil-define-text-object evil-inner-sexp (count &optional beg end type)
     "Select a sp-sexp."
@@ -94,10 +24,6 @@
       (list beg end type :expanded t)))
 
   (setq-default evil-symbol-word-search t)
-  (with-eval-after-load "smartparens"
-    (add-hook 'evil-insert-state-entry-hook #'evil--auto-indent-save-pos)
-    (add-hook 'evil-insert-state-exit-hook #'evil--auto-indent)
-    (advice-add #'evil-jump-item :before-until #'evil-jump-item-with-smartparens))
   (evil-mode 1))
 
 (use-package helm
