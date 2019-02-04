@@ -1150,7 +1150,7 @@
   :config
   (font-lock-add-keywords
    'rust-mode
-   `(("::"
+   `(("\\(::\\|&\\|\\*\\|;\\)"
       (0 'shadow)))
    :append))
 
