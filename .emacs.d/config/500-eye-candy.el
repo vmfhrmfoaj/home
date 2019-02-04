@@ -270,7 +270,6 @@ create the new one."
     (if (eq this-command 'highlight-symbol-jump)
         (when highlight-symbol-on-navigation-p
           (highlight-symbol-temp-highlight))
-      (highlight-symbol-mode-remove-temp)
       (highlight-symbol--custom-update-timer highlight-symbol-idle-delay)))
 
   (defvar highlight-symbol-ignore-face-list
