@@ -1150,7 +1150,16 @@
   :config
   (font-lock-add-keywords
    'rust-mode
-   `(("\\(::\\|&\\|\\*\\|;\\)"
+   `(("\\(|\\)\\([^\r\n|]+\\)\\(|\\)"
+      (1 'shadow)
+      (3 'shadow)
+      ("\\_<[_0-9A-Za-z]+\\_>"
+       (progn
+         (goto-char (setq font-lock--anchor-beg-point (match-beginning 2)))
+         (match-end 2))
+       (goto-char font-lock--anchor-beg-point)
+       (0 'font-lock-variable-name-face)))
+     ("\\(::\\|&\\|\\*\\|;\\|[-=]>\\)"
       (0 'shadow)))
    :append))
 
