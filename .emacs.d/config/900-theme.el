@@ -7,6 +7,7 @@
   (setq x-underline-at-descent-line t)
   (custom-set-faces
    `(bold ((t (:weight bold))))
+   `(default ((t (:background "#FEFEFE"))))
    `(font-lock-comment-face ((t (:slant normal))))
    `(fringe ((t (:background "#F8F8F8"))))
    `(isearch ((t (:underline unspecified :weight bold))))
