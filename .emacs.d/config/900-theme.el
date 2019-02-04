@@ -58,7 +58,7 @@
   (setq-default cursor-in-non-selected-windows nil)
   (let* ((hbar-height (max line-spacing 2))
          (hbar-height (if (string-equal "gnome-imac" hostname)
-                          (* 2 hbar-height) ; for HiDPI
+                          (floor (* 1.4 hbar-height)) ; for HiDPI
                         hbar-height))
          (default-color (color-from 'cursor :background   0))
          (visual-color  (color-from 'cursor :background -15))
