@@ -28,9 +28,20 @@
    `(variable-pitch ((t (:family "DejaVu Serif"))))))
 
 (use-package auto-dim-other-buffers
+  :defer t
   :config
   (custom-set-faces
    `(auto-dim-other-buffers-face ((t (:background "#FAFAFA"))))))
+
+(use-package creole-mode
+  :defer t
+  :config
+  (custom-theme-set-faces
+   'leuven
+   `(info-title-1 ((t (:inherit outline-1 :height 1.3))))
+   `(info-title-2 ((t (:inherit outline-2 :height 1.2))))
+   `(info-title-3 ((t (:inherit outline-3 :height 1.1))))
+   `(info-title-4 ((t (:inherit outline-4 :height 1.0))))))
 
 (use-package clojure-mode
   :defer t
