@@ -100,6 +100,7 @@ which see."
               "TODO"
               (setq-local evil-lookup-func #'org-dic-at-point)))
   (advice-add #'org-tags-completion-function :override #'org-tags-completion-function-for-case-insensitive)
+  (advice-add #'org-clock-goto :before (lambda (&optional select) (persp-switch-to-org)))
   (advice-add #'org-todo :around
               (lambda (of &optional arg)
                 "If reopen the completed _TODO_, show a popup for logging."

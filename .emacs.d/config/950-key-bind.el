@@ -76,7 +76,7 @@
     "aoS" #'org-sync-cloud
     "aoT" #'org-todo-list
     "aoa" #'org-agenda-show-list
-    "aocj" #'org-clock-jump-to-current-clock
+    "aocj" #'org-clock-goto
     "aocn" #'org-capture-note
     "aoct" #'org-capture-todo
     "aor" #'org-agenda-resume
@@ -508,6 +508,7 @@
     "mTT" #'org-todo
     "mci" #'org-clock-in
     "mco" #'org-clock-out
+    "mcj" #'org-clock-goto
     "mtI" #'org-time-stamp-inactive
     "mtd" #'org-deadline
     "mti" #'org-time-stamp
@@ -523,6 +524,17 @@
 (use-package org-agenda
   :defer t
   :config
+  (evil-leader/set-key-for-mode 'org-agenda-mode
+    "mTT" #'org-agenda-todo
+    "mci" #'org-agenda-clock-in
+    "mco" #'org-agenda-clock-out
+    "mtd" #'org-agenda-deadline
+    "mts" #'org-agenda-schedule)
+  (which-key-declare-prefixes-for-mode 'org-agenda-mode
+    (concat evil-leader/leader "mT") "todo"
+    (concat evil-leader/leader "mc") "clock"
+    (concat evil-leader/leader "mt") "time")
+  (evil-leader/set-major-leader-for-mode "," 'org-agenda-mode)
   (evil-set-initial-state 'org-agenda-mode 'normal)
   (evil-define-key '(normal motion) org-agenda-mode-map
     (kbd "RET") #'org-agenda-switch-to
