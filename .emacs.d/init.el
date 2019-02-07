@@ -1,7 +1,7 @@
 ;;; Copyright (c) 2014-2017, Jinseop Kim
 
 (setq custom-file "~/.emacs.d/.custom.el"
-      gc-cons-threshold (* 1024 1024 64)
+      gc-cons-threshold (* 1024 1024 128)
       inhibit-startup-screen t)
 (when (file-exists-p custom-file)
   (load custom-file))
