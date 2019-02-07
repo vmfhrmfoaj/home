@@ -162,6 +162,8 @@ which see."
                                     (0.5 . '(:inherit org-upcoming-deadline :height 1.0 :weight bold))
                                     (0.0 . '(:height 1.0)))
         org-agenda-clockreport-parameter-plist '(:link t :fileskip0 t :stepskip0 t :maxlevel 5 :tcolumns 1 :narrow 70!)
+        org-agenda-scheduled-leaders '("Scheduled: " "Sched.%03dx: ")
+        org-agenda-deadline-leaders  '("Deadline:  " "In %03d d.: " "%02d d. ago: ")
         org-agenda-skip-deadline-if-done t
         org-agenda-skip-scheduled-if-deadline-is-shown t
         org-agenda-skip-function-global
@@ -226,7 +228,7 @@ which see."
                           ,(format-time-string "%b"))
            ,(concat "* %^{Note}" "\n"
                     "\n"
-                    "%t:" "\n"
+                    "%t" "\n"
                     "- %?")
            :prepend t)
           ("p" "Protocol" entry
@@ -234,7 +236,7 @@ which see."
                           ,(format-time-string "%b"))
            ,(concat "* %^{Note}"      "\n"
                     "\n"
-                    "%t:"             "\n"
+                    "%t"              "\n"
                     "- %a"            "\n"
                     "  #+BEGIN_QUOTE" "\n"
                     "  %i"            "\n"
@@ -246,7 +248,7 @@ which see."
                           ,(format-time-string "%b"))
            ,(concat "* %^{Note}" "\n"
                     "\n"
-                    "%t:"  "\n"
+                    "%t"   "\n"
                     "- %a" "\n"
                     "%?")
            :prepend t))))

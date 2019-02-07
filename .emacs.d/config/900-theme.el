@@ -147,7 +147,8 @@
    `(org-level-1 ((t (:height 1.0))))
    `(org-link ((t (:inherit link :underline unspecified))))
    `(org-quote ((t (:slant normal))))
-   `(org-tag ((t (:background unspecified))))))
+   `(org-tag ((t (:background unspecified))))
+   `(org-warning ((t (:background "#FFDDDD" :foreground "#FF5555"))))))
 
 (use-package paren
   :defer t
