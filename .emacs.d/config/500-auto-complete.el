@@ -29,12 +29,13 @@
       (when company-point
         (helm :sources 'helm-source-company
               :buffer  "*helm company*"
-              :input (propertize (-> company-prefix
-                                     (regexp-quote)
-                                     (concat " "))
-                                 'read-only t
-                                 'intangible t
-                                 'rear-nonsticky '(read-only intangible))
+              :input (unless (s-blank-str? company-prefix)
+                       (-> company-prefix
+                           (regexp-quote)
+                           (concat " ")
+                           (propertize 'rear-nonsticky '(read-only intangible)
+                                       'read-only t
+                                       'intangible t)))
               :candidate-number-limit helm-company-candidate-number-limit))))
 
   (defun helm-company-complete-common ()
