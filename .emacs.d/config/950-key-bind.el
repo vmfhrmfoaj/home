@@ -589,11 +589,12 @@
     (kbd "C-k") #'comint-previous-input
     (kbd "C-j") #'comint-next-input))
 
-(use-package racer-help-mode
+(use-package racer
   :defer t
   :config
-  (evil-define-key 'normal 'racer-help-mode-map
-    (kbd "q") #'quit-window))
+  (add-hook 'racer-help-mode-hook
+            (lambda ()
+              (evil-local-set-key 'normal (kbd "q") #'quit-window))))
 
 (use-package rust-mode
   :defer t

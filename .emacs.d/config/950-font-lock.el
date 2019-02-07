@@ -1150,6 +1150,11 @@
   :config
   (font-lock-add-keywords
    'rust-mode
+   `(("^\\s-*\\(use\\)\\s-+\\([_:0-9A-Za-z]+\\)"
+      (1 'font-lock-keyword-face)
+      (2 'font-lock-constant-face))))
+  (font-lock-add-keywords
+   'rust-mode
    `(("\\(|\\)\\([^\r\n|]+\\)\\(|\\)"
       (1 'shadow)
       (3 'shadow)
