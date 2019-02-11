@@ -136,6 +136,11 @@
         helm-display-function #'helm-display-buffer-at-bottom
         helm-split-window-inside-p t
         helm-truncate-lines t)
+  (add-hook 'helm-before-initialize-hook (lambda () (setq gc-cons-threshold (* 1024 1024 128))))
+  (add-hook 'helm-cleanup-hook
+            (lambda ()
+              (setq gc-cons-threshold (* 1024 1024 32))
+              (garbage-collect)))
   (advice-add #'helm-persistent-action-display-window :before-until
               #'helm-persistent-action-display-window-for-neotree)
   (advice-add #'helm-initialize-overlays :after #'helm-custom-initialize-overlays)

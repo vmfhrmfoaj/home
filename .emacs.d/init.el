@@ -3,6 +3,7 @@
 (setq custom-file "~/.emacs.d/.custom.el"
       gc-cons-threshold (* 1024 1024 128)
       inhibit-startup-screen t)
+(add-hook 'emacs-startup-hook (lambda () (setq gc-cons-threshold (* 1024 1024 32))))
 (when (file-exists-p custom-file)
   (load custom-file))
 
