@@ -307,10 +307,15 @@ which see."
   :ensure t
   :defer t
   :init
-  (setq org-trello-current-prefix-keybinding "SPC m x")
-
-  :config
   (setq org-trello-files (-> org-directory
                              (concat "/trello")
                              (directory-files-recursively "\\.org$"))
-        org-trello-input-completion-mechanism 'helm))
+        org-trello-input-completion-mechanism 'helm)
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (when (->> org-trello-files (--any? (string= (expand-file-name it) buffer-file-name)))
+                (org-trello-mode))))
+
+  :config
+  (require 'org-trello-setup nil t)
+  (setq org-trello-buffer--indent-description 0))

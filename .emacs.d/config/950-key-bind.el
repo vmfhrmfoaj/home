@@ -20,12 +20,19 @@
   :ensure t
   :after evil-leader
   :init
-  (defun evil-leader/set-major-leader-for-mode (leader mode &optional evil-states)
+  (defvar evil-leader/major-leader ","
+    "TODO")
+
+  (defun evil-leader/set-major-leader (key)
     "TODO"
-    (let ((leaders (list leader))
-          (modes (list mode))
-          (states (or evil-states '(normal motion visual)))
-          (map-name (intern (format "evil-leader-for-%s-map" mode))))
+    (let ((old-m-leader evil-leader/major-leader))
+      (setq evil-leader/major-leader key)
+      (dolist (mode (-map #'car evil-leader--mode-maps))
+        (evil-leader/set-major-leader-for-mode mode))))
+
+  (defun evil-leader/set-major-leader-for-mode (mode)
+    "TODO"
+    (let ((map-name (intern (format "evil-leader-for-%s-map" mode))))
       (-when-let (map (-some->> evil-leader--mode-maps
                                 (assoc mode)
                                 (-drop 1)
@@ -36,9 +43,9 @@
          `(progn
             (defvar ,map-name ',map)
             (bind-map ,map-name
-              :evil-keys ,leaders
-              :evil-states ,states
-              :major-modes ,modes))))
+              :evil-keys (,evil-leader/major-leader)
+              :evil-states (normal)
+              :major-modes (,mode)))))
       ;; for which-key
       (-when-let (it (assoc mode which-key-replacement-alist))
         (let* ((evil-leader (s-chop-prefix "<" (s-chop-suffix ">" evil-leader/leader)))
@@ -46,14 +53,26 @@
                (its-new-vals
                 (--map (let ((prefix (caar it))
                              (more (cdr it)))
-                         (cons (list (s-replace (concat evil-leader " m") leader prefix)) more))
+                         (cons (list (s-replace (concat evil-leader " m") evil-leader/major-leader prefix)) more))
                        its-vals)))
-          (setcdr it (append its-vals its-new-vals)))))))
+          (setcdr it (append its-vals its-new-vals))))))
+
+  (defun evil-leader/set-local-key (&rest bindings)
+    (let* ((prefix (concat evil-leader/leader "m"))
+           (bindings (->> bindings
+                          (-partition 2)
+                          (--map (cons (concat evil-leader/leader (car it)) (cdr it)))
+                          (--mapcat (if (not (s-starts-with? prefix (car it)))
+                                        (list it)
+                                      (list it (cons (s-replace prefix evil-leader/major-leader (car it)) (cdr it))))))))
+      (dolist (binding bindings)
+        (evil-local-set-key 'normal (car binding) (cadr binding))))))
 
 (use-package evil-leader
   :ensure t
   :config
   (evil-leader/set-leader "<SPC>")
+  (evil-leader/set-major-leader ",")
   (evil-leader/set-key
     "<SPC>" #'helm-M-x
     "TAB" #'switch-to-previous-buffer
@@ -262,7 +281,7 @@
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto"
     (concat evil-leader/leader "mr") "REPL")
-  (evil-leader/set-major-leader-for-mode "," 'cider-repl-mode))
+  (evil-leader/set-major-leader-for-mode 'cider-repl-mode))
 
 (use-package cider-stacktrace
   :defer t
@@ -310,7 +329,7 @@
     "mgG" #'go-guru-definition-other-window)
   (which-key-declare-prefixes-for-mode 'go-mode
     (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode "," 'go-mode))
+  (evil-leader/set-major-leader-for-mode 'go-mode))
 
 (use-package helm-ag
   :defer t
@@ -345,6 +364,12 @@
   (define-key helm-map (kbd "C-k") #'helm-previous-line)
   (define-key helm-map (kbd "C-n") #'helm-next-source)
   (define-key helm-map (kbd "C-p") #'helm-previous-source))
+
+(use-package helm-swoop
+  :defer t
+  :config
+  (define-key helm-swoop-edit-map (kbd "C-c C-c") #'helm-swoop--edit-complete)
+  (define-key helm-swoop-edit-map (kbd "C-c C-k") #'helm-swoop--edit-cancel))
 
 (use-package help-mode
   :defer t
@@ -395,7 +420,7 @@
       "mgg" #'dumb-jump-go)
     (which-key-declare-prefixes-for-mode mode
       (concat evil-leader/leader "mg") "goto")
-    (evil-leader/set-major-leader-for-mode "," mode)))
+    (evil-leader/set-major-leader-for-mode mode)))
 
 (use-package clojure-mode
   :defer t
@@ -416,7 +441,7 @@
       (concat evil-leader/leader "me") "evaluation"
       (concat evil-leader/leader "mg") "goto"
       (concat evil-leader/leader "mr") "REPL")
-    (evil-leader/set-major-leader-for-mode "," mode)))
+    (evil-leader/set-major-leader-for-mode mode)))
 
 (use-package cperl-mode
   :defer t
@@ -427,7 +452,7 @@
     "mgg" #'dumb-jump-go)
   (which-key-declare-prefixes-for-mode 'cperl-mode
     (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode "," 'cperl-mode))
+  (evil-leader/set-major-leader-for-mode 'cperl-mode))
 
 
 (use-package ediff
@@ -455,7 +480,7 @@
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto"
     (concat evil-leader/leader "mr") "REPL")
-  (evil-leader/set-major-leader-for-mode "," 'emacs-lisp-mode)
+  (evil-leader/set-major-leader-for-mode 'emacs-lisp-mode)
 
   ;; lisp-interaction-mode
   (evil-leader/set-key-for-mode 'lisp-interaction-mode
@@ -467,7 +492,7 @@
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto"
     (concat evil-leader/leader "mr") "REPL")
-  (evil-leader/set-major-leader-for-mode "," 'lisp-interaction-mode))
+  (evil-leader/set-major-leader-for-mode 'lisp-interaction-mode))
 
 (use-package elixir-mode
   :defer t
@@ -476,7 +501,7 @@
     "mgg" #'dumb-jump-go)
   (which-key-declare-prefixes-for-mode 'elixir-mode
     (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode "," 'elixir-mode))
+  (evil-leader/set-major-leader-for-mode 'elixir-mode))
 
 (use-package elm-mode
   :defer t
@@ -485,7 +510,7 @@
     "mgg" #'dumb-jump-go)
   (which-key-declare-prefixes-for-mode 'elm-mode
     (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode "," 'elm-mode))
+  (evil-leader/set-major-leader-for-mode 'elm-mode))
 
 (use-package multi-term
   :defer t
@@ -516,8 +541,9 @@
   (which-key-declare-prefixes-for-mode 'org-mode
     (concat evil-leader/leader "mT") "todo"
     (concat evil-leader/leader "mc") "clock"
-    (concat evil-leader/leader "mt") "time")
-  (evil-leader/set-major-leader-for-mode "," 'org-mode)
+    (concat evil-leader/leader "mt") "time"
+    (concat evil-leader/leader "ms") "sync (trello)")
+  (evil-leader/set-major-leader-for-mode 'org-mode)
   (evil-define-key 'normal evil-org-mode-map
     (kbd "RET") #'org-open-at-point))
 
@@ -534,12 +560,28 @@
     (concat evil-leader/leader "mT") "todo"
     (concat evil-leader/leader "mc") "clock"
     (concat evil-leader/leader "mt") "time")
-  (evil-leader/set-major-leader-for-mode "," 'org-agenda-mode)
+  (evil-leader/set-major-leader-for-mode 'org-agenda-mode)
   (evil-set-initial-state 'org-agenda-mode 'normal)
   (evil-define-key '(normal motion) org-agenda-mode-map
     (kbd "RET") #'org-agenda-switch-to
     (kbd "r") #'org-agenda-redo
     (kbd "q") #'org-agenda-quit))
+
+(use-package org-trello
+  :defer t
+  :config
+  (defalias 'org-sync-card-to-trello   (-partial #'org-trello-sync-card nil))
+  (defalias 'org-sync-card-from-trello (-partial #'org-trello-sync-card t))
+  (defalias 'org-sync-buf-to-trello    (-partial #'org-trello-sync-buffer nil))
+  (defalias 'org-sync-buf-from-trello  (-partial #'org-trello-sync-buffer t))
+  ;; FIXME
+  (add-hook 'org-trello-mode-hook
+            (lambda ()
+              (evil-leader/set-local-key
+               "msc" #'org-sync-card-to-trello
+               "msC" #'org-sync-card-from-trello
+               "msb" #'org-sync-buf-to-trello
+               "msB" #'org-sync-buf-from-trello))))
 
 (use-package osx-dictionary
   :if (eq 'darwin system-type)
@@ -573,7 +615,7 @@
   (which-key-declare-prefixes-for-mode 'php-mode
     (concat evil-leader/leader "mg") "goto"
     (concat evil-leader/leader "mr") "REPL")
-  (evil-leader/set-major-leader-for-mode "," 'php-mode)
+  (evil-leader/set-major-leader-for-mode 'php-mode)
   (define-key php-mode-map [tab] nil))
 
 (use-package profiler
@@ -604,7 +646,7 @@
     "mgG" #'racer-find-definition-other-window)
   (which-key-declare-prefixes-for-mode 'rust-mode
     (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode "," 'rust-mode))
+  (evil-leader/set-major-leader-for-mode 'rust-mode))
 
 (use-package vlf
   :defer t
@@ -613,7 +655,7 @@
     "mg" #'vlf-move-to-chunk)
   (which-key-declare-prefixes-for-mode 'vlf-mode
     (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode "," 'vlf-mode)
+  (evil-leader/set-major-leader-for-mode 'vlf-mode)
   (evil-define-key 'normal 'vlf-mode-map
     (kbd "C-k") #'vlf-prev-batch
     (kbd "C-j") #'vlf-next-batch))
