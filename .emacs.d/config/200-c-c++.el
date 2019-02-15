@@ -96,8 +96,7 @@
             (lambda ()
               "TODO"
               (setq-local evil-lookup-func #'man-at-point)
-              (c-toggle-auto-newline -1)
-              (c-setup-indent-config c-indent-config))
+              (c-toggle-auto-newline -1))
             :append)
   (add-hook 'java-mode-hook
             (lambda ()

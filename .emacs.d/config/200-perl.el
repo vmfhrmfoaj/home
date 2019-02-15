@@ -92,8 +92,7 @@
   (defun cperl-mode-setup ()
     "TODO"
     (setq-local beginning-of-defun-function #'cperl-beginning-of-defun)
-    (setq-local end-of-defun-function #'cperl-end-of-defun)
-    (perl-setup-indent-config perl-indent-config))
+    (setq-local end-of-defun-function #'cperl-end-of-defun))
 
   :config
   (modify-syntax-entry ?: "." cperl-mode-syntax-table)

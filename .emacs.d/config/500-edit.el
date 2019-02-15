@@ -37,6 +37,11 @@
               (unless evil-insert-vcount
                 (aggressive-indent-do-indent)))))
 
+(use-package editorconfig
+  :ensure t
+  :config
+  (editorconfig-mode 1))
+
 (use-package evil-surround
   :ensure t
   :after evil
