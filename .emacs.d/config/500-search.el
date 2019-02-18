@@ -112,12 +112,17 @@
     (let ((helm-input-idle-delay 0.2))
       (funcall fn basedir targets)))
 
+  (defun helm-ag--elisp-regexp-to-pcre-for-ripgrep (pattern)
+    "Improve `helm-ag--elisp-regexp-to-pcre' for ripgrep."
+    (s-replace-all '(("\\s-" . "[[:space:]]")) pattern))
+
   :config
   (setq helm-ag-base-command "rg"
-        helm-ag-command-option "--no-messages --no-heading -S"
+        helm-ag-command-option "--no-heading --no-messages --smart-case"
         helm-ag-use-emacs-lisp-regexp t)
   (advice-add #'helm-ag--do-ag-candidate-process :override
               #'helm-ag--custom-do-ag-candidate-process)
   (advice-add #'helm-do-ag :around #'helm-do-ag-wrap)
+  (advice-add #'helm-ag--elisp-regexp-to-pcre :filter-return #'helm-ag--elisp-regexp-to-pcre-for-ripgrep)
   (with-eval-after-load "projectile"
     (advice-add #'helm-ag--project-root :override #'projectile-project-root)))
