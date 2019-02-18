@@ -41,14 +41,9 @@
   :defer t)
 
 (use-package magit
-  ;; NOTE
-  ;;  Use a custom version until fixing `evil-magit'.
-  ;; :ensure t
+  :ensure t
   :defer t
   :init
-  (unless (package-installed-p 'magit)
-    (quelpa '(magit :fetcher github :repo "vmfhrmfoaj/magit" :files ("lisp/*.el"))))
-
   (defface magit-commit-log-type-face
     `((t (:inherit font-lock-function-name-face :weight normal)))
     "TODO")
