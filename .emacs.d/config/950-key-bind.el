@@ -401,7 +401,7 @@
 (use-package magit-svn
   :after evil-magit
   :config
-  (evil-magit-define-key 'normal 'magit-mode-map (kbd "~") #'magit-svn-popup))
+  (evil-magit-define-key 'normal 'magit-mode-map (kbd "~") #'magit-svn))
 
 
 ;; Key binding for the major mode
