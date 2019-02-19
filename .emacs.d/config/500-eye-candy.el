@@ -60,6 +60,7 @@
   (with-eval-after-load "vi-tilde-fringe"         (diminish 'vi-tilde-fringe-mode        ""))
   (with-eval-after-load "view"                    (diminish 'view-mode                   ""))
   (with-eval-after-load "which-key"               (diminish 'which-key-mode              ""))
+  (with-eval-after-load "editorconfig"            (diminish 'editorconfig-mode           ""))
   (with-eval-after-load "zoom"                    (diminish 'zoom-mode                   "")))
 
 (use-package evil-goggles
