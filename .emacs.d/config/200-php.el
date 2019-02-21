@@ -20,14 +20,35 @@
 
   (defvar php-doc-buffer-name "*PHP Doc*")
 
+  (defun php-extras-doc--highlight (lines)
+    (let ((php-code  (with-temp-buffer
+                       (php-mode)
+                       (insert (car lines))
+                       (funcall font-lock-ensure-function (point-min) (point-max))
+                       (buffer-string))))
+      (->> lines
+           (cdr)
+           (cons "")
+           (cons php-code))))
+
   (defun php-extras-doc ()
     (interactive)
-    (-when-let (doc (php-extras-get-function-property (php-get-pattern) 'documentation))
+    (-when-let (doc (->> (php-extras-get-function-property (php-get-pattern) 'documentation)
+                         (s-split "\n")
+                         (-drop 2)
+                         (php-extras-doc--highlight)
+                         (-reduce-from
+                          (lambda (output line)
+                            (if (s-blank? line)
+                                (concat output "\n")
+                              (concat output " " line)))
+                          "")))
       (pop-to-buffer (get-buffer-create php-doc-buffer-name))
       (evil-local-set-key 'normal (kbd "q") #'evil-delete-buffer)
       (kill-region (point-min) (point-max))
       (goto-char (point-min))
       (insert doc)
+      (toggle-truncate-lines 0)
       (read-only-mode 1))))
 
 (use-package php-mode
