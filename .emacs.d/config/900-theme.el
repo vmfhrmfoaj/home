@@ -6,16 +6,15 @@
     "TODO")
   (setq x-underline-at-descent-line t)
   (custom-set-faces
-   `(bold ((t (:weight bold))))
    `(font-lock-comment-face ((t (:slant normal))))
    `(fringe ((t (:background "#F8F8F8"))))
-   `(isearch ((t (:underline unspecified :weight bold))))
+   `(isearch ((t (:inherit bold :underline unspecified))))
    `(link ((t (:inherit underline :underline unspecified))))
    `(link-visited ((t (:inherit underline :underline unspecified))))
    `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium)))))
   (custom-theme-set-faces
    'leuven
-   `(bold ((t (:weight bold))))
+   `(bold ((t (:weight ultrabold))))
    `(italic ((t (:slant italic))))
    `(font-lock-doc-face ((t (:inherit font-lock-string-face :foreground "#7F7F7F"))))
    `(font-lock-negation-char-face ((t (:inherit font-lock-warning-face :weight medium))))
@@ -24,7 +23,7 @@
    `(helm-match-selection ((t (:inherit isearch))))
    `(helm-selection ((t (:background ,(color-from 'isearch :background 35) :distant-foreground "black"))))
    `(underline ((t (:underline (:color foreground-color :style wave)))))
-   `(variable-pitch ((t (:family "DejaVu Serif"))))))
+   `(variable-pitch ((t (:family "Noto Sans"))))))
 
 (use-package auto-dim-other-buffers
   :defer t
@@ -147,14 +146,17 @@
    `(org-link ((t (:inherit link :underline unspecified))))
    `(org-quote ((t (:slant normal))))
    `(org-tag ((t (:background unspecified))))
-   `(org-warning ((t (:background "#FFDDDD" :foreground "#FF5555"))))))
+   `(org-warning ((t (:background "#FFDDDD" :foreground "#FF5555")))))
+  (dolist (i (number-sequence 1 8))
+    (let ((face (intern (concat "org-level-" (number-to-string i)))))
+      (set-face-attribute face nil :inherit 'bold))))
 
 (use-package paren
   :defer t
   :config
   (custom-set-faces
-   `(show-paren-match    ((t (:foreground ,(light-color hl-paren-base-color 5) :weight bold :underline t))))
-   `(show-paren-mismatch ((t (:inherit font-lock-warning-face :weight bold))))))
+   `(show-paren-match    ((t (:inherit bold :foreground ,(light-color hl-paren-base-color 5) :underline t))))
+   `(show-paren-mismatch ((t (:inherit (bold font-lock-warning-face)))))))
 
 (use-package php-mode
   :defer t
@@ -181,8 +183,8 @@
   :defer t
   :config
   (custom-set-faces
-   `(sp-show-pair-match-face    ((t (:foreground ,(light-color hl-paren-base-color 5) :weight bold :underline t))))
-   `(sp-show-pair-mismatch-face ((t (:inherit font-lock-warning-face :weight bold))))))
+   `(sp-show-pair-match-face    ((t (:inherit bold :foreground ,(light-color hl-paren-base-color 5) :underline t))))
+   `(sp-show-pair-mismatch-face ((t (:inherit (bold font-lock-warning-face)))))))
 
 (use-package web-mode
   :disabled t
