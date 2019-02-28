@@ -4,23 +4,23 @@
       (top-offset (if (string-equal "gnome-imac" hostname) 5 0)))
   (setq org-tags-column (+ (- w) 5))
   (when window-system
-    (let* ((h (floor (- (/ (float (display-pixel-height)) h-char) h-titlebar-in-char)))
-           (l (/ (custom-display-pixel-width) 2.0))
-           (l (floor (- l (* (frame-unit->pixel w) 0.4))))
-           (l (if (< 0 (- (custom-display-pixel-width)
-                          (+ l (frame-unit->pixel w))))
-                  l
-                (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w))))))
-      (add-to-list 'default-frame-alist (cons 'width  w))
-      (add-to-list 'default-frame-alist (cons 'height h))
-      (setq split-width-threshold (display-pixel-width)
-            initial-frame-alist (list (cons 'top    0)
-                                      (cons 'left   l)
-                                      (cons 'width  w)
-                                      (cons 'height h)))
-      (if (<= (display-pixel-width) 1440)
-          (set-frame-parameter nil 'fullscreen 'maximized)
-        (setq frame-title-format
+    (if (<= (display-pixel-width) 1440)
+        (set-frame-parameter nil 'fullscreen 'maximized)
+      (let* ((h (floor (- (/ (float (display-pixel-height)) h-char) h-titlebar-in-char)))
+             (l (/ (custom-display-pixel-width) 2.0))
+             (l (floor (- l (* (frame-unit->pixel w) 0.4))))
+             (l (if (< 0 (- (custom-display-pixel-width)
+                            (+ l (frame-unit->pixel w))))
+                    l
+                  (max 0 (- (custom-display-pixel-width) (frame-unit->pixel w))))))
+        (add-to-list 'default-frame-alist (cons 'width  w))
+        (add-to-list 'default-frame-alist (cons 'height h))
+        (setq split-width-threshold (display-pixel-width)
+              initial-frame-alist (list (cons 'top    0)
+                                        (cons 'left   l)
+                                        (cons 'width  w)
+                                        (cons 'height h))
+              frame-title-format
               `(multiple-frames "%b" ("" invocation-name "@" system-name
                                       ,(-reduce #'concat (-repeat (pixel->frame-unit l) " ")))))))))
 
