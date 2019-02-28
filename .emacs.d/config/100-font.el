@@ -3,7 +3,7 @@
   (let ((font "Noto Sans Mono")
         (height (cond
                  ((string-equal "gnome-macbookair" hostname) 113)
-                 ((string-equal "gnome-imac" hostname) 105) ; for HiDPI=2 and Scaling Factor=0.9
+                 ((string-equal "gnome-imac" hostname) 109) ; for HiDPI=2 and Scaling Factor=0.9
                  (t 105))))
     (set-face-font 'default font)
     (set-fontset-font t 'unicode "symbola")
