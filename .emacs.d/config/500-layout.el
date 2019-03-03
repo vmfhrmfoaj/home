@@ -115,12 +115,7 @@
         ;;  change mode-line format for `persp-mode'
         ;; persp-lighter "Ⓟ"
         persp-before-switch-functions #'persp-update-sorted-names
-        persp-lighter '(:eval (format "persp(%s)"
-                                      (save-match-data
-                                        (let ((cur-name (persp-current-name)))
-                                          (if (string-match "/\\([^/]+\\)/?$" cur-name)
-                                              (match-string 1 cur-name)
-                                            cur-name)))))
+        persp-lighter nil
         persp-nil-name "~/"
         persp-last-selected-persp-name persp-nil-name
         persp-set-ido-hooks t
