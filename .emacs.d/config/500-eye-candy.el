@@ -27,8 +27,7 @@
                   inferior-emacs-lisp-mode
                   fundamental-mode
                   special-mode))
-    (all-the-icons-update-data 'all-the-icons-mode-icon-alist mode
-                               :v-adjust -0.1))
+    (all-the-icons-update-data 'all-the-icons-mode-icon-alist mode :v-adjust -0.1))
   (advice-add #'all-the-icons-icon-for-dir :filter-args
               (lambda (args)
                 (let* ((dir (car args))
@@ -386,7 +385,7 @@ This is customized for the normal state of `evil-mode'."
   (setq spaceline-window-numbers-unicode t)
   (advice-add #'spaceline--unicode-number :override
               (lambda (str)
-                (propertize
+                (apply #'propertize
                  (cond
                   ((string=  "1" str) "⑴")
                   ((string=  "2" str) "⑵")
@@ -409,7 +408,12 @@ This is customized for the normal state of `evil-mode'."
                   ((string= "19" str) "⒆")
                   ((string= "20" str) "⒇")
                   (t "⒳"))
-                 'face '(:height 1.15 :weight ultrabold :inherit))))
+                 (cond
+                  ((or (string-equal "gnome-macbookair" hostname)
+                       (string-equal "gnome-imac" hostname))
+                   '(display (raise 0.05) face (:weight ultrabold :inherit)))
+                  (t
+                   '(face (:height 1.15 :weight ultrabold :inherit)))))))
   (spaceline-emacs-theme)
   (spaceline-helm-mode)
 
@@ -441,8 +445,10 @@ This is customized for the normal state of `evil-mode'."
                 (let ((backend (vc-backend (buffer-file-name))))
                   (concat
                    (pcase backend
-                     (`Git (all-the-icons-faicon "git" :v-adjust -0.1 :face nil))
-                     (`SVN (all-the-icons-fileicon "svn" :v-adjust -0.1 :face nil))
+                     (`Git (let ((icon (all-the-icons-faicon "git" :v-adjust -0.1 :face nil)))
+                             (propertize icon 'face (append (get-text-property 0 'face icon) '(:inherit)))))
+                     (`SVN (let ((icon (all-the-icons-fileicon "svn" :v-adjust -0.1 :face nil)))
+                            (propertize icon 'face (append (get-text-property 0 'face icon) '(:inherit)))))
                      (_ backend))
                    " "
                    (let ((branch (or (-some-> vc-mode
@@ -453,7 +459,8 @@ This is customized for the normal state of `evil-mode'."
                                      "-")))
                      (concat
                       (if (eq 'Git backend)
-                          (all-the-icons-octicon "git-branch" :v-adjust -0.1 :face nil)
+                          (let ((icon (all-the-icons-octicon "git-branch" :v-adjust -0.1 :face nil)))
+                           (propertize icon 'face (append (get-text-property 0 'face icon) '(:inherit))))
                           ":")
                       branch))))
                 (when (buffer-file-name)
