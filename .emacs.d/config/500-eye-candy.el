@@ -1,6 +1,5 @@
 (use-package all-the-icons
   :ensure t
-  :defer t
   :init
   (defun all-the-icons-update-data (lst lst-key &rest kvs)
     "TODO"
@@ -17,8 +16,19 @@
                             (apply #'append (-take 3 target) kvs)))))))
 
   :config
+  (setq all-the-icons-default-adjust -0.15)
   (all-the-icons-update-data 'all-the-icons-dir-icon-alist "google[ _-]drive" :height 1.0)
   (all-the-icons-update-data 'all-the-icons-icon-alist "\\.DS_STORE$" :height 0.95 :v-adjust -0.1)
+  (all-the-icons-update-data 'all-the-icons-icon-alist "\\.git" :v-adjust 0)
+  (dolist (mode '(magit-status-mode
+                  magit-log-mode))
+    (all-the-icons-update-data 'all-the-icons-mode-icon-alist mode :v-adjust 0))
+  (dolist (mode '(emacs-lisp-mode
+                  inferior-emacs-lisp-mode
+                  fundamental-mode
+                  special-mode))
+    (all-the-icons-update-data 'all-the-icons-mode-icon-alist mode
+                               :v-adjust -0.1))
   (advice-add #'all-the-icons-icon-for-dir :filter-args
               (lambda (args)
                 (let* ((dir (car args))
@@ -341,71 +351,8 @@ This is customized for the normal state of `evil-mode'."
 
 (use-package powerline
   :ensure t
-  :init
-  (defvar powerline-buffer-id-max 40
-    "TODO")
-
-  (defun powerline-ellipsis-buffer-id (&optional buf-id)
-    "TODO"
-    (let ((buf-id (or buf-id (powerline-buffer-id))))
-      (if (<= (length buf-id) powerline-buffer-id-max)
-          buf-id
-        (let ((substr (substring buf-id 0 powerline-buffer-id-max))
-              (face (get-text-property 1 'face buf-id)))
-          (concat substr (propertize "..." 'face face))))))
-
-  (defun powerline-vim+-theme ()
-    "Setup a Vim-like mode-line."
-    (interactive)
-    (setq-default
-     mode-line-format
-		 '("%e"
-		   (:eval
-		    (let* ((active (powerline-selected-window-active))
-			         (mode-line (if active 'mode-line 'mode-line-inactive))
-               (face0 (if active 'powerline-active0 'powerline-inactive0))
-			         (lhs (list
-                     (powerline-raw (concat (persp-current-name) ":") face0)
-                     (powerline-buffer-id `(mode-line-buffer-id ,face0) 'l)
-				             (powerline-raw "[" face0 'l)
-				             (powerline-major-mode face0)
-				             (powerline-process face0)
-				             (powerline-raw "]" face0)
-				             (if buffer-read-only
-				                 (powerline-raw "[RO]" face0)
-                       (when (buffer-modified-p)
-				                 (powerline-raw "[+]" face0)))
-				             (powerline-raw "[" face0 'l)
-				             (powerline-minor-modes face0)
-				             (powerline-raw "%n" face0)
-				             (powerline-raw "]" face0)
-				             (when (and vc-mode buffer-file-name)
-				               (let ((backend (vc-backend buffer-file-name)))
-					               (when backend
-					                 (concat (powerline-raw "[" face0 'l)
-						                       (powerline-raw (format "%s:%s(%.5s)" backend
-                                                          (or (-some-> vc-mode
-                                                                       (split-string "[-:@]")
-                                                                       (rest)
-                                                                       (-some->> (-interpose "-")
-                                                                                 (apply #'concat)))
-                                                              "-")
-                                                          (vc-working-revision buffer-file-name backend))
-                                                  face0)
-						                       (powerline-raw "]" face0)))))))
-			         (rhs (list (powerline-raw '(10 "%i") face0)
-				                  (powerline-raw global-mode-string face0 'r)
-				                  (powerline-raw "%l," face0 'l)
-				                  (powerline-raw (format-mode-line '(10 "%c")) face0)
-				                  (powerline-raw (replace-regexp-in-string  "%" "%%" (format-mode-line '(-3 "%p"))) face0 'r)
-				                  (powerline-fill face0 0))))
-		      (concat (powerline-render lhs)
-			            (powerline-fill face0 (powerline-width rhs))
-			            (powerline-render rhs)))))))
-
   :config
-  (advice-add #'powerline-buffer-id :filter-return #'powerline-ellipsis-buffer-id)
-  (powerline-vim+-theme))
+  (setq powerline-height (+ (frame-char-height) line-spacing)))
 
 (use-package rainbow-delimiters
   :disabled t
@@ -432,6 +379,95 @@ This is customized for the normal state of `evil-mode'."
   (when (eq 'darwin system-type)
     (advice-add #'rainbow-delimiters--apply-color :override
                 #'rainbow-delimiters--apply-color-for-fira-code)))
+
+(use-package spaceline
+  :ensure t
+  :config
+  (setq spaceline-window-numbers-unicode t)
+  (advice-add #'spaceline--unicode-number :override
+              (lambda (str)
+                (propertize
+                 (cond
+                  ((string=  "1" str) "⑴")
+                  ((string=  "2" str) "⑵")
+                  ((string=  "3" str) "⑶")
+                  ((string=  "4" str) "⑷")
+                  ((string=  "5" str) "⑸")
+                  ((string=  "6" str) "⑹")
+                  ((string=  "7" str) "⑺")
+                  ((string=  "8" str) "⑻")
+                  ((string=  "9" str) "⑼")
+                  ((string= "10" str) "⑽")
+                  ((string= "11" str) "⑾")
+                  ((string= "12" str) "⑿")
+                  ((string= "13" str) "⒀")
+                  ((string= "14" str) "⒁")
+                  ((string= "15" str) "⒂")
+                  ((string= "16" str) "⒃")
+                  ((string= "17" str) "⒄")
+                  ((string= "18" str) "⒅")
+                  ((string= "19" str) "⒆")
+                  ((string= "20" str) "⒇")
+                  (t "⒳"))
+                 'face '(:height 1.15 :weight ultrabold :inherit))))
+  (spaceline-emacs-theme)
+  (spaceline-helm-mode)
+
+  (spaceline-define-segment major-mode
+    "the name of the major mode."
+		(let ((icon (all-the-icons-icon-for-mode major-mode :face nil)))
+      (if (symbolp icon)
+          (powerline-major-mode)
+        (propertize icon
+                    'face (append (get-text-property 0 'face icon) '(:inherit))
+                    'mouse-face 'mode-line-highlight
+                    'help-echo (concat "major mode: " (car (-list mode-name)) "\n"
+                                       "\ mouse-1: display major mode menu\n"
+                                       "\ mouse-2: show help for major mode\n"
+                                       "\ mouse-3: toggle minor modes")
+                    'local-map (let ((map (make-sparse-keymap)))
+                                 (define-key map [mode-line down-mouse-1]
+                                   `(menu-item ,(purecopy "menu bar") ignore
+                                               :filter (lambda (_) (mouse-menu-major-mode-map))))
+                                 (define-key map [mode-line mouse-2] 'describe-mode)
+                                 (define-key map [mode-line down-mouse-3] mode-line-mode-menu)
+                                 map)))))
+
+  (spaceline-define-segment version-control
+    "Version control information."
+    (when vc-mode
+      (powerline-raw
+       (s-trim (concat
+                (let ((backend (vc-backend (buffer-file-name))))
+                  (concat
+                   (pcase backend
+                     (`Git (all-the-icons-faicon "git" :v-adjust -0.1 :face nil))
+                     (`SVN (all-the-icons-fileicon "svn" :v-adjust -0.1 :face nil))
+                     (_ backend))
+                   " "
+                   (let ((branch (or (-some-> vc-mode
+                                              (split-string "[-:@]")
+                                              (rest)
+                                              (-some->> (-interpose "-")
+                                                        (apply #'concat)))
+                                     "-")))
+                     (concat
+                      (if (eq 'Git backend)
+                          (all-the-icons-octicon "git-branch" :v-adjust -0.1 :face nil)
+                          ":")
+                      branch))))
+                (when (buffer-file-name)
+                  (pcase (vc-state (buffer-file-name))
+                    (`up-to-date " ")
+                    (`edited " Mod")
+                    (`added " Add")
+                    (`unregistered " ??")
+                    (`removed " Del")
+                    (`needs-merge " Con")
+                    (`needs-update " Upd")
+                    (`ignored " Ign")
+                    (_ " Unk"))))))))
+  (spaceline-compile))
 
 (use-package vi-tilde-fringe
   :defer t
