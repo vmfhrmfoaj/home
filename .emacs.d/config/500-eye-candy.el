@@ -1,5 +1,6 @@
 (use-package all-the-icons
   :ensure t
+  :defer t
   :init
   (defun all-the-icons-update-data (lst lst-key &rest kvs)
     "TODO"
@@ -419,66 +420,7 @@ This is customized for the normal state of `evil-mode'."
                   (t
                    '(face (:height 1.15 :weight ultrabold :inherit)))))))
   (spaceline-emacs-theme)
-  (spaceline-helm-mode)
-
-  (spaceline-define-segment major-mode
-    "the name of the major mode."
-		(let ((icon (all-the-icons-icon-for-mode major-mode :face nil)))
-      (if (symbolp icon)
-          (powerline-major-mode)
-        (propertize icon
-                    'face (append (get-text-property 0 'face icon) '(:inherit))
-                    'mouse-face 'mode-line-highlight
-                    'help-echo (concat "major mode: " (car (-list mode-name)) "\n"
-                                       "\ mouse-1: display major mode menu\n"
-                                       "\ mouse-2: show help for major mode\n"
-                                       "\ mouse-3: toggle minor modes")
-                    'local-map (let ((map (make-sparse-keymap)))
-                                 (define-key map [mode-line down-mouse-1]
-                                   `(menu-item ,(purecopy "menu bar") ignore
-                                               :filter (lambda (_) (mouse-menu-major-mode-map))))
-                                 (define-key map [mode-line mouse-2] 'describe-mode)
-                                 (define-key map [mode-line down-mouse-3] mode-line-mode-menu)
-                                 map)))))
-
-  (spaceline-define-segment version-control
-    "Version control information."
-    (when vc-mode
-      (powerline-raw
-       (s-trim (concat
-                (let ((backend (vc-backend (buffer-file-name))))
-                  (concat
-                   (pcase backend
-                     (`Git (let ((icon (all-the-icons-faicon "git" :v-adjust -0.1 :face nil)))
-                             (propertize icon 'face (append (get-text-property 0 'face icon) '(:inherit)))))
-                     (`SVN (let ((icon (all-the-icons-fileicon "svn" :v-adjust -0.1 :face nil)))
-                            (propertize icon 'face (append (get-text-property 0 'face icon) '(:inherit)))))
-                     (_ backend))
-                   " "
-                   (let ((branch (or (-some-> vc-mode
-                                              (split-string "[-:@]")
-                                              (rest)
-                                              (-some->> (-interpose "-")
-                                                        (apply #'concat)))
-                                     "-")))
-                     (concat
-                      (if (eq 'Git backend)
-                          (let ((icon (all-the-icons-octicon "git-branch" :v-adjust -0.1 :face nil)))
-                           (propertize icon 'face (append (get-text-property 0 'face icon) '(:inherit))))
-                          ":")
-                      branch))))
-                (when (buffer-file-name)
-                  (pcase (vc-state (buffer-file-name))
-                    (`up-to-date " ")
-                    (`edited " Mod")
-                    (`added " Add")
-                    (`unregistered " ??")
-                    (`removed " Del")
-                    (`needs-merge " Con")
-                    (`needs-update " Upd")
-                    (`ignored " Ign")
-                    (_ " Unk"))))))))
-  (spaceline-compile))
+  (spaceline-helm-mode))
 
 (use-package vi-tilde-fringe
   :defer t
