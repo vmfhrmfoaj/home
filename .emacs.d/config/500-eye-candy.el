@@ -17,9 +17,13 @@
 
   :config
   (setq all-the-icons-default-adjust -0.15)
+  ;; for `neotree'
   (all-the-icons-update-data 'all-the-icons-dir-icon-alist "google[ _-]drive" :height 1.0)
   (all-the-icons-update-data 'all-the-icons-icon-alist "\\.DS_STORE$" :height 0.95 :v-adjust -0.1)
   (all-the-icons-update-data 'all-the-icons-icon-alist "\\.git" :v-adjust 0)
+  ;; for `mode-line'
+  (all-the-icons-update-data 'all-the-icons-mode-icon-alist 'rust-mode :v-adjust 0)
+  (all-the-icons-update-data 'all-the-icons-mode-icon-alist 'java-mode :v-adjust 0.05 :height 1.1)
   (dolist (mode '(magit-status-mode
                   magit-log-mode))
     (all-the-icons-update-data 'all-the-icons-mode-icon-alist mode :v-adjust 0))
