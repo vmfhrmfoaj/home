@@ -416,7 +416,7 @@ This is customized for the normal state of `evil-mode'."
                  (cond
                   ((or (string-equal "gnome-macbookair" hostname)
                        (string-equal "gnome-imac" hostname))
-                   '(display (raise 0.05) face (:weight ultrabold :inherit)))
+                   '(display (raise 0.05) face (:height 1.05 :weight ultrabold :inherit)))
                   (t
                    '(face (:height 1.15 :weight ultrabold :inherit)))))))
   (spaceline-emacs-theme)
