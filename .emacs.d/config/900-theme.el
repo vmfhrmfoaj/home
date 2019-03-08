@@ -15,7 +15,7 @@
   (custom-theme-set-faces
    'leuven
    `(bold ((t (:weight ultrabold))))
-   `(italic ((t (:slant italic))))
+   `(italic ((t (:family "Noto Sans" :slant italic))))
    `(font-lock-doc-face ((t (:inherit font-lock-string-face :foreground "#7F7F7F"))))
    `(font-lock-negation-char-face ((t (:inherit font-lock-warning-face :weight medium))))
    `(helm-swoop-target-word-face ((t (:inherit lazy-highlight))))
@@ -23,7 +23,7 @@
    `(helm-match-selection ((t (:inherit isearch))))
    `(helm-selection ((t (:background ,(color-from 'isearch :background 35) :distant-foreground "black"))))
    `(underline ((t (:underline (:color foreground-color :style wave)))))
-   `(variable-pitch ((t (:family "Noto Sans"))))))
+   `(variable-pitch ((t (:family "Noto Serif"))))))
 
 (use-package auto-dim-other-buffers
   :defer t
