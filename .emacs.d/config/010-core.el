@@ -6,6 +6,9 @@
 (use-package evil
   :ensure t
   :init
+  (defvar-local evil-ex--gl-preview-point nil
+    "TODO")
+
   (defun evil-ex-update-for--goto-line-preview (&optional beg end len string)
     "TODO"
     ;; (print (list 'env (selected-window) (current-buffer) evil-ex-current-buffer '|
@@ -22,7 +25,11 @@
             (goto-line line-num evil-ex-current-buffer)
             (redisplay t)
             (when (bound-and-true-p linum-mode)
-              (linum-update evil-ex-current-buffer)))))))
+              (linum-update evil-ex-current-buffer))
+            (when (and (bound-and-true-p hl-line-mode) hl-line-overlay)
+              (hl-line-highlight))
+            (when (and (bound-and-true-p global-hl-line-mode) global-hl-line-mode)
+              (global-hl-line-highlight)))))))
 
   (defun abort-recursive-edit-for-evil-ex ()
     "TODO"
@@ -59,7 +66,6 @@
       (list beg end type :expanded t)))
 
   (setq-default evil-symbol-word-search t)
-  (setq-default evil-ex--gl-preview-point nil)
   (define-key evil-ex-completion-map [remap abort-recursive-edit] #'abort-recursive-edit-for-evil-ex)
   (advice-add #'evil-ex-setup :before
               (lambda ()
