@@ -181,43 +181,6 @@
                   (shell-command-to-string
                    (concat rsync-remote-notify-cmd "'" res "'")))))))))))
 
-(defvar google-drive-exec nil
-  "TODO")
-
-(defvar google-drive-opts '("-hidden" "-quiet")
-  "TODO")
-
-(defun sync-google-drive (path cb &rest args)
-  "TODO"
-  (async-start
-   `(lambda ()
-      (call-process (or ,google-drive-exec "drive") nil nil nil
-                    ,@args ,@google-drive-opts ,path))
-   `(lambda (status)
-      (when ,cb
-        (funcall ,cb status))
-      (cond
-       ((= 19 status)
-        ;; FIXME
-        ;;  ediff-files
-        (message (concat "syncing '" ,path "' is failed: there are conflicts.")))
-       ((= 0 status)
-        (message (concat "syncing '" ,path "' is done!")))
-       (t
-        (message (concat "syncing '" ,path "' is failed:" (number-to-string status))))))))
-
-(defvar google-drive-push-opts '(("push") ("-depth" "0") ("-retry-count" "0") ("-ignore-checksum"))
-  "TODO")
-
-(defun push-to-google-drive (path &optional cb)
-  (apply #'sync-google-drive path cb (-flatten google-drive-push-opts)))
-
-(defvar google-drive-pull-opts '(("pull"))
-  "TODO")
-
-(defun pull-to-google-drive (path &optional cb)
-  (apply #'sync-google-drive path cb (-flatten google-drive-pull-opts)))
-
 (defvar buf-visit-time nil
   "TODO")
 (make-local-variable 'buf-visit-time)

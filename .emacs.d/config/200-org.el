@@ -136,26 +136,6 @@ which see."
     (org-agenda-list)
     (call-interactively #'org-agenda-redo))
 
-  (defun org-sync-cloud ()
-    "TODO"
-    (interactive)
-    (let ((dir (concat (getenv "HOME") "/Google Drive/Org")))
-      (message (concat "Updating " dir "..."))
-      (pull-to-google-drive
-       dir
-       (-partial
-        (lambda (cur-win _)
-          (when (and (boundp 'org-agenda-buffer)
-                     (buffer-live-p org-agenda-buffer))
-            (flet ((yes-or-no-p (&rest args) t))
-              (dolist (file org-agenda-files)
-                (find-file-noselect file)))
-            (with-selected-window cur-win
-              (with-current-buffer org-agenda-buffer
-                (ignore-errors
-                  (call-interactively #'org-agenda-redo))))))
-        (selected-window)))))
-
   (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
 
   :config
@@ -180,8 +160,6 @@ which see."
         org-agenda-sticky t
         org-agenda-tags-column org-tags-column
         org-agenda-window-setup 'current-window)
-  (when window-system
-    (org-sync-cloud))
   (with-eval-after-load "persp-mode"
     (let ((f (lambda (&rest _)
                (persp-switch-to-org))))
