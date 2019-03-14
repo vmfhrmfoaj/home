@@ -429,5 +429,5 @@ This is customized for the normal state of `evil-mode'."
   ;;:ensure t
   :init
   (unless (package-installed-p 'vi-tilde-fringe)
-    (quelpa '(vi-tilde-fringe :repo "syl20bnr/vi-tilde-fringe" :fetcher github)))
+    (quelpa '(vi-tilde-fringe :fetcher github :repo "syl20bnr/vi-tilde-fringe")))
   (global-vi-tilde-fringe-mode))

@@ -116,4 +116,4 @@
   ;;:ensure t
   :init
   (unless (package-installed-p 'perl5db-as-repl)
-    (quelpa '(perl5db-as-repl :repo "vmfhrmfoaj/perl5db-as-repl" :fetcher gitlab))))
+    (quelpa '(perl5db-as-repl :fetcher gitlab :repo "vmfhrmfoaj/perl5db-as-repl"))))

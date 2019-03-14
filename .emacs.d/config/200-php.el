@@ -14,7 +14,7 @@
   ;;:ensure t
   :init
   (unless (package-installed-p 'php-extras)
-    (quelpa '(php-extras :repo "arnested/php-extras" :fetcher github))
+    (quelpa '(php-extras :fetcher github :repo "arnested/php-extras"))
     (flet ((yes-or-no-p (&rest args) t))
       (php-extras-generate-eldoc)))
 
