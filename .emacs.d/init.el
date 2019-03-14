@@ -10,10 +10,12 @@
 (require 'package)
 (setq package-archives
       '(("org"          . "https://orgmode.org/elpa/")
+        ("gnu"          . "https://elpa.gnu.org/packages/")
         ("melpa"        . "https://melpa.org/packages/")
         ("melpa-stable" . "https://stable.melpa.org/packages/"))
       package-archive-priorities
       '(("org"          . 15)
+        ("gnu"          .  0)
         ("melpa"        . 10)
         ("melpa-stable" .  5)))
 (package-initialize)

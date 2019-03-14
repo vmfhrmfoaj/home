@@ -1,8 +1,3 @@
-(use-package undo-tree
-  :init
-  (unless (package-installed-p 'undo-tree)
-    (quelpa '(undo-tree :fetcher git :url "http://www.dr-qubit.org/git/undo-tree.git"))))
-
 (use-package evil
   :ensure t
   :init
