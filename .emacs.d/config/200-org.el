@@ -193,7 +193,7 @@ which see."
   :config
   (setq org-capture-templates
         `(("t" "Todo" entry
-           (file+headline ,(concat org-directory "/todos/" (format-time-string "%Y") ".org")
+           (file+headline ,(concat org-directory  "/" (format-time-string "%Y") "/todo.org")
                           ,(format-time-string "%b"))
            ,(concat "* TODO %^{Task}"                                                    "\n"
                     ":PROPERTIES:"                                                       "\n"
@@ -203,7 +203,7 @@ which see."
                     "%?")
            :prepend t)
           ("n" "Note" entry
-           (file+headline ,(concat org-directory "/notes/" (format-time-string "%Y") ".org")
+           (file+headline ,(concat org-directory  "/" (format-time-string "%Y") "/note.org")
                           ,(format-time-string "%b"))
            ,(concat "* %^{Note}" "\n"
                     "\n"
@@ -211,7 +211,7 @@ which see."
                     "- %?")
            :prepend t)
           ("p" "Protocol" entry
-           (file+headline ,(concat org-directory "/notes/" (format-time-string "%Y") ".org")
+           (file+headline ,(concat org-directory "/" (format-time-string "%Y") "/note.org")
                           ,(format-time-string "%b"))
            ,(concat "* %^{Note}"      "\n"
                     "\n"
@@ -223,7 +223,7 @@ which see."
                     "%?")
            :prepend t)
           ("L" "Protocol Link" entry
-           (file+headline ,(concat org-directory "/notes/" (format-time-string "%Y") ".org")
+           (file+headline ,(concat org-directory "/" (format-time-string "%Y") "/note.org")
                           ,(format-time-string "%b"))
            ,(concat "* %^{Note}" "\n"
                     "\n"
