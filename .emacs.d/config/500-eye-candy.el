@@ -388,37 +388,12 @@ This is customized for the normal state of `evil-mode'."
   :ensure t
   :config
   (setq spaceline-window-numbers-unicode t)
-  (advice-add #'spaceline--unicode-number :override
-              (lambda (str)
-                (apply #'propertize
-                 (cond
-                  ((string=  "1" str) "⑴")
-                  ((string=  "2" str) "⑵")
-                  ((string=  "3" str) "⑶")
-                  ((string=  "4" str) "⑷")
-                  ((string=  "5" str) "⑸")
-                  ((string=  "6" str) "⑹")
-                  ((string=  "7" str) "⑺")
-                  ((string=  "8" str) "⑻")
-                  ((string=  "9" str) "⑼")
-                  ((string= "10" str) "⑽")
-                  ((string= "11" str) "⑾")
-                  ((string= "12" str) "⑿")
-                  ((string= "13" str) "⒀")
-                  ((string= "14" str) "⒁")
-                  ((string= "15" str) "⒂")
-                  ((string= "16" str) "⒃")
-                  ((string= "17" str) "⒄")
-                  ((string= "18" str) "⒅")
-                  ((string= "19" str) "⒆")
-                  ((string= "20" str) "⒇")
-                  (t "⒳"))
-                 (cond
-                  ((or (string-equal "gnome-macbookair" hostname)
-                       (string-equal "gnome-imac" hostname))
-                   '(display (raise 0.05) face (:height 1.05 :weight ultrabold :inherit)))
-                  (t
-                   '(face (:height 1.15 :weight ultrabold :inherit)))))))
+  (advice-add #'spaceline--unicode-number :around
+              (lambda (fn str)
+                (let ((ret (funcall fn str)))
+                  (if (<= 11 (string-to-number str))
+                      ret
+                    (propertize ret 'display '(raise 0.1))))))
   (spaceline-emacs-theme)
   (spaceline-helm-mode))
 
