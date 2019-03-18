@@ -5,7 +5,7 @@
       inhibit-startup-screen t)
 (add-hook 'emacs-startup-hook (lambda () (setq gc-cons-threshold (* 1024 1024 32))))
 (when (file-exists-p custom-file)
-  (load custom-file))
+  (add-hook 'emacs-startup-hook (lambda () (load custom-file))))
 
 (require 'package)
 (setq package-archives
