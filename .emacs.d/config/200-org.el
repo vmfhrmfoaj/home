@@ -10,6 +10,10 @@
   :config
   (evil-org-agenda-set-keys))
 
+(use-package ledger-mode
+  :ensure t
+  :defer t)
+
 (use-package org
   :ensure org-plus-contrib
   :defer t
@@ -159,7 +163,11 @@ which see."
                                       (search category-keep))
         org-agenda-sticky t
         org-agenda-tags-column org-tags-column
-        org-agenda-window-setup 'current-window)
+        org-agenda-window-setup 'current-window
+        org-babel-load-languages '((R . t)
+                                   (emacs-lisp . t)
+                                   (gnuplot . t)
+                                   (ledger . t)))
   (with-eval-after-load "persp-mode"
     (let ((f (lambda (&rest _)
                (persp-switch-to-org))))
