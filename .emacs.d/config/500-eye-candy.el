@@ -2,7 +2,7 @@
   :ensure t
   :defer t
   :init
-  (defun all-the-icons-update-data (lst lst-key &rest kvs)
+  (defn all-the-icons-update-data (lst lst-key &rest kvs)
     "TODO"
     (let* ((key-vals (-partition 2 kvs))
            (keys (-map #'-first-item key-vals))
@@ -34,13 +34,14 @@
                   special-mode))
     (all-the-icons-update-data 'all-the-icons-mode-icon-alist mode :v-adjust -0.1))
   (advice-add #'all-the-icons-icon-for-dir :filter-args
-              (lambda (args)
-                (let* ((dir (car args))
-                       (dir (s-chop-suffix "/" dir)))
-                  (push (if (string-empty-p dir)
-                            "/"
-                          dir)
-                        (-drop 1 args))))))
+              (byte-compile
+               (lambda (args)
+                 (let* ((dir (car args))
+                        (dir (s-chop-suffix "/" dir)))
+                   (push (if (string-empty-p dir)
+                             "/"
+                           dir)
+                         (-drop 1 args)))))))
 
 (use-package auto-dim-other-buffers
   :ensure t
@@ -92,21 +93,23 @@
     (advice-add #'fancy-narrow-to-region :after #'helm-swoop--clear-cache-hard)
     (advice-add #'fancy-widen :after #'helm-swoop--clear-cache-hard))
   (advice-add #'save-buffer :around
-              (lambda (fn &optional arg)
-                "wrap `save-buffer' to run without `fancy-narrow'."
-                (let (fancy-narrow--beginning fancy-narrow--end)
-                  (funcall fn arg))))
+              (byte-compile
+               (lambda (fn &optional arg)
+                 "wrap `save-buffer' to run without `fancy-narrow'."
+                 (let (fancy-narrow--beginning fancy-narrow--end)
+                   (funcall fn arg)))))
   (advice-add #'jit-lock-function :around
-              (lambda (fn beg)
-                "wrap `jit-lock-function' to run without `fancy-narrow'."
-                (let (fancy-narrow--beginning fancy-narrow--end)
-                  (funcall fn beg)))))
+              (byte-compile
+               (lambda (fn beg)
+                 "wrap `jit-lock-function' to run without `fancy-narrow'."
+                 (let (fancy-narrow--beginning fancy-narrow--end)
+                   (funcall fn beg))))))
 
 (use-package focus
   :ensure t
   :defer t
   :init
-  (defun focus--org-thing ()
+  (defn focus--org-thing ()
     "TODO"
     (ignore-errors
       (if focus-mode-org-thing-lock
@@ -121,7 +124,7 @@
                          (point))))
             (cons beg end))))))
 
-  (defun focus--tex-thing ()
+  (defn focus--tex-thing ()
     "TODO"
     (ignore-errors
       (let* ((regx  (concat "^\\(?:[[:cntrl:]]\\)*$"))
@@ -135,7 +138,7 @@
                       (point))))
         (cons beg end))))
 
-  (defun focus--text-thing ()
+  (defn focus--text-thing ()
     "TODO"
     (ignore-errors
       (save-excursion
@@ -147,7 +150,7 @@
                      (point))))
           (cons beg end)))))
 
-  (defun focus--list+-thing ()
+  (defn focus--list+-thing ()
     "TODO"
     (ignore-errors
       (save-excursion
@@ -166,7 +169,7 @@
                      (point))))
           (cons beg end)))))
 
-  (defun focus--lisp-thing ()
+  (defn focus--lisp-thing ()
     "TODO"
     (ignore-errors
       (save-excursion
@@ -181,7 +184,7 @@
                      (point))))
           (cons beg end)))))
 
-  (defun focus--clojure-thing ()
+  (defn focus--clojure-thing ()
     "TODO"
     (ignore-errors
       (save-excursion
@@ -199,14 +202,14 @@
   (defvar focus--exclude-modes '(term-mode)
     "TODO")
 
-  (defun focus--enable ()
+  (defn focus--enable ()
     "TODO"
     (unless (apply #'derived-mode-p focus--exclude-modes)
       (focus-mode 1)
       (let ((focus-update-idle-time nil))
         (focus-move-focus))))
 
-  (defun focus--disable ()
+  (defn focus--disable ()
     "TODO"
     (focus-mode 0))
 
@@ -230,31 +233,33 @@
   (add-to-list 'focus-mode-to-thing '(tex-mode . tex-sentence))
   (add-to-list 'focus-mode-to-thing '(text-mode . sentence+))
   (advice-add #'focus-terminate :after
-              (lambda ()
-                "Clear `focus--update-timer`."
-                (when focus--update-timer
-                  (cancel-timer focus--update-timer)
-                  (setq focus--update-timer nil))))
+              (byte-compile
+               (lambda ()
+                 "Clear `focus--update-timer`."
+                 (when focus--update-timer
+                   (cancel-timer focus--update-timer)
+                   (setq focus--update-timer nil)))))
   (advice-add #'focus-move-focus :around
-              (lambda (fn)
-                "Delay to update `focus-pre-overlay' and `focus-post-overlay'."
-                (when focus--update-timer
-                  (cancel-timer focus--update-timer))
-                (if (not focus-update-idle-time)
-                    (funcall fn)
-                  (setq focus--update-timer
-                        (run-with-idle-timer
-                         focus-update-idle-time
-                         nil
-                         (lambda (fn)
-                           (setq focus--update-timer nil)
-                           (condition-case nil
-                               (funcall fn)
-                             (error (progn
-                                      (focus-terminate)
-                                      (focus-init)
-                                      (funcall fn)))))
-                         fn))))))
+              (byte-compile
+               (lambda (fn)
+                 "Delay to update `focus-pre-overlay' and `focus-post-overlay'."
+                 (when focus--update-timer
+                   (cancel-timer focus--update-timer))
+                 (if (not focus-update-idle-time)
+                     (funcall fn)
+                   (setq focus--update-timer
+                         (run-with-idle-timer
+                          focus-update-idle-time
+                          nil
+                          (lambda (fn)
+                            (setq focus--update-timer nil)
+                            (condition-case nil
+                                (funcall fn)
+                              (error (progn
+                                       (focus-terminate)
+                                       (focus-init)
+                                       (funcall fn)))))
+                          fn)))))))
 
 (use-package highlight-parentheses
   :ensure t
@@ -270,15 +275,16 @@
 
 (use-package highlight-symbol
   :ensure t
+  :defer t
   :init
-  (defun highlight-symbol--custom-update-timer (value)
+  (defn highlight-symbol--custom-update-timer (value)
     "TODO"
     (when highlight-symbol-timer
       (cancel-timer highlight-symbol-timer))
     (setq highlight-symbol-timer
           (run-with-idle-timer (min 0.1 value) nil #'highlight-symbol-temp-highlight)))
 
-  (defun highlight-symbol-mode--custom-post-command ()
+  (defn highlight-symbol-mode--custom-post-command ()
     "After a command, change the temporary highlighting.
 Remove the temporary symbol highlighting and, unless a timeout is specified,
 create the new one."
@@ -291,7 +297,7 @@ create the new one."
     '(font-lock-doc-face font-lock-comment-face font-lock-string-face php-string)
     "TODO")
 
-  (defun highlight-symbol--custom-get-symbol ()
+  (defn highlight-symbol--custom-get-symbol ()
     "Return a regular expression identifying the symbol at point.
 This is customized for the normal state of `evil-mode'."
     (-when-let (bound (bounds-of-thing-at-point 'symbol))
@@ -325,13 +331,15 @@ This is customized for the normal state of `evil-mode'."
   (advice-add #'highlight-symbol-get-symbol :override #'highlight-symbol--custom-get-symbol))
 
 (use-package hl-line
-  :config
+  :defer t
+  :init
   (global-hl-line-mode 1))
 
 (use-package hl-todo
   :ensure t
+  :defer t
   :init
-  (defun hl-todo--setup-custom ()
+  (defn hl-todo--setup-custom ()
     "TODO"
     (font-lock-remove-keywords nil hl-todo--keywords)
     (setq hl-todo--keywords
@@ -339,10 +347,11 @@ This is customized for the normal state of `evil-mode'."
                       `(1 (hl-todo--get-face) prepend))))
     (font-lock-add-keywords nil hl-todo--keywords t))
 
+  (global-hl-todo-mode 1)
+
   :config
   (advice-add #'hl-todo--get-face :filter-return #'list)
-  (advice-add #'hl-todo--setup :after #'hl-todo--setup-custom)
-  (global-hl-todo-mode 1))
+  (advice-add #'hl-todo--setup :after #'hl-todo--setup-custom))
 
 (use-package org-bullets
   :ensure t
@@ -366,7 +375,7 @@ This is customized for the normal state of `evil-mode'."
   (defvar rainbow-delimiters--prefix-str (concat "@" "?" "#" "_" "'" "`")
     "TODO")
 
-  (defun rainbow-delimiters--apply-color-for-fira-code (loc depth match)
+  (defn rainbow-delimiters--apply-color-for-fira-code (loc depth match)
     "TODO"
     (-when-let (face (funcall rainbow-delimiters-pick-face-function depth match loc))
       (font-lock-prepend-text-property (save-excursion
@@ -389,13 +398,20 @@ This is customized for the normal state of `evil-mode'."
   :config
   (setq spaceline-window-numbers-unicode t)
   (advice-add #'spaceline--unicode-number :around
-              (lambda (fn str)
-                (let ((ret (funcall fn str)))
-                  (if (<= 11 (string-to-number str))
-                      ret
-                    (propertize ret 'display '(raise 0.1))))))
-  (spaceline-emacs-theme)
-  (spaceline-helm-mode))
+              (byte-compile
+               (lambda (fn str)
+                 (let ((ret (funcall fn str)))
+                   (if (<= 11 (string-to-number str))
+                       ret
+                     (propertize ret 'display '(raise 0.1)))))))
+  (make-thread
+   (lambda ()
+     (let ((fmt (spaceline-emacs-theme)))
+       (dolist (buf (buffer-list))
+         (with-current-buffer buf
+           (setq mode-line-format fmt)))
+       (force-mode-line-update t))))
+  (make-thread #'spaceline-helm-mode))
 
 (use-package vi-tilde-fringe
   :defer t

@@ -2,10 +2,10 @@
   :ensure t
   :defer t
   :init
-  (defun helm-swoop--colorize (it)
+  (defn helm-swoop--colorize (it)
     (propertize it 'font-lock-face 'helm-swoop-line-number-face))
 
-  (defun helm-swoop--get-content-for-fancy-narrow (buf &optional linum)
+  (defn helm-swoop--get-content-for-fancy-narrow (buf &optional linum)
     "TODO"
     (let* (ret
            (buf (or (get-buffer buf) (current-buffer)))
@@ -44,15 +44,15 @@
         (setq ret (buffer-substring (point-min) (point-max))))
       ret))
 
-  (defun helm-swoop--clear-cache-hard (&rest _)
+  (defn helm-swoop--clear-cache-hard (&rest _)
     "TODO"
     (kill-local-variable 'helm-swoop-list-cache))
 
-  (defun helm-swoop--refine-candidate (str &optional pattern)
+  (defn helm-swoop--refine-candidate (str &optional pattern)
     (list (-last-item (s-split-up-to "[0-9]+" str 1))
           (or pattern helm-pattern)))
 
-  (defun helm-swoop--modify-action-on-helm-source (source)
+  (defn helm-swoop--modify-action-on-helm-source (source)
     (--map (if (eq 'action (car it))
                `(action . ,(append (cdr it) '(("Edit" . helm-swoop--edit))))
              it)
@@ -85,7 +85,7 @@
   :ensure t
   :defer t
   :init
-  (defun helm-ag--custom-do-ag-candidate-process ()
+  (defn helm-ag--custom-do-ag-candidate-process ()
     (let* ((non-essential nil)
            (default-directory (or helm-ag--default-directory
                                   helm-ag--last-default-directory
@@ -107,12 +107,12 @@
                  (ignore-errors
                    (helm-ag--do-ag-propertize helm-input))))))))))
 
-  (defun helm-do-ag-wrap (fn &optional basedir targets)
+  (defn helm-do-ag-wrap (fn &optional basedir targets)
     "Wrap `helm-do-ag' to change `helm-input-idle-delay' in the `helm-do-ag' context."
     (let ((helm-input-idle-delay 0.2))
       (funcall fn basedir targets)))
 
-  (defun helm-ag--elisp-regexp-to-pcre-for-ripgrep (pattern)
+  (defn helm-ag--elisp-regexp-to-pcre-for-ripgrep (pattern)
     "Improve `helm-ag--elisp-regexp-to-pcre' for ripgrep."
     (s-replace-all '(("\\s-" . "[[:space:]]")) pattern))
 

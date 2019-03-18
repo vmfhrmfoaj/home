@@ -6,7 +6,7 @@
   :init
   (projectile-load-known-projects)
 
-  (defun projectile-project-files-custom-filter (files)
+  (defn projectile-project-files-custom-filter (files)
     "TODO"
     (let ((root (file-truename (projectile-project-root))))
       (-if-let (regex (-some->> (append (projectile-project-ignored-files)
@@ -20,7 +20,7 @@
 
   :config
   (advice-add #'projectile-project-root :before-until
-              (lambda (&optional _) (persp-current-project)))
+              (byte-compile (lambda (&optional _) (persp-current-project))))
   (setq projectile-completion-system 'helm
         projectile-enable-cachig t)
   (advice-add #'projectile-project-files :filter-return

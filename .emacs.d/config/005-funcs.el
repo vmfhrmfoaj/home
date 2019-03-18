@@ -12,13 +12,30 @@
   "TODO"
   `(setq ,(-first-item thread) (->> ,@thread)))
 
+(setq byte-compile-warnings nil)
+
+(defun byte-compile-with-thread (symbol)
+  "TODO"
+  (make-thread
+   `(lambda ()
+      (byte-compile #',symbol))))
+(byte-compile #'byte-compile-with-thread)
+
+(defmacro defn (name args &optional docstr &rest body)
+  "TODO"
+  `(prog1
+       ,(if docstr
+            `(defun ,name ,args ,docstr ,@body)
+          `(defun ,name ,args ,@body))
+    (byte-compile-with-thread #',name)))
+
 
 (require 'color)
 
-(defun color-rgb-to-hex-2-dig (R G B)
+(defn color-rgb-to-hex-2-dig (R G B)
   (color-rgb-to-hex R G B 2))
 
-(defun dim-color (color p)
+(defn dim-color (color p)
   "TODO"
   (->> color
        (color-name-to-rgb)
@@ -27,7 +44,7 @@
        (apply #'color-hsl-to-rgb)
        (apply #'color-rgb-to-hex-2-dig)))
 
-(defun light-color (color p)
+(defn light-color (color p)
   "TODO"
   (->> color
        (color-name-to-rgb)
@@ -36,7 +53,7 @@
        (apply #'color-hsl-to-rgb)
        (apply #'color-rgb-to-hex-2-dig)))
 
-(defun saturate-color (color p)
+(defn saturate-color (color p)
   "TODO"
   (->> color
        (color-name-to-rgb)
@@ -45,7 +62,7 @@
        (apply #'color-hsl-to-rgb)
        (apply #'color-rgb-to-hex-2-dig)))
 
-(defun mix-color (color-a color-b)
+(defn mix-color (color-a color-b)
   "TODO"
   (let ((rgb-a (color-name-to-rgb color-a))
         (rgb-b (color-name-to-rgb color-b)))
@@ -53,13 +70,13 @@
          (--map (/ it 2))
          (apply #'color-rgb-to-hex-2-dig))))
 
-(defun mix-colors (color &rest colors)
+(defn mix-colors (color &rest colors)
   "TODO"
   (if (not colors)
       color
     (-reduce-from #'mix-color color colors)))
 
-(defun color-from (face attr p)
+(defn color-from (face attr p)
   "TODO"
   (let ((fn (cond
              ((< 0 p) #'light-color)
@@ -69,7 +86,7 @@
     (funcall fn (face-attribute face attr) p)))
 
 
-(defun in-comment? ()
+(defn in-comment? ()
   "TODO"
   (comment-only-p (save-excursion
                     (goto-char (match-beginning 0))
@@ -79,34 +96,34 @@
 (setq-default font-lock--skip nil)
 (make-local-variable 'font-lock--skip)
 
-(defun safe-up-list-1 ()
+(defn safe-up-list-1 ()
   "TODO"
   (condition-case nil
       (up-list)
     (error (setq font-lock--skip t))))
 
-(defun safe-down-list-1 ()
+(defn safe-down-list-1 ()
   "TODO"
   (condition-case nil
       (down-list)
     (error (setq font-lock--skip t))))
 
-(defun safe-regexp? (regex)
+(defn safe-regexp? (regex)
   "TODO"
   (condition-case nil
       (progn (string-match-p regex "") t)
     (error nil)))
 
 
-(defun pixel->frame-unit (pixel)
+(defn pixel->frame-unit (pixel)
   "TODO"
   (round (/ pixel (/ (float (frame-pixel-width)) (frame-width)))))
 
-(defun frame-unit->pixel (frame-unit)
+(defn frame-unit->pixel (frame-unit)
   "TODO"
   (round (* frame-unit (/ (float (frame-pixel-width)) (frame-width)))))
 
-(defun custom-display-pixel-width ()
+(defn custom-display-pixel-width ()
   "TODO"
   (->> (--filter (-when-let (frames (-> (assoc 'frames it) cdr))
                    (--some? (eq (selected-frame) it) frames))
@@ -138,7 +155,7 @@
 (defvar rsync-ignore-patterns '(".git" ".svn")
   "TODO")
 
-(defun rsync-remote-dir (&optional buf)
+(defn rsync-remote-dir (&optional buf)
   "TODO"
   (let* ((buf (or (and buf (get-buffer buf))
                   (current-buffer)))
@@ -185,7 +202,7 @@
   "TODO")
 (make-local-variable 'buf-visit-time)
 
-(defun update-buf-visit-time (&rest _)
+(defn update-buf-visit-time (&rest _)
   "TODO"
   (ignore-errors
     (let ((cur-win (selected-window))
@@ -199,7 +216,7 @@
         (-update-> buf-visit-time
                    (plist-put cur-win cur-time))))))
 
-(defun buf-visit-time (&optional buf win)
+(defn buf-visit-time (buf &optional win)
   "TODO"
   (ignore-errors
     (with-current-buffer (or buf (current-buffer))
@@ -216,7 +233,7 @@
 (defvar exclude-alt-buf-regex ""
   "TODO")
 
-(defun switch-to-previous-buffer (&optional win)
+(defn switch-to-previous-buffer (&optional win)
   "TODO"
   (interactive)
   (unless (window-dedicated-p)
@@ -233,7 +250,7 @@
         (switch-to-buffer prev-buf nil t)))))
 
 
-(defun get-scratch-buffer-create ()
+(defn get-scratch-buffer-create ()
   "TODO"
   (interactive)
   (pop-to-buffer (get-buffer-create "*scratch*"))
@@ -242,26 +259,26 @@
   (when (fboundp #'persp-add-buffer-without-switch)
     (persp-add-buffer-without-switch)))
 
-(defun kill-new-buffer-file-name ()
+(defn kill-new-buffer-file-name ()
   "TODO"
   (interactive)
   (-when-let (file-name (buffer-file-name))
     (message (kill-new file-name))))
 
 
-(defun enabled? (mode-status)
+(defn enabled? (mode-status)
   "TODO"
   (cond ((symbolp mode-status) mode-status)
         ((numberp mode-status) (not (zerop mode-status)))
         (t nil)))
 
-(defun disable-modes (modes)
+(defn disable-modes (modes)
   "TODO"
   (--map (and (symbol-value it)
               (funcall it 0))
          modes))
 
-(defun restore-modes (modes status)
+(defn restore-modes (modes status)
   "TODO"
   (--map (and (cdr it)
               (funcall (car it) (cdr it)))

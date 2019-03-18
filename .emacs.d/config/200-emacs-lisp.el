@@ -1,14 +1,14 @@
 (use-package elisp-mode
   :defer t
   :init
-  (defun emacs-lisp-REPL-buffer ()
+  (defn emacs-lisp-REPL-buffer ()
     "TODO"
     (interactive)
     (pop-to-buffer (get-buffer-create "*emacs-lisp REPL*"))
     (unless (eq 'lisp-interaction-mode major-mode)
       (lisp-interaction-mode)))
 
-  (defun emacs-lisp-REPL-eval-print-this-sexp ()
+  (defn emacs-lisp-REPL-eval-print-this-sexp ()
     "TODO"
     (interactive)
     (while (ignore-errors (backward-up-list 1 t) t))
@@ -24,7 +24,7 @@
       (newline)
       (goto-char pos)))
 
-  (defun emacs-lisp-evil-lookup-func ()
+  (defn emacs-lisp-evil-lookup-func ()
     "TODO"
     (call-interactively #'elisp-slime-nav-describe-elisp-thing-at-point)
     (-when-let (buf (->> (window-list)

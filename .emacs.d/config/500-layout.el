@@ -1,22 +1,22 @@
 (use-package persp-mode
   :ensure t
   :init
-  (defun persp-current-name ()
+  (defn persp-current-name ()
     (safe-persp-name (get-frame-persp)))
 
-  (defun persp-current-project ()
+  (defn persp-current-project ()
     (let ((persp-name (persp-current-name)))
       (when (file-exists-p persp-name)
         persp-name)))
 
-  (defun helm-persp-do-create-&-switch-project (proj)
+  (defn helm-persp-do-create-&-switch-project (proj)
     "TODO"
     (interactive)
     (let ((persp-reset-windows-on-nil-window-conf t))
       (persp-switch proj)
       (projectile-switch-project-by-name proj)))
 
-  (defun helm-persp-create-&-switch-project ()
+  (defn helm-persp-create-&-switch-project ()
     "TODO"
     (interactive)
     (helm :sources
@@ -25,7 +25,7 @@
             :fuzzy-match helm-projectile-fuzzy-match
             :action '(("Create/Switch to Project Perspective" . helm-persp-do-create-&-switch-project)))))
 
-  (defun helm-persp ()
+  (defn helm-persp ()
     "TODO"
     (interactive)
     (helm :preselect (persp-current-name)
@@ -35,23 +35,23 @@
             :fuzzy-match t
             :action '(("Switch to Perspective" . persp-switch)))))
 
-  (defun persp-switch-to-default ()
+  (defn persp-switch-to-default ()
     "TODO"
     (interactive)
     (persp-switch persp-nil-name))
 
-  (defun persp-kill-cur-persp ()
+  (defn persp-kill-cur-persp ()
     "TODO"
     (interactive)
     (persp-kill (persp-current-name)))
 
-  (defun persp-add-buffer-without-switch (&optional buf)
+  (defn persp-add-buffer-without-switch (&optional buf)
     "TODO"
     (persp-add-buffer (or buf (current-buffer))
                       (get-current-persp)
                       nil))
 
-  (defun persp-add-all-proj-buffer (&rest _)
+  (defn persp-add-all-proj-buffer (&rest _)
     "TODO"
     (-when-let (cur-root (get-current-persp))
       (let* ((root (aref cur-root 1))
@@ -66,14 +66,14 @@
   (defvar persp-sorted-names nil
     "TODO")
 
-  (defun persp-update-sorted-names (&rest _)
+  (defn persp-update-sorted-names (&rest _)
     "TODO"
     (let ((cur (persp-current-name)))
       (-update->> persp-sorted-names
                   (remove cur)
                   (cons cur))))
 
-  (defun persp-switch-to-last-selected-persp ()
+  (defn persp-switch-to-last-selected-persp ()
     "TODO"
     (interactive)
     (let ((names persp-sorted-names)
@@ -91,7 +91,7 @@
 
   (defvar persp-org-name "@Org")
 
-  (defun persp-add-new-for-org ()
+  (defn persp-add-new-for-org ()
     "TODO"
     (let ((layout (persp-add-new persp-org-name)))
       (persp-switch persp-org-name)
@@ -101,7 +101,7 @@
         (persp-add-buffer buf))
       (org-agenda-list)))
 
-  (defun persp-switch-to-org ()
+  (defn persp-switch-to-org ()
     "TODO"
     (interactive)
     (if (persp-get-by-name persp-org-name *persp-hash* nil)

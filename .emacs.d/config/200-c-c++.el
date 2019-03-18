@@ -60,7 +60,7 @@
 
   (setq-default c-offset-level 1)
 
-  (defun c-set-offsets (offsets &optional level)
+  (defn c-set-offsets (offsets &optional level)
     "TODO"
     (let ((level (or level c-offset-level)))
       (dolist (offset offsets)
@@ -70,14 +70,14 @@
                                 (* level val)
                               val))))))
 
-  (defun c-set-vars (vars)
+  (defn c-set-vars (vars)
     "TODO"
     (dolist (v var)
       (let ((sym (car  v))
             (val (cadr v)))
         (set sym val))))
 
-  (defun c-setup-indent-config (config)
+  (defn c-setup-indent-config (config)
     "TODO"
     (let ((var    (plist-get config 'var))
           (offset (plist-get config 'offset)))
@@ -86,7 +86,7 @@
       (when offset
         (c-set-offsets offset))))
 
-  (defun man-at-point ()
+  (defn man-at-point ()
     (interactive)
     (let ((thing (thing-at-point 'symbol)))
       (pop-to-buffer (man (concat thing "(3)")))))

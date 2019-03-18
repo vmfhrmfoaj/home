@@ -10,7 +10,7 @@
   :init
   (add-hook 'racer-mode-hook #'eldoc-mode)
 
-  (defun racer--signature-at-point (name)
+  (defn racer--signature-at-point (name)
     "Customize `racer--describe-at-point' to avoid popup the helm buffer to select one of multiple matching."
     (let* ((output-lines (save-excursion
                            ;; Move to the end of the current symbol, to
@@ -27,7 +27,7 @@
       (when (and signature (not (s-starts-with-p "/" signature)))
         signature)))
 
-  (defun racer-eldoc--customized ()
+  (defn racer-eldoc--customized ()
     "Sometime `racer-eldoc' very slow."
     (-when-let (signature (-some-> 'symbol
                                    (thing-at-point)

@@ -5,7 +5,7 @@
   :ensure t
   :defer t
   :init
-  (defun aggressive-indent-do-indent ()
+  (defn aggressive-indent-do-indent ()
     "TODO"
     (interactive)
     (when aggressive-indent-mode
@@ -46,7 +46,7 @@
   :ensure t
   :after evil
   :init
-  (defun evil-surround-region-for-hkkb (args)
+  (defn evil-surround-region-for-hkkb (args)
     "TODO"
     (if (> 4 (length args))
         args
@@ -61,7 +61,7 @@
             (-replace-at 3 new-char args)
           args))))
 
-  (defun evil-surround-chnage-for-hkkb (args)
+  (defn evil-surround-chnage-for-hkkb (args)
     (interactive (list (read-key)))
     args)
 
@@ -79,19 +79,19 @@
 (use-package smartparens-config
   :ensure smartparens
   :init
-  (defun sp-wrap-sexp (&optional arg)
+  (defn sp-wrap-sexp (&optional arg)
     "TODO"
     (interactive "P")
     (sp-wrap-with-pair "("))
 
-  (defun sp-org-checkbox-p (_id _action _context)
+  (defn sp-org-checkbox-p (_id _action _context)
     "TODO"
     (save-match-data
       (save-excursion
         (beginning-of-line)
         (and (re-search-forward "^\\s-*\\(?:-\\|[0-9]+\\.\\) \\[\\(?:\\]\\|$\\)" (line-end-position) t) t))))
 
-  (defun sp-org-checkbox-handler (id action context)
+  (defn sp-org-checkbox-handler (id action context)
     "TODO"
     (when (and (string-equal id "[")
                (eq action 'insert)

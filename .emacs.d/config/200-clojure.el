@@ -2,7 +2,7 @@
   :ensure t
   :defer t
   :init
-  (defun cider-cljs-root-dirs ()
+  (defn cider-cljs-root-dirs ()
     "TODO"
     (let (repl reconn? cur-ns)
       (dolist (buf (cider-connections) repl)
@@ -38,7 +38,7 @@
           (nrepl-sync-request:eval cider-cljs-lein-repl repl)
           (and cur-ns (cider-repl-set-ns cur-ns))))))
 
-  (defun cider-conn-type-for-cljc-buffer (&optional buf)
+  (defn cider-conn-type-for-cljc-buffer (&optional buf)
     "TODO"
     (with-current-buffer (or buf (current-buffer))
       (when (eq 'clojurec-mode major-mode)
@@ -52,7 +52,7 @@
                   (when (re-search-backward "\\(?:^\\s-*\\|(\\):\\(cljs?\\)[ \r\t\n]+"  beg-pos t)
                     (match-string-no-properties 1))))))))))
 
-  (defun cider-switch-to-releated-repl-buffer (&optional set-namespace)
+  (defn cider-switch-to-releated-repl-buffer (&optional set-namespace)
     "TODO"
     (interactive "P")
     (let* ((repl-type (cider-connection-type-for-buffer))
@@ -69,7 +69,7 @@
                                         (-first-item all-repl-bufs))
                                     set-namespace)))
 
-  (defun cider-switch-to-last-clj-buf ()
+  (defn cider-switch-to-last-clj-buf ()
     "TODO"
     (interactive)
     (let ((display-fn (if cider-repl-display-in-current-window
@@ -92,12 +92,12 @@
                           (funcall display-fn))
             (setq target-modes nil))))))
 
-  (defun cider-add-cur-buf-into-persp (&rest _)
+  (defn cider-add-cur-buf-into-persp (&rest _)
     "TODO"
     (unless (string-equal persp-nil-name (persp-current-name))
       (persp-add-buffer (current-buffer))))
 
-  (defun cider-expected-ns-for-cljs (path)
+  (defn cider-expected-ns-for-cljs (path)
     "TODO"
     (-when-let (root-dirs (and (cider-connected-p)
                                (string= "cljs" (cider-connection-type-for-buffer))
@@ -114,14 +114,14 @@
                (replace-regexp-in-string "/" ".")
                (replace-regexp-in-string "_" "-"))))))
 
-  (defun cider-find-var-at-point ()
+  (defn cider-find-var-at-point ()
     "TODO"
     (interactive)
     (if (cider-connected-p)
         (cider-find-var nil (cider-symbol-at-point))
       (dumb-jump-go)))
 
-  (defun cider-doc-at-point ()
+  (defn cider-doc-at-point ()
     "TODO"
     (interactive)
     (cider-doc-lookup (cider-symbol-at-point)))
@@ -170,7 +170,7 @@
   :ensure t
   :defer t
   :init
-  (defun clojure-skip (direction-or-item &rest items)
+  (defn clojure-skip (direction-or-item &rest items)
     "TODO"
     (let* ((direction (if (and (numberp direction-or-item) (> 0 direction-or-item)) (- 1) (+ 1)))
            (items     (if (numberp direction-or-item) items (cons direction-or-item items)))
@@ -230,7 +230,7 @@
             (clojure-skip :vector)))
          (t (setq l (cdr l)))))))
 
-  (defun clojure-correct-font-lock-syntatic-face (res)
+  (defn clojure-correct-font-lock-syntatic-face (res)
     "(def _ \"abc\")<~ It should be the string."
     (if (and (eq res font-lock-doc-face)
              (save-excursion
@@ -255,7 +255,7 @@
   (defvar clojure-context-fn-regex (regexp-opt '("in" "on" "with"))
     "TODO")
 
-  (defun clojure--get-indentation (sym)
+  (defn clojure--get-indentation (sym)
     "TODO"
     (when (or (let ((case-fold-search nil))
                 (string-match-p "^[-_A-Z]+\\>" sym))
@@ -273,7 +273,7 @@
         (one-or-more (any whitespace "\n")))
     "TODO")
 
-  (defun clojure-find-ns-custom ()
+  (defn clojure-find-ns-custom ()
     "Sometimes `clojure-find-ns' is slow due to repeatedly call `up-list' to find the top level.
 This is customized version of `clojure-find-ns' to improve some performance."
     (save-excursion
@@ -311,7 +311,7 @@ This is customized version of `clojure-find-ns' to improve some performance."
     '(^:figwheel-load)
     "TODO")
 
-  (defun clojure-insert-namespace ()
+  (defn clojure-insert-namespace ()
     (interactive)
     (let* ((ns (if buffer-file-name
                    (if (fboundp 'cider-expected-ns)
@@ -362,7 +362,7 @@ This is customized version of `clojure-find-ns' to improve some performance."
       (when buffer-file-name
         (save-buffer))))
 
-  (defun clojure-setup ()
+  (defn clojure-setup ()
     "TODO"
     (setq-local font-lock-extend-region-functions
                 (remove 'clojure-font-lock-extend-region-def
@@ -382,18 +382,18 @@ This is customized version of `clojure-find-ns' to improve some performance."
   :ensure t
   :defer t
   :init
-  (defun edn-raw-p (raw)
+  (defn edn-raw-p (raw)
     (and (consp raw)
          (eq 'edn-raw (car raw))))
 
-  (defun edn-raw (raw)
+  (defn edn-raw (raw)
     (format "%s" (cdr raw)))
 
-  (defun edn-reader-macro-p (reader-macro)
+  (defn edn-reader-macro-p (reader-macro)
     (and (listp reader-macro)
          (eq 'edn-reader-macro (car reader-macro))))
 
-  (defun edn-reader-macro (reader-macro)
+  (defn edn-reader-macro (reader-macro)
     (let ((reader-macro (cadr reader-macro))
           (form (caddr reader-macro)))
       (concat reader-macro (edn-print-string form))))

@@ -31,7 +31,7 @@
 
   (setq-default perl-offset-level 1)
 
-  (defun perl-set-offsets (offsets &optional level)
+  (defn perl-set-offsets (offsets &optional level)
     "TODO"
     (let ((level (or level perl-offset-level)))
       (dolist (offset offsets)
@@ -41,14 +41,14 @@
                        (* level val)
                      val))))))
 
-  (defun perl-set-vars (vars)
+  (defn perl-set-vars (vars)
     "TODO"
     (dolist (v var)
       (let ((sym (car  v))
             (val (cadr v)))
         (set sym val))))
 
-  (defun perl-setup-indent-config (config)
+  (defn perl-setup-indent-config (config)
     "TODO"
     (let ((var (plist-get config 'var))
           (offset (plist-get config 'offset)))
@@ -57,7 +57,7 @@
       (when offset
         (perl-set-offsets offset))))
 
-  (defun cperl-beginning-of-defun ()
+  (defn cperl-beginning-of-defun ()
     "TODO"
     (let ((cur-pos (point))
           (beg-pos (line-beginning-position))
@@ -76,7 +76,7 @@
              (and (zerop n)
                   (message "Not found starting of the subroutine."))))))))
 
-  (defun cperl-end-of-defun ()
+  (defn cperl-end-of-defun ()
     "TODO"
     (let ((cur-pos (point))
           (beg-pos (line-beginning-position))
@@ -89,7 +89,7 @@
                  (up-list)))
         (re-search-forward regex nil t))))
 
-  (defun cperl-mode-setup ()
+  (defn cperl-mode-setup ()
     "TODO"
     (setq-local beginning-of-defun-function #'cperl-beginning-of-defun)
     (setq-local end-of-defun-function #'cperl-end-of-defun))
@@ -103,7 +103,7 @@
         cperl-merge-trailing-else nil)
   (with-eval-after-load "smartparens"
     (add-to-list 'sp-sexp-prefix '(cperl-mode regexp "\\(?:qw\\)")))
-  (let ((f (-const nil)))
+  (let ((f (byte-compile (-const nil))))
     (advice-add #'cperl-electric-keyword :override f)
     (advice-add #'cperl-electric-else    :override f)
     (advice-add #'cperl-electric-pod     :override f))

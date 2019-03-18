@@ -4,7 +4,7 @@
   (defvar-local evil-ex--gl-preview-point nil
     "TODO")
 
-  (defun evil-ex-update-for--goto-line-preview (&optional beg end len string)
+  (defn evil-ex-update-for--goto-line-preview (&optional beg end len string)
     "TODO"
     ;; (print (list 'env (selected-window) (current-buffer) evil-ex-current-buffer '|
     ;;              'parameters beg end len string '|
@@ -26,7 +26,7 @@
             (when (and (bound-and-true-p global-hl-line-mode) global-hl-line-mode)
               (global-hl-line-highlight)))))))
 
-  (defun abort-recursive-edit-for-evil-ex ()
+  (defn abort-recursive-edit-for-evil-ex ()
     "TODO"
     (interactive)
     (-when-let (win (-some->> (window-list)
@@ -63,23 +63,25 @@
   (setq-default evil-symbol-word-search t)
   (define-key evil-ex-completion-map [remap abort-recursive-edit] #'abort-recursive-edit-for-evil-ex)
   (advice-add #'evil-ex-setup :before
-              (lambda ()
-                "setup for `evil-ex-update-for--goto-line-preview' function."
-                (with-current-buffer evil-ex-current-buffer
-                  (setq-local evil-ex--gl-preview-point nil))))
+              (byte-compile
+               (lambda ()
+                 "setup for `evil-ex-update-for--goto-line-preview' function."
+                 (with-current-buffer evil-ex-current-buffer
+                   (setq-local evil-ex--gl-preview-point nil)))))
   (advice-add #'evil-ex-update :after #'evil-ex-update-for--goto-line-preview)
   (advice-add #'evil-ex-execute :before
-              (lambda (_)
-                "restore the position of the cursor for `evil-ex-update-for--goto-line-preview' function."
-                (when evil-ex--gl-preview-point
-                  (goto-char evil-ex--gl-preview-point))))
+              (byte-compile
+               (lambda (_)
+                 "restore the position of the cursor for `evil-ex-update-for--goto-line-preview' function."
+                 (when evil-ex--gl-preview-point
+                   (goto-char evil-ex--gl-preview-point)))))
   (evil-mode 1))
 
 (use-package helm
   :ensure t
   :diminish ""
   :init
-  (defun helm-bufferp (buf)
+  (defn helm-bufferp (buf)
     "TODO"
     (when (and (bufferp buf)
                (string-match-p "\\*.*[Hh]elm.*\\*" (buffer-name buf)))
@@ -91,14 +93,14 @@
   (defvar helm-last-search-buffer nil
     "TODO")
 
-  (defun helm--update-last-search-buffer (&rest _)
+  (defn helm--update-last-search-buffer (&rest _)
     "TODO"
     (interactive)
     (when (and (stringp helm-last-buffer)
                (string-match-p helm-search-buffer-regex helm-last-buffer))
       (setq helm-last-search-buffer helm-last-buffer)))
 
-  (defun helm-resume-last-search-buffer ()
+  (defn helm-resume-last-search-buffer ()
     "TODO"
     (interactive)
     ;; NOTE
@@ -108,7 +110,7 @@
       (setq helm-last-buffer helm-last-search-buffer)
       (call-interactively #'helm-resume)))
 
-  (defun helm-display-buffer-at-bottom (buffer &optional resume)
+  (defn helm-display-buffer-at-bottom (buffer &optional resume)
     "TODO"
     (let ((display-buffer-alist '(("\\*.*[Hh]elm.*\\*"
                                    (display-buffer-in-side-window)
@@ -116,7 +118,7 @@
                                    (side . bottom)))))
       (helm-default-display-buffer buffer resume)))
 
-  (defun helm-persistent-action-display-window-for-neotree (&optional _)
+  (defn helm-persistent-action-display-window-for-neotree (&optional _)
     "TODO"
     (with-helm-window
       (when (string-match-p "\\*.*NeoTree" (buffer-name helm-current-buffer))
@@ -132,19 +134,19 @@
 
   (make-local-variable 'helm-match-selection-overlays)
 
-  (defun helm-custom-initialize-overlays (_buffer)
+  (defn helm-custom-initialize-overlays (_buffer)
     "TODO"
     (dolist (ov helm-match-selection-overlays)
       (delete-overlay ov))
     (setq helm-match-selection-overlays nil))
 
-  (defun helm--remove-custom-overlays ()
+  (defn helm--remove-custom-overlays ()
     "TODO"
     (dolist (ov helm-match-selection-overlays)
       (delete-overlay ov))
     (setq helm-match-selection-overlays nil))
 
-  (defun helm-custom-mark-current-line (&optional _resumep _nomouse)
+  (defn helm-custom-mark-current-line (&optional _resumep _nomouse)
     "TODO"
     (helm--remove-custom-overlays)
     (let ((pattern (if (let ((case-fold-search t))
@@ -185,11 +187,12 @@
         helm-display-function #'helm-display-buffer-at-bottom
         helm-split-window-inside-p t
         helm-truncate-lines t)
-  (add-hook 'helm-before-initialize-hook (lambda () (setq gc-cons-threshold (* 1024 1024 128))))
+  (add-hook 'helm-before-initialize-hook (byte-compile (lambda () (setq gc-cons-threshold (* 1024 1024 128)))))
   (add-hook 'helm-cleanup-hook
-            (lambda ()
-              (setq gc-cons-threshold (* 1024 1024 32))
-              (garbage-collect)))
+            (byte-compile
+             (lambda ()
+               (setq gc-cons-threshold (* 1024 1024 32))
+               (garbage-collect))))
   (advice-add #'helm-persistent-action-display-window :before-until
               #'helm-persistent-action-display-window-for-neotree)
   (advice-add #'helm-initialize-overlays :after #'helm-custom-initialize-overlays)

@@ -26,7 +26,7 @@
     '((t (:inherit org-done)))
     "TODO")
 
-  (defun org-insert-schedule-&-deadline (mark &optional _)
+  (defn org-insert-schedule-&-deadline (mark &optional _)
     "Set a schedule and deadline for NEXT."
     (when org-insert-schedule-deadline
       (cond
@@ -40,7 +40,7 @@
         (org-deadline 'overwrite)))
       nil))
 
-  (defun org-tags-completion-function-for-case-insensitive (string _predicate &optional flag)
+  (defn org-tags-completion-function-for-case-insensitive (string _predicate &optional flag)
     "Complete tag STRING.
 FLAG specifies the type of completion operation to perform.  This
 function is passed as a collection function to `completing-read',
@@ -66,7 +66,7 @@ which see."
 	         (completion completion)))
         (_ nil))))
 
-  (defun org-dic-at-point ()
+  (defn org-dic-at-point ()
     "TODO"
     (interactive)
     (when (fboundp #'osx-dictionary-search-pointer)
@@ -105,23 +105,24 @@ which see."
               "TODO"
               (setq-local evil-lookup-func #'org-dic-at-point)))
   (advice-add #'org-tags-completion-function :override #'org-tags-completion-function-for-case-insensitive)
-  (advice-add #'org-clock-goto :before (lambda (&optional select) (persp-switch-to-org)))
+  (advice-add #'org-clock-goto :before (byte-compile (lambda (&optional select) (persp-switch-to-org))))
   (advice-add #'org-todo :around
-              (lambda (of &optional arg)
-                "If reopen the completed _TODO_, show a popup for logging."
-                (let* ((is-done? (member (org-get-todo-state) org-done-keywords))
-                       (org-todo-log-states (if is-done?
-                                                (append '(("TODO" note time)
-                                                          ("NEXT" note time))
-                                                        org-todo-log-states)
-                                              org-todo-log-states)))
-                  (funcall of arg)))))
+              (byte-compile
+               (lambda (of &optional arg)
+                 "If reopen the completed _TODO_, show a popup for logging."
+                 (let* ((is-done? (member (org-get-todo-state) org-done-keywords))
+                        (org-todo-log-states (if is-done?
+                                                 (append '(("TODO" note time)
+                                                           ("NEXT" note time))
+                                                         org-todo-log-states)
+                                               org-todo-log-states)))
+                   (funcall of arg))))))
 
 (use-package org-agenda
   :ensure org-plus-contrib
   :defer t
   :init
-  (defun org-agenda-resume ()
+  (defn org-agenda-resume ()
     "TODO"
     (interactive)
     (when (fboundp #'persp-switch-to-org)
@@ -132,7 +133,7 @@ which see."
       (call-interactively #'org-agenda-redo)
       t))
 
-  (defun org-agenda-show-list ()
+  (defn org-agenda-show-list ()
     "TODO"
     (interactive)
     (when (fboundp #'persp-switch-to-org)
@@ -169,8 +170,9 @@ which see."
                                    (gnuplot . t)
                                    (ledger . t)))
   (with-eval-after-load "persp-mode"
-    (let ((f (lambda (&rest _)
-               (persp-switch-to-org))))
+    (let ((f (byte-compile
+              (lambda (&rest _)
+                (persp-switch-to-org)))))
       (dolist (target-fn '(org-clock-jump-to-current-clock
                            org-search-view
                            org-tags-view
@@ -184,14 +186,14 @@ which see."
 (use-package org-capture
   :defer t
   :init
-  (defun org-capture-todo ()
+  (defn org-capture-todo ()
     "TODO"
     (interactive)
     (when (fboundp #'persp-switch-to-org)
       (persp-switch-to-org))
     (org-capture nil "t"))
 
-  (defun org-capture-note ()
+  (defn org-capture-note ()
     "TODO"
     (interactive)
     (when (fboundp #'persp-switch-to-org)
@@ -245,12 +247,12 @@ which see."
   :commands (org-clock-jump-to-current-clock)
 
   :init
-  (defun org-clock--resume ()
+  (defn org-clock--resume ()
     "TODO"
     (remove-hook 'focus-in-hook 'org-clock--resume)
     (org-clock-in-last))
 
-  (defun org-clock--auto-stop-&-restart ()
+  (defn org-clock--auto-stop-&-restart ()
     "TODO"
     (when (org-clocking-p)
       (let* ((idle-time (seconds-to-time (* 60 org-clock-custom-idle-time)))
@@ -258,14 +260,14 @@ which see."
         (org-clock-out nil t at-time)
         (add-hook 'focus-in-hook #'org-clock--resume))))
 
-  (defun org-clock--stop ()
+  (defn org-clock--stop ()
     "TODO"
     (when (org-clocking-p)
       (org-clock-goto)
       (org-clock-out nil t)
       (save-buffer)))
 
-  (defun org-clock--start-idle-timer ()
+  (defn org-clock--start-idle-timer ()
     "TODO"
     (add-hook 'kill-emacs-hook #'org-clock--stop)
     (run-with-idle-timer (* 60 org-clock-custom-idle-time) t
@@ -282,7 +284,7 @@ which see."
   :ensure org-plus-contrib
   :defer t
   :init
-  (defun org-protocol-setup ()
+  (defn org-protocol-setup ()
     "TODO"
     (remove-hook 'focus-out-hook #'org-protocol-setup)
     (require 'org-capture)

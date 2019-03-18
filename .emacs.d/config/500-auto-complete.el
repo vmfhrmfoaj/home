@@ -14,7 +14,7 @@
   :ensure t
   :after (company helm)
   :init
-  (defun helm-company-plus ()
+  (defn helm-company-plus ()
     "TODO"
     (interactive)
     (unless company-candidates
@@ -38,7 +38,7 @@
                                        'intangible t)))
               :candidate-number-limit helm-company-candidate-number-limit))))
 
-  (defun helm-company-complete-common ()
+  (defn helm-company-complete-common ()
     "TODO"
     (interactive)
     (if (and (not (cdr company-candidates))
@@ -46,7 +46,7 @@
         (helm-company-plus)
       (company--insert-candidate company-common)))
 
-  (defun company-indent-or-helm-company ()
+  (defn company-indent-or-helm-company ()
     "TODO"
     (interactive)
     (cond
@@ -74,6 +74,7 @@
   (remove-hook 'pre-command-hook 'company-pre-command)
   (remove-hook 'post-command-hook 'company-post-command)
   (advice-add #'company-mode-on :after
-              (lambda ()
-                (remove-hook 'pre-command-hook 'company-pre-command t)
-                (remove-hook 'post-command-hook 'company-post-command t))))
+              (byte-compile
+               (lambda ()
+                 (remove-hook 'pre-command-hook 'company-pre-command t)
+                 (remove-hook 'post-command-hook 'company-post-command t)))))

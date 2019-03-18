@@ -10,7 +10,7 @@
   :ensure t
   :defer t
   :init
-  (defun git-gutter-fringe+-setup ()
+  (defn git-gutter-fringe+-setup ()
     (remove-hook 'find-file-hook #'git-gutter-fringe+-setup)
     (require 'git-gutter-fringe+)
     (git-gutter+-mode 1))
@@ -52,7 +52,7 @@
     `((t (:inherit font-lock-variable-name-face :weight normal)))
     "TODO")
 
-  (defun magit-log-propertize-keywords-for-conventional-commits (msg)
+  (defn magit-log-propertize-keywords-for-conventional-commits (msg)
     "TODO"
     (let ((type  "[^:() ]+")
           (scope "[^)]+"))
@@ -69,7 +69,7 @@
                              msg))))
     msg)
 
-  (defun magit-setup ()
+  (defn magit-setup ()
     (remove-hook 'magit-mode-hook #'magit-setup)
     (require 'helm nil t))
 

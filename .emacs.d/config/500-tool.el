@@ -13,7 +13,7 @@
   :ensure t
   :defer t
   :init
-  (defun atomic-chrome-setup ()
+  (defn atomic-chrome-setup ()
     (remove-hook 'focus-out-hook #'atomic-chrome-setup)
     (require 'atomic-chrome))
 
@@ -42,14 +42,14 @@
   (defvar ediff--win-conf nil
     "TODO")
 
-  (defun ediff-addtional-setup (&rest _)
+  (defn ediff-addtional-setup (&rest _)
     "TODO"
     (setq ediff--exclude-mode-status (-map #'symbol-value ediff-exclude-modes)
           ediff--win-conf (current-window-configuration))
     (disable-modes ediff-exclude-modes)
     (toggle-frame-fullscreen))
 
-  (defun ediff-addtional-cleanup (&rest _)
+  (defn ediff-addtional-cleanup (&rest _)
     "TODO"
     (restore-modes ediff-exclude-modes ediff--exclude-mode-status)
     (-when-let (conf ediff--win-conf)
@@ -57,7 +57,7 @@
       (set-window-configuration conf))
     (toggle-frame-fullscreen))
 
-  (defun ediff-reset-text-size ()
+  (defn ediff-reset-text-size ()
     "TODO"
     (interactive)
     (ediff-barf-if-not-control-buffer)
@@ -65,7 +65,7 @@
       (with-current-buffer buf
         (text-scale-increase 0))))
 
-  (defun ediff-increase-text-size ()
+  (defn ediff-increase-text-size ()
     "TODO"
     (interactive)
     (ediff-barf-if-not-control-buffer)
@@ -73,7 +73,7 @@
       (with-current-buffer buf
         (text-scale-increase 0.5))))
 
-  (defun ediff-decrease-text-size ()
+  (defn ediff-decrease-text-size ()
     "TODO"
     (interactive)
     (ediff-barf-if-not-control-buffer)
@@ -103,7 +103,7 @@
   :ensure t
   :defer t
   :init
-  (defun set-linum-rel-fmt-for-cur-file ()
+  (defn set-linum-rel-fmt-for-cur-file ()
     "TODO"
     (setq-local linum-relative-format
                 (concat "%"
@@ -115,12 +115,12 @@
                             (number-to-string))
                         "s")))
 
-  (defun linum-delay-schedule-timeout ()
+  (defn linum-delay-schedule-timeout ()
     "TODO"
     (setq linum-schedule-timer nil)
     (linum-update-current))
 
-  (defun linum-delay-schedule ()
+  (defn linum-delay-schedule ()
     "TODO"
     (unless (eq 'self-insert-command this-command)
       (when linum-schedule-timer
@@ -160,7 +160,7 @@
 (use-package server
   :defer t
   :init
-  (defun emacs-server-setup ()
+  (defn emacs-server-setup ()
     (remove-hook 'focus-out-hook #'emacs-server-setup)
     (require 'server))
 

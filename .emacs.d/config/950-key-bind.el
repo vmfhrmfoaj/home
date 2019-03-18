@@ -23,14 +23,14 @@
   (defvar evil-leader/major-leader ","
     "TODO")
 
-  (defun evil-leader/set-major-leader (key)
+  (defn evil-leader/set-major-leader (key)
     "TODO"
     (let ((old-m-leader evil-leader/major-leader))
       (setq evil-leader/major-leader key)
       (dolist (mode (-map #'car evil-leader--mode-maps))
         (evil-leader/set-major-leader-for-mode mode))))
 
-  (defun evil-leader/set-major-leader-for-mode (mode)
+  (defn evil-leader/set-major-leader-for-mode (mode)
     "TODO"
     (let ((map-name (intern (format "evil-leader-for-%s-map" mode))))
       (-when-let (map (-some->> evil-leader--mode-maps
@@ -57,7 +57,7 @@
                        its-vals)))
           (setcdr it (append its-vals its-new-vals))))))
 
-  (defun evil-leader/set-local-key (&rest bindings)
+  (defn evil-leader/set-local-key (&rest bindings)
     (let* ((prefix (concat evil-leader/leader "m"))
            (bindings (->> bindings
                           (-partition 2)
@@ -466,13 +466,14 @@
   :defer t
   :config
   (advice-add #'ediff-setup-keymap :after
-              (lambda ()
-                (define-key ediff-mode-map (kbd "J") #'ediff-jump-to-difference)
-                (define-key ediff-mode-map (kbd "k") #'ediff-previous-difference)
-                (define-key ediff-mode-map (kbd "j") #'ediff-next-difference)
-                (define-key ediff-mode-map (kbd "0") #'ediff-reset-text-size)
-                (define-key ediff-mode-map (kbd "+") #'ediff-increase-text-size)
-                (define-key ediff-mode-map (kbd "-") #'ediff-decrease-text-size))))
+              (byte-compile
+               (lambda ()
+                 (define-key ediff-mode-map (kbd "J") #'ediff-jump-to-difference)
+                 (define-key ediff-mode-map (kbd "k") #'ediff-previous-difference)
+                 (define-key ediff-mode-map (kbd "j") #'ediff-next-difference)
+                 (define-key ediff-mode-map (kbd "0") #'ediff-reset-text-size)
+                 (define-key ediff-mode-map (kbd "+") #'ediff-increase-text-size)
+                 (define-key ediff-mode-map (kbd "-") #'ediff-decrease-text-size)))))
 
 (use-package elisp-mode
   :defer t
@@ -670,7 +671,7 @@
 (use-package ztree-view
   :defer t
   :init
-  (defun ztree-back-node (&optional node)
+  (defn ztree-back-node (&optional node)
     (interactive)
     (let ((line (line-number-at-pos)))
       (-when-let (node (or node (ztree-find-node-in-line line)))
@@ -681,7 +682,7 @@
           (ztree-do-toggle-expand-state (ztree-find-node-in-line line) nil))
         (ztree-refresh-buffer line))))
 
-  (defun ztree-enter-node (&optional node)
+  (defn ztree-enter-node (&optional node)
     (interactive)
     (let ((line (line-number-at-pos)))
       (-when-let (node (or node (ztree-find-node-in-line line)))

@@ -20,7 +20,7 @@
 
   (defvar php-doc-buffer-name "*PHP Doc*")
 
-  (defun php-extras-doc--highlight (lines)
+  (defn php-extras-doc--highlight (lines)
     (let ((php-code  (with-temp-buffer
                        (php-mode)
                        (insert (car lines))
@@ -31,7 +31,7 @@
            (cons "")
            (cons php-code))))
 
-  (defun php-extras-doc ()
+  (defn php-extras-doc ()
     (interactive)
     (-when-let (doc (->> (php-extras-get-function-property (php-get-pattern) 'documentation)
                          (s-split "\n")
@@ -58,12 +58,12 @@
   (defvar php-code-beg-re "<\\?php[ \t\r\n]")
   (defvar php-code-end-re "[ \t\r\n]\\?>")
 
-  (defun php-goto-beg-of-php-code-block (&optional limit)
+  (defn php-goto-beg-of-php-code-block (&optional limit)
     (while (and (< (point-min) (point))
                 (re-search-backward php-code-beg-re limit t)
                 (sp-point-in-string-or-comment))))
 
-  (defun php-goto-end-of-php-code-block (&optional limit)
+  (defn php-goto-end-of-php-code-block (&optional limit)
     (let ((cur (point)))
       (while (and (< (point) (point-max))
                   (re-search-forward php-code-end-re limit t)
@@ -71,7 +71,7 @@
       (when (= cur (point))
         (goto-char (point-max)))))
 
-  (defun php-code-regions ()
+  (defn php-code-regions ()
     (let ((regions nil)
           (beg (point-min))
           (end (point-max))
@@ -91,7 +91,7 @@
     '((t (:inherit (shadow default) :weight normal)))
     "TODO")
 
-  (defun php-unhilight-no-php-code ()
+  (defn php-unhilight-no-php-code ()
     (let* ((fancy-narrow--beginning nil)
            (fancy-narrow--end nil)
            (php-code-regions (php-code-regions))
@@ -123,7 +123,7 @@
   :ensure t
   :defer t
   :init
-  (defun psysh-show ()
+  (defn psysh-show ()
     (interactive)
     (-when-let (buf (get-buffer (concat "*" (car (psysh--detect-buffer)) "*")))
       (switch-to-buffer buf)))

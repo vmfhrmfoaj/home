@@ -27,7 +27,7 @@
 (use-package winum
   :ensure t
   :init
-  (defun winum--assign-0-to-neotree ()
+  (defn winum--assign-0-to-neotree ()
     "winum assign function for NeoTree."
     (when (and (string-match-p "\\*NeoTree\\*" (buffer-name))
                (not (aref (winum--get-window-vector) 0)))
@@ -41,11 +41,11 @@
 (use-package zoom
   :ensure t
   :init
-  (defun zoom--handler-for-helm (&optional window-or-frame norecord)
+  (defn zoom--handler-for-helm (&optional window-or-frame norecord)
     (unless (bound-and-true-p helm-alive-p)
       (zoom--handler window-or-frame norecord)))
 
-  (defun zoom--on-for-helm ()
+  (defn zoom--on-for-helm ()
     "TODO"
     ;; register the zoom handler
     ;; NOTE
@@ -62,7 +62,7 @@
       (with-selected-frame frame
         (zoom--handler))))
 
-  (defun zoom--update-for-helm ()
+  (defn zoom--update-for-helm ()
     "Update the window layout in the current frame. (custom ver)"
     (let ((zoom-mode nil)
           (window-configuration-change-hook nil)

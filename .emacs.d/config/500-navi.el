@@ -8,20 +8,20 @@
 (use-package neotree
   :ensure t
   :init
-  (defun neo-buffer--back (path _)
+  (defn neo-buffer--back (path _)
     "TODO"
     (when (neo-buffer--expanded-node-p path)
       (neo-buffer--toggle-expand path)
       (neotree-refresh)))
 
-  (defun neotree-back ()
+  (defn neotree-back ()
     "TODO"
     (interactive)
     (unless (neo-buffer--expanded-node-p (neo-buffer--get-filename-current-line))
       (neotree-select-up-node))
     (neo-buffer--execute nil null-fn #'neo-buffer--back))
 
-  (defun neotree-project-dir ()
+  (defn neotree-project-dir ()
     "TODO"
     (interactive)
     (let ((buf-file-name buffer-file-name))
@@ -33,12 +33,12 @@
         (neotree-find buf-file-name)
         (recenter))))
 
-  (defun neotree-toggle-maximize ()
+  (defn neotree-toggle-maximize ()
     "TODO"
     (interactive)
     (neo-window--zoom (if (< neo-window-width (window-width)) 'minimize 'maximize)))
 
-  (defun neotree-create-dir (&optional dir)
+  (defn neotree-create-dir (&optional dir)
     "TODO"
     (interactive "f")
     (neotree-create-node (concat dir "/")))
@@ -57,13 +57,13 @@
   (setq helm-dumb-jump--keyword nil
         helm-dumb-jump--proj nil)
 
-  (defun helm-dumb-jump--after-get-results (info)
+  (defn helm-dumb-jump--after-get-results (info)
     "TODO"
     (setq helm-dumb-jump--proj (plist-get info :root)
           helm-dumb-jump--keyword (plist-get info :symbol))
     info)
 
-  (defun helm-dump-jump--action (find-file-fn candidate)
+  (defn helm-dump-jump--action (find-file-fn candidate)
     "TODO"
     (let* ((candidate (helm-grep-split-line candidate))
            (file (nth 0 candidate))
@@ -82,7 +82,7 @@
       (with-demoted-errors "Error running `dumb-jump-after-jump-hook': %S"
         (run-hooks 'dumb-jump-after-jump-hook))))
 
-  (defun helm-dump-jump--insert-file (file)
+  (defn helm-dump-jump--insert-file (file)
     "TODO"
     (let ((def-dir default-directory))
       (switch-to-buffer (get-buffer-create "*helm-dumb-jump: persistent*"))
@@ -93,11 +93,11 @@
       (set-auto-mode)
       (font-lock-fontify-buffer)))
 
-  (defun helm-dump-jump--persistent-action (candidate)
+  (defn helm-dump-jump--persistent-action (candidate)
     "TODO"
     (helm-dump-jump--action #'helm-dump-jump--insert-file candidate))
 
-  (defun helm-dumb-jump--result-follow (result &optional use-tooltip proj)
+  (defn helm-dumb-jump--result-follow (result &optional use-tooltip proj)
     "TODO"
     (let* ((path (plist-get result :path))
            (path (if (file-name-absolute-p path)
@@ -110,7 +110,7 @@
                      (length))))
       (dumb-jump-goto-file-line path line pos)))
 
-  (defun helm-dumb-jump--prompt-user-for-choice (proj results)
+  (defn helm-dumb-jump--prompt-user-for-choice (proj results)
     "TODO"
     (when (eq 'helm dumb-jump-selector)
       (let* ((proj-regex (concat "^" (regexp-quote proj) "/*"))
