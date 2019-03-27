@@ -19,10 +19,7 @@
               initial-frame-alist (list (cons 'top    0)
                                         (cons 'left   l)
                                         (cons 'width  w)
-                                        (cons 'height h))
-              frame-title-format
-              `(multiple-frames "%b" ("" invocation-name "@" system-name
-                                      ,(-reduce #'concat (-repeat (pixel->frame-unit l) " ")))))))))
+                                        (cons 'height h)))))))
 
 (use-package winum
   :ensure t
