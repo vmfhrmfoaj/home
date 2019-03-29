@@ -1156,10 +1156,19 @@
               "TODO"
               (font-lock-add-keywords
                nil
-               '(("\\(#?'\\|[.,`{}]\\|\\s(\\|\\s)\\)"
+               '(("\\(#?'\\|[.,`]\\|\\s(\\|\\s)\\)"
                   (1 'shadow append)))
                :append))
             :append))
+
+(use-package rpm-spec-mode
+  :defer t
+  :config
+  (font-lock-add-keywords
+   'rpm-spec-mode
+   '(("\\(#?'\\|[.,/<>]\\|\\s(\\|\\s)\\)"
+      (1 'shadow append)))
+   :append))
 
 (use-package rust-mode
   :defer t

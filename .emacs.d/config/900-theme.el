@@ -179,6 +179,13 @@
                               (dim-color 10)
                               (saturate-color -20))))))
 
+(use-package rpm-spec-mode
+  :defer t
+  :config
+  (set-face-attribute 'rpm-spec-section-face nil
+                      :underline 'unspecified
+                      :inherit 'underline))
+
 (use-package smartparens
   :defer t
   :config

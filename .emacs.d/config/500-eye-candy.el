@@ -271,7 +271,8 @@
   :ensure t
   :defer t
   :init
-  (add-hook 'prog-mode-hook #'highlight-numbers-mode))
+  (dolist (mode '(prog-mode-hook rpm-spec-mode-hook))
+    (add-hook mode #'highlight-numbers-mode)))
 
 (use-package highlight-symbol
   :ensure t
