@@ -1,8 +1,5 @@
 (when (window-system)
-  (setq-default line-spacing
-                (cond
-                 ((string-equal "gnome-imac" hostname) 7)
-                 (t 6)))
+  (setq-default line-spacing 6)
   (let ((font "DejaVu Sans Mono")
         (height (cond
                  ((string-equal "gnome-macbookair" hostname) 113)
