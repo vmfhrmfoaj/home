@@ -75,7 +75,7 @@
                  "restore the position of the cursor for `evil-ex-update-for--goto-line-preview' function."
                  (when evil-ex--gl-preview-point
                    (goto-char evil-ex--gl-preview-point)))))
-  (evil-mode 1))
+  (make-thread #'evil-mode))
 
 (use-package helm
   :ensure t
@@ -198,5 +198,6 @@
   (advice-add #'helm-initialize-overlays :after #'helm-custom-initialize-overlays)
   (advice-add #'helm-mark-current-line   :after #'helm-custom-mark-current-line)
   (advice-add #'helm-initialize :after #'helm--update-last-search-buffer)
-  (helm-mode 1)
-  (helm-autoresize-mode 1))
+  (make-thread (lambda ()
+                 (helm-mode 1)
+                 (helm-autoresize-mode 1))))
