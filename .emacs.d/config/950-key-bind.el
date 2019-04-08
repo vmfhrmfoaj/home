@@ -199,7 +199,7 @@
 
     ;; toggle
     "tl" #'toggle-truncate-lines
-    "tm" #'toggle-frame-fullscreen
+    "tm" #'toggle-frame-maximized
     "tw" #'whitespace-mode
 
     ;; layout

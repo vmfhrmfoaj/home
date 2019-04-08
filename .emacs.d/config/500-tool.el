@@ -42,12 +42,22 @@
   (defvar ediff--win-conf nil
     "TODO")
 
+  (defvar ediff--frame-status nil
+    "TODO")
+
   (defn ediff-addtional-setup (&rest _)
     "TODO"
     (setq ediff--exclude-mode-status (-map #'symbol-value ediff-exclude-modes)
           ediff--win-conf (current-window-configuration))
     (disable-modes ediff-exclude-modes)
-    (toggle-frame-fullscreen))
+    (let ((status (frame-parameter nil 'fullscreen)))
+      (setq ediff--frame-status status)
+      (cond
+       ((not status)
+        (toggle-frame-maximized))
+       ((eq status 'maximized)
+        (toggle-frame-fullscreen))
+       (t nil))))
 
   (defn ediff-addtional-cleanup (&rest _)
     "TODO"
@@ -55,7 +65,13 @@
     (-when-let (conf ediff--win-conf)
       (setq ediff--win-conf nil)
       (set-window-configuration conf))
-    (toggle-frame-fullscreen))
+    (cond
+     ((not ediff--frame-status)
+      (toggle-frame-maximized))
+     ((eq ediff--frame-status 'maximized)
+      (toggle-frame-fullscreen))
+     (t nil))
+    (setq ediff--frame-status nil))
 
   (defn ediff-reset-text-size ()
     "TODO"
