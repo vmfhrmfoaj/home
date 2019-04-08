@@ -57,7 +57,6 @@
         (,symbol-fn
          (progn
            (goto-char (setq font-lock--anchor-beg-point (match-beginning 0)))
-           (goto-char (match-beginning 1))
            (match-end 1))
          (goto-char font-lock--anchor-beg-point)
          (1 'font-lock-variable-name-face)))
@@ -65,7 +64,6 @@
         (,symbol-fn
          (progn
            (goto-char (setq font-lock--anchor-beg-point (match-beginning 0)))
-           (goto-char (match-beginning 1))
            (match-end 1))
          (goto-char font-lock--anchor-beg-point)
          (1 'font-lock-variable-name-face)))
