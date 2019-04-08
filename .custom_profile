@@ -50,6 +50,12 @@ function setEnv () {
   source "${asdf_home}/asdf.sh"
   source "${asdf_home}/completions/asdf.bash"
 
+  # Android
+  local android_home="${HOME}/.android/sdk"
+  if [ -d ${android_home} ]; then
+    export ANDROID_HOME="${android_home}"
+  fi
+
   # perlbrew
   export PERLBREW_ROOT="${HOME}/.perlbrew"
   if [ ! -d ${PERLBREW_ROOT} ]; then
