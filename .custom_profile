@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-function setEnv () {
+function setEnv {
   # locale
   export LANG=en_US.UTF-8
   export LC_ALL=en_US.UTF-8
@@ -92,7 +92,7 @@ function setEnv () {
   fi
 }
 
-function zle-keymap-select () {
+function zle-keymap-select {
   local CURSOR_BOX='\e[2 q'
   local CURSOR_UNDERBAR='\e[4 q'
   local CURSOR_LINE='\e[6 q'
@@ -116,7 +116,7 @@ function precmd {
   title $TABNAME $TABNAME
 }
 
-function preexec() {
+function preexec {
   local CURSOR_BOX='\e[2 q'
   local CURSOR_UNDERBAR='\e[4 q'
   local CURSOR_LINE='\e[6 q'
@@ -125,7 +125,7 @@ function preexec() {
   echo -ne $CURSOR_LINE
 }
 
-function postexec() {
+function postexec {
   local TABNAME="%n@%M"
   title $TABNAME $TABNAME
 }
