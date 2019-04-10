@@ -97,7 +97,7 @@ function zle-keymap-select {
   local CURSOR_UNDERBAR='\e[4 q'
   local CURSOR_LINE='\e[6 q'
 
-  if [ "$TERM" = "xterm-256color" ]; then
+  if [[ "$TERM" = *"xterm"* ]]; then
     if [ "$KEYMAP" = vicmd ]; then
       # the command mode for vi
       echo -ne $CURSOR_BOX
@@ -109,6 +109,33 @@ function zle-keymap-select {
   # for Oh My Zsh
   zle reset-prompt
   zle -R
+}
+
+function title {
+  emulate -L zsh
+  setopt prompt_subst
+  [[ "$EMACS" == *term* ]] && return
+  : ${2=$1}
+  case "$TERM" in
+    (cygwin | xterm* | putty* | rxvt* | ansi)
+      print -Pn "\e]2;$2:q\a"
+      print -Pn "\e]1;$1:q\a"
+      ;;
+    (screen*)
+      print -Pn "\e]2;(S) $2:q\a"
+      print -Pn "\e]1;(S) $1:q\a"
+      ;;
+    (tmux*)
+      print -Pn "\ek$1:q\e\\"
+      ;;
+    (*)
+      if [[ -n "$terminfo[fsl]" ]] && [[ -n "$terminfo[tsl]" ]]; then
+        echoti tsl
+        print -Pn "$1"
+        echoti fsl
+      fi
+      ;;
+  esac
 }
 
 function precmd {
