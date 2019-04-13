@@ -124,6 +124,7 @@ function title {
     (screen*)
       print -Pn "\e]2;(S) $2:q\a"
       print -Pn "\e]1;(S) $1:q\a"
+      print -Pn "\ek$1\e\\"
       ;;
     (tmux*)
       print -Pn "\ek$1:q\e\\"
