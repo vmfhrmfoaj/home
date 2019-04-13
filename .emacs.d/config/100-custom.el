@@ -1,7 +1,7 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (setq-default indent-tabs-mode nil
-              tab-width 2
+              tab-width 4
               truncate-lines t)
 
 (let ((backup-dir (concat (getenv "HOME") "/.emacs.d/saves/")))
