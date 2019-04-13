@@ -77,6 +77,11 @@
                    (goto-char evil-ex--gl-preview-point)))))
   (make-thread #'evil-mode))
 
+(use-package evil-ex
+  :ensure evil
+  :config
+  (setq evil-ex-visual-char-range t))
+
 (use-package helm
   :ensure t
   :diminish ""
