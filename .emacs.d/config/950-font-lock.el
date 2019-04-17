@@ -14,12 +14,13 @@
 (use-package cc-mode
   :defer t
   :config
-  (font-lock-add-keywords
-   'java-mode
-   `(("\\(;\\)"
-      (1 'shadow))
-     ("\\([_0-9a-zA-Z]\\|\\s)\\)\\(\\.\\)\\([_0-9a-zA-Z]\\|\\s(\\)"
-      (2 'shadow)))))
+  (add-hook 'c-mode-common-hook
+            (lambda ()
+              (font-lock-add-keywords
+               nil
+               `(("\\([&*]\\|::\\|[-=]>\\)"
+                  (1 'shadow)))
+               :append))))
 
 (use-package elixir-mode
   :defer t
@@ -84,7 +85,7 @@
            (point))
          (goto-char font-lock--anchor-beg-point)
          (1 'elixir-argument-name-face)))
-       ("\\(|>?\\|<<\\|>>\\|[.,&%]\\|\\s(\\|\\s)\\)"
+       ("\\(<<\\|>>\\|[&%]\\|\\s(\\|\\s)\\)"
         (1 'shadow))
        ("\\(/\\)[0-9]"
         (1 'shadow)))
@@ -129,8 +130,6 @@
        ("\\(?:\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\|\\$\\|\\\\\\)"
         (1 'shadow))
        ("\\([*@$%]+\\)\\(?:[:_0-9a-zA-Z]\\|\\s(\\)"
-        (1 'shadow))
-       ("\\(;\\)"
         (1 'shadow))))
    :append))
 
@@ -1006,15 +1005,7 @@
            (prog1 (point)
              (goto-char font-lock--anchor-beg-point)))
          (goto-char font-lock--anchor-beg-point)
-         (0 'go-argument-name-face))))))
-  ;; append
-  (font-lock-add-keywords
-   'go-mode
-   `(("\\(\\*\\)[_A-Za-z]"
-      (1 'shadow))
-     ("[;]"
-      (0 'shadow)))
-   :append))
+         (0 'go-argument-name-face)))))))
 
 (use-package js
   :defer t
@@ -1154,7 +1145,7 @@
               "TODO"
               (font-lock-add-keywords
                nil
-               '(("\\(#?'\\|[.,`]\\|\\s(\\|\\s)\\)"
+               '(("\\([.,;]\\|\\s(\\|\\s)\\)"
                   (1 'shadow append)))
                :append))
             :append))
@@ -1170,10 +1161,17 @@
 
 (use-package rust-mode
   :defer t
+  :init
+  (defface rust-self-var-face
+    '((t (:inherit font-lock-keyword-face :weight normal)))
+    "TODO")
+
   :config
   (font-lock-add-keywords
    'rust-mode
-   `(("^\\s-*\\(use\\)\\s-+\\([_:0-9A-Za-z]+\\)"
+   `(("\\(self\\)\\."
+      (1 'rust-self-var-face))
+     ("^\\s-*\\(use\\)\\s-+\\([_:0-9A-Za-z]+\\)"
       (1 'font-lock-keyword-face)
       (2 'font-lock-constant-face))))
   (font-lock-add-keywords
@@ -1187,8 +1185,14 @@
          (match-end 2))
        (goto-char font-lock--anchor-beg-point)
        (0 'font-lock-variable-name-face)))
-     ("\\(::\\|&\\|\\*\\|;\\|[-=]>\\)"
-      (0 'shadow)))
+     ("\\([&*:']\\|::\\|[-=]>\\)"
+      (1 'shadow))
+     ("\\(<+\\)\\(?:[^ \t\r\n]\\|\\s-*$\\)"
+      (1 'shadow))
+     ("\\(?:^\\s-*\\|[^ \t\r\n]\\)\\(>+\\)"
+      (1 'shadow))
+     ("\\_<\\(_\\)\\_>"
+      (1 'shadow)))
    :append))
 
 (use-package sh-script

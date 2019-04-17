@@ -121,7 +121,7 @@
   :config
   (custom-theme-set-faces
    'solarized-light
-   `(highlight-symbol-face ((t (:background ,(color-from 'default :background -1.5)))))))
+   `(highlight-symbol-face ((t (:background ,(color-from 'default :background -2)))))))
 
 (use-package hl-line
   :defer t
@@ -144,8 +144,8 @@
   :config
   (custom-set-faces
    `(org-block ((t (:background ,(color-from 'default :background -2)))))
-   `(org-block-begin-line ((t (:inherit shadow :background ,(color-from 'default :background -1) :underline unspecified))))
-   `(org-block-end-line   ((t (:inherit shadow :background ,(color-from 'default :background -1) :overline  unspecified))))
+   `(org-block-begin-line ((t (:inherit org-meta-line :background ,(color-from 'default :background -1) :underline unspecified))))
+   `(org-block-end-line   ((t (:inherit org-meta-line :background ,(color-from 'default :background -1) :overline  unspecified))))
    `(org-date ((t (:underline unspecified))))
    `(org-done ((t (:inherit shadow :weight normal))))
    `(org-link ((t (:inherit link :underline unspecified))))
