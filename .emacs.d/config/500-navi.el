@@ -147,7 +147,8 @@
                                    ((executable-find "rg") 'rg)
                                    ((executable-find "ag") 'ag)
                                    (t nil))
-        dumb-jump-selector 'helm)
+        dumb-jump-selector 'helm
+        dumb-jump-rg-search-args nil)
 
   (add-to-list 'dumb-jump-find-rules
                (list :type "function"
