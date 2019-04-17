@@ -1,27 +1,36 @@
-(use-package leuven-theme
+(use-package solarized-theme
   :ensure t
-  :config
+  :init
   (defvar local-variable-name-fg-color
-    (saturate-color (color-from 'font-lock-variable-name-face :foreground 7) -20)
+    (-> 'font-lock-variable-name-face
+        (color-from :foreground 7)
+        (saturate-color -20))
     "TODO")
-  (setq x-underline-at-descent-line t)
+
+  (setq solarized-high-contrast-mode-line t
+        solarized-scale-org-headlines nil
+        solarized-use-variable-pitch nil
+        x-underline-at-descent-line t)
+
+  :config
+  (load-theme 'solarized-light t)
   (custom-set-faces
-   `(font-lock-comment-face ((t (:slant normal))))
-   `(fringe ((t (:background "#F8F8F8"))))
-   `(isearch ((t (:inherit bold :underline unspecified))))
-   `(link ((t (:inherit underline :underline unspecified))))
-   `(link-visited ((t (:inherit underline :underline unspecified))))
-   `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium)))))
+   `(fringe ((t (:background "#F5EFDC"))))
+   `(isearch ((t (:underline unspecified))))
+   `(link ((t (:inherit underline :underline unspecified :weight unspecified))))
+   `(link-visited ((t (:inherit underline :underline unspecified)))))
   (custom-theme-set-faces
-   'leuven
+   'solarized-light
    `(bold ((t (:weight ultrabold))))
-   `(italic ((t (:slant italic))))
-   `(font-lock-doc-face ((t (:inherit font-lock-string-face :foreground "#7F7F7F"))))
-   `(font-lock-negation-char-face ((t (:inherit font-lock-warning-face :weight medium))))
+   `(evil-goggles-delete-face ((t (:inherit diff-refine-removed))))
+   `(evil-goggles-paste-face  ((t (:inherit diff-refine-added))))
+   `(evil-goggles-yank-face   ((t (:inherit diff-refine-changed))))
    `(helm-swoop-target-word-face ((t (:inherit lazy-highlight))))
    `(helm-match ((t (:inherit lazy-highlight))))
    `(helm-match-selection ((t (:inherit isearch))))
-   `(helm-selection ((t (:background ,(color-from 'isearch :background 35) :distant-foreground "black"))))
+   `(helm-selection ((t (:inherit hl-line))))
+   `(italic ((t (:slant italic))))
+   `(trailing-whitespace ((t (:underline (:color "#DC322F" :style wave)))))
    `(underline ((t (:underline (:color foreground-color :style wave)))))
    `(variable-pitch ((t (:family "DejaVu Serif"))))))
 
@@ -29,13 +38,13 @@
   :defer t
   :config
   (custom-set-faces
-   `(auto-dim-other-buffers-face ((t (:background "#FAFAFA"))))))
+   `(auto-dim-other-buffers-face ((t (:background "#F7F1DE"))))))
 
 (use-package creole-mode
   :defer t
   :config
   (custom-theme-set-faces
-   'leuven
+   'solarized-light
    `(info-title-1 ((t (:inherit outline-1 :height 1.3))))
    `(info-title-2 ((t (:inherit outline-2 :height 1.2))))
    `(info-title-3 ((t (:inherit outline-3 :height 1.1))))
@@ -54,6 +63,12 @@
    `(clojure-side-effect-face   ((t (:inherit (bold italic font-lock-warning-face)))))
    `(clojure-special-variable-name-face ((t (:inherit font-lock-constant-face))))))
 
+(use-package elisp-mode
+  :defer t
+  :config
+  (custom-set-faces
+   `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium))))))
+
 (use-package elixir-mode
   :defer t
   :config
@@ -65,23 +80,24 @@
   :defer t
   :config
   (setq-default cursor-in-non-selected-windows nil)
-  (let* ((hbar-height (max line-spacing 2))
-         (hbar-height (if (string-equal "gnome-imac" hostname)
-                          (floor (* 1.4 hbar-height)) ; for HiDPI
-                        hbar-height))
-         (default-color (color-from 'cursor :background   0))
-         (visual-color  (color-from 'cursor :background -15))
-         (operator-color (color-from 'font-lock-keyword-face :foreground 0))
-         (replace-color  (color-from 'font-lock-warning-face :foreground 0)))
-    (setq-default cursor-type 'bar)
-    (setq evil-normal-state-cursor   `((hbar . ,hbar-height) ,default-color)
-          evil-visual-state-cursor   `((hbar . ,hbar-height) ,visual-color)
-          evil-operator-state-cursor `((hbar . ,hbar-height) ,operator-color)
-          evil-insert-state-cursor   `(bar ,default-color)
-          evil-replace-state-cursor  `((hbar . ,hbar-height) ,replace-color))
-    (with-eval-after-load 'evil-multiedit
-      (setq evil-multiedit-normal-state-cursor `((hbar . ,hbar-height) ,default-color)
-            evil-multiedit-insert-state-cursor `(bar ,default-color)))))
+  (when window-system
+    (let* ((hbar-height (max line-spacing 2))
+           (hbar-height (if (string-equal "gnome-imac" hostname)
+                            (floor (* 1.4 hbar-height)) ; for HiDPI
+                          hbar-height))
+           (default-color (color-from 'cursor :background   0))
+           (visual-color  (color-from 'cursor :background -15))
+           (operator-color (color-from 'font-lock-keyword-face :foreground 0))
+           (replace-color  (color-from 'font-lock-warning-face :foreground 0)))
+      (setq-default cursor-type 'bar)
+      (setq evil-normal-state-cursor   `((hbar . ,hbar-height) ,default-color)
+            evil-visual-state-cursor   `((hbar . ,hbar-height) ,visual-color)
+            evil-operator-state-cursor `((hbar . ,hbar-height) ,operator-color)
+            evil-insert-state-cursor   `(bar ,default-color)
+            evil-replace-state-cursor  `((hbar . ,hbar-height) ,replace-color))
+      (with-eval-after-load 'evil-multiedit
+        (setq evil-multiedit-normal-state-cursor `((hbar . ,hbar-height) ,default-color)
+              evil-multiedit-insert-state-cursor `(bar ,default-color))))))
 
 (use-package go-mode
   :defer t
@@ -104,8 +120,8 @@
   :defer t
   :config
   (custom-theme-set-faces
-   'leuven
-   `(highlight-symbol-face ((t (:background "#FFFFCF"))))))
+   'solarized-light
+   `(highlight-symbol-face ((t (:background ,(color-from 'default :background -1.5)))))))
 
 (use-package hl-line
   :defer t
@@ -121,32 +137,21 @@
   :defer t
   :config
   (custom-set-faces
-   `(linum ((t (:inherit default))))))
-
-(use-package magit
-  :defer t
-  :config
-  (custom-set-faces
-   `(magit-section-highlight ((t (:background ,(color-from 'isearch :background 35) :distant-foreground "black")))))
-  (with-eval-after-load "hl-line"
-    (custom-set-faces
-     `(magit-diff-context-highlight ((t (:background ,(color-from 'hl-line :background 7) :foreground ,(color-from 'hl-line :background -50))))))))
+   `(linum ((t (:inherit default :background "#EEE8D5"))))))
 
 (use-package org
   :defer t
   :config
   (custom-set-faces
-   `(org-agenda-date ((t (:height 1.3))))
-   `(org-agenda-date-today ((t (:height 1.3))))
-   `(org-agenda-date-weekend ((t (:height 1.3))))
-   `(org-block-begin-line ((t (:underline unspecified))))
-   `(org-block-end-line ((t (:overline unspecified))))
-   `(org-date ((t (:inherit italic :underline unspecified))))
-   `(org-level-1 ((t (:height 1.0))))
+   `(org-block ((t (:background ,(color-from 'default :background -2)))))
+   `(org-block-begin-line ((t (:inherit shadow :background ,(color-from 'default :background -1) :underline unspecified))))
+   `(org-block-end-line   ((t (:inherit shadow :background ,(color-from 'default :background -1) :overline  unspecified))))
+   `(org-date ((t (:underline unspecified))))
+   `(org-done ((t (:inherit shadow :weight normal))))
    `(org-link ((t (:inherit link :underline unspecified))))
-   `(org-quote ((t (:slant normal))))
-   `(org-tag ((t (:background unspecified))))
-   `(org-warning ((t (:background "#FFDDDD" :foreground "#FF5555")))))
+   `(org-verbatim ((t (:inherit variable-pitch)))))
+  (-when-let (strikethrough (assoc "+" org-emphasis-alist))
+    (setf (cdr strikethrough) '((:inherit shadow :strike-through t))))
   (dolist (i (number-sequence 1 8))
     (let ((face (intern (concat "org-level-" (number-to-string i)))))
       (set-face-attribute face nil :inherit 'bold))))
@@ -168,16 +173,22 @@
                                              (saturate-color 10)
                                              (mix-color (color-from 'font-lock-string-face :foreground -30)))))))))
 
-(use-package rainbow-delimiters
+(use-package powerline
   :defer t
   :config
-  (dolist (i (number-sequence 1 9))
-    (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
-      (set-face-attribute face nil :foreground
-                          (-> face
-                              (face-attribute :foreground)
-                              (dim-color 10)
-                              (saturate-color -20))))))
+  (custom-set-faces
+   `(powerline-active0   ((t (:inherit mode-line))))
+   `(powerline-active1   ((t (:inherit mode-line))))
+   `(powerline-active2   ((t (:inherit mode-line))))
+   `(powerline-inactive0 ((t (:inherit mode-line-inactive))))
+   `(powerline-inactive1 ((t (:inherit mode-line-inactive))))
+   `(powerline-inactive2 ((t (:inherit mode-line-inactive))))))
+
+(use-package spaceline
+  :defer t
+  :config
+  (custom-set-faces
+   `(spaceline-highlight-face ((t (:inherit mode-line))))))
 
 (use-package rpm-spec-mode
   :defer t
