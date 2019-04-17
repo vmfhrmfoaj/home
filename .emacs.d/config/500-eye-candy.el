@@ -366,7 +366,8 @@ This is customized for the normal state of `evil-mode'."
 (use-package powerline
   :ensure t
   :config
-  (setq powerline-height (+ (frame-char-height) line-spacing)))
+  (when window-system
+    (setq powerline-height (+ (frame-char-height) line-spacing))))
 
 (use-package rainbow-delimiters
   :disabled t

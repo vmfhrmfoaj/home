@@ -20,20 +20,21 @@
   :config
   (setq git-gutter+-disabled-modes '(org-mode)
         git-gutter-fr+-side 'left-fringe)
-  (let* ((max (cond
-               ((numberp fringe-mode) fringe-mode)
-               ((consp fringe-mode) (car fringe-mode))
-               (t 8)))
-         (padding 2)
-         (width (- max (* 2 padding)))
-         (bitmap (-repeat (+ (1- (line-pixel-height)) line-spacing)
-                          (apply #'concat (append (-repeat padding ".")
-                                                  (-repeat width   "X")
-                                                  (-repeat padding ".")))))
-         (fr-vec (apply #'fringe-helper-convert bitmap)))
-    (define-fringe-bitmap 'git-gutter-fr+-added    fr-vec nil nil nil)
-    (define-fringe-bitmap 'git-gutter-fr+-deleted  fr-vec nil nil nil)
-    (define-fringe-bitmap 'git-gutter-fr+-modified fr-vec nil nil nil))
+  (when window-system
+    (let* ((max (cond
+                 ((numberp fringe-mode) fringe-mode)
+                 ((consp fringe-mode) (car fringe-mode))
+                 (t 8)))
+           (padding 2)
+           (width (- max (* 2 padding)))
+           (bitmap (-repeat (+ (1- (line-pixel-height)) line-spacing)
+                            (apply #'concat (append (-repeat padding ".")
+                                                    (-repeat width   "X")
+                                                    (-repeat padding ".")))))
+           (fr-vec (apply #'fringe-helper-convert bitmap)))
+      (define-fringe-bitmap 'git-gutter-fr+-added    fr-vec nil nil nil)
+      (define-fringe-bitmap 'git-gutter-fr+-deleted  fr-vec nil nil nil)
+      (define-fringe-bitmap 'git-gutter-fr+-modified fr-vec nil nil nil)))
   (global-git-gutter+-mode 1))
 
 (use-package gitignore-mode
