@@ -334,6 +334,7 @@ This is customized for the normal state of `evil-mode'."
 (use-package hl-line
   :defer t
   :init
+  (setq hl-line-sticky-flag nil)
   (global-hl-line-mode 1))
 
 (use-package hl-todo
@@ -412,6 +413,7 @@ This is customized for the normal state of `evil-mode'."
        (dolist (buf (buffer-list))
          (with-current-buffer buf
            (setq mode-line-format fmt)))
+       (spaceline-toggle-hud-off)
        (force-mode-line-update t))))
   (make-thread #'spaceline-helm-mode))
 
