@@ -97,7 +97,9 @@
             evil-replace-state-cursor  `((hbar . ,hbar-height) ,replace-color))
       (with-eval-after-load 'evil-multiedit
         (setq evil-multiedit-normal-state-cursor `((hbar . ,hbar-height) ,default-color)
-              evil-multiedit-insert-state-cursor `(bar ,default-color))))))
+              evil-multiedit-insert-state-cursor `(bar ,default-color))
+        (custom-set-faces
+         `(iedit-occurrence ((t (:inherit region :background unspecified :foreground "#E072A7")))))))))
 
 (use-package go-mode
   :defer t
@@ -147,7 +149,7 @@
    `(org-block-begin-line ((t (:inherit org-meta-line :background ,(color-from 'default :background -1) :underline unspecified))))
    `(org-block-end-line   ((t (:inherit org-meta-line :background ,(color-from 'default :background -1) :overline  unspecified))))
    `(org-date ((t (:underline unspecified))))
-   `(org-done ((t (:inherit shadow :weight normal))))
+   `(org-done ((t (:inherit shadow :background unspecified :foreground unspecified :weight normal))))
    `(org-link ((t (:inherit link :underline unspecified))))
    `(org-verbatim ((t (:inherit variable-pitch)))))
   (-when-let (strikethrough (assoc "+" org-emphasis-alist))

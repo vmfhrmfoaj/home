@@ -1050,9 +1050,9 @@
                                (t 1.1)))))
           t)
          ("^\\s-*\\(-\\) "
-          1 'bold)
+          1 '(:inherit (bold shadow)))
          ("^\\s-*\\(\\([0-9]\\.\\)\\) "
-          1 'bold)
+          1 '(:inherit (bold shadow)))
          ("\\(\\\\\\\\\\)\\s-*$"
           1 'shadow nil)))
      :append)))
