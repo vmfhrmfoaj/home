@@ -1025,8 +1025,8 @@
             (square       (string-to-char (cdr (assoc "square" data))))
             (minus-square (string-to-char (cdr (assoc "minus-square" data))))
             (check-square (string-to-char (cdr (assoc "check-square" data))))
-            (org-done-face (face-attribute 'org-done :foreground))
-            (org-todo-face (face-attribute 'org-todo :foreground)))
+            (org-done-face (color-from 'org-done :foreground))
+            (org-todo-face (color-from 'org-todo :foreground)))
        `(("^\\s-*\\(?:-\\|[0-9]+\\.\\) \\(\\[\\( \\|-\\|X\\)\\]\\)\\( \\|$\\)"
           1 (progn
               (let ((x (match-string 2))

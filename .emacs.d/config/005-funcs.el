@@ -76,14 +76,30 @@
       color
     (-reduce-from #'mix-color color colors)))
 
-(defn color-from (face attr p)
+(defn custom-face-attribute (face attr)
   "TODO"
-  (let ((fn (cond
-             ((< 0 p) #'light-color)
-             ((< p 0) #'dim-color)
-             ((= p 0) (lambda (color _) color))))
-        (p (abs p)))
-    (funcall fn (face-attribute face attr) p)))
+  (let ((val (face-attribute face attr)))
+    (if (not (eq val 'unspecified))
+        val
+      (let ((parents (face-attribute face :inherit)))
+        (unless (eq parents 'unspecified)
+          (catch 'break
+            (dolist (p (-list parents))
+              (-when-let (val (custom-face-attribute p attr))
+                (throw 'break val)))
+            (face-attribute 'default attr)))))))
+
+(defn color-from (face attr &optional p)
+  "TODO"
+  (let ((color (custom-face-attribute face attr)))
+    (if (not p)
+        color
+      (let ((fn (cond
+                 ((< 0 p) #'light-color)
+                 ((< p 0) #'dim-color)
+                 ((= p 0) (lambda (color _) color))))
+            (p (abs p)))
+        (funcall fn color p)))))
 
 
 (defn in-comment? ()
