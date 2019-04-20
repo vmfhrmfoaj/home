@@ -159,7 +159,7 @@
                               (assoc 'name)
                               (cdr)
                               (string-match-p (regexp-opt '("file" "project")))))
-                       (file-name-base helm-pattern)
+                       (file-name-nondirectory helm-pattern)
                      helm-pattern)))
       (when (not (s-blank-str? pattern))
         (save-excursion
