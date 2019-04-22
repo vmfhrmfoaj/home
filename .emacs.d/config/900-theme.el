@@ -22,6 +22,7 @@
   (custom-theme-set-faces
    'solarized-light
    `(bold ((t (:weight ultrabold))))
+   `(cursor ((t (:background "#657b83"))))
    `(evil-goggles-delete-face ((t (:inherit diff-refine-removed))))
    `(evil-goggles-paste-face  ((t (:inherit diff-refine-added))))
    `(evil-goggles-yank-face   ((t (:inherit diff-refine-changed))))
@@ -85,19 +86,21 @@
            (hbar-height (if (string-equal "gnome-imac" hostname)
                             (floor (* 1.4 hbar-height)) ; for HiDPI
                           hbar-height))
-           (default-color (color-from 'cursor :background))
-           (visual-color  (color-from 'cursor :background -15))
-           (operator-color (color-from 'font-lock-keyword-face :foreground))
-           (replace-color  (color-from 'font-lock-warning-face :foreground)))
+           (default-color (color-from 'default :foreground))
+           (search-color  (color-from 'isearch :background))
+           (pending-color (color-from 'font-lock-keyword-face :foreground))
+           (replace-color (color-from 'font-lock-warning-face :foreground))
+           (special-color (color-from 'font-lock-constant-face :foreground)))
       (setq-default cursor-type 'bar)
       (setq evil-normal-state-cursor   `((hbar . ,hbar-height) ,default-color)
-            evil-visual-state-cursor   `((hbar . ,hbar-height) ,visual-color)
-            evil-operator-state-cursor `((hbar . ,hbar-height) ,operator-color)
+            evil-visual-state-cursor   `((hbar . ,(1+ hbar-height)) ,search-color)
+            evil-operator-state-cursor `((hbar . ,(1+ hbar-height)) ,pending-color)
             evil-insert-state-cursor   `(bar ,default-color)
-            evil-replace-state-cursor  `((hbar . ,hbar-height) ,replace-color))
+            evil-replace-state-cursor  `((hbar . ,(1+ hbar-height)) ,replace-color)
+            evil-emacs-state-cursor    `(bar ,special-color))
       (with-eval-after-load 'evil-multiedit
-        (setq evil-multiedit-normal-state-cursor `((hbar . ,hbar-height) ,default-color)
-              evil-multiedit-insert-state-cursor `(bar ,default-color))
+        (setq evil-multiedit-state-cursor        `((hbar . ,hbar-height) "#E072A7")
+              evil-multiedit-insert-state-cursor `(bar "#E072A7"))
         (custom-set-faces
          `(iedit-occurrence ((t (:inherit region :background unspecified :foreground "#E072A7")))))))))
 
