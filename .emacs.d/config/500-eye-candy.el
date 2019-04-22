@@ -316,12 +316,12 @@ This is customized for the normal state of `evil-mode'."
     '(prog-mode)
     "TODO")
 
-  (add-hook 'evil-normal-state-entry-hook
+  (add-hook 'evil-insert-state-entry-hook
             (lambda ()
               (when (-some #'derived-mode-p highlight-symbol-enable-modes)
                 (highlight-symbol-mode  1))))
 
-  (add-hook 'evil-normal-state-exit-hook
+  (add-hook 'evil-insert-state-exit-hook
             (lambda ()
               (highlight-symbol-mode -1)))
 

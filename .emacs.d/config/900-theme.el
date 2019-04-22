@@ -123,7 +123,7 @@
   :config
   (custom-theme-set-faces
    'solarized-light
-   `(highlight-symbol-face ((t (:background ,(color-from 'default :background -2)))))))
+   `(highlight-symbol-face ((t (:background ,(color-from 'default :background -3)))))))
 
 (use-package hl-line
   :defer t
