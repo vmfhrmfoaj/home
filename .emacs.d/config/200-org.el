@@ -278,7 +278,7 @@ which see."
   :config
   (setq org-clock-into-drawer t
         org-clock-idle-time nil
-        org-clock-custom-idle-time 15
+        org-clock-custom-idle-time 30
         org-clock-custom-idle-timer (org-clock--start-idle-timer))
   (advice-add #'org-clock--mode-line-heading :override (-const "CLOCK-IN")))
 
