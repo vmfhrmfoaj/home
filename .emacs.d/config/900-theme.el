@@ -116,6 +116,8 @@
   (setq hl-paren-base-color "light sea green")
 
   :config
+  (custom-set-faces
+   `(hl-paren-face ((t (:inherit bold)))))
   (setq hl-paren-colors
         (--iterate (dim-color it 6)
                    (apply 'color-rgb-to-hex-2-dig (color-name-to-rgb hl-paren-base-color))
