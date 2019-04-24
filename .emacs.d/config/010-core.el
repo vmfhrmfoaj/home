@@ -84,7 +84,6 @@
 
 (use-package helm
   :ensure t
-  :diminish ""
   :init
   (defn helm-bufferp (buf)
     "TODO"
@@ -205,4 +204,6 @@
   (advice-add #'helm-initialize :after #'helm--update-last-search-buffer)
   (make-thread (lambda ()
                  (helm-mode 1)
-                 (helm-autoresize-mode 1))))
+                 (helm-autoresize-mode 1)
+                 (when (functionp 'diminish)
+                   (diminish 'helm-mode)))))
