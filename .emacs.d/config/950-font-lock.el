@@ -1169,7 +1169,7 @@
   :config
   (font-lock-add-keywords
    'rust-mode
-   `(("\\(self\\)\\."
+   `(("\\_<\\(self\\)\\."
       (1 'rust-self-var-face))
      ("^\\s-*\\(use\\)\\s-+\\([_:0-9A-Za-z]+\\)"
       (1 'font-lock-keyword-face)
