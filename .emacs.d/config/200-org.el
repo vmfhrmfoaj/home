@@ -212,36 +212,16 @@ which see."
                     ":Effort:   %^{Effort|1:00|3:00|6:00|1d|3d|1w|2w|3w|1m|3m|6m|9m|1y}" "\n"
                     ":END:"                                                              "\n"
                     "\n"
-                    "%?")
+                    "%?"
+                    "\n")
            :prepend t)
           ("n" "Note" entry
            (file+headline ,(concat org-directory  "/" (format-time-string "%Y") "/note.org")
                           ,(format-time-string "%b"))
            ,(concat "* %^{Note}" "\n"
                     "\n"
-                    "%t" "\n"
-                    "- %?")
-           :prepend t)
-          ("p" "Protocol" entry
-           (file+headline ,(concat org-directory "/" (format-time-string "%Y") "/note.org")
-                          ,(format-time-string "%b"))
-           ,(concat "* %^{Note}"      "\n"
-                    "\n"
-                    "%t"              "\n"
-                    "- %a"            "\n"
-                    "  #+BEGIN_QUOTE" "\n"
-                    "  %i"            "\n"
-                    "  #+END_QUOTE"   "\n"
-                    "%?")
-           :prepend t)
-          ("L" "Protocol Link" entry
-           (file+headline ,(concat org-directory "/" (format-time-string "%Y") "/note.org")
-                          ,(format-time-string "%b"))
-           ,(concat "* %^{Note}" "\n"
-                    "\n"
-                    "%t"   "\n"
-                    "- %a" "\n"
-                    "%?")
+                    "- %?"
+                    "\n")
            :prepend t))))
 
 (use-package org-clock

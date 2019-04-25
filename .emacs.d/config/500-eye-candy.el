@@ -68,6 +68,7 @@
   (with-eval-after-load "linum-relative"          (diminish 'linum-relative-mode         ""))
   (with-eval-after-load "magit-svn"               (diminish 'magit-svn-mode              ""))
   (with-eval-after-load "org-indent"              (diminish 'org-indent-mode             ""))
+  (with-eval-after-load "org-table"               (diminish 'orgtbl-mode                 ""))
   (with-eval-after-load "simple"                  (diminish 'auto-fill-function          ""))
   (with-eval-after-load "smartparens"             (diminish 'smartparens-mode            ""))
   (with-eval-after-load "subword"                 (diminish 'subword-mode                ""))

@@ -31,6 +31,7 @@
    `(helm-match-selection ((t (:inherit isearch))))
    `(helm-selection ((t (:inherit hl-line))))
    `(italic ((t (:slant italic))))
+   `(secondary-selection ((t (:background "#F1ECDD"))))
    `(trailing-whitespace ((t (:underline (:color "#DC322F" :style wave)))))
    `(underline ((t (:underline (:color foreground-color :style wave)))))
    `(variable-pitch ((t (:family "DejaVu Serif"))))))
@@ -150,6 +151,8 @@
   :defer t
   :config
   (custom-set-faces
+   `(org-agenda-clocking ((t (:background "#D6D0BF"))))
+   `(org-agenda-date ((t (:box unspecified :height 1.05))))
    `(org-block ((t (:background ,(color-from 'default :background -2)))))
    `(org-block-begin-line ((t (:inherit org-meta-line :background ,(color-from 'default :background -1) :underline unspecified))))
    `(org-block-end-line   ((t (:inherit org-meta-line :background ,(color-from 'default :background -1) :overline  unspecified))))

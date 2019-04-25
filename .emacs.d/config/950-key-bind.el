@@ -542,6 +542,8 @@
     "mci" #'org-clock-in
     "mco" #'org-clock-out
     "mcj" #'org-clock-goto
+    "mih" #'org-insert-heading
+    "miH" #'org-insert-subheading
     "mtI" #'org-time-stamp-inactive
     "mtd" #'org-deadline
     "mti" #'org-time-stamp
@@ -549,6 +551,7 @@
   (which-key-declare-prefixes-for-mode 'org-mode
     (concat evil-leader/leader "mT") "todo"
     (concat evil-leader/leader "mc") "clock"
+    (concat evil-leader/leader "mi") "insert"
     (concat evil-leader/leader "mt") "time"
     (concat evil-leader/leader "ms") "sync (trello)")
   (evil-leader/set-major-leader-for-mode 'org-mode)
