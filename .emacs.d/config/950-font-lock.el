@@ -1176,7 +1176,13 @@
       (2 'font-lock-constant-face))))
   (font-lock-add-keywords
    'rust-mode
-   `(("\\(|\\)\\([^\r\n|]+\\)\\(|\\)"
+   `(("\\_>:\\s-+\\(?:[*&]mut\\s-+\\)?\\([_0-9A-Za-z]+\\)\\_>"
+      (1 'font-lock-type-face))
+     (")\\s-+->\\s-+\\(?:[*&]mut\\s-+\\)?\\(?:[_0-9A-Za-z]::\\)*\\([_0-9A-Za-z]+\\)\\_>"
+      (1 'font-lock-type-face))
+     ("\\s-+as\\s-+\\(?:[*&]mut\\s-+\\)?\\(?:[_0-9A-Za-z]::\\)*\\([_0-9A-Za-z]+\\)\\_>"
+      (1 'font-lock-type-face))
+     ("\\(|\\)\\([^\r\n|]+\\)\\(|\\)"
       (1 'shadow)
       (3 'shadow)
       ("\\_<[_0-9A-Za-z]+\\_>"
