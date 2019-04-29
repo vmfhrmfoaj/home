@@ -15,7 +15,7 @@
     (let* ((output-lines (save-excursion
                            ;; Move to the end of the current symbol, to
                            ;; increase racer accuracy.
-                           (skip-syntax-forward "w_")
+                           (forward-symbol 1)
                            (racer--call-at-point "complete-with-snippet")))
            (all-matches (--map (when (s-starts-with-p "MATCH " it)
                                  (racer--split-snippet-match it))
@@ -34,6 +34,18 @@
                                    (racer--signature-at-point)))
       (racer--syntax-highlight signature)))
 
+  (defvar racer-desc-buf-show-fn
+    #'pop-to-buffer
+    "The function to show a doc buffer of `racer-mode'.")
+
+  (defun racer-describe--customized ()
+    "Customize `racer-describe'."
+    (interactive)
+    (let ((buf (racer--describe (thing-at-point 'symbol))))
+      (if buf
+          (funcall racer-desc-buf-show-fn buf)
+        (user-error "No function or type found at point"))))
+
   :config
   (let ((racer-path (concat (getenv "HOME") "/.cargo/bin/racer"))
         (rust-src (concat (getenv "HOME") "/Desktop/Open_Sources/rust/src")))
@@ -43,7 +55,8 @@
       (add-to-list 'process-environment (concat "RUST_SRC_PATH=" rust-src)))
     (when (file-executable-p racer-path)
       (setq racer-cmd racer-path)))
-  (advice-add 'racer-eldoc :override #'racer-eldoc--customized))
+  (advice-add 'racer-eldoc :override #'racer-eldoc--customized)
+  (advice-add 'racer-describe :override #'racer-describe--customized))
 
 (use-package rust-mode
   :ensure t
