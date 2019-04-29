@@ -77,6 +77,16 @@ which see."
   :config
   (require 'helm-org nil t)
   (setq org-complete-tags-always-offer-all-agenda-tags t
+        org-duration-units (let* ((ava-hours-in-day 12)
+                                  (d (- (* ava-hours-in-day 60) ; pomodoro
+                                        (* ava-hours-in-day 10)
+                                        (* (/ ava-hours-in-day 2) 10))))
+                            `(("min" . 1)
+                              ("h"   . 60)
+                              ("d"   . ,d)
+                              ("w"   . ,(* d 7))
+                              ("m"   . ,(* d 30))
+                              ("y"   . ,(* d 24 365.25))))
         org-fontify-whole-heading-line t
         org-fontify-quote-and-verse-blocks t
         org-hide-emphasis-markers t
