@@ -1,13 +1,25 @@
 (use-package persp-mode
   :ensure t
   :init
+  (defvar persp-org-name "@Org"
+    "TODO")
+
   (defn persp-current-name ()
+    "TODO"
     (safe-persp-name (get-frame-persp)))
 
   (defn persp-current-project ()
+    "TODO"
     (let ((persp-name (persp-current-name)))
-      (when (file-exists-p persp-name)
-        persp-name)))
+      (cond
+       ((string-equal persp-org-name persp-name)
+        (or (-some->> (bound-and-true-p org-directory)
+                      (s-chop-suffix "/")
+                      (s-append "/"))
+            persp-nil-name))
+       ((file-exists-p persp-name)
+        persp-name)
+       (t nil))))
 
   (defn helm-persp-do-create-&-switch-project (proj)
     "TODO"
@@ -88,8 +100,6 @@
         (persp-switch last-persp)
         (when global-hl-line-mode
           (hl-line-mode 1)))))
-
-  (defvar persp-org-name "@Org")
 
   (defn persp-add-new-for-org ()
     "TODO"

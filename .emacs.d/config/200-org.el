@@ -115,7 +115,8 @@ which see."
   (add-hook 'org-mode-hook
             (lambda ()
               "TODO"
-              (setq-local evil-lookup-func #'org-dic-at-point)))
+              (setq-local evil-lookup-func #'org-dic-at-point)
+              (setq-local projectile-indexing-method 'native)))
   (advice-add #'org-tags-completion-function :override #'org-tags-completion-function-for-case-insensitive)
   (advice-add #'org-clock-goto :before (byte-compile (lambda (&optional select) (persp-switch-to-org))))
   (advice-add #'org-todo :around
@@ -193,7 +194,8 @@ which see."
     (add-hook 'org-agenda-mode-hook
               (lambda ()
                 (when (string-equal persp-org-name (persp-current-name))
-                  (persp-add-buffer-without-switch))))))
+                  (persp-add-buffer-without-switch))
+                (setq-local projectile-indexing-method 'native)))))
 
 (use-package org-capture
   :defer t
