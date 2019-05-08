@@ -63,7 +63,7 @@
    `(clojure-keyword-face       ((t (:inherit font-lock-builtin-face))))
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
    `(clojure-side-effect-face   ((t (:inherit (bold italic font-lock-warning-face)))))
-   `(clojure-special-variable-name-face ((t (:inherit font-lock-constant-face))))))
+   `(clojure-special-variable-name-face ((t (:inherit font-lock-variable-name-face))))))
 
 (use-package elisp-mode
   :defer t

@@ -242,7 +242,7 @@
          (core-ns? (concat "\\(?:" core-ns "\\)?"))
          (if-kw   (regexp-opt '("if" "if-some" "if-let" "if-not")))
          (oop-kw  (regexp-opt '("definterface" "defprotocol" "defrecord" "deftype" "extend-protocol" "extend-type" "proxy" "reify")))
-         (def-kw  (regexp-opt '("defmacro" "defn" "defn-" "defmethod" "fn" "defrecord" "deftype") t))
+         (def-kw  (regexp-opt '("defmacro" "defn" "defn-" "defmethod" "defrecord" "deftype") t))
          (cond-kw (regexp-opt '("case" "cond" "condp" "cond->" "cond->>"
                                 "for" "if" "if-let" "if-not" "recur" "throw" "when"
                                 "loop" "when-let" "when-not" "while") t))
@@ -582,7 +582,68 @@
                   meta?
                   "\\(" symbol "\\)?" )
          (1 'font-lock-keyword-face)
-         (2 'font-lock-function-name-face nil t))
+         (2 'font-lock-function-name-face nil t)
+
+         ;; fn parameters highlight
+         (,(byte-compile
+            (-partial
+             (lambda (meta?+ns?+symbol limit)
+               (ignore-errors
+                 (when font-lock--skip
+                   (error ""))
+                 (unless clojure-fn-recursive--point
+                   (when clojure-fn-form--multi-arity?
+                     (up-list 2))
+                   (while (progn
+                            (clojure-skip :comment :ignored-form :string :map)
+                            (when clojure-fn-form--method?
+                              (setq clojure-fn-form--method? nil)
+                              (clojure-forward-sexp)
+                              t)))
+                   (when (looking-at "(")
+                     (setq clojure-fn-form--multi-arity? t)
+                     (down-list))
+                   (when (looking-at "\\[")
+                     (down-list)
+                     (setq clojure-fn-recursive--point (point)
+                           clojure-fn-recursive--limit (save-excursion
+                                                         (up-list)
+                                                         (1- (point))))))
+                 (when clojure-fn-recursive--point
+                   (if (re-search-forward meta?+ns?+symbol
+                                          (min limit clojure-fn-recursive--limit) t)
+                       (progn
+                         ;; ignores
+                         (when (string-match-p clojure--ignore-binding-highlight-regex
+                                               (match-string-no-properties 1))
+                           (set-match-data (fake-match-4)))
+                         ;; Handle default bind map
+                         (when (save-excursion
+                                 (backward-up-list)
+                                 (and (char-equal ?{ (char-after))
+                                      (ignore-errors
+                                        (clojure-forward-sexp -1)
+                                        (looking-at-p ":or\\>"))))
+                           (clojure-forward-sexp)))
+                     (set-match-data (fake-match-4))
+                     (setq clojure-fn-recursive--point nil
+                           clojure-fn-recursive--limit nil))
+                   t)))
+             (concat meta? "\\_<" namespace? "\\(" symbol "\\)\\>")))
+          (if (in-comment?)
+              (setq font-lock--skip t)
+            (setq font-lock--skip nil)
+            (setq font-lock--anchor-beg-point (point))
+            (setq clojure-fn-form--multi-arity? nil)
+            (setq clojure-fn-recursive--point nil)
+            (setq clojure-fn-recursive--limit nil)
+            (save-excursion
+              (safe-up-list-1)
+              (point)))
+          (if font-lock--skip
+              (end-of-line)
+            (goto-char font-lock--anchor-beg-point))
+          (1 'clojure-fn-parameter-face)))
 
         ;; (default ....) or (namespace/default ...)
         (,(concat "(" namespace? "\\(default\\)\\>")
