@@ -94,18 +94,15 @@
   (with-eval-after-load "helm-swoop"
     (advice-add #'fancy-narrow-to-region :after #'helm-swoop--clear-cache-hard)
     (advice-add #'fancy-widen :after #'helm-swoop--clear-cache-hard))
-  (advice-add #'save-buffer :around
-              (byte-compile
-               (lambda (fn &optional arg)
-                 "wrap `save-buffer' to run without `fancy-narrow'."
-                 (let (fancy-narrow--beginning fancy-narrow--end)
-                   (funcall fn arg)))))
-  (advice-add #'jit-lock-function :around
-              (byte-compile
-               (lambda (fn beg)
-                 "wrap `jit-lock-function' to run without `fancy-narrow'."
-                 (let (fancy-narrow--beginning fancy-narrow--end)
-                   (funcall fn beg))))))
+  (let ((f (byte-compile
+            (lambda (fn &rest args)
+              "wrap a function to run without `fancy-narrow'."
+              (let (fancy-narrow--beginning fancy-narrow--end)
+                (apply fn args))))))
+    (advice-add #'save-buffer :around f)
+    (advice-add #'jit-lock-function :around f)
+    (with-eval-after-load "cc-mode"
+      (advice-add #'c-after-change :around f))))
 
 (use-package focus
   :ensure t
