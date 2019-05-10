@@ -116,7 +116,12 @@ which see."
             (lambda ()
               "TODO"
               (setq-local evil-lookup-func #'org-dic-at-point)
-              (setq-local projectile-indexing-method 'native)))
+              (when (and (eq (persp-current-name) persp-org-name)
+                         (buffer-file-name)
+                         (->> (file-relative-name buffer-file-name org-directory)
+                              (string-match-p "\\.\\./")
+                              (not)))
+                (setq-local projectile-indexing-method 'native))))
   (advice-add #'org-tags-completion-function :override #'org-tags-completion-function-for-case-insensitive)
   (advice-add #'org-clock-goto :before (byte-compile (lambda (&optional select) (persp-switch-to-org))))
   (advice-add #'org-todo :around
@@ -195,7 +200,8 @@ which see."
               (lambda ()
                 (when (string-equal persp-org-name (persp-current-name))
                   (persp-add-buffer-without-switch))
-                (setq-local projectile-indexing-method 'native)))))
+                (when (eq (persp-current-name) persp-org-name)
+                  (setq-local projectile-indexing-method 'native))))))
 
 (use-package org-capture
   :defer t
