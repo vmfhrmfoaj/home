@@ -283,10 +283,12 @@
     "mgg" #'cider-find-var-at-point
     "mrc" #'cider-repl-clear-buffer
     "mrs" #'cider-switch-to-last-clj-buf
+    "msn" #'cider-repl-set-ns
     "mrq" #'cider-quit)
   (which-key-declare-prefixes-for-mode 'cider-repl-mode
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto"
+    (concat evil-leader/leader "ms") "set/change"
     (concat evil-leader/leader "mr") "REPL")
   (evil-leader/set-major-leader-for-mode 'cider-repl-mode))
 
@@ -447,6 +449,7 @@
     (which-key-declare-prefixes-for-mode mode
       (concat evil-leader/leader "me") "evaluation"
       (concat evil-leader/leader "mg") "goto"
+      (concat evil-leader/leader "mh") "help"
       (concat evil-leader/leader "mr") "REPL")
     (evil-leader/set-major-leader-for-mode mode)))
 

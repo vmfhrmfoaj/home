@@ -68,6 +68,14 @@ function setEnv {
   fi
   source "${PERLBREW_ROOT}/etc/bashrc"
 
+  # Clojure
+  which lein
+  if [ $? -ne 0 ]; then
+    local lein_path="~/.bin/lein"
+    wget -O ${lein_path} 'https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein'
+    chmod +x ${lein_path}
+  fi
+
   # Golang
   export GOPATH="${HOME}/Desktop/Go_Projects"
   local go_bin="${GOPATH}/bin"
