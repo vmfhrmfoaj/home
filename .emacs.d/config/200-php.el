@@ -49,7 +49,8 @@
       (goto-char (point-min))
       (insert doc)
       (toggle-truncate-lines 0)
-      (read-only-mode 1))))
+      (read-only-mode 1)
+      (goto-line 3))))
 
 (use-package php-mode
   :ensure t
