@@ -34,7 +34,7 @@
    `(secondary-selection ((t (:background "#F1ECDD"))))
    `(trailing-whitespace ((t (:underline (:color "#DC322F" :style wave)))))
    `(underline ((t (:underline (:color foreground-color :style wave)))))
-   `(variable-pitch ((t (:family "DejaVu Serif"))))
+   `(variable-pitch ((t (:family "Noto Sans"))))
    `(whitespace-tab ((t (:inherit whitespace-indentation :inverse-video unspecified))))))
 
 (use-package auto-dim-other-buffers
