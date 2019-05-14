@@ -186,6 +186,10 @@
   (unless (server-running-p)
     (server-start)))
 
+(use-package strace-mode
+  :ensure t
+  :defer t)
+
 (use-package undo-tree
   :ensure t
   :defer t
