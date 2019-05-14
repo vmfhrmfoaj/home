@@ -4,7 +4,9 @@
         (spacing 3))
     (cond
      ((string-equal "gnome-macbookair" hostname)
-      (setq height 113)))
+      (setq height 113))
+     ((string-equal "gnome-imac" hostname)
+      (setq spacing 4)))
     (setq-default line-spacing spacing)
     (set-face-font 'default font)
     (set-fontset-font t 'unicode "symbola")
