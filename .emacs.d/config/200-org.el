@@ -107,6 +107,8 @@ which see."
                                  ("CANCELLED" . org-cancelled))
         org-use-sub-superscripts nil
         org-use-fast-tag-selection nil)
+  (-when-let (it (assoc 'file org-link-frame-setup))
+    (setf (cdr it) #'find-file))
   (with-eval-after-load "helm-mode"
     (add-to-list 'helm-completing-read-handlers-alist
                  '(org-set-tags-command . helm-org-completing-read-tags)))

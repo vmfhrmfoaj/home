@@ -559,7 +559,8 @@
     (concat evil-leader/leader "ms") "sync (trello)")
   (evil-leader/set-major-leader-for-mode 'org-mode)
   (evil-define-key 'normal evil-org-mode-map
-    (kbd "RET") #'org-open-at-point))
+    (kbd "RET") #'org-open-at-point
+    (kbd "M-,") #'org-mark-ring-goto))
 
 (use-package org-agenda
   :defer t
