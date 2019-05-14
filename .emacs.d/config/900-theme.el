@@ -136,11 +136,7 @@
   :defer t
   :config
   (custom-set-faces
-   `(hl-line ((t (:underline unspecified :inverse-video nil)))))
-  (cond
-   ((string-equal "gnome-macbookair" hostname)
-    (custom-set-faces
-     `(hl-line ((t (:background "#F5FECA" :underline unspecified :inverse-video nil))))))))
+   `(hl-line ((t (:underline unspecified :inverse-video nil))))))
 
 (use-package linum
   :defer t
