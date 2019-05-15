@@ -76,7 +76,9 @@ which see."
 
   :config
   (require 'helm-org nil t)
-  (setq org-complete-tags-always-offer-all-agenda-tags t
+  (require 'ob-ledger nil t)
+  (setq org-babel-load-languages '((emacs-lisp . t) (ledger . t))
+        org-complete-tags-always-offer-all-agenda-tags t
         org-duration-units (let* ((ava-hours-in-day 12)
                                   (d (- (* ava-hours-in-day 60) ; pomodoro
                                         (* ava-hours-in-day 10)
@@ -184,11 +186,7 @@ which see."
                                       (search category-keep))
         org-agenda-sticky t
         org-agenda-tags-column org-tags-column
-        org-agenda-window-setup 'current-window
-        org-babel-load-languages '((R . t)
-                                   (emacs-lisp . t)
-                                   (gnuplot . t)
-                                   (ledger . t)))
+        org-agenda-window-setup 'current-window)
   (with-eval-after-load "persp-mode"
     (let ((f (byte-compile
               (lambda (&rest _)
