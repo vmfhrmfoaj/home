@@ -69,7 +69,7 @@ function setEnv {
   source "${PERLBREW_ROOT}/etc/bashrc"
 
   # Clojure
-  which lein
+  which lein > /dev/null
   if [ $? -ne 0 ]; then
     local lein_path="~/.bin/lein"
     wget -O ${lein_path} 'https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein'
