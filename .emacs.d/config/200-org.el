@@ -14,6 +14,25 @@
   :ensure t
   :defer t)
 
+(use-package ob-ledger
+  :defer t
+  :init
+  (defn org-babel-execute:ledger--reduce-indentation (output)
+    "TODO"
+    (let* ((lines (->> output (s-lines) (-remove #'s-blank?)))
+           (min-indent-size (->> lines
+                                 (--map (string-match-p "[^ \t]" it))
+                                 (-filter #'numberp)
+                                 (-min))))
+      (->> lines
+           (--map (substring it min-indent-size))
+           (-interpose "\n")
+           (apply #'concat))))
+
+  :config
+  (advice-add #'org-babel-execute:ledger :filter-return
+              #'org-babel-execute:ledger--reduce-indentation))
+
 (use-package org
   :ensure org-plus-contrib
   :defer t
