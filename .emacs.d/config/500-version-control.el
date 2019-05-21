@@ -97,4 +97,8 @@
   :ensure t
   :after magit
   :config
-  (add-hook 'magit-mode-hook 'magit-svn-mode))
+  (add-hook 'magit-mode-hook 'magit-svn-mode)
+  (let ((f (lambda ()
+             (string-match-p "^\\(master\\|svn\\)$" (magit-rev-branch "HEAD")))))
+   (advice-add #'magit-insert-svn-unpulled :before-while f)
+   (advice-add #'magit-insert-svn-unpushed :before-while f)))
