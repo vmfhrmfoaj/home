@@ -151,7 +151,7 @@
     "gk" #'git-gutter+-previous-hunk
 
     ;; jump/join/split
-    "jn" #'sp-newline
+    "jn" #'newline-and-indent
     "jo" #'split-line
     "js" #'sp-split-sexp
 
