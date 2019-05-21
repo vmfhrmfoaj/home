@@ -10,7 +10,9 @@
   (setq c-default-style "linux")
   (add-hook 'c-mode-common-hook
             (lambda ()
-              (setq c-basic-offset 4)
+              (unless (and (fboundp #'editorconfig-core-get-nearest-editorconfig)
+                           (editorconfig-core-get-nearest-editorconfig default-directory))
+                (setq c-basic-offset 4))
               (setq-local evil-lookup-func #'man-at-point)
               (make-local-variable 'font-lock-extend-region-functions)
               (add-to-list 'font-lock-extend-region-functions #'font-lock-extend-region-wholelines)
