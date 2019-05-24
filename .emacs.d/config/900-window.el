@@ -41,26 +41,10 @@
 (use-package zoom
   :ensure t
   :init
-  (defn zoom--handler-for-helm (&optional window-or-frame norecord)
-    (unless (bound-and-true-p helm-alive-p)
-      (zoom--handler window-or-frame norecord)))
-
-  (defn zoom--on-for-helm ()
-    "TODO"
-    ;; register the zoom handler
-    ;; NOTE
-    ;;  It confilct `helm-display-buffer-at-bottom'
-    (add-hook 'window-size-change-functions #'zoom--handler-for-helm)
-    ;; (add-hook 'minibuffer-setup-hook #'zoom--handler)
-    (advice-add #'select-window :after #'zoom--handler)
-    ;; disable mouse resizing
-    (advice-add #'mouse-drag-mode-line :override #'ignore)
-    (advice-add #'mouse-drag-vertical-line :override #'ignore)
-    (advice-add #'mouse-drag-header-line :override #'ignore)
-    ;; update the layout once loaded
-    (dolist (frame (frame-list))
-      (with-selected-frame frame
-        (zoom--handler))))
+  (defn zoom--handler-wrapper-for-helm (f &optional ignored)
+    (unless (and (fboundp #'helm--alive-p)
+                 (helm--alive-p))
+      (funcall f ignored)))
 
   (defn zoom--update-for-helm ()
     "Update the window layout in the current frame. (custom ver)"
@@ -68,17 +52,17 @@
           (window-configuration-change-hook nil)
           (window-combination-resize t)
           (window-resize-pixelwise t))
-      ;; NOTE
-      ;;  It confilct `helm-autoresize-mode'
-      ;; (balance-windows)
+      (unless (and (bound-and-true-p helm-autoresize-mode)
+                   (fboundp #'helm--alive-p)
+                   (helm--alive-p))
+        (balance-windows))
       (unless (zoom--window-ignored-p)
-        (balance-windows)
         (zoom--resize)
         (zoom--fix-scroll))))
 
   :config
   (setq zoom-size '(0.618 . 0.618)
         zoom-ignored-buffer-name-regexps '("\\*.*[Hh]elm.*\\*"))
-  (advice-add #'zoom--on     :override #'zoom--on-for-helm)
+  (advice-add #'zoom--handler :around #'zoom--handler-wrapper-for-helm)
   (advice-add #'zoom--update :override #'zoom--update-for-helm)
   (zoom-mode t))
