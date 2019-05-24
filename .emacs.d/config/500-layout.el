@@ -24,7 +24,8 @@
   (defn helm-persp-do-create-&-switch-project (proj)
     "TODO"
     (interactive)
-    (let ((persp-reset-windows-on-nil-window-conf t))
+    (let ((projectile-indexing-method (default-value 'projectile-indexing-method))
+          (persp-reset-windows-on-nil-window-conf t))
       (persp-switch proj)
       (projectile-switch-project-by-name proj)))
 
