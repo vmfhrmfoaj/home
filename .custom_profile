@@ -45,7 +45,7 @@ function setEnv {
   # .asdf
   local asdf_home="${HOME}/.asdf"
   if [ ! -d "${asdf_home}" ]; then
-    git clone 'https://github.com/asdf-vm/asdf.git' ~/.asdf --branch v0.6.2
+    git clone 'https://github.com/asdf-vm/asdf.git' "${HOME}/.asdf" --branch v0.6.2
   fi
   source "${asdf_home}/asdf.sh"
   source "${asdf_home}/completions/asdf.bash"
@@ -71,7 +71,8 @@ function setEnv {
   # Clojure
   which lein > /dev/null
   if [ $? -ne 0 ]; then
-    local lein_path="~/.bin/lein"
+    local lein_path="${HOME}/.bin/lein"
+    mkdir -p $(dirname ${lein_path})
     wget -O ${lein_path} 'https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein'
     chmod +x ${lein_path}
   fi
