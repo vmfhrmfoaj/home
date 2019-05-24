@@ -16,7 +16,7 @@
   (load-theme 'solarized-light t)
   (custom-set-faces
    `(fringe ((t (:background "#F5EFDC"))))
-   `(isearch ((t (:underline unspecified))))
+   `(isearch ((t (:inherit bold :weight unspecified :underline unspecified))))
    `(link ((t (:inherit underline :underline unspecified :weight unspecified))))
    `(link-visited ((t (:inherit underline :underline unspecified)))))
   (custom-theme-set-faces
@@ -26,11 +26,10 @@
    `(evil-goggles-delete-face ((t (:inherit diff-refine-removed))))
    `(evil-goggles-paste-face  ((t (:inherit diff-refine-added))))
    `(evil-goggles-yank-face   ((t (:inherit diff-refine-changed))))
-   `(helm-source-header ((t (:background "#A5D3F6" :foreground ,(color-from 'default :background)))))
    `(helm-swoop-target-word-face ((t (:inherit lazy-highlight))))
    `(helm-match ((t (:inherit lazy-highlight))))
    `(helm-match-selection ((t (:inherit (bold isearch)))))
-   `(helm-selection ((t (:inherit bold :background "#69B7F0" :foreground ,(color-from 'default :background)))))
+   `(helm-selection ((t (:background "#DDF1EC" :foreground ,(color-from 'default :background)))))
    `(italic ((t (:slant italic))))
    `(secondary-selection ((t (:background "#F1ECDD"))))
    `(trailing-whitespace ((t (:underline (:color "#DC322F" :style wave)))))
@@ -137,7 +136,7 @@
   :defer t
   :config
   (custom-set-faces
-   `(hl-line ((t (:underline unspecified :inverse-video nil))))))
+   `(hl-line ((t (:underline unspecified :background "#DDF1EC" :inverse-video nil))))))
 
 (use-package linum
   :defer t
