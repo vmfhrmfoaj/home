@@ -14,8 +14,13 @@
   :ensure t
   :defer t)
 
+(use-package ob-gnuplot
+  :defer t
+  :commands (org-babel-execute:gnuplot))
+
 (use-package ob-ledger
   :defer t
+  :commands (org-babel-execute:ledger)
   :init
   (defn org-babel-execute:ledger--reduce-indentation (output)
     "TODO"
@@ -95,8 +100,7 @@ which see."
 
   :config
   (require 'helm-org nil t)
-  (require 'ob-ledger nil t)
-  (setq org-babel-load-languages '((emacs-lisp . t) (ledger . t))
+  (setq org-babel-load-languages '((emacs-lisp . t) (ledger . t) (gnuplot . t))
         org-complete-tags-always-offer-all-agenda-tags t
         org-duration-units (let* ((ava-hours-in-day 12)
                                   (d (- (* ava-hours-in-day 60) ; pomodoro

@@ -111,6 +111,10 @@
   :config
   (setq expand-region-contract-fast-key "v"))
 
+(use-package gnuplot
+  :ensure t
+  :defer t)
+
 (use-package helm-mt
   :ensure t
   :defer t)
