@@ -101,8 +101,8 @@
                 (apply fn args))))))
     (advice-add #'save-buffer :around f)
     (advice-add #'jit-lock-function :around f)
-    (with-eval-after-load "cc-mode"
-      (advice-add #'c-after-change :around f))))
+    (eval-after-load "cc-mode"
+      `(advice-add #'c-after-change :around ,f))))
 
 (use-package focus
   :ensure t
