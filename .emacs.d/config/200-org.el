@@ -16,7 +16,12 @@
 
 (use-package ob-gnuplot
   :defer t
-  :commands (org-babel-execute:gnuplot))
+  :commands (org-babel-execute:gnuplot)
+  :config
+  (advice-add #'org-babel-execute:gnuplot :after
+              (byte-compile (lambda (&rest _)
+                              "kill a buffer of `gnuplot-mode' after `org-babel-execute:gnuplot'"
+                              (-some-> gnuplot-buffer (kill-buffer))))))
 
 (use-package ob-ledger
   :defer t
