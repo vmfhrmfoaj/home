@@ -1183,9 +1183,9 @@
             (point))
           (goto-char font-lock--anchor-beg-point)
           (1 'php-passive-assign-variable-face t)))
-        (,(concat "\\(" symbol "\\)\\(\\[[^\\]]*\\]\\)*" assigment)
+        (,(concat "\\(" symbol "\\)\\(?:\\[.*?\\]\\)?" assigment)
          (1 'font-lock-variable-name-face t))
-        (,(concat symbol "->\\([_0-9a-zA-Z]+\\)\\(\\[[^\\]]*\\]\\)*" assigment)
+        (,(concat symbol "->\\([_0-9a-zA-Z]+\\)\\(?:\\[.*?\\]\\)?" assigment)
          (1 'font-lock-variable-name-face t))
         ("$\\(this\\|that\\)\\_>"
          (1 'php-$this))
