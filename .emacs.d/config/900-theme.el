@@ -29,7 +29,7 @@
    `(helm-swoop-target-word-face ((t (:inherit lazy-highlight))))
    `(helm-match ((t (:inherit lazy-highlight))))
    `(helm-match-selection ((t (:inherit (bold isearch)))))
-   `(helm-selection ((t (:background "#DDF1EC" :foreground ,(color-from 'default :background)))))
+   `(helm-selection ((t (:background "#DDF1EC" :underline t))))
    `(italic ((t (:slant italic))))
    `(secondary-selection ((t (:background "#F1ECDD"))))
    `(trailing-whitespace ((t (:underline (:color "#DC322F" :style wave)))))
