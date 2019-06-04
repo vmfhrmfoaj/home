@@ -29,10 +29,12 @@
 
   (defn racer-eldoc--customized ()
     "Sometime `racer-eldoc' very slow."
-    (-when-let (signature (-some-> 'symbol
-                                   (thing-at-point)
-                                   (racer--signature-at-point)))
-      (racer--syntax-highlight signature)))
+    (unless (and (fboundp #'sp-point-in-string-or-comment)
+                 (sp-point-in-string-or-comment))
+      (-when-let (signature (-some-> 'symbol
+                                     (thing-at-point)
+                                     (racer--signature-at-point)))
+        (racer--syntax-highlight signature))))
 
   (defvar racer-desc-buf-show-fn
     #'pop-to-buffer
