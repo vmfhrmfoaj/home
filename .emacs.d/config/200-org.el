@@ -258,15 +258,14 @@ which see."
                     ":Effort:   %^{Effort|1:00|3:00|6:00|1d|3d|1w|2w|3w|1m|3m|6m|9m|1y}" "\n"
                     ":END:"                                                              "\n"
                     "\n"
-                    "%?"
+                    "%?" "\n"
                     "\n")
            :prepend t)
           ("n" "Note" entry
            (file+headline ,(concat org-directory  "/" (format-time-string "%Y") "/note.org")
                           ,(format-time-string "%b"))
            ,(concat "* %^{Note}" "\n"
-                    "\n"
-                    "- %?"
+                    "- %?" "\n"
                     "\n")
            :prepend t))))
 
