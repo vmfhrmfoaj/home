@@ -20,7 +20,7 @@
      (when (member major-mode '(c-mode c++-mode))
        (font-lock-add-keywords
         nil
-        `(("\\([&*]\\|::\\|[-=]>\\)"
+        `(("\\([&|*]\\|::\\|[-=]>\\)"
            (1 'shadow))
           (,(byte-compile
              (lambda (limit)
@@ -158,6 +158,8 @@
        (,(concat whitespace "\\(accept\\)" whitespace* "(")
         (1 'font-lock-type-face))
        ("\\(?:\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\|\\$\\|\\\\\\)"
+        (1 'shadow))
+       ("\\([&|*]\\|::\\|[-=]>\\)"
         (1 'shadow))
        ("\\([*@$%]+\\)\\(?:[:_0-9a-zA-Z]\\|\\s(\\)"
         (1 'shadow))))
@@ -1313,14 +1315,15 @@
         (2 'font-lock-variable-name-face))))
     (font-lock-add-keywords
      'sh-mode
-     `((,(concat "\\(" symbol_ "\\)")
-        (1 (let* ((face (plist-get (text-properties-at (1- (match-beginning 0))) 'face))
+     `((,(concat "\\(\\$\\)\\(" symbol "\\|{" symbol "}\\)")
+        (1 'shadow)
+        (2 (let* ((face (plist-get (text-properties-at (1- (match-beginning 0))) 'face))
                   (face-lst (if (listp face) face (list face))))
              (when (or (memq 'font-lock-comment-face face-lst)
                        (memq 'font-lock-string-face  face-lst))
                face))
            t))
-       ("\\(\\$\\)[(_0-9a-zA-Z]"
+       ("\\([&|<>]\\)"
         (1 'shadow)))
      :append)))
 
