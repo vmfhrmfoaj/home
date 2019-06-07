@@ -3,22 +3,34 @@
     "window.menuBarVisibility": "toggle",
 
     // Edit
+    "breadcrumbs.enabled": true,
     "editor.fontFamily": "'Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "editor.fontSize": 16,
     "editor.fontLigatures": true,
-    "editor.quickSuggestionsDelay": 10,
     "editor.lineNumbers": "relative",
+    "editor.minimap.enabled": false,
+    "editor.quickSuggestionsDelay": 10,
 
-    //
-    // Extentions
-    //
+    ///
+    /// Extentions
+    ///
 
     // Rust
     "rust-client.rustupPath": "/home/vmfhrmfoaj/.cargo/bin/rustup",
     "rust-client.rlsPath": "/home/vmfhrmfoaj/.cargo/bin/rls",
 
     // Vim
+    "vim.sneak": true,
+    "vim.sneakUseIgnorecaseAndSmartcase": true,
+    "vim.incsearch": true,
     "vim.useSystemClipboard": true,
+    "vim.useCtrlKeys": true,
+    "vim.hlsearch": true,
+    "vim.visualstar": true,
+    "vim.statusBarColorControl": true,
+    "vim.handleKeys": {
+        "<C-d>": false,
+    },
     // - https://github.com/VSpaceCode/VSpaceCode
     "vim.leader": "<space>",
     "vim.visualModeKeyBindings": [
@@ -798,6 +810,10 @@
                 {
                     "command": "workbench.action.findInFiles",
                     "args": []
+                },
+                {
+                    "command": "search.action.focusSearchList",
+                    "args": []
                 }
             ]
         },
@@ -1148,7 +1164,7 @@
                     "args": []
                 }
             ]
-        }
+        },
     ],
     "vim.insertModeKeyBindings": [
         {
@@ -1161,4 +1177,14 @@
             ]
         }
     ],
+
+    /// 
+    /// Automatically csutomized
+    ///
+
+    "workbench.colorCustomizations": {
+        "statusBar.background": "#005f5f",
+        "statusBar.noFolderBackground": "#005f5f",
+        "statusBar.debuggingBackground": "#005f5f"
+    },
 }
