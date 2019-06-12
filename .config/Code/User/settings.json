@@ -4,6 +4,7 @@
 
     // Edit
     "breadcrumbs.enabled": true,
+    "workbench.editor.enablePreview": false,
     "editor.fontFamily": "'Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "editor.fontSize": 16,
     "editor.fontLigatures": true,
@@ -30,6 +31,7 @@
     "vim.statusBarColorControl": true,
     "vim.handleKeys": {
         "<C-d>": false,
+        "<C-j>": false,
     },
     // - https://github.com/VSpaceCode/VSpaceCode
     "vim.leader": "<space>",
@@ -57,6 +59,10 @@
             "commands": [
                 {
                     "command": "editor.action.commentLine",
+                    "args": []
+                },
+                {
+                    "command": "extension.vim_escape",
                     "args": []
                 }
             ]
@@ -158,6 +164,19 @@
             "commands": [
                 {
                     "command": "workbench.action.findInFiles",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "0"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "workbench.action.focusSideBar",
                     "args": []
                 }
             ]
@@ -821,6 +840,34 @@
             "before": [
                 "<leader>",
                 "s",
+                "d",
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "editor.action.peekDefinition",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "s",
+                "D"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "editor.action.revealDefinition",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "s",
                 "e"
             ],
             "after": [],
@@ -925,6 +972,48 @@
             "commands": [
                 {
                     "command": "workbench.action.toggleActivityBarVisibility",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "t",
+                "w"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "editor.action.toggleRenderWhitespace",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "t",
+                "P"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "workbench.actions.view.problems",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "t",
+                "T"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "workbench.action.terminal.toggleTerminal",
                     "args": []
                 }
             ]
@@ -1092,6 +1181,10 @@
                 {
                     "command": "workbench.action.maximizeEditor",
                     "args": []
+                },
+                { 
+                    "command": "workbench.action.closePanel",
+                    "args": []
                 }
             ]
         },
@@ -1166,19 +1259,19 @@
             ]
         },
     ],
-    "vim.insertModeKeyBindings": [
-        {
-            "before": [
-                "f",
-                "d"
-            ],
-            "after": [
-                "<Esc>"
-            ]
-        }
-    ],
+    //"vim.insertModeKeyBindings": [
+    //    {
+    //        "before": [
+    //            "f",
+    //            "d"
+    //        ],
+    //        "after": [
+    //            "<Esc>"
+    //        ]
+    //    }
+    //],
 
-    /// 
+    ///
     /// Automatically csutomized
     ///
 
@@ -1187,4 +1280,5 @@
         "statusBar.noFolderBackground": "#005f5f",
         "statusBar.debuggingBackground": "#005f5f"
     },
+    "editor.renderWhitespace": "none",
 }

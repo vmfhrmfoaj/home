@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-function setEnv {
+setEnv() {
   # locale
   export LANG=en_US.UTF-8
   export LC_ALL=en_US.UTF-8
@@ -19,27 +19,19 @@ function setEnv {
   fi
   export PATH="${HOME}/.cask/bin:${PATH}"
 
-  # Oh My Zsh
-  if [ 0 != $(echo $plugins | grep -c 'vi-mode') ]; then
-    # NOTE
-    #  You should change 'backspace key generates' option to control-h on the Gnome terminal.
-    bindkey -M viins '^?' backward-kill-word
-    bindkey -M viins '^b' backward-char
-    bindkey -M viins '^f' forward-char
-    bindkey -M viins '^d' delete-char
-  fi
-  local NEWLINE=$'\n'
-  local PS1_PREFIX='%{$fg[magenta]%}(%n@%M)%{$reset_color%}'
-  export PS1="${PS1_PREFIX}${NEWLINE}${PS1}"
-
   # Heroku
   local HEROKU="${HOME}/.local/heroku"
+  local HEROKU_BIN="${HOME}/.bin/heroku"
   if [ ! -d "${HEROKU}" ]; then
     wget -qO - 'https://cli-assets.heroku.com/heroku-linux-x64.tar.gz' | tar -C $(dirname "${HEROKU}") -xzf -
     yes | "${HEROKU}/bin/heroku" autocomplete
   fi
-  if [ 0 = $(echo ${PATH} | grep -c "${HEROKU}/bin") ]; then
-    export PATH="${HEROKU}/bin/:${PATH}"
+  if [ ! -f "${HEROKU_BIN}" ]; then
+    mkdir -p $(dirname "${HEROKU_BIN}")
+    ln -s "${HEROKU}/bin/heroku" "${HEROKU_BIN}"
+  fi
+  if [ 0 = $(echo ${PATH} | grep -c "${HOME}/.bin") ]; then
+    export PATH="${HOME}/.bin/:${PATH}"
   fi
 
   # .asdf
@@ -101,7 +93,22 @@ function setEnv {
   fi
 }
 
-function zle-keymap-select {
+setEnvForZsh() {
+  # Oh My Zsh
+  if [ 0 != $(echo $plugins | grep -c 'vi-mode') ] && [ ! -z ${GNOME_TERMINAL_SERVICE} ]; then
+    # NOTE
+    #  You should change 'backspace key generates' option to control-h on the Gnome terminal.
+    bindkey -M viins '^?' backward-kill-word
+    bindkey -M viins '^b' backward-char
+    bindkey -M viins '^f' forward-char
+    bindkey -M viins '^d' delete-char
+  fi
+  local NEWLINE=$'\n'
+  local PS1_PREFIX='%{$fg[magenta]%}(%n@%M)%{$reset_color%}'
+  export PS1="${PS1_PREFIX}${NEWLINE}${PS1}"
+}
+
+zle-keymap-select() {
   local CURSOR_BOX='\e[2 q'
   local CURSOR_UNDERBAR='\e[4 q'
   local CURSOR_LINE='\e[6 q'
@@ -120,7 +127,7 @@ function zle-keymap-select {
   zle -R
 }
 
-function title {
+title() {
   emulate -L zsh
   setopt prompt_subst
   [[ "$EMACS" == *term* ]] && return
@@ -148,12 +155,12 @@ function title {
   esac
 }
 
-function precmd {
+precmd() {
   local TABNAME="%n@%M: %~"
   title $TABNAME $TABNAME
 }
 
-function preexec {
+preexec() {
   local CURSOR_BOX='\e[2 q'
   local CURSOR_UNDERBAR='\e[4 q'
   local CURSOR_LINE='\e[6 q'
@@ -162,21 +169,22 @@ function preexec {
   echo -ne $CURSOR_LINE
 }
 
-function postexec {
+postexec() {
   local TABNAME="%n@%M"
   title $TABNAME $TABNAME
 }
 
+setEnv
 if [ -t 1 ] && [ ! -z ${ZSH_NAME} ]; then
-  setEnv
+  setEnvForZsh
 
   zle -N zle-keymap-select
 
   export DISABLE_AUTO_TITLE="true"
   preexec
+fi
 
-  which numlockx 2>&1 > /dev/null
-  if [ $? -eq 0 ]; then
-    numlockx on
-  fi
+which numlockx 2>&1 > /dev/null
+if [ $? -eq 0 ]; then
+  numlockx on
 fi

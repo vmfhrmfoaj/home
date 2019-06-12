@@ -2,4 +2,6 @@
 !.emacs.d/
 !.custom_profile
 !.vimrc
+!.config/Code/User/settings.json
+!.config/Code/User/keybindings.json
 !.gitignore
