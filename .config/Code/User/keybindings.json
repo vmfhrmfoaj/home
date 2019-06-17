@@ -147,16 +147,23 @@
       "when": "inQuickOpen"
    },
 
+   // indentation
+   {
+      "key": "ctrl+.",
+      "command": "editor.action.indentLines",
+      "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
+   },
+   
    // remap "ctrl+j/k" to UP/DOWN
    {
       "key": "ctrl+j",
       "command": "search.action.focusNextSearchResult",
-      "when": "hasSearchResult"
+      "when": "hasSearchResult && searchViewletFocus"
    },
    {
       "key": "ctrl+k",
       "command": "search.action.focusPreviousSearchResult",
-      "when": "hasSearchResult"
+      "when": "hasSearchResult && searchViewletFocus"
    },
    {
       "key": "ctrl+j",
@@ -167,5 +174,52 @@
       "key": "ctrl+k",
       "command": "selectPrevSuggestion",
       "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+   },
+   {
+      "key": "ctrl+j",
+      "command": "workbench.action.quickOpenSelectNext",
+      "when": "inQuickOpen"
+   },
+   {
+      "key": "ctrl+k",
+      "command": "workbench.action.quickOpenSelectPrevious",
+      "when": "inQuickOpen"
+   },
+
+   // Emacs keybinding
+   {
+      "key": "ctrl+h",
+      "command": "deleteLeft",
+      "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
+   },
+   {
+      "key": "ctrl+b",
+      "command": "cursorLeft",
+      "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
+   },
+   {
+      "key": "alt+b",
+      "command": "cursorWordLeft",
+      "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
+   },
+   {
+      "key": "ctrl+f",
+      "command": "cursorRight",
+      "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
+   },
+   {
+      "key": "alt+f",
+      "command": "cursorWordRight",
+      "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
+   },
+   {
+      "key": "ctrl+a",
+      "command": "cursorHome",
+      "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
+   },
+   {
+      "key": "ctrl+e",
+      "command": "cursorEnd",
+      "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
    },
 ]

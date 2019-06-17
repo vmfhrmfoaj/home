@@ -1,5 +1,7 @@
 {
     // Appearance
+    "workbench.colorTheme": "Monokai Dimmed",
+    "editor.letterSpacing": -0.5,
     "window.menuBarVisibility": "toggle",
 
     // Edit
@@ -16,6 +18,9 @@
     /// Extentions
     ///
 
+    // Remote Development
+    "remote.SSH.showLoginTerminal": true,
+
     // Rust
     "rust-client.rustupPath": "/home/vmfhrmfoaj/.cargo/bin/rustup",
     "rust-client.rlsPath": "/home/vmfhrmfoaj/.cargo/bin/rls",
@@ -28,7 +33,6 @@
     "vim.useCtrlKeys": true,
     "vim.hlsearch": true,
     "vim.visualstar": true,
-    "vim.statusBarColorControl": true,
     "vim.handleKeys": {
         "<C-d>": false,
         "<C-j>": false,
@@ -115,19 +119,19 @@
                 }
             ]
         },
-        {
-            "before": [
-                "<leader>",
-                "<tab>"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.openNextRecentlyUsedEditorInGroup",
-                    "args": []
-                }
-            ]
-        },
+        // {
+        //     "before": [
+        //         "<leader>",
+        //         "<tab>"
+        //     ],
+        //     "after": [],
+        //     "commands": [
+        //         {
+        //             "command": "workbench.action.openNextRecentlyUsedEditorInGroup",
+        //             "args": []
+        //         }
+        //     ]
+        // },
         {
             "before": [
                 "<leader>",
@@ -689,6 +693,34 @@
                 "d",
                 "j",
                 "k"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "j",
+                "n"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "editor.action.insertLineAfter",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "j",
+                "o"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "editor.action.insertLineBefore",
+                    "args": []
+                }
             ]
         },
         {
@@ -1259,6 +1291,7 @@
             ]
         },
     ],
+    "editor.renderWhitespace": "none",
     //"vim.insertModeKeyBindings": [
     //    {
     //        "before": [
@@ -1274,11 +1307,4 @@
     ///
     /// Automatically csutomized
     ///
-
-    "workbench.colorCustomizations": {
-        "statusBar.background": "#005f5f",
-        "statusBar.noFolderBackground": "#005f5f",
-        "statusBar.debuggingBackground": "#005f5f"
-    },
-    "editor.renderWhitespace": "none",
 }
