@@ -18,6 +18,19 @@
     /// Extentions
     ///
 
+    // C/C++
+    "C_Cpp.default.intelliSenseMode": "gcc-x64",
+    "C_Cpp.enhancedColorization": "Disabled",
+    "C_Cpp.updateChannel": "Insiders",
+
+    // Markdownlint
+    "markdownlint.config": {
+        "MD024": false,
+    },
+
+    // PHP
+    "php.validate.executablePath": "/home/vmfhrmfoaj/.asdf/shims/php",
+
     // Remote Development
     "remote.SSH.showLoginTerminal": true,
 
@@ -39,7 +52,37 @@
     },
     // - https://github.com/VSpaceCode/VSpaceCode
     "vim.leader": "<space>",
+    "vim.visualModeKeyBindingsNonRecursive": [
+        // TODO: a command which binded to '%' key do not match correctly.
+        // {
+        //     "before": ["%"],
+        //     "after": [],
+        //     "commands": [
+        //         { 
+        //             "command": "editor.action.jumpToBracket",
+        //             "args": []
+        //         }
+        //     ],
+        // },
+    ],
     "vim.visualModeKeyBindings": [
+        {
+            "before": [
+                "<leader>",
+                "/"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "workbench.action.findInFiles",
+                    "args": []
+                },
+                {
+                    "command": "extension.vim_escape",
+                    "args": []
+                }
+            ]
+        },
         {
             "before": [
                 "<leader>",
@@ -95,7 +138,36 @@
             ]
         }
     ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": ["<C-n>"],
+            "commands": [":nohl"]
+        },
+        {
+            "before": ["%"],
+            "after": [],
+            "commands": [
+                { 
+                    "command": "editor.action.jumpToBracket",
+                    "args": []
+                }
+            ],
+        },
+    ],
     "vim.normalModeKeyBindings": [
+        {
+            "before": [
+                "g", 
+                "x"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "editor.action.openLink",
+                    "args": []
+                }
+            ]
+        },
         {
             "before": ["K"],
             "after": [],
@@ -1291,20 +1363,10 @@
             ]
         },
     ],
-    "editor.renderWhitespace": "none",
-    //"vim.insertModeKeyBindings": [
-    //    {
-    //        "before": [
-    //            "f",
-    //            "d"
-    //        ],
-    //        "after": [
-    //            "<Esc>"
-    //        ]
-    //    }
-    //],
+    "workbench.list.keyboardNavigation": "simple", // see, https://github.com/Microsoft/vscode/issues/66995#issuecomment-457123611
 
     ///
-    /// Automatically csutomized
+    /// Automatically customized
     ///
+    "editor.renderWhitespace": "none",
 }

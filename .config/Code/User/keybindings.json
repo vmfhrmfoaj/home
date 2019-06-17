@@ -193,9 +193,17 @@
       "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
    },
    {
+      "key": "ctrl+h",
+      "command": "-editor.action.startFindReplaceAction"
+   },
+   {
       "key": "ctrl+b",
       "command": "cursorLeft",
       "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
+   },
+   {
+      "key": "ctrl+b",
+      "command": "-workbench.action.toggleSidebarVisibility"
    },
    {
       "key": "alt+b",
@@ -208,6 +216,50 @@
       "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
    },
    {
+      "key": "ctrl+f",
+      "command": "-actions.find"
+   },
+   {
+      "key": "ctrl+f",
+      "command": "-repl.action.filter",
+      "when": "inDebugRepl && textInputFocus"
+   },
+   {
+      "key": "ctrl+f",
+      "command": "-workbench.action.terminal.focusFindWidget",
+      "when": "terminalFocus"
+   },
+   {
+      "key": "ctrl+f",
+      "command": "-workbench.action.terminal.focusFindWidget",
+      "when": "terminalFindWidgetFocused"
+   },
+   {
+      "key": "ctrl+f",
+      "command": "-editor.action.extensioneditor.showfind",
+      "when": "activeEditor == 'workbench.editor.extension'"
+   },
+   {
+      "key": "ctrl+f",
+      "command": "-editor.action.webvieweditor.showFind",
+      "when": "!editorFocus && activeEditor == 'WebviewEditor'"
+   },
+   {
+      "key": "ctrl+f",
+      "command": "-problems.action.focusFilter",
+      "when": "problemsViewFocus"
+   },
+   {
+      "key": "ctrl+f",
+      "command": "-settings.action.search",
+      "when": "inSettingsEditor"
+   },
+   {
+      "key": "ctrl+f",
+      "command": "-keybindings.editor.searchKeybindings",
+      "when": "inKeybindings"
+   },
+   {
       "key": "alt+f",
       "command": "cursorWordRight",
       "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
@@ -218,8 +270,32 @@
       "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
    },
    {
+      "key": "ctrl+a",
+      "command": "-list.selectAll",
+      "when": "listFocus && listSupportsMultiselect && !inputFocus"
+   },
+   {
+      "key": "ctrl+a",
+      "command": "-editor.action.selectAll",
+      "when": "textInputFocus"
+   },
+   {
+      "key": "ctrl+a",
+      "command": "-editor.action.webvieweditor.selectAll",
+      "when": "!editorFocus && !inputFocus && activeEditor == 'WebviewEditor'"
+   },
+   {
       "key": "ctrl+e",
       "command": "cursorEnd",
       "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
+   },
+   {
+      "key": "ctrl+e",
+      "command": "-workbench.action.quickOpen"
+   },
+   {
+      "key": "ctrl+e",
+      "command": "-workbench.action.quickOpenNavigateNextInFilePicker",
+      "when": "inFilesPicker && inQuickOpen"
    },
 ]
