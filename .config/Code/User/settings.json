@@ -19,8 +19,7 @@
     ///
 
     // C/C++
-    "C_Cpp.default.intelliSenseMode": "gcc-x64",
-    "C_Cpp.enhancedColorization": "Disabled",
+    "C_Cpp.default.intelliSenseMode": "clang-x64",
     "C_Cpp.updateChannel": "Insiders",
 
     // Markdownlint
@@ -140,10 +139,9 @@
     ],
     "vim.normalModeKeyBindingsNonRecursive": [
         {
-            "before": ["<C-n>"],
+            "before": ["<C-h>"],
             "commands": [":nohl"]
-        },
-        {
+        },{
             "before": ["%"],
             "after": [],
             "commands": [
@@ -773,12 +771,11 @@
                 "j",
                 "n"
             ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "editor.action.insertLineAfter",
-                    "args": []
-                }
+            "after": [
+                "i",
+                "<enter>",
+                "<esc>",
+                "l"
             ]
         },
         {
@@ -787,12 +784,12 @@
                 "j",
                 "o"
             ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "editor.action.insertLineBefore",
-                    "args": []
-                }
+            "after": [
+                "i",
+                "<enter>",
+                "<esc>",
+                "l",
+                "k"
             ]
         },
         {
