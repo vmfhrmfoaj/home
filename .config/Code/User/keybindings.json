@@ -298,4 +298,11 @@
       "command": "-workbench.action.quickOpenNavigateNextInFilePicker",
       "when": "inFilesPicker && inQuickOpen"
    },
+
+   // TAB
+   {
+      "key": "tab",
+      "command": "tab",
+      "when": "editorTextFocus && !editorReadonly && vim.mode == 'Insert'"
+   },
 ]

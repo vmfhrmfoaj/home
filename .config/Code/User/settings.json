@@ -30,6 +30,10 @@
     // PHP
     "php.validate.executablePath": "/home/vmfhrmfoaj/.asdf/shims/php",
 
+    // Python
+    "python.pythonPath": "/home/vmfhrmfoaj/.asdf/shims/python",
+    "python.pipenvPath": "/home/vmfhrmfoaj/.asdf/shims/pip",
+
     // Remote Development
     "remote.SSH.showLoginTerminal": true,
 
