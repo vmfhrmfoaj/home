@@ -53,11 +53,6 @@ setEnv() {
   export PERLBREW_ROOT="${HOME}/.perlbrew"
   if [ ! -d ${PERLBREW_ROOT} ]; then
     curl -fsSL 'https://install.perlbrew.pl' | bash
-    if [ ! -f "${HOME}/.oh-my-zsh/custom/plugins/perlbrew/_perlbrew" ]; then
-      mkdir -p "${HOME}/.oh-my-zsh/custom/plugins/perlbrew/"
-      curl -fsSL -o "${HOME}/.oh-my-zsh/custom/plugins/perlbrew/_perlbrew" \
-           'https://gist.githubusercontent.com/vmfhrmfoaj/5d638cca74fa0c4ea0420457cae831b2/raw/3eb92bee4b2efa4508cbaea91b80bafd6d6c5f0c/_perlbrew'
-    fi
   fi
   source "${PERLBREW_ROOT}/etc/bashrc"
 
@@ -104,6 +99,20 @@ setEnvForZsh() {
     bindkey -M viins '^f' forward-char
     bindkey -M viins '^d' delete-char
   fi
+
+  # autocomplete
+  local plugin_dir="${HOME}/.oh-my-zsh/custom/plugins"
+  if [ ! -f "${plugin_dir}/vboxmanage/_vboxmanage" ]; then
+      mkdir -p "${plugin_dir}/vboxmanage/"
+      curl -fsSL -o "${plugin_dir}/vboxmanage/_vboxmanage" \
+          'https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_virtualbox'
+  fi
+  if [ ! -f "${plugin_dir}/perlbrew/_perlbrew" ]; then
+    mkdir -p "${plugin_dir}/perlbrew/"
+    curl -fsSL -o "${plugin_dir}/perlbrew/_perlbrew" \
+          'https://gist.githubusercontent.com/vmfhrmfoaj/5d638cca74fa0c4ea0420457cae831b2/raw/3eb92bee4b2efa4508cbaea91b80bafd6d6c5f0c/_perlbrew'
+  fi
+
   local NEWLINE=$'\n'
   local PS1_PREFIX='%{$fg[magenta]%}(%n@%M)%{$reset_color%}'
   export PS1="${PS1_PREFIX}${NEWLINE}${PS1}"
