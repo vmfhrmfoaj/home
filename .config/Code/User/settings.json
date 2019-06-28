@@ -55,19 +55,6 @@
     },
     // - https://github.com/VSpaceCode/VSpaceCode
     "vim.leader": "<space>",
-    "vim.visualModeKeyBindingsNonRecursive": [
-        // TODO: a command which binded to '%' key do not match correctly.
-        // {
-        //     "before": ["%"],
-        //     "after": [],
-        //     "commands": [
-        //         { 
-        //             "command": "editor.action.jumpToBracket",
-        //             "args": []
-        //         }
-        //     ],
-        // },
-    ],
     "vim.visualModeKeyBindings": [
         {
             "before": [
@@ -145,15 +132,6 @@
         {
             "before": ["<C-h>"],
             "commands": [":nohl"]
-        },{
-            "before": ["%"],
-            "after": [],
-            "commands": [
-                { 
-                    "command": "editor.action.jumpToBracket",
-                    "args": []
-                }
-            ],
         },
     ],
     "vim.normalModeKeyBindings": [
@@ -166,16 +144,6 @@
             "commands": [
                 {
                     "command": "editor.action.openLink",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": ["K"],
-            "after": [],
-            "commands": [
-                {
-                    "command": "editor.action.showHover",
                     "args": []
                 }
             ]
@@ -951,20 +919,6 @@
             "commands": [
                 {
                     "command": "editor.action.peekDefinition",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "s",
-                "D"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "editor.action.revealDefinition",
                     "args": []
                 }
             ]
