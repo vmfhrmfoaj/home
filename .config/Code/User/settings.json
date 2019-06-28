@@ -20,7 +20,7 @@
 
     // C/C++
     "C_Cpp.default.intelliSenseMode": "clang-x64",
-    "C_Cpp.updateChannel": "Insiders",
+    "C_Cpp.updateChannel": "Default",
 
     // Markdownlint
     "markdownlint.config": {
