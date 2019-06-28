@@ -299,10 +299,17 @@
       "when": "inFilesPicker && inQuickOpen"
    },
 
-   // TAB
+   // Enter
+   {
+      "key": "enter",
+      "command": "-acceptSelectedSuggestionOnEnter",
+      "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus"
+   },
+
+   // Tab
    {
       "key": "tab",
       "command": "tab",
-      "when": "editorTextFocus && !editorReadonly && vim.mode == 'Insert'"
+      "when": "editorTextFocus && !editorReadonly && vim.mode == 'Insert' && !suggestWidgetVisible"
    },
 ]
