@@ -13,28 +13,6 @@ setEnv() {
     export PATH="${HOME}/.bin:${PATH}"
   fi
 
-  # Cask
-  which emacs 2>&1 > /dev/null
-  if [ $? -ne 0 ] && [ ! -d "${HOME}/.cask/bin" ]; then
-    curl -fsSL 'https://raw.githubusercontent.com/cask/cask/master/go' | python
-  fi
-  export PATH="${HOME}/.cask/bin:${PATH}"
-
-  # Heroku
-  local HEROKU="${HOME}/.local/heroku"
-  local HEROKU_BIN="${HOME}/.bin/heroku"
-  if [ ! -d "${HEROKU}" ]; then
-    wget -qO - 'https://cli-assets.heroku.com/heroku-linux-x64.tar.gz' | tar -C $(dirname "${HEROKU}") -xzf -
-    yes | "${HEROKU}/bin/heroku" autocomplete
-  fi
-  if [ ! -f "${HEROKU_BIN}" ]; then
-    mkdir -p $(dirname "${HEROKU_BIN}")
-    ln -s "${HEROKU}/bin/heroku" "${HEROKU_BIN}"
-  fi
-  if [ 0 = $(echo ${PATH} | grep -c "${HOME}/.bin") ]; then
-    export PATH="${HOME}/.bin/:${PATH}"
-  fi
-
   # .asdf
   local asdf_home="${HOME}/.asdf"
   if [ ! -d "${asdf_home}" ]; then
@@ -63,15 +41,6 @@ setEnv() {
     mkdir -p $(dirname ${lein_path})
     wget -O ${lein_path} 'https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein'
     chmod +x ${lein_path}
-  fi
-
-  # Golang
-  export GOPATH="${HOME}/Desktop/Go_Projects"
-  local go_bin="${GOPATH}/bin"
-  if [ -d "${go_bin}" ]; then
-    if [ 0 = $(echo ${PATH} | grep -c "${go_bin}") ]; then
-      export PATH="${go_bin}:${PATH}"
-    fi
   fi
 
   # Rust lang
