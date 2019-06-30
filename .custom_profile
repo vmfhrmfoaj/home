@@ -35,7 +35,7 @@ setup() {
   source "${PERLBREW_ROOT}/etc/bashrc"
 
   # Clojure
-  which lein 2>&1 > /dev/null
+  which lein > /dev/null 2>&1 
   if [ $? -ne 0 ]; then
     local lein_path="${HOME}/.bin/lein"
     mkdir -p $(dirname ${lein_path})
@@ -172,7 +172,7 @@ if [ -t 1 ] && [ ! -z ${ZSH_NAME} ]; then
   export DISABLE_AUTO_TITLE="true"
   preexec
 fi
-which numlockx 2>&1 > /dev/null
+which numlockx > /dev/null 2>&1 
 if [ $? -eq 0 ]; then
   numlockx on
 fi
