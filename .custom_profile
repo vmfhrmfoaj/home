@@ -60,7 +60,7 @@ setup() {
 
 setup_for_zsh() {
   # Oh My Zsh
-  if [ 0 != $(echo $plugins | grep -c 'vi-mode') ] && [ ! -z ${GNOME_TERMINAL_SERVICE} ]; then
+  if { [ ! -z ${GNOME_TERMINAL_SERVICE} ] || [ ! -z ${SSH_TTY} ]; } && [ 0 != $(echo $plugins | grep -c 'vi-mode') ]; then
     # NOTE
     #  You should change 'backspace key generates' option to control-h on the Gnome terminal.
     bindkey -M viins '^?' backward-kill-word
@@ -71,15 +71,20 @@ setup_for_zsh() {
 
   # autocomplete
   local plugin_dir="${HOME}/.oh-my-zsh/custom/plugins"
-  if [ ! -f "${plugin_dir}/vboxmanage/_vboxmanage" ]; then
-      mkdir -p "${plugin_dir}/vboxmanage/"
-      curl -fsSL -o "${plugin_dir}/vboxmanage/_vboxmanage" \
-          'https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_virtualbox'
+  if [ ! -f "${plugin_dir}/openssl/_openssl" ]; then
+      mkdir -p "${plugin_dir}/openssl/"
+      curl -fsSL -o "${plugin_dir}/openssl/_openssl" \
+          'https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_openssl'
   fi
   if [ ! -f "${plugin_dir}/perlbrew/_perlbrew" ]; then
     mkdir -p "${plugin_dir}/perlbrew/"
     curl -fsSL -o "${plugin_dir}/perlbrew/_perlbrew" \
           'https://gist.githubusercontent.com/vmfhrmfoaj/5d638cca74fa0c4ea0420457cae831b2/raw/3eb92bee4b2efa4508cbaea91b80bafd6d6c5f0c/_perlbrew'
+  fi
+  if [ ! -f "${plugin_dir}/vboxmanage/_vboxmanage" ]; then
+      mkdir -p "${plugin_dir}/vboxmanage/"
+      curl -fsSL -o "${plugin_dir}/vboxmanage/_vboxmanage" \
+          'https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_virtualbox'
   fi
 
   local NEWLINE=$'\n'
