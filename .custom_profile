@@ -60,10 +60,12 @@ setup() {
 
 setup_for_zsh() {
   # Oh My Zsh
-  if { [ ! -z ${GNOME_TERMINAL_SERVICE} ] || [ ! -z ${SSH_TTY} ]; } && [ 0 != $(echo $plugins | grep -c 'vi-mode') ]; then
+  if [ 0 != $(echo $plugins | grep -c 'vi-mode') ]; then
     # NOTE
     #  You should change 'backspace key generates' option to control-h on the Gnome terminal.
-    bindkey -M viins '^?' backward-kill-word
+    if [ ! -z ${GNOME_TERMINAL_SERVICE} ]; then
+      bindkey -M viins '^?' backward-kill-word
+    fi
     bindkey -M viins '^b' backward-char
     bindkey -M viins '^f' forward-char
     bindkey -M viins '^d' delete-char
