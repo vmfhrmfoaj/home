@@ -94,6 +94,29 @@ setup_for_zsh() {
   export PS1="${PS1_PREFIX}${NEWLINE}${PS1}"
 }
 
+setup_for_ssh() {
+  local cache_file="${HOME}/.ssh/ssh-agent-for-remote"
+  if [ -f "${cache_file}" ]; then
+    source "${cache_file}"
+  fi
+  if [ -z ${SSH_AGENT_PID} ] || [ 0 = $(echo $(ps -o cmd= -q ${SSH_AGENT_PID}) | grep -c 'ssh-agent') ]; then
+    local pid=$(ps -ux | grep 'ssh-agent' | grep -v 'grep' | awk '{print $2}' | head -1)
+    if [ ! -z ${pid} ] && [ -S /run/user/${UID}/keyring/ssh ]; then
+      cat <<EOF > "${cache_file}"
+  SSH_AUTH_SOCK=/run/user/${UID}/keyring/ssh; export SSH_AUTH_SOCK
+  SSH_AGENT_PID=${pid}; export SSH_AGENT_PID
+  echo Agent pid ${pid}
+EOF
+    else 
+      mkdir -p $(dirname "${cache_file}")
+      ssh-agent -s > "${cache_file}"
+    fi
+    if [ -f "${cache_file}" ]; then
+      source "${cache_file}"
+    fi
+  fi
+}
+
 zle-keymap-select() {
   local CURSOR_BOX='\e[2 q'
   local CURSOR_UNDERBAR='\e[4 q'
@@ -161,6 +184,7 @@ postexec() {
 }
 
 setup
+setup_for_ssh
 if [ -t 1 ] && [ ! -z ${ZSH_NAME} ]; then
   setup_for_zsh
   zle -N zle-keymap-select
