@@ -1,6 +1,6 @@
 // Place your key bindings in this file to override the defaults
 [  
-   // remap 'ctrl+[' to ESC
+   // Escape
    {
      "key": "ctrl+[",
      "command": "workbench.action.hideInterfaceOverview",
@@ -147,14 +147,24 @@
       "when": "inQuickOpen"
    },
 
-   // indentation
+   // Indentation
    {
       "key": "ctrl+.",
       "command": "editor.action.indentLines",
       "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
    },
    
-   // remap "ctrl+j/k" to UP/DOWN
+   // Up/Down
+   {
+      "key": "down",
+      "command": "search.action.focusNextSearchResult",
+      "when": "hasSearchResult && searchViewletFocus"
+   },
+   {
+      "key": "up",
+      "command": "search.action.focusPreviousSearchResult",
+      "when": "hasSearchResult && searchViewletFocus"
+   },
    {
       "key": "ctrl+j",
       "command": "search.action.focusNextSearchResult",
