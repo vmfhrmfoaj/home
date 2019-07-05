@@ -46,21 +46,21 @@
       "command": "closeDirtyDiff",
       "when": "dirtyDiffVisible"
    },
-   //  {
-   //      "key": "ctrl+[",
-   //      "command": "closeFindWidget",
-   //      "when": "editorFocus && findWidgetVisible"
-   //  },
-   //  {
-   //      "key": "ctrl+[",
-   //      "command": "closeMarkersNavigation",
-   //      "when": "editorFocus && markersNavigationVisible"
-   //  },
-   //  {
-   //      "key": "ctrl+[",
-   //      "command": "closeParameterHints",
-   //      "when": "editorFocus && parameterHintsVisible"
-   //  },
+   // {
+   //     "key": "ctrl+[",
+   //     "command": "closeFindWidget",
+   //     "when": "editorFocus && findWidgetVisible"
+   // },
+   // {
+   //     "key": "ctrl+[",
+   //     "command": "closeMarkersNavigation",
+   //     "when": "editorFocus && markersNavigationVisible"
+   // },
+   // {
+   //     "key": "ctrl+[",
+   //     "command": "closeParameterHints",
+   //     "when": "editorFocus && parameterHintsVisible"
+   // },
    {
       "key": "ctrl+[",
       "command": "closeReferenceSearch",
@@ -106,15 +106,15 @@
       "command": "leaveEditorMessage",
       "when": "messageVisible"
    },
-   //  {
-   //      "key": "ctrl+[",
-   //      "command": "leaveSnippet",
-   //      "when": "editorTextFocus && inSnippetMode"
-   //  },
+   // {
+   //     "key": "ctrl+[",
+   //     "command": "leaveSnippet",
+   //     "when": "editorTextFocus && inSnippetMode"
+   // },
    {
       "key": "ctrl+[",
       "command": "list.clear",
-      "when": "listFocus && listHasSelectionOrFocus && !inputFocus"
+      "when": "listFocus && listHasSelectionOrFocus && !inputFocus && !referenceSearchVisible"
    },
    {
       "key": "ctrl+[",
