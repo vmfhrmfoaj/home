@@ -96,14 +96,20 @@ setup_for_zsh() {
 
 setup_for_ssh() {
   local cache_file="${HOME}/.ssh/ssh-agent-for-remote"
-  if [ -f "${cache_file}" ]; then
-    source "${cache_file}"
+  if [ -z ${SSH_AGENT_PID} ] || [ -z ${SSH_AUTH_SOCK} ]; then
+    if [ -f "${cache_file}" ]; then
+      source "${cache_file}"
+    fi
   fi
-  if [ -z ${SSH_AGENT_PID} ] || [ 0 = $(echo $(ps -o cmd= -q ${SSH_AGENT_PID}) | grep -c 'ssh-agent') ]; then
+  local sock=${SSH_AUTH_SOCK}
+  if [ ! -S ${sock} ]; then
+    sock="/run/user/${UID}/keyring/ssh"
+  fi
+  if [ 0 = $(echo $(ps -o cmd= -q ${SSH_AGENT_PID}) | grep -c 'ssh-agent') ] && [ -S ${sock} ]; then
     local pid=$(ps -ux | grep 'ssh-agent' | grep -v 'grep' | awk '{print $2}' | head -1)
-    if [ ! -z ${pid} ] && [ -S /run/user/${UID}/keyring/ssh ]; then
+    if [ ! -z ${pid} ] && [ -S ${sock} ]; then
       cat <<EOF > "${cache_file}"
-  SSH_AUTH_SOCK=/run/user/${UID}/keyring/ssh; export SSH_AUTH_SOCK
+  SSH_AUTH_SOCK=${sock}; export SSH_AUTH_SOCK
   SSH_AGENT_PID=${pid}; export SSH_AGENT_PID
   echo Agent pid ${pid}
 EOF
@@ -142,19 +148,19 @@ title() {
   [[ "$EMACS" == *term* ]] && return
   : ${2=$1}
   case "$TERM" in
-    (cygwin | xterm* | putty* | rxvt* | ansi)
+    cygwin | xterm* | putty* | rxvt* | ansi)
       print -Pn "\e]2;$2:q\a"
       print -Pn "\e]1;$1:q\a"
       ;;
-    (screen*)
+    screen*)
       print -Pn "\e]2;(S) $2:q\a"
       print -Pn "\e]1;(S) $1:q\a"
       print -Pn "\ek$1\e\\"
       ;;
-    (tmux*)
+    tmux*)
       print -Pn "\ek$1:q\e\\"
       ;;
-    (*)
+    *)
       if [[ -n "$terminfo[fsl]" ]] && [[ -n "$terminfo[tsl]" ]]; then
         echoti tsl
         print -Pn "$1"
