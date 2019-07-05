@@ -1,7 +1,8 @@
 {
     // Appearance
-    "workbench.colorTheme": "Monokai Dimmed",
     "editor.letterSpacing": -0.5,
+    "workbench.colorTheme": "Monokai Dimmed",
+    "workbench.iconTheme": "material-icon-theme",
     "window.menuBarVisibility": "toggle",
 
     // Edit
@@ -42,6 +43,7 @@
     "rust-client.rlsPath": "/home/vmfhrmfoaj/.cargo/bin/rls",
 
     // Vim
+    "workbench.list.keyboardNavigation": "simple", // see, https://github.com/Microsoft/vscode/issues/66995#issuecomment-457123611
     "vim.sneak": true,
     "vim.camelCaseMotion.enable": true,
     "vim.sneakUseIgnorecaseAndSmartcase": true,
@@ -632,6 +634,20 @@
             "before": [
                 "<leader>",
                 "W",
+                "="
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "workbench.action.evenEditorWidths",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "W",
                 "d"
             ],
             "after": [],
@@ -689,10 +705,4 @@
             ]
         },
     ],
-    "workbench.list.keyboardNavigation": "simple", // see, https://github.com/Microsoft/vscode/issues/66995#issuecomment-457123611
-
-    ///
-    /// Automatically customized
-    ///
-    "editor.renderWhitespace": "none",
 }
