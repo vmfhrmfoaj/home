@@ -105,18 +105,16 @@ setup_for_ssh() {
   if [ ! -S ${sock} ]; then
     sock="/run/user/${UID}/keyring/ssh"
   fi
-  if [ 0 = $(echo $(ps -o cmd= -q ${SSH_AGENT_PID}) | grep -c 'ssh-agent') ] && [ -S ${sock} ]; then
-    local pid=$(ps -ux | grep 'ssh-agent' | grep -v 'grep' | awk '{print $2}' | head -1)
-    if [ ! -z ${pid} ] && [ -S ${sock} ]; then
-      cat <<EOF > "${cache_file}"
-  SSH_AUTH_SOCK=${sock}; export SSH_AUTH_SOCK
-  SSH_AGENT_PID=${pid}; export SSH_AGENT_PID
-  echo Agent pid ${pid}
-EOF
-    else 
-      mkdir -p $(dirname "${cache_file}")
-      ssh-agent -s > "${cache_file}"
+  if [ 0 = $(echo $(ps -o cmd= -q ${SSH_AGENT_PID}) | grep -c 'ssh-agent') ] || [ ! -S ${sock} ]; then
+    if [ ! -S ${sock} ]; then
+      local pid=$(ps -ux | grep 'ssh-agent' | grep -v 'grep' | awk '{print $2}' | head -1)
+      if [ ! -z ${pid} ]; then
+        kill -TERM ${pid}
+      fi
     fi
+    rm -rf ${sock} 2> /dev/null
+    mkdir -p $(dirname "${cache_file}")
+    ssh-agent -s > "${cache_file}"
     if [ -f "${cache_file}" ]; then
       source "${cache_file}"
     fi
