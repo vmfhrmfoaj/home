@@ -94,31 +94,43 @@ setup_for_zsh() {
   export PS1="${PS1_PREFIX}${NEWLINE}${PS1}"
 }
 
+_load_cached_ssh_agent() {
+  local cache_file=${1:-"${HOME}/.ssh/ssh-agent-for-remote"}
+  [ -f "${cache_file}" ] && source "${cache_file}"
+}
+
+_start_ssh_agent() {
+  local cache_file=${1:-"${HOME}/.ssh/ssh-agent-for-remote"}
+  mkdir -p $(dirname "${cache_file}")
+  ssh-agent -s > "${cache_file}"
+  if [ -f "${cache_file}" ]; then
+    source "${cache_file}"
+  fi
+}
+
+_clean_up_ssh_agent() {
+  local pid=$(ps -ux | grep 'ssh-agent' | grep -v 'grep' | awk '{print $2}' | head -1)
+  if [ ! -z ${pid} ]; then
+    kill -TERM ${pid}
+  fi
+  if [ ! -z ${SSH_AUTH_SOCK} ]; then
+    rm -rf ${SSH_AUTH_SOCK} 2> /dev/null
+  fi
+}
+
 setup_for_ssh() {
-  local cache_file="${HOME}/.ssh/ssh-agent-for-remote"
+  local cache_file={$1:-"${HOME}/.ssh/ssh-agent-for-remote"}
   if [ -z ${SSH_AGENT_PID} ] || [ -z ${SSH_AUTH_SOCK} ]; then
-    if [ -f "${cache_file}" ]; then
-      source "${cache_file}"
+    _load_cached_ssh_agent ${cache_file}
+  fi
+  if [ ! -z ${SSH_AGENT_PID} ] && [ -S ${SSH_AUTH_SOCK} ]; then
+    if [ 0 != $(ps -o cmd= -q ${SSH_AGENT_PID} | grep -c 'ssh-agent') ]; then
+      return 0
     fi
   fi
-  local sock=${SSH_AUTH_SOCK}
-  if [ ! -S ${sock} ]; then
-    sock="/run/user/${UID}/keyring/ssh"
-  fi
-  if [ 0 = $(echo $(ps -o cmd= -q ${SSH_AGENT_PID}) | grep -c 'ssh-agent') ] || [ ! -S ${sock} ]; then
-    if [ ! -S ${sock} ]; then
-      local pid=$(ps -ux | grep 'ssh-agent' | grep -v 'grep' | awk '{print $2}' | head -1)
-      if [ ! -z ${pid} ]; then
-        kill -TERM ${pid}
-      fi
-    fi
-    rm -rf ${sock} 2> /dev/null
-    mkdir -p $(dirname "${cache_file}")
-    ssh-agent -s > "${cache_file}"
-    if [ -f "${cache_file}" ]; then
-      source "${cache_file}"
-    fi
-  fi
+  _clean_up_ssh_agent
+  _start_ssh_agent "${cache_file}"
+  _load_cached_ssh_agent "${cache_file}"
 }
 
 zle-keymap-select() {
