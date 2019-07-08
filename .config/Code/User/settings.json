@@ -1,9 +1,10 @@
 {
     // Appearance
     "editor.letterSpacing": -0.5,
-    "workbench.colorTheme": "Monokai Dimmed",
+    "workbench.colorTheme": "One Dark Pro Bold",
     "workbench.iconTheme": "material-icon-theme",
     "window.menuBarVisibility": "toggle",
+    "window.titleBarStyle": "custom",
 
     // Edit
     "breadcrumbs.enabled": true,
