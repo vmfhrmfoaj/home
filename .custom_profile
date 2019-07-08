@@ -25,6 +25,12 @@ setup() {
   local android_home="${HOME}/.android/sdk"
   if [ -d ${android_home} ]; then
     export ANDROID_HOME="${android_home}"
+    if [ -d "${android_home}/tools/bin" ] && [ 0 = $(echo ${PATH} | grep -c "${android_home}/tools/bin") ]; then
+      export PATH="${android_home}/tools/bin:${PATH}"
+    fi
+    if [ -d "${android_home}/platform-tools" ] && [ 0 = $(echo ${PATH} | grep -c "${android_home}/platform-tools") ]; then
+      export PATH="${android_home}/platform-tools:${PATH}"
+    fi
   fi
 
   # perlbrew
