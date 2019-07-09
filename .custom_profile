@@ -57,7 +57,7 @@ setup() {
     rustup toolchain add stable
     rustup default stable
     rustup toolchain add nightly
-    cargo +nightly install racer
+    rustup component add rls rust-analysis rust-src # for rls (Rust Language Server)
   fi
   if [ -f "${HOME}/.cargo/env" ]; then
     source "${HOME}/.cargo/env"
