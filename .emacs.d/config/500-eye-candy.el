@@ -367,7 +367,8 @@ This is customized for the normal state of `evil-mode'."
   :ensure t
   :config
   (when window-system
-    (setq powerline-height (+ (frame-char-height) line-spacing))))
+    (setq powerline-height (+ (frame-char-height) line-spacing)
+          powerline-text-scale-factor 1)))
 
 (use-package rainbow-delimiters
   :disabled t
@@ -398,6 +399,7 @@ This is customized for the normal state of `evil-mode'."
 (use-package spaceline
   :ensure t
   :config
+  (require 'spaceline-config)
   (setq spaceline-window-numbers-unicode t)
   (advice-add #'spaceline--unicode-number :around
               (byte-compile

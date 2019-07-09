@@ -95,7 +95,8 @@
     "rust-client.rlsPath": "/home/vmfhrmfoaj/.cargo/bin/rls",
 
     // Java
-    "java.home": "/home/jinseop.kim/.asdf/installs/java/openjdk-12.0.1",
+    "java.home": "/home/vmfhrmfoaj/.asdf/installs/java/openjdk-12.0.1",
+    "maven.executable.path": "/home/vmfhrmfoaj/.asdf/shims/mvn",
 
     // Vim
     "workbench.list.keyboardNavigation": "simple", // see, https://github.com/Microsoft/vscode/issues/66995#issuecomment-457123611

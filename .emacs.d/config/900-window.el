@@ -1,10 +1,10 @@
-(let ((w 142)
+(let ((w 160)
       (h-char (frame-char-height))
       (h-titlebar-in-char 2)
       (top-offset (if (string-equal "gnome-imac" hostname) 5 0)))
   (setq org-tags-column (+ (- w) 5))
   (when window-system
-    (if (<= (display-pixel-width) 1440)
+    (if (<= (display-pixel-width) (* w (frame-char-width)))
         (set-frame-parameter nil 'fullscreen 'maximized)
       (let* ((h (floor (- (/ (float (display-pixel-height)) h-char) h-titlebar-in-char)))
              (l (/ (custom-display-pixel-width) 2.0))
