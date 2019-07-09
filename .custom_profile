@@ -112,7 +112,7 @@ _is_ssh_agent_running() {
 }
 
 setup_for_ssh() {
-  local cache_file={$1:-"${HOME}/.ssh/ssh-agent-for-remote"}
+  local cache_file=${1:-"${HOME}/.ssh/ssh-agent-for-remote"}
   if [ 'OK' = "$(_is_ssh_agent_running)" ]; then
     return 0
   fi
