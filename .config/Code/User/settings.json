@@ -4,7 +4,6 @@
     "workbench.colorTheme": "One Dark Pro Vivid",
     "workbench.iconTheme": "material-icon-theme",
     "window.menuBarVisibility": "toggle",
-    "window.titleBarStyle": "custom",
 
     // Edit
     "breadcrumbs.enabled": true,
@@ -94,6 +93,9 @@
     // Rust
     "rust-client.rustupPath": "/home/vmfhrmfoaj/.cargo/bin/rustup",
     "rust-client.rlsPath": "/home/vmfhrmfoaj/.cargo/bin/rls",
+
+    // Java
+    "java.home": "/home/jinseop.kim/.asdf/installs/java/openjdk-12.0.1",
 
     // Vim
     "workbench.list.keyboardNavigation": "simple", // see, https://github.com/Microsoft/vscode/issues/66995#issuecomment-457123611
@@ -758,4 +760,7 @@
             ]
         },
     ],
+    "editor.renderWhitespace": "none",
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
 }
