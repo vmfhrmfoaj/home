@@ -9,7 +9,7 @@
     "breadcrumbs.enabled": true,
     "workbench.editor.enablePreview": false,
     "editor.fontFamily": "'Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
-    "editor.fontSize": 16,
+    "editor.fontWeight": "bold",
     "editor.fontLigatures": true,
     "editor.lineNumbers": "relative",
     "editor.minimap.enabled": false,
@@ -761,7 +761,4 @@
             ]
         },
     ],
-    "editor.renderWhitespace": "none",
-    "editor.suggestSelection": "first",
-    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
 }
