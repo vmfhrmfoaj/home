@@ -103,6 +103,6 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-if [ -f ~/.custom_profile ]; then
-  . ~/.custom_profile
+if [ -f "${HOME}/.profile" ]; then
+  source "${HOME}/.profile"
 fi

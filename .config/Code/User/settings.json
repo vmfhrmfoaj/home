@@ -80,23 +80,8 @@
         "MD024": false,
     },
 
-    // PHP
-    "php.validate.executablePath": "/home/vmfhrmfoaj/.asdf/shims/php",
-
-    // Python
-    "python.pythonPath": "/home/vmfhrmfoaj/.asdf/shims/python",
-    "python.pipenvPath": "/home/vmfhrmfoaj/.asdf/shims/pip",
-
     // Remote Development
     "remote.SSH.showLoginTerminal": true,
-
-    // Rust
-    "rust-client.rustupPath": "/home/vmfhrmfoaj/.cargo/bin/rustup",
-    "rust-client.rlsPath": "/home/vmfhrmfoaj/.cargo/bin/rls",
-
-    // Java
-    "java.home": "/home/vmfhrmfoaj/.asdf/installs/java/openjdk-12.0.1",
-    "maven.executable.path": "/home/vmfhrmfoaj/.asdf/shims/mvn",
 
     // Vim
     "workbench.list.keyboardNavigation": "simple", // see, https://github.com/Microsoft/vscode/issues/66995#issuecomment-457123611

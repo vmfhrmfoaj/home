@@ -19,6 +19,6 @@ fi
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
-if [ -f ~/.custom_profile ]; then
-  . ~/.custom_profile
+if [ -f "${HOME}/.profile" ]; then
+  source "${HOME}/.profile"
 fi
