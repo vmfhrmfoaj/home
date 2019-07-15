@@ -134,7 +134,7 @@
    {
       "key": "ctrl+[",
       "command": "search.action.cancel",
-      "when": "listFocus && searchViewletVisible && !inputFocus"
+      "when": "listFocus && searchViewletVisible && !inputFocus && !referenceSearchVisible"
    },
    {
       "key": "ctrl+[",
@@ -321,5 +321,11 @@
       "key": "tab",
       "command": "tab",
       "when": "editorTextFocus && !editorReadonly && vim.mode == 'Insert' && !suggestWidgetVisible"
+   },
+
+   // Toggle
+   {
+      "key": "alt+j",
+      "command": "workbench.action.toggleSidebarVisibility",
    },
 ]
