@@ -52,7 +52,7 @@ setup() {
   # Rust lang
   if [ ! -d "${HOME}/.cargo" ]; then
     # see, https://github.com/rust-lang/rustup.rs/issues/953#issuecomment-318650338
-    curl https://sh.rustup.rs -sSf | RUSTUP_INIT_SKIP_PATH_CHECK=yes sh -s -- --no-modify-path --default-toolchain nightly
+    curl 'https://sh.rustup.rs' -sSf | RUSTUP_INIT_SKIP_PATH_CHECK=yes sh -s -- --no-modify-path --default-toolchain nightly
     source "${HOME}/.cargo/env"
     rustup toolchain add stable
     rustup default stable

@@ -36,18 +36,6 @@ setup_for_zsh() {
   export PS1="${PS1_PREFIX}${NEWLINE}${PS1}"
 }
 
-_is_ssh_agent_running() {
-  if [ ! -z ${SSH_AGENT_PID} ] && [ 0 != $(ps -o cmd= -q ${SSH_AGENT_PID} | grep -c 'ssh-agent') ] && \
-     [ ! -z ${SSH_AUTH_SOCK} ] && [ -S ${SSH_AUTH_SOCK} ]; then
-    echo 'OK'
-    return 0
-  else
-    echo 'NO'
-    return 255
-  fi
-}
-
-
 zle-keymap-select() {
   local CURSOR_BOX='\e[2 q'
   local CURSOR_UNDERBAR='\e[4 q'
