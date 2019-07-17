@@ -2,6 +2,7 @@
     // Appearance
     "editor.fontFamily": "'Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "editor.fontSize": 14,
+    "editor.lineHeight": 18,
     "editor.fontWeight": "bold",
     "editor.fontLigatures": true,
     "editor.letterSpacing": -0.4,
@@ -99,6 +100,7 @@
     "vim.handleKeys": {
         "<C-d>": false,
         "<C-j>": false,
+        "<C-w>": false,
     },
     // - https://github.com/VSpaceCode/VSpaceCode
     "vim.leader": "<space>",
