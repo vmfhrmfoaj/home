@@ -21,6 +21,12 @@ setup() {
   source "${asdf_home}/asdf.sh"
   source "${asdf_home}/completions/asdf.bash"
 
+  # Java
+  local java_home=$(asdf where java 2> /dev/null)
+  if [ ! -z $java_home ]; then
+    export JAVA_HOME=$java_home
+  fi
+
   # Android
   local android_home="${HOME}/.android/sdk"
   if [ -d ${android_home} ]; then
@@ -33,7 +39,7 @@ setup() {
     fi
   fi
 
-  # perlbrew
+  # Perlbrew
   export PERLBREW_ROOT="${HOME}/.perlbrew"
   if [ ! -d ${PERLBREW_ROOT} ]; then
     curl -fsSL 'https://install.perlbrew.pl' | bash
