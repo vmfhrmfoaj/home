@@ -62,6 +62,12 @@
             "backgroundColor": "transparent"
         },
         {
+            "tag": "fixme",
+            "color": "#FF8C00",
+            "strikethrough": false,
+            "backgroundColor": "transparent"
+        },
+        {
             "tag": "*",
             "color": "#98C379",
             "strikethrough": false,
@@ -751,4 +757,5 @@
             ]
         },
     ],
+    "window.zoomLevel": 0,
 }
