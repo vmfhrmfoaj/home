@@ -1,4 +1,6 @@
+/.cache
 /.custom.el
+/.lsp-*
 /bookmarks
 /elpa
 /persp-confs
@@ -7,6 +9,8 @@
 /quelpa
 /recentf
 /saved
+/saves
+/auto-save-list
 /url
 /session.*
 /.trello

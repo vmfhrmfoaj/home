@@ -7,7 +7,12 @@
         (saturate-color -20))
     "TODO")
 
-  (setq x-underline-at-descent-line t))
+  (setq x-underline-at-descent-line t)
+
+  :config
+  (custom-set-faces
+   `(cursor ((t (:background "#79FFB2"))))
+   `(variable-pitch ((t (:family "DejaVu Sans"))))))
 
 (use-package auto-dim-other-buffers
   :defer t
@@ -50,6 +55,19 @@
   (custom-set-faces
    `(go-argument-name-face ((t (:inherit font-lock-variable-name-face))))))
 
+(use-package highlight-parentheses
+  :defer t
+  :init
+  (setq hl-paren-base-color "#C6FF79")
+
+  :config
+  (custom-set-faces
+   `(hl-paren-face ((t (:inherit bold)))))
+  (setq hl-paren-colors
+        (--iterate (dim-color it 12)
+                   (apply 'color-rgb-to-hex-2-dig (color-name-to-rgb hl-paren-base-color))
+                   4)))
+
 (use-package highlight-symbol
   :defer t
   :config
@@ -68,6 +86,28 @@
   (custom-set-faces
    `(linum-relative-current-face ((t (:inherit linum :background unspecified :foreground "#CAE682"))))))
 
+(use-package lsp-mode
+  :defer t
+  :config
+  (custom-set-faces
+   `(lsp-face-highlight-read ((t (:background ,(color-from 'default :background -2) :foreground "cyan" :underline t))))))
+
+(use-package lsp-ui-sideline
+  :defer t
+  :config
+  (custom-set-faces
+   `(lsp-ui-sideline-symbol ((t (:background ,(color-from 'default :background -2)))))
+   `(lsp-ui-sideline-current-symbol ((t (:background ,(color-from 'default :background -5)))))
+   `(lsp-ui-sideline-code-action ((t (:inherit link :foreground "#61A3B1"))))
+   `(lsp-ui-sideline-global ((t (:inherit shadow :height 0.95))))))
+
+(use-package paren
+  :defer t
+  :config
+  (custom-set-faces
+   `(show-paren-match    ((t (:inherit bold :foreground ,(light-color hl-paren-base-color 5) :underline t))))
+   `(show-paren-mismatch ((t (:inherit (bold font-lock-warning-face)))))))
+
 (use-package php-mode
   :defer t
   :config
@@ -84,6 +124,13 @@
   (set-face-attribute 'rpm-spec-section-face nil
                       :underline 'unspecified
                       :inherit 'underline))
+
+(use-package smartparens
+  :defer t
+  :config
+  (custom-set-faces
+   `(sp-show-pair-match-face    ((t (:inherit bold :foreground ,(light-color hl-paren-base-color 5) :underline t))))
+   `(sp-show-pair-mismatch-face ((t (:inherit (bold font-lock-warning-face)))))))
 
 (use-package web-mode
   :disabled t

@@ -274,6 +274,7 @@
     (add-hook mode #'highlight-numbers-mode)))
 
 (use-package highlight-symbol
+  :disabled t
   :ensure t
   :defer t
   :init

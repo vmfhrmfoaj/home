@@ -10,6 +10,15 @@
         company-etags-ignore-case t)
   (global-company-mode 1))
 
+(use-package company-lsp
+  :ensure t
+  :commands company-lsp)
+
+(use-package flymake
+  :defer t
+  :config
+  (setq flymake-fringe-indicator-position 'right-fringe))
+
 (use-package helm-company
   :ensure t
   :after (company helm)
@@ -78,3 +87,24 @@
                (lambda ()
                  (remove-hook 'pre-command-hook 'company-pre-command t)
                  (remove-hook 'post-command-hook 'company-post-command t)))))
+
+(use-package helm-lsp
+  :ensure t
+  :commands helm-lsp-workspace-symbol)
+
+(use-package lsp-mode
+  :ensure t
+  :hook ((js-mode   . lsp)
+         (rust-mode . lsp)
+         (sh-mode   . lsp))
+  :commands lsp
+  :config
+  (setq lsp-enable-snippet nil))
+
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode)
+
+(use-package lsp-treemacs
+  :ensure t
+  :commands lsp-treemacs-errors-list)
