@@ -14,11 +14,6 @@
   :ensure t
   :commands company-lsp)
 
-(use-package flymake
-  :defer t
-  :config
-  (setq flymake-fringe-indicator-position 'right-fringe))
-
 (use-package helm-company
   :ensure t
   :after (company helm)
@@ -94,12 +89,28 @@
 
 (use-package lsp-mode
   :ensure t
-  :hook ((js-mode   . lsp)
-         (rust-mode . lsp)
-         (sh-mode   . lsp))
+  :hook ((js-mode         . lsp)
+         (js2-mode        . lsp)
+         (rust-mode       . lsp)
+         (typescript-mode . lsp)
+         (sh-mode         . lsp))
   :commands lsp
+  :init
+  (defn lsp--custom-render-on-hover-content (args)
+    (let ((contents (car args)))
+      (if (not (seqp contents))
+          args
+        (apply #'list (-interpose "\n" (append contents nil)) (-drop 1 args)))))
+
   :config
-  (setq lsp-enable-snippet nil))
+  (setq lsp-enable-snippet nil
+        lsp-prefer-flymake nil
+        lsp-ui-doc-enable nil
+        lsp-ui-sideline-show-code-actions nil
+        lsp-ui-sideline-show-hover nil
+        lsp-ui-sideline-show-symbol nil)
+  (advice-add #'lsp--render-on-hover-content :filter-args
+              #'lsp--custom-render-on-hover-content))
 
 (use-package lsp-ui
   :ensure t

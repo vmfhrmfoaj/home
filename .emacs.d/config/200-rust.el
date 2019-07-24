@@ -5,6 +5,7 @@
 ;; NOTE
 ;;  See, https://github.com/racer-rust/racer#installation
 (use-package racer
+  :disabled t
   :ensure t
   :defer t
   :init
@@ -66,8 +67,8 @@
   :init
   (add-hook 'rust-mode-hook
             (lambda ()
-              (setq-local evil-lookup-func #'racer-describe)
-              (racer-mode 1)))
+              (with-eval-after-load "lsp-mode"
+                (setq-local evil-lookup-func #'lsp-describe-thing-at-point))))
 
   :config
   (defvar cargo-home (or (getenv "CARGO_HOME")

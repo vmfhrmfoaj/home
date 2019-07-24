@@ -1105,7 +1105,7 @@
   :config
   (font-lock-add-keywords
    'js-mode
-   `(("export\\s-+function\\s-+\\([_0-9A-Za-z]+\\)\\>"
+   `(("\\(?:async\\|export\\)\\s-+function\\s-+\\([_0-9A-Za-z]+\\)\\>"
       (1 'font-lock-function-name-face)))))
 
 (use-package org

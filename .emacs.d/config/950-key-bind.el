@@ -663,6 +663,15 @@
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode 'rust-mode))
 
+(use-package view
+  :defer t
+  :config
+  (evil-set-initial-state 'view-mode 'normal)
+  (add-hook 'view-mode-hook
+            (lambda ()
+              (ignore-errors
+                (evil-local-set-key 'normal (kbd "q") #'quit-window)))))
+
 (use-package vlf
   :defer t
   :config

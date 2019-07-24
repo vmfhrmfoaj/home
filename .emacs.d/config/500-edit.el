@@ -76,6 +76,36 @@
   :ensure t
   :after evil)
 
+(use-package flycheck
+  :ensure t
+  :defer t
+  :config
+  (setq flycheck-indication-mode 'right-fringe)
+  (when (fboundp 'define-fringe-bitmap)
+    (define-fringe-bitmap 'flycheck-fringe-bitmap-double-arrow
+      (vector #b00000000
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00011001
+              #b00110110
+              #b01101100
+              #b11011000
+              #b01101100
+              #b00110110
+              #b00011001
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00000000))))
+
+(use-package flymake
+  :defer t
+  :config
+  (setq flymake-fringe-indicator-position 'right-fringe))
+
 (use-package smartparens-config
   :ensure smartparens
   :init

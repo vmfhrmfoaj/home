@@ -1,18 +1,20 @@
 (use-package dracula-theme
   :ensure t
   :init
-  (defvar local-variable-name-fg-color
-    (-> 'font-lock-variable-name-face
-        (color-from :foreground 7)
-        (saturate-color -20))
-    "TODO")
-
   (setq x-underline-at-descent-line t)
 
   :config
   (custom-set-faces
    `(cursor ((t (:background "#79FFB2"))))
-   `(variable-pitch ((t (:family "DejaVu Sans"))))))
+   `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-string-face :foreground "#A8AF62" :weight bold))))
+   `(font-lock-regexp-grouping-construct ((t (:inherit font-lock-string-face :foreground "#A8AF62" :weight bold))))
+   `(font-lock-variable-name-face ((t (:foreground "#7ECB92"))))
+   `(variable-pitch ((t (:family "DejaVu Sans")))))
+  (defvar local-variable-name-fg-color
+    (-> 'font-lock-variable-name-face
+        (color-from :foreground 7)
+        (saturate-color -20))
+    "TODO"))
 
 (use-package auto-dim-other-buffers
   :defer t
@@ -78,13 +80,13 @@
   :defer t
   :config
   (custom-set-faces
-   `(linum ((t (:inherit default))))))
+   `(linum ((t (:inherit default :slant italic))))))
 
 (use-package linum-relative
   :defer t
   :config
   (custom-set-faces
-   `(linum-relative-current-face ((t (:inherit linum :background unspecified :foreground "#CAE682"))))))
+   `(linum-relative-current-face ((t (:inherit linum :background unspecified :foreground "#CAE682" :slant normal))))))
 
 (use-package lsp-mode
   :defer t
