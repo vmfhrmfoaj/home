@@ -37,9 +37,15 @@ setup_for_zsh() {
 }
 
 zle-keymap-select() {
-  local CURSOR_BOX='\e[2 q'
-  local CURSOR_UNDERBAR='\e[4 q'
-  local CURSOR_LINE='\e[6 q'
+  if [[ "${TERM}" = screen* ]]; then
+    local CURSOR_BOX='\eP\e[2 q\e\\'
+    local CURSOR_UNDERBAR='\eP\e[4 q\e\\'
+    local CURSOR_LINE='\eP\e[6 q\e\\'
+  else
+    local CURSOR_BOX='\e[2 q'
+    local CURSOR_UNDERBAR='\e[4 q'
+    local CURSOR_LINE='\e[6 q'
+  fi
 
   if [[ "$TERM" = *"xterm"* ]]; then
     if [ "$KEYMAP" = vicmd ]; then
@@ -89,9 +95,15 @@ precmd() {
 }
 
 preexec() {
-  local CURSOR_BOX='\e[2 q'
-  local CURSOR_UNDERBAR='\e[4 q'
-  local CURSOR_LINE='\e[6 q'
+  if [[ "${TERM}" = screen* ]]; then
+    local CURSOR_BOX='\eP\e[2 q\e\\'
+    local CURSOR_UNDERBAR='\eP\e[4 q\e\\'
+    local CURSOR_LINE='\eP\e[6 q\e\\'
+  else
+    local CURSOR_BOX='\e[2 q'
+    local CURSOR_UNDERBAR='\e[4 q'
+    local CURSOR_LINE='\e[6 q'
+  fi
   local TABNAME="${2:gs/%/%%}"
   title $TABNAME $TABNAME
   echo -ne $CURSOR_LINE
