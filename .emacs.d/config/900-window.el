@@ -1,5 +1,4 @@
 (let* ((column-width 160)
-       (h-char (frame-char-height))
        (h-titlebar-in-char 2)
        (monitors (x-display-monitor-attributes-list))
        (get-resolution (lambda (it) (->> it (nth 1) (-take-last 2) (apply #'*))))
@@ -12,8 +11,9 @@
   (when window-system
     (if (<= main-monitor-w (* column-width (frame-char-width)))
         (set-frame-parameter nil 'fullscreen 'maximized)
-      (let* ((h (floor (- (/ (float main-monitor-h) h-char) h-titlebar-in-char)))
-             (l (/ (custom-display-pixel-width) 2.0))
+      (set-frame-position (selected-frame) main-monitor-l main-monitor-t)
+      (let* ((h (floor (- (/ (float main-monitor-h) (frame-char-height)) h-titlebar-in-char)))
+             (l (/ main-monitor-w 2.0))
              (l (floor (- l (* (frame-unit->pixel column-width) 0.4))))
              (l (if (< 0 (- main-monitor-w (+ l (frame-unit->pixel column-width))))
                     l
