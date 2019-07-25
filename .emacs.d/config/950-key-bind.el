@@ -464,7 +464,6 @@
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode 'cperl-mode))
 
-
 (use-package ediff
   :defer t
   :config
@@ -662,6 +661,15 @@
   (which-key-declare-prefixes-for-mode 'rust-mode
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode 'rust-mode))
+
+(use-package sh-script
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'sh-mode
+    "mgg" #'dumb-jump-go)
+  (which-key-declare-prefixes-for-mode 'sh-mode
+    (concat evil-leader/leader "mg") "goto")
+  (evil-leader/set-major-leader-for-mode 'sh-mode))
 
 (use-package view
   :defer t

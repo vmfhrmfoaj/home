@@ -1,6 +1,7 @@
 /.cache
 /.custom.el
 /.lsp-*
+/.trello
 /bookmarks
 /elpa
 /persp-confs
@@ -13,6 +14,6 @@
 /auto-save-list
 /url
 /session.*
-/.trello
+/lsp-*
 /request
 /transient

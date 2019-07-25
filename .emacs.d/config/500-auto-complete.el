@@ -91,6 +91,7 @@
   :ensure t
   :hook ((js-mode         . lsp)
          (js2-mode        . lsp)
+         (php-mode        . lsp)
          (rust-mode       . lsp)
          (typescript-mode . lsp)
          (sh-mode         . lsp))

@@ -92,7 +92,9 @@
   :defer t
   :config
   (custom-set-faces
-   `(lsp-face-highlight-read ((t (:background ,(color-from 'default :background -2) :foreground "cyan" :underline t))))))
+   `(lsp-face-highlight-read    ((t (:background ,(color-from 'default :background -2) :foreground "cyan"  :weight unspecified))))
+   `(lsp-face-highlight-write   ((t (:background ,(color-from 'default :background -2) :foreground "cyan"  :weight unspecified :underline (:color foreground-color :style wave)))))
+   `(lsp-face-highlight-textual ((t (:background ,(color-from 'default :background -2) :foreground "cyan2" :weight unspecified))))))
 
 (use-package lsp-ui-sideline
   :defer t

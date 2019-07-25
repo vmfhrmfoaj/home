@@ -8,6 +8,7 @@
               (add-to-list 'company-backends #'company-ac-php-backend))))
 
 (use-package php-extras
+  :disabled t
   :defer t
   ;; NOTE:
   ;;  This package not included in the `MELPA'.
@@ -55,6 +56,7 @@
 (use-package php-mode
   :ensure t
   :defer t
+  :mode ("\\.php\\'" . php-mode)
   :init
   (defvar php-code-beg-re "<\\?php[ \t\r\n]")
   (defvar php-code-end-re "[ \t\r\n]\\?>")
@@ -115,7 +117,8 @@
   :config
   (add-hook 'php-mode-hook
             (lambda ()
-              (setq-local evil-lookup-func #'php-extras-doc)
+              (with-eval-after-load "lsp-mode"
+                (setq-local evil-lookup-func #'lsp-describe-thing-at-point))
               (make-local-variable 'font-lock-extend-region-functions)
               (add-to-list 'font-lock-extend-region-functions #'font-lock-extend-region-wholelines))))
 
