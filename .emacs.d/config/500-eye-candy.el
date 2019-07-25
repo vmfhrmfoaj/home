@@ -61,6 +61,7 @@
   (with-eval-after-load "elisp-slime-nav"         (diminish 'elisp-slime-nav-mode        ""))
   (with-eval-after-load "evil-goggles"            (diminish 'evil-goggles-mode           ""))
   (with-eval-after-load "evil-org"                (diminish 'evil-org-mode               ""))
+  (with-eval-after-load "flycheck"                (diminish 'flycheck-mode               ""))
   (with-eval-after-load "git-gutter+"             (diminish 'git-gutter+-mode            ""))
   (with-eval-after-load "helm"                    (diminish 'helm-mode                   ""))
   (with-eval-after-load "highlight-parentheses"   (diminish 'highlight-parentheses-mode  ""))

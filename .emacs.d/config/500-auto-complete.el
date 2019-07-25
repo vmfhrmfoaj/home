@@ -103,19 +103,57 @@
         (apply #'list (-interpose "\n" (append contents nil)) (-drop 1 args)))))
 
   :config
-  (setq lsp-enable-snippet nil
-        lsp-prefer-flymake nil
-        lsp-ui-doc-enable nil
-        lsp-ui-sideline-show-code-actions nil
-        lsp-ui-sideline-show-hover nil
-        lsp-ui-sideline-show-symbol nil)
+  (setq lsp-enable-snippet nil)
   (advice-add #'lsp--render-on-hover-content :filter-args
               #'lsp--custom-render-on-hover-content))
 
 (use-package lsp-ui
   :ensure t
-  :commands lsp-ui-mode)
+  :commands lsp-ui-mode
+  :init
+  (defn lsp-ui-sideline--custom-diagnostics (fn bol eol)
+    (if (not lsp-prefer-flymake)
+        (funcall fn bol eol)
+      (let* ((offset 0)
+             (line-num (line-number-at-pos bol t))
+             (diagnostics (-some->> (lsp-diagnostics)
+                                    (gethash buffer-file-name)
+                                    (--filter (-when-let (range (lsp-diagnostic-range it))
+                                                ;; NOTE: I think, the line number of `lsp-diagnostics' is zero-based numbering.
+                                                (let ((beg (-some-> range (plist-get :start) (plist-get :line) (1+)))
+                                                      (end (-some-> range (plist-get :end)   (plist-get :line) (1+))))
+                                                  (when (<= beg line-num end)
+                                                    it)))))))
+        (dolist (diagnostic diagnostics)
+          (let* ((message (-some->> diagnostic
+                                    (lsp-diagnostic-message)
+                                    (s-replace-regexp "[ \t]+" " ")
+                                    (s-trim)))
+                 (len (length message))
+                 (level (lsp-diagnostic-severity diagnostic))
+                 (face (cond
+                        ((eq 4 level) 'success)
+                        ((eq 3 level) 'success)
+                        ((eq 2 level) 'font-lock-warning-face)
+                        ((eq 1 level) 'error)))
+                 (margin (lsp-ui-sideline--margin-width))
+                 (message (progn (add-face-text-property 0 len 'lsp-ui-sideline-global nil message)
+                                 (add-face-text-property 0 len face nil message)
+                                 message))
+                 (string (concat (propertize " " 'display `(space :align-to (- right-fringe ,(lsp-ui-sideline--align len margin))))
+                                 message))
+                 (pos-ov (lsp-ui-sideline--find-line len bol eol nil offset))
+                 (ov (and pos-ov (make-overlay (car pos-ov) (car pos-ov)))))
+            (when pos-ov
+              (setq offset (car (cdr pos-ov)))
+              (overlay-put ov 'after-string string)
+              (overlay-put ov 'kind 'diagnotics)
+              (push ov lsp-ui-sideline--ovs)))))))
 
-(use-package lsp-treemacs
-  :ensure t
-  :commands lsp-treemacs-errors-list)
+  :config
+  (setq lsp-ui-doc-enable nil
+        lsp-ui-sideline-show-code-actions nil
+        lsp-ui-sideline-show-hover nil
+        lsp-ui-sideline-show-symbol nil)
+  (advice-add #'lsp-ui-sideline--diagnostics :around
+              #'lsp-ui-sideline--custom-diagnostics))

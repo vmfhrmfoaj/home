@@ -77,6 +77,7 @@
   :after evil)
 
 (use-package flycheck
+  :disabled t
   :ensure t
   :defer t
   :config
