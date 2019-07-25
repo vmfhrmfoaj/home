@@ -47,7 +47,7 @@ setup() {
   source "${PERLBREW_ROOT}/etc/bashrc"
 
   # Clojure
-  which lein > /dev/null 2>&1 
+  which lein > /dev/null 2>&1
   if [ $? -ne 0 ]; then
     local lein_path="${HOME}/.bin/lein"
     mkdir -p $(dirname ${lein_path})
@@ -103,7 +103,7 @@ if [ ! -z ${SHELL} ]; then
   if [ -t 1 ] && [ ! -z ${ZSH_NAME} ] && [ -f "${HOME}/.zsh_profile" ]; then
     source "${HOME}/.zsh_profile"
   fi
-  which numlockx > /dev/null 2>&1 
+  which numlockx > /dev/null 2>&1
   if [ $? -eq 0 ]; then
     numlockx on
   fi
