@@ -143,7 +143,7 @@
 
   :config
   (setq dumb-jump-git-grep-cmd "git grep --full-name"
-        dumb-jump-prefer-searcher (cond
+        dumb-jump-force-searcher (cond
                                    ((executable-find "rg") 'rg)
                                    ((executable-find "ag") 'ag)
                                    (t nil))
