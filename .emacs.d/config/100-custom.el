@@ -33,6 +33,9 @@
  ((string-equal "gnome-imac" hostname)
   (fringe-mode 15)))
 
+(with-eval-after-load "eldoc"
+  (setq eldoc-idle-delay 0.2))
+
 (add-hook 'after-init-hook
           (lambda ()
             (advice-add #'select-frame      :after #'update-buf-visit-time)

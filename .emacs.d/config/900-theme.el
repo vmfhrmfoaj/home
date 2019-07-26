@@ -102,8 +102,8 @@
   (custom-set-faces
    `(lsp-ui-sideline-symbol ((t (:background ,(color-from 'default :background -2)))))
    `(lsp-ui-sideline-current-symbol ((t (:background ,(color-from 'default :background -5)))))
-   `(lsp-ui-sideline-code-action ((t (:inherit link :foreground "#61A3B1"))))
-   `(lsp-ui-sideline-global ((t (:inherit shadow :height 0.95))))))
+   `(lsp-ui-sideline-code-action ((t (:inherit link :foreground "#61A3B1" :slant normal))))
+   `(lsp-ui-sideline-global ((t (:inherit (shadow italic) :height 0.95))))))
 
 (use-package paren
   :defer t

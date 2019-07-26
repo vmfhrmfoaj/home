@@ -106,7 +106,16 @@
   :config
   (setq lsp-enable-snippet nil)
   (advice-add #'lsp--render-on-hover-content :filter-args
-              #'lsp--custom-render-on-hover-content))
+              #'lsp--custom-render-on-hover-content)
+  (add-hook 'lsp-mode-hook
+            (lambda ()
+              (let ((f (byte-compile
+                         (lambda (&rest _)
+                           ;; NOTE:
+                           ;;  May be it cause the performance issue!
+                           (flymake-start nil t)))))
+                (add-hook 'after-save-hook f nil :local)
+                (add-hook 'after-change-functions f nil :local)))))
 
 (use-package lsp-ui
   :ensure t
@@ -115,8 +124,7 @@
   (defn lsp-ui-sideline--custom-diagnostics (fn bol eol)
     (if (not lsp-prefer-flymake)
         (funcall fn bol eol)
-      (let* ((offset 0)
-             (line-num (line-number-at-pos bol t))
+      (let* ((line-num (line-number-at-pos bol t))
              (diagnostics (-some->> (lsp-diagnostics)
                                     (gethash buffer-file-name)
                                     (--filter (-when-let (range (lsp-diagnostic-range it))
@@ -138,15 +146,15 @@
                         ((eq 2 level) 'font-lock-warning-face)
                         ((eq 1 level) 'error)))
                  (margin (lsp-ui-sideline--margin-width))
-                 (message (progn (add-face-text-property 0 len 'lsp-ui-sideline-global nil message)
-                                 (add-face-text-property 0 len face nil message)
-                                 message))
+                 (message (progn
+                            (add-face-text-property 0 len 'lsp-ui-sideline-global nil message)
+                            (add-face-text-property 0 len face nil message)
+                            message))
                  (string (concat (propertize " " 'display `(space :align-to (- right-fringe ,(lsp-ui-sideline--align len margin))))
                                  message))
-                 (pos-ov (lsp-ui-sideline--find-line len bol eol nil offset))
+                 (pos-ov (lsp-ui-sideline--find-line len bol eol))
                  (ov (and pos-ov (make-overlay (car pos-ov) (car pos-ov)))))
             (when pos-ov
-              (setq offset (car (cdr pos-ov)))
               (overlay-put ov 'after-string string)
               (overlay-put ov 'kind 'diagnotics)
               (push ov lsp-ui-sideline--ovs)))))))
