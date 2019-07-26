@@ -8,6 +8,7 @@
                 (setq-local evil-lookup-func #'lsp-describe-thing-at-point)))))
 
 (use-package js2-mode
+  :disabled t
   :ensure t
   :defer t
   :mode (("\\.jsm?\\'" . js2-mode)

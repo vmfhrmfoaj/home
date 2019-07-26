@@ -527,6 +527,16 @@
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode 'elm-mode))
 
+(use-package js
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'js-mode
+    "mgg" #'lsp-goto-implementation
+    "mgd" #'lsp-goto-type-definition)
+  (which-key-declare-prefixes-for-mode 'js-mode
+    (concat evil-leader/leader "mg") "goto")
+  (evil-leader/set-major-leader-for-mode 'js-mode))
+
 (use-package multi-term
   :defer t
   :config
@@ -661,8 +671,8 @@
   :defer t
   :config
   (evil-leader/set-key-for-mode 'rust-mode
-    "mgg" #'racer-find-definition
-    "mgG" #'racer-find-definition-other-window)
+    "mgg" #'lsp-goto-implementation
+    "mgd" #'lsp-goto-type-definition)
   (which-key-declare-prefixes-for-mode 'rust-mode
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode 'rust-mode))
@@ -675,6 +685,16 @@
   (which-key-declare-prefixes-for-mode 'sh-mode
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode 'sh-mode))
+
+(use-package typescript-mode
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'typescript-mode
+    "mgg" #'lsp-goto-implementation
+    "mgd" #'lsp-goto-type-definition)
+  (which-key-declare-prefixes-for-mode 'typescript-mode
+    (concat evil-leader/leader "mg") "goto")
+  (evil-leader/set-major-leader-for-mode 'typescript-mode))
 
 (use-package view
   :defer t
