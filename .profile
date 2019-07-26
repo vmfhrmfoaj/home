@@ -5,6 +5,12 @@ setup() {
   export LANG=en_US.UTF-8
   export LC_ALL=en_US.UTF-8
 
+  # X
+  which numlockx > /dev/null 2>&1
+  if [ $? -ne 0 ]; then
+    /usr/bin/numlockx on
+  fi
+
   # PATH
   if [ 0 = $(echo ${PATH} | grep -c '/sbin') ]; then
     export PATH="/sbin:/usr/sbin:${PATH}"

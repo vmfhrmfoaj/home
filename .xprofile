@@ -1,7 +1,0 @@
-if [ "gnome-imac" = $(hostname) ]; then
-  export QT_AUTO_SCREEN_SCALE_FACTOR=1
-  export QT_FONT_DPI=144
-fi
-if [ -x /usr/bin/numlockx ]; then
-  /usr/bin/numlockx on
-fi

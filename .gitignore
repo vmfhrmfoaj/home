@@ -1,7 +1,8 @@
 /*
 !.emacs.d/
-!.custom_profile
-!.vimrc
-!.config/Code/User/settings.json
 !.config/Code/User/keybindings.json
+!.config/Code/User/settings.json
 !.gitignore
+!.profile
+!.vimrc
+!.zsh_profile
