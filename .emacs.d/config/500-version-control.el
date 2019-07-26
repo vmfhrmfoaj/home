@@ -55,19 +55,20 @@
 
   (defn magit-log-propertize-keywords-for-conventional-commits (msg)
     "TODO"
-    (let ((type  "[^:() ]+")
-          (scope "[^)]+"))
-      (when (and magit-log-highlight-keywords
-                 (string-match (concat "^\\(" type "\\)\\(?:(\\(" scope "\\))\\)?:") msg))
-        (put-text-property (match-beginning 1)
-                           (match-end 1)
-                           'face 'magit-commit-log-type-face
-                           msg)
-        (when (match-beginning 2)
-          (put-text-property (match-beginning 2)
-                             (match-end 2)
-                             'face 'magit-commit-log-scope-face
-                             msg))))
+    (ignore-errors
+      (let ((type  "[^:() ]+")
+            (scope "[^)]+"))
+        (when (and magit-log-highlight-keywords
+                   (string-match (concat "^\\(" type "\\)\\(?:(\\(" scope "\\))\\)?:") msg))
+          (put-text-property (match-beginning 1)
+                             (match-end 1)
+                             'face 'magit-commit-log-type-face
+                             msg)
+          (when (match-beginning 2)
+            (put-text-property (match-beginning 2)
+                               (match-end 2)
+                               'face 'magit-commit-log-scope-face
+                               msg)))))
     msg)
 
   (defn magit-setup ()
@@ -99,6 +100,7 @@
   :config
   (add-hook 'magit-mode-hook 'magit-svn-mode)
   (let ((f (lambda ()
-             (string-match-p "^\\(master\\|svn\\)$" (magit-rev-branch "HEAD")))))
-   (advice-add #'magit-insert-svn-unpulled :before-while f)
-   (advice-add #'magit-insert-svn-unpushed :before-while f)))
+             (ignore-errors
+               (string-match-p "^\\(master\\|svn\\)$" (magit-rev-branch "HEAD"))))))
+    (advice-add #'magit-insert-svn-unpulled :before-while f)
+    (advice-add #'magit-insert-svn-unpushed :before-while f)))
