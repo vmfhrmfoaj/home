@@ -28,10 +28,8 @@
   (set-file-name-coding-system 'utf-8-hfs))
 
 (cond
- ((string-equal "gnome-macbookair" hostname)
-  (setq x-super-keysym 'meta))
- ((string-equal "gnome-imac" hostname)
-  (fringe-mode 15)))
+ ((string-equal "vmfhrmfoaj-netbook" hostname)
+  (setq x-super-keysym 'meta)))
 
 (with-eval-after-load "eldoc"
   (setq eldoc-idle-delay 0.2))
