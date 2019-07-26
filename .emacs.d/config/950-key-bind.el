@@ -68,6 +68,11 @@
       (dolist (binding bindings)
         (evil-local-set-key 'normal (car binding) (cadr binding))))))
 
+(use-package evil
+  :config
+  (evil-define-key 'normal 'global
+    "gh" #'eldoc-refresh))
+
 (use-package evil-leader
   :ensure t
   :config

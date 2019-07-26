@@ -32,7 +32,23 @@
   (setq x-super-keysym 'meta)))
 
 (with-eval-after-load "eldoc"
-  (setq eldoc-idle-delay 0.2))
+  (defn eldoc-refresh ()
+    (interactive)
+    (when (and (or eldoc-mode (and global-eldoc-mode (eldoc--supported-p)))
+               (functionp eldoc-documentation-function))
+      (let ((msg (funcall eldoc-documentation-function)))
+        (unless (s-blank? msg)
+          (eldoc-message msg)
+          (when (and eldoc-timer
+                     (timerp eldoc-timer))
+            (cancel-timer eldoc-timer))
+          (setq eldoc-timer nil
+                ;; NOTE:
+                ;;  I just skip `eldoc-pre-command-refresh-echo-area' do.
+                eldoc-last-message nil)))))
+
+  (setq eldoc-idle-delay 0.2)
+  (add-hook 'eldoc-mode-hook #'eldoc-refresh :append))
 
 (add-hook 'after-init-hook
           (lambda ()
