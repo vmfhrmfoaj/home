@@ -1,6 +1,8 @@
 (when (window-system)
   (let ((font "DejaVu Sans Mono")
-        (height 105)
+        (height (cond
+                 ((string-equal "vmfhrmfoaj-netbook" hostname) 113)
+                 (t 105)))
         (spacing 1))
     (setq-default line-spacing spacing)
     (set-face-font 'default font)
