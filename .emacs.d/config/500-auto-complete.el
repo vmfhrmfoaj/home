@@ -103,8 +103,13 @@
           args
         (apply #'list (-interpose "\n" (append contents nil)) (-drop 1 args)))))
 
+  (defun lsp--custom-eldoc-message (&optional msg)
+    "Show MSG in eldoc."
+    (eldoc-message msg))
+
   :config
   (setq lsp-enable-snippet nil)
+  (advice-add #'lsp--eldoc-message :override #'lsp--custom-eldoc-message)
   (advice-add #'lsp--render-on-hover-content :filter-args
               #'lsp--custom-render-on-hover-content)
   (add-hook 'lsp-mode-hook
