@@ -27,10 +27,6 @@
   (require 'ucs-normalize)
   (set-file-name-coding-system 'utf-8-hfs))
 
-(cond
- ((string-equal "vmfhrmfoaj-netbook" hostname)
-  (setq x-super-keysym 'meta)))
-
 (with-eval-after-load "eldoc"
   (defn eldoc-refresh ()
     (interactive)

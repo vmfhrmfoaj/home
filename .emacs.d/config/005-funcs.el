@@ -1,4 +1,15 @@
-(defvar hostname (s-trim (shell-command-to-string "hostname"))
+(defvar main-monitor
+  (let ((get-resolution (lambda (it) (->> it (nth 1) (-take-last 2) (apply #'*)))))
+    (-some->> (x-display-monitor-attributes-list)
+              (--max-by (> (funcall get-resolution it)
+                           (funcall get-resolution other)))))
+  "TODO")
+
+(defvar main-monitor-resolution
+  (-some->> main-monitor
+            (nth 1)
+            (-drop 1)
+            (-take-last 2))
   "TODO")
 
 (defvar null-fn (-const nil)

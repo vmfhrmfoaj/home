@@ -1139,7 +1139,7 @@
                                       ,org-done-face
                                     ,org-todo-face)
                       :height (cond
-                               ((string-equal "gnome-imac" hostname) 0.95)
+                               ((eq 113 font-height) 0.95)
                                (t 1.1)))))
           t)
          ("^\\s-*\\(-\\) "
