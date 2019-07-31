@@ -2,7 +2,7 @@ Xft.antialias: true
 Xft.rgba: rgb
 Xft.autohint: false
 Xft.hinting: true
-Xft.hintstyle: hintfull
+Xft.hintstyle: none
 Xft.lcdfilter: lcddefault
 Xft.embolden: true
 Emacs.fontBackend: xft
