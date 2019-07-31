@@ -141,6 +141,17 @@
               :buffer "*helm-dumb-jump*"))
       t))
 
+  (defn dumb-jump--custom-get-language (file)
+    "Get language from FILE extension and then fallback to using 'major-mode' name."
+    (let* ((languages (-distinct
+                       (--map (plist-get it :language)
+                              dumb-jump-find-rules)))
+           (language (or (dumb-jump-get-language-from-mode) ; I just changed order of this
+                         (dumb-jump-get-language-by-filename file))))
+      (if (member language languages)
+          language
+        (format ".%s file" (or (f-ext file) "")))))
+
   :config
   (setq dumb-jump-git-grep-cmd "git grep --full-name"
         dumb-jump-force-searcher (cond
@@ -158,5 +169,6 @@
 
   (advice-add #'dumb-jump-get-results :filter-return #'helm-dumb-jump--after-get-results)
   (advice-add #'dumb-jump--result-follow :override #'helm-dumb-jump--result-follow)
+  (advice-add #'dumb-jump-get-language :override #'dumb-jump--custom-get-language)
   (advice-add #'dumb-jump-prompt-user-for-choice :before-until
               #'helm-dumb-jump--prompt-user-for-choice))
