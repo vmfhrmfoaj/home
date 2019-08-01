@@ -30,21 +30,26 @@
 (with-eval-after-load "eldoc"
   (defn eldoc-refresh ()
     (interactive)
-    (when (and (or eldoc-mode (and global-eldoc-mode (eldoc--supported-p)))
-               (functionp eldoc-documentation-function))
-      (let ((msg (funcall eldoc-documentation-function)))
-        (unless (s-blank? msg)
-          (eldoc-message msg)
-          (when (and eldoc-timer
-                     (timerp eldoc-timer))
-            (cancel-timer eldoc-timer))
-          (setq eldoc-timer nil
-                ;; NOTE:
-                ;;  I just skip `eldoc-pre-command-refresh-echo-area' do.
-                eldoc-last-message nil)))))
+    (when (or eldoc-mode
+              (and global-eldoc-mode
+                   (eldoc--supported-p)))
+      (when (timerp eldoc-timer)
+        (cancel-timer eldoc-timer)
+        (setq eldoc-timer nil))
+      (when (and (not (interactive-p))
+                 (functionp eldoc-documentation-function))
+        (let ((msg (funcall eldoc-documentation-function)))
+          (unless (s-blank? msg)
+            (eldoc-message msg))))))
 
   (setq eldoc-idle-delay 0.2)
-  (add-hook 'eldoc-mode-hook #'eldoc-refresh :append))
+  (add-hook 'eldoc-mode-hook
+            (lambda ()
+              (eldoc-add-command 'eldoc-refresh)
+              (eldoc-refresh))
+            :append))
+
+(setq resize-mini-windows t)
 
 (add-hook 'after-init-hook
           (lambda ()

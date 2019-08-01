@@ -105,7 +105,19 @@
 
   (defun lsp--custom-eldoc-message (&optional msg)
     "Show MSG in eldoc."
-    (eldoc-message msg))
+    (let ((lines (s-lines (or msg "")))
+          (max-line (cond
+                     ((floatp max-mini-window-height)
+                      (ceiling (* (frame-height) max-mini-window-height)))
+                     ((numberp max-mini-window-height)
+                      max-mini-window-height)
+                     (t 10))))
+      (eldoc-message (when lines
+                       (->> (if (<= (length lines) max-line)
+                                lines
+                              (-snoc (-take (max 1 (1- max-line)) lines) (propertize "(...)" 'face 'shadow)))
+                            (-interpose "\n")
+                            (apply #'concat))))))
 
   :config
   (setq lsp-enable-snippet nil)
@@ -115,10 +127,10 @@
   (add-hook 'lsp-mode-hook
             (lambda ()
               (let ((f (byte-compile
-                         (lambda (&rest _)
-                           ;; NOTE:
-                           ;;  May be it cause the performance issue!
-                           (flymake-start nil t)))))
+                        (lambda (&rest _)
+                          ;; NOTE:
+                          ;;  May be it cause the performance issue!
+                          (flymake-start t t)))))
                 (add-hook 'after-save-hook f nil :local)
                 (add-hook 'after-change-functions f nil :local)))))
 
