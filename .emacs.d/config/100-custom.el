@@ -49,6 +49,14 @@
               (eldoc-refresh))
             :append))
 
+(with-eval-after-load "tramp-sh"
+  (let ((home-dir (getenv "HOME")))
+    (when (file-exists-p (concat home-dir "/.ssh/sockets/"))
+      (setq tramp-ssh-controlmaster-options
+            (concat "-o ControlMaster=auto "
+                    "-o ControlPath='" home-dir "/.ssh/sockets/%%r@%%h-%%p' "
+                    "-o ControlPersist=600 ")))))
+
 (setq resize-mini-windows t)
 
 (add-hook 'after-init-hook
