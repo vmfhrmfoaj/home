@@ -93,7 +93,7 @@
   :config
   (custom-set-faces
    `(lsp-face-highlight-read    ((t (:background ,(color-from 'default :background -2) :foreground "cyan"  :weight unspecified))))
-   `(lsp-face-highlight-write   ((t (:background ,(color-from 'default :background -2) :foreground "cyan"  :weight unspecified :underline (:color foreground-color :style wave)))))
+   `(lsp-face-highlight-write   ((t (:background ,(color-from 'default :background -2) :foreground "cyan"  :weight unspecified :weight bold))))
    `(lsp-face-highlight-textual ((t (:background ,(color-from 'default :background -2) :foreground "cyan2" :weight unspecified))))))
 
 (use-package lsp-ui-sideline
@@ -127,7 +127,8 @@
   :config
   (set-face-attribute 'rpm-spec-section-face nil
                       :underline 'unspecified
-                      :inherit 'underline))
+                      :inherit 'underline
+                      :weight 'bold))
 
 (use-package smartparens
   :defer t
