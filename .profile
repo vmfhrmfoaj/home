@@ -1,6 +1,13 @@
 #!/bin/zsh
 
-setup() {
+_update_java_home() {
+  local java_home=$(asdf where java 2> /dev/null)
+  if [ ! -z $java_home ]; then
+    export JAVA_HOME=$java_home
+  fi
+}
+
+_setup() {
   # locale
   export LANG=en_US.UTF-8
   export LC_ALL=en_US.UTF-8
@@ -28,10 +35,7 @@ setup() {
   source "${asdf_home}/completions/asdf.bash"
 
   # Java
-  local java_home=$(asdf where java 2> /dev/null)
-  if [ ! -z $java_home ]; then
-    export JAVA_HOME=$java_home
-  fi
+  _update_java_home()
 
   # Android
   local android_home="${HOME}/.android/sdk"
@@ -103,7 +107,7 @@ setup_for_ssh() {
   source "${cache_file}"
 }
 
-setup
+_setup
 if [ ! -z ${SHELL} ]; then
   setup_for_ssh
   if [ -t 1 ] && [ ! -z ${ZSH_NAME} ] && [ -f "${HOME}/.zsh_profile" ]; then

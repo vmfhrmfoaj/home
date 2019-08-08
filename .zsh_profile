@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-setup_for_zsh() {
+_setup_for_zsh() {
   # Oh My Zsh
   if [ 0 != $(echo $plugins | grep -c 'vi-mode') ]; then
     # NOTE
@@ -104,7 +104,7 @@ postexec() {
   title $TABNAME $TABNAME
 }
 
-setup_for_zsh
+_setup_for_zsh
 zle -N zle-keymap-select
 export DISABLE_AUTO_TITLE="true"
 preexec
