@@ -50,8 +50,8 @@
         (user-error "No function or type found at point"))))
 
   :config
-  (let ((racer-path (concat (getenv "HOME") "/.cargo/bin/racer"))
-        (rust-src (concat (getenv "HOME") "/Desktop/Open_Sources/rust/src")))
+  (let ((racer-path (concat home-dir "/.cargo/bin/racer"))
+        (rust-src (concat home-dir "/Desktop/Open_Sources/rust/src")))
     (when (file-exists-p rust-src)
       (setq racer-rust-src-path rust-src)
       (setenv "RUST_SRC_PATH" rust-src)
@@ -72,4 +72,4 @@
 
   :config
   (defvar cargo-home (or (getenv "CARGO_HOME")
-                         (concat (getenv "HOME") "/.cargo"))))
+                         (concat home-dir "/.cargo"))))

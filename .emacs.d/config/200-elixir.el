@@ -18,7 +18,7 @@
 
   :config
   (setq alchemist-hooks-compile-on-save t)
-  (let ((opt-src (concat (getenv "HOME") "/Desktop/Open_Sources/otp"))
-        (elixir-src (concat (getenv "HOME") "/Desktop/Open_Sources/elixir")))
+  (let ((opt-src (concat home-dir "/Desktop/Open_Sources/otp"))
+        (elixir-src (concat home-dir "/Desktop/Open_Sources/elixir")))
     (and (file-exists-p opt-src)    (setq alchemist-goto-erlang-source-dir opt-src))
     (and (file-exists-p elixir-src) (setq alchemist-goto-elixir-source-dir elixir-src))))

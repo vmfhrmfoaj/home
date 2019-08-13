@@ -34,9 +34,11 @@
 
   :config
   (setq gofmt-command "goimports")
-  (let* ((go-path (concat (getenv "HOME") "/Desktop/Go_Projects"))
+  (let* ((go-path (concat home-dir "/Desktop/Go_Projects"))
          (go-bin-path (concat go-path "/bin")))
-    (setenv "GOPATH" go-path)
-    (add-to-list 'process-environment (concat "GOPATH=" go-path))
-    (setenv "PATH" (concat go-bin-path ":" (getenv "PATH")))
-    (add-to-list 'exec-path go-bin-path)))
+    (when (and (file-exists-p go-path)
+               (file-exists-p go-bin-path))
+      (setenv "GOPATH" go-path)
+      (add-to-list 'process-environment (concat "GOPATH=" go-path))
+      (setenv "PATH" (concat go-bin-path ":" (getenv "PATH")))
+      (add-to-list 'exec-path go-bin-path))))

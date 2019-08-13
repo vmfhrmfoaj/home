@@ -69,7 +69,7 @@
     (-when-let (cur-root (get-current-persp))
       (let* ((root (aref cur-root 1))
              (root_ (if (string-prefix-p "/" root)
-                        (concat "~/" (file-relative-name root (getenv "HOME")))
+                        (concat "~/" (file-relative-name root home-dir))
                       (file-truename root))))
         (dolist (buf (--filter (or (projectile-project-buffer-p it root_)
                                    (projectile-project-buffer-p it root))
