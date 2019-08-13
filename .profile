@@ -2,8 +2,8 @@
 
 _update_java_home() {
   local java_home=$(asdf where java 2> /dev/null)
-  if [ ! -z $java_home ]; then
-    export JAVA_HOME=$java_home
+  if [ ! -z ${java_home} ]; then
+    export JAVA_HOME=${java_home}
   fi
 }
 
@@ -12,7 +12,7 @@ _setup() {
   export LANG=en_US.UTF-8
   export LC_ALL=en_US.UTF-8
 
-  # X
+  # Xorg
   which numlockx > /dev/null 2>&1
   if [ $? -ne 0 ]; then
     /usr/bin/numlockx on
@@ -35,13 +35,13 @@ _setup() {
   source "${asdf_home}/completions/asdf.bash"
 
   # Java
-  _update_java_home()
+  #_update_java_home
 
   # Android
   local android_home="${HOME}/.android/sdk"
   if [ -d ${android_home} ]; then
     export ANDROID_HOME="${android_home}"
-    if [ -d "${android_home}/tools/bin" ] && [ 0 = $(echo ${PATH} | grep -c "${android_home}/tools/bin") ]; then
+    if [ -d "${android_home}/tools/bin" ]      && [ 0 = $(echo ${PATH} | grep -c "${android_home}/tools/bin") ]; then
       export PATH="${android_home}/tools/bin:${PATH}"
     fi
     if [ -d "${android_home}/platform-tools" ] && [ 0 = $(echo ${PATH} | grep -c "${android_home}/platform-tools") ]; then
@@ -91,7 +91,7 @@ _is_ssh_agent_running() {
   fi
 }
 
-setup_for_ssh() {
+_setup_for_ssh() {
   local cache_file=${1:-"${HOME}/.ssh/ssh-agent-for-remote"}
   if [ 'OK' = "$(_is_ssh_agent_running)" ]; then
     return 0
@@ -108,13 +108,9 @@ setup_for_ssh() {
 }
 
 _setup
-if [ ! -z ${SHELL} ]; then
-  setup_for_ssh
-  if [ -t 1 ] && [ ! -z ${ZSH_NAME} ] && [ -f "${HOME}/.zsh_profile" ]; then
+if [ -t 1 ] && [ ! -z ${SHELL} ]; then
+  _setup_for_ssh
+  if [ ! -z ${ZSH} ] && [ -f "${HOME}/.zsh_profile" ]; then
     source "${HOME}/.zsh_profile"
-  fi
-  which numlockx > /dev/null 2>&1
-  if [ $? -eq 0 ]; then
-    numlockx on
   fi
 fi
