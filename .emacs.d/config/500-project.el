@@ -8,15 +8,15 @@
 
   (defn projectile-project-files-custom-filter (files)
     "TODO"
-    (let ((root (file-truename (projectile-project-root))))
-      (-if-let (regex (-some->> (append (projectile-project-ignored-files)
-                                        (-some->> (projectile-project-ignored-directories)
-                                                  (--map (concat it "/"))))
-                                (-map (-partial #'s-chop-prefix root))
-                                (regexp-opt)
-                                (concat "^")))
-          (-remove (-partial #'string-match-p regex) files)
-       files)))
+    (-if-let (regex (-some->> (projectile-paths-to-ignore)
+                              (--map (->> it
+                                          (s-chop-prefix (file-truename (projectile-project-root)))
+                                          (concat "^")))
+                              (append (projectile-patterns-to-ignore))
+                              (-interpose "\\|")
+                              (apply #'concat)))
+        (-remove (-partial #'string-match-p regex) files)
+      files))
 
   :config
   (advice-add #'projectile-project-root :before-until
