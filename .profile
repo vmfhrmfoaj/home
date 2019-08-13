@@ -1,4 +1,9 @@
-#!/bin/zsh
+#!/bin/bash
+
+# Load /etc/profile
+if [ -f /etc/profile ]; then
+  source /etc/profile
+fi
 
 _update_java_home() {
   local java_home=$(asdf where java 2> /dev/null)
@@ -110,7 +115,4 @@ _setup_for_ssh() {
 _setup
 if [ -t 1 ] && [ ! -z ${SHELL} ]; then
   _setup_for_ssh
-  if [ ! -z ${ZSH} ] && [ -f "${HOME}/.zsh_profile" ]; then
-    source "${HOME}/.zsh_profile"
-  fi
 fi

@@ -1,8 +1,3 @@
-# Load /etc/profile
-if [ -f /etc/profile ]; then
-  . /etc/profile
-fi
-
 # for Gento
 if [ -f /etc/os-release ] && [ 0 -gt $(grep -c 'gentoo' /etc/os-release) ]; then
   autoload -U compinit promptinit
@@ -103,6 +98,6 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-if [ -f "${HOME}/.profile" ]; then
-  source "${HOME}/.profile"
+if [ -f "${HOME}/.zsh_profile" ]; then
+  source "${HOME}/.zsh_profile"
 fi
