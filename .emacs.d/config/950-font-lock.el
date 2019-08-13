@@ -124,11 +124,15 @@
 (use-package cperl-mode
   :defer t
   :config
+  (defface cperl-less-important-keyword-face
+    '((t (:inherit font-lock-keyword-face :weight normal)))
+    "TODO")
+
   (let ((unimportant-kws '("bless" "defined" "delete" "exists" "grep" "join" "lc" "map" "push" "ref" "splice")))
    (font-lock-add-keywords
     'cperl-mode
     `((,(regexp-opt unimportant-kws 'symbols)
-       (1 'default)))))
+       1 'cperl-less-important-keyword-face))))
   (font-lock-add-keywords
    'cperl-mode
    (let* ((symbol "[@$%]+[:_0-9a-zA-Z]+")
