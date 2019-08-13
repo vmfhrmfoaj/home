@@ -9,6 +9,8 @@
    `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-string-face :foreground "#A8AF62" :weight bold))))
    `(font-lock-regexp-grouping-construct ((t (:inherit font-lock-string-face :foreground "#A8AF62" :weight bold))))
    `(font-lock-variable-name-face ((t (:foreground "#7ECB92"))))
+   `(highlight ((t (:foreground "#e5a561"))))
+   `(lazy-highlight ((t (:foreground "#ffb86c"))))
    `(variable-pitch ((t (:family "DejaVu Sans")))))
   (defvar local-variable-name-fg-color
     (-> 'font-lock-variable-name-face
@@ -92,9 +94,9 @@
   :defer t
   :config
   (custom-set-faces
-   `(lsp-face-highlight-read    ((t (:background ,(color-from 'default :background -2) :foreground "cyan"  :weight unspecified))))
-   `(lsp-face-highlight-write   ((t (:background ,(color-from 'default :background -2) :foreground "cyan"  :weight unspecified :weight bold))))
-   `(lsp-face-highlight-textual ((t (:background ,(color-from 'default :background -2) :foreground "cyan2" :weight unspecified))))))
+   `(lsp-face-highlight-read    ((t (:inherit highlight))))
+   `(lsp-face-highlight-write   ((t (:inherit (bold highlight)))))
+   `(lsp-face-highlight-textual ((t (:inherit highlight))))))
 
 (use-package lsp-ui-sideline
   :defer t
