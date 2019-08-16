@@ -37,7 +37,7 @@ zle-keymap-select() {
     local CURSOR_LINE='\e[6 q'
   fi
 
-  if [[ "$TERM" = *"xterm"* ]]; then
+  if [[ "$TERM" = *"xterm"* ]] || [[ "$TERM" = "screen"* ]]; then
     if [ "$KEYMAP" = vicmd ]; then
       # the command mode for vi
       echo -ne $CURSOR_BOX
