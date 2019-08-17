@@ -101,3 +101,7 @@ source $ZSH/oh-my-zsh.sh
 if [ -f "${HOME}/.zsh_profile" ]; then
   source "${HOME}/.zsh_profile"
 fi
+
+if [ -f "${HOME}/.zsh_untracked_profile" ]; then
+  source "${HOME}/.zsh_untracked_profile"
+fi

@@ -19,8 +19,8 @@ _setup() {
 
   # Xorg
   which numlockx > /dev/null 2>&1
-  if [ $? -ne 0 ]; then
-    /usr/bin/numlockx on
+  if [ $? -eq 0 ]; then
+    numlockx on
   fi
 
   # PATH
