@@ -98,6 +98,10 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+if [ -f "${HOME}/.profile" ]; then
+  source "${HOME}/.profile"
+fi
+
 if [ -f "${HOME}/.zsh_profile" ]; then
   source "${HOME}/.zsh_profile"
 fi

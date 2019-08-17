@@ -1,48 +1,15 @@
 #!/bin/bash
 
-# Load /etc/profile
-if [ -f /etc/profile ]; then
-  source /etc/profile
-fi
-
-_update_java_home() {
-  local java_home=$(asdf where java 2> /dev/null)
-  if [ ! -z ${java_home} ]; then
-    export JAVA_HOME=${java_home}
+_add_to_path() {
+  local new_path=$1
+  if [ ! -z ${new_path} ]; then
+    if [ -d "${new_path}" ] && [ 0 = $(echo ${PATH} | grep -c "${new_path}") ]; then
+      export PATH="${new_path}:${PATH}"
+    fi
   fi
 }
 
-_setup() {
-  # locale
-  export LANG=en_US.UTF-8
-  export LC_ALL=en_US.UTF-8
-
-  # Xorg
-  which numlockx > /dev/null 2>&1
-  if [ $? -eq 0 ]; then
-    numlockx on
-  fi
-
-  # PATH
-  if [ 0 = $(echo ${PATH} | grep -c '/sbin') ]; then
-    export PATH="/sbin:/usr/sbin:${PATH}"
-  fi
-  if [ -d "${HOME}/.bin" ] && [ 0 = $(echo ${PATH} | grep -c "${HOME}/.bin") ]; then
-    export PATH="${HOME}/.bin:${PATH}"
-  fi
-
-  # .asdf
-  local asdf_home="${HOME}/.asdf"
-  if [ ! -d "${asdf_home}" ]; then
-    git clone 'https://github.com/asdf-vm/asdf.git' "${HOME}/.asdf" --branch v0.6.2
-  fi
-  source "${asdf_home}/asdf.sh"
-  source "${asdf_home}/completions/asdf.bash"
-
-  # Java
-  #_update_java_home
-
-  # Android
+_setup_for_android() {
   local android_home="${HOME}/.android/sdk"
   if [ -d ${android_home} ]; then
     export ANDROID_HOME="${android_home}"
@@ -53,15 +20,22 @@ _setup() {
       export PATH="${android_home}/platform-tools:${PATH}"
     fi
   fi
+}
 
-  # Perlbrew
-  export PERLBREW_ROOT="${HOME}/.perlbrew"
-  if [ ! -d ${PERLBREW_ROOT} ]; then
-    curl -fsSL 'https://install.perlbrew.pl' | bash
+_setup_for_asdf() {
+  local asdf_home="${HOME}/.asdf"
+  if [ ! -d "${asdf_home}" ]; then
+    git clone 'https://github.com/asdf-vm/asdf.git' "${HOME}/.asdf" --branch v0.7.4
   fi
-  source "${PERLBREW_ROOT}/etc/bashrc"
+  if [ -f "${asdf_home}/asdf.sh" ]; then
+    source "${asdf_home}/asdf.sh"
+  fi
+  if [ -f "${asdf_home}/completions/asdf.bash" ]; then
+    source "${asdf_home}/completions/asdf.bash"
+  fi
+}
 
-  # Clojure
+_setup_for_clojure() {
   which lein > /dev/null 2>&1
   if [ $? -ne 0 ]; then
     local lein_path="${HOME}/.bin/lein"
@@ -69,16 +43,41 @@ _setup() {
     wget -O ${lein_path} 'https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein'
     chmod +x ${lein_path}
   fi
+}
 
-  # Rust lang
+_setup_for_java() {
+  local java_home=$(asdf where java 2> /dev/null)
+  if [ ! -z ${java_home} ]; then
+    export JAVA_HOME=${java_home}
+  fi
+}
+
+_setup_for_locale() {
+  export LANG=en_US.UTF-8
+  export LC_ALL=en_US.UTF-8
+}
+
+_setup_for_perlbrew() {
+  export PERLBREW_ROOT="${HOME}/.perlbrew"
+  if [ ! -d ${PERLBREW_ROOT} ]; then
+    curl -fsSL 'https://install.perlbrew.pl' | bash
+  fi
+  if [ -f "${PERLBREW_ROOT}/etc/bashrc" ]; then
+    source "${PERLBREW_ROOT}/etc/bashrc"
+  fi
+}
+
+_setup_for_rust() {
   if [ ! -d "${HOME}/.cargo" ]; then
     # see, https://github.com/rust-lang/rustup.rs/issues/953#issuecomment-318650338
     curl 'https://sh.rustup.rs' -sSf | RUSTUP_INIT_SKIP_PATH_CHECK=yes sh -s -- --no-modify-path --default-toolchain nightly
-    source "${HOME}/.cargo/env"
-    rustup toolchain add stable
-    rustup default stable
-    rustup toolchain add nightly
-    rustup component add rls rust-analysis rust-src # for rls (Rust Language Server)
+    if [ -f "${HOME}/.cargo/env" ]; then
+      source "${HOME}/.cargo/env"
+      rustup toolchain add stable
+      rustup default stable
+      rustup toolchain add nightly
+      rustup component add rls rust-analysis rust-src # for rls (Rust Language Server)
+    fi
   fi
   if [ -f "${HOME}/.cargo/env" ]; then
     source "${HOME}/.cargo/env"
@@ -87,7 +86,7 @@ _setup() {
 
 _is_ssh_agent_running() {
   if [ ! -z ${SSH_AGENT_PID} ] && [ 0 != $(ps -o cmd= -q ${SSH_AGENT_PID} | grep -c 'ssh-agent') ] && \
-     [ ! -z ${SSH_AUTH_SOCK} ] && [ -S ${SSH_AUTH_SOCK} ]; then
+       [ ! -z ${SSH_AUTH_SOCK} ] && [ -S ${SSH_AUTH_SOCK} ]; then
     echo 'OK'
     return 0
   else
@@ -112,7 +111,47 @@ _setup_for_ssh() {
   source "${cache_file}"
 }
 
-_setup
+_setup_for_wsl() {
+  if [ -z ${DISPLAY} ]; then
+    export DISPLAY=localhost:0.0
+  fi
+  which xrdb > /dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    xrdb -merge "${HOME}/.Xresources"
+  fi
+}
+
+_setup_for_xorg() {
+  which numlockx > /dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    numlockx on
+  fi
+}
+
+
+# add dirs to PATH
+_add_to_path '/sbin'
+_add_to_path '/usr/sbin'
+_add_to_path "${HOME}/.bin"
+
+# basic setup
+_setup_for_android
+_setup_for_asdf
+_setup_for_clojure
+_setup_for_locale
+_setup_for_perlbrew
+_setup_for_rust
+_setup_for_xorg
+
+# depend on `asdf`
+_setup_for_java
+
+# for only terminal environment
 if [ -t 1 ] && [ ! -z ${SHELL} ]; then
   _setup_for_ssh
 fi
+
+if [ ! -z ${WSLENV+ok} ]; then
+  _setup_for_wsl
+fi
+
