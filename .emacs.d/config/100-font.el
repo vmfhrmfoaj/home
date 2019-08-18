@@ -1,7 +1,8 @@
-(when (window-system)
+(when window-system
   (let* ((font "DejaVu Sans Mono")
          (height (cond
-                  ((equal '(1440 900) main-monitor-resolution) 113)
+                  ((equal '(1440  900) main-monitor-resolution) 113)
+                  ((and (stringp (getenv "WSLENV")) (equal '(1920  1080) main-monitor-resolution)) 135)
                   (t 105)))
          (spacing 1))
     (setq-default line-spacing spacing)
