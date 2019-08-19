@@ -87,6 +87,15 @@
   :ensure t
   :commands helm-lsp-workspace-symbol)
 
+(use-package lsp-java
+  :ensure t
+  :defer t
+  :init
+  (add-hook 'java-mode-hook
+            (lambda ()
+              (require 'lsp-java)
+              (lsp))))
+
 (use-package lsp-mode
   :ensure t
   :hook ((js-mode         . lsp)

@@ -431,7 +431,8 @@
   :config
   (dolist (mode '(c-mode c++-mode java-mode))
     (evil-leader/set-key-for-mode mode
-      "mgg" #'dumb-jump-go)
+      "mgg" #'lsp-goto-implementation
+      "mgd" #'lsp-goto-type-definition)
     (which-key-declare-prefixes-for-mode mode
       (concat evil-leader/leader "mg") "goto")
     (evil-leader/set-major-leader-for-mode mode)))

@@ -17,3 +17,5 @@
 /lsp-*
 /request
 /transient
+/eclipse.jdt.ls
+/workspace
