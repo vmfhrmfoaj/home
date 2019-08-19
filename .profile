@@ -72,6 +72,13 @@ _setup_for_rust() {
   [ -f "${HOME}/.cargo/env" ] && source "${HOME}/.cargo/env"
 }
 
+_setup_for_schroot() {
+  if [ -z ${DISPLAY} ]; then
+    # See, https://lukeplant.me.uk/blog/posts/chroot-with-x-applications/
+    export DISPLAY=:0.0
+  fi
+}
+
 _is_ssh_agent_running() {
   if [ ! -z ${SSH_AGENT_PID} ] && [ 0 != $(ps -o cmd= -q ${SSH_AGENT_PID} | grep -c 'ssh-agent') ] && \
        [ ! -z ${SSH_AUTH_SOCK} ] && [ -S ${SSH_AUTH_SOCK} ]; then
@@ -139,7 +146,10 @@ if [ -t 1 ] && [ ! -z ${SHELL} ]; then
   _setup_for_ssh
 fi
 
-if [ ! -z ${WSLENV+ok} ]; then
-  _setup_for_wsl
+if [ 'yes' = "${SCHROOT_CHROOT_NAME+yes}" ]; then
+  _setup_for_schroot
 fi
 
+if [ 'yes' = "${WSLENV+yes}" ]; then
+  _setup_for_wsl
+fi
