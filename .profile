@@ -13,12 +13,8 @@ _setup_for_android() {
   local android_home="${HOME}/.android/sdk"
   if [ -d ${android_home} ]; then
     export ANDROID_HOME="${android_home}"
-    if [ -d "${android_home}/tools/bin" ]      && [ 0 = $(echo ${PATH} | grep -c "${android_home}/tools/bin") ]; then
-      export PATH="${android_home}/tools/bin:${PATH}"
-    fi
-    if [ -d "${android_home}/platform-tools" ] && [ 0 = $(echo ${PATH} | grep -c "${android_home}/platform-tools") ]; then
-      export PATH="${android_home}/platform-tools:${PATH}"
-    fi
+    _add_to_path "${android_home}/tools/bin"
+    _add_to_path "${android_home}/platform-tools"
   fi
 }
 
@@ -27,12 +23,8 @@ _setup_for_asdf() {
   if [ ! -d "${asdf_home}" ]; then
     git clone 'https://github.com/asdf-vm/asdf.git' "${HOME}/.asdf" --branch v0.7.4
   fi
-  if [ -f "${asdf_home}/asdf.sh" ]; then
-    source "${asdf_home}/asdf.sh"
-  fi
-  if [ -f "${asdf_home}/completions/asdf.bash" ]; then
-    source "${asdf_home}/completions/asdf.bash"
-  fi
+  [ -f "${asdf_home}/asdf.sh" ]               && source "${asdf_home}/asdf.sh"
+  [ -f "${asdf_home}/completions/asdf.bash" ] && source "${asdf_home}/completions/asdf.bash"
 }
 
 _setup_for_clojure() {
@@ -62,9 +54,7 @@ _setup_for_perlbrew() {
   if [ ! -d ${PERLBREW_ROOT} ]; then
     curl -fsSL 'https://install.perlbrew.pl' | bash
   fi
-  if [ -f "${PERLBREW_ROOT}/etc/bashrc" ]; then
-    source "${PERLBREW_ROOT}/etc/bashrc"
-  fi
+  [ -f "${PERLBREW_ROOT}/etc/bashrc" ] && source "${PERLBREW_ROOT}/etc/bashrc"
 }
 
 _setup_for_rust() {
@@ -79,9 +69,7 @@ _setup_for_rust() {
       rustup component add rls rust-analysis rust-src # for rls (Rust Language Server)
     fi
   fi
-  if [ -f "${HOME}/.cargo/env" ]; then
-    source "${HOME}/.cargo/env"
-  fi
+  [ -f "${HOME}/.cargo/env" ] && source "${HOME}/.cargo/env"
 }
 
 _is_ssh_agent_running() {
