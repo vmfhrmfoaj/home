@@ -8,55 +8,6 @@
   (add-to-list 'interpreter-mode-alist '("perl5" . cperl-mode))
   (add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
 
-  (defvar perl-indent-config--default
-    '(var
-      ((indent-tabs-mode nil))
-
-      offset
-      ((cperl-indent-level 2)
-       (cperl-brace-offset 0)
-       (cperl-continued-brace-offset -2)
-       (cperl-label-offset -2)
-       (cperl-continued-statement-offset 2)
-       (cperl-extra-newline-before-brace nil)
-       (cperl-extra-newline-before-brace-multiline nil)
-       (cperl-merge-trailing-else t)))
-    "TODO")
-
-  (defcustom perl-indent-config
-    perl-indent-config--default
-    "TODO"
-    :type 'list
-    :safe 'listp)
-
-  (setq-default perl-offset-level 1)
-
-  (defn perl-set-offsets (offsets &optional level)
-    "TODO"
-    (let ((level (or level perl-offset-level)))
-      (dolist (offset offsets)
-        (let ((sym (car  offset))
-              (val (cadr offset)))
-          (set sym (if (numberp val)
-                       (* level val)
-                     val))))))
-
-  (defn perl-set-vars (vars)
-    "TODO"
-    (dolist (v var)
-      (let ((sym (car  v))
-            (val (cadr v)))
-        (set sym val))))
-
-  (defn perl-setup-indent-config (config)
-    "TODO"
-    (let ((var (plist-get config 'var))
-          (offset (plist-get config 'offset)))
-      (when var
-        (perl-set-vars var))
-      (when offset
-        (perl-set-offsets offset))))
-
   (defn cperl-beginning-of-defun ()
     "TODO"
     (let ((cur-pos (point))
@@ -92,7 +43,7 @@
   (defn cperl-mode-setup ()
     "TODO"
     (setq-local beginning-of-defun-function #'cperl-beginning-of-defun)
-    (setq-local end-of-defun-function #'cperl-end-of-defun))
+    (setq-local end-of-defun-function       #'cperl-end-of-defun))
 
   :config
   (modify-syntax-entry ?: "." cperl-mode-syntax-table)
