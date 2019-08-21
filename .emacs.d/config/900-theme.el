@@ -10,7 +10,7 @@
    `(font-lock-regexp-grouping-construct ((t (:inherit font-lock-string-face :foreground "#A8AF62" :weight bold))))
    `(font-lock-variable-name-face ((t (:foreground "#7ECB92"))))
    `(highlight ((t (:foreground "#e5a561"))))
-   `(lazy-highlight ((t (:foreground "#ffb86c"))))
+   `(lazy-highlight ((t (:foreground "#ffb86c" :weight normal))))
    `(variable-pitch ((t (:family "DejaVu Sans")))))
   (defvar local-variable-name-fg-color
     (-> 'font-lock-variable-name-face
