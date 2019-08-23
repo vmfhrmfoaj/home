@@ -14,6 +14,7 @@
     "breadcrumbs.enabled": true,
     "workbench.editor.enablePreview": false,
     "editor.lineNumbers": "relative",
+    "editor.renderWhitespace": "selection",
     "editor.minimap.enabled": true,
     "editor.quickSuggestionsDelay": 10,
     "editor.suggestSelection": "first",
@@ -193,7 +194,7 @@
         },
         {
             "before": [
-                "g", 
+                "g",
                 "x"
             ],
             "after": [],
@@ -602,20 +603,6 @@
         {
             "before": [
                 "<leader>",
-                "t",
-                "w"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "editor.action.toggleRenderWhitespace",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
                 "p",
                 "t"
             ],
@@ -737,7 +724,7 @@
                     "command": "workbench.action.maximizeEditor",
                     "args": []
                 },
-                { 
+                {
                     "command": "workbench.action.closePanel",
                     "args": []
                 }
@@ -773,5 +760,4 @@
         },
     ],
     "window.zoomLevel": 0,
-    "editor.renderWhitespace": "none",
 }
