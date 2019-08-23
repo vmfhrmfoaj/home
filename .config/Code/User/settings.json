@@ -15,7 +15,7 @@
     "workbench.editor.enablePreview": false,
     "editor.lineNumbers": "relative",
     "editor.renderWhitespace": "selection",
-    "editor.minimap.enabled": true,
+    "editor.minimap.enabled": false,
     "editor.quickSuggestionsDelay": 10,
     "editor.suggestSelection": "first",
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
