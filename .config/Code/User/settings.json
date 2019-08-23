@@ -14,7 +14,7 @@
     "breadcrumbs.enabled": true,
     "workbench.editor.enablePreview": false,
     "editor.lineNumbers": "relative",
-    "editor.minimap.enabled": false,
+    "editor.minimap.enabled": true,
     "editor.quickSuggestionsDelay": 10,
     "editor.suggestSelection": "first",
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
@@ -105,6 +105,7 @@
     "vim.visualstar": true,
     "vim.handleKeys": {
         "<C-d>": false,
+        "<C-k>": false,
         "<C-j>": false,
         "<C-w>": false,
     },
