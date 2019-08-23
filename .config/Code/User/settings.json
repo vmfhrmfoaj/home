@@ -602,6 +602,20 @@
         {
             "before": [
                 "<leader>",
+                "t",
+                "w"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "editor.action.toggleRenderWhitespace",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
                 "p",
                 "t"
             ],
@@ -759,4 +773,5 @@
         },
     ],
     "window.zoomLevel": 0,
+    "editor.renderWhitespace": "none",
 }
