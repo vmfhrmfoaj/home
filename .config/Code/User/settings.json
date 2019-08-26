@@ -149,15 +149,6 @@
         },
         {
             "before": [
-                "f",
-                "d"
-            ],
-            "after": [
-                "<Esc>"
-            ]
-        },
-        {
-            "before": [
                 "<leader>",
                 "j",
                 "="
@@ -218,32 +209,6 @@
             "commands": [
                 {
                     "command": "editor.action.commentLine",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "`"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.terminal.toggleTerminal",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "/"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.findInFiles",
                     "args": []
                 }
             ]
@@ -411,76 +376,6 @@
             "before": [
                 "<leader>",
                 "f",
-                "e"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.openGlobalSettings",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "f",
-                "f"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.files.openFile",
-                    "args": [],
-                },
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "f",
-                "r"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.openRecent",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "f",
-                "s"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.files.save",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "f",
-                "t"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.view.explorer",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "f",
                 "y"
             ],
             "after": [],
@@ -587,48 +482,6 @@
                 "b",
                 "d",
                 "w"
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "l",
-                "d"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.closeFolder",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "p",
-                "t"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.view.explorer",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "q",
-                "f"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.closeWindow",
-                    "args": []
-                }
             ]
         },
         {
@@ -743,20 +596,6 @@
             "commands": [
                 {
                     "command": "editor.action.sortLinesAscending",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "x",
-                "w"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "editor.action.trimTrailingWhitespace",
                     "args": []
                 }
             ]
