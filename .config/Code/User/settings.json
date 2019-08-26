@@ -106,7 +106,6 @@
     "vim.visualstar": true,
     "vim.handleKeys": {
         "<C-d>": false,
-        "<C-k>": false,
         "<C-j>": false,
         "<C-w>": false,
     },
@@ -173,6 +172,10 @@
         }
     ],
     "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": ["K"],
+            "commands": ["editor.action.showHover"]
+        },
         {
             "before": ["<C-h>"],
             "commands": [":nohl"]
