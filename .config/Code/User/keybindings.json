@@ -156,14 +156,14 @@
 
    // Up/Down
    {
-      "key": "down",
+      "key": "tab",
       "command": "search.action.focusNextSearchResult",
-      "when": "hasSearchResult && searchViewletFocus"
+      "when": "hasSearchResult && searchViewletVisible && vim.mode == 'Normal'"
    },
    {
-      "key": "up",
+      "key": "shift+tab",
       "command": "search.action.focusPreviousSearchResult",
-      "when": "hasSearchResult && searchViewletFocus"
+      "when": "hasSearchResult && searchViewletVisible && vim.mode == 'Normal'"
    },
 
    // Emacs keybinding
