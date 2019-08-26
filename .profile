@@ -2,7 +2,7 @@
 
 _add_to_path() {
   local new_path=$1
-  if [ -n ${new_path} ]; then
+  if [ ! -z ${new_path} ]; then
     if [ -d "${new_path}" ] && [ 0 = $(echo ${PATH} | grep -c "${new_path}") ]; then
       export PATH="${new_path}:${PATH}"
     fi
@@ -39,7 +39,7 @@ _setup_for_clojure() {
 
 _setup_for_java() {
   local java_home=$(asdf where java 2> /dev/null)
-  if [ -n ${java_home} ]; then
+  if [ ! -z ${java_home} ]; then
     export JAVA_HOME=${java_home}
   fi
 }
@@ -80,8 +80,8 @@ _setup_for_schroot() {
 }
 
 _is_ssh_agent_running() {
-  if [ -n ${SSH_AGENT_PID} ] && [ 0 != $(ps -o cmd= -q ${SSH_AGENT_PID} | grep -c 'ssh-agent') ] && \
-       [ -n ${SSH_AUTH_SOCK} ] && [ -S ${SSH_AUTH_SOCK} ]; then
+  if [ ! -z ${SSH_AGENT_PID} ] && [ 0 != $(ps -o cmd= -q ${SSH_AGENT_PID} | grep -c 'ssh-agent') ] && \
+       [ ! -z ${SSH_AUTH_SOCK} ] && [ -S ${SSH_AUTH_SOCK} ]; then
     echo 'OK'
     return 0
   else
@@ -142,7 +142,7 @@ _setup_for_xorg
 _setup_for_java
 
 # for only terminal environment
-if [ -t 1 ] && [ -n ${SHELL} ]; then
+if [ -t 1 ] && [ ! -z ${SHELL} ]; then
   _setup_for_ssh
 fi
 
