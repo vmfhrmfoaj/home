@@ -5,7 +5,7 @@ _setup_for_zsh() {
   if [ 0 != $(echo $plugins | grep -c 'vi-mode') ]; then
     # NOTE
     #  You should change 'backspace key generates' option to control-h on the Gnome terminal.
-    if [ ! -z ${GNOME_TERMINAL_SERVICE} ]; then
+    if [ -n ${GNOME_TERMINAL_SERVICE} ]; then
       bindkey -M viins '^?' backward-kill-word
     fi
     bindkey -M viins '^b' backward-char
@@ -57,13 +57,13 @@ title() {
   [[ "$EMACS" == *term* ]] && return
   : ${2=$1}
   local prefix=''
-  if [ ! -z ${SCHROOT_CHROOT_NAME} ]; then
+  if [ -n ${SCHROOT_CHROOT_NAME} ]; then
     prefix='C'
   fi
   if [[ "$TERM" = "screen"* ]]; then
     prefix="S${prefix}"
   fi
-  if [ ! -z ${prefix} ]; then
+  if [ -n ${prefix} ]; then
     prefix="(${prefix}) "
   fi
   case "$TERM" in
