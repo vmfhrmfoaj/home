@@ -2,6 +2,7 @@
 !.emacs.d/
 !.config/Code/User/keybindings.json
 !.config/Code/User/settings.json
+!.functions
 !.gitignore
 !.profile
 !.vimrc

@@ -1,117 +1,117 @@
 #!/bin/zsh
 
 _setup_for_zsh() {
-  # Oh My Zsh
-  if [ 0 != $(echo $plugins | grep -c 'vi-mode') ]; then
-    # NOTE
-    #  You should change 'backspace key generates' option to control-h on the Gnome terminal.
-    if [ -n ${GNOME_TERMINAL_SERVICE} ]; then
-      bindkey -M viins '^?' backward-kill-word
+    # Oh My Zsh
+    if [ 0 != $(echo $plugins | grep -c 'vi-mode') ]; then
+        # NOTE
+        #    You should change 'backspace key generates' option to control-h on the Gnome terminal.
+        if [ -n ${GNOME_TERMINAL_SERVICE} ]; then
+            bindkey -M viins '^?' backward-kill-word
+        fi
+        bindkey -M viins '^b' backward-char
+        bindkey -M viins '^f' forward-char
+        bindkey -M viins '^d' delete-char
     fi
-    bindkey -M viins '^b' backward-char
-    bindkey -M viins '^f' forward-char
-    bindkey -M viins '^d' delete-char
-  fi
 
-  # custom autocomplete, please install `zsh-completions` package
-  local plugin_dir="${HOME}/.oh-my-zsh/custom/plugins"
-  if [ ! -f "${plugin_dir}/perlbrew/_perlbrew" ]; then
-    mkdir -p "${plugin_dir}/perlbrew/"
-    curl -fsSL -o "${plugin_dir}/perlbrew/_perlbrew" \
-          'https://gist.githubusercontent.com/vmfhrmfoaj/5d638cca74fa0c4ea0420457cae831b2/raw/3eb92bee4b2efa4508cbaea91b80bafd6d6c5f0c/_perlbrew'
-  fi
+    # custom autocomplete, please install `zsh-completions` package
+    local plugin_dir="${HOME}/.oh-my-zsh/custom/plugins"
+    if [ ! -f "${plugin_dir}/perlbrew/_perlbrew" ]; then
+        mkdir -p "${plugin_dir}/perlbrew/"
+        curl -fsSL -o "${plugin_dir}/perlbrew/_perlbrew" \
+            'https://gist.githubusercontent.com/vmfhrmfoaj/5d638cca74fa0c4ea0420457cae831b2/raw/3eb92bee4b2efa4508cbaea91b80bafd6d6c5f0c/_perlbrew'
+    fi
 
-  local NEWLINE=$'\n'
-  local PS1_PREFIX='%{$fg[magenta]%}(%n@%M)%{$reset_color%}'
-  export PS1="${PS1_PREFIX}${NEWLINE}${PS1}"
+    local NEWLINE=$'\n'
+    local PS1_PREFIX='%{$fg[magenta]%}(%n@%M)%{$reset_color%}'
+    export PS1="${PS1_PREFIX}${NEWLINE}${PS1}"
 }
 
 zle-keymap-select() {
-  if [[ "${TERM}" = screen* ]]; then
-    local CURSOR_BOX='\eP\e[2 q\e\\'
-    local CURSOR_UNDERBAR='\eP\e[4 q\e\\'
-    local CURSOR_LINE='\eP\e[6 q\e\\'
-  else
-    local CURSOR_BOX='\e[2 q'
-    local CURSOR_UNDERBAR='\e[4 q'
-    local CURSOR_LINE='\e[6 q'
-  fi
-
-  if [[ "$TERM" = *"xterm"* ]] || [[ "$TERM" = "screen"* ]]; then
-    if [ "$KEYMAP" = vicmd ]; then
-      # the command mode for vi
-      echo -ne $CURSOR_BOX
+    if [[ "${TERM}" = screen* ]]; then
+        local CURSOR_BOX='\eP\e[2 q\e\\'
+        local CURSOR_UNDERBAR='\eP\e[4 q\e\\'
+        local CURSOR_LINE='\eP\e[6 q\e\\'
     else
-      # the insert mode for vi
-      echo -ne $CURSOR_LINE
+        local CURSOR_BOX='\e[2 q'
+        local CURSOR_UNDERBAR='\e[4 q'
+        local CURSOR_LINE='\e[6 q'
     fi
-  fi
-  # for Oh My Zsh
-  zle reset-prompt
-  zle -R
+
+    if [[ "$TERM" = *"xterm"* ]] || [[ "$TERM" = "screen"* ]]; then
+        if [ "$KEYMAP" = vicmd ]; then
+            # the command mode for vi
+            echo -ne $CURSOR_BOX
+        else
+            # the insert mode for vi
+            echo -ne $CURSOR_LINE
+        fi
+    fi
+    # for Oh My Zsh
+    zle reset-prompt
+    zle -R
 }
 
 title() {
-  emulate -L zsh
-  setopt prompt_subst
-  [[ "$EMACS" == *term* ]] && return
-  : ${2=$1}
-  local prefix=''
-  if [ ! -z ${SCHROOT_CHROOT_NAME} ]; then
-    prefix='C'
-  fi
-  if [[ "$TERM" = "screen"* ]]; then
-    prefix="S${prefix}"
-  fi
-  if [ ! -z ${prefix} ]; then
-    prefix="(${prefix}) "
-  fi
-  case "$TERM" in
-    cygwin | xterm* | putty* | rxvt* | ansi)
-      print -Pn "\e]2;${prefix}$2:q\a"
-      print -Pn "\e]1;${prefix}$1:q\a"
-      ;;
-    screen*)
-      print -Pn "\e]2;${prefix}$2:q\a"
-      print -Pn "\e]1;${prefix}$1:q\a"
-      print -Pn "\ek$1\e\\"
-      ;;
-    tmux*)
-      print -Pn "\ek$1:q\e\\"
-      ;;
-    *)
-      if [[ -n "$terminfo[fsl]" ]] && [[ -n "$terminfo[tsl]" ]]; then
-        echoti tsl
-        print -Pn "$1"
-        echoti fsl
-      fi
-      ;;
-  esac
+    emulate -L zsh
+    setopt prompt_subst
+    [[ "$EMACS" == *term* ]] && return
+    : ${2=$1}
+    local prefix=''
+    if [ ! -z ${SCHROOT_CHROOT_NAME} ]; then
+        prefix='C'
+    fi
+    if [[ "$TERM" = "screen"* ]]; then
+        prefix="S${prefix}"
+    fi
+    if [ ! -z ${prefix} ]; then
+        prefix="(${prefix}) "
+    fi
+    case "$TERM" in
+        cygwin | xterm* | putty* | rxvt* | ansi)
+            print -Pn "\e]2;${prefix}$2:q\a"
+            print -Pn "\e]1;${prefix}$1:q\a"
+            ;;
+        screen*)
+            print -Pn "\e]2;${prefix}$2:q\a"
+            print -Pn "\e]1;${prefix}$1:q\a"
+            print -Pn "\ek$1\e\\"
+            ;;
+        tmux*)
+            print -Pn "\ek$1:q\e\\"
+            ;;
+        *)
+            if [[ -n "$terminfo[fsl]" ]] && [[ -n "$terminfo[tsl]" ]]; then
+                echoti tsl
+                print -Pn "$1"
+                echoti fsl
+            fi
+            ;;
+    esac
 }
 
 precmd() {
-  local TABNAME="%n@%M: %~"
-  title $TABNAME $TABNAME
+    local TABNAME="%n@%M: %~"
+    title $TABNAME $TABNAME
 }
 
 preexec() {
-  if [[ "${TERM}" = screen* ]]; then
-    local CURSOR_BOX='\eP\e[2 q\e\\'
-    local CURSOR_UNDERBAR='\eP\e[4 q\e\\'
-    local CURSOR_LINE='\eP\e[6 q\e\\'
-  else
-    local CURSOR_BOX='\e[2 q'
-    local CURSOR_UNDERBAR='\e[4 q'
-    local CURSOR_LINE='\e[6 q'
-  fi
-  local TABNAME="${2:gs/%/%%}"
-  title $TABNAME $TABNAME
-  echo -ne $CURSOR_LINE
+    if [[ "${TERM}" = screen* ]]; then
+        local CURSOR_BOX='\eP\e[2 q\e\\'
+        local CURSOR_UNDERBAR='\eP\e[4 q\e\\'
+        local CURSOR_LINE='\eP\e[6 q\e\\'
+    else
+        local CURSOR_BOX='\e[2 q'
+        local CURSOR_UNDERBAR='\e[4 q'
+        local CURSOR_LINE='\e[6 q'
+    fi
+    local TABNAME="${2:gs/%/%%}"
+    title $TABNAME $TABNAME
+    echo -ne $CURSOR_LINE
 }
 
 postexec() {
-  local TABNAME="%n@%M"
-  title $TABNAME $TABNAME
+    local TABNAME="%n@%M"
+    title $TABNAME $TABNAME
 }
 
 _setup_for_zsh
