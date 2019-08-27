@@ -1,18 +1,6 @@
 #!/bin/zsh
 
 _setup_for_zsh() {
-    # Oh My Zsh
-    if [ 0 != $(echo $plugins | grep -c 'vi-mode') ]; then
-        # NOTE
-        #    You should change 'backspace key generates' option to control-h on the Gnome terminal.
-        if [ -n ${GNOME_TERMINAL_SERVICE} ]; then
-            bindkey -M viins '^?' backward-kill-word
-        fi
-        bindkey -M viins '^b' backward-char
-        bindkey -M viins '^f' forward-char
-        bindkey -M viins '^d' delete-char
-    fi
-
     # custom autocomplete, please install `zsh-completions` package
     local plugin_dir="${HOME}/.oh-my-zsh/custom/plugins"
     if [ ! -f "${plugin_dir}/perlbrew/_perlbrew" ]; then
