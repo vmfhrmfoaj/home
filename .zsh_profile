@@ -1,6 +1,15 @@
 #!/bin/zsh
 
 _setup_for_zsh() {
+    if [ -n "$(echo "${plugins}" | grep 'vi-mode')" ]; then
+        # NOTE
+        #  See https://wiki.archlinux.org/index.php/Zsh#Key_bindings
+        bindkey -M vicmd "${terminfo[khome]}" beginning-of-line
+        bindkey -M viins "${terminfo[khome]}" beginning-of-line
+        bindkey -M viins "${terminfo[kend]}" end-of-line
+        bindkey -M vicmd "${terminfo[kend]}" end-of-line
+    fi
+
     # custom autocomplete, please install `zsh-completions` package
     local plugin_dir="${HOME}/.oh-my-zsh/custom/plugins"
     if [ ! -f "${plugin_dir}/perlbrew/_perlbrew" ]; then
