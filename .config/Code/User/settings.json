@@ -163,10 +163,6 @@
     ],
     "vim.normalModeKeyBindingsNonRecursive": [
         {
-            "before": ["K"],
-            "commands": ["editor.action.showHover"]
-        },
-        {
             "before": ["<C-h>"],
             "commands": [":nohl"]
         },
