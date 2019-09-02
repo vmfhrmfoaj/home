@@ -141,7 +141,15 @@
                           ;;  May be it cause the performance issue!
                           (flymake-start t t)))))
                 (add-hook 'after-save-hook f nil :local)
-                (add-hook 'after-change-functions f nil :local)))))
+                (add-hook 'after-change-functions f nil :local))))
+  (let ((f (byte-compile
+                (lambda (f &rest args)
+                  "Fallback for `dumb-jump'"
+                  (let ((res (apply f args)))
+                    (when (and (stringp res) (s-starts-with? "Not found for:" res))
+                      (call-interactively #'dumb-jump-go)))))))
+   (advice-add #'lsp-goto-implementation  :around f)
+   (advice-add #'lsp-goto-type-definition :around f)))
 
 (use-package lsp-ui
   :ensure t
