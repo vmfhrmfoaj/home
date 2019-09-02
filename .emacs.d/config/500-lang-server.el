@@ -59,12 +59,15 @@
                 (add-hook 'after-change-functions f nil :local))))
   (let ((f (byte-compile
                 (lambda (f &rest args)
-                  "Fallback for `dumb-jump'"
+                  "fallback"
                   (let ((res (apply f args)))
-                    (when (and (stringp res) (s-starts-with? "Not found for:" res))
+                    (when (and (stringp res)
+                               (s-starts-with? "Not found for:" res))
                       (call-interactively #'dumb-jump-go)))))))
-   (advice-add #'lsp-goto-implementation  :around f)
-   (advice-add #'lsp-goto-type-definition :around f)))
+    (advice-add #'lsp-find-definition      :around f)
+    (advice-add #'lsp-find-declaration     :around f)
+    (advice-add #'lsp-find-implementation  :around f)
+    (advice-add #'lsp-find-type-definition :around f)))
 
 (use-package lsp-ui
   :ensure t

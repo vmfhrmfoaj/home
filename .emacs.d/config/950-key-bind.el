@@ -431,8 +431,10 @@
   :config
   (dolist (mode '(c-mode c++-mode java-mode))
     (evil-leader/set-key-for-mode mode
-      "mgg" #'lsp-goto-implementation
-      "mgd" #'lsp-goto-type-definition)
+      "mgg" #'lsp-find-definition
+      "mgd" #'lsp-find-declaration
+      "mgi" #'lsp-find-implementation
+      "mgt" #'lsp-find-type-definition)
     (which-key-declare-prefixes-for-mode mode
       (concat evil-leader/leader "mg") "goto")
     (evil-leader/set-major-leader-for-mode mode)))
@@ -532,8 +534,10 @@
   :defer t
   :config
   (evil-leader/set-key-for-mode 'js-mode
-    "mgg" #'lsp-goto-implementation
-    "mgd" #'lsp-goto-type-definition)
+    "mgg" #'lsp-find-definition
+    "mgd" #'lsp-find-declaration
+    "mgi" #'lsp-find-implementation
+    "mgt" #'lsp-find-type-definition)
   (which-key-declare-prefixes-for-mode 'js-mode
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode 'js-mode))
@@ -646,7 +650,10 @@
   :defer t
   :config
   (evil-leader/set-key-for-mode 'php-mode
-    "mgg" #'dumb-jump-go
+    "mgg" #'lsp-find-definition
+    "mgd" #'lsp-find-declaration
+    "mgi" #'lsp-find-implementation
+    "mgt" #'lsp-find-type-definition
     "mrr" #'psysh
     "mrR" #'psysh-restart
     "mrs" #'psysh-show)
@@ -680,8 +687,10 @@
   :defer t
   :config
   (evil-leader/set-key-for-mode 'rust-mode
-    "mgg" #'lsp-goto-implementation
-    "mgd" #'lsp-goto-type-definition)
+    "mgg" #'lsp-find-definition
+    "mgd" #'lsp-find-declaration
+    "mgi" #'lsp-find-implementation
+    "mgt" #'lsp-find-type-definition)
   (which-key-declare-prefixes-for-mode 'rust-mode
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode 'rust-mode))
@@ -699,8 +708,10 @@
   :defer t
   :config
   (evil-leader/set-key-for-mode 'typescript-mode
-    "mgg" #'lsp-goto-implementation
-    "mgd" #'lsp-goto-type-definition)
+    "mgg" #'lsp-find-definition
+    "mgd" #'lsp-find-declaration
+    "mgi" #'lsp-find-implementation
+    "mgt" #'lsp-find-type-definition)
   (which-key-declare-prefixes-for-mode 'typescript-mode
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode 'typescript-mode))
