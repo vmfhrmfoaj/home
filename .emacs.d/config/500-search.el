@@ -76,7 +76,7 @@
                helm-mm-3-migemo-search)
              (--map (-partial #'apply it))
              (--map (-compose it #'helm-swoop--refine-candidate))))
-  (advice-add #'helm-swoop :after #'keyboard-quit) ; NOTE: How to cancel the selection?
+  (advice-add #'helm-swoop :after (byte-compile (lambda (&rest _) (keyboard-quit)))) ; NOTE: How to cancel the selection?
   (advice-add #'helm-swoop--get-content :override #'helm-swoop--get-content-for-fancy-narrow)
   (advice-add #'helm-c-source-swoop       :filter-return #'helm-swoop--modify-action-on-helm-source)
   (advice-add #'helm-c-source-multi-swoop :filter-return #'helm-swoop--modify-action-on-helm-source))

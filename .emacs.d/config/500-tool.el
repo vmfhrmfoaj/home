@@ -202,7 +202,11 @@
         undo-tree-history-directory-alist backup-directory-alist))
 
 (use-package vlf-setup
-  :ensure vlf)
+  :ensure vlf
+  :init
+  (let ((size (* 1024 600)))
+    (setq large-file-warning-threshold size
+          vlf-batch-size               size)))
 
 (use-package ztree
   :ensure t

@@ -63,6 +63,7 @@
                   (let ((res (apply f args)))
                     (when (and (stringp res)
                                (s-starts-with? "Not found for:" res))
+                      (message nil)
                       (call-interactively #'dumb-jump-go)))))))
     (advice-add #'lsp-find-definition      :around f)
     (advice-add #'lsp-find-declaration     :around f)
