@@ -538,6 +538,14 @@
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode 'js-mode))
 
+(use-package lsp-mode
+  :defer t
+  :config
+  (add-hook 'lsp-mode-hook
+            (lambda ()
+              (evil-local-set-key 'normal [remap next-error]     #'flymake-goto-next-error)
+              (evil-local-set-key 'normal [remap previous-error] #'flymake-goto-prev-error))))
+
 (use-package multi-term
   :defer t
   :config
