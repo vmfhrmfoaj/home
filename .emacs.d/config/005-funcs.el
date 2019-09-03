@@ -327,7 +327,7 @@
 (defn comment-it ()
   "TODO"
   (interactive)
-  (call-interactively
-   (if (region-active-p)
-       #'comment-region
-     #'comment-line)))
+  (if (region-active-p)
+      (call-interactively #'comment-dwim)
+    (save-excursion (comment-line 1))
+    (beginning-of-line-text)))
