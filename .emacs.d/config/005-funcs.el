@@ -323,3 +323,11 @@
        (restore-modes ,modes mode-status))))
 
 (put 'with-disable-modes 'lisp-indent-function 'defun)
+
+(defn comment-it ()
+  "TODO"
+  (interactive)
+  (call-interactively
+   (if (region-active-p)
+       #'comment-region
+     #'comment-line)))

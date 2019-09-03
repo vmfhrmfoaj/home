@@ -82,6 +82,7 @@
     "<SPC>" #'helm-M-x
     "TAB" #'switch-to-previous-buffer
     "!" #'shell-command
+    ";" #'comment-it
     "0" #'winum-select-window-0
     "1" #'winum-select-window-1
     "2" #'winum-select-window-2
@@ -197,6 +198,7 @@
     ;; search/symbol
     "se" #'evil-multiedit-match-all
     "sf" #'helm-do-ag
+    "sF" #'helm-do-ag-this-file
     "sg" #'helm-do-grep-ag
     "sr" #'helm-resume-last-search-buffer
     "sp" #'helm-do-ag-project-root
@@ -730,9 +732,6 @@
   :config
   (add-hook 'vlf-mode-hook
             (lambda ()
-              (evil-leader/set-major-leader-for-mode 'vlf-mode)
-              (evil-local-set-key 'normal "gg" #'vlf-custom-beginning-of-file)
-              (evil-local-set-key 'normal "G"  #'vlf-custom-end-of-file)
               (evil-local-set-key 'normal (kbd "C-k") #'vlf-prev-batch)
               (evil-local-set-key 'normal (kbd "C-j") #'vlf-next-batch))))
 
