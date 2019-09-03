@@ -204,9 +204,20 @@
 (use-package vlf-setup
   :ensure vlf
   :init
+  (defn vlf-custom-beginning-of-file ()
+    (interactive)
+    (vlf-beginning-of-file)
+    (beginning-of-buffer))
+
+  (defn vlf-custom-end-of-file ()
+    (interactive)
+    (vlf-end-of-file)
+    (end-of-buffer))
+
   (let ((size (* 1024 600)))
     (setq large-file-warning-threshold size
-          vlf-batch-size               size)))
+          vlf-batch-size               size
+          vlf-tune-enabled nil)))
 
 (use-package ztree
   :ensure t

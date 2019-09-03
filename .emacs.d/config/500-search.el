@@ -116,6 +116,30 @@
     "Improve `helm-ag--elisp-regexp-to-pcre' for ripgrep."
     (s-replace-all '(("\\s-" . "[[:space:]]")) pattern))
 
+  (defn helm-ag--find-file-action-for-vlf (candidate find-func this-file &optional persistent)
+    "antoehr version of `helm-ag--find-file-action' for `vlf-mode'."
+    (when vlf-mode
+      (when (memq 'pt helm-ag--command-features)
+        ;; 'pt' always show filename if matched file is only one.
+        (setq this-file nil))
+      (let* ((file-line (helm-grep-split-line candidate))
+             (filename (or this-file (cl-first file-line) candidate))
+             (line (if this-file
+                       (cl-first (split-string candidate ":"))
+                     (cl-second file-line)))
+             (default-directory (or helm-ag--default-directory
+                                    helm-ag--last-default-directory
+                                    default-directory)))
+        (unless persistent
+          (setq helm-ag--last-default-directory default-directory))
+        (funcall find-func filename)
+        (vlf-goto-line (string-to-number line))
+        (beginning-of-line)
+        (ignore-errors
+          (and (re-search-forward helm-ag--last-query (line-end-position) t)
+               (goto-char (match-beginning 0))))
+        t)))
+
   :config
   (setq helm-ag-base-command "rg"
         helm-ag-command-option "--no-heading --no-messages --smart-case"
@@ -125,4 +149,6 @@
   (advice-add #'helm-do-ag :around #'helm-do-ag-wrap)
   (advice-add #'helm-ag--elisp-regexp-to-pcre :filter-return #'helm-ag--elisp-regexp-to-pcre-for-ripgrep)
   (with-eval-after-load "projectile"
-    (advice-add #'helm-ag--project-root :override #'projectile-project-root)))
+    (advice-add #'helm-ag--project-root :override #'projectile-project-root))
+  (with-eval-after-load "vlf"
+    (advice-add #'helm-ag--find-file-action :before-until #'helm-ag--find-file-action-for-vlf)))

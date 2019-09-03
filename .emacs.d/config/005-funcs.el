@@ -35,6 +35,7 @@
 
 (defmacro defn (name args &optional docstr &rest body)
   "TODO"
+  (declare (doc-string 3) (indent 2))
   `(prog1
        ,(if docstr
             `(defun ,name ,args ,docstr ,@body)
