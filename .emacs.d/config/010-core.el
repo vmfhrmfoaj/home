@@ -110,7 +110,7 @@
     ;; NOTE
     ;; (helm-resume helm-last-search-buffer)
     ;;  for `helm-swoop-resume' advice function:
-    (if (not (and helm-last-search-buffer (get-buffer helm-last-search-buffer)))
+    (if (not (and (stringp helm-last-search-buffer) (get-buffer helm-last-search-buffer)))
         (message "There is no search result!")
       (setq helm-last-buffer helm-last-search-buffer)
       (call-interactively #'helm-resume)))
