@@ -27,7 +27,7 @@
           args
         (apply #'list (-interpose "\n" (append contents nil)) (-drop 1 args)))))
 
-  (defun lsp--custom-eldoc-message (&optional msg)
+  (defn lsp--custom-eldoc-message (&optional msg)
     "Show MSG in eldoc."
     (let ((lines (s-lines (or msg "")))
           (max-line (cond
@@ -58,13 +58,12 @@
                 (add-hook 'after-save-hook f nil :local)
                 (add-hook 'after-change-functions f nil :local))))
   (let ((f (byte-compile
-                (lambda (f &rest args)
-                  "fallback"
-                  (let ((res (apply f args)))
-                    (when (and (stringp res)
-                               (s-starts-with? "Not found for:" res))
-                      (message nil)
-                      (call-interactively #'dumb-jump-go)))))))
+            (lambda (f &rest args)
+              "fallback"
+              (let ((success? (ignore-errors (not (apply f args)))))
+                (unless success?
+                  (message nil)
+                  (call-interactively #'dumb-jump-go)))))))
     (advice-add #'lsp-find-definition      :around f)
     (advice-add #'lsp-find-declaration     :around f)
     (advice-add #'lsp-find-implementation  :around f)
