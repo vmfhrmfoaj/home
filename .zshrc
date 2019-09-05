@@ -65,7 +65,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(cargo docker dotenv git heroku openssl perlbrew rust vi-mode vboxmanage)
+plugins=(cargo docker dotenv git heroku perlbrew rust vi-mode)
 
 source $ZSH/oh-my-zsh.sh
 
