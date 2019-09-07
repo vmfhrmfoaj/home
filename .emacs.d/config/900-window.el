@@ -5,7 +5,10 @@
          (main-monitor-t (nth 1 workarea))
          (main-monitor-w (nth 2 workarea))
          (main-monitor-h (nth 3 workarea)))
-    (when (getenv "WSLENV")
+    (when (or (getenv "WSLENV")
+              ;; NOTE
+              ;;  On Xming, `workarea' and `geometry' are always same.
+              (equal workarea (-some->> main-monitor (assoc 'geometry) (-drop 1))))
       ;; for WSL (Windows Linux Subsystem)
       (let ((title-bar-h 31)
             (task-bar-h 44))
