@@ -4,14 +4,20 @@
       (-some->> (x-display-monitor-attributes-list)
                 (--max-by (> (funcall get-resolution it)
                              (funcall get-resolution other)))))
-    "TODO")
+    "See `display-monitor-attributes-list'")
 
   (defvar main-monitor-resolution
     (-some->> main-monitor
               (assoc 'geometry)
               (-drop 1)
               (-take-last 2))
-    "TODO"))
+    "See `display-monitor-attributes-list'")
+
+  (defvar main-monitor-mm-size
+    (-some->> main-monitor
+              (assoc 'mm-size)
+              (-drop 1))
+    "See `display-monitor-attributes-list'"))
 
 (defvar null-fn (-const nil)
   "TODO")
