@@ -1,6 +1,6 @@
 (when window-system
   (let* ((font "DejaVu Sans Mono")
-         (spacing 1)
+         (spacing 0)
          (height (cond
                   ((equal '(1440  900) main-monitor-resolution) 113)
                   ((equal '(1920 1080) main-monitor-resolution)
