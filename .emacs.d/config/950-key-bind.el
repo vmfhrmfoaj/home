@@ -70,6 +70,7 @@
 
 (use-package evil
   :config
+  (define-key isearch-mode-map (kbd "C-h") #'isearch-delete-char)
   (evil-define-key 'normal 'global
     "gh" #'eldoc-refresh))
 
