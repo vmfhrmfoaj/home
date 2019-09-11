@@ -78,8 +78,8 @@ _setup_for_rust() {
         if [ -f "${HOME}/.cargo/env" ]; then
             source "${HOME}/.cargo/env"
             rustup toolchain add stable
-            rustup default stable
             rustup toolchain add nightly
+            rustup default nightly
             rustup component add rls rust-analysis rust-src # for rls (Rust Language Server)
         fi
     fi
