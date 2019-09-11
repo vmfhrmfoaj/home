@@ -77,6 +77,7 @@
   ;;  Turn company popup off completely.
   (remove-hook 'pre-command-hook 'company-pre-command)
   (remove-hook 'post-command-hook 'company-post-command)
+  (advice-add #'helm-company-action-insert :after #'evil-normal-state)
   (advice-add #'company-mode-on :after
               (byte-compile
                (lambda ()
