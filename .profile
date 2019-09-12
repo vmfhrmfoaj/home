@@ -121,6 +121,10 @@ _setup_for_ssh() {
 }
 
 _setup_for_wsl() {
+    # for VcXsrv
+    if [ -z ${LIBGL_ALWAYS_INDIRECT} ]; then
+      export LIBGL_ALWAYS_INDIRECT=1
+    fi
     if [ -z ${DISPLAY} ]; then
         export DISPLAY=localhost:0.0
     fi

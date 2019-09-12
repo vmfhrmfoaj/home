@@ -6,6 +6,7 @@
   :config
   (custom-set-faces
    `(cursor ((t (:background "#79FFB2"))))
+   `(default ((t (:weight medium))))
    `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-string-face :foreground "#A8AF62" :weight bold))))
    `(font-lock-regexp-grouping-construct ((t (:inherit font-lock-string-face :foreground "#A8AF62" :weight bold))))
    `(font-lock-variable-name-face ((t (:foreground "#7ECB92"))))

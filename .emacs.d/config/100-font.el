@@ -11,11 +11,7 @@
       (setq font-height height))
     (setq-default line-spacing spacing)
     (set-face-font 'default font)
-    (set-fontset-font t 'unicode "symbola")
-    (set-face-attribute 'default nil
-                        :weight 'medium
-                        :width 'medium
-                        :height height))
+    (set-fontset-font t 'unicode "symbola"))
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
   (add-to-list 'face-font-rescale-alist '("DejaVu Serif"     . 0.95))
   (add-to-list 'face-font-rescale-alist '("FontAwesome"      . 0.9))
