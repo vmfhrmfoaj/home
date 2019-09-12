@@ -3,9 +3,11 @@
          (spacing 0)
          (height (cond
                   ((equal '(1440  900) main-monitor-resolution) 113)
-                  ((equal '(1920 1080) main-monitor-resolution) 105))))
-    (when height
-      (setq font-height height))
+                  ((equal '(1920 1080) main-monitor-resolution) 105)
+                  (t 110))))
+    (defvar font-height
+      height
+      "Default font heigh.")
     (setq-default line-spacing spacing)
     (set-face-font 'default font)
     (set-fontset-font t 'unicode "symbola"))
