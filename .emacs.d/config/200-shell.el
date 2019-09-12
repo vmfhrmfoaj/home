@@ -2,9 +2,9 @@
   :defer t
   :mode ("\\.env\\'" . sh-mode)
   :config
-  (setq sh-basic-offset 2
-        sh-indentation 2
-        smie-indent-basic 2)
+  (setq sh-basic-offset 4
+        sh-indentation 4
+        smie-indent-basic 4)
   (add-hook 'sh-mode-hook
             (lambda ()
               (with-eval-after-load "lsp-mode"
