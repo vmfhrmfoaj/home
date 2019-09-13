@@ -3,7 +3,8 @@
          (spacing 0)
          (height (cond
                   ((equal '(1440  900) main-monitor-resolution) 113)
-                  ((equal '(1920 1080) main-monitor-resolution) 105)
+                  ((equal '(1920 1080) main-monitor-resolution)
+                   (if (equal '(650 366) main-monitor-mm-size) 135 105))
                   (t 110))))
     (defvar font-height
       height
