@@ -124,6 +124,10 @@ _setup_for_wsl() {
     if [ -z ${DISPLAY} ]; then
         export DISPLAY=localhost:0.0
     fi
+    # for VcXsrv
+    if [ -z ${LIBGL_ALWAYS_INDIRECT} ]; then
+        export LIBGL_ALWAYS_INDIRECT=1
+    fi
     which xrdb > /dev/null 2>&1
     if [ $? -eq 0 ]; then
         xrdb -merge "${HOME}/.Xresources"
