@@ -104,7 +104,7 @@ _is_ssh_agent_running() {
     fi
 }
 
-_setup_for_ssh() {
+_setup_for_term() {
     local cache_file=${1:-"${HOME}/.ssh/ssh-agent-for-remote"}
     if [ 'OK' = "$(_is_ssh_agent_running)" ]; then
         return 0
@@ -118,6 +118,12 @@ _setup_for_ssh() {
     mkdir -p $(dirname "${cache_file}")
     ssh-agent -s > "${cache_file}"
     source "${cache_file}"
+}
+
+_setup_for_ssh() {
+    if [ -z ${LIBGL_ALWAYS_INDIRECT} ]; then
+        export LIBGL_ALWAYS_INDIRECT=1
+    fi
 }
 
 _setup_for_wsl() {
@@ -161,7 +167,15 @@ _setup_for_java
 
 # for only terminal environment
 if [ -t 1 ] && [ ! -z ${SHELL} ]; then
-    _setup_for_ssh
+    _setup_for_term
+fi
+
+# for GUI or X11 forwarding
+if [ ! -z ${DISPLAY} ]; then
+    # for X11 forwarding
+    if [ ! -z $(echo ${DISPLAY} | grep ':10' ) ]; then
+        _setup_for_ssh
+    fi
 fi
 
 if [ 'yes' = "${SCHROOT_CHROOT_NAME+yes}" ]; then
