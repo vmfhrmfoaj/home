@@ -5,6 +5,7 @@
     "editor.fontWeight": "bold",
     "editor.fontLigatures": true,
     "editor.letterSpacing": -0.4,
+    "editor.wordWrapColumn": 120,
     "workbench.colorTheme": "One Dark Pro Vivid",
     "workbench.iconTheme": "material-icon-theme",
     "window.menuBarVisibility": "toggle",
