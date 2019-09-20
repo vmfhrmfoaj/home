@@ -72,7 +72,7 @@
   :config
   (define-key isearch-mode-map (kbd "C-h") #'isearch-delete-char)
   (evil-define-key 'normal 'global
-    "gh" #'eldoc-refresh))
+    "gr" #'eldoc-refresh))
 
 (use-package evil-leader
   :ensure t
@@ -224,10 +224,10 @@
 
     ;; window
     "w-" #'split-window-vertically
-    "wH" #'windmove-left
-    "wJ" #'windmove-down
-    "wK" #'windmove-up
-    "wL" #'windmove-right
+    "wh" #'windmove-left
+    "wj" #'windmove-down
+    "wk" #'windmove-up
+    "wl" #'windmove-right
     "wd" #'delete-window
     "wm" #'delete-other-windows
 
