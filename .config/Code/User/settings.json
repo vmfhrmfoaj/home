@@ -1,10 +1,10 @@
 {
     // Appearance
-    "editor.fontFamily": "'Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontFamily": "'Cascadia Code', 'Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "editor.fontSize": 14,
     "editor.fontWeight": "bold",
     "editor.fontLigatures": true,
-    "editor.letterSpacing": -0.4,
+    "editor.lineHeight": 18,
     "editor.wordWrapColumn": 120,
     "workbench.colorTheme": "One Dark Pro Vivid",
     "workbench.iconTheme": "material-icon-theme",
@@ -108,6 +108,7 @@
         "<C-d>": false,
         "<C-j>": false,
         "<C-w>": false,
+        "<C-k>": false,
     },
     // - https://github.com/VSpaceCode/VSpaceCode
     "vim.leader": "<space>",
@@ -132,7 +133,6 @@
         {
             "before": [
                 "<leader>",
-                ";",
                 ";"
             ],
             "after": [],
@@ -199,7 +199,6 @@
             "before": [
                 "<leader>",
                 ";",
-                ";"
             ],
             "after": [],
             "commands": [

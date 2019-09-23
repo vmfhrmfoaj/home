@@ -7,18 +7,6 @@
       "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
    },
 
-   // Up/Down
-   {
-      "key": "tab",
-      "command": "search.action.focusNextSearchResult",
-      "when": "hasSearchResult && searchViewletVisible && vim.mode == 'Normal'"
-   },
-   {
-      "key": "shift+tab",
-      "command": "search.action.focusPreviousSearchResult",
-      "when": "hasSearchResult && searchViewletVisible && vim.mode == 'Normal'"
-   },
-
    // Emacs keybinding
    {
       "key": "ctrl+h",
@@ -43,10 +31,27 @@
       "command": "tab",
       "when": "editorTextFocus && !editorReadonly && vim.mode == 'Insert' && !suggestWidgetVisible"
    },
+   {
+      "key": "tab",
+      "command": "search.action.focusNextSearchResult",
+      "when": "textInputFocus && hasSearchResult && searchViewletVisible && vim.mode == 'Normal'"
+   },
+   {
+      "key": "shift+tab",
+      "command": "search.action.focusPreviousSearchResult",
+      "when": "textInputFocus && hasSearchResult && searchViewletVisible && vim.mode == 'Normal'"
+   },
 
    // Toggle
    {
       "key": "alt+j",
       "command": "workbench.action.toggleSidebarVisibility",
+   },
+
+   // for improving key convention
+   {
+      "key": "ctrl+k ctrl+p",
+      "command": "editor.action.marker.nextInFiles",
+      "when": "editorFocus && !editorReadonly"
    },
 ]
