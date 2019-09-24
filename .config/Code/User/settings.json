@@ -86,10 +86,47 @@
     "C_Cpp.default.intelliSenseMode": "clang-x64",
     "C_Cpp.updateChannel": "Default",
 
+    // Gitlens
+    "gitlens.codeLens.enabled": false,
+    "gitlens.currentLine.enabled": false,
+    "gitlens.statusBar.format": "${author}(${agoOrDate}): \"${message}\"",
+
     // Markdownlint
     "markdownlint.config": {
         "MD024": false,
     },
+
+    // multi-command
+    "multiCommand.commands": [
+        {
+            "command": "multiCommand.findInFiles",
+            "sequence": [
+                "workbench.action.findInFiles",
+                "extension.vim_escape"
+            ]
+        },
+        {
+            "command": "multiCommand.vimSelectedSuggestionAndEscape",
+            "sequence": [
+                "acceptSelectedSuggestionOnEnter",
+                "extension.vim_escape"
+            ]
+        },
+        {
+            "command": "multiCommand.gitStageSelectedRanges",
+            "sequence": [
+                "git.stageSelectedRanges",
+                "extension.vim_escape"
+            ]
+        },
+        {
+            "command": "multiCommand.gitUnstageSelectedRanges",
+            "sequence": [
+                "git.unstageSelectedRanges",
+                "extension.vim_escape"
+            ]
+        },
+    ],
 
     // Remote Development
     "remote.SSH.showLoginTerminal": true,
@@ -108,28 +145,12 @@
         "<C-d>": false,
         "<C-j>": false,
         "<C-w>": false,
-        "<C-k>": false,
     },
     // - https://github.com/VSpaceCode/VSpaceCode
     "vim.leader": "<space>",
+    "vim.visualModeKeyBindingsNonRecursive": [
+    ],
     "vim.visualModeKeyBindings": [
-        {
-            "before": [
-                "<leader>",
-                "/"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.findInFiles",
-                    "args": []
-                },
-                {
-                    "command": "extension.vim_escape",
-                    "args": []
-                }
-            ]
-        },
         {
             "before": [
                 "<leader>",
@@ -321,48 +342,6 @@
             "commands": [
                 {
                     "command": "workbench.action.focusEighthEditorGroup",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "E",
-                "l"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.actions.view.problems",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "E",
-                "n"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "editor.action.marker.next",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "E",
-                "p"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "editor.action.marker.prev",
                     "args": []
                 }
             ]

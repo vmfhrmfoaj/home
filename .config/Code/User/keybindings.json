@@ -18,13 +18,6 @@
       "command": "-editor.action.startFindReplaceAction"
    },
 
-   // Enter
-   {
-      "key": "enter",
-      "command": "-acceptSelectedSuggestionOnEnter",
-      "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus"
-   },
-
    // Tab
    {
       "key": "tab",
@@ -45,13 +38,50 @@
    // Toggle
    {
       "key": "alt+j",
-      "command": "workbench.action.toggleSidebarVisibility",
+      "command": "workbench.action.toggleSidebarPosition",
    },
 
-   // for improving key convention
+   // for Vim
    {
-      "key": "ctrl+k ctrl+p",
-      "command": "editor.action.marker.nextInFiles",
-      "when": "editorFocus && !editorReadonly"
+      "key": "enter",
+      "command": "multiCommand.vimSelectedSuggestionAndEscape",
+      "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.mode == 'Insert'"
+   },
+   {
+      "key": "ctrl+shift+f",
+      "command": "multiCommand.findInFiles"
+   },
+
+   // for Git and Gitlens
+   {
+      "key": "ctrl+shift+g shift+s",
+      "command": "gitlens.showQuickCommitDetails",
+      "when": "gitlens:enabled"
+   },
+   {
+      "key": "ctrl+shift+g NumPad_Add",
+      "command": "multiCommand.gitStageSelectedRanges"
+   },
+   {
+      "key": "ctrl+shift+g NumPad_Multiply",
+      "command": "git.stageAll"
+   },
+   {
+      "key": "ctrl+shift+g NumPad_Subtract",
+      "command": "multiCommand.gitUnstageSelectedRanges"
+   },
+   {
+      "key": "ctrl+shift+g NumPad_Divide",
+      "command": "git.unstageAll"
+   },
+   {
+      "key": "ctrl+shift+g shift+.",
+      "command": "workbench.action.editor.nextChange",
+      "when": "editorTextFocus"
+   },
+   {
+      "key": "ctrl+shift+g shift+,",
+      "command": "workbench.action.editor.previousChange",
+      "when": "editorTextFocus"
    },
 ]
