@@ -1,10 +1,11 @@
 (when window-system
-  (let* ((font "Monoid")
+  (let* ((font "DejaVu Sans Mono")
          (spacing 0)
          (height (cond
-                  ((equal '(1440  900) main-monitor-resolution) 90)
-                  ((equal '(1920 1080) main-monitor-resolution) 90)
-                  (t 90))))
+                  ((equal '(1440  900) main-monitor-resolution) 113)
+                  ((equal '(1920 1080) main-monitor-resolution)
+                   (if (equal '(650 366) main-monitor-mm-size) 135 105))
+                  (t 110))))
     (defvar font-height
       height
       "Default font heigh.")
@@ -12,10 +13,9 @@
     (set-face-font 'default font)
     (set-fontset-font t 'unicode "symbola"))
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.95))
+  (add-to-list 'face-font-rescale-alist '("DejaVu Serif"     . 0.95))
   (add-to-list 'face-font-rescale-alist '("FontAwesome"      . 0.9))
   (add-to-list 'face-font-rescale-alist '("Material Icons"   . 0.95))
-  (add-to-list 'face-font-rescale-alist '("Noto Sans CJK JP" . 0.9))
-  (add-to-list 'face-font-rescale-alist '("Noto Sans CJK KR" . 0.9))
   (add-to-list 'face-font-rescale-alist '("STIXGeneral"      . 0.95))
   (add-to-list 'face-font-rescale-alist '("Weather Icons"    . 0.95))
   (add-to-list 'face-font-rescale-alist '("all-the-icons"    . 0.9))
