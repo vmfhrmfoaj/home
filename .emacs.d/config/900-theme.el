@@ -22,8 +22,6 @@
  `(mode-line-inactive ((t (:inherit mode-line))))
  `(nlinum-current-line ((t (:inherit linum))))
  `(nlinum-relative-current-face ((t (:inherit linum))))
- `(org-agenda-date-today ((t (:inherit (bold org-agenda-date)))))
- `(org-mode-line-clock ((t)))
  `(widget-button ((t (:inherit bold)))))
 
 (use-package twilight-anti-bright-theme
@@ -31,15 +29,16 @@
   :config
   (load-theme 'twilight-anti-bright t)
   (custom-set-faces
+   `(default ((t (:foreground "#CBCCCC"))))
+   `(font-lock-type-face ((t (:foreground "#bf3f1e"))))
+   `(font-lock-comment-face ((t (:inherit italic :background unspecified))))
    `(link ((t (:inherit underline :weight normal))))
    `(linum-relative-current-face ((t (:inherit linum))))
    `(magit-section-heading ((t (:inherit bold :foreground "DarkGoldenrod4"))))
    `(magit-diff-file-heading ((t (:weight medium))))
    `(magit-commit-log-type-face  ((t (:inherit font-lock-function-name-face :weight medium))))
    `(magit-commit-log-scope-face ((t (:inherit font-lock-variable-name-face :weight medium))))
-   `(show-paren-match ((t (:inherit underline :foreground "Cyan2" :background nil)))))
-  (custom-set-faces
-   `(font-lock-type-face ((t (:foreground "#bf3f1e"))))
+   `(show-paren-match ((t (:inherit underline :foreground "Cyan2" :background nil))))
    `(mode-line-inactive ((t (:background ,(face-attribute 'mode-line :background))))))
   (custom-theme-set-faces
    'twilight-anti-bright
@@ -65,14 +64,6 @@
    `(lazy-highlight ((t :background "paleturquoise4" :foreground "paleturquoise3")))
    `(linum ((t (:background "#000000" :foreground "#666666"))))
    `(linum-relative-current-face ((t (:inherit linum :foreground "#aaaaaa"))))
-   `(org-cancelled ((t (:foreground nil :inherit org-done))))
-   `(org-column ((t (:inherit bold))))
-   `(org-block
-     ((t :foreground ,(color-from 'default :foreground -15)
-         :background ,(color-from 'default :background -5))))
-   `(org-hide ((t (:foreground ,(face-attribute 'default :background) :background unspecified))))
-   `(org-link ((t (:inherit link))))
-   `(org-next ((t (:foreground "#dca3a3" :inherit (bold org-todo)))))
    `(region ((t (:background ,(color-from 'region :background +10)))))
    `(shadow ((t (:foreground "#9a9a9a"))))
    `(trailing-whitespace ((t (:background "gray35"))))))
@@ -109,22 +100,6 @@
         (--iterate (dim-color it 10)
                    (apply 'color-rgb-to-hex (color-name-to-rgb "Springgreen"))
                    4)))
-
-(use-package org
-  :after plan9-theme
-  :config
-  (dolist (i (number-sequence 1 8))
-    (let ((face (intern (concat "org-level-" (number-to-string i))))
-          (outline-face (intern (concat "outline-" (number-to-string i)))))
-      (set-face-attribute face nil
-                          :background 'unspecified
-                          :box nil
-                          :height (if (<= i 1)
-                                      1.1
-                                    1.0)
-                          :overline nil
-                          :underline nil
-                          :inherit outline-face))))
 
 (use-package rainbow-delimiters
   :after plan9-theme

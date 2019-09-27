@@ -409,7 +409,7 @@ This is customized for the normal state of `evil-mode'."
                  (let ((ret (funcall fn str)))
                    (if (<= 11 (string-to-number str))
                        ret
-                     (propertize ret 'display '(raise 0.1)))))))
+                     (propertize ret 'display '(raise 0.05)))))))
   (make-thread
    (lambda ()
      (let ((fmt (spaceline-emacs-theme)))

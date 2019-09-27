@@ -72,7 +72,9 @@
   :config
   (define-key isearch-mode-map (kbd "C-h") #'isearch-delete-char)
   (evil-define-key 'normal 'global
-    "gr" #'eldoc-refresh))
+    "gd" #'up-list
+    "gr" #'eldoc-refresh
+    "gu" #'backward-up-list))
 
 (use-package evil-leader
   :ensure t
