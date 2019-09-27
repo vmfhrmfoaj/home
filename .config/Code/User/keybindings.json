@@ -49,8 +49,25 @@
    },
    {
       "key": "ctrl+shift+f",
-      "command": "multiCommand.findInFiles"
+      "command": "multiCommand.findInFiles",
+      "when": "editorTextFocus"
    },
+   {
+      "key": "ctrl+pageup",
+      "command": "multiCommand.vimPreviousEditor",
+      "when": "editorTextFocus && vim.mode == 'Insert'"
+   },
+   {
+      "key": "ctrl+pagedown",
+      "command": "multiCommand.vimNextEditor",
+      "when": "editorTextFocus && vim.mode == 'Insert'"
+   },
+   {
+      "key": "ctrl+p",
+      "command": "multiCommand.vimQuickOpen",
+      "when": "editorTextFocus && vim.mode == 'Insert'"
+   },
+
 
    // for Git and Gitlens
    {

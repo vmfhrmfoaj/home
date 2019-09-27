@@ -126,6 +126,27 @@
                 "extension.vim_escape"
             ]
         },
+        {
+            "command": "multiCommand.vimPreviousEditor",
+            "sequence": [
+                "extension.vim_escape",
+                "workbench.action.previousEditor"
+            ]
+        },
+        {
+            "command": "multiCommand.vimNextEditor",
+            "sequence": [
+                "extension.vim_escape",
+                "workbench.action.nextEditor"
+            ]
+        },
+        {
+            "command": "multiCommand.vimQuickOpen",
+            "sequence": [
+                "extension.vim_escape",
+                "workbench.action.quickOpen",
+            ]
+        },
     ],
 
     // Remote Development
