@@ -1,10 +1,10 @@
 (when window-system
-  (let* ((font "Cascadia Code")
+  (let* ((font "Monoid")
          (spacing 0)
          (height (cond
-                  ((equal '(1440  900) main-monitor-resolution) 113)
-                  ((equal '(1920 1080) main-monitor-resolution) 105)
-                  (t 110))))
+                  ((equal '(1440  900) main-monitor-resolution) 90)
+                  ((equal '(1920 1080) main-monitor-resolution) 90)
+                  (t 90))))
     (defvar font-height
       height
       "Default font heigh.")
