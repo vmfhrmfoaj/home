@@ -1,19 +1,5 @@
 #!/bin/bash
 
-_install_vs_code_from_tar() {
-    local tar_file=$1
-    local target_dir=${2:-"${HOME}/.vscode"}
-    if [ -z ${tar_file} ]; then
-        echo "Usage: $0 [TAR_FILE] [TARGET_DIR]?"
-        return 255
-    fi
-
-    local sym_file="${HOME}/.bin/code"
-    rm -rf "${sym_file}"
-    ln -rs "${target_dir}/bin/code" "${sym_file}"
-    return 0
-}
-
 _add_to_path() {
     local new_path=$1
     if [ ! -z ${new_path} ]; then
