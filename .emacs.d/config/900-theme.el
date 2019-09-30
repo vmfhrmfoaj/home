@@ -96,6 +96,8 @@
 (use-package highlight-parentheses
   :defer t
   :config
+  (custom-set-faces
+   `(hl-paren-face ((t (:weight bold)))))
   (setq hl-paren-colors
         (--iterate (dim-color it 10)
                    (apply 'color-rgb-to-hex (color-name-to-rgb "Springgreen"))
