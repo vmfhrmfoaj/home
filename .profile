@@ -2,9 +2,14 @@
 
 _add_to_path() {
     local new_path=$1
+    local is_append=$2{:-'no'}
     if [ ! -z ${new_path} ]; then
         if [ -d "${new_path}" ] && [ 0 = $(echo ${PATH} | grep -c "${new_path}") ]; then
-            export PATH="${new_path}:${PATH}"
+            if [ "${is_append}" == "yes" ]; then
+                export PATH="${PATH}:${new_path}"
+            else
+                export PATH="${new_path}:${PATH}"
+            fi
         fi
     fi
 }
@@ -23,7 +28,7 @@ _setup_for_asdf() {
     if [ ! -d "${asdf_home}" ]; then
         git clone 'https://github.com/asdf-vm/asdf.git' "${HOME}/.asdf" --branch v0.7.4
     fi
-    [ -f "${asdf_home}/asdf.sh" ]                             && source "${asdf_home}/asdf.sh"
+    [ -f "${asdf_home}/asdf.sh" ]               && source "${asdf_home}/asdf.sh"
     [ -f "${asdf_home}/completions/asdf.bash" ] && source "${asdf_home}/completions/asdf.bash"
 }
 
