@@ -5,9 +5,11 @@
     "editor.fontLigatures": true,
     "editor.lineHeight": 17,
     "editor.wordWrapColumn": 120,
-    "workbench.colorTheme": "One Monokai",
-    "workbench.iconTheme": "material-icon-theme",
+    "terminal.integrated.fontSize": 12,
     "window.menuBarVisibility": "toggle",
+    "workbench.colorTheme": "Monokai Dimmed",
+    "workbench.iconTheme": "material-icon-theme",
+
 
     // Edit
     "breadcrumbs.enabled": true,
@@ -98,10 +100,10 @@
     // multi-command
     "multiCommand.commands": [
         {
-            "command": "multiCommand.findInFiles",
+            "command": "multiCommand.vimFindInFiles",
             "sequence": [
-                "workbench.action.findInFiles",
-                "extension.vim_escape"
+                "extension.vim_escape",
+                "workbench.action.findInFiles"
             ]
         },
         {

@@ -49,8 +49,8 @@
    },
    {
       "key": "ctrl+shift+f",
-      "command": "multiCommand.findInFiles",
-      "when": "editorTextFocus"
+      "command": "multiCommand.vimFindInFiles",
+      "when": "editorTextFocus && vim.mode == 'Insert'"
    },
    {
       "key": "ctrl+pageup",
