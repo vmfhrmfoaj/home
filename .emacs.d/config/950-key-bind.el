@@ -281,7 +281,8 @@
   (define-key company-active-map (kbd "C-h") nil)
   (define-key company-active-map (kbd "C-j") #'company-select-next)
   (define-key company-active-map (kbd "C-k") #'company-select-previous)
-  (define-key company-active-map (kbd "SPC") #'company-complete-selection-and-insert-space))
+  (define-key company-active-map (kbd "SPC") #'company-abort-and-insert-space)
+  (evil-global-set-key 'insert (kbd "TAB") #'company-indent-or-complete-common))
 
 (use-package cider-repl
   :defer t
@@ -359,8 +360,7 @@
 (use-package helm-company
   :defer t
   :config
-  (evil-global-set-key 'insert (kbd "TAB") #'company-indent-or-helm-company)
-  (define-key company-active-map (kbd "C-s") #'helm-company))
+  (define-key company-active-map (kbd "C-s") #'helm-company-plus))
 
 (use-package helm-files
   :defer t

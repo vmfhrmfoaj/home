@@ -44,7 +44,8 @@
                             (apply #'concat))))))
 
   :config
-  (setq lsp-enable-snippet nil)
+  (setq lsp-file-watch-threshold nil
+        lsp-enable-snippet nil)
   (advice-add #'lsp--eldoc-message :override #'lsp--custom-eldoc-message)
   (advice-add #'lsp--render-on-hover-content :filter-args
               #'lsp--custom-render-on-hover-content)

@@ -1,9 +1,15 @@
 (use-package company
   :ensure t
+  :init
+  (defun company-abort-and-insert-space ()
+    "`company-abort' and insert a space."
+    (interactive)
+    (company-abort)
+    (execute-kbd-macro (kbd "SPC")))
+
   :config
   (add-hook 'evil-normal-state-entry-hook #'company-abort)
-  (setq company-idle-delay nil
-        company-selection-wrap-around t
+  (setq company-selection-wrap-around t
         company-dabbrev-downcase nil
         company-dabbrev-ignore-case t
         company-dabbrev-code-ignore-case t
@@ -68,18 +74,20 @@
 
   :config
   (add-hook 'helm-cleanup-hook
-            (lambda ()
-              (with-helm-current-buffer
-                (unless (minibufferp)
-                  (company-abort)))))
+            (byte-compile
+             (lambda ()
+               (with-helm-current-buffer
+                 (unless (minibufferp)
+                   (company-abort))))))
+  (advice-add #'helm-company-action-insert :after #'evil-normal-state)
 
   ;; NOTE
   ;;  Turn company popup off completely.
-  (remove-hook 'pre-command-hook 'company-pre-command)
-  (remove-hook 'post-command-hook 'company-post-command)
-  (advice-add #'helm-company-action-insert :after #'evil-normal-state)
-  (advice-add #'company-mode-on :after
-              (byte-compile
-               (lambda ()
-                 (remove-hook 'pre-command-hook 'company-pre-command t)
-                 (remove-hook 'post-command-hook 'company-post-command t)))))
+  ;; (remove-hook 'pre-command-hook 'company-pre-command)
+  ;; (remove-hook 'post-command-hook 'company-post-command)
+  ;; (advice-add #'company-mode-on :after
+  ;;             (byte-compile
+  ;;              (lambda ()
+  ;;                (remove-hook 'pre-command-hook 'company-pre-command t)
+  ;;                (remove-hook 'post-command-hook 'company-post-command t))))
+  )
