@@ -6,10 +6,16 @@
     "editor.lineHeight": 17,
     "editor.wordWrapColumn": 120,
     "terminal.integrated.fontSize": 12,
+    "terminal.integrated.fontWeightBold": "normal",
     "window.menuBarVisibility": "toggle",
-    "workbench.colorTheme": "Monokai Dimmed",
+    "workbench.colorCustomizations": {
+        "[Atom One Light]": {
+            "editorCursor.background": "#fff", // for Vim extension
+            "sideBarSectionHeader.background": "#eee"
+        }
+    },
+    "workbench.colorTheme": "Atom One Light",
     "workbench.iconTheme": "material-icon-theme",
-
 
     // Edit
     "breadcrumbs.enabled": true,
