@@ -12,9 +12,12 @@
         "[Atom One Light]": {
             "editorCursor.background": "#fff", // for Vim extension
             "sideBarSectionHeader.background": "#eee"
+        },
+        "[Horizon]": {
+            "sideBar.background": "#191b22",
         }
     },
-    "workbench.colorTheme": "Atom One Light",
+    "workbench.colorTheme": "Horizon",
     "workbench.iconTheme": "material-icon-theme",
 
     // Edit
