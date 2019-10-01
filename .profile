@@ -5,7 +5,7 @@ _add_to_path() {
     local is_append=$2{:-'no'}
     if [ ! -z ${new_path} ]; then
         if [ -d "${new_path}" ] && [ 0 = $(echo ${PATH} | grep -c "${new_path}") ]; then
-            if [ "${is_append}" == "yes" ]; then
+            if [ "${is_append}" = "yes" ]; then
                 export PATH="${PATH}:${new_path}"
             else
                 export PATH="${new_path}:${PATH}"
