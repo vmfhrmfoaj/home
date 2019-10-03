@@ -30,12 +30,58 @@ Name=Visual Studio Code
 GenericName=VS Code
 Comment=Multiplatform Visual Studio Code from Microsoft
 Icon=${target_dir}/resources/app/resources/linux/code.png
-TryExec="${target_dir}/bin/code"
-Exec="${target_dir}/bin/code" %F
+TryExec=${target_dir}/bin/code
+Exec=${target_dir}/bin/code %F
 Terminal=true
 MimeType=text/css;text/english;text/html;text/plain;text/x-c;text/x-chdr;text/x-csrc;text/x-c++;text/x-c++hdr;text/x-c++src;text/x-java;text/x-makefile;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;
 Categories=Development;IDE;TextEditor;
 StartupWMClass=Code
 EOF
+
+    read -p "Do you want to install extensions? (Y or N)" yn
+    if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
+        local extensions=(
+            aaron-bond.better-comments
+            bmewburn.vscode-intelephense-client
+            bungcip.better-toml
+            coolbear.systemd-unit-file
+            DavidAnson.vscode-markdownlint
+            dbaeumer.vscode-eslint
+            DotJoshJohnson.xml
+            dunstontc.vscode-rust-syntax
+            eamodio.gitlens
+            EditorConfig.EditorConfig
+            HookyQR.beautify
+            LaurentTreguier.rpm-spec
+            mads-hartmann.bash-ide-vscode
+            maelvalais.autoconf
+            ms-python.python
+            ms-vscode-remote.remote-containers
+            ms-vscode-remote.remote-ssh
+            ms-vscode-remote.remote-ssh-edit
+            ms-vscode-remote.remote-ssh-explorer
+            ms-vscode-remote.remote-wsl
+            ms-vscode-remote.vscode-remote-extensionpack
+            ms-vscode.cpptools
+            ms-vscode.vscode-typescript-tslint-plugin
+            msjsdiag.debugger-for-chrome
+            PKief.material-icon-theme
+            redhat.java
+            rust-lang.rust
+            ryuta46.multi-command
+            shardulm94.trailing-spaces
+            slevesque.vscode-hexdump
+            VisualStudioExptTeam.vscodeintellicode
+            vscjava.vscode-java-debug
+            vscjava.vscode-java-dependency
+            vscjava.vscode-java-pack
+            vscjava.vscode-java-test
+            vscjava.vscode-maven
+            vscodevim.vim)
+        for ext in "${extensions[@]}"; do
+            ${target_dir}/bin/code --install-extension ${ext}
+        done
+    fi
+    update-desktop-database "${HOME}/.local/share/applications"
     return 0
 }
