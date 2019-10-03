@@ -1,5 +1,36 @@
 #!/bin/bash
 
+_install_android_studio_from_tar() {
+    local tar_file=$1
+    local target_dir=${2:-"${HOME}/.android-studio"}
+    if [ -z ${tar_file} ]; then
+        echo "Usage: $0 [TAR_FILE] [TARGET_DIR]?"
+        return 255
+    fi
+
+    mkdir -p "${target_dir}"
+    tar -C "${target_dir}" -xf "${tar_file}" --strip-components=1 'android-studio'
+    if [ $? -ne 0 ]; then
+        >&2 echo "Can't unpack '${tar_file}' to '${target_dir}'"
+        return 255;
+    fi
+
+    cat > "${HOME}/.local/share/applications/android-studio.desktop" <<EOF
+[Desktop Entry]
+Type=Application
+Version=$(grep -Po '(?<="version":)[ ]*"[^ ]*"' "${target_dir}/product-info.json" | grep -o '[^" ]*')
+Name=Android Stuio
+Comment=Android Studio provides the fastest tools for building apps on every type of Android device.
+Icon=${target_dir}/bin/studio.png
+Exec=${target_dir}/bin/studio.sh %F
+Terminal=true
+Categories=Development;IDE;TextEditor;
+EOF
+    update-desktop-database "${HOME}/.local/share/applications"
+    return 0
+
+}
+
 _install_vs_code_from_tar() {
     local tar_file=$1
     local target_dir=${2:-"${HOME}/.vscode"}
