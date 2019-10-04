@@ -157,6 +157,20 @@
                 "workbench.action.quickOpen",
             ]
         },
+        {
+            "command": "multiCommand.vimOpenNextRecentlyUsedEditorInGroup",
+            "sequence": [
+                "extension.vim_escape",
+                "workbench.action.openNextRecentlyUsedEditorInGroup"
+            ]
+        },
+        {
+            "command": "multiCommand.vimOpenPreviousRecentlyUsedEditorInGroup",
+            "sequence": [
+                "extension.vim_escape",
+                "workbench.action.openPreviousRecentlyUsedEditorInGroup"
+            ]
+        },
     ],
 
     // Remote Development

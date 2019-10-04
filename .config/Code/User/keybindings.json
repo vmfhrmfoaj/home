@@ -67,6 +67,16 @@
       "command": "multiCommand.vimQuickOpen",
       "when": "editorTextFocus && vim.mode == 'Insert'"
    },
+   {
+      "key": "ctrl+tab",
+      "command": "multiCommand.vimOpenNextRecentlyUsedEditorInGroup",
+      "when": "editorTextFocus && vim.mode == 'Insert'"
+   },
+   {
+      "key": "ctrl+shift+tab",
+      "command": "multiCommand.vimOpenPreviousRecentlyUsedEditorInGroup",
+      "when": "editorTextFocus && vim.mode == 'Insert'"
+   },
 
 
    // for Git and Gitlens
