@@ -10,11 +10,14 @@
     "window.menuBarVisibility": "toggle",
     "workbench.colorCustomizations": {
         "[Atom One Light]": {
-            "editorCursor.background": "#fff", // for Vim extension
-            "sideBarSectionHeader.background": "#eee"
+            "editorCursor.background": "#FFF", // for Vim extension
+            "sideBarSectionHeader.background": "#EEE"
         },
         "[Horizon]": {
-            "sideBar.background": "#191b22",
+            "sideBar.background": "#191B22",
+            "tab.border": "#242630",
+            "tab.activeBorder": "#1C1E2600", // clear
+            "tab.activeBorderTop": "#E95378",
         }
     },
     "workbench.colorTheme": "Horizon",
