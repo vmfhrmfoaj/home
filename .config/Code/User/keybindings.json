@@ -35,6 +35,13 @@
       "when": "textInputFocus && hasSearchResult && searchViewletVisible && vim.mode == 'Normal'"
    },
 
+   // End
+   {
+      "key": "shift+enter",
+      "command": "editor.action.insertLineAfter",
+      "when": "suggestWidgetVisible && textInputFocus"
+   },
+
    // Toggle
    {
       "key": "alt+j",
