@@ -1,12 +1,12 @@
 {
     // Appearance
     "editor.fontFamily": "Monoid, 'Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
-    "editor.fontSize": 11,
+    "editor.fontSize": 12,
     "editor.fontLigatures": true,
     "editor.fontWeight": "bold",
-    "editor.lineHeight": 16,
+    "editor.lineHeight": 18,
     "editor.wordWrapColumn": 120,
-    "terminal.integrated.fontSize": 11,
+    "terminal.integrated.fontSize": 12,
     "terminal.integrated.fontWeight": "bold",
     "window.menuBarVisibility": "toggle",
     "workbench.colorCustomizations": {
