@@ -24,18 +24,8 @@
       "command": "tab",
       "when": "editorTextFocus && !editorReadonly && vim.mode == 'Insert' && !suggestWidgetVisible"
    },
-   {
-      "key": "tab",
-      "command": "search.action.focusNextSearchResult",
-      "when": "textInputFocus && hasSearchResult && searchViewletVisible && vim.mode == 'Normal'"
-   },
-   {
-      "key": "shift+tab",
-      "command": "search.action.focusPreviousSearchResult",
-      "when": "textInputFocus && hasSearchResult && searchViewletVisible && vim.mode == 'Normal'"
-   },
 
-   // End
+   // for suggestion popup
    {
       "key": "shift+enter",
       "command": "editor.action.insertLineAfter",
@@ -84,7 +74,16 @@
       "command": "multiCommand.vimOpenPreviousRecentlyUsedEditorInGroup",
       "when": "editorTextFocus && vim.mode == 'Insert'"
    },
-
+   {
+      "key": "tab",
+      "command": "search.action.focusNextSearchResult",
+      "when": "textInputFocus && hasSearchResult && searchViewletVisible && vim.mode == 'Normal'"
+   },
+   {
+      "key": "shift+tab",
+      "command": "search.action.focusPreviousSearchResult",
+      "when": "textInputFocus && hasSearchResult && searchViewletVisible && vim.mode == 'Normal'"
+   },
 
    // for Git and Gitlens
    {

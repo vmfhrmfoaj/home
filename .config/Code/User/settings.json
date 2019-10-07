@@ -1,25 +1,25 @@
 {
     // Appearance
-    "editor.fontFamily": "'Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
-    "editor.fontSize": 14,
+    "editor.fontFamily": "Monoid, 'Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontSize": 11,
     "editor.fontLigatures": true,
     "editor.fontWeight": "bold",
-    "editor.letterSpacing": -0.1,
-    "editor.lineHeight": 18,
+    "editor.lineHeight": 16,
     "editor.wordWrapColumn": 120,
-    "terminal.integrated.fontSize": 13,
+    "terminal.integrated.fontSize": 11,
+    "terminal.integrated.fontWeight": "bold",
     "window.menuBarVisibility": "toggle",
     "workbench.colorCustomizations": {
         "[Atom One Light]": {
             "editorCursor.background": "#FFF", // for Vim extension
-            "sideBarSectionHeader.background": "#EEE"
+            "sideBarSectionHeader.background": "#EEE",
         },
         "[Horizon]": {
             "sideBar.background": "#191B22",
             "tab.border": "#242630",
             "tab.activeBorder": "#1C1E2600", // clear
             "tab.activeBorderTop": "#E95378",
-        }
+        },
     },
     "workbench.colorTheme": "Horizon",
     "workbench.iconTheme": "material-icon-theme",
