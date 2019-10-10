@@ -4,7 +4,19 @@
     "editor.fontSize": 14,
     "editor.fontLigatures": true,
     "editor.fontWeight": "bold",
-    "editor.letterSpacing": -0.2,
+    "editor.letterSpacing": -0.3,
+    "editor.tokenColorCustomizations": {
+        "[Horizon]": {
+            "textMateRules": [
+                {
+                    "scope": "comment",
+                    "settings": {
+                        "fontStyle": "" // for removing italic style on the comment
+                    }
+                }
+            ]
+        }
+    },
     "editor.wordWrapColumn": 120,
     "terminal.integrated.fontSize": 13,
     "terminal.integrated.fontWeight": "bold",
@@ -176,6 +188,9 @@
             ]
         },
     ],
+
+    // Python
+    "python.jediEnabled": false,
 
     // Remote Development
     "remote.SSH.showLoginTerminal": true,
