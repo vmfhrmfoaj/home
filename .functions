@@ -69,7 +69,8 @@ Categories=Development;IDE;TextEditor;
 StartupWMClass=Code
 EOF
 
-    read -p "Do you want to install extensions? (Y or N)" yn
+    echo -n "Do you want to install extensions? (Y or N): "
+    read yn
     if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
         local extensions=(
             aaron-bond.better-comments
