@@ -97,7 +97,7 @@
    },
    {
       "key": "ctrl+shift+g NumPad_Multiply",
-      "command": "git.stageAll"
+      "command": "git.stage"
    },
    {
       "key": "ctrl+shift+g NumPad_Subtract",
@@ -105,7 +105,7 @@
    },
    {
       "key": "ctrl+shift+g NumPad_Divide",
-      "command": "git.unstageAll"
+      "command": "git.unstage"
    },
    {
       "key": "ctrl+shift+g shift+.",
