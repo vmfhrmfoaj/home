@@ -143,6 +143,7 @@ _setup_for_xorg() {
 _add_to_path '/sbin'
 _add_to_path '/usr/sbin'
 _add_to_path "${HOME}/.bin"
+_add_to_path "${HOME}/.local/bin"
 
 # basic setup
 _setup_for_android
