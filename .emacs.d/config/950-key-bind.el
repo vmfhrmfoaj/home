@@ -276,14 +276,13 @@
 ;; Key binding for the minor mode
 
 (use-package company
+  :disabled
   :defer t
   :config
   (define-key company-active-map (kbd "C-h") nil)
   (define-key company-active-map (kbd "C-j") #'company-select-next)
   (define-key company-active-map (kbd "C-k") #'company-select-previous)
   (define-key company-active-map (kbd "SPC") #'company-abort-and-insert-space)
-  (define-key company-active-map [return]    #'company-complete-selection-and-switch-to-normal-mode)
-  (define-key company-active-map (kbd "RET") #'company-complete-selection-and-switch-to-normal-mode)
   (evil-global-set-key 'insert (kbd "TAB") #'company-indent-or-complete-common))
 
 (use-package cider-repl
@@ -362,6 +361,7 @@
 (use-package helm-company
   :defer t
   :config
+  (evil-global-set-key 'insert (kbd "TAB") #'company-indent-or-helm-company)
   (define-key company-active-map (kbd "C-s") #'helm-company-plus))
 
 (use-package helm-files

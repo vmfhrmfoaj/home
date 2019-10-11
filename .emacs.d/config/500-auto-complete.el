@@ -7,12 +7,6 @@
     (company-abort)
     (execute-kbd-macro (kbd "SPC")))
 
-  (defun company-complete-selection-and-switch-to-normal-mode ()
-    "`company-abort' and insert a space."
-    (interactive)
-    (company-complete-selection)
-    (evil-normal-state))
-
   :config
   (add-hook 'evil-normal-state-entry-hook #'company-abort)
   (setq company-selection-wrap-around t
@@ -89,11 +83,10 @@
 
   ;; NOTE
   ;;  Turn company popup off completely.
-  ;; (remove-hook 'pre-command-hook 'company-pre-command)
-  ;; (remove-hook 'post-command-hook 'company-post-command)
-  ;; (advice-add #'company-mode-on :after
-  ;;             (byte-compile
-  ;;              (lambda ()
-  ;;                (remove-hook 'pre-command-hook 'company-pre-command t)
-  ;;                (remove-hook 'post-command-hook 'company-post-command t))))
-  )
+  (remove-hook 'pre-command-hook 'company-pre-command)
+  (remove-hook 'post-command-hook 'company-post-command)
+  (advice-add #'company-mode-on :after
+              (byte-compile
+               (lambda ()
+                 (remove-hook 'pre-command-hook 'company-pre-command t)
+                 (remove-hook 'post-command-hook 'company-post-command t)))))
