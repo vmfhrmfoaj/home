@@ -25,7 +25,7 @@
    `(clojure-meta-face ((t (:foreground "#b0b0b0"))))
    `(cursor ((t (:background "deep sky blue"))))
    `(cperl-nonoverridable-face ((t (:inherit font-lock-constant-face :foreground ,(color-from 'font-lock-constant-face :foreground +10)))))
-   `(default ((t (:background "#14191f" :foreground "#CBCCCC"))))
+   `(default ((t (:background "#14191f" :foreground "#d0d1d1"))))
    `(evil-ex-lazy-highlight ((t (:inherit (bold lazy-highlight)))))
    `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
    `(font-lock-regexp-grouping-construct ((t (:inherit bold :foreground ,(color-from 'font-lock-string-face :foreground -5)))))
