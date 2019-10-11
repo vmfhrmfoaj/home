@@ -7,6 +7,12 @@
     (company-abort)
     (execute-kbd-macro (kbd "SPC")))
 
+  (defun company-complete-selection-and-switch-to-normal-mode ()
+    "`company-abort' and insert a space."
+    (interactive)
+    (company-complete-selection)
+    (evil-normal-state))
+
   :config
   (add-hook 'evil-normal-state-entry-hook #'company-abort)
   (setq company-selection-wrap-around t

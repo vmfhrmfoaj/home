@@ -282,6 +282,8 @@
   (define-key company-active-map (kbd "C-j") #'company-select-next)
   (define-key company-active-map (kbd "C-k") #'company-select-previous)
   (define-key company-active-map (kbd "SPC") #'company-abort-and-insert-space)
+  (define-key company-active-map [return]    #'company-complete-selection-and-switch-to-normal-mode)
+  (define-key company-active-map (kbd "RET") #'company-complete-selection-and-switch-to-normal-mode)
   (evil-global-set-key 'insert (kbd "TAB") #'company-indent-or-complete-common))
 
 (use-package cider-repl
