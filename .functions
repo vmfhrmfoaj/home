@@ -22,8 +22,8 @@ Version=$(grep -Po '(?<="version":)[ ]*"[^ ]*"' "${target_dir}/product-info.json
 Name=Android Stuio
 Comment=Android Studio provides the fastest tools for building apps on every type of Android device.
 Icon=${target_dir}/bin/studio.png
-Exec=${target_dir}/bin/studio.sh %F
-Terminal=true
+Exec=/bin/sh ${target_dir}/bin/studio.sh %F
+Terminal=false
 Categories=Development;IDE;TextEditor;
 EOF
     update-desktop-database "${HOME}/.local/share/applications"
