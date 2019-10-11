@@ -7,7 +7,10 @@
       (pop-to-buffer (man (concat thing "(3)")))))
 
   :config
-  (setq c-default-style "linux")
+  (setq c-default-style '((java-mode . "java")
+                          (awk-mode . "awk")
+                          (other . "linux")))
+  (c-set-offset 'case-label '+)
   (add-hook 'c-mode-common-hook
             (lambda ()
               (unless (and (fboundp #'editorconfig-core-get-nearest-editorconfig)
