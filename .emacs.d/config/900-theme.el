@@ -1,3 +1,46 @@
+(use-package twilight-anti-bright-theme
+  :ensure t
+  :config
+  (custom-set-faces
+   `(font-lock-type-face ((t (:foreground "#bf3f1e"))))
+   `(font-lock-comment-face ((t (:inherit italic :background unspecified))))
+   `(link ((t (:inherit underline :weight normal))))
+   `(linum-relative-current-face ((t (:inherit linum))))
+   `(magit-section-heading ((t (:inherit bold :foreground "DarkGoldenrod4"))))
+   `(magit-diff-file-heading ((t (:weight medium))))
+   `(magit-commit-log-type-face  ((t (:inherit font-lock-function-name-face :weight medium))))
+   `(magit-commit-log-scope-face ((t (:inherit font-lock-variable-name-face :weight medium))))
+   `(show-paren-match ((t (:inherit underline :foreground "Cyan2" :background nil))))
+   `(mode-line-inactive ((t (:background ,(face-attribute 'mode-line :background))))))
+  (custom-theme-set-faces
+   'twilight-anti-bright
+   `(auto-dim-other-buffers-face
+     ((t :foreground ,(color-from 'default :foreground -10)
+         :background ,(color-from 'default :background +1))))
+   `(clojure-if-true-face
+     ((t (:background ,(-> 'font-lock-keyword-face
+                           (face-attribute :background)
+                           (dim-color 4.35)
+                           (saturate-color -8))))))
+   `(clojure-meta-face ((t (:foreground "#b0b0b0"))))
+   `(cursor ((t (:background "deep sky blue"))))
+   `(cperl-nonoverridable-face ((t (:inherit font-lock-constant-face :foreground ,(color-from 'font-lock-constant-face :foreground +10)))))
+   `(default ((t (:background "#14191f" :foreground "#CBCCCC"))))
+   `(evil-ex-lazy-highlight ((t (:inherit (bold lazy-highlight)))))
+   `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
+   `(font-lock-regexp-grouping-construct ((t (:inherit bold :foreground ,(color-from 'font-lock-string-face :foreground -5)))))
+   `(fringe ((t (:background ,(color-from 'default :background -2)))))
+   `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added   :background)))))
+   `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
+   `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
+   `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
+   `(lazy-highlight ((t :background "paleturquoise4" :foreground "paleturquoise3")))
+   `(linum ((t (:background "#000000" :foreground "#666666"))))
+   `(linum-relative-current-face ((t (:inherit linum :foreground "#aaaaaa"))))
+   `(region ((t (:background ,(color-from 'region :background +10)))))
+   `(shadow ((t (:foreground "#9a9a9a"))))
+   `(trailing-whitespace ((t (:background "gray35"))))))
+
 (custom-set-faces
  `(default ((t (:weight medium :height ,font-height))))
  `(bold ((t (:weight bold))))
@@ -23,50 +66,6 @@
  `(nlinum-current-line ((t (:inherit linum))))
  `(nlinum-relative-current-face ((t (:inherit linum))))
  `(widget-button ((t (:inherit bold)))))
-
-(use-package twilight-anti-bright-theme
-  :ensure t
-  :config
-  (load-theme 'twilight-anti-bright t)
-  (custom-set-faces
-   `(default ((t (:foreground "#CBCCCC"))))
-   `(font-lock-type-face ((t (:foreground "#bf3f1e"))))
-   `(font-lock-comment-face ((t (:inherit italic :background unspecified))))
-   `(link ((t (:inherit underline :weight normal))))
-   `(linum-relative-current-face ((t (:inherit linum))))
-   `(magit-section-heading ((t (:inherit bold :foreground "DarkGoldenrod4"))))
-   `(magit-diff-file-heading ((t (:weight medium))))
-   `(magit-commit-log-type-face  ((t (:inherit font-lock-function-name-face :weight medium))))
-   `(magit-commit-log-scope-face ((t (:inherit font-lock-variable-name-face :weight medium))))
-   `(show-paren-match ((t (:inherit underline :foreground "Cyan2" :background nil))))
-   `(mode-line-inactive ((t (:background ,(face-attribute 'mode-line :background))))))
-  (custom-theme-set-faces
-   'twilight-anti-bright
-   `(auto-dim-other-buffers-face
-     ((t :foreground ,(color-from 'default :foreground -10)
-         :background ,(color-from 'default :background +1))))
-   `(clojure-if-true-face
-     ((t (:background ,(-> 'font-lock-keyword-face
-                           (face-attribute :background)
-                           (dim-color 4.35)
-                           (saturate-color -8))))))
-   `(clojure-meta-face ((t (:foreground "#b0b0b0"))))
-   `(cursor ((t (:background "deep sky blue"))))
-   `(cperl-nonoverridable-face ((t (:inherit font-lock-constant-face :foreground ,(color-from 'font-lock-constant-face :foreground +10)))))
-   `(evil-ex-lazy-highlight ((t (:inherit (bold lazy-highlight)))))
-   `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
-   `(font-lock-regexp-grouping-construct ((t (:inherit bold :foreground ,(color-from 'font-lock-string-face :foreground -5)))))
-   `(fringe ((t (:background ,(color-from 'default :background -2)))))
-   `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added   :background)))))
-   `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
-   `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
-   `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
-   `(lazy-highlight ((t :background "paleturquoise4" :foreground "paleturquoise3")))
-   `(linum ((t (:background "#000000" :foreground "#666666"))))
-   `(linum-relative-current-face ((t (:inherit linum :foreground "#aaaaaa"))))
-   `(region ((t (:background ,(color-from 'region :background +10)))))
-   `(shadow ((t (:foreground "#9a9a9a"))))
-   `(trailing-whitespace ((t (:background "gray35"))))))
 
 (use-package goto-addr
   :defer t
