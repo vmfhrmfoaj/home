@@ -1112,49 +1112,6 @@
    `(("\\(?:async\\|export\\)\\s-+function\\s-+\\([_0-9A-Za-z]+\\)\\>"
       (1 'font-lock-function-name-face)))))
 
-(use-package org
-  :defer t
-  :config
-  (when (require 'all-the-icons nil t)
-    (font-lock-add-keywords
-     'org-mode
-     (let* ((data (all-the-icons-faicon-data))
-            (square       (string-to-char (cdr (assoc "square" data))))
-            (minus-square (string-to-char (cdr (assoc "minus-square" data))))
-            (check-square (string-to-char (cdr (assoc "check-square" data))))
-            (org-done-face (color-from 'org-done :foreground))
-            (org-todo-face (color-from 'org-todo :foreground)))
-       `(("^\\s-*\\(?:-\\|[0-9]+\\.\\) \\(\\[\\( \\|-\\|X\\)\\]\\)\\( \\|$\\)"
-          1 (progn
-              (let ((x (match-string 2))
-                    (s (match-beginning 1))
-                    (e (match-end 1)))
-                (compose-region
-                 s e
-                 (cond
-                  ((string-equal x " ") ,square)
-                  ((string-equal x "-") ,minus-square)
-                  ((string-equal x "X") ,check-square)))
-                (cond
-                 ((eq 'gnu/linux system-type)
-                  (put-text-property s e 'display '(raise  0.05))))
-                (list :family "FontAwesome"
-                      :foreground (if (string-equal x "X")
-                                      ,org-done-face
-                                    ,org-todo-face)
-                      :height (cond
-                               ((eq 113 font-height) 0.95)
-                               (t 1.1)))))
-          t)
-         ("^\\s-*\\(-\\) "
-          1 '(:inherit (bold shadow)))
-         ("^\\s-*\\(\\([0-9]\\.\\)\\) "
-          1 '(:inherit (bold shadow)))
-         ("\\(\\\\\\\\\\)\\s-*$"
-          1 'shadow nil)))
-     :append)))
-
-
 (use-package php-mode
   :defer t
   :config
