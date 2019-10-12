@@ -46,7 +46,9 @@
                            (propertize 'rear-nonsticky '(read-only intangible)
                                        'read-only t
                                        'intangible t)))
-              :candidate-number-limit helm-company-candidate-number-limit))))
+              :candidate-number-limit helm-company-candidate-number-limit)
+        (when (functionp 'evil-normal-state)
+          (evil-normal-state)))))
 
   (defn helm-company-complete-common ()
     "TODO"
@@ -79,7 +81,6 @@
                (with-helm-current-buffer
                  (unless (minibufferp)
                    (company-abort))))))
-  (advice-add #'helm-company-action-insert :after #'evil-normal-state)
 
   ;; NOTE
   ;;  Turn company popup off completely.
