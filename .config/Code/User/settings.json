@@ -1,10 +1,9 @@
 {
     // Appearance
-    "editor.fontFamily": "'Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontFamily": "'Cascadia Code', 'Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "editor.fontSize": 14,
     "editor.fontLigatures": true,
     "editor.fontWeight": "bold",
-    "editor.letterSpacing": -0.3,
     "editor.tokenColorCustomizations": {
         "[Horizon]": {
             "textMateRules": [
@@ -49,64 +48,6 @@
     ///
     /// Extentions
     ///
-
-    // Better Commends
-    "better-comments.tags": [
-        {
-            "tag": "!",
-            "color": "#FF2D00",
-            "strikethrough": false,
-            "backgroundColor": "transparent"
-        },
-        {
-            "tag": "?",
-            "color": "#3498DB",
-            "strikethrough": false,
-            "backgroundColor": "transparent"
-        },
-        {
-            "tag": "//",
-            "color": "#474747",
-            "strikethrough": true,
-            "backgroundColor": "transparent"
-        },
-        {
-            "tag": "todo",
-            "color": "#FF8C00",
-            "strikethrough": false,
-            "backgroundColor": "transparent"
-        },
-        {
-            "tag": "note",
-            "color": "#FF8C00",
-            "strikethrough": false,
-            "backgroundColor": "transparent"
-        },
-        {
-            "tag": "xxx",
-            "color": "#FF8C00",
-            "strikethrough": false,
-            "backgroundColor": "transparent"
-        },
-        {
-            "tag": "fixme",
-            "color": "#FF8C00",
-            "strikethrough": false,
-            "backgroundColor": "transparent"
-        },
-        {
-            "tag": "*",
-            "color": "#98C379",
-            "strikethrough": false,
-            "backgroundColor": "transparent"
-        },
-        {
-            "tag": "@",
-            "color": "#98C379",
-            "strikethrough": false,
-            "backgroundColor": "transparent"
-        },
-    ],
 
     // C/C++
     "C_Cpp.default.intelliSenseMode": "clang-x64",
