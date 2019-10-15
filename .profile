@@ -30,6 +30,19 @@ _setup_for_asdf() {
         read yn
         if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
             git clone 'https://github.com/asdf-vm/asdf.git' "${asdf_home}" --branch v0.7.4
+        else
+            mkdir -p ${asdf_home}
+            cat > "${HOME}/.bin/asdf" <<EOF
+#!/bin/bash
+echo -n "Do you want to install 'ASDF'? (Y or N): "
+read yn
+if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
+    rm -rf ${asdf_home}
+    git clone 'https://github.com/asdf-vm/asdf.git' "${asdf_home}" --branch v0.7.4
+    rm -rf \$0
+fi
+EOF
+            chmod +x "${HOME}/.bin/asdf"
         fi
     fi
     [ -f "${asdf_home}/asdf.sh" ]               && source "${asdf_home}/asdf.sh"
@@ -39,12 +52,24 @@ _setup_for_asdf() {
 _setup_for_clojure() {
     which lein > /dev/null 2>&1
     if [ $? -ne 0 ]; then
+        local lein_path="${HOME}/.bin/lein"
         echo -n "Do you want to install 'Lein(Clojure project manager)'? (Y or N): "
         read yn
         if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
-            local lein_path="${HOME}/.bin/lein"
             mkdir -p $(dirname ${lein_path})
             wget -O ${lein_path} 'https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein'
+            chmod +x ${lein_path}
+        else
+            mkdir -p $(dirname ${lein_path})
+            cat > ${lein_path} <<EOF
+#!/bin/bash
+echo -n "Do you want to install 'Lein(Clojure project manager)'? (Y or N): "
+read yn
+if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
+    wget -O ${lein_path} 'https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein'
+    chmod +x ${lein_path}
+fi
+EOF
             chmod +x ${lein_path}
         fi
     fi
@@ -69,6 +94,19 @@ _setup_for_perlbrew() {
         read yn
         if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
             curl -fsSL 'https://install.perlbrew.pl' | bash
+        else
+            mkdir -p ${PERLBREW_ROOT}
+            cat > "${HOME}/.bin/perlbrew" <<EOF
+#!/bin/bash
+echo -n "Do you want to install 'Perlbrew'? (Y or N): "
+read yn
+if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
+    rm -rf ${PERLBREW_ROOT}
+    curl -fsSL 'https://install.perlbrew.pl' | bash
+    rm -rf \$0
+fi
+EOF
+            chmod +x "${HOME}/.bin/perlbrew"
         fi
     fi
     [ -f "${PERLBREW_ROOT}/etc/bashrc" ] && source "${PERLBREW_ROOT}/etc/bashrc"
@@ -88,6 +126,32 @@ _setup_for_rust() {
                 rustup default nightly
                 rustup component add rls rust-analysis rust-src # for rls (Rust Language Server)
             fi
+        else
+            mkdir -p "${HOME}/.rustup"
+            mkdir -p "${HOME}/.cargo"
+            touch "${HOME}/.cargo/env"
+            cat > "${HOME}/.bin/cargo" <<EOF
+#!/bin/bash
+echo -n "Do you want to install 'rustup'? (Y or N): "
+read yn
+if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
+    rm -rf \${HOME}/.cargo
+    rm -rf \${HOME}/.rustup
+    curl 'https://sh.rustup.rs' -sSf | RUSTUP_INIT_SKIP_PATH_CHECK=yes sh -s -- --no-modify-path --default-toolchain nightly
+    if [ -f "\${HOME}/.cargo/env" ]; then
+        source "${HOME}/.cargo/env"
+        rustup toolchain add stable
+        rustup toolchain add nightly
+        rustup default nightly
+        rustup component add rls rust-analysis rust-src # for rls (Rust Language Server)
+    fi
+    rm -rf \$0
+    rm -rf "\$(dirname \$0)/cargo"
+    rm -rf "\$(dirname \$0)/rustup"
+fi
+EOF
+            chmod +x "${HOME}/.bin/cargo"
+            cp "${HOME}/.bin/cargo" "${HOME}/.bin/rustup"
         fi
     fi
     [ -f "${HOME}/.cargo/env" ] && source "${HOME}/.cargo/env"
