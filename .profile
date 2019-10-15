@@ -26,7 +26,11 @@ _setup_for_android() {
 _setup_for_asdf() {
     local asdf_home="${HOME}/.asdf"
     if [ ! -d "${asdf_home}" ]; then
-        git clone 'https://github.com/asdf-vm/asdf.git' "${HOME}/.asdf" --branch v0.7.4
+        echo -n "Do you want to install 'ASDF'? (Y or N): "
+        read yn
+        if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
+            git clone 'https://github.com/asdf-vm/asdf.git' "${asdf_home}" --branch v0.7.4
+        fi
     fi
     [ -f "${asdf_home}/asdf.sh" ]               && source "${asdf_home}/asdf.sh"
     [ -f "${asdf_home}/completions/asdf.bash" ] && source "${asdf_home}/completions/asdf.bash"
@@ -35,10 +39,14 @@ _setup_for_asdf() {
 _setup_for_clojure() {
     which lein > /dev/null 2>&1
     if [ $? -ne 0 ]; then
-        local lein_path="${HOME}/.bin/lein"
-        mkdir -p $(dirname ${lein_path})
-        wget -O ${lein_path} 'https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein'
-        chmod +x ${lein_path}
+        echo -n "Do you want to install 'Lein(Clojure project manager)'? (Y or N): "
+        read yn
+        if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
+            local lein_path="${HOME}/.bin/lein"
+            mkdir -p $(dirname ${lein_path})
+            wget -O ${lein_path} 'https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein'
+            chmod +x ${lein_path}
+        fi
     fi
 }
 
@@ -57,21 +65,29 @@ _setup_for_locale() {
 _setup_for_perlbrew() {
     export PERLBREW_ROOT="${HOME}/.perlbrew"
     if [ ! -d ${PERLBREW_ROOT} ]; then
-        curl -fsSL 'https://install.perlbrew.pl' | bash
+        echo -n "Do you want to install 'Perlbrew'? (Y or N): "
+        read yn
+        if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
+            curl -fsSL 'https://install.perlbrew.pl' | bash
+        fi
     fi
     [ -f "${PERLBREW_ROOT}/etc/bashrc" ] && source "${PERLBREW_ROOT}/etc/bashrc"
 }
 
 _setup_for_rust() {
-    if [ ! -d "${HOME}/.cargo" ]; then
-        # see, https://github.com/rust-lang/rustup.rs/issues/953#issuecomment-318650338
-        curl 'https://sh.rustup.rs' -sSf | RUSTUP_INIT_SKIP_PATH_CHECK=yes sh -s -- --no-modify-path --default-toolchain nightly
-        if [ -f "${HOME}/.cargo/env" ]; then
-            source "${HOME}/.cargo/env"
-            rustup toolchain add stable
-            rustup toolchain add nightly
-            rustup default nightly
-            rustup component add rls rust-analysis rust-src # for rls (Rust Language Server)
+    if [ ! -d "${HOME}/.cargo" ] || [ ! -d "${HOME}/.rustup" ]; then
+        echo -n "Do you want to install 'rustup'? (Y or N): "
+        read yn
+        if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
+            # see, https://github.com/rust-lang/rustup.rs/issues/953#issuecomment-318650338
+            curl 'https://sh.rustup.rs' -sSf | RUSTUP_INIT_SKIP_PATH_CHECK=yes sh -s -- --no-modify-path --default-toolchain nightly
+            if [ -f "${HOME}/.cargo/env" ]; then
+                source "${HOME}/.cargo/env"
+                rustup toolchain add stable
+                rustup toolchain add nightly
+                rustup default nightly
+                rustup component add rls rust-analysis rust-src # for rls (Rust Language Server)
+            fi
         fi
     fi
     [ -f "${HOME}/.cargo/env" ] && source "${HOME}/.cargo/env"
