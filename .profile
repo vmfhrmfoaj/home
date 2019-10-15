@@ -3,7 +3,8 @@
 _is_shim() {
     local name=$1
     local path=$(which ${name})
-    if [ -n "$(echo ${path} | grep -E '^/${HOME}/.shim/')" ]; then
+    echo ${path} | grep -E "^/${HOME}/.shim/" >/dev/null 2>&1
+    if [ $? -eq 0 ]; then
         return 0
     else
         return 255
