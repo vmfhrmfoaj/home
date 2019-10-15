@@ -1,5 +1,15 @@
 #!/bin/bash
 
+_is_shim() {
+    local name=$1
+    local path=$(which ${name})
+    if [ -n "$(echo ${path} | grep -E '^/${HOME}/.shim/')" ]; then
+        return 0
+    else
+        return 255
+    fi
+}
+
 _add_to_path() {
     local new_path=$1
     local is_append=$2{:-'no'}
@@ -32,7 +42,8 @@ _setup_for_asdf() {
             git clone 'https://github.com/asdf-vm/asdf.git' "${asdf_home}" --branch v0.7.4
         else
             mkdir -p ${asdf_home}
-            cat > "${HOME}/.bin/asdf" <<EOF
+            mkdir -p "${HOME}/.shim"
+            cat > "${HOME}/.shim/asdf" <<EOF
 #!/bin/bash
 echo -n "Do you want to install 'ASDF'? (Y or N): "
 read yn
@@ -42,7 +53,7 @@ if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
     rm -rf \$0
 fi
 EOF
-            chmod +x "${HOME}/.bin/asdf"
+            chmod +x "${HOME}/.shim/asdf"
         fi
     fi
     [ -f "${asdf_home}/asdf.sh" ]               && source "${asdf_home}/asdf.sh"
@@ -60,8 +71,8 @@ _setup_for_clojure() {
             wget -O ${lein_path} 'https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein'
             chmod +x ${lein_path}
         else
-            mkdir -p $(dirname ${lein_path})
-            cat > ${lein_path} <<EOF
+            mkdir -p "${HOME}/.shim"
+            cat > "${HOME}/.shim/lein" <<EOF
 #!/bin/bash
 echo -n "Do you want to install 'Lein(Clojure project manager)'? (Y or N): "
 read yn
@@ -70,15 +81,18 @@ if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
     chmod +x ${lein_path}
 fi
 EOF
-            chmod +x ${lein_path}
+            chmod +x "${HOME}/.shim/lein"
         fi
     fi
 }
 
 _setup_for_java() {
-    local java_home=$(asdf where java 2> /dev/null)
-    if [ ! -z ${java_home} ]; then
-        export JAVA_HOME=${java_home}
+    _is_shim 'asdf'
+    if [ $? -ne 0 ]; then
+        local java_home=$(asdf where java 2> /dev/null)
+        if [ ! -z ${java_home} ]; then
+            export JAVA_HOME=${java_home}
+        fi
     fi
 }
 
@@ -96,7 +110,8 @@ _setup_for_perlbrew() {
             curl -fsSL 'https://install.perlbrew.pl' | bash
         else
             mkdir -p ${PERLBREW_ROOT}
-            cat > "${HOME}/.bin/perlbrew" <<EOF
+            mkdir -p "${HOME}/.shim"
+            cat > "${HOME}/.shim/perlbrew" <<EOF
 #!/bin/bash
 echo -n "Do you want to install 'Perlbrew'? (Y or N): "
 read yn
@@ -106,7 +121,7 @@ if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
     rm -rf \$0
 fi
 EOF
-            chmod +x "${HOME}/.bin/perlbrew"
+            chmod +x "${HOME}/.shim/perlbrew"
         fi
     fi
     [ -f "${PERLBREW_ROOT}/etc/bashrc" ] && source "${PERLBREW_ROOT}/etc/bashrc"
@@ -129,8 +144,8 @@ _setup_for_rust() {
         else
             mkdir -p "${HOME}/.rustup"
             mkdir -p "${HOME}/.cargo"
-            touch "${HOME}/.cargo/env"
-            cat > "${HOME}/.bin/cargo" <<EOF
+            mkdir -p "${HOME}/.shim"
+            cat > "${HOME}/.shim/cargo" <<EOF
 #!/bin/bash
 echo -n "Do you want to install 'rustup'? (Y or N): "
 read yn
@@ -150,8 +165,8 @@ if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
     rm -rf "\$(dirname \$0)/rustup"
 fi
 EOF
-            chmod +x "${HOME}/.bin/cargo"
-            cp "${HOME}/.bin/cargo" "${HOME}/.bin/rustup"
+            chmod +x "${HOME}/.shim/cargo"
+            cp "${HOME}/.shim/cargo" "${HOME}/.shim/rustup"
         fi
     fi
     [ -f "${HOME}/.cargo/env" ] && source "${HOME}/.cargo/env"
@@ -222,6 +237,7 @@ _setup_for_xorg() {
 # add dirs to PATH
 _add_to_path '/sbin'
 _add_to_path '/usr/sbin'
+_add_to_path "${HOME}/.shim"
 _add_to_path "${HOME}/.bin"
 _add_to_path "${HOME}/.local/bin"
 
@@ -257,3 +273,6 @@ fi
 if [ 'yes' = "${WSLENV+yes}" ]; then
     _setup_for_wsl
 fi
+
+# add shim dir to PATH
+_add_to_path "${HOME}/.shim"
