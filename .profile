@@ -209,11 +209,11 @@ _setup_for_term() {
 
 _setup_for_ssh() {
     if [ -n "${DISPLAY}" ]; then
-        # EXPERIMENTAL
-        #  I didn't test.
-        export CHROMIUM_FLAGS="${CHROMIUM_FLAGS} --wm-window-animations-disabled"
         if [ -z ${LIBGL_ALWAYS_INDIRECT} ]; then
             export LIBGL_ALWAYS_INDIRECT=1
+        fi
+        if [ -z ${GTK_BACKEND} ]; then
+            export GDK_BACKEND=x11
         fi
     fi
 }
