@@ -1,8 +1,8 @@
 # for Gento
-if [ -f /etc/profile ]; then
-    source /etc/profile
-fi
 if [ -f /etc/os-release ] && [ 0 -gt $(grep -c 'gentoo' /etc/os-release) ]; then
+  if [ -e /etc/profile.env ]; then
+    source /etc/profile.env
+  fi
   autoload -U compinit promptinit
   compinit
   promptinit; prompt gentoo
