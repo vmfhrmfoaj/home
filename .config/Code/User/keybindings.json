@@ -45,44 +45,49 @@
       "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.mode == 'Insert'"
    },
    {
+      "key": "escape",
+      "command": "multiCommand.vimNohAndEscape",
+      "when": "editorTextFocus && vim.active && vim.mode == 'Normal' && !renameInputVisible && !editorHasSelection && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !markersNavigationVisible && !parameterHintsVisible && !referenceSearchVisible"
+   },
+   {
       "key": "ctrl+shift+f",
       "command": "multiCommand.vimFindInFiles",
-      "when": "editorTextFocus && vim.mode == 'Insert'"
+      "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
    },
    {
       "key": "ctrl+pageup",
       "command": "multiCommand.vimPreviousEditor",
-      "when": "editorTextFocus && vim.mode == 'Insert'"
+      "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
    },
    {
       "key": "ctrl+pagedown",
       "command": "multiCommand.vimNextEditor",
-      "when": "editorTextFocus && vim.mode == 'Insert'"
+      "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
    },
    {
       "key": "ctrl+p",
       "command": "multiCommand.vimQuickOpen",
-      "when": "editorTextFocus && vim.mode == 'Insert'"
+      "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
    },
    {
       "key": "ctrl+tab",
       "command": "multiCommand.vimOpenNextRecentlyUsedEditorInGroup",
-      "when": "editorTextFocus && vim.mode == 'Insert'"
+      "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
    },
    {
       "key": "ctrl+shift+tab",
       "command": "multiCommand.vimOpenPreviousRecentlyUsedEditorInGroup",
-      "when": "editorTextFocus && vim.mode == 'Insert'"
+      "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
    },
    {
       "key": "tab",
       "command": "search.action.focusNextSearchResult",
-      "when": "textInputFocus && hasSearchResult && searchViewletVisible && vim.mode == 'Normal'"
+      "when": "textInputFocus && hasSearchResult && searchViewletVisible && vim.active && vim.mode == 'Normal'"
    },
    {
       "key": "shift+tab",
       "command": "search.action.focusPreviousSearchResult",
-      "when": "textInputFocus && hasSearchResult && searchViewletVisible && vim.mode == 'Normal'"
+      "when": "textInputFocus && hasSearchResult && searchViewletVisible && vim.active && vim.mode == 'Normal'"
    },
 
    // for Git and Gitlens

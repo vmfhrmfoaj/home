@@ -66,6 +66,13 @@
     // multi-command
     "multiCommand.commands": [
         {
+            "command": "multiCommand.vimNohAndEscape",
+            "sequence": [
+                "extension.vim_ctrl+h",
+                "extension.vim_escape"
+            ]
+        },
+        {
             "command": "multiCommand.vimFindInFiles",
             "sequence": [
                 "extension.vim_escape",
