@@ -5,14 +5,6 @@
          (main-monitor-t (nth 1 workarea))
          (main-monitor-w (nth 2 workarea))
          (main-monitor-h (nth 3 workarea)))
-    ;; NOTE
-    ;;  On Xming, `workarea' and `geometry' are always same.
-    (when (equal workarea (-some->> main-monitor (assoc 'geometry) (-drop 1)))
-      ;; for WSL (Windows Linux Subsystem)
-      (let ((title-bar-h 31)
-            (task-bar-h 44))
-        (setq main-monitor-t (+ main-monitor-t title-bar-h))
-        (setq main-monitor-h (- main-monitor-h title-bar-h task-bar-h))))
     (if (<= main-monitor-w (* column-width (frame-char-width)))
         (set-frame-parameter nil 'fullscreen 'maximized)
       (set-frame-position (selected-frame) main-monitor-l main-monitor-t)
