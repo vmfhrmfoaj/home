@@ -32,7 +32,7 @@
             "tab.activeBorderTop": "#E95378",
         },
     },
-    "workbench.colorTheme": "Horizon",
+    "workbench.colorTheme": "Atom One Light",
     "workbench.iconTheme": "material-icon-theme",
 
     // Edit
@@ -153,7 +153,6 @@
     "vim.useCtrlKeys": true,
     "vim.hlsearch": true,
     "vim.visualstar": true,
-    "vim.searchHighlightColor": "#74293c",
     "vim.handleKeys": {
         "<C-d>": false,
         "<C-j>": false,
