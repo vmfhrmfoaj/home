@@ -1,6 +1,6 @@
 (when window-system
   (let* ((font "Noto Sans Mono")
-         (spacing 0)
+         (spacing 1)
          (height (cond
                   ((equal '(1440  900) main-monitor-resolution) 113)
                   ((equal '(1920 1080) main-monitor-resolution) 105)
