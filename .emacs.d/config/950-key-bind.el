@@ -280,8 +280,6 @@
   :defer t
   :config
   (define-key company-active-map (kbd "C-h") nil)
-  (define-key company-active-map (kbd "C-j") #'company-select-next)
-  (define-key company-active-map (kbd "C-k") #'company-select-previous)
   (define-key company-active-map (kbd "SPC") #'company-abort-and-insert-space)
   (evil-global-set-key 'insert (kbd "TAB") #'company-indent-or-complete-common))
 
@@ -335,22 +333,13 @@
   :defer t
   :config
   (evil-define-minor-mode-key 'normal 'git-timemachine-mode
-    (kbd "C-j") #'git-timemachine-show-previous-revision
-    (kbd "C-k") #'git-timemachine-show-next-revision
+    (kbd "i")   #'evil-normal-state
+    (kbd "p") #'git-timemachine-show-previous-revision
+    (kbd "n") #'git-timemachine-show-next-revision
     (kbd "M-b") #'git-timemachine-blame
     (kbd "M-w") #'git-timemachine-kill-abbreviated-revision
     (kbd "M-W") #'git-timemachine-kill-revision
     (kbd "q")   #'git-timemachine-quit))
-
-(use-package go-mode
-  :defer t
-  :config
-  (evil-leader/set-key-for-mode 'go-mode
-    "mgg" #'go-guru-definition
-    "mgG" #'go-guru-definition-other-window)
-  (which-key-declare-prefixes-for-mode 'go-mode
-    (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode 'go-mode))
 
 (use-package helm-ag
   :defer t
@@ -380,11 +369,7 @@
   (global-set-key (kbd "M-x") #'helm-M-x)
   (global-set-key (kbd "C-x C-f") #'helm-find-files)
   (define-key helm-map (kbd "<escape>") #'helm-keyboard-quit)
-  (define-key helm-map (kbd "C-h") #'delete-backward-char)
-  (define-key helm-map (kbd "C-j") #'helm-next-line)
-  (define-key helm-map (kbd "C-k") #'helm-previous-line)
-  (define-key helm-map (kbd "C-n") #'helm-next-source)
-  (define-key helm-map (kbd "C-p") #'helm-previous-source))
+  (define-key helm-map (kbd "C-h") #'delete-backward-char))
 
 (use-package helm-swoop
   :defer t
@@ -400,7 +385,7 @@
     (kbd "TAB")   #'forward-button
     (kbd "S-TAB") #'backward-button
     (kbd "M-,") #'help-go-back
-    (kbd "q") #'quit-window))
+    (kbd "<escape>") #'quit-window))
 
 (use-package neotree
   :defer t
@@ -417,12 +402,14 @@
     (kbd "h") #'neotree-back
     (kbd "l") #'neotree-enter
     (kbd "x") #'neotree-delete-node
-    (kbd "q") #'evil-delete-buffer))
+    (kbd "<escape>") #'neotree-hide))
 
 (use-package magit-svn
   :after evil-magit
   :config
-  (evil-magit-define-key 'normal 'magit-mode-map (kbd "~") #'magit-svn))
+  (evil-magit-define-key 'normal 'magit-mode-map (kbd "~") #'magit-svn)
+  (evil-magit-define-key 'normal 'magit-mode-map (kbd "p") #'magit-section-backward)
+  (evil-magit-define-key 'normal 'magit-mode-map (kbd "n") #'magit-section-forward))
 
 
 ;; Key binding for the major mode
@@ -431,7 +418,7 @@
   :defer t
   :config
   (evil-define-key 'normal alchemist-help-minor-mode-map
-    (kbd "q") #'evil-delete-buffer))
+    (kbd "<escape>") #'evil-delete-buffer))
 
 (use-package cc-mode
   :defer t
@@ -537,6 +524,16 @@
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode 'elm-mode))
 
+(use-package go-mode
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'go-mode
+    "mgg" #'go-guru-definition
+    "mgG" #'go-guru-definition-other-window)
+  (which-key-declare-prefixes-for-mode 'go-mode
+    (concat evil-leader/leader "mg") "goto")
+  (evil-leader/set-major-leader-for-mode 'go-mode))
+
 (use-package js
   :defer t
   :config
@@ -596,52 +593,6 @@
     (kbd "RET") #'org-open-at-point
     (kbd "M-,") #'org-mark-ring-goto))
 
-(use-package org-agenda
-  :defer t
-  :config
-  (evil-leader/set-key-for-mode 'org-agenda-mode
-    "mTT" #'org-agenda-todo
-    "mci" #'org-agenda-clock-in
-    "mco" #'org-agenda-clock-out
-    "mtd" #'org-agenda-deadline
-    "mts" #'org-agenda-schedule)
-  (which-key-declare-prefixes-for-mode 'org-agenda-mode
-    (concat evil-leader/leader "mT") "todo"
-    (concat evil-leader/leader "mc") "clock"
-    (concat evil-leader/leader "mt") "time")
-  (evil-leader/set-major-leader-for-mode 'org-agenda-mode)
-  (evil-set-initial-state 'org-agenda-mode 'normal)
-  (evil-define-key '(normal motion) org-agenda-mode-map
-    (kbd "RET") #'org-agenda-switch-to
-    (kbd "r") #'org-agenda-redo
-    (kbd "q") #'org-agenda-quit))
-
-(use-package org-trello
-  :defer t
-  :config
-  (defalias 'org-sync-card-to-trello   (-partial #'org-trello-sync-card nil))
-  (defalias 'org-sync-card-from-trello (-partial #'org-trello-sync-card t))
-  (defalias 'org-sync-buf-to-trello    (-partial #'org-trello-sync-buffer nil))
-  (defalias 'org-sync-buf-from-trello  (-partial #'org-trello-sync-buffer t))
-  ;; FIXME
-  (add-hook 'org-trello-mode-hook
-            (lambda ()
-              (evil-leader/set-local-key
-               "msc" #'org-sync-card-to-trello
-               "msC" #'org-sync-card-from-trello
-               "msb" #'org-sync-buf-to-trello
-               "msB" #'org-sync-buf-from-trello))))
-
-(use-package osx-dictionary
-  :if (eq 'darwin system-type)
-  :defer t
-  :config
-  (evil-define-key 'normal osx-dictionary-mode-map
-    (kbd "o") #'osx-dictionary-open-dictionary.app
-    (kbd "q") #'osx-dictionary-quit
-    (kbd "r") #'osx-dictionary-read-word
-    (kbd "s") #'osx-dictionary-search-input))
-
 (use-package package
   :defer t
   :config
@@ -650,7 +601,7 @@
     (kbd "U") #'package-menu-mark-upgrades
     (kbd "d") #'package-menu-mark-delete
     (kbd "i") #'package-menu-mark-install
-    (kbd "q") #'evil-delete-buffer
+    (kbd "<escape>") #'evil-delete-buffer
     (kbd "x") #'package-menu-execute))
 
 (use-package php-mode
@@ -680,15 +631,15 @@
   :defer t
   :config
   (evil-define-key 'normal 'psysh-mode-map
-    (kbd "C-k") #'comint-previous-input
-    (kbd "C-j") #'comint-next-input))
+    (kbd "M-p") #'comint-previous-input
+    (kbd "M-n") #'comint-next-input))
 
 (use-package racer
   :defer t
   :config
   (add-hook 'racer-help-mode-hook
             (lambda ()
-              (evil-local-set-key 'normal (kbd "q") #'quit-window))))
+              (evil-local-set-key 'normal (kbd "<escape>") #'quit-window))))
 
 (use-package rust-mode
   :defer t
@@ -730,15 +681,15 @@
   (add-hook 'view-mode-hook
             (lambda ()
               (ignore-errors
-                (evil-local-set-key 'normal (kbd "q") #'quit-window)))))
+                (evil-local-set-key 'normal (kbd "<escape>") #'quit-window)))))
 
 (use-package vlf
   :defer t
   :config
   (add-hook 'vlf-mode-hook
             (lambda ()
-              (evil-local-set-key 'normal (kbd "C-k") #'vlf-prev-batch)
-              (evil-local-set-key 'normal (kbd "C-j") #'vlf-next-batch))))
+              (evil-local-set-key 'normal (kbd "M-p") #'vlf-prev-batch)
+              (evil-local-set-key 'normal (kbd "M-n") #'vlf-next-batch))))
 
 (use-package ztree-view
   :defer t
@@ -771,4 +722,4 @@
               (evil-local-set-key 'normal (kbd "RET") #'ztree-perform-action)
               (evil-local-set-key 'normal (kbd "l") #'ztree-enter-node)
               (evil-local-set-key 'normal (kbd "h") #'ztree-back-node)
-              (evil-local-set-key 'normal (kbd "q") #'evil-delete-buffer))))
+              (evil-local-set-key 'normal (kbd "<escape>") #'evil-delete-buffer))))

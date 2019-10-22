@@ -85,6 +85,7 @@
   :ensure t
   :after evil
   :config
+  (setq evil-goggles-duration 0.4)
   (evil-goggles-mode)
   (evil-goggles-use-diff-faces))
 

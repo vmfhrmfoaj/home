@@ -25,6 +25,9 @@
    `(underline ((t (:underline (:color foreground-color :style wave)))))
    `(variable-pitch ((t (:family "DejaVu Serif"))))))
 
+
+;; customize color theme for minor/major modes
+
 (use-package auto-dim-other-buffers
   :defer t
   :config
@@ -60,6 +63,11 @@
   (custom-set-faces
    `(elixir-argument-name-face ((t (:inherit font-lock-variable-name-face))))
    `(elixir-atom-face ((t (:inherit 'font-lock-builtin-face))))))
+
+(use-package evil-goggles
+  :defer t
+  :config
+  (evil-goggles-use-diff-refine-faces))
 
 (use-package go-mode
   :defer t
@@ -105,6 +113,12 @@
   (with-eval-after-load "hl-line"
     (custom-set-faces
      `(magit-diff-context-highlight ((t (:background ,(color-from 'hl-line :background 7) :foreground ,(color-from 'hl-line :background -50))))))))
+
+(use-package make-mode
+  :defer t
+  :config
+  (custom-set-faces
+   `(makefile-targets ((t (:weight normal))))))
 
 (use-package org
   :defer t
