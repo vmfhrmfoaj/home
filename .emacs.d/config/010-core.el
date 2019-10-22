@@ -123,7 +123,7 @@
                                    (side . bottom)))))
       (helm-default-display-buffer buffer resume)))
 
-  (defn helm-persistent-action-display-window-for-neotree (&optional _)
+  (defn helm-persistent-action-display-window-for-neotree (&rest _)
     "TODO"
     (with-helm-window
       (when (string-match-p "\\*.*NeoTree" (buffer-name helm-current-buffer))
