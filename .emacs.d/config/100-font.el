@@ -1,5 +1,5 @@
 (when window-system
-  (let* ((font "Noto Sans Mono")
+  (let* ((font "Cascadia Code")
          (spacing 1)
          (height (cond
                   ((equal '(1440  900) main-monitor-resolution) 113)
