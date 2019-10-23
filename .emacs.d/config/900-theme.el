@@ -9,8 +9,6 @@
    `(font-lock-comment-face ((t (:slant normal))))
    `(fringe ((t (:background "#F8F8F8"))))
    `(isearch ((t (:inherit bold :underline unspecified))))
-   `(link ((t (:inherit underline :underline unspecified))))
-   `(link-visited ((t (:inherit underline :underline unspecified))))
    `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium)))))
   (custom-theme-set-faces
    'leuven
@@ -22,7 +20,6 @@
    `(helm-match ((t (:inherit lazy-highlight))))
    `(helm-match-selection ((t (:inherit isearch))))
    `(helm-selection ((t (:background ,(color-from 'isearch :background 35) :distant-foreground "black"))))
-   `(underline ((t (:underline (:color foreground-color :style wave)))))
    `(variable-pitch ((t (:family "DejaVu Serif"))))))
 
 
