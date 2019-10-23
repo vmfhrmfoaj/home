@@ -331,8 +331,18 @@
 (use-package evil-ex
   :defer t
   :config
-  (evil-define-key 'normal evil-ex-completion-map
-    (kbd "<escape>") #'abort-recursive-edit))
+  (define-key evil-ex-completion-map [remap abort-recursive-edit] #'abort-recursive-edit-for-evil-ex)
+  (when evil-want-minibuffer
+    (evil-define-key 'normal evil-ex-completion-map
+      (kbd "<escape>") #'abort-recursive-edit-for-evil-ex)
+    (evil-define-key 'insert evil-ex-completion-map
+      (kbd "<escape>")
+      (byte-compile
+       (lambda ()
+         (interactive)
+         (if evil-ex-expression
+             (evil-normal-state)
+           (abort-recursive-edit-for-evil-ex)))))))
 
 (use-package evil-surround
   :defer t
@@ -385,7 +395,16 @@
         (evil-define-key 'normal helm-map
           "k" #'helm-previous-line
           "j" #'helm-next-line
-          (kbd "<escape>") #'helm-keyboard-quit))
+          (kbd "<escape>") #'helm-keyboard-quit)
+        (evil-define-key 'insert helm-map
+          (kbd "<escape>")
+          (byte-compile
+           (lambda ()
+             (interactive)
+             (if (and (stringp helm-input)
+                        (not (s-blank? helm-input)))
+                 (evil-normal-state)
+               (helm-keyboard-quit)))))))
     (define-key helm-map (kbd "<escape>") #'helm-keyboard-quit)
     (define-key helm-map (kbd "C-h") #'delete-backward-char)))
 
