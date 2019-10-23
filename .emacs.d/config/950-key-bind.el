@@ -10,11 +10,20 @@
   (define-key input-decode-map (kbd "<S-kp-add>") "="))
 
 ;; minibuffer
+(define-key isearch-mode-map (kbd "C-h") #'isearch-delete-char)
+(remove-hook 'minibuffer-setup-hook #'evil-initialize)
 (add-hook 'minibuffer-setup-hook
-          (lambda ()
-            (local-set-key (kbd "C-a") #'beginning-of-line)
-            (local-set-key (kbd "C-b") #'backward-char)
-            (local-set-key (kbd "C-h") #'backward-delete-char)))
+          (byte-compile
+           (if (bound-and-true-p evil-want-minibuffer)
+               (lambda ()
+                 (evil-initialize)
+                 (evil-local-set-key 'insert (kbd "C-a") #'beginning-of-line)
+                 (evil-local-set-key 'insert (kbd "C-b") #'backward-char)
+                 (evil-local-set-key 'insert (kbd "C-h") #'backward-delete-char))
+             (lambda ()
+               (local-set-key (kbd "C-a") #'beginning-of-line)
+               (local-set-key (kbd "C-b") #'backward-char)
+               (local-set-key (kbd "C-h") #'backward-delete-char)))))
 
 (use-package bind-map
   :ensure t
@@ -67,14 +76,6 @@
                                       (list it (cons (s-replace prefix evil-leader/major-leader (car it)) (cdr it))))))))
       (dolist (binding bindings)
         (evil-local-set-key 'normal (car binding) (cadr binding))))))
-
-(use-package evil
-  :config
-  (define-key isearch-mode-map (kbd "C-h") #'isearch-delete-char)
-  (evil-define-key 'normal 'global
-    "gd" #'up-list
-    "gr" #'eldoc-refresh
-    "gu" #'backward-up-list))
 
 (use-package evil-leader
   :ensure t
@@ -156,8 +157,8 @@
     "gS" #'git-gutter+-stage-hunks
     "gs" #'magit-status
     "gt" #'git-timemachine
-    "gj" #'git-gutter+-next-hunk
-    "gk" #'git-gutter+-previous-hunk
+    "gp" #'git-gutter+-previous-hunk
+    "gn" #'git-gutter+-next-hunk
 
     ;; jump/join/split
     "jn" #'newline-and-indent
@@ -313,14 +314,25 @@
   :config
   (define-key evil-outer-text-objects-map "U" 'evil-a-sexp)
   (define-key evil-inner-text-objects-map "U" 'evil-inner-sexp)
-  (evil-global-set-key 'insert (kbd "C-h") #'backward-delete-char)
-  (evil-global-set-key 'insert (kbd "C-a") #'beginning-of-line-text)
-  (evil-global-set-key 'insert (kbd "C-e") #'end-of-line)
-  (evil-global-set-key 'visual (kbd "v") #'er/expand-region)
-  (evil-global-set-key 'normal (kbd "TAB") #'indent-for-tab-command)
-  (with-eval-after-load 'aggressive-indent-mode
-    (evil-global-set-key 'normal (kbd "TAB") #'aggressive-indent-do-indent))
-  (evil-global-set-key 'visual (kbd "TAB") #'indent-region))
+  (evil-define-key 'normal 'global
+    "gd" #'up-list
+    "gr" #'eldoc-refresh
+    "gu" #'backward-up-list
+    (kbd "<escape>") #'keyboard-quit
+    (kbd "TAB") #'indent-for-tab-command)
+  (evil-define-key 'insert 'global
+    (kbd "C-h") #'backward-delete-char
+    (kbd "C-a") #'beginning-of-line-text
+    (kbd "C-e") #'end-of-line)
+  (evil-define-key 'visual 'global
+    (kbd "TAB") #'indent-region
+    (kbd "v") #'er/expand-region))
+
+(use-package evil-ex
+  :defer t
+  :config
+  (evil-define-key 'normal evil-ex-completion-map
+    (kbd "<escape>") #'abort-recursive-edit))
 
 (use-package evil-surround
   :defer t
@@ -368,8 +380,14 @@
   :config
   (global-set-key (kbd "M-x") #'helm-M-x)
   (global-set-key (kbd "C-x C-f") #'helm-find-files)
-  (define-key helm-map (kbd "<escape>") #'helm-keyboard-quit)
-  (define-key helm-map (kbd "C-h") #'delete-backward-char))
+  (if (bound-and-true-p evil-want-minibuffer)
+      (progn
+        (evil-define-key 'normal helm-map
+          "k" #'helm-previous-line
+          "j" #'helm-next-line
+          (kbd "<escape>") #'helm-keyboard-quit))
+    (define-key helm-map (kbd "<escape>") #'helm-keyboard-quit)
+    (define-key helm-map (kbd "C-h") #'delete-backward-char)))
 
 (use-package helm-swoop
   :defer t

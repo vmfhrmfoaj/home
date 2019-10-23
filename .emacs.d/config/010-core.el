@@ -60,6 +60,7 @@
                  (point))))
       (list beg end type :expanded t)))
 
+  (setq-default evil-want-minibuffer t)
   (setq-default evil-symbol-word-search t)
   (define-key evil-ex-completion-map [remap abort-recursive-edit] #'abort-recursive-edit-for-evil-ex)
   (advice-add #'evil-ex-setup :before
