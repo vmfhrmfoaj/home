@@ -395,7 +395,8 @@
         (evil-define-key 'normal helm-map
           "k" #'helm-previous-line
           "j" #'helm-next-line
-          (kbd "<escape>") #'helm-keyboard-quit)
+          (kbd "<escape>") #'helm-keyboard-quit
+          (kbd "RET") #'helm-maybe-exit-minibuffer)
         (evil-define-key 'insert helm-map
           (kbd "<escape>")
           (byte-compile
