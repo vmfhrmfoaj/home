@@ -402,9 +402,9 @@
            (lambda ()
              (interactive)
              (if (and (stringp helm-input)
-                        (not (s-blank? helm-input)))
+                      (not (s-blank? helm-input)))
                  (evil-normal-state)
-               (helm-keyboard-quit)))))))
+               (helm-keyboard-quit))))))
     (define-key helm-map (kbd "<escape>") #'helm-keyboard-quit)
     (define-key helm-map (kbd "C-h") #'delete-backward-char)))
 
