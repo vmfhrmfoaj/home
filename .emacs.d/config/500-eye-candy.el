@@ -85,7 +85,10 @@
   :ensure t
   :after evil
   :config
-  (setq evil-goggles-duration 0.4)
+  (setq evil-goggles-duration (if (string= ":10" (getenv "DISPLAY")) 0.4 0.1))
+  (add-hook 'minibuffer-setup-hook
+            (lambda ()
+              (setq-local evil-goggles-duration 0.001)))
   (evil-goggles-mode)
   (evil-goggles-use-diff-faces))
 
