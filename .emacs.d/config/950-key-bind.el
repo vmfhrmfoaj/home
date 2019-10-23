@@ -442,6 +442,12 @@
     (kbd "x") #'neotree-delete-node
     (kbd "<escape>") #'neotree-hide))
 
+(use-package magit
+  :defer t
+  :config
+  (define-key transient-base-map (kbd "<escape>") #'transient-quit-one)
+  (define-key transient-map (kbd "<escape>") #'transient-quit-one))
+
 (use-package magit-svn
   :after evil-magit
   :config
