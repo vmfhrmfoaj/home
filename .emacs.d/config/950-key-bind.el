@@ -10,7 +10,15 @@
   (define-key input-decode-map (kbd "<S-kp-add>") "="))
 
 ;; minibuffer
-(define-key isearch-mode-map (kbd "C-h") #'isearch-delete-char)
+(define-key isearch-mode-map (kbd "C-g") #'isearch-cancel)
+(define-key isearch-mode-map (kbd "C-h")
+  (byte-compile
+   (lambda ()
+     (interactive)
+     (if (and isearch-success (not isearch-error))
+         (isearch-delete-char)
+       (while (or (not isearch-success) isearch-error) (isearch-pop-state))
+       (isearch-update)))))
 (remove-hook 'minibuffer-setup-hook #'evil-initialize)
 (add-hook 'minibuffer-setup-hook
           (byte-compile
