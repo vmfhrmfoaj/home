@@ -25,9 +25,18 @@
            (if (bound-and-true-p evil-want-minibuffer)
                (lambda ()
                  (evil-initialize)
+                 (set (make-local-variable 'evil-echo-state) nil)
+                 (evil-insert 1)
                  (evil-local-set-key 'insert (kbd "C-a") #'beginning-of-line)
                  (evil-local-set-key 'insert (kbd "C-b") #'backward-char)
-                 (evil-local-set-key 'insert (kbd "C-h") #'backward-delete-char))
+                 (evil-local-set-key 'insert (kbd "C-h") #'backward-delete-char)
+                 ;; FIXME
+                 ;;  Not working `minibuffer-local-map'
+                 (unless (or (bound-and-true-p helm-alive-p)
+                             (bound-and-true-p evil-ex-current-buffer))
+                   (evil-local-set-key 'normal (kbd "<escape>") #'abort-recursive-edit)
+                   (evil-local-set-key 'normal (kbd "RET") #'exit-minibuffer)
+                   (evil-local-set-key 'insert (kbd "RET") #'exit-minibuffer)))
              (lambda ()
                (local-set-key (kbd "C-a") #'beginning-of-line)
                (local-set-key (kbd "C-b") #'backward-char)
@@ -400,17 +409,12 @@
         (evil-define-key 'normal helm-map
           "k" #'helm-previous-line
           "j" #'helm-next-line
-          (kbd "<escape>") #'helm-keyboard-quit
-          (kbd "RET") #'helm-maybe-exit-minibuffer)
+          (kbd "C-g") #'helm-keyboard-quit
+          (kbd "RET") #'helm-maybe-exit-minibuffer
+          (kbd "<escape>") #'helm-keyboard-quit)
         (evil-define-key 'insert helm-map
-          (kbd "TAB") #'helm-select-action
-          (kbd "<escape>") (byte-compile
-                            (lambda ()
-                              (interactive)
-                              (if (and (stringp helm-input)
-                                       (not (s-blank? helm-input)))
-                                  (evil-normal-state)
-                                (helm-keyboard-quit))))))
+          (kbd "C-g") #'helm-keyboard-quit
+          (kbd "TAB") #'helm-select-action))
     (define-key helm-map (kbd "<escape>") #'helm-keyboard-quit)
     (define-key helm-map (kbd "C-h") #'delete-backward-char)))
 
