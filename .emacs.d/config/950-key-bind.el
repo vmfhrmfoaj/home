@@ -336,13 +336,12 @@
     (evil-define-key 'normal evil-ex-completion-map
       (kbd "<escape>") #'abort-recursive-edit-for-evil-ex)
     (evil-define-key 'insert evil-ex-completion-map
-      (kbd "<escape>")
-      (byte-compile
-       (lambda ()
-         (interactive)
-         (if evil-ex-expression
-             (evil-normal-state)
-           (abort-recursive-edit-for-evil-ex)))))))
+      (kbd "<escape>") (byte-compile
+                        (lambda ()
+                          (interactive)
+                          (if evil-ex-expression
+                              (evil-normal-state)
+                            (abort-recursive-edit-for-evil-ex)))))))
 
 (use-package evil-surround
   :defer t
@@ -378,8 +377,6 @@
 (use-package helm-files
   :defer t
   :config
-  (define-key helm-map (kbd "C-z") #'helm-select-action)
-  (define-key helm-map (kbd "TAB") #'helm-execute-persistent-action)
   (dolist (map (list helm-find-files-map
                      helm-read-file-map))
     (define-key map (kbd "C-u") #'helm-find-files-up-one-level)
@@ -398,14 +395,14 @@
           (kbd "<escape>") #'helm-keyboard-quit
           (kbd "RET") #'helm-maybe-exit-minibuffer)
         (evil-define-key 'insert helm-map
-          (kbd "<escape>")
-          (byte-compile
-           (lambda ()
-             (interactive)
-             (if (and (stringp helm-input)
-                      (not (s-blank? helm-input)))
-                 (evil-normal-state)
-               (helm-keyboard-quit))))))
+          (kbd "TAB") #'helm-select-action
+          (kbd "<escape>") (byte-compile
+                            (lambda ()
+                              (interactive)
+                              (if (and (stringp helm-input)
+                                       (not (s-blank? helm-input)))
+                                  (evil-normal-state)
+                                (helm-keyboard-quit))))))
     (define-key helm-map (kbd "<escape>") #'helm-keyboard-quit)
     (define-key helm-map (kbd "C-h") #'delete-backward-char)))
 
@@ -445,7 +442,9 @@
 (use-package magit
   :defer t
   :config
+  (define-key transient-base-map (kbd "C-g")      #'transient-quit-all)
   (define-key transient-base-map (kbd "<escape>") #'transient-quit-one)
+  (define-key transient-map (kbd "C-g")      #'transient-quit-all)
   (define-key transient-map (kbd "<escape>") #'transient-quit-one))
 
 (use-package magit-svn

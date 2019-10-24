@@ -208,7 +208,8 @@
 
   (defn focus--enable ()
     "TODO"
-    (unless (apply #'derived-mode-p focus--exclude-modes)
+    (unless (or (apply #'derived-mode-p focus--exclude-modes)
+                (bound-and-true-p helm-alive-p))
       (focus-mode 1)
       (let ((focus-update-idle-time nil))
         (focus-move-focus))))
