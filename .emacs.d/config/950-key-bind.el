@@ -22,7 +22,7 @@
 (remove-hook 'minibuffer-setup-hook #'evil-initialize)
 (add-hook 'minibuffer-setup-hook
           (byte-compile
-           (if (bound-and-true-p evil-want-minibuffer)
+           (if evil-want-minibuffer
                (lambda ()
                  (evil-initialize)
                  (set (make-local-variable 'evil-echo-state) nil)
@@ -32,8 +32,8 @@
                  (evil-local-set-key 'insert (kbd "C-h") #'backward-delete-char)
                  ;; FIXME
                  ;;  Not working `minibuffer-local-map'
-                 (unless (or (bound-and-true-p helm-alive-p)
-                             (bound-and-true-p evil-ex-current-buffer))
+                 (unless (or helm-alive-p
+                             evil-ex-current-buffer)
                    (evil-local-set-key 'normal (kbd "<escape>") #'abort-recursive-edit)
                    (evil-local-set-key 'normal (kbd "RET") #'exit-minibuffer)
                    (evil-local-set-key 'insert (kbd "RET") #'exit-minibuffer)))
@@ -403,7 +403,7 @@
   :config
   (global-set-key (kbd "M-x") #'helm-M-x)
   (global-set-key (kbd "C-x C-f") #'helm-find-files)
-  (if (bound-and-true-p evil-want-minibuffer)
+  (if evil-want-minibuffer
       (progn
         (evil-define-key 'normal helm-map
           "k" #'helm-previous-line
