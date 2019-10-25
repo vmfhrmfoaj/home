@@ -335,7 +335,6 @@
     "gd" #'up-list
     "gr" #'eldoc-refresh
     "gu" #'backward-up-list
-    (kbd "<escape>") #'keyboard-quit
     (kbd "TAB") #'indent-for-tab-command)
   (evil-define-key 'insert 'global
     (kbd "C-h") #'backward-delete-char
@@ -372,8 +371,8 @@
   :config
   (evil-define-minor-mode-key 'normal 'git-timemachine-mode
     (kbd "i")   #'evil-normal-state
-    (kbd "p") #'git-timemachine-show-previous-revision
-    (kbd "n") #'git-timemachine-show-next-revision
+    (kbd "p")   #'git-timemachine-show-previous-revision
+    (kbd "n")   #'git-timemachine-show-next-revision
     (kbd "M-b") #'git-timemachine-blame
     (kbd "M-w") #'git-timemachine-kill-abbreviated-revision
     (kbd "M-W") #'git-timemachine-kill-revision
@@ -432,7 +431,7 @@
     (kbd "TAB")   #'forward-button
     (kbd "S-TAB") #'backward-button
     (kbd "M-,") #'help-go-back
-    (kbd "<escape>") #'quit-window))
+    (kbd "q") #'quit-window))
 
 (use-package neotree
   :defer t
@@ -449,7 +448,7 @@
     (kbd "h") #'neotree-back
     (kbd "l") #'neotree-enter
     (kbd "x") #'neotree-delete-node
-    (kbd "<escape>") #'neotree-hide))
+    (kbd "q") #'neotree-hide))
 
 (use-package magit
   :defer t
@@ -473,7 +472,7 @@
   :defer t
   :config
   (evil-define-key 'normal alchemist-help-minor-mode-map
-    (kbd "<escape>") #'evil-delete-buffer))
+    (kbd "q") #'evil-delete-buffer))
 
 (use-package cc-mode
   :defer t
@@ -656,7 +655,7 @@
     (kbd "U") #'package-menu-mark-upgrades
     (kbd "d") #'package-menu-mark-delete
     (kbd "i") #'package-menu-mark-install
-    (kbd "<escape>") #'evil-delete-buffer
+    (kbd "q") #'kill-buffer
     (kbd "x") #'package-menu-execute))
 
 (use-package php-mode
@@ -694,7 +693,7 @@
   :config
   (add-hook 'racer-help-mode-hook
             (lambda ()
-              (evil-local-set-key 'normal (kbd "<escape>") #'quit-window))))
+              (evil-local-set-key 'normal (kbd "q") #'quit-window))))
 
 (use-package rust-mode
   :defer t
@@ -736,7 +735,7 @@
   (add-hook 'view-mode-hook
             (lambda ()
               (ignore-errors
-                (evil-local-set-key 'normal (kbd "<escape>") #'quit-window)))))
+                (evil-local-set-key 'normal (kbd "q") #'quit-window)))))
 
 (use-package vlf
   :defer t
@@ -777,4 +776,4 @@
               (evil-local-set-key 'normal (kbd "RET") #'ztree-perform-action)
               (evil-local-set-key 'normal (kbd "l") #'ztree-enter-node)
               (evil-local-set-key 'normal (kbd "h") #'ztree-back-node)
-              (evil-local-set-key 'normal (kbd "<escape>") #'evil-delete-buffer))))
+              (evil-local-set-key 'normal (kbd "q") #'kill-buffer))))
