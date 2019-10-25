@@ -30,13 +30,20 @@
   "TODO"
   `(setq ,(-first-item thread) (->> ,@thread)))
 
-(setq byte-compile-warnings nil)
+(setq-default byte-compile-warnings nil)
 
 (defun byte-compile-with-thread (symbol)
   "TODO"
   (make-thread
    `(lambda ()
-      (byte-compile #',symbol))))
+      (let ((byte-compile-warnings nil)
+            (byte-compile-log nil))
+        (byte-compile #',symbol)
+        (-when-let (buf (get-buffer byte-compile-log-buffer))
+          (-> buf
+              (get-buffer-window)
+              (delete-window))
+          (kill-buffer buf))))))
 (byte-compile #'byte-compile-with-thread)
 
 (defmacro defn (name args &optional docstr &rest body)
@@ -46,7 +53,7 @@
        ,(if docstr
             `(defun ,name ,args ,docstr ,@body)
           `(defun ,name ,args ,@body))
-    (byte-compile-with-thread #',name)))
+     (byte-compile-with-thread #',name)))
 
 
 (require 'color)
