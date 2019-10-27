@@ -54,8 +54,11 @@
 (use-package dumb-jump
   :ensure t
   :init
-  (setq helm-dumb-jump--keyword nil
-        helm-dumb-jump--proj nil)
+  (defvar helm-dumb-jump--keyword nil
+    "TODO")
+
+  (defvar helm-dumb-jump--proj nil
+    "TODO")
 
   (defn helm-dumb-jump--after-get-results (info)
     "TODO"
@@ -158,8 +161,7 @@
                                    ((executable-find "rg") 'rg)
                                    ((executable-find "ag") 'ag)
                                    (t nil))
-        dumb-jump-selector 'helm
-        dumb-jump-rg-search-args nil)
+        dumb-jump-selector 'helm)
 
   (add-to-list 'dumb-jump-find-rules
                (list :type "function"
