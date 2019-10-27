@@ -13,7 +13,9 @@
 
 (use-package lsp-mode
   :ensure t
-  :hook ((js-mode         . lsp)
+  :hook ((c-mode          . lsp)
+         (c++-mode        . lsp)
+         (js-mode         . lsp)
          (js2-mode        . lsp)
          (php-mode        . lsp)
          (rust-mode       . lsp)
