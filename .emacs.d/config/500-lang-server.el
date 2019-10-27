@@ -44,11 +44,10 @@
                             (apply #'concat))))))
 
   :config
-  (setq lsp-file-watch-threshold nil
-        lsp-enable-snippet nil)
+  (setq lsp-enable-snippet nil
+        lsp-file-watch-threshold nil)
   (advice-add #'lsp--eldoc-message :override #'lsp--custom-eldoc-message)
-  (advice-add #'lsp--render-on-hover-content :filter-args
-              #'lsp--custom-render-on-hover-content)
+  (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--custom-render-on-hover-content)
   (add-hook 'lsp-mode-hook
             (lambda ()
               (let ((f (byte-compile

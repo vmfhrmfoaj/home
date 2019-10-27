@@ -468,9 +468,7 @@
 (use-package magit-svn
   :after evil-magit
   :config
-  (evil-magit-define-key 'normal 'magit-mode-map (kbd "~") #'magit-svn)
-  (evil-magit-define-key 'normal 'magit-mode-map (kbd "p") #'magit-section-backward)
-  (evil-magit-define-key 'normal 'magit-mode-map (kbd "n") #'magit-section-forward))
+  (evil-magit-define-key 'normal 'magit-mode-map (kbd "~") #'magit-svn))
 
 
 ;; Key binding for the major mode
