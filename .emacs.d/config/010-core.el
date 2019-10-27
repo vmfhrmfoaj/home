@@ -137,6 +137,9 @@
   (defvar helm-match-selection-overlays nil
     "TODO")
 
+  (defvar helm-cur-line-highlight-symbols '()
+    "TODO")
+
   (make-local-variable 'helm-match-selection-overlays)
 
   (defn helm-custom-initialize-overlays (_buffer)
@@ -151,38 +154,54 @@
       (delete-overlay ov))
     (setq helm-match-selection-overlays nil))
 
+  (defn helm--pattern-to-regex (pattern)
+    "TODO"
+    (unless (s-blank-str? pattern)
+        (->> pattern
+             (s-replace "\\ " "\\s-")
+             (s-split " ")
+             (-remove #'s-blank-str?)
+             (--sort (< (length other) (length it)))
+             (-interpose "\\|")
+             (apply #'concat))))
+
   (defn helm-custom-mark-current-line (&optional _resumep _nomouse)
     "TODO"
     (helm--remove-custom-overlays)
     (let ((pattern (if (let ((case-fold-search t))
-                         (->> (helm-get-current-source)
-                              (assoc 'name)
-                              (cdr)
-                              (string-match-p (regexp-opt '("file" "project")))))
+                         (-some->> (helm-get-current-source)
+                                   (assoc 'name)
+                                   (cdr)
+                                   (string-match-p (regexp-opt '("file" "project")))))
                        (file-name-nondirectory helm-pattern)
                      helm-pattern)))
-      (when (not (s-blank-str? pattern))
-        (save-excursion
-          (beginning-of-line)
-          (while (-intersection '(helm-swoop-line-number-face helm-moccur-buffer helm-grep-file helm-grep-lineno)
-                                (-concat (-list (get-text-property (point) 'face))
-                                         (-list (get-text-property (point) 'font-lock-face))))
-            (forward-char 1))
-          (let ((regex (->> pattern
-                            (s-replace "\\ " "\\s-")
-                            (s-split " ")
-                            (-remove #'s-blank-str?)
-                            (--sort (< (length other) (length it)))
-                            (-interpose "\\|")
-                            (apply #'concat))))
-            (condition-case nil
-                (while (and (re-search-forward regex (line-end-position) t)
-                            (not (= (match-beginning 0) (match-end 0))))
-                  (let ((ov (make-overlay (match-beginning 0) (match-end 0))))
-                    (add-to-list 'helm-match-selection-overlays ov)
-                    (overlay-put ov 'face 'helm-match-selection)
-                    (overlay-put ov 'priority 2)))
-              (error (helm--remove-custom-overlays))))))))
+      (save-excursion
+        (beginning-of-line)
+        (while (-intersection '(helm-swoop-line-number-face helm-moccur-buffer helm-grep-file helm-grep-lineno)
+                              (-concat (-list (get-text-property (point) 'face))
+                                       (-list (get-text-property (point) 'font-lock-face))))
+          (forward-char 1))
+        (let ((patterns (->> pattern
+                             (helm--pattern-to-regex)
+                             (-list)
+                             (--mapcat (s-split "\\s-+" it)))))
+          (dolist (sym helm-cur-line-highlight-symbols patterns)
+            (let ((val (ignore-errors (symbol-value sym))))
+              (unless (s-blank-str? val)
+                (add-to-list 'patterns (helm--pattern-to-regex val) t))))
+          (let ((regex (-some->> patterns
+                                 (--sort (< (length other) (length it)))
+                                 (-interpose "\\|")
+                                 (apply #'concat))))
+            (unless (s-blank-str? regex)
+              (condition-case nil
+                  (while (and (re-search-forward regex (line-end-position) t)
+                              (not (= (match-beginning 0) (match-end 0))))
+                    (let ((ov (make-overlay (match-beginning 0) (match-end 0))))
+                      (add-to-list 'helm-match-selection-overlays ov)
+                      (overlay-put ov 'face 'helm-match-selection)
+                      (overlay-put ov 'priority 2)))
+                (error (helm--remove-custom-overlays)))))))))
 
   :config
   (require 'helm-config)

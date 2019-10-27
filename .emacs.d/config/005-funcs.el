@@ -324,7 +324,7 @@
   "TODO"
   (--map (and (cdr it)
               (funcall (car it) (cdr it)))
-         (-zip modes status)))
+         (-zip-pair modes status)))
 
 (defmacro with-disable-modes (modes &rest body)
   "TODO"

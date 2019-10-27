@@ -8,6 +8,7 @@
   (custom-set-faces
    `(font-lock-comment-face ((t (:slant normal))))
    `(fringe ((t (:background "#F8F8F8"))))
+   `(helm-grep-lineno ((t (:weight medium))))
    `(isearch ((t (:inherit bold :underline unspecified))))
    `(lisp-local-binding-variable-name-face ((t (:foreground ,local-variable-name-fg-color :weight medium)))))
   (custom-theme-set-faces
@@ -53,6 +54,12 @@
    `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
    `(clojure-side-effect-face   ((t (:inherit (bold italic font-lock-warning-face)))))
    `(clojure-special-variable-name-face ((t (:inherit font-lock-constant-face))))))
+
+(use-package dumb-jump
+  :defer t
+  :config
+  (custom-set-faces
+   `(helm-dumb-jump-match ((t (:background ,(color-from 'helm-match :background -15)))))))
 
 (use-package elixir-mode
   :defer t

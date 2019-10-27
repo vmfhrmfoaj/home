@@ -60,13 +60,17 @@
   (defvar helm-dumb-jump--proj nil
     "TODO")
 
+  (defface helm-dumb-jump-match
+    '((t (:inherit helm-match)))
+    "TODO")
+
   (defn helm-dumb-jump--after-get-results (info)
     "TODO"
     (setq helm-dumb-jump--proj (plist-get info :root)
           helm-dumb-jump--keyword (plist-get info :symbol))
     info)
 
-  (defn helm-dump-jump--action (find-file-fn candidate)
+  (defn helm-dumb-jump--action (find-file-fn candidate)
     "TODO"
     (let* ((candidate (helm-grep-split-line candidate))
            (file (nth 0 candidate))
@@ -85,7 +89,7 @@
       (with-demoted-errors "Error running `dumb-jump-after-jump-hook': %S"
         (run-hooks 'dumb-jump-after-jump-hook))))
 
-  (defn helm-dump-jump--insert-file (file)
+  (defn helm-dumb-jump--insert-file (file)
     "TODO"
     (let ((def-dir default-directory))
       (switch-to-buffer (get-buffer-create "*helm-dumb-jump: persistent*"))
@@ -96,9 +100,9 @@
       (set-auto-mode)
       (font-lock-fontify-buffer)))
 
-  (defn helm-dump-jump--persistent-action (candidate)
+  (defn helm-dumb-jump--persistent-action (candidate)
     "TODO"
-    (helm-dump-jump--action #'helm-dump-jump--insert-file candidate))
+    (helm-dumb-jump--action #'helm-dumb-jump--insert-file candidate))
 
   (defn helm-dumb-jump--result-follow (result &optional use-tooltip proj)
     "TODO"
@@ -129,18 +133,22 @@
                          (--map (plist-get it :context))
                          (--map (s-trim it))
                          (--map (s-split (regexp-quote helm-dumb-jump--keyword) it))
-                         (--map (-interpose (propertize helm-dumb-jump--keyword 'face 'helm-match) it))
+                         (--map (-interpose (propertize helm-dumb-jump--keyword 'face 'helm-dumb-jump-match) it))
                          (--map (apply #'concat " " it))))
-             (candidates (->> (-zip paths lines ctxs)
+             (candidates (->> (-zip-pair paths lines ctxs)
                               (--map (-interpose ":" it))
                               (--map (apply #'concat it)))))
         (helm :sources
               (helm-build-sync-source "Dump Jump"
                 :candidates candidates
                 :action (helm-make-actions
-                         "Open file"              (-partial #'helm-dump-jump--action #'find-file)
-                         "Open file other window" (-partial #'helm-dump-jump--action #'find-file-other-window))
-                :persistent-action #'helm-dump-jump--persistent-action)
+                         "Open file"              (-partial #'helm-dumb-jump--action #'find-file)
+                         "Open file other window" (-partial #'helm-dumb-jump--action #'find-file-other-window))
+                :persistent-action #'helm-dumb-jump--persistent-action
+                :after-init-hook
+                (lambda ()
+                  (with-current-buffer (get-buffer-create "*helm-dumb-jump*")
+                    (setq-local helm-cur-line-highlight-symbols '(helm-dumb-jump--keyword)))))
               :buffer "*helm-dumb-jump*"))
       t))
 
