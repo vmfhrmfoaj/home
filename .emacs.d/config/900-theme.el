@@ -109,6 +109,13 @@
   (custom-set-faces
    `(linum ((t (:inherit default))))))
 
+(use-package lsp-mode
+  :defer t
+  :config
+  (custom-set-faces
+   `(lsp-face-highlight-read  ((t (:inherit highlight :underline unspecified))))
+   `(lsp-face-highlight-write ((t (:inherit (underline highlight)))))))
+
 (use-package magit
   :defer t
   :config
