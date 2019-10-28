@@ -17,10 +17,9 @@
    `(italic ((t (:slant italic))))
    `(font-lock-doc-face ((t (:inherit font-lock-string-face :foreground "#7F7F7F"))))
    `(font-lock-negation-char-face ((t (:inherit font-lock-warning-face :weight medium))))
-   `(helm-swoop-target-word-face ((t (:inherit lazy-highlight))))
-   `(helm-match ((t (:inherit lazy-highlight))))
-   `(helm-match-selection ((t (:inherit isearch))))
-   `(helm-selection ((t (:background ,(color-from 'isearch :background 35) :distant-foreground "black"))))
+   `(helm-match ((t (:foreground "#FFFF00" :background "black" :inverse-video t))))
+   `(helm-selection ((t (:background "#9BBAEA" :distant-foreground "white" :inverse-video nil))))
+   `(helm-swoop-target-word-face ((t (:inherit helm-match))))
    `(variable-pitch ((t (:family "DejaVu Serif"))))))
 
 
@@ -59,7 +58,7 @@
   :defer t
   :config
   (custom-set-faces
-   `(helm-dumb-jump-match ((t (:background ,(color-from 'helm-match :background -15)))))))
+   `(helm-dumb-jump-match ((t (:inherit helm-match :foreground ,(color-from 'helm-match :foreground -5)))))))
 
 (use-package elixir-mode
   :defer t
@@ -120,10 +119,8 @@
   :defer t
   :config
   (custom-set-faces
-   `(magit-section-highlight ((t (:background ,(color-from 'isearch :background 35) :distant-foreground "black")))))
-  (with-eval-after-load "hl-line"
-    (custom-set-faces
-     `(magit-diff-context-highlight ((t (:background ,(color-from 'hl-line :background 7) :foreground ,(color-from 'hl-line :background -50))))))))
+   `(magit-diff-context-highlight ((t (:background "#FBFEEE" :foreground "#A4C207"))))
+   `(magit-section-highlight ((t (:background "#9BBAEA" :distant-foreground "white"))))))
 
 (use-package make-mode
   :defer t

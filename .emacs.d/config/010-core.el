@@ -129,80 +129,42 @@
       (when (string-match-p "\\*.*NeoTree" (buffer-name helm-current-buffer))
         (get-buffer-window helm-current-buffer))))
 
-  (defface helm-match-selection
-    `((t (:inherit helm-match)))
-    "TODO"
-    :group 'helm-faces)
-
-  (defvar helm-match-selection-overlays nil
+  (defvar helm-match-highlight-symbols '()
     "TODO")
 
-  (defvar helm-cur-line-highlight-symbols '()
-    "TODO")
-
-  (make-local-variable 'helm-match-selection-overlays)
-
-  (defn helm-custom-initialize-overlays (_buffer)
-    "TODO"
-    (dolist (ov helm-match-selection-overlays)
-      (delete-overlay ov))
-    (setq helm-match-selection-overlays nil))
-
-  (defn helm--remove-custom-overlays ()
-    "TODO"
-    (dolist (ov helm-match-selection-overlays)
-      (delete-overlay ov))
-    (setq helm-match-selection-overlays nil))
-
-  (defn helm--pattern-to-list (pattern)
+  (defn helm--pattern-to-regex-list (pattern)
     "TODO"
     (unless (s-blank-str? pattern)
       (->> pattern
            (s-replace "\\ " "\\s-")
            (s-split " ")
+           (--mapcat (s-split "\\s-+" it))
            (-remove #'s-blank-str?))))
 
-  (defn helm-custom-mark-current-line (&optional _resumep _nomouse)
+  (defn helm-fuzzy-custom-highlight-match (candidate)
     "TODO"
-    (helm--remove-custom-overlays)
-    (let ((pattern (if (let ((case-fold-search t))
-                         (-some->> (helm-get-current-source)
-                                   (assoc 'name)
-                                   (cdr)
-                                   (string-match-p (regexp-opt '("file" "project")))))
-                       (file-name-nondirectory helm-pattern)
-                     helm-pattern)))
-      (save-excursion
-        (beginning-of-line)
-        (while (-intersection '(helm-swoop-line-number-face helm-moccur-buffer helm-grep-file helm-grep-lineno)
-                              (-concat (-list (get-text-property (point) 'face))
-                                       (-list (get-text-property (point) 'font-lock-face))))
-          (forward-char 1))
-        (let ((patterns (->> pattern
-                             (helm--pattern-to-list)
-                             (-list)
-                             (--mapcat (s-split "\\s-+" it)))))
-          (dolist (sym helm-cur-line-highlight-symbols patterns)
-            (let ((val (ignore-errors (symbol-value sym))))
-              (unless (s-blank-str? val)
-                (add-to-list 'patterns (helm--pattern-to-list val) t))))
-          (dolist (pattern patterns)
-            (let ((idx 0)
-                  (regex pattern))
-              (save-excursion
-                (when (s-starts-with? "^" regex)
-                  (setq idx 1
-                        regex (concat "^\\(?:.+?:[0-9]+:\\)?\\(" (substring regex 1) "\\)")))
-                ;; (print (list pattern '-> regex))
-                (beginning-of-line)
-                (condition-case nil
-                    (while (and (re-search-forward regex (line-end-position) t)
-                                (not (= (match-beginning 0) (match-end 0))))
-                      (let ((ov (make-overlay (match-beginning idx) (match-end idx))))
-                        (add-to-list 'helm-match-selection-overlays ov)
-                        (overlay-put ov 'face 'helm-match-selection)
-                        (overlay-put ov 'priority 2)))
-                  (error (helm--remove-custom-overlays))))))))))
+    (condition-case nil
+        (let* ((pair    (and (consp candidate) candidate))
+               (display (helm-stringify (if pair (car pair) candidate)))
+               (real    (cdr pair))
+               (pattern (if (let ((case-fold-search t))
+                              (-some->> (helm-get-current-source)
+                                        (assoc 'name)
+                                        (cdr)
+                                        (string-match-p "file\\|project")))
+                            (file-name-nondirectory helm-pattern)
+                          helm-pattern))
+               (regexes (helm--pattern-to-regex-list pattern)))
+          (dolist (regex regexes)
+            (let ((i 0))
+              (while (and (string-match regex display i)
+                          (not (= (match-beginning 0) (match-end 0))))
+                (setq i (match-end 0)
+                      display (concat (substring display 0 (match-beginning 0))
+                                      (propertize (substring display (match-beginning 0) (match-end 0)) 'face 'helm-match)
+                                      (substring display (match-end 0)))))))
+          (if real (cons display real) display))
+      (error candidate)))
 
   :config
   (require 'helm-config)
@@ -210,6 +172,7 @@
         helm-autoresize-max-height 45
         helm-display-header-line nil
         helm-display-function #'helm-display-buffer-at-bottom
+        helm-fuzzy-matching-highlight-fn #'helm-fuzzy-custom-highlight-match
         helm-split-window-inside-p t
         helm-truncate-lines t)
   (add-hook 'helm-before-initialize-hook (byte-compile (lambda () (setq gc-cons-threshold (* 1024 1024 128)))))
@@ -220,8 +183,6 @@
                (garbage-collect))))
   (advice-add #'helm-persistent-action-display-window :before-until
               #'helm-persistent-action-display-window-for-neotree)
-  (advice-add #'helm-initialize-overlays :after #'helm-custom-initialize-overlays)
-  (advice-add #'helm-mark-current-line   :after #'helm-custom-mark-current-line)
   (advice-add #'helm-initialize :after #'helm--update-last-search-buffer)
   (make-thread (lambda ()
                  (helm-mode 1)

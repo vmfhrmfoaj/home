@@ -144,11 +144,7 @@
                 :action (helm-make-actions
                          "Open file"              (-partial #'helm-dumb-jump--action #'find-file)
                          "Open file other window" (-partial #'helm-dumb-jump--action #'find-file-other-window))
-                :persistent-action #'helm-dumb-jump--persistent-action
-                :after-init-hook
-                (lambda ()
-                  (with-current-buffer (get-buffer-create "*helm-dumb-jump*")
-                    (setq-local helm-cur-line-highlight-symbols '(helm-dumb-jump--keyword)))))
+                :persistent-action #'helm-dumb-jump--persistent-action)
               :buffer "*helm-dumb-jump*"))
       t))
 
