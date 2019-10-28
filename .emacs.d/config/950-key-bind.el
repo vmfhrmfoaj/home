@@ -371,8 +371,8 @@
   :config
   (evil-define-minor-mode-key 'normal 'git-timemachine-mode
     (kbd "i")   #'evil-normal-state
-    (kbd "p")   #'git-timemachine-show-previous-revision
-    (kbd "n")   #'git-timemachine-show-next-revision
+    (kbd "M-p") #'git-timemachine-show-previous-revision
+    (kbd "M-n") #'git-timemachine-show-next-revision
     (kbd "M-b") #'git-timemachine-blame
     (kbd "M-w") #'git-timemachine-kill-abbreviated-revision
     (kbd "M-W") #'git-timemachine-kill-revision
