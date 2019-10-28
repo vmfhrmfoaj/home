@@ -48,34 +48,23 @@
     "TODO"
     (kill-local-variable 'helm-swoop-list-cache))
 
-  (defn helm-swoop--refine-candidate (str &optional pattern)
-    (list (-last-item (s-split-up-to "[0-9]+" str 1))
-          (or pattern helm-pattern)))
+  (defn helm-swoop--refine-candidate (candidate)
+    (if (string-match "^[0-9]+\\(.+\\)$" candidate)
+        (match-string 1 candidate)
+      candidate))
 
   (defn helm-swoop--modify-action-on-helm-source (source)
-    (--map (if (eq 'action (car it))
-               `(action . ,(append (cdr it) '(("Edit" . helm-swoop--edit))))
-             it)
-           source))
+    (-snoc (--map (if (eq 'action (car it))
+                      `(action . ,(append (cdr it) '(("Edit" . helm-swoop--edit))))
+                    it)
+                  source)
+           `(match-part . ,#'helm-swoop--refine-candidate)))
 
   :config
   (setq helm-swoop-pre-input-function (-const "")
         helm-swoop-speed-or-color nil
         helm-swoop-split-window-function #'helm-display-buffer-at-bottom
-        helm-swoop-use-line-number-face t
-        helm-c-source-swoop-match-functions
-        (->> '(helm-mm-exact-match
-               helm-mm-match
-               helm-mm-3-migemo-match)
-             (--map (-partial #'apply it))
-             (--map (-compose it #'helm-swoop--refine-candidate)))
-        helm-c-source-swoop-search-functions
-        (->> '(helm-mm-exact-search
-               helm-mm-search
-               helm-candidates-in-buffer-search-default-fn
-               helm-mm-3-migemo-search)
-             (--map (-partial #'apply it))
-             (--map (-compose it #'helm-swoop--refine-candidate))))
+        helm-swoop-use-line-number-face t)
   (advice-add #'helm-swoop :after (byte-compile (lambda (&rest _) (keyboard-quit)))) ; NOTE: How to cancel the selection?
   (advice-add #'helm-swoop--get-content :override #'helm-swoop--get-content-for-fancy-narrow)
   (advice-add #'helm-c-source-swoop       :filter-return #'helm-swoop--modify-action-on-helm-source)
