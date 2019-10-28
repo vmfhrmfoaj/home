@@ -120,31 +120,43 @@
   (defn helm-dumb-jump--prompt-user-for-choice (proj results)
     "TODO"
     (when (eq 'helm dumb-jump-selector)
-      (let* ((proj-regex (concat "^" (regexp-quote proj) "/*"))
-             (paths (->> results
-                         (--map (plist-get it :path))
-                         (--map (s-replace-regexp proj-regex "" it))
-                         (--map (propertize it 'face 'helm-moccur-buffer))))
-             (lines (->> results
-                         (--map (plist-get it :line))
-                         (--map (number-to-string it))
-                         (--map (propertize it 'face 'helm-grep-lineno))))
-             (ctxs  (->> results
-                         (--map (plist-get it :context))
-                         (--map (s-trim it))
-                         (--map (s-split (regexp-quote helm-dumb-jump--keyword) it))
-                         (--map (-interpose (propertize helm-dumb-jump--keyword 'face 'helm-dumb-jump-match) it))
-                         (--map (apply #'concat " " it))))
-             (candidates (->> (-zip-pair paths lines ctxs)
-                              (--map (-interpose ":" it))
-                              (--map (apply #'concat it)))))
+      (let ((proj-regex (concat "^" (regexp-quote proj) "/*"))
+            candidates)
+        (dolist (res results)
+          (let ((path (s-replace-regexp proj-regex "" (plist-get res :path)))
+                (line-num (number-to-string (plist-get res :line)))
+                (line (plist-get res :context))
+                (i 0)
+                match-start-pos)
+            (while (and (string-match (regexp-quote helm-dumb-jump--keyword) line i)
+                        (not (= (match-beginning 0) (match-end 0))))
+              (setq i (match-end 0)
+                    line (concat (substring line 0 (match-beginning 0))
+                                 (propertize (substring line (match-beginning 0) (match-end 0))
+                                             'face 'helm-dumb-jump-match)
+                                 (substring line (match-end 0)))))
+            (add-to-list 'candidates
+                         (concat (propertize path 'face 'helm-moccur-buffer) ":"
+                                 (propertize line-num 'face 'helm-grep-lineno) ":"
+                                 line)
+                         t)))
         (helm :sources
               (helm-build-sync-source "Dump Jump"
                 :candidates candidates
                 :action (helm-make-actions
                          "Open file"              (-partial #'helm-dumb-jump--action #'find-file)
                          "Open file other window" (-partial #'helm-dumb-jump--action #'find-file-other-window))
-                :persistent-action #'helm-dumb-jump--persistent-action)
+                :persistent-action #'helm-dumb-jump--persistent-action
+                :match-part
+                (byte-compile
+                 (lambda (candidate)
+                   (if (string-match "^.+?:[0-9]+:\\(.+\\)$" candidate)
+                       (match-string 1 candidate)
+                     candidate)))
+                :after-init-hook
+                (lambda ()
+                  (with-current-buffer (get-buffer-create "*helm-dumb-jump*")
+                    (setq-local helm-cur-line-highlight-symbols '(helm-dumb-jump--keyword)))))
               :buffer "*helm-dumb-jump*"))
       t))
 
