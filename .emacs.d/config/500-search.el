@@ -75,6 +75,7 @@
   :defer t
   :init
   (defn helm-ag--custom-do-ag-candidate-process ()
+    "TODO"
     (let* ((non-essential nil)
            (default-directory (or helm-ag--default-directory
                                   helm-ag--last-default-directory
@@ -129,12 +130,54 @@
                (goto-char (match-beginning 0))))
         t)))
 
+  (defn helm-ag--custom-propertize-candidates (input)
+    "TODO"
+    (save-excursion
+      (goto-char (point-min))
+      (forward-line 1)
+      (let ((patterns (helm-ag--do-ag-highlight-patterns input)))
+        (cl-loop with one-file-p = (and (not (helm-ag--vimgrep-option))
+                                        (helm-ag--search-only-one-file-p))
+                 while (not (eobp))
+                 for num = 1 then (1+ num)
+                 do
+                 (progn
+                   (let ((start (point))
+                         (bound (line-end-position)))
+                     (if (and one-file-p (search-forward ":" bound t))
+                         (set-text-properties (line-beginning-position) (1- (point))
+                                              '(face helm-grep-lineno))
+                       (when (re-search-forward helm-grep-split-line-regexp bound t)
+                         (set-text-properties (match-beginning 1) (match-end 1) '(face helm-moccur-buffer))
+                         (set-text-properties (match-beginning 2) (match-end 2) '(face helm-grep-lineno))
+                         (goto-char (match-beginning 3))))
+                     (let ((curpoint (point))
+                           (case-fold-search helm-ag--ignore-case))
+                       (dolist (pattern patterns)
+                         (let ((idx 0)
+                               (last-point (point)))
+                           (when (s-starts-with? "^" pattern)
+                             (beginning-of-line)
+                             (setq idx 1
+                                   pattern (concat "^\\(?:[[:lower:][:upper:]]?:?.*?\\):\\(?:[0-9]+\\):\\("
+                                                   (substring pattern 1)
+                                                   "\\)")))
+                           (while (re-search-forward pattern bound t)
+                             (set-text-properties (match-beginning idx) (match-end idx)
+                                                  '(face helm-match))
+                             (when (= last-point (point))
+                               (forward-char 1))
+                             (setq last-point (point)))
+                           (goto-char curpoint))))
+                     (put-text-property start bound 'helm-cand-num num))
+                   (forward-line 1))))))
+
   :config
   (setq helm-ag-base-command "rg"
         helm-ag-command-option "--no-heading --no-messages --smart-case"
         helm-ag-use-emacs-lisp-regexp t)
-  (advice-add #'helm-ag--do-ag-candidate-process :override
-              #'helm-ag--custom-do-ag-candidate-process)
+  (advice-add #'helm-ag--do-ag-candidate-process :override #'helm-ag--custom-do-ag-candidate-process)
+  (advice-add #'helm-ag--propertize-candidates :override #'helm-ag--custom-propertize-candidates)
   (advice-add #'helm-do-ag :around #'helm-do-ag-wrap)
   (advice-add #'helm-ag--elisp-regexp-to-pcre :filter-return #'helm-ag--elisp-regexp-to-pcre-for-ripgrep)
   (with-eval-after-load "projectile"

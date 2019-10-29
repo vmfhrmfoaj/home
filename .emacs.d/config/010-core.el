@@ -187,7 +187,7 @@
               (beginning-of-line)
               (if (s-starts-with? "^" regex)
                   (setq idx 1
-                        regex (concat "^\\(?:.+?:[0-9]+:\\)?\\(" (substring regex 1) "\\)"))
+                        regex (concat "^\\(?:[[:lower:][:upper:]]?:?.*?[0-9]+:\\)?\\(" (substring regex 1) "\\)"))
                 (re-search-forward "^\\(?:.+?:[0-9]+:\\)" (line-end-position) t))
               (condition-case nil
                   (while (and (re-search-forward regex (line-end-position) t)
