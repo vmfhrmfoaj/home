@@ -190,7 +190,10 @@
                    (goto-char (match-beginning 0))))
             (let* ((i 0)
                    (start-pos (point))
-                   (end-pos (line-end-position))
+                   (end-pos (or (cond
+                                 ((string= "*helm buffers*" helm-buffer)
+                                  (text-property-any (line-beginning-position) (line-end-position) 'face 'helm-buffer-size)))
+                                (line-end-position)))
                    (line (buffer-substring start-pos end-pos)))
               (condition-case nil
                   (while (and (string-match regex line i)
