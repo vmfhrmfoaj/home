@@ -15,6 +15,9 @@ _install_android_studio_from_tar() {
         return 255;
     fi
 
+    local sym_file="${HOME}/.bin/android-studio"
+    rm -rf "${sym_file}"
+    ln -rs "${target_dir}/bin/studio.sh" "${sym_file}"
     cat > "${HOME}/.local/share/applications/android-studio.desktop" <<EOF
 [Desktop Entry]
 Type=Application
