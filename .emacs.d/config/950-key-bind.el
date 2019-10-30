@@ -30,6 +30,8 @@
                  (evil-local-set-key 'insert (kbd "C-a") #'beginning-of-line)
                  (evil-local-set-key 'insert (kbd "C-b") #'backward-char)
                  (evil-local-set-key 'insert (kbd "C-h") #'backward-delete-char)
+                 (when (and helm-alive-p (string= helm-buffer "*helm find files*"))
+                   (evil-local-set-key 'insert (kbd "TAB") #'helm-execute-persistent-action))
                  ;; FIXME
                  ;;  Not working `minibuffer-local-map'
                  (unless (or helm-alive-p
