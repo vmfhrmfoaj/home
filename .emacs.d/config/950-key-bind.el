@@ -221,7 +221,7 @@
     "sg" #'helm-do-grep-ag
     "sr" #'helm-resume-last-search-buffer
     "sp" #'helm-do-ag-project-root
-    "ss" #'helm-swoop
+    "ss" #'helm-occur
 
     ;; toggle
     "tl" #'toggle-truncate-lines
@@ -415,12 +415,6 @@
       (kbd "RET") #'helm-maybe-exit-minibuffer
       (kbd "<escape>") #'helm-keyboard-quit))
   (define-key helm-map (kbd "<escape>") #'helm-keyboard-quit))
-
-(use-package helm-swoop
-  :defer t
-  :config
-  (define-key helm-swoop-edit-map (kbd "C-c C-c") #'helm-swoop--edit-complete)
-  (define-key helm-swoop-edit-map (kbd "C-c C-k") #'helm-swoop--edit-cancel))
 
 (use-package help-mode
   :defer t

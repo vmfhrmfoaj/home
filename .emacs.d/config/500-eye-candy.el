@@ -96,9 +96,6 @@
   :ensure t
   :defer t
   :config
-  (with-eval-after-load "helm-swoop"
-    (advice-add #'fancy-narrow-to-region :after #'helm-swoop--clear-cache-hard)
-    (advice-add #'fancy-widen :after #'helm-swoop--clear-cache-hard))
   (let ((f (byte-compile
             (lambda (fn &rest args)
               "wrap a function to run without `fancy-narrow'."
