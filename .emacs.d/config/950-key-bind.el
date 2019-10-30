@@ -116,24 +116,6 @@
 
     ;; applications
 
-    ;; - org
-    "aoa" #'org-agenda-show-list
-    "aocj" #'org-clock-goto
-    "aocn" #'org-capture-note
-    "aoct" #'org-capture-todo
-    "aom" #'org-tags-view
-    "aoM" (defalias 'org-tags-view-todo-only
-            (lambda ()
-              (interactive)
-              (org-tags-view t)))
-    "aor" #'org-agenda-resume
-    "aos" #'org-search-view
-    "aoS" (defalias 'org-search-view-todo-only
-            (lambda ()
-              (interactive)
-              (org-search-view t)))
-    "aot" #'org-todo-list
-
     ;; - calculator
     "ac" #'calc
 
