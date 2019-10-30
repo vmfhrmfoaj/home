@@ -22,27 +22,23 @@
 (remove-hook 'minibuffer-setup-hook #'evil-initialize)
 (add-hook 'minibuffer-setup-hook
           (byte-compile
-           (if evil-want-minibuffer
-               (lambda ()
-                 (evil-initialize)
-                 (set (make-local-variable 'evil-echo-state) nil)
-                 (evil-insert 1)
-                 (evil-local-set-key 'insert (kbd "C-a") #'beginning-of-line)
-                 (evil-local-set-key 'insert (kbd "C-b") #'backward-char)
-                 (evil-local-set-key 'insert (kbd "C-h") #'backward-delete-char)
-                 (when (and helm-alive-p (string= helm-buffer "*helm find files*"))
-                   (evil-local-set-key 'insert (kbd "TAB") #'helm-execute-persistent-action))
-                 ;; FIXME
-                 ;;  Not working `minibuffer-local-map'
-                 (unless (or helm-alive-p
-                             evil-ex-current-buffer)
-                   (evil-local-set-key 'normal (kbd "<escape>") #'abort-recursive-edit)
-                   (evil-local-set-key 'normal (kbd "RET") #'exit-minibuffer)
-                   (evil-local-set-key 'insert (kbd "RET") #'exit-minibuffer)))
-             (lambda ()
-               (local-set-key (kbd "C-a") #'beginning-of-line)
-               (local-set-key (kbd "C-b") #'backward-char)
-               (local-set-key (kbd "C-h") #'backward-delete-char)))))
+           (lambda ()
+             (when evil-want-minibuffer
+               (evil-initialize)
+               (set (make-local-variable 'evil-echo-state) nil)
+               (evil-insert 1)
+               (when (and helm-alive-p (string= helm-buffer "*helm find files*"))
+                 (evil-local-set-key 'insert (kbd "TAB") #'helm-execute-persistent-action))
+               ;; FIXME
+               ;;  Not working `minibuffer-local-map'
+               (unless (or helm-alive-p
+                           evil-ex-current-buffer)
+                 (evil-local-set-key 'normal (kbd "<escape>") #'abort-recursive-edit)
+                 (evil-local-set-key 'normal (kbd "RET") #'exit-minibuffer)
+                 (evil-local-set-key 'insert (kbd "RET") #'exit-minibuffer)))
+             (local-set-key (kbd "C-a") #'beginning-of-line)
+             (local-set-key (kbd "C-b") #'backward-char)
+             (local-set-key (kbd "C-h") #'backward-delete-char))))
 
 (use-package bind-map
   :ensure t
@@ -383,6 +379,12 @@
 (use-package helm-ag
   :defer t
   :config
+  (when evil-want-minibuffer
+    (dolist (map (list helm-ag-map helm-do-ag-map))
+      (evil-define-key 'normal map
+        "gu" #'helm-ag--up-one-level)
+      (evil-define-key 'insert map
+        (kbd "C-u") #'helm-ag--up-one-level)))
   (define-key helm-ag-map    (kbd "C-u") #'helm-ag--up-one-level)
   (define-key helm-do-ag-map (kbd "C-u") #'helm-ag--do-ag-up-one-level))
 
@@ -405,19 +407,14 @@
   :config
   (global-set-key (kbd "M-x") #'helm-M-x)
   (global-set-key (kbd "C-x C-f") #'helm-find-files)
-  (if evil-want-minibuffer
-      (progn
-        (evil-define-key 'normal helm-map
-          "k" #'helm-previous-line
-          "j" #'helm-next-line
-          (kbd "C-g") #'helm-keyboard-quit
-          (kbd "RET") #'helm-maybe-exit-minibuffer
-          (kbd "<escape>") #'helm-keyboard-quit)
-        (evil-define-key 'insert helm-map
-          (kbd "C-g") #'helm-keyboard-quit
-          (kbd "TAB") #'helm-select-action))
-    (define-key helm-map (kbd "<escape>") #'helm-keyboard-quit)
-    (define-key helm-map (kbd "C-h") #'delete-backward-char)))
+  (when evil-want-minibuffer
+    (evil-define-key 'normal helm-map
+      "k" #'helm-previous-line
+      "j" #'helm-next-line
+      (kbd "C-g") #'helm-keyboard-quit
+      (kbd "RET") #'helm-maybe-exit-minibuffer
+      (kbd "<escape>") #'helm-keyboard-quit))
+  (define-key helm-map (kbd "<escape>") #'helm-keyboard-quit))
 
 (use-package helm-swoop
   :defer t

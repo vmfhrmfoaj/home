@@ -3,6 +3,7 @@
   :defer t
   :init
   (defn helm-swoop--colorize (it)
+    "TODO"
     (propertize it 'font-lock-face 'helm-swoop-line-number-face))
 
   (defn helm-swoop--get-content-for-fancy-narrow (buf &optional linum)
@@ -49,11 +50,13 @@
     (kill-local-variable 'helm-swoop-list-cache))
 
   (defn helm-swoop--refine-candidate (candidate)
+    "TODO"
     (if (string-match "^[0-9]+\\(.+\\)$" candidate)
         (match-string 1 candidate)
       candidate))
 
   (defn helm-swoop--modify-action-on-helm-source (source)
+    "TODO"
     (-snoc (--map (if (eq 'action (car it))
                       `(action . ,(append (cdr it) '(("Edit" . helm-swoop--edit))))
                     it)
