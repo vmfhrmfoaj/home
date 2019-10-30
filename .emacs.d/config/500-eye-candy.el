@@ -47,12 +47,14 @@
   :ensure t
   :config
   (advice-add #'adob--never-dim-p :before-until #'helm-bufferp)
+  (with-eval-after-load "helm-occur"
+    (advice-add #'adob--never-dim-p :before-until #'helm-occur-current-bufferp))
   (auto-dim-other-buffers-mode))
 
 (use-package diminish
   :ensure t
   :config
-  (with-eval-after-load "auto-dim-other-buffers") (diminish 'auto-dim-other-buffers-mode "")
+  (with-eval-after-load "auto-dim-other-buffers"  (diminish 'auto-dim-other-buffers-mode ""))
   (with-eval-after-load "abbrev"                  (diminish 'abbrev-mode                 ""))
   (with-eval-after-load "aggressive-indent"       (diminish 'aggressive-indent-mode      ""))
   (with-eval-after-load "autorevert"              (diminish 'auto-revert-mode            ""))
@@ -96,6 +98,8 @@
   :ensure t
   :defer t
   :config
+  (with-eval-after-load "helm-occur"
+    (fancy-narrow--advise-function #'helm-occur))
   (let ((f (byte-compile
             (lambda (fn &rest args)
               "wrap a function to run without `fancy-narrow'."

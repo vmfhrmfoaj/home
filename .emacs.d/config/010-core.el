@@ -91,7 +91,13 @@
                (string-match-p "\\*.*[Hh]elm.*\\*" (buffer-name buf)))
       t))
 
-  (defvar helm-search-buffer-regex "\\*\\(?:helm-ag\\|Helm Swoop\\)\\*"
+  (defn helm-occur-current-bufferp (buf)
+    "TODO"
+    (when (and (string= helm-buffer "*helm occur*")
+          (equal helm-current-buffer buf))
+      t))
+
+  (defvar helm-search-buffer-regex (regexp-opt '("*helm-ag*" "*helm occur*"))
     "TODO")
 
   (defvar helm-last-search-buffer nil
