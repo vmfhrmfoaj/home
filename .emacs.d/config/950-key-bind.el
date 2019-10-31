@@ -32,6 +32,7 @@
                (unless (or helm-alive-p
                            evil-ex-current-buffer)
                  (evil-local-set-key 'normal (kbd "<escape>") #'abort-recursive-edit)
+                 (evil-local-set-key 'insert (kbd "TAB") #'minibuffer-complete)
                  (evil-local-set-key 'normal (kbd "RET") #'exit-minibuffer)
                  (evil-local-set-key 'insert (kbd "RET") #'exit-minibuffer)))
              (local-set-key (kbd "C-a") #'beginning-of-line)
