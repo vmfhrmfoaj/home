@@ -1,9 +1,9 @@
 (when window-system
-  (let* ((font "Cascadia Code")
+  (let* ((font "Fantasque Sans Mono")
          (spacing 1)
          (height (cond
-                  ((equal '(1440  900) main-monitor-resolution) 113)
-                  ((equal '(1920 1080) main-monitor-resolution) 105)
+                  ((equal '(1440  900) main-monitor-resolution) 128)
+                  ((equal '(1920 1080) main-monitor-resolution) 120)
                   (t 110))))
     (setq-default line-spacing spacing)
     (set-face-font 'default font)
