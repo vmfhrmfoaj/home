@@ -27,8 +27,6 @@
                (evil-initialize)
                (set (make-local-variable 'evil-echo-state) nil)
                (evil-insert 1)
-               (when (and helm-alive-p (string= helm-buffer "*helm find files*"))
-                 (evil-local-set-key 'insert (kbd "TAB") #'helm-execute-persistent-action))
                ;; FIXME
                ;;  Not working `minibuffer-local-map'
                (unless (or helm-alive-p
@@ -381,6 +379,12 @@
   :config
   (dolist (map (list helm-find-files-map
                      helm-read-file-map))
+    (when evil-want-minibuffer
+      (evil-define-key 'normal map
+        "gu" #'helm-find-files-up-one-level
+        (kbd "TAB") #'helm-execute-persistent-action)
+      (evil-define-key 'insert map
+        (kbd "TAB") #'helm-execute-persistent-action))
     (define-key map (kbd "C-u") #'helm-find-files-up-one-level)
     (define-key map [C-backspace] #'backward-kill-word)))
 
