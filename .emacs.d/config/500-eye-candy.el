@@ -98,6 +98,7 @@
   :ensure t
   :defer t
   :config
+  (advice-add #'fancy-narrow-to-region :after (lambda (&rest _) "To cancel a selection." (keyboard-quit)))
   (with-eval-after-load "helm-occur"
     (fancy-narrow--advise-function #'helm-occur))
   (let ((f (byte-compile
