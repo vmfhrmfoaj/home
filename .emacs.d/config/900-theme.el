@@ -113,7 +113,7 @@
   :config
   (custom-set-faces
    `(lsp-face-highlight-read  ((t (:inherit highlight :underline unspecified))))
-   `(lsp-face-highlight-write ((t (:inherit (underline highlight)))))))
+   `(lsp-face-highlight-write ((t (:inherit highlight :underline (:color foreground-color :style wave)))))))
 
 (use-package magit
   :defer t
