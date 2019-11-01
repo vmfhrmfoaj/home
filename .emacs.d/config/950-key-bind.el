@@ -433,6 +433,10 @@
 (use-package magit
   :defer t
   :config
+  (evil-magit-define-key 'normal 'magit-mode-map "M-p" #'magit-section-backward)
+  (evil-magit-define-key 'normal 'magit-mode-map "M-n" #'magit-section-forward)
+  (evil-magit-define-key 'normal 'magit-mode-map "M-P" #'magit-section-backward-sibling)
+  (evil-magit-define-key 'normal 'magit-mode-map "M-N" #'magit-section-forward-sibling)
   (define-key transient-base-map (kbd "C-g")      #'transient-quit-all)
   (define-key transient-base-map (kbd "<escape>") #'transient-quit-one)
   (define-key transient-map (kbd "C-g")      #'transient-quit-all)
