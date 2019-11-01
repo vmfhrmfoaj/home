@@ -24,14 +24,52 @@ Type=Application
 Version=$(grep -Po '(?<="version":)[ ]*"[^ ]*"' "${target_dir}/product-info.json" | grep -o '[^" ]*')
 Name=Android Stuio
 Comment=Android Studio provides the fastest tools for building apps on every type of Android device.
-Icon=${target_dir}/bin/studio.png
+Icon=android-studio
 Exec=/bin/sh ${target_dir}/bin/studio.sh %F
 Terminal=false
 Categories=Development;IDE;TextEditor;
 EOF
     update-desktop-database "${HOME}/.local/share/applications"
     return 0
+}
 
+_install_atom_from_tar() {
+    local tar_file=$1
+    local target_dir=${2:-"${HOME}/.atom/bin"}
+    if [ -z ${tar_file} ]; then
+        echo "Usage: $0 [TAR_FILE] [TARGET_DIR]?"
+        return 255
+    fi
+
+    mkdir -p "${target_dir}"
+    tar -C "${target_dir}" -xf "${tar_file}" --strip-components=1
+    if [ $? -ne 0 ]; then
+        >&2 echo "Can't unpack '${tar_file}' to '${target_dir}'"
+        return 255;
+    fi
+
+    local sym_file="${HOME}/.bin/atom"
+    rm -rf "${sym_file}"
+    ln -rs "${target_dir}/atom" "${sym_file}"
+    if [ $? -ne 0 ]; then
+        >&2 echo "Can't create a symbolic link at '${sym_file}'"
+        return 255;
+    fi
+    cat > "${HOME}/.local/share/applications/atom.desktop" <<EOF
+[Desktop Entry]
+Type=Application
+Version=$(${target_dir}/atom --version | awk '{ if ($0 ~ /Atom/) { print gensub(/Atom\s*:\s*([.0-9]+)$/, "\\1", "g", $0); }}')
+Name=Atom
+Comment=A hackable text editor for the 21st Century
+Icon=atom
+TryExec=${target_dir}/atom
+Exec=${target_dir}/atom %F
+Terminal=false
+MimeType=text/css;text/english;text/html;text/plain;text/x-c;text/x-chdr;text/x-csrc;text/x-c++;text/x-c++hdr;text/x-c++src;text/x-java;text/x-makefile;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;
+Categories=Development;IDE;TextEditor;
+EOF
+    update-desktop-database "${HOME}/.local/share/applications"
+    return 0
 }
 
 _install_vs_code_from_tar() {
@@ -63,7 +101,7 @@ Version=$(${target_dir}/bin/code --version | head -1)
 Name=Visual Studio Code
 GenericName=VS Code
 Comment=Multiplatform Visual Studio Code from Microsoft
-Icon=${target_dir}/resources/app/resources/linux/code.png
+Icon=visual-studio-code
 TryExec=${target_dir}/bin/code
 Exec=${target_dir}/bin/code %F
 Terminal=true
