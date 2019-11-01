@@ -1,0 +1,19 @@
+"*":
+  core:
+    autoHideMenuBar: true
+    telemetryConsent: "limited"
+    themes: [
+      "one-light-ui"
+      "one-light-syntax"
+    ]
+  editor:
+    fontFamily: "Cascadia Code, Menlo, Consolas, DejaVu Sans Mono, monospace"
+  "exception-reporting":
+    userId: "44dd0953-7e00-4339-a2f1-841952d8c385"
+  "vim-mode-plus":
+    autoDisableInputMethodWhenLeavingInsertMode: true
+    automaticallyEscapeInsertModeOnActivePaneItemChange: true
+    ignoreCaseForSearchCurrentWord: true
+    useSmartcaseForSearch: true
+  welcome:
+    showOnStartup: false
