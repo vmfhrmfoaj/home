@@ -17,8 +17,8 @@
         }
     },
     "editor.wordWrapColumn": 120,
-    "terminal.integrated.fontSize": 13,
-    "terminal.integrated.fontWeight": "bold",
+    "terminal.integrated.fontFamily": "Fantasque Sans Mono",
+    "terminal.integrated.fontSize": 15,
     "window.menuBarVisibility": "toggle",
     "workbench.colorCustomizations": {
         "[Atom One Light]": {
