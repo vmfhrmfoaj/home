@@ -24,6 +24,19 @@
         "[Atom One Light]": {
             "editorCursor.background": "#FFF", // for Vim extension
             "sideBarSectionHeader.background": "#EEE",
+            "syntax.type": "#C18401",
+            "syntax.scope": "#00897B",
+            "syntax.function": "#4078F2",
+            "syntax.variable": "#E45649",
+            "syntax.number": "#90A4AE",
+            "syntax.string": "#50A14F",
+            "syntax.comment": "#A0A1A7",
+            "syntax.constant": "#986801",
+            "syntax.directive": "#7E57C2",
+            "syntax.control": "#A626A4",
+            "syntax.operator": "#707074",
+            "syntax.modifier": "#FF0000",
+            "syntax.punctuation": "#707074",
         },
         "[Horizon]": {
             "sideBar.background": "#191B22",
