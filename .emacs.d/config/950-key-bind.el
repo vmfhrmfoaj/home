@@ -361,11 +361,14 @@
   :defer t
   :config
   (when evil-want-minibuffer
-    (dolist (map (list helm-ag-map helm-do-ag-map))
-      (evil-define-key 'normal map
-        "gu" #'helm-ag--up-one-level)
-      (evil-define-key 'insert map
-        (kbd "C-u") #'helm-ag--up-one-level)))
+    (evil-define-key 'normal helm-ag-map
+      "gu" #'helm-ag--up-one-level)
+    (evil-define-key 'insert helm-ag-map
+      (kbd "C-u") #'helm-ag--up-one-level)
+    (evil-define-key 'normal helm-do-ag-map
+      "gu" #'helm-ag--do-ag-up-one-level)
+    (evil-define-key 'insert helm-do-ag-map
+      (kbd "C-u") #'helm-ag--do-ag-up-one-level))
   (define-key helm-ag-map    (kbd "C-u") #'helm-ag--up-one-level)
   (define-key helm-do-ag-map (kbd "C-u") #'helm-ag--do-ag-up-one-level))
 
