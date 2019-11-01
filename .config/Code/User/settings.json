@@ -28,7 +28,7 @@
             "syntax.scope": "#00897B",
             "syntax.function": "#4078F2",
             "syntax.variable": "#E45649",
-            "syntax.number": "#90A4AE",
+            "syntax.number": "#FF0000",
             "syntax.string": "#50A14F",
             "syntax.comment": "#A0A1A7",
             "syntax.constant": "#986801",
