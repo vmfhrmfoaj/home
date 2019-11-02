@@ -6,6 +6,7 @@
     "TODO")
   (setq x-underline-at-descent-line t)
   (custom-set-faces
+   `(error ((t (:weight bold))))
    `(font-lock-comment-face ((t (:slant normal))))
    `(fringe ((t (:background "#F8F8F8"))))
    `(helm-grep-lineno ((t (:weight medium))))
