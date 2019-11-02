@@ -25,11 +25,6 @@
                  (ignore-errors
                    (helm-ag--do-ag-propertize helm-input))))))))))
 
-  (defn helm-do-ag-wrap (fn &optional basedir targets)
-    "Wrap `helm-do-ag' to change `helm-input-idle-delay' in the `helm-do-ag' context."
-    (let ((helm-input-idle-delay 0.2))
-      (funcall fn basedir targets)))
-
   (defn helm-ag--elisp-regexp-to-pcre-for-ripgrep (pattern)
     "Improve `helm-ag--elisp-regexp-to-pcre' for ripgrep."
     (s-replace-all '(("\\s-" . "[[:space:]]")) pattern))
@@ -100,18 +95,28 @@
                      (put-text-property start bound 'helm-cand-num num))
                    (forward-line 1))))))
 
+  (defn helm-ag--set-input-idle-delay (&rest _)
+    "Locally set `helm-input-idle-delay' to `helm-grep-input-idle-delay'."
+    (helm-set-local-variable
+     'helm-input-idle-delay helm-grep-input-idle-delay))
+
   :config
   (setq helm-ag-base-command "rg"
         helm-ag-command-option "--no-heading --no-messages --smart-case"
         helm-ag-use-emacs-lisp-regexp t)
   (advice-add #'helm-ag--do-ag-candidate-process :override #'helm-ag--custom-do-ag-candidate-process)
   (advice-add #'helm-ag--propertize-candidates :override #'helm-ag--custom-propertize-candidates)
-  (advice-add #'helm-do-ag :around #'helm-do-ag-wrap)
+  (advice-add #'helm-do-ag--helm :before #'helm-ag--set-input-idle-delay)
   (advice-add #'helm-ag--elisp-regexp-to-pcre :filter-return #'helm-ag--elisp-regexp-to-pcre-for-ripgrep)
   (with-eval-after-load "projectile"
     (advice-add #'helm-ag--project-root :override #'projectile-project-root))
   (with-eval-after-load "vlf"
     (advice-add #'helm-ag--find-file-action :before-until #'helm-ag--find-file-action-for-vlf)))
+
+(use-package helm-grep
+  :defer t
+  :config
+  (setq helm-grep-input-idle-delay 0.2))
 
 (use-package helm-occur
   :defer t
