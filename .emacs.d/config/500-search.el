@@ -112,3 +112,14 @@
     (advice-add #'helm-ag--project-root :override #'projectile-project-root))
   (with-eval-after-load "vlf"
     (advice-add #'helm-ag--find-file-action :before-until #'helm-ag--find-file-action-for-vlf)))
+
+(use-package helm-occur
+  :defer t
+  :init
+  (defn helm-occur--switch-to-helm-window-after-action (&rest _)
+    "Return the focus to `helm-window' to avoid flickering."
+    (-when-let (win (helm-window))
+      (select-window win)))
+
+  :config
+  (advice-add #'helm-occur-action :after #'helm-occur--switch-to-helm-window-after-action))
