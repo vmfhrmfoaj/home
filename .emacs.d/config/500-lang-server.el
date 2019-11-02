@@ -88,30 +88,33 @@
                                                   (when (<= beg line-num end)
                                                     it)))))))
         (dolist (diagnostic diagnostics)
-          (let* ((message (-some->> diagnostic
+          (let ((messages (-some->> diagnostic
                                     (lsp-diagnostic-message)
                                     (s-replace-regexp "[ \t]+" " ")
-                                    (s-trim)))
-                 (len (length message))
-                 (level (lsp-diagnostic-severity diagnostic))
-                 (face (cond
-                        ((eq 4 level) 'success)
-                        ((eq 3 level) 'success)
-                        ((eq 2 level) 'font-lock-warning-face)
-                        ((eq 1 level) 'error)))
-                 (margin (lsp-ui-sideline--margin-width))
-                 (message (progn
-                            (add-face-text-property 0 len 'lsp-ui-sideline-global nil message)
-                            (add-face-text-property 0 len face nil message)
-                            message))
-                 (string (concat (propertize " " 'display `(space :align-to (- right-fringe ,(lsp-ui-sideline--align len margin))))
-                                 message))
-                 (pos-ov (lsp-ui-sideline--find-line len bol eol))
-                 (ov (and pos-ov (make-overlay (car pos-ov) (car pos-ov)))))
-            (when pos-ov
-              (overlay-put ov 'after-string string)
-              (overlay-put ov 'kind 'diagnotics)
-              (push ov lsp-ui-sideline--ovs)))))))
+                                    (s-trim)
+                                    (s-split "[\r\n]+")
+                                    (-remove #'s-blank-str?)))
+                (face (let ((level (lsp-diagnostic-severity diagnostic)))
+                        (cond
+                         ((eq 4 level) '(:inherit warning :weight normal))
+                         ((eq 3 level) '(:inherit warning :weight bold))
+                         ((eq 2 level) '(:inherit error :weight normal))
+                         ((eq 1 level) '(:inherit error :weight bold)))))
+                (margin (lsp-ui-sideline--margin-width)))
+            (dolist (message (->> (-drop 1 messages)
+                                  (--map (concat it " ↩"))
+                                  (-cons* (-first-item messages))))
+              (let* ((len (length message))
+                     (string (concat (propertize " " 'display `(space :align-to (- right-fringe ,(lsp-ui-sideline--align len margin))))
+                                     (progn
+                                       (add-face-text-property 0 len 'lsp-ui-sideline-global nil message)
+                                       (add-face-text-property 0 len face nil message)
+                                       message))))
+                (-when-let (pos-ov (lsp-ui-sideline--find-line len bol eol))
+                  (let ((ov (and pos-ov (make-overlay (car pos-ov) (car pos-ov)))))
+                    (overlay-put ov 'after-string string)
+                    (overlay-put ov 'kind 'diagnotics)
+                    (push ov lsp-ui-sideline--ovs))))))))))
 
   :config
   (setq lsp-ui-doc-enable nil
