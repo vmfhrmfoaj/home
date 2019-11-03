@@ -188,3 +188,12 @@
   (advice-add #'dumb-jump-get-language :override #'dumb-jump--custom-get-language)
   (advice-add #'dumb-jump-prompt-user-for-choice :before-until
               #'helm-dumb-jump--prompt-user-for-choice))
+
+(use-package helm-xref
+  :ensure t
+  :defer t
+  :commands (helm-xref-show-defs-27
+             helm-xref-show-xrefs-27)
+  :init
+  (setq xref-show-definitions-function 'helm-xref-show-defs-27
+        xref-show-xrefs-function 'helm-xref-show-xrefs-27))

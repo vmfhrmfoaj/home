@@ -45,6 +45,17 @@
                             (-interpose "\n")
                             (apply #'concat))))))
 
+  (defn lsp--wrap-find-xxx-for-fallback (f &rest args)
+    "Fall back to `dumb-jump-go'."
+    (let ((pos (point))
+          (cur-buf (current-buffer))
+          (success? (ignore-errors (not (apply f args)))))
+      (when (and (not success?)
+                 (eq cur-buf (current-buffer))
+                 (= pos (point)))
+        (message nil)
+        (call-interactively #'dumb-jump-go))))
+
   :config
   (setq lsp-enable-snippet nil
         lsp-file-watch-threshold nil)
@@ -59,17 +70,10 @@
                           (flymake-start t t)))))
                 (add-hook 'after-save-hook f nil :local)
                 (add-hook 'after-change-functions f nil :local))))
-  (let ((f (byte-compile
-            (lambda (f &rest args)
-              "fallback"
-              (let ((success? (ignore-errors (not (apply f args)))))
-                (unless success?
-                  (message nil)
-                  (call-interactively #'dumb-jump-go)))))))
-    (advice-add #'lsp-find-definition      :around f)
-    (advice-add #'lsp-find-declaration     :around f)
-    (advice-add #'lsp-find-implementation  :around f)
-    (advice-add #'lsp-find-type-definition :around f)))
+  (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx-for-fallback)
+  (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx-for-fallback)
+  (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx-for-fallback)
+  (advice-add #'lsp-find-type-definition :around #'lsp--wrap-find-xxx-for-fallback))
 
 (use-package lsp-ui
   :ensure t
@@ -102,13 +106,13 @@
                          ((eq 1 level) '(:inherit error :weight bold)))))
                 (margin (lsp-ui-sideline--margin-width)))
             (dolist (message (->> (-drop 1 messages)
-                                  (--map (concat it " ↩"))
+                                  (--map (concat it (propertize " ↩ " 'face '(:inherit shadow :weight normal))))
                                   (-cons* (-first-item messages))))
               (let* ((len (length message))
                      (string (concat (propertize " " 'display `(space :align-to (- right-fringe ,(lsp-ui-sideline--align len margin))))
                                      (progn
                                        (add-face-text-property 0 len 'lsp-ui-sideline-global nil message)
-                                       (add-face-text-property 0 len face nil message)
+                                       (add-face-text-property 0 len face t message)
                                        message))))
                 (-when-let (pos-ov (lsp-ui-sideline--find-line len bol eol))
                   (let ((ov (and pos-ov (make-overlay (car pos-ov) (car pos-ov)))))
