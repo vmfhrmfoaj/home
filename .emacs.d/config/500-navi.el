@@ -60,8 +60,8 @@
   (defvar helm-dumb-jump--proj nil
     "TODO")
 
-  (defface helm-dumb-jump-match
-    '((t (:inherit helm-match)))
+  (defface helm-dumb-jump-keyword
+    '((t (:inherit highlight)))
     "TODO")
 
   (defn helm-dumb-jump--after-get-results (info)
@@ -133,13 +133,15 @@
               (setq i (match-end 0)
                     line (concat (substring line 0 (match-beginning 0))
                                  (propertize (substring line (match-beginning 0) (match-end 0))
-                                             'face 'helm-dumb-jump-match)
+                                             'face 'helm-dumb-jump-keyword)
                                  (substring line (match-end 0)))))
             (add-to-list 'candidates
                          (concat (propertize path 'face 'helm-moccur-buffer) ":"
                                  (propertize line-num 'face 'helm-grep-lineno) ":"
                                  line)
                          t)))
+        ;; (helm-set-local-variable
+        ;;  'helm-cur-line-highlight-symbols '(helm-dumb-jump--keyword))
         (helm :sources
               (helm-build-sync-source "Dump Jump"
                 :candidates candidates
@@ -152,11 +154,7 @@
                  (lambda (candidate)
                    (if (string-match "^.+?:[0-9]+:\\(.+\\)$" candidate)
                        (match-string 1 candidate)
-                     candidate)))
-                :after-init-hook
-                (lambda ()
-                  (with-current-buffer (get-buffer-create "*helm-dumb-jump*")
-                    (setq-local helm-cur-line-highlight-symbols '(helm-dumb-jump--keyword)))))
+                     candidate))))
               :buffer "*helm-dumb-jump*"))
       t))
 

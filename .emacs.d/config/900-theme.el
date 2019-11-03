@@ -56,12 +56,6 @@
    `(clojure-side-effect-face   ((t (:inherit (bold italic font-lock-warning-face)))))
    `(clojure-special-variable-name-face ((t (:inherit font-lock-constant-face))))))
 
-(use-package dumb-jump
-  :defer t
-  :config
-  (custom-set-faces
-   `(helm-dumb-jump-match ((t (:inherit helm-match :background ,(color-from 'helm-match :background -5)))))))
-
 (use-package elixir-mode
   :defer t
   :config
