@@ -22,3 +22,16 @@
                            (--map (let ((a (car it))
                                         (b (substring (cdr it) 0 -1)))
                                     `(,a . ,b)))))))))
+
+(use-package mmm-mode
+  :defer t
+  ;; NOTE:
+  ;;  This package not included in the `MELPA'.
+  ;;:ensure t
+  :init
+  (unless (package-installed-p 'mmm-mode)
+    (quelpa '(mmm-mode :fetcher github :repo "purcell/mmm-mode"))))
+
+(use-package vue-mode
+  :ensure t
+  :defer t)
