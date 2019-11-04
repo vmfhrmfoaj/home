@@ -56,7 +56,8 @@
         (message nil)
         (call-interactively #'dumb-jump-go))))
 
-  (setq lsp-enable-snippet nil
+  (setq lsp-eldoc-prefer-signature-help nil
+        lsp-enable-snippet nil
         lsp-file-watch-threshold nil)
 
   (add-hook 'lsp-mode-hook
