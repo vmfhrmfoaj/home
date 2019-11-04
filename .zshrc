@@ -101,8 +101,8 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-if [ -f "${HOME}/.profile" ]; then
-  source "${HOME}/.profile"
+if [ -f "${HOME}/.script/setup" ]; then
+  source "${HOME}/.script/setup"
 fi
 
 if [ -f "${HOME}/.zsh_profile" ]; then
