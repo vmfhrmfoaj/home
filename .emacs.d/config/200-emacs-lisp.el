@@ -1,6 +1,5 @@
 (use-package elisp-mode
-  :defer t
-  :init
+  :config
   (defn emacs-lisp-REPL-buffer ()
     "TODO"
     (interactive)
@@ -32,7 +31,6 @@
                          (--first (string-equal "*Help*" (buffer-name it)))))
       (pop-to-buffer buf)))
 
-  :config
   (add-hook 'emacs-lisp-mode-hook
             (lambda ()
               (setq-local evil-lookup-func #'emacs-lisp-evil-lookup-func)
@@ -41,5 +39,4 @@
 
 (use-package elisp-slime-nav
   :ensure t
-  :init
-  (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode))
+  :hook (emacs-lisp-mode . elisp-slime-nav-mode))

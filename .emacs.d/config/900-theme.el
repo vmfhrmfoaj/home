@@ -186,7 +186,6 @@
    `(sp-show-pair-mismatch-face ((t (:inherit (bold font-lock-warning-face)))))))
 
 (use-package web-mode
-  :disabled t
   :defer t
   :config
   (let ((tag-face       `(:foreground ,(-> "#AE1B9A" (light-color 15) (saturate-color -40))))

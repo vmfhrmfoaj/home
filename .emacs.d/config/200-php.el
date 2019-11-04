@@ -7,52 +7,6 @@
               (make-local-variable 'company-backends)
               (add-to-list 'company-backends #'company-ac-php-backend))))
 
-(use-package php-extras
-  :disabled t
-  :defer t
-  ;; NOTE:
-  ;;  This package not included in the `MELPA'.
-  ;;:ensure t
-  :init
-  (unless (package-installed-p 'php-extras)
-    (quelpa '(php-extras :fetcher github :repo "arnested/php-extras"))
-    (flet ((yes-or-no-p (&rest args) t))
-      (php-extras-generate-eldoc)))
-
-  (defvar php-doc-buffer-name "*PHP Doc*")
-
-  (defn php-extras-doc--highlight (lines)
-    (let ((php-code  (with-temp-buffer
-                       (php-mode)
-                       (insert (car lines))
-                       (funcall font-lock-ensure-function (point-min) (point-max))
-                       (buffer-string))))
-      (->> lines
-           (cdr)
-           (cons "")
-           (cons php-code))))
-
-  (defn php-extras-doc ()
-    (interactive)
-    (-when-let (doc (->> (php-extras-get-function-property (php-get-pattern) 'documentation)
-                         (s-split "\n")
-                         (-drop 2)
-                         (php-extras-doc--highlight)
-                         (-reduce-from
-                          (lambda (output line)
-                            (if (s-blank? line)
-                                (concat output "\n")
-                              (concat output " " line)))
-                          "")))
-      (pop-to-buffer (get-buffer-create php-doc-buffer-name))
-      (evil-local-set-key 'normal (kbd "q") #'evil-delete-buffer)
-      (kill-region (point-min) (point-max))
-      (goto-char (point-min))
-      (insert doc)
-      (toggle-truncate-lines 0)
-      (read-only-mode 1)
-      (goto-line 3))))
-
 (use-package php-mode
   :ensure t
   :defer t
@@ -114,7 +68,6 @@
               (end (cadr region)))
           (overlay-put (make-overlay beg end) 'face 'php-unhilight-face)))))
 
-  :config
   (add-hook 'php-mode-hook
             (lambda ()
               (with-eval-after-load "lsp-mode"
@@ -126,11 +79,10 @@
   :disabled t
   :ensure t
   :defer t
-  :init
+  :config
   (defn psysh-show ()
     (interactive)
     (-when-let (buf (get-buffer (concat "*" (car (psysh--detect-buffer)) "*")))
       (switch-to-buffer buf)))
 
-  :config
   (advice-add #'psysh-restart :before #'psysh-show))

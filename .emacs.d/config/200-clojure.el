@@ -1,7 +1,7 @@
 (use-package cider
   :ensure t
   :defer t
-  :init
+  :config
   (defn cider-cljs-root-dirs ()
     "TODO"
     (let (repl reconn? cur-ns)
@@ -126,7 +126,6 @@
     (interactive)
     (cider-doc-lookup (cider-symbol-at-point)))
 
-  :config
   (setq cider-repl-display-in-current-window t
         cider-repl-use-pretty-printing t
         cider-cljs-lein-repl (concat "(do"
@@ -169,7 +168,7 @@
 (use-package clojure-mode
   :ensure t
   :defer t
-  :init
+  :config
   (defn clojure-skip (direction-or-item &rest items)
     "TODO"
     (let* ((direction (if (and (numberp direction-or-item) (> 0 direction-or-item)) (- 1) (+ 1)))
@@ -370,7 +369,6 @@ This is customized version of `clojure-find-ns' to improve some performance."
     (when (and buffer-file-name (= (point-min) (point-max)))
       (clojure-insert-namespace)))
 
-  :config
   (setq clojure-get-indent-function #'clojure--get-indentation)
   (put-clojure-indent 'lazy-seq 0)
   (add-hook 'clojure-mode-hook #'clojure-setup :append)
@@ -381,7 +379,7 @@ This is customized version of `clojure-find-ns' to improve some performance."
 (use-package edn
   :ensure t
   :defer t
-  :init
+  :config
   (defn edn-raw-p (raw)
     (and (consp raw)
          (eq 'edn-raw (car raw))))

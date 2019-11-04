@@ -1,6 +1,6 @@
 (use-package evil
   :ensure t
-  :init
+  :config
   (defvar-local evil-ex--gl-preview-point nil
     "TODO")
 
@@ -37,7 +37,6 @@
           (goto-char evil-ex--gl-preview-point))))
     (abort-recursive-edit))
 
-  :config
   (evil-define-text-object evil-inner-sexp (count &optional beg end type)
     "Select a sp-sexp."
     :extend-selection nil
@@ -62,6 +61,7 @@
 
   (setq-default evil-want-minibuffer t)
   (setq-default evil-symbol-word-search t)
+
   (advice-add #'evil-ex-setup :before
               (byte-compile
                (lambda ()
@@ -75,6 +75,7 @@
                  "restore the position of the cursor for `evil-ex-update-for--goto-line-preview' function."
                  (when evil-ex--gl-preview-point
                    (goto-char evil-ex--gl-preview-point)))))
+
   (make-thread #'evil-mode))
 
 (use-package evil-ex
@@ -84,7 +85,7 @@
 
 (use-package helm
   :ensure t
-  :init
+  :config
   (defn helm-bufferp (buf)
     "TODO"
     (when (and (bufferp buf)
@@ -214,7 +215,6 @@
                       (overlay-put ov 'priority 2)))
                 (error (helm--remove-custom-overlays)))))))))
 
-  :config
   (require 'helm-config)
   (setq helm-autoresize-min-height 25
         helm-autoresize-max-height 45
@@ -222,17 +222,23 @@
         helm-display-function #'helm-display-buffer-at-bottom
         helm-split-window-inside-p t
         helm-truncate-lines t)
-  (add-hook 'helm-before-initialize-hook (byte-compile (lambda () (setq gc-cons-threshold (* 1024 1024 128)))))
+
+  (add-hook 'helm-before-initialize-hook
+            (byte-compile
+             (lambda ()
+               (setq gc-cons-threshold (* 1024 1024 128)))))
   (add-hook 'helm-cleanup-hook
             (byte-compile
              (lambda ()
                (setq gc-cons-threshold (* 1024 1024 32))
                (garbage-collect))))
+
   (advice-add #'helm-persistent-action-display-window :before-until
               #'helm-persistent-action-display-window-for-neotree)
   (advice-add #'helm-initialize-overlays :after #'helm-custom-initialize-overlays)
   (advice-add #'helm-mark-current-line   :after #'helm-custom-mark-current-line)
   (advice-add #'helm-initialize :after #'helm--update-last-search-buffer)
+
   (make-thread (lambda ()
                  (helm-mode 1)
                  (helm-autoresize-mode 1)

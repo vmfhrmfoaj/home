@@ -1,6 +1,6 @@
 (use-package persp-mode
   :ensure t
-  :init
+  :config
   (defvar persp-org-name "@Org"
     "TODO")
 
@@ -32,6 +32,7 @@
   (defn helm-persp-create-&-switch-project ()
     "TODO"
     (interactive)
+    (require 'projectile)
     (helm :sources
           (helm-build-in-buffer-source "*Helm Create/Switch Project Perspective*"
             :data projectile-known-projects
@@ -119,7 +120,6 @@
         (persp-switch persp-org-name)
       (persp-add-new-for-org)))
 
-  :config
   (setq persp-autokill-buffer-on-remove #'kill-weak
         persp-auto-resume-time -1
         ;; TODO
@@ -132,8 +132,9 @@
         persp-set-ido-hooks t
         wg-morph-on nil)
 
-  (advice-add #'persp-switch :after #'persp-add-all-proj-buffer)
-  (add-hook 'magit-diff-mode-hook #'persp-add-buffer-without-switch)
-  (add-hook 'magit-log-mode-hook #'persp-add-buffer-without-switch)
+  (add-hook 'magit-diff-mode-hook   #'persp-add-buffer-without-switch)
+  (add-hook 'magit-log-mode-hook    #'persp-add-buffer-without-switch)
   (add-hook 'magit-status-mode-hook #'persp-add-buffer-without-switch)
-  (add-hook 'after-init-hook (-partial #'persp-mode 1)))
+  (add-hook 'after-init-hook (-partial #'persp-mode 1))
+
+  (advice-add #'persp-switch :after #'persp-add-all-proj-buffer))

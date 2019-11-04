@@ -22,20 +22,9 @@
   :config
   (atomic-chrome-start-server))
 
-(use-package display-line-numbers
-  :disabled t
-  :defer t
-  :init
-  (add-hook 'prog-mode-hook #'display-line-numbers--turn-on)
-
-  :config
-  (setq display-line-numbers-type 'relative
-        display-line-numbers-width 3
-        display-line-numbers-width-start t))
-
 (use-package ediff
   :defer t
-  :init
+  :config
   (defvar ediff--exclude-mode-status nil
     "TODO")
 
@@ -97,13 +86,38 @@
       (with-current-buffer buf
         (text-scale-decrease 0.5))))
 
-  :config
   ;; NOTE
   ;;  prevent to calculate the width of the window in `ediff-setup-windows-plain-compare' function.
   (setq ediff-exclude-modes '(zoom-mode)
         ediff-split-window-function #'split-window-right)
+
   (advice-add #'ediff-setup :before #'ediff-addtional-setup)
   (advice-add #'ediff-quit  :after  #'ediff-addtional-cleanup))
+
+(use-package eldoc
+  :defer t
+  :config
+  (defn eldoc-refresh ()
+    (interactive)
+    (when (or eldoc-mode
+              (and global-eldoc-mode
+                   (eldoc--supported-p)))
+      (when (timerp eldoc-timer)
+        (cancel-timer eldoc-timer)
+        (setq eldoc-timer nil))
+      (when (and (not (interactive-p))
+                 (functionp eldoc-documentation-function))
+        (let ((msg (funcall eldoc-documentation-function)))
+          (unless (s-blank? msg)
+            (eldoc-message msg))))))
+
+  (setq eldoc-idle-delay 0.2)
+
+  (add-hook 'eldoc-mode-hook
+            (lambda ()
+              (eldoc-add-command 'eldoc-refresh)
+              (eldoc-refresh))
+            :append))
 
 (use-package expand-region
   :ensure t
@@ -123,7 +137,7 @@
   :ensure t
   :defer t
   :init
-  (defn set-linum-rel-fmt-for-cur-file ()
+ (defn set-linum-rel-fmt-for-cur-file ()
     "TODO"
     (setq-local linum-relative-format
                 (concat "%"
@@ -133,8 +147,13 @@
                             (min 5)
                             (max 3)
                             (number-to-string))
-                        "s")))
+                        "s"))) 
 
+  (add-hook 'prog-mode-hook
+            (lambda ()
+              (set-linum-rel-fmt-for-cur-file)
+              (linum-relative-mode)))
+  :config
   (defn linum-delay-schedule-timeout ()
     "TODO"
     (setq linum-schedule-timer nil)
@@ -149,11 +168,6 @@
           (linum-update-current)
         (let ((timer (run-with-idle-timer linum-delay nil #'linum-delay-schedule-timeout)))
           (setq-local linum-schedule-timer timer)))))
-
-  (add-hook 'prog-mode-hook
-            (lambda ()
-              (set-linum-rel-fmt-for-cur-file)
-              (linum-relative-mode)))
 
   :config
   (setq linum-delay 0.1
@@ -194,6 +208,15 @@
   :ensure t
   :defer t)
 
+(use-package tramp
+  :defer t
+  :config
+  (when (file-exists-p (concat home-dir "/.ssh/sockets/"))
+    (setq tramp-ssh-controlmaster-options
+          (concat "-o ControlMaster=auto "
+                  "-o ControlPath='" home-dir "/.ssh/sockets/%%r@%%h-%%p' "
+                  "-o ControlPersist=600 "))))
+
 (use-package undo-tree
   :ensure t
   :defer t
@@ -203,7 +226,7 @@
 
 (use-package vlf-setup
   :ensure vlf
-  :init
+  :config
   (defn vlf-custom-beginning-of-file ()
     (interactive)
     (vlf-beginning-of-file)

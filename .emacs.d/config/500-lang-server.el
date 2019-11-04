@@ -22,7 +22,7 @@
          (typescript-mode . lsp)
          (sh-mode         . lsp))
   :commands lsp
-  :init
+  :config
   (defn lsp--custom-render-on-hover-content (args)
     (let ((contents (car args)))
       (if (not (seqp contents))
@@ -56,11 +56,9 @@
         (message nil)
         (call-interactively #'dumb-jump-go))))
 
-  :config
   (setq lsp-enable-snippet nil
         lsp-file-watch-threshold nil)
-  (advice-add #'lsp--eldoc-message :override #'lsp--custom-eldoc-message)
-  (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--custom-render-on-hover-content)
+
   (add-hook 'lsp-mode-hook
             (lambda ()
               (let ((f (byte-compile
@@ -70,6 +68,9 @@
                           (flymake-start t t)))))
                 (add-hook 'after-save-hook f nil :local)
                 (add-hook 'after-change-functions f nil :local))))
+
+  (advice-add #'lsp--eldoc-message :override #'lsp--custom-eldoc-message)
+  (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--custom-render-on-hover-content)
   (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx-for-fallback)
   (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx-for-fallback)
   (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx-for-fallback)
@@ -78,7 +79,7 @@
 (use-package lsp-ui
   :ensure t
   :commands lsp-ui-mode
-  :init
+  :config
   (defn lsp-ui-sideline--custom-diagnostics (fn bol eol)
     (if (not lsp-prefer-flymake)
         (funcall fn bol eol)
@@ -120,10 +121,9 @@
                     (overlay-put ov 'kind 'diagnotics)
                     (push ov lsp-ui-sideline--ovs))))))))))
 
-  :config
   (setq lsp-ui-doc-enable nil
         lsp-ui-sideline-show-code-actions nil
         lsp-ui-sideline-show-hover nil
         lsp-ui-sideline-show-symbol nil)
-  (advice-add #'lsp-ui-sideline--diagnostics :around
-              #'lsp-ui-sideline--custom-diagnostics))
+
+  (advice-add #'lsp-ui-sideline--diagnostics :around #'lsp-ui-sideline--custom-diagnostics))

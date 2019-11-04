@@ -1,7 +1,7 @@
 (use-package company-go
   :ensure t
   :defer t
-  :init
+  :config
   (add-hook 'go-mode-hook
             (lambda ()
               (make-local-variable 'company-backends)
@@ -10,28 +10,18 @@
 (use-package go-eldoc
   :ensure t
   :defer t
-  :init
-  (add-hook 'go-mode-hook #'go-eldoc-setup))
+  :hook (go-mode . go-eldoc-setup))
 
 (use-package go-guru
   :ensure t
   :defer t
-  :init
-  (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
-
+  :hook (go-mode . go-guru-hl-identifier-mode)
   :config
   (setq go-guru-hl-identifier-idle-time 0.3))
 
 (use-package go-mode
   :ensure t
   :defer t
-  :init
-  (add-hook 'go-mode-hook
-            (lambda ()
-              (setq-local font-lock-multiline t)
-              ;; (setq-local evil-lookup-func #'go-guru-)
-              ))
-
   :config
   (setq gofmt-command "goimports")
   (let* ((go-path (concat home-dir "/Desktop/Go_Projects"))
@@ -41,4 +31,10 @@
       (setenv "GOPATH" go-path)
       (add-to-list 'process-environment (concat "GOPATH=" go-path))
       (setenv "PATH" (concat go-bin-path ":" (getenv "PATH")))
-      (add-to-list 'exec-path go-bin-path))))
+      (add-to-list 'exec-path go-bin-path)))
+
+  (add-hook 'go-mode-hook
+            (lambda ()
+              (setq-local font-lock-multiline t)
+              ;; (setq-local evil-lookup-func #'go-guru-)
+              )))

@@ -28,21 +28,29 @@
 
 (use-package winum
   :ensure t
-  :init
+  :config
   (defn winum--assign-0-to-neotree ()
     "winum assign function for NeoTree."
     (when (and (string-match-p "\\*NeoTree\\*" (buffer-name))
                (not (aref (winum--get-window-vector) 0)))
       0))
 
-  :config
   (setq winum-auto-setup-mode-line nil)
   (add-to-list 'winum-assign-functions #'winum--assign-0-to-neotree)
+
   (winum-mode))
 
 (use-package zoom
   :ensure t
+  :defer t
   :init
+  (defn zoom-initial-setup ()
+    (remove-hook 'window-configuration-change-hook #'zoom-initial-setup)
+    (require 'zoom))
+
+  (add-hook 'window-configuration-change-hook #'zoom-initial-setup)
+
+  :config
   (defn zoom--handler-wrapper-for-helm (f &optional ignored)
     (unless (and (fboundp #'helm--alive-p)
                  (helm--alive-p))
@@ -62,9 +70,10 @@
         (zoom--resize)
         (zoom--fix-scroll))))
 
-  :config
   (setq zoom-size '(0.618 . 0.618)
         zoom-ignored-buffer-name-regexps '("\\*.*[Hh]elm.*\\*"))
+
   (advice-add #'zoom--handler :around #'zoom--handler-wrapper-for-helm)
   (advice-add #'zoom--update :override #'zoom--update-for-helm)
+
   (zoom-mode t))

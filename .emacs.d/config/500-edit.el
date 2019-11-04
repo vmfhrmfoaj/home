@@ -4,7 +4,7 @@
 (use-package aggressive-indent
   :ensure t
   :defer t
-  :init
+  :config
   (defn aggressive-indent-do-indent ()
     "TODO"
     (interactive)
@@ -15,7 +15,6 @@
                 aggressive-indent-protected-current-commands)
             (aggressive-indent--proccess-changed-list-and-indent))))))
 
-  :config
   (setq aggressive-indent-sit-for-time 0.1)
   (add-to-list 'aggressive-indent-protected-current-commands #'sp-backward-barf-sexp)
   (add-to-list 'aggressive-indent-protected-current-commands #'sp-splice-sexp-killing-forward)
@@ -31,11 +30,13 @@
   (add-to-list 'aggressive-indent-excluded-modes 'cider-repl-mode)
   (add-to-list 'aggressive-indent-dont-indent-if '(not (eq 'insert evil-state)))
   (add-to-list 'aggressive-indent-dont-indent-if 'evil-insert-vcount)
+
   (add-hook 'evil-insert-state-exit-hook
-            (lambda ()
-              "TODO"
-              (unless evil-insert-vcount
-                (aggressive-indent-do-indent)))))
+            (byte-compile
+             (lambda ()
+               "TODO"
+               (unless evil-insert-vcount
+                 (aggressive-indent-do-indent))))))
 
 (use-package editorconfig
   :ensure t
@@ -45,7 +46,7 @@
 (use-package evil-surround
   :ensure t
   :after evil
-  :init
+  :config
   (defn evil-surround-region-for-hkkb (args)
     "TODO"
     (if (> 4 (length args))
@@ -65,42 +66,16 @@
     (interactive (list (read-key)))
     args)
 
-  :config
   (when HHKB?
     (advice-add #'evil-surround-region :filter-args #'evil-surround-region-for-hkkb)
     (advice-add #'evil-surround-change :filter-args #'evil-surround-chnage-for-hkkb)
     (advice-add #'evil-surround-delete :filter-args #'evil-surround-chnage-for-hkkb))
+
   (global-evil-surround-mode 1))
 
 (use-package evil-multiedit
   :ensure t
   :after evil)
-
-(use-package flycheck
-  :disabled t
-  :ensure t
-  :defer t
-  :config
-  (setq flycheck-indication-mode 'right-fringe)
-  (when (fboundp 'define-fringe-bitmap)
-    (define-fringe-bitmap 'flycheck-fringe-bitmap-double-arrow
-      (vector #b00000000
-              #b00000000
-              #b00000000
-              #b00000000
-              #b00000000
-              #b00011001
-              #b00110110
-              #b01101100
-              #b11011000
-              #b01101100
-              #b00110110
-              #b00011001
-              #b00000000
-              #b00000000
-              #b00000000
-              #b00000000
-              #b00000000))))
 
 (use-package flymake
   :defer t
@@ -109,7 +84,7 @@
 
 (use-package smartparens-config
   :ensure smartparens
-  :init
+  :config
   (defn sp-wrap-sexp (&optional arg)
     "TODO"
     (interactive "P")
@@ -131,18 +106,19 @@
       (skip-chars-forward "[^[]")
       (insert " ")))
 
-  :config
   (setq sp-highlight-pair-overlay nil
         sp-highlight-wrap-overlay nil
         sp-highlight-wrap-tag-overlay nil)
   (with-eval-after-load "org"
     (sp-local-pair 'org-mode "[" "]" :post-handlers '(:add sp-org-checkbox-handler)))
+
   (smartparens-global-mode 1)
   (show-smartparens-global-mode 1))
 
 (use-package whitespace
   :config
   (setq-default whitespace-line-column 120)
+
   (add-hook 'prog-mode-hook
             (lambda ()
               (setq-local show-trailing-whitespace t))))

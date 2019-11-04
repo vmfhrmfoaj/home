@@ -27,35 +27,6 @@
   (require 'ucs-normalize)
   (set-file-name-coding-system 'utf-8-hfs))
 
-(with-eval-after-load "eldoc"
-  (defn eldoc-refresh ()
-    (interactive)
-    (when (or eldoc-mode
-              (and global-eldoc-mode
-                   (eldoc--supported-p)))
-      (when (timerp eldoc-timer)
-        (cancel-timer eldoc-timer)
-        (setq eldoc-timer nil))
-      (when (and (not (interactive-p))
-                 (functionp eldoc-documentation-function))
-        (let ((msg (funcall eldoc-documentation-function)))
-          (unless (s-blank? msg)
-            (eldoc-message msg))))))
-
-  (setq eldoc-idle-delay 0.2)
-  (add-hook 'eldoc-mode-hook
-            (lambda ()
-              (eldoc-add-command 'eldoc-refresh)
-              (eldoc-refresh))
-            :append))
-
-(with-eval-after-load "tramp-sh"
-  (when (file-exists-p (concat home-dir "/.ssh/sockets/"))
-    (setq tramp-ssh-controlmaster-options
-          (concat "-o ControlMaster=auto "
-                  "-o ControlPath='" home-dir "/.ssh/sockets/%%r@%%h-%%p' "
-                  "-o ControlPersist=600 "))))
-
 (setq resize-mini-windows t)
 
 (add-hook 'after-init-hook

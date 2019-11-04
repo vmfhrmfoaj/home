@@ -1,29 +1,24 @@
 (use-package company
   :ensure t
-  :init
+  :defer t
+  :hook (prog-mode . company-mode-on)
+  :config
   (defun company-abort-and-insert-space ()
     "`company-abort' and insert a space."
     (interactive)
     (company-abort)
     (execute-kbd-macro (kbd "SPC")))
 
-  :config
-  (add-hook 'evil-normal-state-entry-hook #'company-abort)
   (setq company-selection-wrap-around t
         company-dabbrev-downcase nil
         company-dabbrev-ignore-case t
         company-dabbrev-code-ignore-case t
-        company-etags-ignore-case t)
-  (global-company-mode 1))
-
-(use-package company-lsp
-  :ensure t
-  :commands company-lsp)
+        company-etags-ignore-case t))
 
 (use-package helm-company
   :ensure t
   :after (company helm)
-  :init
+  :config
   (defn helm-company-plus ()
     "TODO"
     (interactive)
@@ -74,18 +69,17 @@
                    (eq old-tick (buffer-chars-modified-tick)))
           (helm-company-complete-common))))))
 
-  :config
   (add-hook 'helm-cleanup-hook
             (byte-compile
              (lambda ()
                (with-helm-current-buffer
                  (unless (minibufferp)
                    (company-abort))))))
-
   ;; NOTE
   ;;  Turn company popup off completely.
   (remove-hook 'pre-command-hook 'company-pre-command)
   (remove-hook 'post-command-hook 'company-post-command)
+
   (advice-add #'company-mode-on :after
               (byte-compile
                (lambda ()

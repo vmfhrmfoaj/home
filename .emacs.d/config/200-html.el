@@ -6,9 +6,7 @@
 (use-package web-mode
   :ensure t
   :defer t
-  :init
-  (add-to-list 'auto-mode-alist '("\\.html\\.eex\\'" . web-mode))
-
+  :mode "\\.html\\.eex\\'"
   :config
   (setq web-mode-markup-indent-offset 2
         web-mode-css-indent-offset 2

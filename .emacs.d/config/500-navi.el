@@ -7,7 +7,7 @@
 
 (use-package neotree
   :ensure t
-  :init
+  :config
   (defn neo-buffer--back (path _)
     "TODO"
     (when (neo-buffer--expanded-node-p path)
@@ -43,7 +43,6 @@
     (interactive "f")
     (neotree-create-node (concat dir "/")))
 
-  :config
   (setq neo-auto-indent-point t
         neo-keymap-style 'concise
         neo-show-hidden-files t
@@ -53,7 +52,7 @@
 
 (use-package dumb-jump
   :ensure t
-  :init
+  :config
   (defvar helm-dumb-jump--keyword nil
     "TODO")
 
@@ -169,7 +168,6 @@
           language
         (format ".%s file" (or (f-ext file) "")))))
 
-  :config
   (setq dumb-jump-git-grep-cmd "git grep --full-name"
         dumb-jump-force-searcher (cond
                                    ((executable-find "rg") 'rg)
@@ -192,8 +190,7 @@
 (use-package helm-xref
   :ensure t
   :defer t
-  :commands (helm-xref-show-defs-27
-             helm-xref-show-xrefs-27)
+  :commands (helm-xref-show-defs-27 helm-xref-show-xrefs-27)
   :init
   (setq xref-show-definitions-function 'helm-xref-show-defs-27
         xref-show-xrefs-function 'helm-xref-show-xrefs-27))

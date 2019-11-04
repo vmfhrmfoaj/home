@@ -171,7 +171,7 @@
 
 (use-package clojure-mode
   :defer t
-  :init
+  :config
   (defface clojure-defining-spec-face
     `((t (:inherit (clojure-keyword-face))))
     "Face used to font-lock Clojure defining Spec")
@@ -243,7 +243,6 @@
       (if (< n 0) (clojure-skip -1 :comment :ignored-form :tagged-literal))
       (setq n (funcall (if (< 0 n) '1- '1+) n))))
 
-  :config
   (setq font-lock--anchor-beg-point nil)
   (setq clojure-binding-form--recursive-point nil)
   (setq clojure-binding-form--recursive-limit nil)
@@ -942,14 +941,14 @@
 
 (use-package elisp-mode
   :defer t
-  :init
+  :config
   (defface lisp-local-binding-variable-name-face
     '((t (:inherit font-lock-variable-name-face)))
     "Face used to font-lock Lisp local binding variable name.")
 
-  :config
   (setq-default elisp--binding-form-point nil)
   (make-local-variable 'elisp--binding-form-point)
+
   (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
     (font-lock-add-keywords
      mode
@@ -1220,12 +1219,11 @@
 
 (use-package rust-mode
   :defer t
-  :init
+  :config
   (defface rust-self-var-face
     '((t (:inherit font-lock-keyword-face :weight normal)))
     "TODO")
 
-  :config
   (font-lock-add-keywords
    'rust-mode
    `(("\\_<\\(self\\)\\."

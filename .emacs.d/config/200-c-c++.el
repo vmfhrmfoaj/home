@@ -1,12 +1,11 @@
 (use-package cc-mode
   :defer t
-  :init
+  :config
   (defn man-at-point ()
     (interactive)
     (let ((thing (thing-at-point 'symbol)))
       (pop-to-buffer (man (concat thing "(3)")))))
 
-  :config
   (setq c-default-style '((java-mode . "java")
                           (awk-mode . "awk")
                           (other . "linux")))

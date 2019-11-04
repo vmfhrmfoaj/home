@@ -8,6 +8,7 @@
   (add-to-list 'interpreter-mode-alist '("perl5" . cperl-mode))
   (add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
 
+  :config
   (defn cperl-beginning-of-defun ()
     "TODO"
     (let ((cur-pos (point))
@@ -45,7 +46,6 @@
     (setq-local beginning-of-defun-function #'cperl-beginning-of-defun)
     (setq-local end-of-defun-function       #'cperl-end-of-defun))
 
-  :config
   (modify-syntax-entry ?: "." cperl-mode-syntax-table)
   (setq cperl-break-one-line-blocks-when-indent nil
         cperl-fix-hanging-brace-when-indent nil

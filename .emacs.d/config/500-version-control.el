@@ -5,7 +5,7 @@
 (use-package git-timemachine
   :ensure t
   :defer t
-  :init
+  :config
   (defn git-timemachine--custom-blame ()
     "Call ‘magit-blame’ on current revision."
     (interactive)
@@ -27,7 +27,6 @@
                                                (-first-item))))
         (git-timemachine--custom-blame))))
 
-  :config
   (advice-add #'git-timemachine-blame :override #'git-timemachine--custom-blame))
 
 (use-package git-gutter-fringe+
@@ -59,6 +58,7 @@
       (define-fringe-bitmap 'git-gutter-fr+-added    fr-vec nil nil nil)
       (define-fringe-bitmap 'git-gutter-fr+-deleted  fr-vec nil nil nil)
       (define-fringe-bitmap 'git-gutter-fr+-modified fr-vec nil nil nil)))
+
   (global-git-gutter+-mode 1))
 
 (use-package gitignore-mode
@@ -68,7 +68,7 @@
 (use-package magit
   :ensure t
   :defer t
-  :init
+  :config
   (defface magit-commit-log-type-face
     `((t (:inherit font-lock-function-name-face :weight normal)))
     "TODO")
@@ -99,14 +99,14 @@
     (remove-hook 'magit-mode-hook #'magit-setup)
     (require 'helm nil t))
 
-  (add-hook 'magit-mode-hook #'magit-setup)
-
-  :config
   (setq magit-diff-refine-hunk t
         magit-bury-buffer-function #'magit-mode-quit-window)
+
+  (add-hook 'magit-mode-hook #'magit-setup)
   (-update->> magit-status-sections-hook
               (-replace-first 'magit-insert-unpushed-to-upstream-or-recent
                               'magit-insert-unpushed-to-upstream))
+
   ;; NOTE
   ;;  The result of `(call-process "env" nil t t)` does not contain 'HOME' variable.
   ;;  But on Linux or without the configuration(e.g. emacs -Q), it is ok.
@@ -123,6 +123,7 @@
   :after magit
   :config
   (add-hook 'magit-mode-hook 'magit-svn-mode)
+
   (let ((f (lambda ()
              (ignore-errors
                (string-match-p "^\\(master\\|svn\\)$" (magit-rev-branch "HEAD"))))))

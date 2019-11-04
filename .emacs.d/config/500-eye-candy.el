@@ -1,7 +1,7 @@
 (use-package all-the-icons
   :ensure t
   :defer t
-  :init
+  :config
   (defn all-the-icons-update-data (lst lst-key &rest kvs)
     "TODO"
     (let* ((key-vals (-partition 2 kvs))
@@ -16,8 +16,8 @@
                             (-remove is-in-kvs?)
                             (apply #'append (-take 3 target) kvs)))))))
 
-  :config
   (setq all-the-icons-default-adjust -0.15)
+
   ;; for `neotree'
   (all-the-icons-update-data 'all-the-icons-dir-icon-alist "google[ _-]drive" :height 1.0)
   (all-the-icons-update-data 'all-the-icons-icon-alist "\\.DS_STORE$" :height 0.95 :v-adjust -0.1)
@@ -33,6 +33,7 @@
                   fundamental-mode
                   special-mode))
     (all-the-icons-update-data 'all-the-icons-mode-icon-alist mode :v-adjust -0.1))
+
   (advice-add #'all-the-icons-icon-for-dir :filter-args
               (byte-compile
                (lambda (args)
@@ -45,10 +46,19 @@
 
 (use-package auto-dim-other-buffers
   :ensure t
+  :defer t
+  :init
+  (defn auto-dim-other-initial-setup ()
+    (remove-hook 'window-configuration-change-hook #'auto-dim-other-initial-setup)
+    (require 'auto-dim-other-buffers))
+
+  (add-hook 'window-configuration-change-hook #'auto-dim-other-initial-setup)
+
   :config
   (advice-add #'adob--never-dim-p :before-until #'helm-bufferp)
   (with-eval-after-load "helm-occur"
     (advice-add #'adob--never-dim-p :before-until #'helm-occur-current-bufferp))
+
   (auto-dim-other-buffers-mode))
 
 (use-package diminish
@@ -88,11 +98,14 @@
   :after evil
   :config
   (setq evil-goggles-duration (if (string= ":10" (getenv "DISPLAY")) 0.4 0.1))
+
   (add-hook 'minibuffer-setup-hook
-            (lambda ()
-              (setq-local evil-goggles-duration 0.001)))
-  (evil-goggles-mode)
-  (evil-goggles-use-diff-faces))
+            (byte-compile
+             (lambda ()
+               (setq-local evil-goggles-duration 0.001))))
+
+  (evil-goggles-use-diff-faces)
+  (evil-goggles-mode 1))
 
 (use-package fancy-narrow
   :ensure t
@@ -115,6 +128,22 @@
   :ensure t
   :defer t
   :init
+  (defn focus--enable ()
+    "TODO"
+    (unless (or (apply #'derived-mode-p focus--exclude-modes)
+                (bound-and-true-p helm-alive-p))
+      (focus-mode 1)
+      (let ((focus-update-idle-time nil))
+        (focus-move-focus))))
+
+  (defn focus--disable ()
+    "TODO"
+    (focus-mode 0))
+
+  (add-hook 'evil-insert-state-entry-hook #'focus--enable)
+  (add-hook 'evil-insert-state-exit-hook  #'focus--disable)
+
+  :config
   (defn focus--org-thing ()
     "TODO"
     (ignore-errors
@@ -208,147 +237,72 @@
   (defvar focus--exclude-modes '(term-mode)
     "TODO")
 
-  (defn focus--enable ()
-    "TODO"
-    (unless (or (apply #'derived-mode-p focus--exclude-modes)
-                (bound-and-true-p helm-alive-p))
-      (focus-mode 1)
-      (let ((focus-update-idle-time nil))
-        (focus-move-focus))))
+  (defvar-local focus--update-timer nil
+    "TODO")
 
-  (defn focus--disable ()
-    "TODO"
-    (focus-mode 0))
+  (defn focus--clear-update-timer ()
+    "Clear `focus--update-timer`."
+    (when focus--update-timer
+      (cancel-timer focus--update-timer)
+      (setq focus--update-timer nil)))
 
-  (put 'org          'bounds-of-thing-at-point #'focus--org-thing)
-  (put 'tex-sentence 'bounds-of-thing-at-point #'focus--tex-thing)
-  (put 'sentence+    'bounds-of-thing-at-point #'focus--text-thing)
-  (put 'list+        'bounds-of-thing-at-point #'focus--list+-thing)
-  (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing)
-  (put 'clojure      'bounds-of-thing-at-point #'focus--clojure-thing)
-  (add-hook 'evil-insert-state-entry-hook #'focus--enable)
-  (add-hook 'evil-insert-state-exit-hook #'focus--disable)
+  (defn focus--wrap-move-focus (fn)
+    "Delay to update `focus-pre-overlay' and `focus-post-overlay'."
+    (when focus--update-timer
+      (cancel-timer focus--update-timer))
+    (if (not focus-update-idle-time)
+        (funcall fn)
+      (setq focus--update-timer
+            (run-with-idle-timer
+             focus-update-idle-time
+             nil
+             (lambda (fn)
+               (setq focus--update-timer nil)
+               (condition-case nil
+                   (funcall fn)
+                 (error (progn
+                          (focus-terminate)
+                          (focus-init)
+                          (funcall fn)))))
+             fn))))
 
-  :config
-  (setq focus-update-idle-time 0.2
-        focus--update-timer nil)
-  (make-local-variable 'focus--update-timer)
+  (setq focus-update-idle-time 0.2)
   (add-to-list 'focus-mode-to-thing '(clojure-mode . clojure))
   (add-to-list 'focus-mode-to-thing '(cider-repl-mode . list+))
   (add-to-list 'focus-mode-to-thing '(emacs-lisp-mode . lisp))
   (add-to-list 'focus-mode-to-thing '(org-mode . org))
   (add-to-list 'focus-mode-to-thing '(tex-mode . tex-sentence))
   (add-to-list 'focus-mode-to-thing '(text-mode . sentence+))
-  (advice-add #'focus-terminate :after
-              (byte-compile
-               (lambda ()
-                 "Clear `focus--update-timer`."
-                 (when focus--update-timer
-                   (cancel-timer focus--update-timer)
-                   (setq focus--update-timer nil)))))
-  (advice-add #'focus-move-focus :around
-              (byte-compile
-               (lambda (fn)
-                 "Delay to update `focus-pre-overlay' and `focus-post-overlay'."
-                 (when focus--update-timer
-                   (cancel-timer focus--update-timer))
-                 (if (not focus-update-idle-time)
-                     (funcall fn)
-                   (setq focus--update-timer
-                         (run-with-idle-timer
-                          focus-update-idle-time
-                          nil
-                          (lambda (fn)
-                            (setq focus--update-timer nil)
-                            (condition-case nil
-                                (funcall fn)
-                              (error (progn
-                                       (focus-terminate)
-                                       (focus-init)
-                                       (funcall fn)))))
-                          fn)))))))
+  (put 'org          'bounds-of-thing-at-point #'focus--org-thing)
+  (put 'tex-sentence 'bounds-of-thing-at-point #'focus--tex-thing)
+  (put 'sentence+    'bounds-of-thing-at-point #'focus--text-thing)
+  (put 'list+        'bounds-of-thing-at-point #'focus--list+-thing)
+  (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing)
+  (put 'clojure      'bounds-of-thing-at-point #'focus--clojure-thing)
+
+  (advice-add #'focus-terminate :after #'focus--clear-update-timer)
+  (advice-add #'focus-move-focus :around #'focus--wrap-move-focus))
 
 (use-package highlight-parentheses
   :ensure t
   :defer t
-  :init
-  (add-hook 'prog-mode-hook #'highlight-parentheses-mode))
+  :hook (prog-mode . highlight-parentheses-mode))
 
 (use-package highlight-numbers
   :ensure t
   :defer t
-  :init
-  (dolist (mode '(prog-mode-hook rpm-spec-mode-hook))
-    (add-hook mode #'highlight-numbers-mode)))
-
-(use-package highlight-symbol
-  :disabled t
-  :ensure t
-  :defer t
-  :init
-  (defn highlight-symbol--custom-update-timer (value)
-    "TODO"
-    (when highlight-symbol-timer
-      (cancel-timer highlight-symbol-timer))
-    (setq highlight-symbol-timer
-          (run-with-idle-timer (min 0.1 value) nil #'highlight-symbol-temp-highlight)))
-
-  (defn highlight-symbol-mode--custom-post-command ()
-    "After a command, change the temporary highlighting.
-Remove the temporary symbol highlighting and, unless a timeout is specified,
-create the new one."
-    (if (eq this-command 'highlight-symbol-jump)
-        (when highlight-symbol-on-navigation-p
-          (highlight-symbol-temp-highlight))
-      (highlight-symbol--custom-update-timer highlight-symbol-idle-delay)))
-
-  (defvar highlight-symbol-ignore-face-list
-    '(font-lock-doc-face font-lock-comment-face font-lock-string-face php-string)
-    "TODO")
-
-  (defn highlight-symbol--custom-get-symbol ()
-    "Return a regular expression identifying the symbol at point.
-This is customized for the normal state of `evil-mode'."
-    (-when-let (bound (bounds-of-thing-at-point 'symbol))
-      (let ((beg (car bound))
-            (end (cdr bound)))
-        (when (< (point) end)
-          (let ((symbol (buffer-substring beg end)))
-            (unless (or (-intersection (-list (get-text-property beg 'face)) highlight-symbol-ignore-face-list)
-                        (--some (string-match-p it symbol) highlight-symbol-ignore-list))
-              (concat (car highlight-symbol-border-pattern)
-                      (regexp-quote symbol)
-                      (cdr highlight-symbol-border-pattern))))))))
-
-  (defvar highlight-symbol-enable-modes
-    '(prog-mode)
-    "TODO")
-
-  (add-hook 'evil-insert-state-entry-hook
-            (lambda ()
-              (when (-some #'derived-mode-p highlight-symbol-enable-modes)
-                (highlight-symbol-mode  1))))
-
-  (add-hook 'evil-insert-state-exit-hook
-            (lambda ()
-              (highlight-symbol-mode -1)))
-
-  :config
-  (setq highlight-symbol-idle-delay 0.2)
-  (advice-add #'highlight-symbol-update-timer :override #'highlight-symbol--custom-update-timer)
-  (advice-add #'highlight-symbol-mode-post-command :override #'highlight-symbol-mode--custom-post-command)
-  (advice-add #'highlight-symbol-get-symbol :override #'highlight-symbol--custom-get-symbol))
+  :hook ((prog-mode rpm-spec-mode) . highlight-numbers-mode))
 
 (use-package hl-line
-  :defer t
-  :init
+  :config
   (setq hl-line-sticky-flag nil)
+
   (global-hl-line-mode 1))
 
 (use-package hl-todo
   :ensure t
-  :defer t
-  :init
+  :hook (prog-mode . hl-todo-mode)
+  :config
   (defn hl-todo--setup-custom ()
     "TODO"
     (font-lock-remove-keywords nil hl-todo--keywords)
@@ -357,20 +311,8 @@ This is customized for the normal state of `evil-mode'."
                       `(1 (hl-todo--get-face) prepend))))
     (font-lock-add-keywords nil hl-todo--keywords t))
 
-  (global-hl-todo-mode 1)
-
-  :config
   (advice-add #'hl-todo--get-face :filter-return #'list)
   (advice-add #'hl-todo--setup :after #'hl-todo--setup-custom))
-
-(use-package org-bullets
-  :ensure t
-  :defer t
-  :init
-  (add-hook 'org-mode-hook #'org-bullets-mode)
-
-  :config
-  (setq org-bullets-bullet-list '("■" "□" "●" "○" "◌")))
 
 (use-package powerline
   :ensure t
@@ -379,44 +321,21 @@ This is customized for the normal state of `evil-mode'."
     (setq powerline-height (+ (frame-char-height) line-spacing)
           powerline-text-scale-factor 1)))
 
-(use-package rainbow-delimiters
-  :disabled t
-  :ensure t
-  :defer t
-  :init
-  (defvar rainbow-delimiters--prefix-str (concat "@" "?" "#" "_" "'" "`")
-    "TODO")
-
-  (defn rainbow-delimiters--apply-color-for-fira-code (loc depth match)
-    "TODO"
-    (-when-let (face (funcall rainbow-delimiters-pick-face-function depth match loc))
-      (font-lock-prepend-text-property (save-excursion
-                                         (goto-char loc)
-                                         (when (looking-at-p "\\s(")
-                                           (skip-chars-backward rainbow-delimiters--prefix-str))
-                                         (point))
-                                       (1+ loc)
-                                       'face face)))
-
-  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-
-  :config
-  (when (eq 'darwin system-type)
-    (advice-add #'rainbow-delimiters--apply-color :override
-                #'rainbow-delimiters--apply-color-for-fira-code)))
-
 (use-package spaceline
   :ensure t
   :config
+  (defn spaceline--wrap-unicode-number (fn str)
+    "TODO"
+    (let ((ret (funcall fn str)))
+      (if (<= 11 (string-to-number str))
+          ret
+        (propertize ret 'display '(raise 0.05)))))
+
   (require 'spaceline-config)
   (setq spaceline-window-numbers-unicode t)
-  (advice-add #'spaceline--unicode-number :around
-              (byte-compile
-               (lambda (fn str)
-                 (let ((ret (funcall fn str)))
-                   (if (<= 11 (string-to-number str))
-                       ret
-                     (propertize ret 'display '(raise 0.05)))))))
+
+  (advice-add #'spaceline--unicode-number :around #'spaceline--wrap-unicode-number)
+
   (make-thread
    (lambda ()
      (let ((fmt (spaceline-emacs-theme)))
@@ -424,8 +343,8 @@ This is customized for the normal state of `evil-mode'."
          (with-current-buffer buf
            (setq mode-line-format fmt)))
        (spaceline-toggle-hud-off)
-       (force-mode-line-update t))))
-  (make-thread #'spaceline-helm-mode))
+       (force-mode-line-update t)
+       (spaceline-helm-mode)))))
 
 (use-package vi-tilde-fringe
   :defer t

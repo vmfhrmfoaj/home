@@ -1,7 +1,7 @@
 (use-package helm-ag
   :ensure t
   :defer t
-  :init
+  :config
   (defn helm-ag--custom-do-ag-candidate-process ()
     "TODO"
     (let* ((non-essential nil)
@@ -100,10 +100,10 @@
     (helm-set-local-variable
      'helm-input-idle-delay helm-grep-input-idle-delay))
 
-  :config
   (setq helm-ag-base-command "rg"
         helm-ag-command-option "--no-heading --no-messages --smart-case"
         helm-ag-use-emacs-lisp-regexp t)
+
   (advice-add #'helm-ag--do-ag-candidate-process :override #'helm-ag--custom-do-ag-candidate-process)
   (advice-add #'helm-ag--propertize-candidates :override #'helm-ag--custom-propertize-candidates)
   (advice-add #'helm-do-ag--helm :before #'helm-ag--set-input-idle-delay)
@@ -120,11 +120,10 @@
 
 (use-package helm-occur
   :defer t
-  :init
+  :config
   (defn helm-occur--switch-to-helm-window-after-action (&rest _)
     "Return the focus to `helm-window' to avoid flickering."
     (-when-let (win (helm-window))
       (select-window win)))
 
-  :config
   (advice-add #'helm-occur-action :after #'helm-occur--switch-to-helm-window-after-action))

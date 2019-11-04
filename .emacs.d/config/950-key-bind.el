@@ -42,7 +42,7 @@
 (use-package bind-map
   :ensure t
   :after evil-leader
-  :init
+  :config
   (defvar evil-leader/major-leader ","
     "TODO")
 
@@ -273,12 +273,10 @@
 ;; Key binding for the minor mode
 
 (use-package company
-  :disabled
   :defer t
   :config
   (define-key company-active-map (kbd "C-h") nil)
-  (define-key company-active-map (kbd "SPC") #'company-abort-and-insert-space)
-  (evil-global-set-key 'insert (kbd "TAB") #'company-indent-or-complete-common))
+  (define-key company-active-map (kbd "SPC") #'company-abort-and-insert-space))
 
 (use-package cider-repl
   :defer t
@@ -739,7 +737,7 @@
 
 (use-package ztree-view
   :defer t
-  :init
+  :config
   (defn ztree-back-node (&optional node)
     (interactive)
     (let ((line (line-number-at-pos)))
@@ -762,7 +760,6 @@
           (when ztree-node-action-fun
             (funcall ztree-node-action-fun node t))))))
 
-  :config
   (add-hook 'ztreediff-mode-hook
             (lambda ()
               (evil-local-set-key 'normal (kbd "RET") #'ztree-perform-action)
