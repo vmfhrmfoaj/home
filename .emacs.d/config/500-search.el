@@ -123,6 +123,7 @@
   :config
   (defn helm-occur--switch-to-helm-window-after-action (&rest _)
     "Return the focus to `helm-window' to avoid flickering."
+    (global-hl-line-highlight)
     (-when-let (win (helm-window))
       (select-window win)))
 

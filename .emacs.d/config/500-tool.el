@@ -137,7 +137,7 @@
   :ensure t
   :defer t
   :init
- (defn set-linum-rel-fmt-for-cur-file ()
+  (defn set-linum-rel-fmt-for-cur-file ()
     "TODO"
     (setq-local linum-relative-format
                 (concat "%"
@@ -153,6 +153,7 @@
             (lambda ()
               (set-linum-rel-fmt-for-cur-file)
               (linum-relative-mode)))
+
   :config
   (defn linum-delay-schedule-timeout ()
     "TODO"
@@ -169,11 +170,11 @@
         (let ((timer (run-with-idle-timer linum-delay nil #'linum-delay-schedule-timeout)))
           (setq-local linum-schedule-timer timer)))))
 
-  :config
   (setq linum-delay 0.1
         linum-relative-current-symbol ""
         linum-schedule-timer nil)
-  (add-hook 'evil-insert-state-entry-hook #'linum-update-current)
+
+  (advice-add #'linum-relative-in-helm-p :override (-const nil))
   (advice-add #'linum-schedule :override #'linum-delay-schedule))
 
 (use-package multi-term
