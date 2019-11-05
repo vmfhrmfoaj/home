@@ -127,18 +127,23 @@
 (use-package focus
   :ensure t
   :defer t
+  :commands (focus-init focus-terminate)
   :init
+  (defvar focus--exclude-modes '(term-mode)
+    "TODO")
+
   (defn focus--enable ()
     "TODO"
     (unless (or (apply #'derived-mode-p focus--exclude-modes)
-                (bound-and-true-p helm-alive-p))
-      (focus-mode 1)
+                (bound-and-true-p helm-alive-p)
+                (minibufferp))
+      (focus-init)
       (let ((focus-update-idle-time nil))
         (focus-move-focus))))
 
   (defn focus--disable ()
     "TODO"
-    (focus-mode 0))
+    (focus-terminate))
 
   (add-hook 'evil-insert-state-entry-hook #'focus--enable)
   (add-hook 'evil-insert-state-exit-hook  #'focus--disable)
@@ -233,9 +238,6 @@
                      (forward-list)
                      (point))))
           (cons beg end)))))
-
-  (defvar focus--exclude-modes '(term-mode)
-    "TODO")
 
   (defvar-local focus--update-timer nil
     "TODO")
