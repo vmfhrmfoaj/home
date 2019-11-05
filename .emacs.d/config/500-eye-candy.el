@@ -97,7 +97,7 @@
   :ensure t
   :after evil
   :config
-  (setq evil-goggles-duration (if (string= ":10" (getenv "DISPLAY")) 0.4 0.1))
+  (setq evil-goggles-duration 0.1)
 
   (add-hook 'minibuffer-setup-hook
             (byte-compile
