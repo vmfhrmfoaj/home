@@ -399,6 +399,8 @@
     (evil-define-key 'normal helm-map
       "k" #'helm-previous-line
       "j" #'helm-next-line
+      "gg" #'helm-beginning-of-buffer
+      "G" #'helm-end-of-buffer
       (kbd "C-g") #'helm-keyboard-quit
       (kbd "RET") #'helm-maybe-exit-minibuffer
       (kbd "<escape>") #'helm-keyboard-quit))
