@@ -59,6 +59,12 @@
                           :weight light
                           :box (:line-width -1 :color "grey75" :style nil))))))
 
+(use-package linum
+  :defer t
+  :config
+  (custom-set-faces
+   '(linum ((((class color) (background light)) :inherit (shadow default) :background "grey98")))))
+
 (use-package lsp-mode
   :defer t
   :config
