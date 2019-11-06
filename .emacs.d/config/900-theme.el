@@ -21,14 +21,14 @@
   :defer t
   :config
   (custom-set-faces
-   `(cider-fringe-good-face ((t :inherit success)))
-   `(clojure-define-type-face ((t :inherit (font-lock-type-face))))
-   `(clojure-defining-spec-face ((t :inherit (clojure-keyword-face))))
+   '(cider-fringe-good-face ((t :inherit success)))
+   '(clojure-define-type-face ((t :inherit (font-lock-type-face))))
+   '(clojure-defining-spec-face ((t :inherit (clojure-keyword-face))))
    `(clojure-fn-parameter-face ((((class color) (background light)) :foreground ,local-variable-name-light-fg-color :weight medium)))
-   `(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
-   `(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
-   `(clojure-side-effect-face ((t :inherit (bold italic font-lock-warning-face))))
-   `(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))))
+   '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
+   '(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
+   '(clojure-side-effect-face ((t :inherit (bold italic font-lock-warning-face))))
+   '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))))
 
 (use-package helm
   :defer t
@@ -42,12 +42,12 @@
   :defer t
   :config
   (custom-set-faces
-   `(php-passive-assign-variable-face ((t (:inherit font-lock-variable-name-face))))
+   '(php-passive-assign-variable-face ((t :inherit font-lock-variable-name-face)))
    `(php-variable-name ((((class color) (background light))
-                         (:foreground ,(-> 'font-lock-variable-name-face
-                                           (color-from :foreground 30)
-                                           (saturate-color 10)
-                                           (mix-color (color-from 'font-lock-string-face :foreground -30)))))))))
+                         :foreground ,(-> 'font-lock-variable-name-face
+                                          (color-from :foreground 30)
+                                          (saturate-color 10)
+                                          (mix-color (color-from 'font-lock-string-face :foreground -30))))))))
 
 (use-package powerline
   :defer t
@@ -63,8 +63,8 @@
   :defer t
   :config
   (custom-set-faces
-   `(lsp-face-highlight-read  ((t (:inherit highlight :underline unspecified))))
-   `(lsp-face-highlight-write ((t (:inherit highlight :underline t))))))
+   '(lsp-face-highlight-read  ((t :inherit highlight :underline unspecified)))
+   '(lsp-face-highlight-write ((t :inherit highlight :underline t)))))
 
 (use-package magit
   :defer t
