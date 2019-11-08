@@ -251,7 +251,7 @@
                           (list :type "function"
                                 :supports '("ag" "grep" "rg" "git-grep")
                                 :language "c++"
-                                :regex "#define\\s+JJJ\\\(")
+                                :regex "(^\\s*#define\\s+JJJ\\\()")
                           ;; original
                           (list :type "type"
                                 :supports '("ag" "rg" "git-grep")

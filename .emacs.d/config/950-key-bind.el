@@ -192,9 +192,8 @@
     "pd" #'helm-projectile-find-dir
     "pf" #'helm-projectile-find-file
     "pl" #'helm-persp-create-&-switch-project
-    "pp" #'helm-projectile-switch-project
+    "pp" #'helm-persp
     "pq" #'persp-kill-cur-persp
-    "ps" #'helm-persp
     "pt" #'neotree-project-dir
 
     ;; register/rings/resume
