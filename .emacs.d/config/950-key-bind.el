@@ -181,14 +181,20 @@
     "nw" #'fancy-widen
 
     ;; project
+    "p TAB" #'persp-switch-to-last-selected-persp
+    "p~" #'persp-switch-to-default
     "p!" #'projectile-run-shell-command-in-root
     "pA" #'projectile-add-known-project
     "pD" #'projectile-remove-known-project
     "pI" #'projectile-invalidate-cache
+    "pL" #'persp-load-state-from-file
+    "pS" #'persp-save-state-to-file
     "pd" #'helm-projectile-find-dir
     "pf" #'helm-projectile-find-file
     "pl" #'helm-persp-create-&-switch-project
     "pp" #'helm-projectile-switch-project
+    "pq" #'persp-kill-cur-persp
+    "ps" #'helm-persp
     "pt" #'neotree-project-dir
 
     ;; register/rings/resume
@@ -208,15 +214,6 @@
     "tl" #'toggle-truncate-lines
     "tm" #'toggle-frame-maximized
     "tw" #'whitespace-mode
-
-    ;; layout
-    "l TAB" #'persp-switch-to-last-selected-persp
-    "l@" #'persp-switch-to-org
-    "lh" #'persp-switch-to-default
-    "ll" #'helm-persp
-    "lr" #'persp-load-state-from-file
-    "ls" #'persp-save-state-to-file
-    "lx" #'persp-kill-cur-persp
 
     ;; quit
     "qq" #'save-buffers-kill-emacs
