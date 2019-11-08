@@ -223,7 +223,12 @@
                                                 cur-line-num parse-fn generate-fn)
                          search-paths))
            (results (delete-dups (--map (plist-put it :target look-for) raw-results))))
-      `(:results ,results :lang ,(if (null lang) "" lang) :symbol ,look-for :ctx-type ,(if (null ctx-type) "" ctx-type) :file ,cur-file :root ,proj-root)))
+      (list :results results
+            :langa (or lang "")
+            :symbol look-for
+            :ctx-type (or ctx-type "")
+            :file cur-file
+            :root proj-root)))
 
   (setq dumb-jump-git-grep-cmd "git grep --full-name"
         dumb-jump-fallback-search nil
@@ -242,7 +247,7 @@
                           (list :type "function"
                                 :supports '("ag" "rg")
                                 :language "c++"
-                                :regex "\\s*(static\\s+)?((struct|union)\\s+)?[_:0-9A-Za-z]+(\\s*\\*)?\\s+JJJ\\s*\\\([^\\)]*(\\\)(\\s*\\{)?|,)\\s*")
+                                :regex "(^\\s*(static\\s+)?((struct|union)\\s+)?[_:0-9A-Za-z]+(\\s*\\*)?\\s+JJJ\\s*\\\([^\\)]*(\\\)(\\s*\\{)?|,)\\s*$)")
                           (list :type "function"
                                 :supports '("ag" "grep" "rg" "git-grep")
                                 :language "c++"
@@ -251,7 +256,11 @@
                           (list :type "type"
                                 :supports '("ag" "rg" "git-grep")
                                 :language "c++"
-                                :regex "\\b(class|struct|enum|union)\\b\\s*JJJ\\b\\s*(final\\s*)?(:((\\s*\\w+\\s*::)*\\s*\\w*\\s*<?(\\s*\\w+\\s*::)*\\w+>?\\s*,*)+)?((\\{|$))|}\\s*JJJ\\b\\s*;")))))
+                                :regex "\\b(class|struct|enum|union)\\b\\s*JJJ\\b\\s*(final\\s*)?(:((\\s*\\w+\\s*::)*\\s*\\w*\\s*<?(\\s*\\w+\\s*::)*\\w+>?\\s*,*)+)?((\\{|$))|}\\s*JJJ\\b\\s*;")
+                          (list :type "variable"
+                                :supports '("ag" "rg")
+                                :language "c++"
+                                :regex "(^\\s*(static\\s+)?((struct|union)\\s+)?[_:0-9A-Za-z]+(\\s*\\*)?\\s+JJJ\\s*(;\\s*$|=))|#define\\s+JJJ\\b")))))
   (with-eval-after-load "cperl-mode"
     (add-to-list 'dumb-jump-find-rules
                  (list :type "function"
