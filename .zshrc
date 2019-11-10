@@ -1,11 +1,22 @@
-# for Gento
-if [ -f /etc/os-release ] && [ 0 -gt $(grep -c 'gentoo' /etc/os-release) ]; then
-  if [ -e /etc/profile.env ]; then
-    source /etc/profile.env
+if [ -f /etc/os-release ]; then
+  # for Arch Linux
+  if [ $(grep -c 'Arch Linux' /etc/os-release) -gt 0 ]; then
+    # NOTE
+    #  you may need run following command: 'sudo pkgfile --update'
+    if [ -f /usr/share/doc/pkgfile/command-not-found.zsh ]; then
+      source /usr/share/doc/pkgfile/command-not-found.zsh
+    fi
   fi
-  autoload -U compinit promptinit
-  compinit
-  promptinit; prompt gentoo
+
+  # for Gento Linux
+  if [ $(grep -c 'gentoo' /etc/os-release) -gt 0 ]; then
+    if [ -f /etc/profile.env ]; then
+      source /etc/profile.env
+    fi
+    autoload -U compinit promptinit
+    compinit
+    promptinit; prompt gentoo
+  fi
 fi
 
 # Path to your oh-my-zsh installation.
