@@ -1,10 +1,7 @@
 (when window-system
   (let* ((font "Fantasque Sans Mono")
          (spacing 1)
-         (height (cond
-                  ((equal '(1440  900) main-monitor-resolution) 128)
-                  ((equal '(1920 1080) main-monitor-resolution) 121)
-                  (t 110))))
+         (height 120))
     (setq-default line-spacing spacing)
     (set-face-font 'default font)
     (set-face-attribute 'default nil
