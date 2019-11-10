@@ -3,7 +3,7 @@
          (spacing 1)
          (height (cond
                   ((equal '(1440  900) main-monitor-resolution) 128)
-                  ((equal '(1920 1080) main-monitor-resolution) 120)
+                  ((equal '(1920 1080) main-monitor-resolution) 121)
                   (t 110))))
     (setq-default line-spacing spacing)
     (set-face-font 'default font)
