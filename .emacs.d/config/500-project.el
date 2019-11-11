@@ -147,6 +147,7 @@
   :ensure t
   :defer t
   :diminish ""
+  :commands (projectile-project-root)
   :config
   (defn projectile-project-files-custom-filter (files)
     "TODO"
