@@ -29,6 +29,17 @@
           args
         (apply #'list (-interpose "\n" (append contents nil)) (-drop 1 args)))))
 
+  (defn lsp--custom-render-string (args)
+    "TODO"
+    (let ((str (car args))
+          (lang (cadr args)))
+      (cond
+       ((and (derived-mode-p 'sh-mode)
+             (or (string-match "^SYNOPSIS[ \t\r]*\n[ \t\r]*\\([^\r\n]+\\)[ \t\r]*\n[ \t\r]*\n" str)
+                 (= 0 (string-match "^[^:]+?:[ \t]+\\([^\r\n]+\\)$" str))))
+        (list (match-string 1 str) lang))
+       (t args))))
+
   (defn lsp--custom-eldoc-message (&optional msg)
     "Show MSG in eldoc."
     (let ((lines (s-lines (or msg "")))
@@ -72,6 +83,7 @@
 
   (advice-add #'lsp--eldoc-message :override #'lsp--custom-eldoc-message)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--custom-render-on-hover-content)
+  (advice-add #'lsp--render-string           :filter-args #'lsp--custom-render-string)
   (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx-for-fallback)
   (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx-for-fallback)
   (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx-for-fallback)
