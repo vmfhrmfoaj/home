@@ -13,7 +13,7 @@
   (add-to-list 'face-font-rescale-alist '("FontAwesome"      . 0.85))
   (add-to-list 'face-font-rescale-alist '("Free-Symbola"     . 0.85))
   (add-to-list 'face-font-rescale-alist '("Material Icons"   . 0.9))
-  (add-to-list 'face-font-rescale-alist '("Noto Sans CJK KR" . 0.8))
+  (add-to-list 'face-font-rescale-alist '("Noto Sans"        . 0.8))
   (add-to-list 'face-font-rescale-alist '("STIXGeneral"      . 0.9))
   (add-to-list 'face-font-rescale-alist '("Unifont"          . 0.95))
   (add-to-list 'face-font-rescale-alist '("Weather Icons"    . 0.9))
