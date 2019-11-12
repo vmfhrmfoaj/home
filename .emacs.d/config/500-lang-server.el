@@ -35,9 +35,17 @@
           (lang (cadr args)))
       (cond
        ((and (derived-mode-p 'sh-mode)
-             (or (string-match "^SYNOPSIS[ \t\r]*\n[ \t\r]*\\([^\r\n]+\\)[ \t\r]*\n[ \t\r]*\n" str)
-                 (= 0 (string-match "^[^:]+?:[ \t]+\\([^\r\n]+\\)$" str))))
-        (list (match-string 1 str) lang))
+             (stringp str)
+             (or (string-match "^SYNOPSIS[ \t\r]*\n[ \t\r]*\\(\\(?:.\\|[\r\n]+\\)+?\\)[ \t\r]*\n[ \t\r]*\n" str)
+                 (let ((res (string-match "^[^ :]+?:[ \t]+\\([^\r\n]+\\)$" str)))
+                   (and (numberp res) (= 0 res)))))
+        (list (->> str
+                   (match-string 1)
+                   (s-lines)
+                   (-map #'s-trim)
+                   (-interpose "\n")
+                   (apply #'concat))
+              lang))
        (t args))))
 
   (defn lsp--custom-eldoc-message (&optional msg)
