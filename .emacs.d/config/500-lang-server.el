@@ -2,6 +2,21 @@
   :ensure t
   :commands helm-lsp-workspace-symbol)
 
+(use-package lsp-intelephense
+  :defer t
+  :config
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection (lambda () lsp-intelephense-server-command))
+                    :major-modes '(php-mode)
+                    :priority -1
+                    :notification-handlers (ht ("indexingStarted" #'ignore) ("indexingEnded" #'ignore))
+                    :initialization-options (lambda ()
+                                              (list :globalStoragePath lsp-intelephense-storage-path
+                                                    :storagePath lsp-intelephense-storage-path
+                                                    :clearCache lsp-intelephense-clear-cache))
+                    :multi-root t
+                    :server-id 'iph)))
+
 (use-package lsp-java
   :ensure t
   :defer t
