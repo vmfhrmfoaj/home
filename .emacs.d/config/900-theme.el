@@ -9,6 +9,9 @@
  '(diff-refine-added   ((((class color) (background light)) :background "#ddffdd" :foreground "#119911")))
  '(diff-refine-changed ((((class color) (background light)) :background "#ffffdd" :foreground "#999911")))
  '(diff-refine-removed ((((class color) (background light)) :background "#ffdddd" :foreground "#991111")))
+ '(font-lock-negation-char-face ((((class color) (background light)) :foreground "red3")))
+ '(mode-line          ((((class color) (background light)) :background "grey75" :foreground "black")))
+ '(mode-line-inactive ((((class color) (background light)) :background "grey90" :foreground "grey40" :weight light)))
  '(region ((((class color) (background light)) :background "light sky blue"))))
 
 (use-package auto-dim-other-buffers
@@ -48,16 +51,6 @@
                                           (color-from :foreground 30)
                                           (saturate-color 10)
                                           (mix-color (color-from 'font-lock-string-face :foreground -30))))))))
-
-(use-package powerline
-  :defer t
-  :config
-  (custom-set-faces
-   '(mode-line-inactive ((((class color) (background light))
-                          :background "grey90"
-                          :foreground "grey40"
-                          :weight light
-                          :box (:line-width -1 :color "grey75" :style nil))))))
 
 (use-package linum
   :defer t
