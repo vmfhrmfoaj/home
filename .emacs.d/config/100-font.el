@@ -1,6 +1,6 @@
 (when window-system
   (let* ((font "Fantasque Sans Mono")
-         (spacing 1)
+         (spacing 0)
          (height 120))
     (setq-default line-spacing spacing)
     (set-face-font 'default font)
@@ -9,6 +9,7 @@
                         :width 'medium
                         :height height))
   (add-to-list 'face-font-rescale-alist '("Arial Unicode MS" . 0.9))
+  (add-to-list 'face-font-rescale-alist '("DejaVu Sans"      . 0.9))
   (add-to-list 'face-font-rescale-alist '("DejaVu Serif"     . 0.9))
   (add-to-list 'face-font-rescale-alist '("FontAwesome"      . 0.85))
   (add-to-list 'face-font-rescale-alist '("Free-Symbola"     . 0.85))
