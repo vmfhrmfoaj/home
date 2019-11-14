@@ -308,7 +308,8 @@
     "gd" #'up-list
     "gr" #'eldoc-refresh
     "gu" #'backward-up-list
-    (kbd "TAB") #'indent-for-tab-command)
+    (kbd "TAB") #'indent-for-tab-command
+    (kbd "C-u") #'evil-scroll-up)
   (evil-define-key 'insert 'global
     (kbd "C-h") #'backward-delete-char
     (kbd "C-a") #'beginning-of-line-text
