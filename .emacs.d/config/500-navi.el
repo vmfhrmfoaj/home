@@ -224,9 +224,9 @@
                          search-paths))
            (results (delete-dups (--map (plist-put it :target look-for) raw-results))))
       (list :results results
-            :langa (or lang "")
+            :lang (if (null lang) "" lang)
             :symbol look-for
-            :ctx-type (or ctx-type "")
+            :ctx-type (if (null ctx-type) "" ctx-type)
             :file cur-file
             :root proj-root)))
 
