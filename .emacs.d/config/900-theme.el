@@ -1,68 +1,86 @@
 (use-package twilight-anti-bright-theme
   :ensure t
   :config
-  (custom-set-faces
-   `(font-lock-type-face ((t (:foreground "#bf3f1e"))))
-   `(font-lock-comment-face ((t (:background unspecified))))
-   `(link ((t (:inherit underline :weight normal))))
-   `(linum-relative-current-face ((t (:inherit linum))))
-   `(magit-section-heading ((t (:inherit bold :foreground "DarkGoldenrod4"))))
-   `(magit-diff-file-heading ((t (:weight medium))))
-   `(magit-commit-log-type-face  ((t (:inherit font-lock-function-name-face :weight medium))))
-   `(magit-commit-log-scope-face ((t (:inherit font-lock-variable-name-face :weight medium))))
-   `(show-paren-match ((t (:inherit underline :foreground "Cyan2" :background nil))))
-   `(mode-line-inactive ((t (:background ,(face-attribute 'mode-line :background))))))
   (custom-theme-set-faces
    'twilight-anti-bright
    `(auto-dim-other-buffers-face
      ((t :foreground ,(color-from 'default :foreground -10)
          :background ,(color-from 'default :background +1))))
-   `(clojure-if-true-face
-     ((t (:background ,(-> 'font-lock-keyword-face
-                           (face-attribute :background)
-                           (dim-color 4.35)
-                           (saturate-color -8))))))
-   `(clojure-meta-face ((t (:foreground "#b0b0b0"))))
-   `(cursor ((t (:background "deep sky blue"))))
-   `(cperl-nonoverridable-face ((t (:inherit font-lock-constant-face :foreground ,(color-from 'font-lock-constant-face :foreground +10)))))
-   `(default ((t (:background "#14191f" :foreground "#d0d1d1"))))
-   `(evil-ex-lazy-highlight ((t (:inherit (bold lazy-highlight)))))
-   `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-regexp-grouping-construct))))
-   `(font-lock-regexp-grouping-construct ((t (:inherit bold :foreground ,(color-from 'font-lock-string-face :foreground -5)))))
-   `(fringe ((t (:background ,(color-from 'default :background -3)))))
-   `(git-gutter+-added    ((t (:foreground ,(face-attribute 'diff-refine-added   :background)))))
-   `(git-gutter+-deleted  ((t (:foreground ,(face-attribute 'diff-refine-removed :background)))))
-   `(git-gutter+-modified ((t (:foreground ,(face-attribute 'diff-refine-changed :background)))))
-   `(git-timemachine-minibuffer-detail-face ((t (:foreground nil :inherit highlight))))
+   `(cursor ((t :background "deep sky blue")))
+   `(evil-ex-lazy-highlight ((t :inherit (bold lazy-highlight))))
+   `(font-lock-regexp-grouping-backslash ((t :inherit font-lock-regexp-grouping-construct)))
+   `(font-lock-regexp-grouping-construct ((t :inherit bold :foreground ,(color-from 'font-lock-string-face :foreground -5))))
+   `(fringe ((t :background ,(color-from 'default :background -3))))
    `(lazy-highlight ((t :background "paleturquoise4" :foreground "paleturquoise3")))
-   `(linum ((t (:background "#000000" :foreground "#666666"))))
-   `(linum-relative-current-face ((t (:inherit linum :foreground "#aaaaaa"))))
-   `(region ((t (:background ,(color-from 'region :background +10)))))
-   `(shadow ((t (:foreground "#9a9a9a"))))
-   `(trailing-whitespace ((t (:background "gray35"))))))
+   `(region ((t :background ,(color-from 'region :background +10))))
+   `(shadow ((t :foreground "#9a9a9a")))
+   `(trailing-whitespace ((t :background "gray35"))))
+  (custom-set-faces
+   `(font-lock-comment-face ((t :background unspecified)))
+   `(font-lock-doc-face ((t :slant italic)))
+   `(font-lock-function-name-face ((t :inherit bold)))
+   `(font-lock-string-face ((t :slant normal)))
+   `(font-lock-type-face ((t :foreground "#bf3f1e")))
+   `(font-lock-variable-name-face ((t :inherit bold)))
+   `(hl-line ((t :inverse-video nil)))
+   `(link ((t :inherit underline :weight normal)))
+   `(lisp-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :weight medium)))
+   `(mode-line ((t :weight medium)))
+   `(mode-line-inactive ((t :background ,(face-attribute 'mode-line :background))))
+   `(mode-line-inactive ((t :inherit mode-line)))
+   `(show-paren-match ((t :inherit (bold underline) :foreground "Cyan2" :background nil)))
+   `(widget-button ((t :inherit bold)))))
 
-(custom-set-faces
- `(cider-fringe-good-face ((t (:inherit success))))
- `(clojure-define-type-face   ((t (:inherit (bold font-lock-type-face)))))
- `(clojure-defining-spec-face ((t (:inherit (bold clojure-keyword-face)))))
- `(clojure-fn-parameter-face ((t (:inherit font-lock-variable-name-face :weight medium))))
- `(clojure-keyword-face ((t (:inherit font-lock-builtin-face))))
- `(clojure-local-binding-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
- `(clojure-side-effect-face ((t (:inherit (bold italic font-lock-warning-face)))))
- `(clojure-special-variable-name-face ((t (:inherit clojure-fn-parameter-face))))
- `(css-property ((t (:inherit font-lock-builtin-face :foreground nil :weight medium))))
- `(css-selector ((t (:inherit (bold font-lock-variable-name-face) :foreground nil))))
- `(font-lock-doc-face ((t (:slant italic))))
- `(font-lock-function-name-face ((t (:inherit bold))))
- `(font-lock-string-face ((t (:slant normal))))
- `(font-lock-variable-name-face ((t (:inherit bold))))
- `(hl-line ((t (:inverse-video nil))))
- `(lisp-local-binding-variable-name-face ((t (:inherit font-lock-variable-name-face :weight medium))))
- `(mode-line ((t (:weight medium))))
- `(mode-line-inactive ((t (:inherit mode-line))))
- `(nlinum-current-line ((t (:inherit linum))))
- `(nlinum-relative-current-face ((t (:inherit linum))))
- `(widget-button ((t (:inherit bold)))))
+(use-package cperl-mode
+  :defer t
+  :config
+  (custom-set-faces
+   `(cperl-nonoverridable-face ((t :inherit font-lock-constant-face :foreground ,(color-from 'font-lock-constant-face :foreground +10))))))
+
+(use-package cider-mode
+  :defer t
+  :config
+  (custom-set-faces
+   `(cider-fringe-good-face ((t :inherit success)))))
+
+(use-package clojure-mode
+  :defer t
+  :config
+  (custom-set-faces
+   `(clojure-if-true-face
+     ((t :background ,(-> 'font-lock-keyword-face
+                          (face-attribute :background)
+                          (dim-color 4.35)
+                          (saturate-color -8)))))
+   `(clojure-meta-face ((t :foreground "#b0b0b0")))
+   `(clojure-define-type-face   ((t :inherit (bold font-lock-type-face))))
+   `(clojure-defining-spec-face ((t :inherit (bold clojure-keyword-face))))
+   `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight medium)))
+   `(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
+   `(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
+   `(clojure-side-effect-face ((t :inherit (bold italic font-lock-warning-face))))
+   `(clojure-special-variable-name-face ((t :inherit clojure-fn-parameter-face)))))
+
+(use-package css-mode
+  :defer t
+  :config
+  (custom-set-faces
+   `(css-property ((t :inherit font-lock-builtin-face :foreground nil :weight medium)))
+   `(css-selector ((t :inherit (bold font-lock-variable-name-face) :foreground nil)))))
+
+(use-package git-gutter+
+  :defer t
+  :config
+  (custom-set-faces
+   `(git-gutter+-added    ((t :foreground ,(face-attribute 'diff-refine-added   :background))))
+   `(git-gutter+-deleted  ((t :foreground ,(face-attribute 'diff-refine-removed :background))))
+   `(git-gutter+-modified ((t :foreground ,(face-attribute 'diff-refine-changed :background))))))
+
+(use-package git-timemachine
+  :defer t
+  :config
+  (custom-set-faces
+   `(git-timemachine-minibuffer-detail-face ((t :foreground nil :inherit highlight)))))
 
 (use-package goto-addr
   :defer t
@@ -73,11 +91,24 @@
   :defer t
   :config
   (custom-set-faces
-   `(linum ((t (:inherit default :underline nil :height 1.0 :distant-foreground ,(face-attribute 'linum :foreground)))))))
+   `(linum ((t :inherit default :underline nil :height 1.0 :distant-foreground ,(face-attribute 'linum :foreground))))
+   `(linum-relative-current-face ((t :inherit linum)))))
+
+(use-package lsp-mode
+  :defer t
+  :config
+  (custom-set-faces
+   '(lsp-face-highlight-read  ((t :inherit  highlight       :underline t)))
+   '(lsp-face-highlight-write ((t :inherit (highlight bold) :underline (:color foreground-color :style wave))))))
 
 (use-package magit
   :defer t
   :config
+  (custom-set-faces
+   `(magit-section-heading ((t :inherit bold :foreground "DarkGoldenrod4")))
+   `(magit-diff-file-heading ((t :weight medium)))
+   `(magit-commit-log-type-face  ((t :inherit font-lock-function-name-face :weight medium)))
+   `(magit-commit-log-scope-face ((t :inherit font-lock-variable-name-face :weight medium))))
   (dolist (face '(magit-branch-current
                   magit-branch-local
                   magit-branch-remote
@@ -93,21 +124,11 @@
   :defer t
   :config
   (custom-set-faces
-   `(hl-paren-face ((t (:weight bold)))))
+   `(hl-paren-face ((t (:inherit bold)))))
   (setq hl-paren-colors
         (--iterate (dim-color it 10)
                    (apply 'color-rgb-to-hex (color-name-to-rgb "Springgreen"))
                    4)))
-
-(use-package rainbow-delimiters
-  :after plan9-theme
-  :config
-  (dolist (i (number-sequence 1 9))
-    (let ((face (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))))
-      (set-face-attribute face nil :foreground
-                          (-> face
-                              (face-attribute :foreground)
-                              (saturate-color -10))))))
 
 (use-package outline
   :defer t
