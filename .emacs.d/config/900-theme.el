@@ -98,8 +98,8 @@
   :defer t
   :config
   (custom-set-faces
-   '(lsp-face-highlight-read  ((t :inherit  highlight       :underline t)))
-   '(lsp-face-highlight-write ((t :inherit (highlight bold) :underline (:color foreground-color :style wave))))))
+   `(lsp-face-highlight-read  ((t :inherit  highlight       :underline t)))
+   `(lsp-face-highlight-write ((t :inherit (highlight bold) :underline (:color foreground-color :style wave))))))
 
 (use-package magit
   :defer t
