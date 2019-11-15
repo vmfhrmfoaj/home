@@ -280,5 +280,6 @@
   :defer t
   :commands (helm-xref-show-defs-27 helm-xref-show-xrefs-27)
   :init
+  (defalias 'xref-pop-to-location #'xref--pop-to-location)
   (setq xref-show-definitions-function 'helm-xref-show-defs-27
         xref-show-xrefs-function 'helm-xref-show-xrefs-27))
