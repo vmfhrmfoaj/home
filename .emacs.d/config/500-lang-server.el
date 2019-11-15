@@ -90,21 +90,17 @@
         (message nil)
         (call-interactively #'dumb-jump-go))))
 
+  (defn lsp--custom-flymake-backend (report-fn &rest _args)
+    "Custom `flymake' backend for ."
+    (setq lsp--flymake-report-fn report-fn)
+    (lsp--flymake-update-diagnostics))
+
   (setq lsp-eldoc-prefer-signature-help nil
         lsp-enable-snippet nil
         lsp-file-watch-threshold nil)
 
-  (add-hook 'lsp-mode-hook
-            (lambda ()
-              (let ((f (byte-compile
-                        (lambda (&rest _)
-                          ;; NOTE:
-                          ;;  May be it cause the performance issue!
-                          (flymake-start t t)))))
-                (add-hook 'after-save-hook f nil :local)
-                (add-hook 'after-change-functions f nil :local))))
-
-  (advice-add #'lsp--eldoc-message :override #'lsp--custom-eldoc-message)
+  (advice-add #'lsp--eldoc-message   :override #'lsp--custom-eldoc-message)
+  (advice-add #'lsp--flymake-backend :override #'lsp--custom-flymake-backend)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--custom-render-on-hover-content)
   (advice-add #'lsp--render-string           :filter-args #'lsp--custom-render-string)
   (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx-for-fallback)
