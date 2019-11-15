@@ -16,6 +16,7 @@ _install_android_studio_from_tar() {
     fi
 
     local sym_file="${HOME}/.bin/android-studio"
+    mkdir -p $(dirname "${sym_file}")
     rm -rf "${sym_file}"
     ln -rs "${target_dir}/bin/studio.sh" "${sym_file}"
     cat > "${HOME}/.local/share/applications/android-studio.desktop" <<EOF
@@ -49,6 +50,7 @@ _install_atom_from_tar() {
     fi
 
     local sym_file="${HOME}/.bin/atom"
+    mkdir -p $(dirname "${sym_file}")
     rm -rf "${sym_file}"
     ln -rs "${target_dir}/atom" "${sym_file}"
     if [ $? -ne 0 ]; then
@@ -88,6 +90,7 @@ _install_vs_code_from_tar() {
     fi
 
     local sym_file="${HOME}/.bin/code"
+    mkdir -p $(dirname "${sym_file}")
     rm -rf "${sym_file}"
     ln -rs "${target_dir}/bin/code" "${sym_file}"
     if [ $? -ne 0 ]; then
