@@ -87,6 +87,14 @@
   :config
   (setq goto-address-mail-face "link"))
 
+(use-package helm
+  :defer t
+  :config
+  (custom-set-faces
+   '(helm-match ((t :inherit lazy-highlight)))
+   '(helm-match-item ((t :inherit lazy-highlight)))
+   '(helm-match-selection ((t :inherit isearch)))))
+
 (use-package linum
   :defer t
   :config
