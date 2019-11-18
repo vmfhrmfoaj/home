@@ -1,12 +1,3 @@
-(use-package company-php
-  :ensure t
-  :after php-mode
-  :config
-  (add-hook 'php-mode-hook
-            (lambda ()
-              (make-local-variable 'company-backends)
-              (add-to-list 'company-backends #'company-ac-php-backend))))
-
 (use-package php-mode
   :ensure t
   :defer t
