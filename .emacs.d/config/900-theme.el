@@ -93,7 +93,8 @@
   (custom-set-faces
    '(helm-match ((t :inherit lazy-highlight)))
    '(helm-match-item ((t :inherit lazy-highlight)))
-   '(helm-match-selection ((t :inherit isearch)))))
+   '(helm-match-selection ((t :inherit isearch)))
+   '(helm-selection-line ((t :foreground unspecified)))))
 
 (use-package linum
   :defer t
