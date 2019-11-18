@@ -1,3 +1,15 @@
+(use-package flymake
+  :defer t
+  :config
+  (defn flymake--wrap-goto-next-error (fn &rest args)
+    "TODO"
+    (cl-letf (((symbol-function #'message) (-const t)))
+      (apply fn args))
+    (when (fboundp #'eldoc-refresh)
+      (eldoc-refresh)))
+
+  (advice-add #'flymake-goto-next-error :around #'flymake--wrap-goto-next-error))
+
 (use-package helm-lsp
   :ensure t
   :commands helm-lsp-workspace-symbol)
