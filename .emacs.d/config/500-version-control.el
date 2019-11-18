@@ -14,19 +14,6 @@
           (magit-blame-addition nil))
       (message "You need to install magit for blame capabilities")))
 
-  (defn git-timemachine-from-magit-blame ()
-    "TODO"
-    (interactive)
-    (when magit-blame-mode
-      (let ((git-timemachine-directory (magit-toplevel))
-            (git-timemachine-file (buffer-file-name))
-            (sha (oref (magit-current-blame-chunk) orig-rev)))
-        (git-timemachine--start (-partial #'git-timemachine-show-revision
-                                          (->> (git-timemachine--revisions)
-                                               (--drop-while (not (string= sha (car it))))
-                                               (-first-item))))
-        (git-timemachine--custom-blame))))
-
   (advice-add #'git-timemachine-blame :override #'git-timemachine--custom-blame))
 
 (use-package git-gutter-fringe+

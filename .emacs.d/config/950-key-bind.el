@@ -442,13 +442,6 @@
   (define-key transient-map (kbd "C-g")      #'transient-quit-all)
   (define-key transient-map (kbd "<escape>") #'transient-quit-one))
 
-(use-package magit-blame
-  :defer t
-  :config
-  (when (fboundp 'git-timemachine-from-magit-blame)
-    (evil-define-key 'normal magit-blame-mode-map
-      (kbd "M-t") #'git-timemachine-from-magit-blame)))
-
 (use-package magit-svn
   :after evil-magit
   :config
