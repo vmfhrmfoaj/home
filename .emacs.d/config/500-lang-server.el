@@ -50,11 +50,33 @@
          (sh-mode         . lsp))
   :commands lsp
   :config
+  (defvar lsp--custom-render--regex-1-for-php
+    (concat "```php[ \t\r\n]*"                     ; ```php
+            "\\(?:[ \t\r\n]*<\\?php[ \t\r\n]*\\)?" ; <?php
+            "\\(\\(?:\n\\|.\\)+?\\)"               ; <CONTENTS>
+            "\\(?:[ \t\r\n]*{\\s-*}[ \t\r\n]*\\)?" ; { }
+            "[ \t\r\n]*\\(?:[ \t\r\n]*\\?>"        ; ?>
+            "[ \t\r\n]*\\)?```")                   ; ```
+    "TODO")
+  (defvar lsp--custom-render--regex-2-for-php
+    "\\(?:_@var_\\|_@param_\\)\\s-*`?\\s-*\\(.+?\\)\\s-*`?$"
+    "TODO")
+
   (defn lsp--custom-render-on-hover-content (args)
+    "TODO"
     (let ((contents (car args)))
-      (if (not (seqp contents))
-          args
-        (apply #'list (-interpose "\n" (append contents nil)) (-drop 1 args)))))
+      (when (and (derived-mode-p 'php-mode)
+                 (hash-table-p contents))
+        (puthash "language" "php" contents)
+        (when (string= "markdown" (or (gethash "kind" contents) ""))
+          (let ((md (gethash "value" contents)))
+            (when (or (string-match lsp--custom-render--regex-1-for-php md)
+                      (string-match lsp--custom-render--regex-2-for-php md))
+             (remhash "kind" contents)
+             (puthash "value" (match-string 1 md) contents)))))
+      (if (not (listp contents))
+          (apply #'list contents (cdr args))
+        (apply #'list (-interpose "\n" (append contents nil)) (cdr args)))))
 
   (defn lsp--custom-render-string (args)
     "TODO"
