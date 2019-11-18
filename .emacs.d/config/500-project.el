@@ -4,6 +4,12 @@
   (defvar persp-org-name "@Org"
     "TODO")
 
+  (defn persp--wrap-make-process (fn &rest args)
+    "Wrap `make-process' to add a buffer of process."
+    (prog1 (apply fn args)
+      (-when-let (buf (-some-> args (plist-get :buffer) (get-buffer)))
+        (persp-add-buffer-without-switch buf))))
+
   (defn persp-current-name ()
     "TODO"
     (safe-persp-name (get-frame-persp)))
@@ -141,6 +147,7 @@
               (let ((root (persp-current-project)))
                 (setq-local dumb-jump-project root))))
 
+  (advice-add #'make-process :around #'persp--wrap-make-process)
   (advice-add #'persp-switch :after #'persp-add-all-proj-buffer))
 
 (use-package projectile
