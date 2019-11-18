@@ -1,6 +1,6 @@
 (when window-system
   (let* ((font "Fantasque Sans Mono")
-         (spacing 0)
+         (spacing 1)
          (height 128))
     (setq-default line-spacing spacing)
     (set-face-font 'default font)
