@@ -21,11 +21,11 @@
    `(font-lock-function-name-face ((t :inherit bold)))
    `(font-lock-string-face ((t :slant normal)))
    `(font-lock-type-face ((t :foreground "#bf3f1e")))
-   `(font-lock-variable-name-face ((t :inherit bold)))
+   `(font-lock-warning-face ((t :inherit bold)))
    `(hl-line ((t :inverse-video nil)))
    `(link ((t :inherit underline :weight normal)))
-   `(lisp-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :weight medium)))
-   `(mode-line ((t :weight medium)))
+   `(lisp-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face)))
+   `(mode-line ((t :weight normal)))
    `(mode-line-inactive ((t :background ,(face-attribute 'mode-line :background))))
    `(mode-line-inactive ((t :inherit mode-line)))
    `(show-paren-match ((t :inherit (bold underline) :foreground "Cyan2" :background nil)))
@@ -55,7 +55,7 @@
    `(clojure-meta-face ((t :foreground "#b0b0b0")))
    `(clojure-define-type-face   ((t :inherit (bold font-lock-type-face))))
    `(clojure-defining-spec-face ((t :inherit (bold clojure-keyword-face))))
-   `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight medium)))
+   `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight normal)))
    `(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
    `(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
    `(clojure-side-effect-face ((t :inherit (bold italic font-lock-warning-face))))
@@ -65,7 +65,7 @@
   :defer t
   :config
   (custom-set-faces
-   `(css-property ((t :inherit font-lock-builtin-face :foreground nil :weight medium)))
+   `(css-property ((t :inherit font-lock-builtin-face :foreground nil :weight normal)))
    `(css-selector ((t :inherit (bold font-lock-variable-name-face) :foreground nil)))))
 
 (use-package git-gutter+
@@ -96,6 +96,16 @@
    '(helm-match-selection ((t :inherit isearch)))
    '(helm-selection-line ((t :foreground unspecified)))))
 
+(use-package highlight-parentheses
+  :defer t
+  :config
+  (custom-set-faces
+   `(hl-paren-face ((t :inherit bold))))
+  (setq hl-paren-colors
+        (--iterate (dim-color it 10)
+                   (apply 'color-rgb-to-hex (color-name-to-rgb "Springgreen"))
+                   4)))
+
 (use-package linum
   :defer t
   :config
@@ -115,9 +125,9 @@
   :config
   (custom-set-faces
    `(magit-section-heading ((t :inherit bold :foreground "DarkGoldenrod4")))
-   `(magit-diff-file-heading ((t :weight medium)))
-   `(magit-commit-log-type-face  ((t :inherit font-lock-function-name-face :weight medium)))
-   `(magit-commit-log-scope-face ((t :inherit font-lock-variable-name-face :weight medium))))
+   `(magit-diff-file-heading ((t :weight normal)))
+   `(magit-commit-log-type-face  ((t :inherit font-lock-function-name-face :weight normal)))
+   `(magit-commit-log-scope-face ((t :inherit font-lock-variable-name-face :weight normal))))
   (dolist (face '(magit-branch-current
                   magit-branch-local
                   magit-branch-remote
@@ -129,16 +139,6 @@
                               (cons 'bold inherit)
                             (list 'bold inherit))))))
 
-(use-package highlight-parentheses
-  :defer t
-  :config
-  (custom-set-faces
-   `(hl-paren-face ((t (:inherit bold)))))
-  (setq hl-paren-colors
-        (--iterate (dim-color it 10)
-                   (apply 'color-rgb-to-hex (color-name-to-rgb "Springgreen"))
-                   4)))
-
 (use-package outline
   :defer t
   :config
@@ -149,3 +149,10 @@
                             (if (listp inherit)
                                 (cons 'bold inherit)
                               (list 'bold inherit)))))))
+
+(use-package rust-mode
+  :defer t
+  :config
+  (custom-set-faces
+   `(rust-question-mark-face ((t :inherit font-lock-builtin-face :weight unspecified)))))
+
