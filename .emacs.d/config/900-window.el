@@ -1,5 +1,5 @@
 (when window-system
-  (let* ((column-width 160)
+  (let* ((column-width 140)
          (workarea (-some->> main-monitor (assoc 'workarea) (-drop 1)))
          (main-monitor-l (nth 0 workarea))
          (main-monitor-t (nth 1 workarea))
