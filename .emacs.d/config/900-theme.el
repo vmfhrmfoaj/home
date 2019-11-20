@@ -76,6 +76,12 @@
    `(git-gutter+-deleted  ((t :foreground ,(face-attribute 'diff-refine-removed :background))))
    `(git-gutter+-modified ((t :foreground ,(face-attribute 'diff-refine-changed :background))))))
 
+(use-package git-commit
+  :defer t
+  :config
+  (custom-set-faces
+   `(git-commit-overlong-summary ((t :inherit font-lock-warning-face :foreground "red2" :underline (:color foreground-color :style wave))))))
+
 (use-package git-timemachine
   :defer t
   :config
