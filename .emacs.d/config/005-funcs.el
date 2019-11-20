@@ -296,8 +296,8 @@
   "TODO"
   (interactive)
   (pop-to-buffer (get-buffer-create "*scratch*"))
-  (unless (eq 'org-mode major-mode)
-    (org-mode))
+  (unless (eq 'markdown-mode major-mode)
+    (markdown-mode))
   (when (fboundp #'persp-add-buffer-without-switch)
     (persp-add-buffer-without-switch)))
 
