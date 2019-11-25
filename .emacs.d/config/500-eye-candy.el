@@ -59,7 +59,7 @@
   (with-eval-after-load "helm-occur"
     (advice-add #'adob--never-dim-p :before-until #'helm-occur-current-bufferp))
 
-  (auto-dim-other-buffers-mode))
+  (make-thread #'auto-dim-other-buffers-mode))
 
 (use-package diminish
   :ensure t
@@ -105,7 +105,7 @@
                (setq-local evil-goggles-duration 0.001))))
 
   (evil-goggles-use-diff-faces)
-  (evil-goggles-mode 1))
+  (make-thread #'evil-goggles-mode))
 
 (use-package fancy-narrow
   :ensure t
@@ -299,7 +299,7 @@
   :config
   (setq hl-line-sticky-flag nil)
 
-  (global-hl-line-mode 1))
+  (make-thread #'global-hl-line-mode))
 
 (use-package hl-todo
   :ensure t
@@ -349,11 +349,10 @@
        (spaceline-helm-mode)))))
 
 (use-package vi-tilde-fringe
-  :defer t
   ;; NOTE:
   ;;  This package not included in the `MELPA'.
   ;;:ensure t
   :init
   (unless (package-installed-p 'vi-tilde-fringe)
     (quelpa '(vi-tilde-fringe :fetcher github :repo "syl20bnr/vi-tilde-fringe")))
-  (global-vi-tilde-fringe-mode))
+  (make-thread #'global-vi-tilde-fringe-mode))
