@@ -1,10 +1,7 @@
 (when window-system
   (setq-default line-spacing 1)
-  (set-face-font 'default  "Fantasque Sans Mono")
-  (set-face-attribute 'default nil
-                      :weight 'medium
-                      :width 'medium
-                      :height 128))
+  (set-face-font 'default  "Noto Sans Mono")
+  (set-face-attribute 'default nil :height 105))
 
 (make-thread (lambda ()
                (prefer-coding-system 'utf-8)
@@ -16,7 +13,7 @@
                  (add-to-list 'face-font-rescale-alist '("FontAwesome"      . 0.85))
                  (add-to-list 'face-font-rescale-alist '("Free-Symbola"     . 0.85))
                  (add-to-list 'face-font-rescale-alist '("Material Icons"   . 0.9))
-                 (add-to-list 'face-font-rescale-alist '("Noto Sans"        . 0.8))
+                 (add-to-list 'face-font-rescale-alist '("Noto Sans CJK"    . 0.8))
                  (add-to-list 'face-font-rescale-alist '("STIXGeneral"      . 0.9))
                  (add-to-list 'face-font-rescale-alist '("Unifont"          . 0.95))
                  (add-to-list 'face-font-rescale-alist '("Weather Icons"    . 0.9))
