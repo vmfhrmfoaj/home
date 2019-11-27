@@ -67,6 +67,11 @@
   :config
   (evil-goggles-use-diff-refine-faces))
 
+(use-package flymake
+  :defer t
+  :config
+  (put 'flymake-note 'mode-line-face '(:inherit compilation-info :foreground "cyan3")))
+
 (use-package go-mode
   :defer t
   :config
