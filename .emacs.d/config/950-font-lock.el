@@ -125,7 +125,7 @@
   :defer t
   :config
   (defface cperl-less-important-keyword-face
-    '((t (:inherit font-lock-keyword-face :weight normal)))
+    `((t (:inherit font-lock-keyword-face :weight ,(face-attribute 'default :weight))))
     "TODO")
 
   (let ((unimportant-kws '("bless" "defined" "delete" "exists" "grep" "join" "lc" "map" "push" "ref" "splice")))
@@ -182,10 +182,10 @@
     '((t (:inherit (italic font-lock-keyword-face))))
     "Face used to font-lock Clojure important keywords.")
   (defface clojure-special-variable-name-face
-    '((t (:inherit font-lock-variable-name-face :weight medium)))
+    `((t (:inherit font-lock-variable-name-face :weight ,(face-attribute 'default :weight))))
     "Face used to font-lock Clojure special variable name.")
   (defface clojure-local-binding-variable-name-face
-    '((t (:inherit font-lock-variable-name-face :weight medium)))
+    `((t (:inherit font-lock-variable-name-face :weight ,(face-attribute 'default :weight))))
     "Face used to font-lock Clojure local binding variable name.")
   (defface clojure-local-binding-variable-name-warning-face
     '((t (:inherit (italic clojure-local-binding-variable-name-face))))
@@ -197,7 +197,7 @@
     '((t (:inherit (italic clojure-fn-parameter-face))))
     "TODO")
   (defface clojure-semi-function-name-face
-    '((t (:inherit font-lock-function-name-face :weight medium)))
+    `((t (:inherit font-lock-function-name-face :weight ,(face-attribute 'default :weight))))
     "Face used to font-lock Clojure OOP style functions.")
   (defface clojure-cond-condtion-face
     '((t (:inherit italic)))
@@ -1221,7 +1221,7 @@
   :defer t
   :config
   (defface rust-self-var-face
-    '((t (:inherit font-lock-keyword-face :weight normal)))
+    `((t (:inherit font-lock-keyword-face :weight ,(face-attribute 'default :weight))))
     "TODO")
 
   (font-lock-add-keywords

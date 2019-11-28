@@ -36,7 +36,7 @@
         regions)))
 
   (defface php-unhilight-face
-    '((t (:inherit (shadow default) :weight normal)))
+    `((t (:inherit (shadow default) :weight ,(face-attribute 'default :weight))))
     "TODO")
 
   (defn php-unhilight-no-php-code ()
