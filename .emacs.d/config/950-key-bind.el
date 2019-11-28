@@ -447,6 +447,14 @@
   :config
   (evil-magit-define-key 'normal 'magit-mode-map (kbd "~") #'magit-svn))
 
+(use-package magit-blame
+  :defer t
+  :config
+  (dolist (key '("p" "P" "n" "N" "b" "r" "f" "B"))
+    (-when-let (f (lookup-key magit-blame-read-only-mode-map (kbd key)))
+      (evil-define-key 'normal magit-blame-mode-map (kbd (concat "M-" key)) f))
+    (define-key magit-blame-read-only-mode-map (kbd key) nil)))
+
 
 ;; Key binding for the major mode
 

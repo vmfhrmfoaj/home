@@ -147,7 +147,7 @@
                             (min 5)
                             (max 3)
                             (number-to-string))
-                        "s"))) 
+                        "s")))
 
   (add-hook 'prog-mode-hook
             (lambda ()
