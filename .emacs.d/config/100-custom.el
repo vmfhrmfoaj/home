@@ -17,6 +17,7 @@
 
 (put 'dired-find-alternate-file 'disabled nil)
 
+(blink-cursor-mode 1)
 (global-subword-mode 1)
 (prefer-coding-system 'utf-8)
 (recentf-mode 1)
@@ -31,6 +32,7 @@
 
 (setq resize-mini-windows t)
 
+(add-hook 'focus-in-hook #'blink-cursor-start)
 (add-hook 'after-init-hook
           (lambda ()
             (advice-add #'select-frame      :after #'update-buf-visit-time)
@@ -39,6 +41,3 @@
             (advice-add #'switch-to-buffer  :after #'update-buf-visit-time)
             (setq gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect)))
           :append)
-
-(remove-hook 'focus-in-hook #'blink-cursor-check)
-(add-hook 'focus-in-hook #'blink-cursor-start)
