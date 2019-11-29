@@ -3,6 +3,7 @@
   "A foreground color for the local variable such as parameters")
 
 (custom-set-faces
+ '(default ((((class color) (background light)) :foreground "grey15")))
  '(diff-added          ((((class color) (background light)) :background "#cceecc" :foreground "#22aa22")))
  '(diff-changed        ((((class color) (background light)) :background "#eeeecc" :foreground "#aaaa22")))
  '(diff-removed        ((((class color) (background light)) :background "#eecccc" :foreground "#aa2222")))
@@ -42,6 +43,12 @@
    '(helm-match-item ((t :inherit lazy-highlight)))
    '(helm-match-selection ((t :inherit isearch)))))
 
+(use-package iedit
+  :defer t
+  :config
+  (custom-set-faces
+   '(iedit-occurrence ((t :inherit highlight :slant italic)))))
+
 (use-package php-mode
   :defer t
   :config
@@ -63,8 +70,8 @@
   :defer t
   :config
   (custom-set-faces
-   '(lsp-face-highlight-read  ((t :inherit highlight :underline t)))
-   '(lsp-face-highlight-write ((t :inherit highlight :underline t :weight bold)))))
+   '(lsp-face-highlight-read  ((t :inherit highlight)))
+   '(lsp-face-highlight-write ((t :inherit highlight :weight bold)))))
 
 (use-package magit
   :defer t
