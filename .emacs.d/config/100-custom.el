@@ -7,6 +7,8 @@
 (let ((backup-dir (concat home-dir "/.emacs.d/saves/")))
   (setq auto-save-file-name-transforms `((".*" ,backup-dir t))
         backup-directory-alist `((".*" . ,backup-dir))
+        blink-cursor-blinks 0
+        blink-cursor-delay 3
         create-lockfiles nil
         exclude-alt-buf-regex "^\\s-*\\*\\s-*\\([Hh]elm\\|which-key\\|NeoTree\\|Org todo\\)"
         initial-major-mode 'text-mode
@@ -37,3 +39,6 @@
             (advice-add #'switch-to-buffer  :after #'update-buf-visit-time)
             (setq gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect)))
           :append)
+
+(remove-hook 'focus-in-hook #'blink-cursor-check)
+(add-hook 'focus-in-hook #'blink-cursor-start)
