@@ -1,9 +1,6 @@
 (use-package persp-mode
   :ensure t
   :config
-  (defvar persp-org-name "@Org"
-    "TODO")
-
   (defn persp--wrap-make-process (fn &rest args)
     "Wrap `make-process' to add a buffer of process."
     (prog1 (apply fn args)
@@ -18,11 +15,6 @@
     "TODO"
     (let ((persp-name (persp-current-name)))
       (cond
-       ((string-equal persp-org-name persp-name)
-        (or (-some->> (bound-and-true-p org-directory)
-              (s-chop-suffix "/")
-              (s-append "/"))
-            persp-nil-name))
        ((file-exists-p persp-name)
         persp-name)
        (t nil))))
@@ -108,23 +100,6 @@
         (persp-switch last-persp)
         (when global-hl-line-mode
           (hl-line-mode 1)))))
-
-  (defn persp-add-new-for-org ()
-    "TODO"
-    (let ((layout (persp-add-new persp-org-name)))
-      (persp-switch persp-org-name)
-      (dolist (buf (append (->> org-agenda-files (-map #'find-file-noselect))
-                           (->> (buffer-list) (--filter (with-current-buffer it
-                                                          (derived-mode-p 'org-agenda-mode))))))
-        (persp-add-buffer buf))
-      (org-agenda-list)))
-
-  (defn persp-switch-to-org ()
-    "TODO"
-    (interactive)
-    (if (persp-get-by-name persp-org-name *persp-hash* nil)
-        (persp-switch persp-org-name)
-      (persp-add-new-for-org)))
 
   (setq persp-autokill-buffer-on-remove #'kill-weak
         persp-auto-resume-time -1

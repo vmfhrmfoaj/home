@@ -28,8 +28,7 @@
   (add-hook 'find-file-hook #'git-gutter-fringe+-setup)
 
   :config
-  (setq git-gutter+-disabled-modes '(org-mode)
-        git-gutter-fr+-side 'left-fringe)
+  (setq git-gutter-fr+-side 'left-fringe)
   (when window-system
     (let* ((max (cond
                  ((numberp fringe-mode) fringe-mode)

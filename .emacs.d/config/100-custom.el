@@ -10,7 +10,7 @@
         blink-cursor-blinks 0
         blink-cursor-delay 3
         create-lockfiles nil
-        exclude-alt-buf-regex "^\\s-*\\*\\s-*\\([Hh]elm\\|which-key\\|NeoTree\\|Org todo\\)"
+        exclude-alt-buf-regex "^\\s-*\\*\\s-*\\([Hh]elm\\|which-key\\|NeoTree\\)"
         initial-major-mode 'text-mode
         initial-scratch-message ""
         ring-bell-function 'ignore))

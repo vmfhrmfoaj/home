@@ -72,7 +72,6 @@
   (with-eval-after-load "eldoc"                   (diminish 'eldoc-mode                  ""))
   (with-eval-after-load "elisp-slime-nav"         (diminish 'elisp-slime-nav-mode        ""))
   (with-eval-after-load "evil-goggles"            (diminish 'evil-goggles-mode           ""))
-  (with-eval-after-load "evil-org"                (diminish 'evil-org-mode               ""))
   (with-eval-after-load "flycheck"                (diminish 'flycheck-mode               ""))
   (with-eval-after-load "git-gutter+"             (diminish 'git-gutter+-mode            ""))
   (with-eval-after-load "helm"                    (diminish 'helm-mode                   ""))
@@ -81,8 +80,6 @@
   (with-eval-after-load "linum-relative"          (diminish 'linum-relative-mode         ""))
   (with-eval-after-load "magit-blame"             (diminish 'magit-blame-mode            ""))
   (with-eval-after-load "magit-svn"               (diminish 'magit-svn-mode              ""))
-  (with-eval-after-load "org-indent"              (diminish 'org-indent-mode             ""))
-  (with-eval-after-load "org-table"               (diminish 'orgtbl-mode                 ""))
   (with-eval-after-load "racer"                   (diminish 'racer-mode                  ""))
   (with-eval-after-load "simple"                  (diminish 'auto-fill-function          ""))
   (with-eval-after-load "smartparens"             (diminish 'smartparens-mode            ""))
@@ -150,21 +147,6 @@
   (add-hook 'evil-insert-state-exit-hook  #'focus--disable)
 
   :config
-  (defn focus--org-thing ()
-    "TODO"
-    (ignore-errors
-      (if focus-mode-org-thing-lock
-          (cons 0 0)
-        (save-excursion
-          (let ((beg (progn
-                       (outline-previous-heading)
-                       (point)))
-                (end   (progn
-                         (outline-next-visible-heading 1)
-                         (beginning-of-line)
-                         (point))))
-            (cons beg end))))))
-
   (defn focus--tex-thing ()
     "TODO"
     (ignore-errors
@@ -273,10 +255,8 @@
   (add-to-list 'focus-mode-to-thing '(clojure-mode . clojure))
   (add-to-list 'focus-mode-to-thing '(cider-repl-mode . list+))
   (add-to-list 'focus-mode-to-thing '(emacs-lisp-mode . lisp))
-  (add-to-list 'focus-mode-to-thing '(org-mode . org))
   (add-to-list 'focus-mode-to-thing '(tex-mode . tex-sentence))
   (add-to-list 'focus-mode-to-thing '(text-mode . sentence+))
-  (put 'org          'bounds-of-thing-at-point #'focus--org-thing)
   (put 'tex-sentence 'bounds-of-thing-at-point #'focus--tex-thing)
   (put 'sentence+    'bounds-of-thing-at-point #'focus--text-thing)
   (put 'list+        'bounds-of-thing-at-point #'focus--list+-thing)

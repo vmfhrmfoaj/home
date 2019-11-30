@@ -246,7 +246,6 @@
   (which-key-mode)
   (which-key-declare-prefixes
     (concat evil-leader/leader "a") "applications"
-    (concat evil-leader/leader "ao") "org"
     (concat evil-leader/leader "aoc") "capture/clock"
     (concat evil-leader/leader "d") "display"
     (concat evil-leader/leader "e") "error"
@@ -619,32 +618,6 @@
   (evil-define-key 'insert term-raw-map
     (kbd "C-h") #'term-send-backspace
     (kbd "M-DEL") #'term-send-backward-kill-word))
-
-(use-package org
-  :defer t
-  :config
-  (evil-leader/set-key-for-mode 'org-mode
-    "m:" #'org-set-tags-command
-    "mTT" #'org-todo
-    "mci" #'org-clock-in
-    "mco" #'org-clock-out
-    "mcj" #'org-clock-goto
-    "mih" #'org-insert-heading
-    "miH" #'org-insert-subheading
-    "mtI" #'org-time-stamp-inactive
-    "mtd" #'org-deadline
-    "mti" #'org-time-stamp
-    "mts" #'org-schedule)
-  (which-key-declare-prefixes-for-mode 'org-mode
-    (concat evil-leader/leader "mT") "todo"
-    (concat evil-leader/leader "mc") "clock"
-    (concat evil-leader/leader "mi") "insert"
-    (concat evil-leader/leader "mt") "time"
-    (concat evil-leader/leader "ms") "sync (trello)")
-  (evil-leader/set-major-leader-for-mode 'org-mode)
-  (evil-define-key 'normal evil-org-mode-map
-    (kbd "RET") #'org-open-at-point
-    (kbd "M-,") #'org-mark-ring-goto))
 
 (use-package package
   :defer t
