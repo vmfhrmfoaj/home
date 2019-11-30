@@ -598,6 +598,15 @@
               (evil-local-set-key 'normal [remap next-error]     #'flymake-goto-next-error)
               (evil-local-set-key 'normal [remap previous-error] #'flymake-goto-prev-error))))
 
+(use-package markdown-mode
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'markdown-mode
+    "msp" #'markdown-preview)
+  (which-key-declare-prefixes-for-mode 'markdown-mode
+    (concat evil-leader/leader "ms") "Show")
+  (evil-leader/set-major-leader-for-mode 'markdown-mode))
+
 (use-package multi-term
   :defer t
   :config
