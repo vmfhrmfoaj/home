@@ -66,13 +66,6 @@
   (custom-set-faces
    '(linum ((((class color) (background light)) :inherit (shadow default) :background "grey98")))))
 
-(use-package lsp-mode
-  :defer t
-  :config
-  (custom-set-faces
-   '(lsp-face-highlight-read  ((t :inherit highlight)))
-   '(lsp-face-highlight-write ((t :inherit highlight :weight bold)))))
-
 (use-package magit
   :defer t
   :config

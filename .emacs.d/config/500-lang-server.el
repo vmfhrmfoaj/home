@@ -129,10 +129,15 @@
     (setq lsp--flymake-report-fn report-fn)
     (lsp--flymake-update-diagnostics))
 
+  (defn lsp--custom-document-highlight ()
+    "Disable `lsp-document-highlight'."
+    (interactive))
+
   (setq lsp-eldoc-prefer-signature-help nil
         lsp-enable-snippet nil
         lsp-file-watch-threshold nil)
 
+  (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
   (advice-add #'lsp--eldoc-message   :override #'lsp--custom-eldoc-message)
   (advice-add #'lsp--flymake-backend :override #'lsp--custom-flymake-backend)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--custom-render-on-hover-content)
