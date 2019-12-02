@@ -394,7 +394,8 @@
     (interactive)
     (when helm-alive-p
       (cond
-       ((string= helm-buffer "*helm find files*")
+       ((or (string= helm-buffer "*helm find files*")
+            (string= helm-buffer "*helm-mode-projectile-add-known-project*"))
         (call-interactively #'helm-execute-persistent-action)
         t))))
 
