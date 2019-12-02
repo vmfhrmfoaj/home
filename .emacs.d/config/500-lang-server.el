@@ -62,7 +62,7 @@
     "\\(?:_@var_\\|_@param_\\)\\s-*`?\\s-*\\(.+?\\)\\s-*`?$"
     "TODO")
 
-  (defn lsp--custom-render-on-hover-content (args)
+  (defn lsp--adapter-render-on-hover-content (args)
     "TODO"
     (let ((contents (car args)))
       (when (and (derived-mode-p 'php-mode)
@@ -85,7 +85,7 @@
           (apply #'list contents (cdr args))
         (apply #'list (-interpose "\n" (append contents nil)) (cdr args)))))
 
-  (defn lsp--custom-render-string (args)
+  (defn lsp--adapter-render-string (args)
     "TODO"
     (let ((str (car args))
           (lang (cadr args)))
@@ -106,6 +106,7 @@
 
   (defn lsp--custom-eldoc-message (&optional msg)
     "Show MSG in eldoc."
+    (setq lsp--eldoc-saved-message msg)
     (let ((lines (s-lines (or msg "")))
           (max-line (cond
                      ((floatp max-mini-window-height)
@@ -140,15 +141,14 @@
     "Disable `lsp-document-highlight'."
     (interactive))
 
-  (setq lsp-eldoc-prefer-signature-help nil
-        lsp-enable-snippet nil
+  (setq lsp-enable-snippet nil
         lsp-file-watch-threshold nil)
 
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
   (advice-add #'lsp--eldoc-message   :override #'lsp--custom-eldoc-message)
   (advice-add #'lsp--flymake-backend :override #'lsp--custom-flymake-backend)
-  (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--custom-render-on-hover-content)
-  (advice-add #'lsp--render-string           :filter-args #'lsp--custom-render-string)
+  (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
+  (advice-add #'lsp--render-string           :filter-args #'lsp--adapter-render-string)
   (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx-for-fallback)
   (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx-for-fallback)
   (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx-for-fallback)
