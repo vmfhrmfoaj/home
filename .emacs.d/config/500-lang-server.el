@@ -73,7 +73,14 @@
             (when (or (string-match lsp--custom-render--regex-1-for-php md)
                       (string-match lsp--custom-render--regex-2-for-php md))
              (remhash "kind" contents)
-             (puthash "value" (match-string 1 md) contents)))))
+             (puthash "value"
+                      (->> md
+                           (match-string 1)
+                           (s-lines)
+                           (-map #'s-trim)
+                           (apply #'concat)
+                           (s-replace "," ", "))
+                      contents)))))
       (if (not (listp contents))
           (apply #'list contents (cdr args))
         (apply #'list (-interpose "\n" (append contents nil)) (cdr args)))))
