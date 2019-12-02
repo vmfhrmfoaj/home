@@ -14,6 +14,24 @@
   :ensure t
   :commands helm-lsp-workspace-symbol)
 
+(use-package lsp-clients
+  :defer t
+  :config
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection '("bash-language-server" "start"))
+                    :major-modes '(sh-mode)
+                    :priority -1
+                    :environment-fn (lambda ()
+                                      (let ((env nil))
+                                        (when lsp-bash-explainshell-endpoint
+                                          (-update-> env (append '(("EXPLAINSHELL_ENDPOINT" .
+                                                                    lsp-bash-explainshell-endpoint)))))
+                                        (when lsp-bash-highlight-parsing-errors
+                                          (-update-> env (append '(("HIGHLIGHT_PARSING_ERRORS" .
+                                                                    lsp-bash-highlight-parsing-errors)))))
+                                        env))
+                    :server-id 'bash-ls)))
+
 (use-package lsp-intelephense
   :defer t
   :config
