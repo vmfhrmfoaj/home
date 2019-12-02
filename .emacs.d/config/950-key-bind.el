@@ -389,6 +389,20 @@
 (use-package helm-mode
   :defer t
   :config
+  (defn helm-minibuffer-complete ()
+    "TODO"
+    (interactive)
+    (when helm-alive-p
+      (cond
+       ((string= helm-buffer "*helm find files*")
+        (call-interactively #'helm-execute-persistent-action)
+        t))))
+
+  ;; NOTE
+  ;;  A function binded to "TAB" key in `helm-find-files-map` was not fired.
+  ;;  So I workaround to fix it.
+  (advice-add #'minibuffer-complete :before-until #'helm-minibuffer-complete)
+
   (global-set-key (kbd "M-x") #'helm-M-x)
   (global-set-key (kbd "C-x C-f") #'helm-find-files)
   (when evil-want-minibuffer
