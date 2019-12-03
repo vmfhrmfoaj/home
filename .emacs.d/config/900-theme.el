@@ -66,7 +66,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(linum ((((class color) (background light) (min-colors 548)) :inherit (shadow default) :background "grey96")
+   '(linum ((((class color) (background light) (min-colors 548)) :inherit (shadow default) :background "grey97")
             (((class color) (background light) (min-colors 256)) :inherit (shadow default) :background "color-255")))))
 
 (use-package magit
