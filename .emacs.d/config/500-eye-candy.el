@@ -66,7 +66,6 @@
   :config
   (with-eval-after-load "auto-dim-other-buffers"  (diminish 'auto-dim-other-buffers-mode ""))
   (with-eval-after-load "abbrev"                  (diminish 'abbrev-mode                 ""))
-  (with-eval-after-load "aggressive-indent"       (diminish 'aggressive-indent-mode      ""))
   (with-eval-after-load "autorevert"              (diminish 'auto-revert-mode            ""))
   (with-eval-after-load "company"                 (diminish 'company-mode                ""))
   (with-eval-after-load "eldoc"                   (diminish 'eldoc-mode                  ""))
@@ -76,11 +75,9 @@
   (with-eval-after-load "git-gutter+"             (diminish 'git-gutter+-mode            ""))
   (with-eval-after-load "helm"                    (diminish 'helm-mode                   ""))
   (with-eval-after-load "highlight-parentheses"   (diminish 'highlight-parentheses-mode  ""))
-  (with-eval-after-load "highlight-symbol"        (diminish 'highlight-symbol-mode       ""))
   (with-eval-after-load "linum-relative"          (diminish 'linum-relative-mode         ""))
   (with-eval-after-load "magit-blame"             (diminish 'magit-blame-mode            ""))
   (with-eval-after-load "magit-svn"               (diminish 'magit-svn-mode              ""))
-  (with-eval-after-load "racer"                   (diminish 'racer-mode                  ""))
   (with-eval-after-load "simple"                  (diminish 'auto-fill-function          ""))
   (with-eval-after-load "smartparens"             (diminish 'smartparens-mode            ""))
   (with-eval-after-load "subword"                 (diminish 'subword-mode                ""))
@@ -123,6 +120,7 @@
       `(advice-add #'c-after-change :around ,f))))
 
 (use-package focus
+  :disabled t
   :ensure t
   :defer t
   :commands (focus-init focus-terminate)
