@@ -139,6 +139,32 @@
                             (-interpose "\n")
                             (apply #'concat))))))
 
+  (defn lsp--custom-hover ()
+    "Display hover info (based on `textDocument/hover')."
+    (if (and lsp--hover-saved-bounds
+             (lsp--point-in-bounds-p lsp--hover-saved-bounds))
+        (lsp--eldoc-message lsp--eldoc-saved-message)
+      (setq lsp--hover-saved-bounds nil
+            lsp--eldoc-saved-message nil)
+      (if (looking-at "[[:space:]\n]")
+          (lsp--eldoc-message nil)
+        (when (and lsp-eldoc-enable-hover (lsp--capability "hoverProvider"))
+          (lsp-request-async
+           "textDocument/hover"
+           (lsp--text-document-position-params)
+           (lambda (hover)
+             (if (null hover)
+                 (lsp--eldoc-message nil)
+               (when-let (range (gethash "range" hover))
+                 (setq lsp--hover-saved-bounds (lsp--range-to-region range)))
+               (-let* ((contents (gethash "contents" hover)))
+                 (lsp--eldoc-message (and contents
+                                          (lsp--render-on-hover-content contents
+                                                                        lsp-eldoc-render-all))))))
+           :error-handler #'ignore
+           :mode 'tick
+           :cancel-token :eldoc-hover)))))
+
   (defn lsp--wrap-find-xxx-for-fallback (f &rest args)
     "Fall back to `dumb-jump-go'."
     (let ((pos (point))
@@ -167,6 +193,7 @@
   (advice-add #'lsp--flymake-backend :override #'lsp--custom-flymake-backend)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
   (advice-add #'lsp--render-string           :filter-args #'lsp--adapter-render-string)
+  (advice-add #'lsp-hover :override #'lsp--custom-hover)
   (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx-for-fallback)
   (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx-for-fallback)
   (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx-for-fallback)
