@@ -13,7 +13,7 @@ _is_shim() {
 _add_to_path() {
     local new_path=$1
     local is_append=$2{:-'no'}
-    if [ ! -z ${new_path} ]; then
+    if [ -n "${new_path}" ]; then
         if [ -d "${new_path}" ] && [ 0 = $(echo ${PATH} | grep -c "${new_path}") ]; then
             if [ "${is_append}" = "yes" ]; then
                 export PATH="${PATH}:${new_path}"
@@ -173,14 +173,14 @@ EOF
 }
 
 _setup_for_schroot() {
-    if [ -z ${DISPLAY} ]; then
+    if [ -z "${DISPLAY}" ]; then
         # See, https://lukeplant.me.uk/blog/posts/chroot-with-x-applications/
         export DISPLAY=:0.0
     fi
 }
 
 _is_ssh_agent_running() {
-    if [ ! -z ${SSH_AUTH_SOCK} ] && [ -S ${SSH_AUTH_SOCK} ]; then
+    if [ -n "${SSH_AUTH_SOCK}" ] && [ -S "${SSH_AUTH_SOCK}" ]; then
         echo 'OK'
         return 0
     else
@@ -207,21 +207,21 @@ _setup_for_term() {
 
 _setup_for_ssh() {
     if [ -n "${DISPLAY}" ]; then
-        if [ -z ${LIBGL_ALWAYS_INDIRECT} ]; then
+        if [ -z "${LIBGL_ALWAYS_INDIRECT}" ]; then
             export LIBGL_ALWAYS_INDIRECT=1
         fi
-        if [ -z ${GTK_BACKEND} ]; then
+        if [ -z "${GTK_BACKEND}" ]; then
             export GDK_BACKEND=x11
         fi
     fi
 }
 
 _setup_for_wsl() {
-    if [ -z ${DISPLAY} ]; then
+    if [ -z "${DISPLAY}" ]; then
         export DISPLAY=localhost:0.0
     fi
     # for VcXsrv
-    if [ -z ${LIBGL_ALWAYS_INDIRECT} ]; then
+    if [ -z "${LIBGL_ALWAYS_INDIRECT}" ]; then
         export LIBGL_ALWAYS_INDIRECT=1
     fi
     which xrdb > /dev/null 2>&1
@@ -258,14 +258,14 @@ _setup_for_xorg
 _setup_for_java
 
 # for only terminal environment
-if [ -t 1 ] && [ ! -z ${SHELL} ]; then
+if [ -t 1 ] && [ -n "${SHELL}" ]; then
     _setup_for_term
 fi
 
 # for GUI or X11 forwarding
-if [ ! -z ${DISPLAY} ]; then
+if [ -n "${DISPLAY}" ]; then
     # for X11 forwarding
-    if [ ! -z $(echo ${DISPLAY} | grep ':10' ) ]; then
+    if [ -n "$(echo ${DISPLAY} | grep ':10' )" ]; then
         _setup_for_ssh
     fi
 fi
