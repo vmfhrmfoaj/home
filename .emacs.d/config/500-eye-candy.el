@@ -330,6 +330,7 @@
        (spaceline-helm-mode)))))
 
 (use-package vi-tilde-fringe
+  :if (fboundp 'define-fringe-bitmap)
   ;; NOTE:
   ;;  This package not included in the `MELPA'.
   ;;:ensure t

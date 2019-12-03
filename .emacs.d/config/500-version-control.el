@@ -17,6 +17,7 @@
   (advice-add #'git-timemachine-blame :override #'git-timemachine--custom-blame))
 
 (use-package git-gutter-fringe+
+  :if (fboundp 'define-fringe-bitmap)
   :ensure t
   :defer t
   :init
