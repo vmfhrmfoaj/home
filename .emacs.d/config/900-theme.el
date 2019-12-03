@@ -3,7 +3,8 @@
   "A foreground color for the local variable such as parameters")
 
 (custom-set-faces
- '(default ((((class color) (background light)) :foreground "grey15")))
+ '(default ((((class color) (background light) (min-colors 548)) :background "white" :foreground "grey18")
+            (((class color) (background light) (min-colors 256)) :background "brightwhite" :foreground "black")))
  '(diff-added          ((((class color) (background light)) :background "#cceecc" :foreground "#22aa22")))
  '(diff-changed        ((((class color) (background light)) :background "#eeeecc" :foreground "#aaaa22")))
  '(diff-removed        ((((class color) (background light)) :background "#eecccc" :foreground "#aa2222")))
@@ -20,7 +21,8 @@
   :defer t
   :config
   (custom-set-faces
-   '(auto-dim-other-buffers-face ((((class color) (background light)) :background "#F3F3F3")))))
+   '(auto-dim-other-buffers-face ((((class color) (background light) (min-colors 548)) :background "grey97")
+                                  (((class color) (background light) (min-colors 256)) :background "color-254")))))
 
 (use-package clojure-mode
   :defer t
@@ -64,7 +66,8 @@
   :defer t
   :config
   (custom-set-faces
-   '(linum ((((class color) (background light)) :inherit (shadow default) :background "grey98")))))
+   '(linum ((((class color) (background light) (min-colors 548)) :inherit (shadow default) :background "grey96")
+            (((class color) (background light) (min-colors 256)) :inherit (shadow default) :background "color-255")))))
 
 (use-package magit
   :defer t
