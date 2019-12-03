@@ -48,7 +48,9 @@
         neo-show-hidden-files t
         neo-smart-open t
         neo-theme 'icons
-        neo-window-width 35))
+        neo-window-width 35)
+
+  (add-hook 'neotree-mode-hook (lambda () (setq-local right-fringe-width 0))))
 
 (use-package dumb-jump
   :ensure t
