@@ -49,7 +49,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(iedit-occurrence ((t :inherit highlight :slant italic)))))
+   '(iedit-occurrence ((t :inherit (highlight italic))))))
 
 (use-package php-mode
   :defer t
