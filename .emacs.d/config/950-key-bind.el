@@ -380,9 +380,9 @@
     (when evil-want-minibuffer
       (evil-define-key 'normal map
         "gu" #'helm-find-files-up-one-level
-        (kbd "TAB") #'helm-execute-persistent-action)
+        (kbd "TAB") #'helm-ff-TAB)
       (evil-define-key 'insert map
-        (kbd "TAB") #'helm-execute-persistent-action))
+        (kbd "TAB") #'helm-ff-TAB))
     (define-key map (kbd "C-u") #'helm-find-files-up-one-level)
     (define-key map [C-backspace] #'backward-kill-word)))
 
@@ -396,8 +396,9 @@
       (cond
        ((or (string= helm-buffer "*helm find files*")
             (string= helm-buffer "*helm-mode-projectile-add-known-project*"))
-        (call-interactively #'helm-execute-persistent-action)
-        t))))
+        (call-interactively #'helm-ff-TAB)
+        t)
+       (t (call-interactively #'helm-select-action) t))))
 
   ;; NOTE
   ;;  A function binded to "TAB" key in `helm-find-files-map` was not fired.
