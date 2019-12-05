@@ -11,7 +11,7 @@
  '(diff-refine-added   ((((class color) (background light)) :background "#ddffdd" :foreground "#119911")))
  '(diff-refine-changed ((((class color) (background light)) :background "#ffffdd" :foreground "#999911")))
  '(diff-refine-removed ((((class color) (background light)) :background "#ffdddd" :foreground "#991111")))
- '(font-lock-function-name-face ((((class color) (background light)) :foreground "blue1" :weight bold)))
+ '(font-lock-function-name-face ((((class color) (background light)) :foreground "blue1" :weight semi-bold)))
  '(font-lock-negation-char-face ((((class color) (background light)) :foreground "red3")))
  '(mode-line          ((((class color) (background light)) :background "grey75" :foreground "black")))
  `(mode-line-inactive ((((class color) (background light)) :background "grey90" :foreground "grey40" :weight ,(face-attribute 'default :weight))))
@@ -74,4 +74,7 @@
   :config
   (custom-set-faces
    '(magit-diff-context-highlight ((((class color) (background light)) :background "#FBFEEE" :foreground "#A4C207")))
+   '(magit-hash ((((class color) (background light)) :foreground "grey60" :slant normal :weight extra-light)))
+   '(magit-log-author ((((class color) (background light)) :foreground "firebrick" :slant normal :weight extra-light)))
+   '(magit-log-date ((((class color) (background light)) :foreground "grey30" :slant normal :weight extra-light)))
    '(magit-section-highlight ((((class color) (background light)) :inherit hl-line :distant-foreground "black")))))
