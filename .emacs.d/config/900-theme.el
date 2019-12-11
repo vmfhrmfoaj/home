@@ -1,28 +1,33 @@
-(defvar local-variable-name-light-fg-color
-  (saturate-color (color-from 'font-lock-variable-name-face :foreground 7) -20)
-  "A foreground color for the local variable such as parameters")
+(use-package twilight-bright-theme
+  :ensure t
+  :config
+  (custom-set-faces
+   '(cursor ((t :background "sky blue")))
+   '(font-lock-comment-face ((t :background unspecified :weight normal)))
+   '(font-lock-doc-face ((t :slant italic)))
+   '(font-lock-function-name-face ((t :weight bold)))
+   '(font-lock-type-face ((t :weight unspecified)))
+   '(font-lock-warning-face ((t :weight extra-bold)))
+   '(fringe ((t :background "gray98")))
+   '(hl-line ((t :background "#eef7fd")))
+   '(link ((t :underline t)))
+   '(isearch ((t :background "magenta3" :foreground "white")))
+   '(shadow ((t :inherit default :foreground "gray55")))
+   '(show-paren-match ((t :underline t)))
+   '(trailing-whitespace ((t :background "gray65"))))
 
-(custom-set-faces
- '(default ((((class color) (background light) (min-colors 548)) :background "white" :foreground "grey18")
-            (((class color) (background light) (min-colors 256)) :background "brightwhite" :foreground "black")))
- '(diff-added          ((((class color) (background light)) :background "#cceecc" :foreground "#22aa22")))
- '(diff-changed        ((((class color) (background light)) :background "#eeeecc" :foreground "#aaaa22")))
- '(diff-removed        ((((class color) (background light)) :background "#eecccc" :foreground "#aa2222")))
- '(diff-refine-added   ((((class color) (background light)) :background "#ddffdd" :foreground "#119911")))
- '(diff-refine-changed ((((class color) (background light)) :background "#ffffdd" :foreground "#999911")))
- '(diff-refine-removed ((((class color) (background light)) :background "#ffdddd" :foreground "#991111")))
- '(font-lock-function-name-face ((((class color) (background light)) :foreground "blue1" :weight semi-bold)))
- '(font-lock-negation-char-face ((((class color) (background light)) :foreground "red3")))
- '(mode-line          ((((class color) (background light)) :background "grey75" :foreground "black")))
- `(mode-line-inactive ((((class color) (background light)) :background "grey90" :foreground "grey40" :weight ,(face-attribute 'default :weight))))
- '(region ((((class color) (background light)) :background "light sky blue"))))
+  (with-eval-after-load "sh-script"
+    (custom-set-faces
+     `(sh-heredoc     ((t :background "#fcf7f2" :foreground "tan1")))
+     `(sh-quoted-exec ((t :background "#faecfa" :foreground "magenta"))))))
 
 (use-package auto-dim-other-buffers
   :defer t
   :config
   (custom-set-faces
-   '(auto-dim-other-buffers-face ((((class color) (background light) (min-colors 548)) :background "grey97")
-                                  (((class color) (background light) (min-colors 256)) :background "color-254")))))
+   `(auto-dim-other-buffers-face
+     ((t :foreground ,(color-from 'default :foreground +4)
+         :background ,(color-from 'default :background -2))))))
 
 (use-package clojure-mode
   :defer t
@@ -37,6 +42,12 @@
    '(clojure-side-effect-face ((t :inherit (bold italic font-lock-warning-face))))
    '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))))
 
+(use-package flymake
+  :defer t
+  :config
+  (custom-set-faces
+   '(flymake-warning ((t :underline (:style wave :color "dark orange"))))))
+
 (use-package helm
   :defer t
   :config
@@ -44,6 +55,12 @@
    '(helm-match ((t :inherit lazy-highlight)))
    '(helm-match-item ((t :inherit lazy-highlight)))
    '(helm-match-selection ((t :inherit isearch)))))
+
+(use-package hl-todo
+  :defer t
+  :config
+  (custom-set-faces
+   '(hl-todo ((t :foreground "#cc9393" :weight semi-bold)))))
 
 (use-package iedit
   :defer t
@@ -66,15 +83,15 @@
   :defer t
   :config
   (custom-set-faces
-   '(linum ((((class color) (background light) (min-colors 548)) :inherit (shadow default) :background "grey97")
+   '(linum ((((class color) (background light) (min-colors 548)) :inherit (shadow default) :background "gray97")
             (((class color) (background light) (min-colors 256)) :inherit (shadow default) :background "color-255")))))
 
 (use-package magit
   :defer t
   :config
   (custom-set-faces
-   '(magit-diff-context-highlight ((((class color) (background light)) :background "#FBFEEE" :foreground "#A4C207")))
-   '(magit-hash ((((class color) (background light)) :foreground "grey60" :slant normal :weight extra-light)))
-   '(magit-log-author ((((class color) (background light)) :foreground "firebrick" :slant normal :weight extra-light)))
-   '(magit-log-date ((((class color) (background light)) :foreground "grey30" :slant normal :weight extra-light)))
+   '(magit-diff-context-highlight ((((class color) (background light)) :background "#fbfeee" :foreground "#a4c207")))
+   '(magit-hash ((((class color) (background light)) :foreground "gray60" :slant normal :weight normal)))
+   '(magit-log-author ((((class color) (background light)) :foreground "firebrick" :slant normal :weight normal)))
+   '(magit-log-date ((((class color) (background light)) :foreground "gray30" :slant normal :weight normal)))
    '(magit-section-highlight ((((class color) (background light)) :inherit hl-line :distant-foreground "black")))))
