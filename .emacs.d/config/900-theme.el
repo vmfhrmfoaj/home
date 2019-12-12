@@ -13,8 +13,12 @@
    '(link ((t :underline t)))
    '(isearch ((t :background "magenta3" :foreground "white")))
    '(shadow ((t :inherit default :foreground "gray55")))
-   '(show-paren-match ((t :underline t)))
+   '(show-paren-match ((t :underline t :weight bold)))
    '(trailing-whitespace ((t :background "gray65"))))
+
+  (defvar local-variable-name-light-fg-color
+    (saturate-color (color-from 'font-lock-variable-name-face :foreground 7) -20)
+    "A foreground color for the local variable such as parameters")
 
   (with-eval-after-load "sh-script"
     (custom-set-faces
