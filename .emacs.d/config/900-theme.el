@@ -2,18 +2,19 @@
   :ensure t
   :config
   (custom-set-faces
+   '(bold ((t :weight semi-bold)))
    '(cursor ((t :background "sky blue")))
-   '(font-lock-comment-face ((t :background unspecified :weight normal)))
-   '(font-lock-doc-face ((t :slant italic)))
-   '(font-lock-function-name-face ((t :weight bold)))
+   '(font-lock-comment-face ((t :background unspecified :weight light)))
+   '(font-lock-doc-face ((t :inherit italic)))
+   '(font-lock-function-name-face ((t :inherit bold)))
    '(font-lock-type-face ((t :weight unspecified)))
-   '(font-lock-warning-face ((t :weight extra-bold)))
+   '(font-lock-warning-face ((t :weight bold)))
    '(fringe ((t :background "gray98")))
    '(hl-line ((t :background "#eef7fd")))
    '(link ((t :underline t)))
    '(isearch ((t :background "magenta3" :foreground "white")))
    '(shadow ((t :inherit default :foreground "gray55")))
-   '(show-paren-match ((t :underline t :weight bold)))
+   '(show-paren-match ((t :inherit bold :underline t)))
    '(trailing-whitespace ((t :background "gray65"))))
 
   (defvar local-variable-name-light-fg-color
@@ -64,7 +65,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(hl-todo ((t :foreground "#cc9393" :weight semi-bold)))))
+   '(hl-todo ((t :inherit bold :foreground "#cc9393")))))
 
 (use-package iedit
   :defer t
@@ -95,7 +96,7 @@
   :config
   (custom-set-faces
    '(magit-diff-context-highlight ((((class color) (background light)) :background "#fbfeee" :foreground "#a4c207")))
-   '(magit-hash ((((class color) (background light)) :foreground "gray60" :slant normal :weight normal)))
-   '(magit-log-author ((((class color) (background light)) :foreground "firebrick" :slant normal :weight normal)))
-   '(magit-log-date ((((class color) (background light)) :foreground "gray30" :slant normal :weight normal)))
+   '(magit-hash ((((class color) (background light)) :foreground "gray60" :weight light)))
+   '(magit-log-author ((((class color) (background light)) :foreground "firebrick" :weight light)))
+   '(magit-log-date ((((class color) (background light)) :foreground "gray30" :weight light)))
    '(magit-section-highlight ((((class color) (background light)) :inherit hl-line :distant-foreground "black")))))
