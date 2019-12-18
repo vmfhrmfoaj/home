@@ -19,6 +19,10 @@ fi
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
-if [ -f "${HOME}/.profile" ]; then
-  source "${HOME}/.profile"
+if [ -f "${HOME}/.script/setup" ]; then
+  source "${HOME}/.script/setup"
+fi
+
+if [ -f "${HOME}/.bash_untracked_profile" ]; then
+  source "${HOME}/.bash_untracked_profile"
 fi
