@@ -51,7 +51,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(flymake-warning ((t :underline (:style wave :color "dark orange"))))))
+   '(flymake-warning ((t :underline (:style wave :color "gold"))))))
 
 (use-package helm
   :defer t
