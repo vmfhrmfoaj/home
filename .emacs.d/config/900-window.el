@@ -23,9 +23,6 @@
                                         (cons 'width  w)
                                         (cons 'height h)))))))
 
-(unless window-system
-  (menu-bar-mode -1))
-
 (use-package winum
   :ensure t
   :config

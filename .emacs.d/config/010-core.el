@@ -1,6 +1,36 @@
 (use-package evil
   :ensure t
   :config
+  (evil-define-text-object evil-inner-sexp (count &optional beg end type)
+    "Select a sp-sexp."
+    :extend-selection nil
+    (let ((beg (save-excursion
+                 (sp-backward-up-sexp)
+                 (sp-down-sexp)
+                 (point)))
+          (end (save-excursion
+                 (sp-end-of-sexp)
+                 (1- (point)))))
+      (list beg end type)))
+
+  (evil-define-text-object evil-a-sexp (count &optional beg end type)
+    "Select a sp-sexp."
+    (let ((beg (save-excursion
+                 (sp-backward-up-sexp)
+                 (point)))
+          (end (save-excursion
+                 (sp-up-sexp)
+                 (point))))
+      (list beg end type :expanded t)))
+
+  (setq-default evil-want-minibuffer t)
+  (setq-default evil-symbol-word-search t)
+
+  (make-thread #'evil-mode))
+
+(use-package evil-ex
+  :ensure evil
+  :config
   (defvar-local evil-ex--gl-preview-point nil
     "TODO")
 
@@ -37,31 +67,6 @@
           (goto-char evil-ex--gl-preview-point))))
     (abort-recursive-edit))
 
-  (evil-define-text-object evil-inner-sexp (count &optional beg end type)
-    "Select a sp-sexp."
-    :extend-selection nil
-    (let ((beg (save-excursion
-                 (sp-backward-up-sexp)
-                 (sp-down-sexp)
-                 (point)))
-          (end (save-excursion
-                 (sp-end-of-sexp)
-                 (1- (point)))))
-      (list beg end type)))
-
-  (evil-define-text-object evil-a-sexp (count &optional beg end type)
-    "Select a sp-sexp."
-    (let ((beg (save-excursion
-                 (sp-backward-up-sexp)
-                 (point)))
-          (end (save-excursion
-                 (sp-up-sexp)
-                 (point))))
-      (list beg end type :expanded t)))
-
-  (setq-default evil-want-minibuffer t)
-  (setq-default evil-symbol-word-search t)
-
   (advice-add #'evil-ex-setup :before
               (byte-compile
                (lambda ()
@@ -76,11 +81,6 @@
                  (when evil-ex--gl-preview-point
                    (goto-char evil-ex--gl-preview-point)))))
 
-  (make-thread #'evil-mode))
-
-(use-package evil-ex
-  :ensure evil
-  :config
   (setq evil-ex-visual-char-range t))
 
 (use-package helm
