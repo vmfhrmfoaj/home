@@ -203,11 +203,6 @@
         (message nil)
         (call-interactively #'dumb-jump-go))))
 
-  (defn lsp--custom-flymake-backend (report-fn &rest _args)
-    "Custom `flymake' backend for ."
-    (setq lsp--flymake-report-fn report-fn)
-    (lsp--flymake-update-diagnostics))
-
   (defn lsp--custom-document-highlight ()
     "Disable `lsp-document-highlight'."
     (interactive))
@@ -218,7 +213,6 @@
 
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
   (advice-add #'lsp--eldoc-message   :override #'lsp--custom-eldoc-message)
-  (advice-add #'lsp--flymake-backend :override #'lsp--custom-flymake-backend)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
   (advice-add #'lsp--render-string           :filter-args #'lsp--adapter-render-string)
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
