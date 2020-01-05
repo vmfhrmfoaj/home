@@ -3,7 +3,6 @@
     "editor.fontFamily": "'Cascadia Code', 'Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "editor.fontSize": 14,
     "editor.fontLigatures": true,
-    "editor.fontWeight": "bold",
     "editor.tokenColorCustomizations": {
         "[Horizon]": {
             "textMateRules": [
@@ -22,21 +21,9 @@
     "window.menuBarVisibility": "toggle",
     "workbench.colorCustomizations": {
         "[Atom One Light]": {
+            "editor.foreground": "#444",
             "editorCursor.background": "#FFF", // for Vim extension
             "sideBarSectionHeader.background": "#EEE",
-            "syntax.type": "#C18401",
-            "syntax.scope": "#00897B",
-            "syntax.function": "#4078F2",
-            "syntax.variable": "#E45649",
-            "syntax.number": "#FF0000",
-            "syntax.string": "#50A14F",
-            "syntax.comment": "#A0A1A7",
-            "syntax.constant": "#986801",
-            "syntax.directive": "#7E57C2",
-            "syntax.control": "#A626A4",
-            "syntax.operator": "#707074",
-            "syntax.modifier": "#A626A4",
-            "syntax.punctuation": "#707074",
         },
         "[Horizon]": {
             "sideBar.background": "#191B22",
@@ -156,6 +143,14 @@
     // Remote Development
     "remote.SSH.showLoginTerminal": true,
 
+    // Rust Language Server
+    "rust-client.enableMultiProjectSetup": true,
+
+    // Rust Analyzer
+    "rust-analyzer.displayInlayHints": true,
+    "rust-analyzer.enableEnhancedTyping": false,
+    "rust-analyzer.highlightingOn": true,
+
     // Vim
     "workbench.list.keyboardNavigation": "simple", // see, https://github.com/Microsoft/vscode/issues/66995#issuecomment-457123611
     "vim.sneak": true,
@@ -168,6 +163,7 @@
     "vim.visualstar": true,
     "vim.handleKeys": {
         "<C-d>": false,
+        "<C-k>": false,
         "<C-j>": false,
         "<C-w>": false,
     },
