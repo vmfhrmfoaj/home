@@ -104,7 +104,7 @@ Version=$(${target_dir}/bin/code --version | head -1)
 Name=Visual Studio Code
 GenericName=VS Code
 Comment=Multiplatform Visual Studio Code from Microsoft
-Icon=visual-studio-code
+Icon=${target_dir}/resources/app/resources/linux/code.png
 TryExec=${target_dir}/bin/code
 Exec=${target_dir}/bin/code %F
 Terminal=true
@@ -117,41 +117,18 @@ EOF
     read yn
     if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
         local extensions=(
-            bmewburn.vscode-intelephense-client
             bungcip.better-toml
-            coolbear.systemd-unit-file
-            DavidAnson.vscode-markdownlint
-            dbaeumer.vscode-eslint
-            DotJoshJohnson.xml
-            dunstontc.vscode-rust-syntax
             EditorConfig.EditorConfig
             eamodio.gitlens
-            evgeniypeshkov.syntax-highlighter
-            HookyQR.beautify
-            LaurentTreguier.rpm-spec
-            mads-hartmann.bash-ide-vscode
-            maelvalais.autoconf
-            ms-python.python
             ms-vscode-remote.remote-containers
             ms-vscode-remote.remote-ssh
             ms-vscode-remote.remote-ssh-edit
             ms-vscode-remote.remote-wsl
             ms-vscode-remote.vscode-remote-extensionpack
-            ms-vscode.cpptools
-            ms-vscode.vscode-typescript-tslint-plugin
-            msjsdiag.debugger-for-chrome
             PKief.material-icon-theme
-            redhat.java
-            rust-lang.rust
             ryuta46.multi-command
             shardulm94.trailing-spaces
             slevesque.vscode-hexdump
-            VisualStudioExptTeam.vscodeintellicode
-            vscjava.vscode-java-debug
-            vscjava.vscode-java-dependency
-            vscjava.vscode-java-pack
-            vscjava.vscode-java-test
-            vscjava.vscode-maven
             vscodevim.vim)
         for ext in "${extensions[@]}"; do
             ${target_dir}/bin/code --install-extension ${ext}
