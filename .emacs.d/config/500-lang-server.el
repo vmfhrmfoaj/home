@@ -80,6 +80,14 @@
     "\\(?:_@var_\\|_@param_\\)\\s-*`?\\s-*\\(.+?\\)\\s-*`?$"
     "TODO")
 
+  (defvar lsp--custom-render--regex-for-rust
+    (concat "```rust[ \t\r\n]*"      ; ```rust
+            "\\(\\(?:\n\\|.\\)+?\\)" ; <CONTENTS>
+            "[ \t\r\n]*?```")        ; ```
+    "TODO")
+  (defvar lsp--filter--regex-for-rust
+    "^\\(()\\|{unknown}\\)$")
+
   (defn lsp--adapter-render-on-hover-content (args)
     "TODO"
     (let ((contents (car args)))
@@ -99,6 +107,17 @@
                            (apply #'concat)
                            (s-replace "," ", "))
                       contents)))))
+      (when (and (derived-mode-p 'rust-mode)
+                 (hash-table-p contents))
+        (puthash "language" "rust" contents)
+        (when (string= "markdown" (or (gethash "kind" contents) ""))
+          (let ((md (gethash "value" contents)))
+            (when (string-match lsp--custom-render--regex-for-rust md)
+              (let ((val (match-string 1 md)))
+                (when (string-match lsp--filter--regex-for-rust val)
+                  (error (concat "'" val "' is invalid.")))
+                (remhash "kind" contents)
+                (puthash "value" val contents))))))
       (if (not (listp contents))
           (apply #'list contents (cdr args))
         (apply #'list (-interpose "\n" (append contents nil)) (cdr args)))))
@@ -139,14 +158,18 @@
                             (-interpose "\n")
                             (apply #'concat))))))
 
+  (defn lsp--reset-hover-cache ()
+    "Clear `lsp--hover-saved-bounds' and `lsp--eldoc-saved-message'"
+    (setq lsp--hover-saved-bounds nil
+          lsp--eldoc-saved-message nil))
+
   (defn lsp--custom-hover ()
     "Display hover info (based on `textDocument/hover')."
     (if (and lsp--hover-saved-bounds
              (lsp--point-in-bounds-p lsp--hover-saved-bounds))
         (lsp--eldoc-message lsp--eldoc-saved-message)
-      (setq lsp--hover-saved-bounds nil
-            lsp--eldoc-saved-message nil)
-      (if (looking-at "[[:space:]\n]")
+      (lsp--reset-hover-cache)
+      (if (not (thing-at-point 'symbol))
           (lsp--eldoc-message nil)
         (when (and lsp-eldoc-enable-hover (lsp--capability "hoverProvider"))
           (lsp-request-async
@@ -158,9 +181,13 @@
                (when-let (range (gethash "range" hover))
                  (setq lsp--hover-saved-bounds (lsp--range-to-region range)))
                (-let* ((contents (gethash "contents" hover)))
-                 (lsp--eldoc-message (and contents
-                                          (lsp--render-on-hover-content contents
-                                                                        lsp-eldoc-render-all))))))
+                 (condition-case nil
+                     (lsp--eldoc-message (and contents
+                                              (lsp--render-on-hover-content contents
+                                                                            lsp-eldoc-render-all)))
+                   (error
+                    (lsp--reset-hover-cache)
+                    (lsp--eldoc-message nil))))))
            :error-handler #'ignore
            :mode 'tick
            :cancel-token :eldoc-hover)))))
@@ -186,7 +213,8 @@
     (interactive))
 
   (setq lsp-enable-snippet nil
-        lsp-file-watch-threshold nil)
+        lsp-file-watch-threshold nil
+        lsp-rust-server 'rust-analyzer)
 
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
   (advice-add #'lsp--eldoc-message   :override #'lsp--custom-eldoc-message)
@@ -201,6 +229,7 @@
 
 (use-package lsp-ui
   :ensure t
+  :defer t
   :commands lsp-ui-mode
   :config
   (defn lsp-ui-sideline--custom-diagnostics (fn bol eol)
