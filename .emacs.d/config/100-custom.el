@@ -33,6 +33,7 @@
 (setq resize-mini-windows t)
 
 (add-hook 'focus-in-hook #'blink-cursor-start)
+(add-hook 'help-mode-hook #'visual-line-mode)
 (add-hook 'after-init-hook
           (lambda ()
             (advice-add #'select-frame      :after #'update-buf-visit-time)
