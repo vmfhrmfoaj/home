@@ -45,12 +45,20 @@
     (remove-hook 'window-configuration-change-hook #'zoom-initial-setup)
     (require 'zoom))
 
-  (add-hook 'window-configuration-change-hook #'zoom-initial-setup)
+  (add-hook 'after-init-hook
+            (lambda ()
+             (add-hook 'window-configuration-change-hook #'zoom-initial-setup)))
 
   :config
   (defn zoom--handler-wrapper-for-helm (f &optional ignored)
-    (unless (and (fboundp #'helm--alive-p)
-                 (helm--alive-p))
+    (unless (helm--alive-p)
+      ;; NOTE
+      ;;  temporary fix
+      ;;  In MELPA, yet, a patch is not applied.
+      (unless (or (equal (selected-window) zoom--last-window)
+                  (and zoom-minibuffer-preserve-layout (window-minibuffer-p))
+                  track-mouse)
+        (setq zoom--last-window (selected-window)))
       (funcall f ignored)))
 
   (defn zoom--update-for-helm ()
