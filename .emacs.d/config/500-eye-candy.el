@@ -52,7 +52,8 @@
     (remove-hook 'window-configuration-change-hook #'auto-dim-other-initial-setup)
     (require 'auto-dim-other-buffers))
 
-  (add-hook 'window-configuration-change-hook #'auto-dim-other-initial-setup)
+  (add-hook 'after-init-hook
+            (lambda () (add-hook 'window-configuration-change-hook #'auto-dim-other-initial-setup)))
 
   :config
   (advice-add #'adob--never-dim-p :before-until #'helm-bufferp)
