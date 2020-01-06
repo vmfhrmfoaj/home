@@ -207,12 +207,20 @@
     "Disable `lsp-document-highlight'."
     (interactive))
 
+  (defn lsp--clear-flymake-state ()
+    "Clear `flymake--backend-state'."
+    (print flymake--backend-state)
+    (-when-let (state (gethash 'lsp--flymake-backend flymake--backend-state))
+      (-when-let (diags (flymake--backend-state-diags state))
+        (setf (flymake--backend-state-diags state) (-distinct diags)))))
+
   (setq lsp-enable-snippet nil
         lsp-file-watch-threshold nil
         lsp-rust-server 'rust-analyzer)
 
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
-  (advice-add #'lsp--eldoc-message   :override #'lsp--custom-eldoc-message)
+  (advice-add #'lsp--eldoc-message :override #'lsp--custom-eldoc-message)
+  (advice-add #'lsp--flymake-update-diagnostics :before #'lsp--clear-flymake-state)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
   (advice-add #'lsp--render-string           :filter-args #'lsp--adapter-render-string)
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
