@@ -209,10 +209,10 @@
 
   (defn lsp--clear-flymake-state ()
     "Clear `flymake--backend-state'."
-    (print flymake--backend-state)
-    (-when-let (state (gethash 'lsp--flymake-backend flymake--backend-state))
-      (-when-let (diags (flymake--backend-state-diags state))
-        (setf (flymake--backend-state-diags state) (-distinct diags)))))
+    (ignore-errors
+      (-when-let (state (gethash 'lsp--flymake-backend flymake--backend-state))
+        (-when-let (diags (flymake--backend-state-diags state))
+          (setf (flymake--backend-state-diags state) (-distinct diags))))))
 
   (setq lsp-enable-snippet nil
         lsp-file-watch-threshold nil
