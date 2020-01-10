@@ -395,9 +395,10 @@
     (interactive)
     (when helm-alive-p
       (cond
-       ((or (string= helm-buffer "*helm find files*")
-            (string= helm-buffer "*helm-mode-projectile-add-known-project*")
-            (string= helm-buffer "*helm-mode-lsp*"))
+       ((or (s-equals?      "*helm find files*"     helm-buffer)
+            (s-equals?      "*helm-mode-lsp*"       helm-buffer)
+            (s-starts-with? "*helm-mode-projectile" helm-buffer)
+            (s-starts-with? "*helm-mode-neo-buffer" helm-buffer))
         (call-interactively #'helm-ff-TAB)
         t)
        (t (call-interactively #'helm-select-action) t))))
