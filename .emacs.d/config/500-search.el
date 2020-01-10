@@ -127,4 +127,26 @@
     (-when-let (win (helm-window))
       (select-window win)))
 
+  (defn helm-occur--edit (candidate)
+    "TODO"
+    (let ((buf-name "*hmoccur*"))
+      (ignore-errors (kill-buffer buf-name))
+      (helm-occur-save-results candidate)
+      (-when-let (buf (get-buffer buf-name))
+        (with-current-buffer buf
+          (wgrep-change-to-wgrep-mode)
+          (local-set-key (kbd "C-c C-c") (lambda () (interactive) (wgrep-finish-edit) (kill-buffer-and-window)))
+          (local-set-key (kbd "C-c C-k") (lambda () (interactive)                     (kill-buffer-and-window)))))))
+
+  (defn helm-occur-edit ()
+    "TODO"
+    (interactive)
+    (helm-exit-and-execute-action 'helm-occur--edit))
+
+  (-update-> helm-occur-actions (append '(("Edit search results" . helm-occur--edit))))
+
   (advice-add #'helm-occur-action :after #'helm-occur--switch-to-helm-window-after-action))
+
+(use-package wgrep-helm
+  :ensure t
+  :defer t)

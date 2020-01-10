@@ -420,6 +420,11 @@
       (kbd "<escape>") #'helm-keyboard-quit))
   (define-key helm-map (kbd "<escape>") #'helm-keyboard-quit))
 
+(use-package helm-occur
+  :defer t
+  :config
+  (define-key helm-occur-map (kbd "C-c C-e") #'helm-occur-edit))
+
 (use-package help-mode
   :defer t
   :config
