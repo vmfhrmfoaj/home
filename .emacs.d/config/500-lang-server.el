@@ -263,7 +263,7 @@
                          ((eq 1 level) `(:inherit compilation-error :weight light)))))
                 (margin (lsp-ui-sideline--margin-width)))
             (dolist (message (->> (-drop 1 messages)
-                                  (--map (concat it (propertize " ↩ " 'face `(:inherit shadow :weight ,(face-attribute 'default :weight)))))
+                                  (--map (concat it (propertize " ↩ " 'face `(:inherit shadow :family "Dejavu Sans Mono" :weight ,(face-attribute 'default :weight)))))
                                   (-cons* (-first-item messages))))
               (let* ((len (length message))
                      (string (concat (propertize " " 'display `(space :align-to (- right-fringe ,(lsp-ui-sideline--align len margin))))
