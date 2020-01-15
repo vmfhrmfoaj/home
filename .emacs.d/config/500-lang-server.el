@@ -207,6 +207,11 @@
     "Disable `lsp-document-highlight'."
     (interactive))
 
+  (defn lsp--custom-flymake-backend (report-fn &rest _args)
+    "Custom `flymake' backend for ."
+    (setq lsp--flymake-report-fn report-fn)
+    (lsp--flymake-update-diagnostics))
+
   (defn lsp--sanitate-flymake-diags ()
      "Remove duplicated items in `diags' of `flymake--backend-state'."
      (-when-let (state (gethash 'lsp--flymake-backend flymake--backend-state))
@@ -221,7 +226,8 @@
         lsp-rust-server 'rust-analyzer)
 
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
-  (advice-add #'lsp--eldoc-message :override #'lsp--custom-eldoc-message)
+  (advice-add #'lsp--eldoc-message   :override #'lsp--custom-eldoc-message)
+  (advice-add #'lsp--flymake-backend :override #'lsp--custom-flymake-backend)
   (advice-add #'lsp--flymake-update-diagnostics :after #'lsp--sanitate-flymake-diags)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
   (advice-add #'lsp--render-string           :filter-args #'lsp--adapter-render-string)
