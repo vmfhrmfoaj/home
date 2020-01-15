@@ -96,6 +96,16 @@ _setup_for_java() {
     fi
 }
 
+_setup_for_nodejs() {
+    _is_shim 'asdf'
+    if [ $? -ne 0 ]; then
+        local nodejs_home=$(asdf where nodejs 2>/dev/null)
+        if [ -d "${nodejs_home}/.npm/bin" ]; then
+            _add_to_path "${nodejs_home}/.npm/bin"
+        fi
+    fi
+}
+
 _setup_for_locale() {
     export LANG=en_US.UTF-8
     export LC_ALL=en_US.UTF-8
@@ -256,6 +266,7 @@ _setup_for_xorg
 
 # depend on `asdf`
 _setup_for_java
+_setup_for_nodejs
 
 # for only terminal environment
 if [ -t 1 ] && [ -n "${SHELL}" ]; then
