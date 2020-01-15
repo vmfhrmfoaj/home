@@ -88,27 +88,19 @@
   (defvar lsp--filter--regex-for-rust
     "^\\(()\\|{unknown}\\)$")
 
+  (defvar lsp--custom-render--regex-1-for-shell
+    "^SYNOPSIS[ \t\r]*\n[ \t\r]*\\(\\(?:.\\|[\r\n]+\\)+?\\)[ \t\r]*\n[ \t\r]*\n"
+    "TODO")
+  (defvar lsp--custom-render--regex-2-for-shell
+    "^[^ :]+?:[ \t]+\\([^\r\n]+\\)"
+    "TODO")
+
   (defn lsp--adapter-render-on-hover-content (args)
     "TODO"
     (let ((contents (car args)))
-      (when (and (derived-mode-p 'php-mode)
-                 (hash-table-p contents))
-        (puthash "language" "php" contents)
-        (when (string= "markdown" (or (gethash "kind" contents) ""))
-          (let ((md (gethash "value" contents)))
-            (when (or (string-match lsp--custom-render--regex-1-for-php md)
-                      (string-match lsp--custom-render--regex-2-for-php md))
-             (remhash "kind" contents)
-             (puthash "value"
-                      (->> md
-                           (match-string 1)
-                           (s-lines)
-                           (-map #'s-trim)
-                           (apply #'concat)
-                           (s-replace "," ", "))
-                      contents)))))
-      (when (and (derived-mode-p 'rust-mode)
-                 (hash-table-p contents))
+      (cond
+       ((and (derived-mode-p 'rust-mode)
+             (hash-table-p contents))
         (puthash "language" "rust" contents)
         (when (string= "markdown" (or (gethash "kind" contents) ""))
           (let ((md (gethash "value" contents)))
@@ -118,28 +110,41 @@
                   (error (concat "'" val "' is invalid.")))
                 (remhash "kind" contents)
                 (puthash "value" val contents))))))
+       ((and (derived-mode-p 'sh-mode)
+             (hash-table-p contents))
+        (puthash "language" "shellscript" contents)
+        (when (string= "markdown" (or (gethash "kind" contents) ""))
+          (let ((md (gethash "value" contents)))
+            (when (or (string-match lsp--custom-render--regex-1-for-shell md)
+                      (string-match lsp--custom-render--regex-2-for-shell md))
+              (remhash "kind" contents)
+              (puthash "value"
+                       (->> md
+                            (match-string 1)
+                            (s-lines)
+                            (-map #'s-trim)
+                            (-interpose "\n")
+                            (apply #'concat))
+                       contents)))))
+       ((and (derived-mode-p 'php-mode)
+             (hash-table-p contents))
+        (puthash "language" "php" contents)
+        (when (string= "markdown" (or (gethash "kind" contents) ""))
+          (let ((md (gethash "value" contents)))
+            (when (or (string-match lsp--custom-render--regex-1-for-php md)
+                      (string-match lsp--custom-render--regex-2-for-php md))
+              (remhash "kind" contents)
+              (puthash "value"
+                       (->> md
+                            (match-string 1)
+                            (s-lines)
+                            (-map #'s-trim)
+                            (apply #'concat)
+                            (s-replace "," ", "))
+                       contents))))))
       (if (not (listp contents))
           (apply #'list contents (cdr args))
         (apply #'list (-interpose "\n" (append contents nil)) (cdr args)))))
-
-  (defn lsp--adapter-render-string (args)
-    "TODO"
-    (let ((str (car args))
-          (lang (cadr args)))
-      (cond
-       ((and (derived-mode-p 'sh-mode)
-             (stringp str)
-             (or (string-match "^SYNOPSIS[ \t\r]*\n[ \t\r]*\\(\\(?:.\\|[\r\n]+\\)+?\\)[ \t\r]*\n[ \t\r]*\n" str)
-                 (let ((res (string-match "^[^ :]+?:[ \t]+\\([^\r\n]+\\)$" str)))
-                   (and (numberp res) (= 0 res)))))
-        (list (->> str
-                   (match-string 1)
-                   (s-lines)
-                   (-map #'s-trim)
-                   (-interpose "\n")
-                   (apply #'concat))
-              lang))
-       (t args))))
 
   (defn lsp--custom-eldoc-message (&optional msg)
     "Show MSG in eldoc."
@@ -230,7 +235,6 @@
   (advice-add #'lsp--flymake-backend :override #'lsp--custom-flymake-backend)
   (advice-add #'lsp--flymake-update-diagnostics :after #'lsp--sanitate-flymake-diags)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
-  (advice-add #'lsp--render-string           :filter-args #'lsp--adapter-render-string)
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
   (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx-for-fallback)
   (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx-for-fallback)
