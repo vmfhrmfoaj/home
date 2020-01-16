@@ -234,8 +234,7 @@
        (aset state 4 nil)
        (flymake-delete-own-overlays)))
 
-  (setq lsp-enable-snippet nil
-        lsp-file-watch-threshold nil
+  (setq lsp-file-watch-threshold nil
         lsp-rust-server 'rust-analyzer)
 
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
