@@ -1,6 +1,5 @@
 (use-package company
   :ensure t
-  :defer t
   :hook (prog-mode . company-mode-on)
   :config
   (defun company-abort-and-insert-space ()
@@ -85,3 +84,7 @@
                (lambda ()
                  (remove-hook 'pre-command-hook 'company-pre-command t)
                  (remove-hook 'post-command-hook 'company-post-command t)))))
+
+(use-package yasnippet
+  :ensure t
+  :hook (prog-mode . yas-minor-mode-on))
