@@ -1,3 +1,9 @@
+(use-package company-lsp
+  :ensure t
+  :after (helm-company)
+  :config
+  (push 'company-lsp company-backends))
+
 (use-package flymake
   :defer t
   :config
