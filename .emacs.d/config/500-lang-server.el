@@ -217,14 +217,14 @@
     (setq lsp--flymake-report-fn report-fn)
     (lsp--flymake-update-diagnostics))
 
-  (defn lsp--sanitate-flymake-diags ()
+  (defn lsp--clear-flymake-diags ()
      "Remove duplicated items in `diags' of `flymake--backend-state'."
      (-when-let (state (gethash 'lsp--flymake-backend flymake--backend-state))
-       (-when-let (diags (flymake--backend-state-diags state))
-         ;; NOTE
-         ;;  `setf' is macro. I think the problem  too early expand the macro.
-         ;; (eval '(setf (flymake--backend-state-diags state) (-distinct diags)))
-         (aset state 4 (-distinct diags)))))
+       ;; NOTE
+       ;;  `setf' is macro. I think the problem  too early expand the macro.
+       ;; (eval '(setf (flymake--backend-state-diags state) (-distinct diags)))
+       (aset state 4 nil)
+       (flymake-delete-own-overlays)))
 
   (setq lsp-enable-snippet nil
         lsp-file-watch-threshold nil
@@ -233,7 +233,7 @@
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
   (advice-add #'lsp--eldoc-message   :override #'lsp--custom-eldoc-message)
   (advice-add #'lsp--flymake-backend :override #'lsp--custom-flymake-backend)
-  (advice-add #'lsp--flymake-update-diagnostics :after #'lsp--sanitate-flymake-diags)
+  (advice-add #'lsp--flymake-update-diagnostics :before #'lsp--clear-flymake-diags)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
   (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx-for-fallback)
