@@ -8,7 +8,9 @@
     (when (fboundp #'eldoc-refresh)
       (eldoc-refresh)))
 
-  (advice-add #'flymake-goto-next-error :around #'flymake--wrap-goto-next-error))
+  (advice-add #'flymake-goto-next-error :around #'flymake--wrap-goto-next-error)
+
+  (setq flymake-fringe-indicator-position 'right-fringe))
 
 (use-package helm-lsp
   :ensure t

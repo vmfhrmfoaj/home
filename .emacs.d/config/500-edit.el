@@ -37,11 +37,6 @@
   :ensure t
   :after evil)
 
-(use-package flymake
-  :defer t
-  :config
-  (setq flymake-fringe-indicator-position 'right-fringe))
-
 (use-package smartparens-config
   :ensure smartparens
   :config
