@@ -76,14 +76,11 @@
                    (company-abort))))))
   ;; NOTE
   ;;  Turn company popup off completely.
-  (remove-hook 'pre-command-hook 'company-pre-command)
-  (remove-hook 'post-command-hook 'company-post-command)
-
-  (advice-add #'company-mode-on :after
-              (byte-compile
-               (lambda ()
-                 (remove-hook 'pre-command-hook 'company-pre-command t)
-                 (remove-hook 'post-command-hook 'company-post-command t)))))
+  (add-hook 'company-mode-hook
+            (lambda ()
+              "Prevent raising a popup box."
+              (remove-hook 'pre-command-hook 'company-pre-command t)
+              (remove-hook 'post-command-hook 'company-post-command t))))
 
 (use-package yasnippet
   :ensure t
