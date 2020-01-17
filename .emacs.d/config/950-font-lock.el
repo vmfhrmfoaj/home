@@ -1255,7 +1255,15 @@
      ("\\(?:^\\s-*\\|[^ \t\r\n]\\)\\(>+\\)"
       (1 'shadow))
      ("\\_<\\(_\\)\\_>"
-      (1 'shadow)))
+      (1 'shadow))
+     ("^use\\s-+\\(?:[_0-9A-Za-z]+::\\)+\\s-*{"
+      ("\\_<[A-Za-z]+\\_>"
+       (save-excursion
+         (setq font-lock--skip nil)
+         (safe-up-list-1)
+         (point))
+       nil
+       (0 font-lock-constant-face))))
    :append))
 
 (use-package sh-script
