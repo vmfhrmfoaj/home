@@ -80,13 +80,13 @@
   :defer t
   :config
   (custom-set-faces
-   '(iedit-occurrence ((t :inherit (highlight italic))))))
+   '(iedit-occurrence ((t :inherit (highlight underline bold))))))
 
 (use-package isearch
   :defer t
   :config
   (custom-set-faces
-   '(isearch ((t :background "magenta3" :foreground "white")))))
+   '(isearch ((t :inherit bold :background "magenta3" :foreground "white")))))
 
 (use-package php-mode
   :defer t
@@ -105,6 +105,14 @@
   (custom-set-faces
    '(linum ((((class color) (background light) (min-colors 548)) :inherit (shadow default) :background "gray97")
             (((class color) (background light) (min-colors 256)) :inherit (shadow default) :background "color-255")))))
+
+(use-package lsp-mode
+  :defer t
+  :config
+  (custom-set-faces
+   '(lsp-face-highlight-read    ((t :inherit (highlight underline))))
+   '(lsp-face-highlight-textual ((t :inherit (highlight underline))))
+   '(lsp-face-highlight-write   ((t :inherit (highlight underline bold))))))
 
 (use-package magit
   :defer t
