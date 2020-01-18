@@ -4,27 +4,10 @@
   (custom-set-faces
    '(bold ((t :weight semi-bold)))
    '(cursor ((t :background "sky blue")))
-   '(font-lock-comment-face ((t :background unspecified :weight light)))
-   '(font-lock-doc-face ((t :inherit italic)))
-   '(font-lock-function-name-face ((t :inherit bold)))
-   '(font-lock-type-face ((t :weight unspecified)))
-   '(font-lock-warning-face ((t :weight bold)))
-   '(fringe ((t :background "gray98")))
-   '(hl-line ((t :background "#eef7fd")))
    '(link ((t :underline t)))
-   '(isearch ((t :background "magenta3" :foreground "white")))
    '(shadow ((t :inherit default :foreground "gray55")))
    '(show-paren-match ((t :inherit bold :underline t)))
-   '(trailing-whitespace ((t :background "gray65"))))
-
-  (defvar local-variable-name-light-fg-color
-    (saturate-color (color-from 'font-lock-variable-name-face :foreground 7) -20)
-    "A foreground color for the local variable such as parameters")
-
-  (with-eval-after-load "sh-script"
-    (custom-set-faces
-     `(sh-heredoc     ((t :background "#fcf7f2" :foreground "tan1")))
-     `(sh-quoted-exec ((t :background "#faecfa" :foreground "magenta"))))))
+   '(trailing-whitespace ((t :background "gray65")))))
 
 (use-package auto-dim-other-buffers
   :defer t
@@ -47,11 +30,30 @@
    '(clojure-side-effect-face ((t :inherit (bold italic font-lock-warning-face))))
    '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))))
 
+(use-package font-lock
+  :defer t
+  :config
+  (custom-set-faces
+   '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight light)))
+   '(font-lock-function-name-face ((t :inherit bold)))
+   '(font-lock-type-face ((t :weight unspecified)))
+   '(font-lock-warning-face ((t :weight bold))))
+
+  (defvar local-variable-name-light-fg-color
+    (saturate-color (color-from 'font-lock-variable-name-face :foreground 7) -20)
+    "A foreground color for the local variable such as parameters"))
+
 (use-package flymake
   :defer t
   :config
   (custom-set-faces
    '(flymake-warning ((t :underline (:style wave :color "gold"))))))
+
+(use-package fringe
+  :defer t
+  :config
+  (custom-set-faces
+   '(fringe ((t :background "gray98")))))
 
 (use-package helm
   :defer t
@@ -60,6 +62,13 @@
    '(helm-match ((t :inherit lazy-highlight)))
    '(helm-match-item ((t :inherit lazy-highlight)))
    '(helm-match-selection ((t :inherit isearch)))))
+
+
+(use-package hl-line
+  :defer t
+  :config
+  (custom-set-faces
+   '(hl-line ((t :background "#eef7fd")))))
 
 (use-package hl-todo
   :defer t
@@ -72,6 +81,12 @@
   :config
   (custom-set-faces
    '(iedit-occurrence ((t :inherit (highlight italic))))))
+
+(use-package isearch
+  :defer t
+  :config
+  (custom-set-faces
+   '(isearch ((t :background "magenta3" :foreground "white")))))
 
 (use-package php-mode
   :defer t
@@ -101,3 +116,10 @@
    '(magit-log-author ((((class color) (background light)) :foreground "firebrick" :weight light)))
    '(magit-log-date ((((class color) (background light)) :foreground "gray30" :weight light)))
    '(magit-section-highlight ((((class color) (background light)) :inherit hl-line :distant-foreground "black")))))
+
+(use-package sh-script
+  :defer t
+  :config
+  (custom-set-faces
+   `(sh-heredoc     ((t :background "#fcf7f2" :foreground "tan1")))
+   `(sh-quoted-exec ((t :background "#faecfa" :foreground "magenta")))))
