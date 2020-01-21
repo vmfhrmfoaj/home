@@ -180,6 +180,10 @@
           lsp--eldoc-saved-message nil
           lsp--hover-saved-symbol nil))
 
+  (defvar lsp--hover-exclude-regex-for-rust
+    "\\(?:match\\|let\\|=\\)"
+    "TODO")
+
   (defn lsp--custom-hover ()
     "Display hover info (based on `textDocument/hover')."
     (let ((symbol (thing-at-point 'symbol)))
@@ -187,7 +191,9 @@
                lsp--hover-saved-bounds (lsp--point-in-bounds-p lsp--hover-saved-bounds))
           (lsp--eldoc-message lsp--eldoc-saved-message)
         (lsp--reset-hover-cache)
-        (if (not symbol)
+        (if (or (not symbol)
+                (and (derived-mode-p 'rust-mode)
+                     (string-match-p  lsp--hover-exclude-regex-for-rust symbol)))
             (lsp--eldoc-message nil)
           (when (and lsp-eldoc-enable-hover (lsp--capability "hoverProvider"))
             (setq lsp--hover-saved-symbol symbol)
