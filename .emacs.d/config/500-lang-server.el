@@ -171,39 +171,45 @@
                             (-interpose "\n")
                             (apply #'concat))))))
 
+  (defvar-local lsp--hover-saved-symbol nil
+    "TODO")
+
   (defn lsp--reset-hover-cache ()
     "Clear `lsp--hover-saved-bounds' and `lsp--eldoc-saved-message'"
     (setq lsp--hover-saved-bounds nil
-          lsp--eldoc-saved-message nil))
+          lsp--eldoc-saved-message nil
+          lsp--hover-saved-symbol nil))
 
   (defn lsp--custom-hover ()
     "Display hover info (based on `textDocument/hover')."
-    (if (and lsp--hover-saved-bounds
-             (lsp--point-in-bounds-p lsp--hover-saved-bounds))
-        (lsp--eldoc-message lsp--eldoc-saved-message)
-      (lsp--reset-hover-cache)
-      (if (not (thing-at-point 'symbol))
-          (lsp--eldoc-message nil)
-        (when (and lsp-eldoc-enable-hover (lsp--capability "hoverProvider"))
-          (lsp-request-async
-           "textDocument/hover"
-           (lsp--text-document-position-params)
-           (lambda (hover)
-             (if (null hover)
-                 (lsp--eldoc-message nil)
-               (when-let (range (gethash "range" hover))
-                 (setq lsp--hover-saved-bounds (lsp--range-to-region range)))
-               (-let* ((contents (gethash "contents" hover)))
-                 (condition-case nil
-                     (lsp--eldoc-message (and contents
-                                              (lsp--render-on-hover-content contents
-                                                                            lsp-eldoc-render-all)))
-                   (error
-                    (lsp--reset-hover-cache)
-                    (lsp--eldoc-message nil))))))
-           :error-handler #'ignore
-           :mode 'tick
-           :cancel-token :eldoc-hover)))))
+    (let ((symbol (thing-at-point 'symbol)))
+      (if (and lsp--hover-saved-symbol (string= lsp--hover-saved-symbol symbol)
+               lsp--hover-saved-bounds (lsp--point-in-bounds-p lsp--hover-saved-bounds))
+          (lsp--eldoc-message lsp--eldoc-saved-message)
+        (lsp--reset-hover-cache)
+        (if (not symbol)
+            (lsp--eldoc-message nil)
+          (when (and lsp-eldoc-enable-hover (lsp--capability "hoverProvider"))
+            (setq lsp--hover-saved-symbol symbol)
+            (lsp-request-async
+             "textDocument/hover"
+             (lsp--text-document-position-params)
+             (lambda (hover)
+               (if (null hover)
+                   (lsp--eldoc-message nil)
+                 (when-let (range (gethash "range" hover))
+                   (setq lsp--hover-saved-bounds (lsp--range-to-region range)))
+                 (-let* ((contents (gethash "contents" hover)))
+                   (condition-case nil
+                       (lsp--eldoc-message (and contents
+                                                (lsp--render-on-hover-content contents
+                                                                              lsp-eldoc-render-all)))
+                     (error
+                      (lsp--reset-hover-cache)
+                      (lsp--eldoc-message nil))))))
+             :error-handler #'ignore
+             :mode 'tick
+             :cancel-token :eldoc-hover))))))
 
   (defn lsp--wrap-find-xxx-for-fallback (f &rest args)
     "Fall back to `dumb-jump-go'."
