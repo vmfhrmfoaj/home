@@ -93,8 +93,6 @@
             "\\(\\(?:\n\\|.\\)+?\\)" ; <CONTENTS>
             "[ \t\r\n]*?```")        ; ```
     "TODO")
-  (defvar lsp--filter--regex-for-rust
-    "^\\(()\\|{unknown}\\)$")
 
   (defvar lsp--custom-render--regex-1-for-shell
     "^SYNOPSIS[ \t\r]*\n[ \t\r]*\\(\\(?:.\\|[\r\n]+\\)+?\\)[ \t\r]*\n[ \t\r]*\n"
@@ -114,8 +112,6 @@
           (let ((md (gethash "value" contents)))
             (when (string-match lsp--custom-render--regex-for-rust md)
               (let ((val (match-string 1 md)))
-                (when (string-match lsp--filter--regex-for-rust val)
-                  (error (concat "'" val "' is invalid.")))
                 (remhash "kind" contents)
                 (puthash "value" val contents))))))
        ((and (derived-mode-p 'sh-mode)
@@ -181,7 +177,7 @@
           lsp--hover-saved-symbol nil))
 
   (defvar lsp--hover-exclude-regex-for-rust
-    "\\(?:match\\|let\\|=\\)"
+    (regexp-opt '("match" "let" "for" "if" "=") 'symbols)
     "TODO")
 
   (defn lsp--custom-hover ()
