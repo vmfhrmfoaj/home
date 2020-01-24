@@ -180,6 +180,11 @@ EOF
         fi
     fi
     [ -f "${HOME}/.cargo/env" ] && source "${HOME}/.cargo/env"
+    if [ ! -f  "${HOME}/.oh-my-zsh/custom/plugins/rustup/_rustup" ]; then
+        mkdir -p "${HOME}/.oh-my-zsh/custom/plugins/rustup"
+        rustup completions zsh > "${HOME}/.oh-my-zsh/custom/plugins/rustup/_rustup"
+        rm -rf "${HOME}/.zcompdump*"
+    fi
 }
 
 _setup_for_schroot() {
