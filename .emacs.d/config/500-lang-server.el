@@ -233,6 +233,15 @@
     (setq lsp--flymake-report-fn report-fn)
     (lsp--flymake-update-diagnostics))
 
+  (defn lsp--clear-diagnostics (workspace params)
+    "TODO"
+    ;; NOTE
+    ;;  I think most implements of the language server is push all diagnostics.
+    ;;  Because, It is easy. So, I clear all old diagnostics.
+    (ignore-errors
+      (remhash (lsp--uri-to-path (gethash "uri" params))
+               (lsp--workspace-diagnostics workspace))))
+
   (defn lsp--clear-flymake-diags ()
      "Remove duplicated items in `diags' of `flymake--backend-state'."
      (-when-let (state (gethash 'lsp--flymake-backend flymake--backend-state))
@@ -248,6 +257,7 @@
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
   (advice-add #'lsp--eldoc-message   :override #'lsp--custom-eldoc-message)
   (advice-add #'lsp--flymake-backend :override #'lsp--custom-flymake-backend)
+  (advice-add #'lsp--on-diagnostics             :before #'lsp--clear-diagnostics)
   (advice-add #'lsp--flymake-update-diagnostics :before #'lsp--clear-flymake-diags)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
