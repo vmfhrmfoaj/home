@@ -1263,7 +1263,7 @@
          (safe-up-list-1)
          (point))
        nil
-       (0 font-lock-constant-face))))
+       (0 font-lock-constant-face t))))
    :append))
 
 (use-package sh-script
