@@ -96,6 +96,24 @@ _setup_for_java() {
     fi
 }
 
+_setup_for_kotlin() {
+    _is_shim 'asdf'
+    if [ $? -ne 0 ]; then
+        if [ -d "$(asdf where java 2>/dev/null)" ]; then
+            local kotlin_home="${HOME}/.kotlin"
+            local temp_file="/tmp/kotlin-langauge-server.zip"
+            if [ ! -d "${kotlin_home}" ]; then
+                wget --quiet -O "${temp_file}" 'https://github.com/fwcd/kotlin-language-server/releases/latest/download/server.zip'
+                if [ $? -eq 0 ]; then
+                    mkdir -p "${kotlin_home}"
+                    unzip -q -d "${kotlin_home}" "${temp_file}"
+                fi
+            fi
+            _add_to_path "${kotlin_home}/server/bin"
+        fi
+    fi
+}
+
 _setup_for_nodejs() {
     _is_shim 'asdf'
     if [ $? -ne 0 ]; then
@@ -271,6 +289,7 @@ _setup_for_xorg
 
 # depend on `asdf`
 _setup_for_java
+_setup_for_kotlin
 _setup_for_nodejs
 
 # for only terminal environment
