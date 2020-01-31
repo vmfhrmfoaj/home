@@ -304,11 +304,10 @@
   (define-key evil-outer-text-objects-map "U" 'evil-a-sexp)
   (define-key evil-inner-text-objects-map "U" 'evil-inner-sexp)
   (evil-define-key 'normal 'global
-    "gd" #'up-list
     "gr" #'eldoc-refresh
-    "gu" #'backward-up-list
     (kbd "TAB") #'indent-for-tab-command
-    (kbd "C-u") #'evil-scroll-up)
+    (kbd "C-d") #'sp-up-sexp
+    (kbd "C-u") #'sp-backward-up-sexp)
   (evil-define-key 'insert 'global
     (kbd "C-h") #'backward-delete-char
     (kbd "C-a") #'beginning-of-line-text
@@ -356,12 +355,8 @@
   :defer t
   :config
   (when evil-want-minibuffer
-    (evil-define-key 'normal helm-ag-map
-      "gu" #'helm-ag--up-one-level)
     (evil-define-key 'insert helm-ag-map
       (kbd "C-u") #'helm-ag--up-one-level)
-    (evil-define-key 'normal helm-do-ag-map
-      "gu" #'helm-ag--do-ag-up-one-level)
     (evil-define-key 'insert helm-do-ag-map
       (kbd "C-u") #'helm-ag--do-ag-up-one-level))
   (define-key helm-ag-map    (kbd "C-u") #'helm-ag--up-one-level)
