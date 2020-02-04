@@ -223,7 +223,8 @@
                         (file-truename))))
       (when (and persp-root
                  proj-root
-                 (not (s-starts-with? persp-root proj-root)))
+                 (not (s-starts-with? persp-root proj-root))
+                 (not (s-starts-with? proj-root  persp-root)))
         (let ((buf-name (buffer-name))
               (old-persp (get-current-persp))
               (proj (abbreviate-file-name proj-root)))
