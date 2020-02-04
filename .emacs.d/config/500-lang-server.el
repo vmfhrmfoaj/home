@@ -218,9 +218,11 @@
     (let ((pos (point))
           (cur-buf (current-buffer))
           (success? (ignore-errors (not (apply f args)))))
-      (when (and (not success?)
-                 (eq cur-buf (current-buffer))
-                 (= pos (point)))
+      (when (or (not success?)
+                (and (eq cur-buf (current-buffer))
+                     (eq pos (point))))
+        (when success?
+          (ring-remove xref--marker-ring 0))
         (message nil)
         (call-interactively #'dumb-jump-go))))
 
