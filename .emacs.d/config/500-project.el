@@ -1,3 +1,10 @@
+(use-package helm-projectile
+  :ensure t
+  :defer t
+  :commands (helm-projectile-find-dir
+             helm-projectile-find-file
+             helm-projectile-switch-project))
+
 (use-package persp-mode
   :ensure t
   :config
@@ -117,10 +124,6 @@
   (add-hook 'magit-log-mode-hook    #'persp-add-buffer-without-switch)
   (add-hook 'magit-status-mode-hook #'persp-add-buffer-without-switch)
   (add-hook 'after-init-hook (-partial #'persp-mode 1))
-  (add-hook 'find-file-hook
-            (lambda ()
-              (let ((root (persp-current-project)))
-                (setq-local dumb-jump-project root))))
 
   (advice-add #'make-process :around #'persp--wrap-make-process)
   (advice-add #'persp-switch :after #'persp-add-all-proj-buffer))
@@ -146,7 +149,13 @@
   (setq projectile-completion-system 'helm
         projectile-enable-cachig t)
 
-  (advice-add #'projectile-project-root :before-until (byte-compile (lambda (&optional _) "persp-current-project" (persp-current-project))))
+  (add-hook 'find-file-hook
+            (lambda ()
+              (setq-local dumb-jump-project
+                          (-> buffer-file-name
+                              (file-name-directory)
+                              (projectile-project-root)))))
+
   (advice-add #'projectile-project-files :filter-return
               #'projectile-project-files-custom-filter)
 

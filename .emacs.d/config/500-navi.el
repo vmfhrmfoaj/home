@@ -1,57 +1,3 @@
-(use-package helm-projectile
-  :ensure t
-  :defer t
-  :commands (helm-projectile-find-dir
-             helm-projectile-find-file
-             helm-projectile-switch-project))
-
-(use-package neotree
-  :ensure t
-  :config
-  (defn neo-buffer--back (path _)
-    "TODO"
-    (when (neo-buffer--expanded-node-p path)
-      (neo-buffer--toggle-expand path)
-      (neotree-refresh)))
-
-  (defn neotree-back ()
-    "TODO"
-    (interactive)
-    (unless (neo-buffer--expanded-node-p (neo-buffer--get-filename-current-line))
-      (neotree-select-up-node))
-    (neo-buffer--execute nil null-fn #'neo-buffer--back))
-
-  (defn neotree-project-dir ()
-    "TODO"
-    (interactive)
-    (let ((buf-file-name buffer-file-name))
-      (neotree-dir (or (projectile-project-root)
-                       (file-name-directory (or buf-file-name ""))
-                       "~/"))
-      (when (and neo-smart-open
-                 buf-file-name)
-        (neotree-find buf-file-name)
-        (recenter))))
-
-  (defn neotree-toggle-maximize ()
-    "TODO"
-    (interactive)
-    (neo-window--zoom (if (< neo-window-width (window-width)) 'minimize 'maximize)))
-
-  (defn neotree-create-dir (&optional dir)
-    "TODO"
-    (interactive "f")
-    (neotree-create-node (concat dir "/")))
-
-  (setq neo-auto-indent-point t
-        neo-keymap-style 'concise
-        neo-show-hidden-files t
-        neo-smart-open t
-        neo-theme 'icons
-        neo-window-width 35)
-
-  (add-hook 'neotree-mode-hook (lambda () (setq-local right-fringe-width 0))))
-
 (use-package dumb-jump
   :ensure t
   :config
@@ -285,3 +231,74 @@
   (defalias 'xref-pop-to-location #'xref--pop-to-location)
   (setq xref-show-definitions-function 'helm-xref-show-defs-27
         xref-show-xrefs-function 'helm-xref-show-xrefs-27))
+
+(use-package neotree
+  :ensure t
+  :config
+  (defn neo-buffer--back (path _)
+    "TODO"
+    (when (neo-buffer--expanded-node-p path)
+      (neo-buffer--toggle-expand path)
+      (neotree-refresh)))
+
+  (defn neotree-back ()
+    "TODO"
+    (interactive)
+    (unless (neo-buffer--expanded-node-p (neo-buffer--get-filename-current-line))
+      (neotree-select-up-node))
+    (neo-buffer--execute nil null-fn #'neo-buffer--back))
+
+  (defn neotree-project-dir ()
+    "TODO"
+    (interactive)
+    (let ((buf-file-name buffer-file-name))
+      (neotree-dir (or (projectile-project-root)
+                       (file-name-directory (or buf-file-name ""))
+                       "~/"))
+      (when (and neo-smart-open
+                 buf-file-name)
+        (neotree-find buf-file-name)
+        (recenter))))
+
+  (defn neotree-toggle-maximize ()
+    "TODO"
+    (interactive)
+    (neo-window--zoom (if (< neo-window-width (window-width)) 'minimize 'maximize)))
+
+  (defn neotree-create-dir (&optional dir)
+    "TODO"
+    (interactive "f")
+    (neotree-create-node (concat dir "/")))
+
+  (setq neo-auto-indent-point t
+        neo-keymap-style 'concise
+        neo-show-hidden-files t
+        neo-smart-open t
+        neo-theme 'icons
+        neo-window-width 35)
+
+  (add-hook 'neotree-mode-hook (lambda () (setq-local right-fringe-width 0))))
+
+(use-package xref
+  :after (persp-mode projectile)
+  :config
+  (defn xref--change-persp-after-pop-marker ()
+    "TODO"
+    (let* ((persp-root (-some->> (persp-current-project)
+                         (file-truename)))
+           (proj-root (-some->> buffer-file-name
+                        (file-name-directory)
+                        (projectile-project-root)
+                        (file-truename))))
+      (when (and persp-root
+                 proj-root
+                 (not (s-starts-with? persp-root proj-root)))
+        (let ((cur-buf (current-buffer))
+              (proj (abbreviate-file-name proj-root)))
+          (switch-to-previous-buffer)
+          (persp-switch proj)
+          (switch-to-buffer cur-buf)))))
+
+  ;; See, `lsp--change-proj' function
+  (advice-add #'xref-pop-marker-stack :after
+              #'xref--change-persp-after-pop-marker))

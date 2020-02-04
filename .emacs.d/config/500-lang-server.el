@@ -213,7 +213,25 @@
              :mode 'tick
              :cancel-token :eldoc-hover))))))
 
-  (defn lsp--wrap-find-xxx-for-fallback (f &rest args)
+  (defn lsp--change-proj ()
+    "TODO"
+    (let* ((persp-root (-some->> (persp-current-project)
+                         (file-truename)))
+           (proj-root (-some->> buffer-file-name
+                        (file-name-directory)
+                        (projectile-project-root)
+                        (file-truename))))
+      (when (and persp-root
+                 proj-root
+                 (not (s-starts-with? persp-root proj-root)))
+        (let ((buf-name (buffer-name))
+              (old-persp (get-current-persp))
+              (proj (abbreviate-file-name proj-root)))
+          (persp-switch proj)
+          (persp-add-buffer buf-name)
+          (persp-remove-buffer buf-name old-persp)))))
+
+  (defn lsp--wrap-find-xxx (f &rest args)
     "Fall back to `dumb-jump-go'."
     (let ((pos (point))
           (cur-buf (current-buffer))
@@ -224,7 +242,8 @@
         (when success?
           (ring-remove xref--marker-ring 0))
         (message nil)
-        (call-interactively #'dumb-jump-go))))
+        (call-interactively #'dumb-jump-go))
+      (lsp--change-proj)))
 
   (defn lsp--custom-document-highlight ()
     "Disable `lsp-document-highlight'."
@@ -253,10 +272,10 @@
   (advice-add #'lsp--flymake-update-diagnostics :before #'lsp--clear-flymake-diags)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
-  (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx-for-fallback)
-  (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx-for-fallback)
-  (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx-for-fallback)
-  (advice-add #'lsp-find-type-definition :around #'lsp--wrap-find-xxx-for-fallback))
+  (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx)
+  (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx)
+  (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx)
+  (advice-add #'lsp-find-type-definition :around #'lsp--wrap-find-xxx))
 
 (use-package lsp-rust
   :ensure lsp-mode
