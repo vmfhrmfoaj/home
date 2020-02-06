@@ -294,11 +294,9 @@
                  proj-root
                  (not (s-starts-with? persp-root proj-root))
                  (not (s-starts-with? proj-root  persp-root)))
-        (let ((cur-buf (current-buffer))
-              (proj (abbreviate-file-name proj-root)))
+        (let ((proj (abbreviate-file-name proj-root)))
           (switch-to-previous-buffer)
-          (persp-switch proj)
-          (switch-to-buffer cur-buf)))))
+          (persp-switch proj)))))
 
   ;; See, `lsp--change-proj' function
   (advice-add #'xref-pop-marker-stack :after

@@ -213,7 +213,7 @@
              :mode 'tick
              :cancel-token :eldoc-hover))))))
 
-  (defn lsp--change-proj ()
+  (defn lsp--change-proj (cur-buf)
     "TODO"
     (let* ((persp-root (-some->> (persp-current-project)
                          (file-truename)))
@@ -228,9 +228,14 @@
         (let ((buf-name (buffer-name))
               (old-persp (get-current-persp))
               (proj (abbreviate-file-name proj-root)))
-          (persp-switch proj)
-          (persp-add-buffer buf-name)
-          (persp-remove-buffer buf-name old-persp)))))
+          ;; NOTE
+          ;;  To switch to old buffer to store persp before switching persp.
+          ;;  `persp-add-buffer' will switch back to current buffer.
+          (switch-to-buffer cur-buf)
+          (save-excursion
+            (persp-switch proj)
+            (persp-add-buffer buf-name) ; see `switchorno' parameter
+            (persp-remove-buffer buf-name old-persp))))))
 
   (defn lsp--wrap-find-xxx (f &rest args)
     "Fall back to `dumb-jump-go'."
@@ -244,7 +249,7 @@
           (ring-remove xref--marker-ring 0))
         (message nil)
         (call-interactively #'dumb-jump-go))
-      (lsp--change-proj)))
+      (lsp--change-proj cur-buf)))
 
   (defn lsp--custom-document-highlight ()
     "Disable `lsp-document-highlight'."
