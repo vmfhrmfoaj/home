@@ -269,7 +269,8 @@
        (aset state 4 nil)
        (flymake-delete-own-overlays)))
 
-  (setq lsp-file-watch-threshold nil
+  (setq lsp-diagnostic-package :flymake
+        lsp-file-watch-threshold nil
         lsp-rust-server 'rust-analyzer)
 
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
@@ -300,7 +301,9 @@
   :commands lsp-ui-mode
   :config
   (defn lsp-ui-sideline--custom-diagnostics (fn bol eol)
-    (if (not lsp-prefer-flymake)
+    (if (and (or (eq lsp-diagnostic-package :auto)
+                 (eq lsp-diagnostic-package :flycheck))
+             (functionp 'flycheck-mode))
         (funcall fn bol eol)
       (let* ((line-num (line-number-at-pos bol t))
              (diagnostics (-some->> (lsp-diagnostics)
