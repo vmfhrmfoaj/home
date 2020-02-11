@@ -2,7 +2,7 @@
   :ensure t
   :config
   (custom-set-faces
-   '(bold ((t :weight semi-bold)))
+   '(bold ((t :weight bold)))
    '(cursor ((t :background "sky blue")))
    '(link ((t :underline t)))
    '(shadow ((t :inherit default :foreground "gray55")))
