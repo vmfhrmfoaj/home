@@ -4,12 +4,14 @@
   (defn man-at-point ()
     (interactive)
     (let ((thing (thing-at-point 'symbol)))
-      (pop-to-buffer (man (concat thing "(3)")))))
+      (man (concat "--sections=2 3 " thing))))
 
-  (setq c-default-style '((java-mode . "java")
+  (c-set-offset 'case-label '+)
+  (setq Man-notify-method 'aggressive
+        c-default-style '((java-mode . "java")
                           (awk-mode . "awk")
                           (other . "linux")))
-  (c-set-offset 'case-label '+)
+
   (add-hook 'c-mode-common-hook
             (lambda ()
               (unless (and (fboundp #'editorconfig-core-get-nearest-editorconfig)
@@ -21,6 +23,7 @@
                 (add-to-list 'font-lock-extend-region-functions #'font-lock-extend-region-wholelines)
                 (c-toggle-auto-newline -1)))
             :append)
+
   (add-hook 'java-mode-hook
             (lambda ()
               (with-eval-after-load "lsp-mode"
