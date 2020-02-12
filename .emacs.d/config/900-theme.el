@@ -36,6 +36,7 @@
   (custom-set-faces
    '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight light)))
    '(font-lock-function-name-face ((t :inherit bold)))
+   '(font-lock-regexp-grouping-construct ((t :inherit bold :weight semi-bold)))
    '(font-lock-type-face ((t :weight unspecified)))
    '(font-lock-warning-face ((t :weight bold))))
 
