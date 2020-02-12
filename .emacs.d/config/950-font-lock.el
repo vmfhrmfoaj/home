@@ -21,35 +21,7 @@
        (font-lock-add-keywords
         nil
         `(("\\([&|*]\\|::\\|[-=]>\\)"
-           (1 'shadow))
-          (,(byte-compile
-             (lambda (limit)
-               (catch 'break
-                 (while (re-search-forward (concat "\\([A-Za-z][_0-9A-Za-z]+\\)\\s-+"
-                                                   "\\([A-Za-z][_0-9A-Za-z]+\\)\\s-+"
-                                                   "\\([A-Za-z][_0-9A-Za-z]+\\)")
-                                           limit t)
-                   (unless (or (string-match-p "static\\|typedef" (match-string-no-properties 1))
-                               (sp-point-in-string-or-comment (match-beginning 2)))
-                     (throw 'break t))))))
-           (2 'font-lock-variable-name-face t)
-           (3 'default t))
-          (,(byte-compile
-             (lambda (limit)
-               (catch 'break
-                 (while (re-search-forward (concat "\\([A-Za-z][_0-9A-Za-z]+\\)\\s-+"
-                                                   "\\([A-Za-z][_0-9A-Za-z]+\\)")
-                                           limit t)
-                   (when (eq 'font-lock-type-face (get-text-property (match-beginning 1) 'face))
-                     (save-match-data
-                       (save-excursion
-                         (ignore-errors
-                           (up-list))
-                         (when (and (looking-back ")[ \t\r\n]*")
-                                    (not (looking-at "[ \t\r\n]*{")))
-                           (throw 'break t)))))))))
-           (1 'default t)
-           (2 'default t)))
+           (1 'shadow)))
         :append)))))
 
 (use-package elixir-mode
