@@ -75,7 +75,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(hl-todo ((t :inherit bold :foreground "#cc9393")))))
+   '(hl-todo ((t :inherit bold :weight semi-bold :foreground "#cc9393")))))
 
 (use-package iedit
   :defer t
