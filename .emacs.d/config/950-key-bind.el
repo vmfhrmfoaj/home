@@ -413,7 +413,7 @@
       "G" #'helm-end-of-buffer
       (kbd "C-g") #'helm-keyboard-quit
       (kbd "RET") #'helm-maybe-exit-minibuffer
-      (kbd "<escape>") nil))
+      (kbd "<escape>") #'helm-keyboard-quit))
   (define-key helm-map (kbd "<escape>") #'helm-keyboard-quit))
 
 (use-package helm-occur
