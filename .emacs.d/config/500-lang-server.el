@@ -227,7 +227,8 @@
                  (not (s-starts-with? proj-root  persp-root)))
         (let ((buf-name (buffer-name))
               (old-persp (get-current-persp))
-              (proj (abbreviate-file-name proj-root)))
+              (proj (abbreviate-file-name proj-root))
+              (pos (point)))
           ;; NOTE
           ;;  To switch to old buffer to store persp before switching persp.
           ;;  `persp-add-buffer' will switch back to current buffer.
@@ -235,6 +236,8 @@
           (save-excursion
             (persp-switch proj)
             (persp-add-buffer buf-name) ; see `switchorno' parameter
+            (switch-to-buffer buf-name)
+            (goto-char pos)
             (persp-remove-buffer buf-name old-persp))))))
 
   (defn lsp--wrap-find-xxx (f &rest args)
