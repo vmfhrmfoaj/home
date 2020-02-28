@@ -273,6 +273,7 @@
        (flymake-delete-own-overlays)))
 
   (setq lsp-diagnostic-package :flymake
+        lsp-enable-on-type-formatting nil
         lsp-file-watch-threshold nil
         lsp-rust-server 'rust-analyzer)
 
