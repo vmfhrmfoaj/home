@@ -32,7 +32,7 @@
             "tab.activeBorderTop": "#E95378",
         },
     },
-    "workbench.colorTheme": "Atom One Light",
+    "workbench.colorTheme": "One Dark Pro",
     "workbench.iconTheme": "material-icon-theme",
 
     // Edit
@@ -147,6 +147,7 @@
     "rust-client.enableMultiProjectSetup": true,
 
     // Rust Analyzer
+    "rust-analyzer.serverPath": "rust-analyzer",
     "rust-analyzer.displayInlayHints": true,
     "rust-analyzer.enableEnhancedTyping": false,
     "rust-analyzer.highlightingOn": true,

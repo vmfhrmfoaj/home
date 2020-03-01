@@ -117,6 +117,7 @@ EOF
     read yn
     if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
         local extensions=(
+            akamud.vscode-theme-onelight
             bungcip.better-toml
             EditorConfig.EditorConfig
             eamodio.gitlens
