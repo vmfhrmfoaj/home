@@ -7,8 +7,8 @@
     "terminal.integrated.fontFamily": "Cascadia Code",
     "terminal.integrated.fontSize": 13,
     "window.titleBarStyle": "custom",
-    "window.menuBarVisibility": "visible",
-    "workbench.colorTheme": "Better Solarized Light",
+    "window.menuBarVisibility": "default",
+    "workbench.colorTheme": "Atom One Light",
     "workbench.iconTheme": "material-icon-theme",
 
     // Edit
