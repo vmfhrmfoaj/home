@@ -1,38 +1,14 @@
 {
     // Appearance
     "editor.fontFamily": "'Cascadia Code', 'Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
-    "editor.fontSize": 14,
+    "editor.fontSize": 15,
     "editor.fontLigatures": true,
-    "editor.tokenColorCustomizations": {
-        "[Horizon]": {
-            "textMateRules": [
-                {
-                    "scope": "comment",
-                    "settings": {
-                        "fontStyle": "" // for removing italic style on the comment
-                    }
-                }
-            ]
-        }
-    },
     "editor.wordWrapColumn": 120,
-    "terminal.integrated.fontFamily": "Fantasque Sans Mono",
-    "terminal.integrated.fontSize": 15,
-    "window.menuBarVisibility": "toggle",
-    "workbench.colorCustomizations": {
-        "[Atom One Light]": {
-            "editor.foreground": "#444",
-            "editorCursor.background": "#FFF", // for Vim extension
-            "sideBarSectionHeader.background": "#EEE",
-        },
-        "[Horizon]": {
-            "sideBar.background": "#191B22",
-            "tab.border": "#242630",
-            "tab.activeBorder": "#1C1E2600", // clear
-            "tab.activeBorderTop": "#E95378",
-        },
-    },
-    "workbench.colorTheme": "One Dark Pro",
+    "terminal.integrated.fontFamily": "Cascadia Code",
+    "terminal.integrated.fontSize": 13,
+    "window.titleBarStyle": "custom",
+    "window.menuBarVisibility": "visible",
+    "workbench.colorTheme": "Better Solarized Light",
     "workbench.iconTheme": "material-icon-theme",
 
     // Edit
@@ -43,7 +19,6 @@
     "editor.minimap.enabled": false,
     "editor.quickSuggestionsDelay": 10,
     "editor.suggestSelection": "first",
-    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
 
     ///
     /// Extentions
@@ -52,6 +27,7 @@
     // C/C++
     "C_Cpp.default.intelliSenseMode": "clang-x64",
     "C_Cpp.updateChannel": "Default",
+    "C_Cpp.enhancedColorization": "Disabled",
 
     // Gitlens
     "gitlens.codeLens.enabled": false,
@@ -145,11 +121,9 @@
 
     // Rust Language Server
     "rust-client.enableMultiProjectSetup": true,
-
     // Rust Analyzer
     "rust-analyzer.serverPath": "rust-analyzer",
-    "rust-analyzer.displayInlayHints": true,
-    "rust-analyzer.enableEnhancedTyping": false,
+    "rust-analyzer.displayInlayHints": false,
     "rust-analyzer.highlightingOn": true,
 
     // Vim
@@ -164,8 +138,6 @@
     "vim.visualstar": true,
     "vim.handleKeys": {
         "<C-d>": false,
-        "<C-k>": false,
-        "<C-j>": false,
         "<C-w>": false,
     },
     // - https://github.com/VSpaceCode/VSpaceCode
@@ -215,12 +187,12 @@
         {
             "before": [
                 "g",
-                "s",
+                "D",
             ],
             "after": [],
             "commands": [
                 {
-                    "command": "editor.action.referenceSearch.trigger",
+                    "command": "editor.action.goToReferences",
                     "args": []
                 }
             ]
@@ -598,4 +570,5 @@
         },
     ],
     "window.zoomLevel": 0,
+    "explorer.confirmDelete": false,
 }
