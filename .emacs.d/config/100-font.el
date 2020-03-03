@@ -2,7 +2,7 @@
   (setq-default line-spacing 1)
   (set-face-font 'default
                  (font-spec :family "Source Code Pro"
-                            :size 14)))
+                            :size 15)))
 
 (make-thread (lambda ()
                (prefer-coding-system 'utf-8)
