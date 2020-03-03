@@ -138,6 +138,8 @@
     "vim.visualstar": true,
     "vim.handleKeys": {
         "<C-d>": false,
+        "<C-k>": false,
+        "<C-t>": false,
         "<C-w>": false,
     },
     // - https://github.com/VSpaceCode/VSpaceCode
@@ -184,19 +186,6 @@
         },
     ],
     "vim.normalModeKeyBindings": [
-        {
-            "before": [
-                "g",
-                "D",
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "editor.action.goToReferences",
-                    "args": []
-                }
-            ]
-        },
         {
             "before": [
                 "g",
