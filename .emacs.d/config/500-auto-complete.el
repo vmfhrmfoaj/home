@@ -41,8 +41,14 @@
                                        'read-only t
                                        'intangible t)))
               :candidate-number-limit helm-company-candidate-number-limit)
-        (when (functionp 'evil-normal-state)
-          (evil-normal-state)))))
+        (when (or (not (featurep 'yasnippet))
+                  (null yas--active-snippets)
+                  (looking-back "\\s)")) ; ignore "foo()$0" snippet
+          (evil-normal-state))
+        (when (and (featurep 'lsp)
+                   lsp-signature-auto-activate
+                   (lsp-feature? "textDocument/signatureHelp"))
+          (lsp-signature-activate)))))
 
   (defn helm-company-complete-common ()
     "TODO"

@@ -1202,7 +1202,9 @@
       (1 'rust-self-var-face))
      ("^\\s-*\\(use\\)\\s-+\\([_:0-9A-Za-z]+\\)"
       (1 'font-lock-keyword-face)
-      (2 'font-lock-constant-face))))
+      (2 'font-lock-constant-face))
+     ("\\(?:Ok\\|Err\\|Some\\)(\\(?:ref\\(?:\\s-+mut\\)?\\s-+\\)?\\([_0-9A-Za-z]+\\)"
+      (1 'font-lock-variable-name-face))))
   (font-lock-add-keywords
    'rust-mode
    `(("\\_>:\\s-+\\(?:[*&]mut\\s-+\\)?\\([_0-9A-Za-z]+\\)\\_>"
