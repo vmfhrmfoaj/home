@@ -1,6 +1,6 @@
 (use-package company-lsp
   :ensure t
-  :after (helm-company)
+  :after (helm-company lsp-mode)
   :config
 
   (defn company-lsp--custom-post-completion (candidate)
