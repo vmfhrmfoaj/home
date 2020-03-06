@@ -11,6 +11,7 @@
 
   (add-hook 'rust-mode-hook
             (lambda ()
+              (setq-local font-lock-multiline t)
               (with-eval-after-load "lsp-mode"
                 (setq-local evil-lookup-func #'lsp-describe-thing-at-point))))
 

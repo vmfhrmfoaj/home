@@ -1202,9 +1202,7 @@
       (1 'rust-self-var-face))
      ("^\\s-*\\(use\\)\\s-+\\([_:0-9A-Za-z]+\\)"
       (1 'font-lock-keyword-face)
-      (2 'font-lock-constant-face))
-     ("\\(?:Ok\\|Err\\|Some\\)(\\(?:ref\\(?:\\s-+mut\\)?\\s-+\\)?\\([_0-9A-Za-z]+\\)"
-      (1 'font-lock-variable-name-face))))
+      (2 'font-lock-constant-face))))
   (font-lock-add-keywords
    'rust-mode
    `(("\\_>:\\s-+\\(?:[*&]mut\\s-+\\)?\\([_0-9A-Za-z]+\\)\\_>"
@@ -1226,16 +1224,55 @@
       (1 'shadow))
      ("\\(?:^\\s-*\\|[^ \t\r\n]\\)\\(>+\\)"
       (1 'shadow))
-     ("\\_<\\(_\\)\\_>"
+     ("\\_<\\(_\\|\\.\\.\\)\\_>"
       (1 'shadow))
      ("^use\\s-+\\(?:[_0-9A-Za-z]+::\\)+\\s-*{"
       ("\\_<[A-Za-z]+\\_>"
        (save-excursion
-         (setq font-lock--skip nil)
          (safe-up-list-1)
          (point))
        nil
-       (0 font-lock-constant-face t))))
+       (0 font-lock-constant-face t)))
+     ("&?'[_a-z]+"
+      (0 'shadow t))
+     ("if let\\s-+[_:0-9A-Za-z]+\\s-*[({]\\(.+?\\)[})]\\s-*="
+      ("\\([_0-9A-Za-z]+\\)\\(?:\\s-*,\\)?\\s-*"
+       (progn
+         (goto-char (match-beginning 1))
+         (match-end 1))
+       nil
+       (1 'font-lock-variable-name-face)))
+     ("match\\s-+.+?{$"
+      (,(byte-compile
+         (lambda (limit)
+           (ignore-errors
+             (when font-lock--skip
+               (error ""))
+             (if (null font-lock--local-limit)
+                 (when (re-search-forward "^\\s-*\\(.+?\\)\\s-*\\(?:|\\|=>\\)" limit t)
+                   (goto-char (match-beginning 1))
+                   (if (re-search-forward "[_:0-9A-Za-z]+\\s-*[({]\\s-*\\([_0-9A-Za-z]+\\)\\(?:\\s-*,\\)?\\s-*" (match-end 1) t)
+                       (save-excursion
+                         (safe-up-list-1)
+                         (setq font-lock--local-limit (point)))
+                     (set-match-data (fake-match-4)))
+                   t)
+               (unless (re-search-forward "\\([_0-9A-Za-z]+\\)\\(?:\\s-*,\\)?\\s-*" font-lock--local-limit t)
+                 (goto-char font-lock--local-limit)
+                 (when (and (re-search-forward "\\s-*\\(?:|\\|=>\\)[ \t\r\n]*" limit t)
+                            (looking-at "\\s-*{"))
+                   (goto-char (match-end 0))
+                   (safe-up-list-1))
+                 (setq font-lock--local-limit nil)
+                 (set-match-data (fake-match-4)))
+               t))))
+       (save-excursion
+         (setq font-lock--anchor-beg-point (point)
+               font-lock--local-limit nil)
+         (safe-up-list-1)
+         (point))
+       (goto-char font-lock--anchor-beg-point)
+       (1 'font-lock-variable-name-face))))
    :append))
 
 (use-package sh-script
