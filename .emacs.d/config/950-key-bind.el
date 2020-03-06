@@ -306,8 +306,8 @@
   (evil-define-key 'normal 'global
     "gr" #'eldoc-refresh
     (kbd "TAB") #'indent-for-tab-command
-    (kbd "C-d") #'sp-up-sexp
-    (kbd "C-u") #'sp-backward-up-sexp)
+    (kbd "C-d") (lambda () (interactive) (up-list nil t))
+    (kbd "C-u") (lambda () (interactive) (backward-up-list nil t)))
   (evil-define-key 'insert 'global
     (kbd "C-h") #'backward-delete-char
     (kbd "C-a") #'beginning-of-line-text
@@ -375,7 +375,6 @@
                      helm-read-file-map))
     (when evil-want-minibuffer
       (evil-define-key 'normal map
-        "gu" #'helm-find-files-up-one-level
         (kbd "TAB") #'helm-ff-TAB)
       (evil-define-key 'insert map
         (kbd "TAB") #'helm-ff-TAB))
