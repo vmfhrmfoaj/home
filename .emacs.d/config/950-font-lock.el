@@ -1235,6 +1235,13 @@
        (0 font-lock-constant-face t)))
      ("&?'[_a-z]+"
       (0 'shadow t))
+     ("\\(?:let\\|for\\)\\s-+[({]\\(.+?\\)[})]\\s-+\\(?:=\\|in\\)"
+      ("\\([_0-9A-Za-z]+\\)\\(?:\\s-*,\\)?\\s-*"
+       (progn
+         (goto-char (match-beginning 1))
+         (match-end 1))
+       nil
+       (1 'font-lock-variable-name-face)))
      ("if let\\s-+[_:0-9A-Za-z]+\\s-*[({]\\(.+?\\)[})]\\s-*="
       ("\\([_0-9A-Za-z]+\\)\\(?:\\s-*,\\)?\\s-*"
        (progn
