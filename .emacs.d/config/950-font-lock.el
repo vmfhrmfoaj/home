@@ -1202,7 +1202,9 @@
       (1 'rust-self-var-face))
      ("^\\s-*\\(use\\)\\s-+\\([_:0-9A-Za-z]+\\)"
       (1 'font-lock-keyword-face)
-      (2 'font-lock-constant-face))))
+      (2 'font-lock-constant-face))
+     ("&?'[_a-z]+"
+      (0 'shadow))))
   (font-lock-add-keywords
    'rust-mode
    `(("\\_>:\\s-+\\(?:[*&]mut\\s-+\\)?\\([_0-9A-Za-z]+\\)\\_>"
@@ -1233,8 +1235,6 @@
          (point))
        nil
        (0 font-lock-constant-face t)))
-     ("&?'[_a-z]+"
-      (0 'shadow t))
      ("\\(?:let\\|for\\)\\s-+[({]\\(.+?\\)[})]\\s-+\\(?:=\\|in\\)"
       ("\\([_0-9A-Za-z]+\\)\\(?:\\s-*,\\)?\\s-*"
        (progn
