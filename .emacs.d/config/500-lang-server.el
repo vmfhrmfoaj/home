@@ -74,6 +74,10 @@ instead of fixing the bug in `rust-analyzer'."
 
   (push 'company-lsp company-backends))
 
+(use-package dap-mode
+  :ensure t
+  :defer t)
+
 (use-package flymake
   :defer t
   :config
