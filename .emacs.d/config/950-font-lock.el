@@ -1228,22 +1228,22 @@
       (1 'shadow))
      ("\\_<\\(_\\|\\.\\.\\)\\_>"
       (1 'shadow))
-     ("^use\\s-+\\(?:[_0-9A-Za-z]+::\\)+\\s-*{"
-      ("\\_<[A-Za-z]+\\_>"
+     ("^\\s-*use\\s-+\\(?:[_0-9A-Za-z]+::\\)+\\s-*{"
+      ("\\_<[_0-9A-Za-z]+\\_>"
        (save-excursion
          (safe-up-list-1)
          (point))
        nil
        (0 font-lock-constant-face t)))
      ("\\(?:let\\|for\\)\\s-+[({]\\(.+?\\)[})]\\s-+\\(?:=\\|in\\)"
-      ("\\([_0-9A-Za-z]+\\)\\(?:\\s-*,\\)?\\s-*"
+      ("\\([_0-9A-Za-z]+\\)"
        (progn
          (goto-char (match-beginning 1))
          (match-end 1))
        nil
        (1 'font-lock-variable-name-face)))
      ("if let\\s-+[_:0-9A-Za-z]+\\s-*[({]\\(.+?\\)[})]\\s-*="
-      ("\\([_0-9A-Za-z]+\\)\\(?:\\s-*,\\)?\\s-*"
+      ("\\([_0-9A-Za-z]+\\)"
        (progn
          (goto-char (match-beginning 1))
          (match-end 1))
@@ -1258,13 +1258,13 @@
              (if (null font-lock--local-limit)
                  (when (re-search-forward "^\\s-*\\(.+?\\)\\s-*\\(?:|\\|=>\\)" limit t)
                    (goto-char (match-beginning 1))
-                   (if (re-search-forward "[_:0-9A-Za-z]+\\s-*[({]\\s-*\\([_0-9A-Za-z]+\\)\\(?:\\s-*,\\)?\\s-*" (match-end 1) t)
+                   (if (re-search-forward "[_:0-9A-Za-z]+\\s-*[({]\\s-*\\([_0-9A-Za-z]+\\)" (match-end 1) t)
                        (save-excursion
                          (safe-up-list-1)
                          (setq font-lock--local-limit (point)))
                      (set-match-data (fake-match-4)))
                    t)
-               (unless (re-search-forward "\\([_0-9A-Za-z]+\\)\\(?:\\s-*,\\)?\\s-*" font-lock--local-limit t)
+               (unless (re-search-forward "\\([_0-9A-Za-z]+\\)" font-lock--local-limit t)
                  (goto-char font-lock--local-limit)
                  (when (and (re-search-forward "\\s-*\\(?:|\\|=>\\)[ \t\r\n]*" limit t)
                             (looking-at "\\s-*{"))
