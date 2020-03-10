@@ -1,8 +1,6 @@
 (use-package company-lsp
   :ensure t
-  :after (helm-company lsp-mode)
-  :config
-  (push 'company-lsp company-backends))
+  :defer t)
 
 (use-package dap-mode
   :ensure t
@@ -316,6 +314,10 @@
   :ensure t
   :defer t
   :commands lsp-ui-mode
+  :init
+  (setq lsp-ui-doc-winum-ignore t
+        lsp-ui-doc--buffer-prefix " *lsp-ui-doc-")
+
   :config
   (defn lsp-ui-sideline--custom-diagnostics (fn bol eol)
     (if (and (or (eq lsp-diagnostic-package :auto)
