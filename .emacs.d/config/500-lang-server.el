@@ -311,7 +311,6 @@
 (use-package lsp-ui
   :ensure t
   :defer t
-  :commands lsp-ui-mode
   :init
   (setq lsp-ui-doc-winum-ignore t
         lsp-ui-doc--buffer-prefix " *lsp-ui-doc-")
