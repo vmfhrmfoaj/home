@@ -245,13 +245,11 @@
   (defn lsp--wrap-find-xxx (f &rest args)
     "Fall back to `dumb-jump-go'."
     (let ((pos (point))
-          (cur-buf (current-buffer))
-          (success? (ignore-errors (not (apply f args)))))
-      (when (or (not success?)
-                (and (eq cur-buf (current-buffer))
-                     (eq pos (point))))
-        (when success?
-          (ring-remove xref--marker-ring 0))
+          (cur-buf (current-buffer)))
+      (ignore-errors (not (apply f args)))
+      (when (and (eq cur-buf (current-buffer))
+                 (eq pos (point)))
+        (ring-remove xref--marker-ring 0)
         (message nil)
         (call-interactively #'dumb-jump-go))
       (lsp--change-proj cur-buf)))
