@@ -76,7 +76,6 @@
          (rust-mode       . lsp)
          (typescript-mode . lsp)
          (sh-mode         . lsp))
-  :commands lsp
   :config
   (defvar lsp--custom-render--regex-1-for-php
     (concat "```php[ \t\r\n]*"                     ; ```php
@@ -311,10 +310,6 @@
 (use-package lsp-ui
   :ensure t
   :defer t
-  :init
-  (setq lsp-ui-doc-winum-ignore t
-        lsp-ui-doc--buffer-prefix " *lsp-ui-doc-")
-
   :config
   (defn lsp-ui-sideline--custom-diagnostics (fn bol eol)
     (if (and (or (eq lsp-diagnostic-package :auto)
