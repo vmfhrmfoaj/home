@@ -271,6 +271,41 @@
        (aset state 4 nil)
        (flymake-delete-own-overlays)))
 
+  (defn lsp--custom-signature->message (signature-help)
+    "Customize to remove the document in the signature"
+    (setq lsp--signature-last signature-help)
+    (when (and signature-help (not (seq-empty-p (gethash "signatures" signature-help))))
+      (-let* (((&hash "activeSignature" active-index
+                      "activeParameter" active-parameter
+                      "signatures")     signature-help)
+              (active-index (or lsp--signature-last-index active-index 0))
+              (_ (setq lsp--signature-last-index active-index))
+              ((signature &as &hash? "label" "parameters") (seq-elt signatures active-index))
+              (prefix (format "%s/%s%s"
+                              (1+ active-index)
+                              (length signatures)
+                              (propertize "│ " 'face 'shadow)))
+              (prefix-length (- (length prefix) 2))
+              (separator (propertize
+                          (concat "\n"
+                                  (s-repeat prefix-length "─")
+                                  "┴"
+                                  (s-repeat (1+ (length label)) "─"))
+                          'face 'shadow)))
+        (when (and active-parameter (not (seq-empty-p parameters)))
+          (-when-let* ((param (when (and (< -1 active-parameter (length parameters)))
+                                (seq-elt parameters active-parameter)))
+                       (selected-param-label (let ((label (gethash "label" param)))
+                                               (if (stringp label) label (append label nil))))
+                       (start (if (stringp selected-param-label)
+                                  (s-index-of selected-param-label label)
+                                (cl-first selected-param-label)))
+                       (end (if (stringp selected-param-label)
+                                (+ start (length selected-param-label))
+                              (cl-second selected-param-label))))
+            (add-face-text-property start end 'eldoc-highlight-function-argument nil label)))
+        (concat prefix label separator))))
+
   (setq lsp-diagnostic-package :flymake
         lsp-enable-on-type-formatting nil
         lsp-file-watch-threshold nil
@@ -288,6 +323,7 @@
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
   (advice-add #'lsp--eldoc-message   :override #'lsp--custom-eldoc-message)
   (advice-add #'lsp--flymake-backend :override #'lsp--custom-flymake-backend)
+  (advice-add #'lsp--signature->message :override #'lsp--custom-signature->message)
   (advice-add #'lsp--flymake-update-diagnostics :before #'lsp--clear-flymake-diags)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
