@@ -42,3 +42,8 @@
             (advice-add #'switch-to-buffer  :after #'update-buf-visit-time)
             (setq gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect)))
           :append)
+
+;; NOTE
+;;  This is quite dangerous. but I usually use Emacs as main editor.
+;;  I think, in my use case, overwriting problem will be not happen.
+(advice-add #'verify-visited-file-modtime :override (-const t))
