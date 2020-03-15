@@ -279,32 +279,40 @@
                       "activeParameter" active-parameter
                       "signatures")     signature-help)
               (active-index (or lsp--signature-last-index active-index 0))
-              (_ (setq lsp--signature-last-index active-index))
               ((signature &as &hash? "label" "parameters") (seq-elt signatures active-index))
+              (_ (when (and active-parameter (not (seq-empty-p parameters)))
+                   (-when-let* ((param (when (and (< -1 active-parameter (length parameters)))
+                                         (seq-elt parameters active-parameter)))
+                                (selected-param-label (let ((label (gethash "label" param)))
+                                                        (if (stringp label) label (append label nil))))
+                                (start (if (stringp selected-param-label)
+                                           (s-index-of selected-param-label label)
+                                         (cl-first selected-param-label)))
+                                (end (if (stringp selected-param-label)
+                                         (+ start (length selected-param-label))
+                                       (cl-second selected-param-label))))
+                     (add-face-text-property start end 'eldoc-highlight-function-argument nil label))))
               (prefix (format "%s/%s%s"
                               (1+ active-index)
                               (length signatures)
                               (propertize "│ " 'face 'shadow)))
               (prefix-length (- (length prefix) 2))
+              (prefix2 (concat (s-repeat prefix-length " ")
+                               (propertize "│ " 'face 'shadow)))
+              (sig-lines (->> label (s-lines)))
               (separator (propertize
                           (concat "\n"
                                   (s-repeat prefix-length "─")
                                   "┴"
-                                  (s-repeat (1+ (length label)) "─"))
+                                  (s-repeat (1+ (-max (--map (length it) sig-lines))) "─"))
                           'face 'shadow)))
-        (when (and active-parameter (not (seq-empty-p parameters)))
-          (-when-let* ((param (when (and (< -1 active-parameter (length parameters)))
-                                (seq-elt parameters active-parameter)))
-                       (selected-param-label (let ((label (gethash "label" param)))
-                                               (if (stringp label) label (append label nil))))
-                       (start (if (stringp selected-param-label)
-                                  (s-index-of selected-param-label label)
-                                (cl-first selected-param-label)))
-                       (end (if (stringp selected-param-label)
-                                (+ start (length selected-param-label))
-                              (cl-second selected-param-label))))
-            (add-face-text-property start end 'eldoc-highlight-function-argument nil label)))
-        (concat prefix label separator))))
+        (setq lsp--signature-last-index active-index)
+        (concat prefix
+                (first sig-lines)
+                (-some->> sig-lines
+                  (-drop 1)
+                  (apply #'concat "\n" prefix2))
+                separator))))
 
   (setq lsp-diagnostic-package :flymake
         lsp-enable-on-type-formatting nil
