@@ -108,9 +108,10 @@
   :ensure t
   :defer t
   :config
-  (advice-add #'fancy-narrow-to-region :after (lambda (&rest _) "To cancel a selection." (keyboard-quit)))
   (with-eval-after-load "helm-occur"
     (fancy-narrow--advise-function #'helm-occur))
+
+  (advice-add #'fancy-narrow-to-region :after (lambda (&rest _) "To cancel a selection." (keyboard-quit)))
   (let ((f (byte-compile
             (lambda (fn &rest args)
               "wrap a function to run without `fancy-narrow'."
@@ -122,8 +123,10 @@
     ;;  For avoiding to conflict between `evil-forward-nearest' and `fancy-narrow'.
     ;;  But this is not mean that allow to go out of boundary of `fancy-narrow'.
     (advice-add #'evil-forward-nearest :around f)
-    (eval-after-load "cc-mode"
-      `(advice-add #'c-after-change :around ,f))))
+    (with-eval-after-load "cc-mode"
+      (advice-add #'c-after-change :around f))
+    (with-eval-after-load "lsp"
+      (advice-add #'lsp-on-change :around f))))
 
 (use-package focus
   :disabled t
