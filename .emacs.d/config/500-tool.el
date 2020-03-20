@@ -238,10 +238,7 @@
     (vlf-end-of-file)
     (end-of-buffer))
 
-  (let ((size (* 1024 600)))
-    (setq large-file-warning-threshold size
-          vlf-batch-size               size
-          vlf-tune-enabled nil)))
+  (setq vlf-tune-enabled nil))
 
 (use-package ztree
   :ensure t
