@@ -5,7 +5,8 @@
               truncate-lines t)
 
 (let ((backup-dir (concat home-dir "/.emacs.d/saves/")))
-  (setq auto-save-file-name-transforms `((".*" ,backup-dir t))
+  (setq auto-revert-interval 0.5
+        auto-save-file-name-transforms `((".*" ,backup-dir t))
         backup-directory-alist `((".*" . ,backup-dir))
         blink-cursor-blinks 0
         blink-cursor-delay 3
@@ -19,6 +20,7 @@
 
 (blink-cursor-mode 1)
 (global-subword-mode 1)
+(global-auto-revert-mode 1)
 (prefer-coding-system 'utf-8)
 (recentf-mode 1)
 
@@ -42,8 +44,3 @@
             (advice-add #'switch-to-buffer  :after #'update-buf-visit-time)
             (setq gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect)))
           :append)
-
-;; NOTE
-;;  This is quite dangerous. but I usually use Emacs as main editor.
-;;  I think, in my use case, overwriting problem will be not happen.
-(advice-add #'verify-visited-file-modtime :override (-const t))
