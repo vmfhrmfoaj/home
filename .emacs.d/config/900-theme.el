@@ -30,6 +30,12 @@
    '(clojure-side-effect-face ((t :inherit (bold italic font-lock-warning-face))))
    '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))))
 
+(use-package fancy-narrow
+  :defer t
+  :config
+  (custom-set-faces
+   `(fancy-narrow-blocked-face ((t :foreground "#a49da5" :weight light)))))
+
 (use-package font-lock
   :defer t
   :config
