@@ -129,7 +129,6 @@
       (advice-add #'lsp-on-change :around f))))
 
 (use-package focus
-  :disabled t
   :ensure t
   :defer t
   :commands (focus-init focus-terminate)
