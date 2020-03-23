@@ -262,6 +262,23 @@
        (aset state 4 nil)
        (flymake-delete-own-overlays)))
 
+  (defn lsp--custom-handle-signature-update (signature)
+    "Use `eldoc' instead `iv'."
+    (let ((message (lsp--signature->message signature)))
+      (if (s-present? message)
+          (eldoc-message message)
+        (lsp-signature-stop))))
+
+  (defn lsp-custom-signature-stop ()
+    "Use `eldoc' instead `iv'."
+    (interactive)
+    (lsp-cancel-request-by-token :signature)
+    (with-current-buffer (or lsp--signature-last-buffer (current-buffer))
+      (remove-hook 'lsp-on-idle-hook #'lsp-signature t))
+    (remove-hook 'post-command-hook #'lsp--signature-maybe-stop)
+    (eldoc-message nil)
+    (lsp-signature-mode -1))
+
   (defn lsp--custom-signature->message (signature-help)
     "Customize to remove the document in the signature"
     (setq lsp--signature-last signature-help)
@@ -286,24 +303,16 @@
               (prefix (format "%s/%s%s"
                               (1+ active-index)
                               (length signatures)
-                              (propertize "│ " 'face 'shadow)))
-              (prefix-length (- (length prefix) 2))
-              (prefix2 (concat (s-repeat prefix-length " ")
-                               (propertize "│ " 'face 'shadow)))
-              (sig-lines (->> label (s-lines)))
-              (separator (propertize
-                          (concat "\n"
-                                  (s-repeat prefix-length "─")
-                                  "┴"
-                                  (s-repeat (1+ (-max (--map (length it) sig-lines))) "─"))
-                          'face 'shadow)))
+                              (propertize " │ " 'face 'shadow)))
+              (prefix2 (concat (s-repeat (- (length prefix) 2) " ")
+                               (propertize " │ " 'face 'shadow)))
+              (sig-lines (->> label (s-lines))))
         (setq lsp--signature-last-index active-index)
         (concat prefix
                 (first sig-lines)
                 (-some->> sig-lines
                   (-drop 1)
-                  (apply #'concat "\n" prefix2))
-                separator))))
+                  (apply #'concat "\n" prefix2))))))
 
   (setq lsp-diagnostic-package :flymake
         lsp-enable-on-type-formatting nil
@@ -315,13 +324,13 @@
               (when (and lsp-signature-auto-activate
                          (lsp-feature? "textDocument/signatureHelp"))
                 (lsp-signature-activate))))
-  (add-hook #'evil-insert-state-exit-hook
-            (lambda ()
-              (lsp-signature-stop)))
+  (add-hook #'evil-insert-state-exit-hook #'lsp-signature-stop)
 
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
   (advice-add #'lsp--eldoc-message   :override #'lsp--custom-eldoc-message)
   (advice-add #'lsp--flymake-backend :override #'lsp--custom-flymake-backend)
+  (advice-add #'lsp--handle-signature-update :override #'lsp--custom-handle-signature-update)
+  (advice-add #'lsp-signature-stop :override #'lsp-custom-signature-stop)
   (advice-add #'lsp--signature->message :override #'lsp--custom-signature->message)
   (advice-add #'lsp--flymake-update-diagnostics :before #'lsp--clear-flymake-diags)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
