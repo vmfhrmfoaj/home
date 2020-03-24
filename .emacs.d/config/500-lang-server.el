@@ -322,7 +322,8 @@
   (add-hook #'evil-insert-state-entry-hook
             (lambda ()
               (when (and lsp-signature-auto-activate
-                         (lsp-feature? "textDocument/signatureHelp"))
+                         (lsp-feature? "textDocument/signatureHelp")
+                         (null lsp-signature-mode))
                 (lsp-signature-activate))))
   (add-hook #'evil-insert-state-exit-hook #'lsp-signature-stop)
 
