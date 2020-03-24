@@ -733,7 +733,9 @@
   (add-hook 'vlf-mode-hook
             (lambda ()
               (evil-local-set-key 'normal (kbd "M-p") #'vlf-prev-batch)
-              (evil-local-set-key 'normal (kbd "M-n") #'vlf-next-batch))))
+              (evil-local-set-key 'normal (kbd "M-n") #'vlf-next-batch)
+              (evil-local-set-key 'normal (kbd "gg") #'vlf-custom-beginning-of-file)
+              (evil-local-set-key 'normal (kbd "G")  #'vlf-custom-end-of-file))))
 
 (use-package ztree-view
   :defer t

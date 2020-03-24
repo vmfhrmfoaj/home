@@ -238,7 +238,7 @@
     (vlf-end-of-file)
     (end-of-buffer))
 
-  (setq vlf-tune-enabled nil))
+  (add-hook 'vlf-mode-hook (-partial #'auto-revert-mode -1)))
 
 (use-package ztree
   :ensure t
