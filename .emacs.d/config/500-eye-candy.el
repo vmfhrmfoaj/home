@@ -231,6 +231,34 @@
                      (point))))
           (cons beg end)))))
 
+  (defn focus--c-style-thing ()
+    "TODO"
+    (save-excursion
+      (condition-case nil
+          (let (end)
+            (while (progn
+                     (backward-up-list 1 t t)
+                     (not (char-equal ?{ (char-after)))))
+            (save-excursion
+              (forward-list)
+              (setq end (point)))
+            (beginning-of-line-text)
+            (unless (char-equal ?} (char-after))
+              (let ((keep-going t))
+                (while (and (not (looking-at-p "[[:space:]]*$"))
+                            (not (looking-at-p "^\\s-*//"))
+                            (not (looking-at-p ".*;\\s-*$"))
+                            keep-going)
+                  (forward-line -1)
+                  (beginning-of-line)
+                  (when (looking-at-p ".*{\\s-*$")
+                    (setq keep-going nil)))
+                (forward-line 1)
+                (beginning-of-line)))
+            (skip-chars-forward " \t}" )
+            (cons (point) end))
+        (error (cons (point-min) (point-max))))))
+
   (defvar-local focus--update-timer nil
     "TODO")
 
@@ -261,9 +289,13 @@
              fn))))
 
   (setq focus-update-idle-time 0.2)
-  (add-to-list 'focus-mode-to-thing '(clojure-mode . clojure))
+  (add-to-list 'focus-mode-to-thing '(c-mode . c-style))
+  (add-to-list 'focus-mode-to-thing '(c++-mode . c-style))
   (add-to-list 'focus-mode-to-thing '(cider-repl-mode . list+))
+  (add-to-list 'focus-mode-to-thing '(clojure-mode . clojure))
   (add-to-list 'focus-mode-to-thing '(emacs-lisp-mode . lisp))
+  (add-to-list 'focus-mode-to-thing '(java-mode . c-style))
+  (add-to-list 'focus-mode-to-thing '(rust-mode . c-style))
   (add-to-list 'focus-mode-to-thing '(tex-mode . tex-sentence))
   (add-to-list 'focus-mode-to-thing '(text-mode . sentence+))
   (put 'tex-sentence 'bounds-of-thing-at-point #'focus--tex-thing)
@@ -271,6 +303,7 @@
   (put 'list+        'bounds-of-thing-at-point #'focus--list+-thing)
   (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing)
   (put 'clojure      'bounds-of-thing-at-point #'focus--clojure-thing)
+  (put 'c-style      'bounds-of-thing-at-point #'focus--c-style-thing)
 
   (advice-add #'focus-terminate :after #'focus--clear-update-timer)
   (advice-add #'focus-move-focus :around #'focus--wrap-move-focus))

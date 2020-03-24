@@ -36,6 +36,12 @@
   (custom-set-faces
    `(fancy-narrow-blocked-face ((t :foreground "#a49da5" :weight light)))))
 
+(use-package focus
+  :defer t
+  :config
+  (custom-set-faces
+   `(focus-unfocused ((t :foreground "#a49da5" :weight light)))))
+
 (use-package font-lock
   :defer t
   :config
