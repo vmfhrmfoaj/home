@@ -100,6 +100,13 @@
     (helm-set-local-variable
      'helm-input-idle-delay helm-grep-input-idle-delay))
 
+  (defn helm-ag--custom-project-root ()
+    "TODO"
+    (or (and (featurep 'persp-mode)
+             (persp-current-project))
+        (and (featurep 'projectile)
+             (projectile-project-root))))
+
   (setq helm-ag-base-command "rg"
         helm-ag-command-option "--no-heading --no-messages --smart-case"
         helm-ag-use-emacs-lisp-regexp t)
@@ -108,8 +115,7 @@
   (advice-add #'helm-ag--propertize-candidates :override #'helm-ag--custom-propertize-candidates)
   (advice-add #'helm-do-ag--helm :before #'helm-ag--set-input-idle-delay)
   (advice-add #'helm-ag--elisp-regexp-to-pcre :filter-return #'helm-ag--elisp-regexp-to-pcre-for-ripgrep)
-  (with-eval-after-load "projectile"
-    (advice-add #'helm-ag--project-root :override #'projectile-project-root))
+  (advice-add #'helm-ag--project-root :override #'helm-ag--custom-project-root)
   (with-eval-after-load "vlf"
     (advice-add #'helm-ag--find-file-action :before-until #'helm-ag--find-file-action-for-vlf)))
 

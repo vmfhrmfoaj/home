@@ -3,7 +3,18 @@
   :defer t
   :commands (helm-projectile-find-dir
              helm-projectile-find-file
-             helm-projectile-switch-project))
+             helm-projectile-switch-project)
+  :config
+  (with-eval-after-load "persp-mode"
+    (setf (cdr (assq 'candidates helm-source-projectile-files-list))
+          (byte-compile
+           (lambda ()
+             (when (projectile-project-p)
+               (with-helm-current-buffer
+                 (cl-loop with root = (or (persp-current-project)
+                                          (projectile-project-root))
+                          for display in (projectile-project-files root)
+                          collect (cons display (expand-file-name display root))))))))))
 
 (use-package persp-mode
   :ensure t
@@ -124,6 +135,11 @@
   (add-hook 'magit-log-mode-hook    #'persp-add-buffer-without-switch)
   (add-hook 'magit-status-mode-hook #'persp-add-buffer-without-switch)
   (add-hook 'after-init-hook (-partial #'persp-mode 1))
+  (add-hook 'find-file-hook
+            (lambda ()
+              (let ((root (or (persp-current-project)
+                              (projectile-project-root))))
+                (setq-local dumb-jump-project root))))
 
   (advice-add #'make-process :around #'persp--wrap-make-process)
   (advice-add #'persp-switch :after #'persp-add-all-proj-buffer))
