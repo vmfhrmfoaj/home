@@ -234,6 +234,20 @@
 
 (use-package neotree
   :ensure t
+  :defer t
+  :init
+  (defn neotree-project-dir ()
+    "TODO"
+    (interactive)
+    (let ((buf-file-name buffer-file-name))
+      (neotree-dir (or (projectile-project-root)
+                       (file-name-directory (or buf-file-name ""))
+                       "~/"))
+      (when (and neo-smart-open
+                 buf-file-name)
+        (neotree-find buf-file-name)
+        (recenter))))
+
   :config
   (defn neo-buffer--back (path _)
     "TODO"
@@ -247,18 +261,6 @@
     (unless (neo-buffer--expanded-node-p (neo-buffer--get-filename-current-line))
       (neotree-select-up-node))
     (neo-buffer--execute nil null-fn #'neo-buffer--back))
-
-  (defn neotree-project-dir ()
-    "TODO"
-    (interactive)
-    (let ((buf-file-name buffer-file-name))
-      (neotree-dir (or (projectile-project-root)
-                       (file-name-directory (or buf-file-name ""))
-                       "~/"))
-      (when (and neo-smart-open
-                 buf-file-name)
-        (neotree-find buf-file-name)
-        (recenter))))
 
   (defn neotree-toggle-maximize ()
     "TODO"
@@ -274,7 +276,7 @@
         neo-keymap-style 'concise
         neo-show-hidden-files t
         neo-smart-open t
-        neo-theme 'icons
+        neo-theme 'ascii
         neo-window-width 35)
 
   (add-hook 'neotree-mode-hook (lambda () (setq-local right-fringe-width 0))))
