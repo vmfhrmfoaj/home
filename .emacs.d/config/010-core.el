@@ -218,6 +218,7 @@
   (require 'helm-config)
   (setq helm-autoresize-min-height 25
         helm-autoresize-max-height 45
+        helm-buffer-max-length 35
         helm-display-header-line nil
         helm-display-function #'helm-display-buffer-at-bottom
         helm-split-window-inside-p t
