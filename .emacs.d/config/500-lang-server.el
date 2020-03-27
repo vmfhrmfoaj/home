@@ -27,6 +27,8 @@
 (use-package lsp-clients
   :defer t
   :config
+  (add-to-list 'lsp-clients-clangd-args "--header-insertion=never")
+
   (lsp-register-client
    (make-lsp-client :new-connection (lsp-stdio-connection '("bash-language-server" "start"))
                     :major-modes '(sh-mode)
