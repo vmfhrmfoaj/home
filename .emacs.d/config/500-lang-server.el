@@ -174,9 +174,16 @@
     (regexp-opt '("match" "let" "for" "if" "=") 'symbols)
     "TODO")
 
+  (defn lsp--custom-hover-err-handler (_)
+    "TODO"
+    (lsp--reset-hover-cache)
+    (lsp--eldoc-message nil))
+
   (defn lsp--custom-hover ()
     "Display hover info (based on `textDocument/hover')."
-    (let ((symbol (thing-at-point 'symbol)))
+    (let* ((symbol-bounds (bounds-of-thing-at-point 'symbol))
+           (symbol (when symbol-bounds
+                     (buffer-substring-no-properties (car symbol-bounds) (cdr symbol-bounds)))))
       (if (and lsp--hover-saved-symbol (string= lsp--hover-saved-symbol symbol)
                lsp--hover-saved-bounds (lsp--point-in-bounds-p lsp--hover-saved-bounds))
           (lsp--eldoc-message lsp--eldoc-saved-message)
@@ -185,27 +192,68 @@
                 (and (derived-mode-p 'rust-mode)
                      (string-match-p  lsp--hover-exclude-regex-for-rust symbol)))
             (lsp--eldoc-message nil)
-          (when (and lsp-eldoc-enable-hover (lsp--capability "hoverProvider"))
+          (when lsp-eldoc-enable-hover
             (setq lsp--hover-saved-symbol symbol)
-            (lsp-request-async
-             "textDocument/hover"
-             (lsp--text-document-position-params)
-             (lambda (hover)
-               (if (null hover)
-                   (lsp--eldoc-message nil)
-                 (when-let (range (gethash "range" hover))
-                   (setq lsp--hover-saved-bounds (lsp--range-to-region range)))
-                 (-let* ((contents (gethash "contents" hover)))
-                   (condition-case nil
-                       (lsp--eldoc-message (and contents
-                                                (lsp--render-on-hover-content contents
-                                                                              lsp-eldoc-render-all)))
-                     (error
-                      (lsp--reset-hover-cache)
-                      (lsp--eldoc-message nil))))))
-             :error-handler #'ignore
-             :mode 'tick
-             :cancel-token :eldoc-hover))))))
+            (cond
+             ((member major-mode '(c-mode c++-mode))
+              (when (lsp--capability "signatureHelpProvider")
+                (lsp-request-async
+                 "textDocument/signatureHelp"
+                 (save-excursion
+                   (goto-char (cdr symbol-bounds))
+                   (when (looking-at "\\s-*(")
+                     (down-list))
+                   (lsp--text-document-position-params))
+                 (-partial
+                  (lambda (symbol symbol-bounds signature)
+                    (let* ((sig (-some->> signature
+                                  (gethash "signatures")
+                                  (--map (gethash "label" it))
+                                  (--filter (s-starts-with? symbol it))
+                                  (--map (-some->> it
+                                           (s-split "->")
+                                           (-map #'s-trim)
+                                           (reverse)
+                                           (-interpose " ")
+                                           (apply #'concat)
+                                           (s-replace " * " "* ")))
+                                  (-non-nil)
+                                  (-interpose "\n")
+                                  (apply #'concat)))
+                           (sig (when sig
+                                  (with-temp-buffer
+                                    (c-mode)
+                                    (insert sig)
+                                    (font-lock-fontify-buffer)
+                                    (setq sig (buffer-string))))))
+                      (when sig
+                        (setq lsp--hover-saved-bounds symbol-bounds))
+                      (lsp--eldoc-message sig)))
+                  symbol symbol-bounds)
+                 :error-handler #'lsp--custom-hover-err-handler
+                 :mode 'tick
+                 :cancel-token :eldoc-hover)))
+             (t
+              (when (lsp--capability "hoverProvider")
+                (lsp-request-async
+                 "textDocument/hover"
+                 (lsp--text-document-position-params)
+                 (lambda (hover)
+                   (if (null hover)
+                       (lsp--eldoc-message nil)
+                     (when-let (range (gethash "range" hover))
+                       (setq lsp--hover-saved-bounds (lsp--range-to-region range)))
+                     (let* ((contents (gethash "contents" hover)))
+                       (condition-case nil
+                           (lsp--eldoc-message (and contents
+                                                    (lsp--render-on-hover-content contents
+                                                                                  lsp-eldoc-render-all)))
+                         (error
+                          (lsp--reset-hover-cache)
+                          (lsp--eldoc-message nil))))))
+                 :error-handler #'lsp--custom-hover-err-handler
+                 :mode 'tick
+                 :cancel-token :eldoc-hover)))))))))
 
   (defn lsp--change-proj (cur-buf)
     "TODO"
