@@ -195,6 +195,7 @@
                      (not (char-equal ?{ (char-after)))))
             (save-excursion
               (forward-list)
+              (end-of-line)
               (setq end (point)))
             (beginning-of-line-text)
             (unless (char-equal ?} (char-after))
