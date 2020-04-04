@@ -175,5 +175,4 @@
   (advice-add #'projectile-project-files :filter-return
               #'projectile-project-files-custom-filter)
 
-  (projectile-cleanup-known-projects)
   (projectile-mode 1))
