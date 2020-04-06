@@ -279,9 +279,7 @@ This is customized version of `clojure-find-ns' to improve some performance."
       (save-restriction
         (widen)
         (let ((limit (line-end-position))
-              matched?
-              fancy-narrow--beginning
-              fancy-narrow--end)
+              matched?)
           (goto-char (point-min))
           (while (re-search-forward clojure-namespace-name-regex-1 limit t)
             (setq matched? t))

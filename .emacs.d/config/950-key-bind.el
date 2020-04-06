@@ -175,10 +175,10 @@
     "kw" #'sp-wrap-sexp
 
     ;; narrow
-    "nf" #'fancy-narrow-to-defun
-    "np" #'fancy-narrow-to-page
-    "nr" #'fancy-narrow-to-region
-    "nw" #'fancy-widen
+    "nf" #'narrow-to-defun
+    "np" #'narrow-to-page
+    "nr" #'narrow-to-region
+    "nw" #'widen
 
     ;; project
     "p TAB" #'persp-switch-to-last-selected-persp

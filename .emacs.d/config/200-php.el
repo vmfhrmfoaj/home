@@ -40,9 +40,7 @@
     "TODO")
 
   (defn php-unhilight-no-php-code ()
-    (let* ((fancy-narrow--beginning nil)
-           (fancy-narrow--end nil)
-           (php-code-regions (php-code-regions))
+    (let* ((php-code-regions (php-code-regions))
            (non-php-code-regions
             (->> (if (= (point-max) (cdr (-last-item php-code-regions)))
                      php-code-regions
