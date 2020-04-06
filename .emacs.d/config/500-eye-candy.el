@@ -51,9 +51,8 @@
   (setq evil-goggles-duration 0.2)
 
   (add-hook 'minibuffer-setup-hook
-            (byte-compile
-             (lambda ()
-               (setq-local evil-goggles-duration 0.001))))
+            (lambda ()
+              (setq-local evil-goggles-duration 0.001)))
 
   (evil-goggles-use-diff-faces)
   (make-thread #'evil-goggles-mode))
@@ -203,20 +202,22 @@
                                (not (char-equal ?{ (char-after)))))
                       (save-excursion
                         (forward-list)
-                        (end-of-line)
                         (setq end (point)))
                       (beginning-of-line)
                       (unless (looking-at-p "\\s-*}")
-                        (let ((keep-going t))
-                          (while (and (not (bobp))
-                                      (not (looking-at-p "[[:space:]]*$"))
-                                      (not (looking-at-p "\\s-*//"))
-                                      (not (looking-at-p ".*,(\\s-*//.*)?\\s-*$"))
-                                      (not (looking-at-p ".*;(\\s-*//.*)?\\s-*$"))
-                                      keep-going)
+                        (let ((keep-going t)
+                              (need-forward-line t))
+                          (while (and (not (bobp)) keep-going)
                             (forward-line -1)
                             (beginning-of-line)
-                            (when (looking-at-p ".*{\\s-*$")
+                            (when (or (looking-at-p "[[:space:]]*$")
+                                      (looking-at-p "\\s-*/[*/]")
+                                      (looking-at-p ".*,\\s-*\\(/[*/].*\\)?$")
+                                      (looking-at-p ".*;\\s-*\\(/[*/].*\\)?$")
+                                      (looking-at-p ".*{\\s-*\\(/[*/].*\\)?$"))
+                              (when need-forward-line
+                                (forward-line 1)
+                                (beginning-of-line))
                               (setq keep-going nil)))))
                       (skip-chars-forward " \t}" )
                       (cons (point) end)))))
