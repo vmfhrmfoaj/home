@@ -364,6 +364,11 @@
                   (-drop 1)
                   (apply #'concat "\n" prefix2))))))
 
+  (defn lps--focus-lsp-help-buffer (&rest _)
+    "Force on '*lsp-help*' buffer"
+    (-when-let (buf (get-buffer "*lsp-help*"))
+      (pop-to-buffer buf)))
+
   (setq lsp-diagnostic-package :flymake
         lsp-enable-on-type-formatting nil
         lsp-file-watch-threshold nil
@@ -386,6 +391,7 @@
   (advice-add #'lsp--flymake-update-diagnostics :before #'lsp--clear-flymake-diags)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
+  (advice-add #'lsp-describe-thing-at-point :after #'lps--focus-lsp-help-buffer)
   (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx)
