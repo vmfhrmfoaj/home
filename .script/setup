@@ -12,7 +12,7 @@ _is_shim() {
 
 _add_to_path() {
     local new_path=$1
-    local is_append=$2{:-'no'}
+    local is_append=${2:-'no'}
     if [ -n "${new_path}" ]; then
         if [ -d "${new_path}" ] && [ 0 = $(echo ${PATH} | grep -c "${new_path}") ]; then
             if [ "${is_append}" = "yes" ]; then
