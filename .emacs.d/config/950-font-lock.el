@@ -937,7 +937,7 @@
          (,(concat "(defn" whitespace+ "\\(" symbol "\\)")
           (1 'font-lock-function-name-face))
          ;; local variables
-         (,(concat "(\\(lexical-\\|-\\)?let\\*?" whitespace+ "(")
+         (,(concat "(\\(lexical-\\|when-\\|if-\\)?let\\*?" whitespace+ "(")
           (,(byte-compile
              (-partial
               (lambda (symbol+whitespace limit)
