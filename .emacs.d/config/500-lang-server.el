@@ -397,17 +397,6 @@
   (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-type-definition :around #'lsp--wrap-find-xxx))
 
-(use-package lsp-rust
-  :ensure lsp-mode
-  :defer t
-  :config
-  (defn lsp-rust-analyzer--append-init-options (options)
-    "Append options for `rust-analyzer'."
-    (append '(:rust-analyzer.enableEnhancedTyping nil) options))
-
-  (advice-add #'lsp-rust-analyzer--make-init-options :filter-return
-              #'lsp-rust-analyzer--append-init-options))
-
 (use-package lsp-ui
   :ensure t
   :defer t
