@@ -374,13 +374,13 @@
         lsp-file-watch-threshold nil
         lsp-rust-server 'rust-analyzer)
 
-  (add-hook #'evil-insert-state-entry-hook
+  (add-hook 'evil-insert-state-entry-hook
             (lambda ()
               (when (and lsp-signature-auto-activate
                          (lsp-feature? "textDocument/signatureHelp")
                          (null lsp-signature-mode))
                 (lsp-signature-activate))))
-  (add-hook #'evil-insert-state-exit-hook #'lsp-signature-stop)
+  (add-hook 'evil-insert-state-exit-hook #'lsp-signature-stop)
 
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
   (advice-add #'lsp--eldoc-message   :override #'lsp--custom-eldoc-message)

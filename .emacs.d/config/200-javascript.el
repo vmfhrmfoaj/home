@@ -2,7 +2,7 @@
   :defer t
   :config
   (setq-default js-indent-level 4)
-  (add-hook #'js-mode-hook
+  (add-hook 'js-mode-hook
             (lambda ()
               (with-eval-after-load "lsp-mode"
                 (setq-local evil-lookup-func #'lsp-describe-thing-at-point)))))
@@ -19,7 +19,7 @@
   (defconst js--prettify-symbols-alist nil)
   (setq-default js-indent-level 4
                 js2-basic-offset 2)
-  (add-hook #'js2-mode-hook
+  (add-hook 'js2-mode-hook
             (lambda ()
               (with-eval-after-load "lsp-mode"
                 (setq-local evil-lookup-func #'lsp-describe-thing-at-point)))))
@@ -28,7 +28,7 @@
   :ensure t
   :defer t
   :config
-  (add-hook #'typescript-mode-hook
+  (add-hook 'typescript-mode-hook
             (lambda ()
               (with-eval-after-load "lsp-mode"
                 (setq-local evil-lookup-func #'lsp-describe-thing-at-point)))))
