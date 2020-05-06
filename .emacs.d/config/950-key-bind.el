@@ -522,7 +522,10 @@
   (define-key cperl-mode-map (kbd "{") nil) ; disable `cperl-electric-lbrace'
   (evil-define-key 'normal cperl-mode-map (kbd "M-,") #'pop-tag-mark)
   (evil-leader/set-key-for-mode 'cperl-mode
-    "mgg" #'dumb-jump-go)
+    "mgg" #'lsp-find-definition
+    "mgd" #'lsp-find-declaration
+    "mgi" #'lsp-find-implementation
+    "mgt" #'lsp-find-type-definition)
   (which-key-declare-prefixes-for-mode 'cperl-mode
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode 'cperl-mode))

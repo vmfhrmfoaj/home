@@ -63,6 +63,7 @@
   :ensure t
   :hook ((c-mode          . lsp)
          (c++-mode        . lsp)
+         (cperl-mode      . lsp)
          (js-mode         . lsp)
          (js2-mode        . lsp)
          (php-mode        . lsp)
@@ -289,7 +290,7 @@
       (ignore-errors (not (apply f args)))
       (when (and (eq cur-buf (current-buffer))
                  (eq pos (point)))
-        (ring-remove xref--marker-ring 0)
+        (ignore-errors (ring-remove xref--marker-ring 0))
         (message nil)
         (call-interactively #'dumb-jump-go))
       (lsp--change-proj cur-buf)))
@@ -374,6 +375,9 @@
         lsp-file-watch-threshold nil
         lsp-rust-server 'rust-analyzer)
 
+  (add-to-list 'lsp-language-id-configuration '(cperl-mode . "perl"))
+  (add-to-list 'lsp-language-id-configuration '(".*\\.pl$" . "perl"))
+
   (add-hook 'evil-insert-state-entry-hook
             (lambda ()
               (when (and lsp-signature-auto-activate
@@ -396,6 +400,22 @@
   (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-type-definition :around #'lsp--wrap-find-xxx))
+
+(use-package lsp-perl
+  :defer t
+  :config
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-tcp-connection
+                                     (lambda (port)
+                                       (list lsp-perl-language-server-path
+                                             "-MPerl::LanguageServer"
+                                             "-ePerl::LanguageServer::run"
+                                             "--"
+                                             "--port"
+                                             (number-to-string port))))
+                    :major-modes '(perl-mode cperl-mode)
+                    :priority -1
+                    :server-id 'perl-language-server)))
 
 (use-package lsp-ui
   :ensure t

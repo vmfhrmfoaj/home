@@ -46,6 +46,11 @@
     (setq-local beginning-of-defun-function #'cperl-beginning-of-defun)
     (setq-local end-of-defun-function       #'cperl-end-of-defun))
 
+  (add-hook 'cperl-mode-hook
+            (lambda ()
+              (with-eval-after-load "lsp-mode"
+                (setq-local evil-lookup-func #'lsp-describe-thing-at-point))))
+
   (modify-syntax-entry ?: "." cperl-mode-syntax-table)
   (setq cperl-break-one-line-blocks-when-indent nil
         cperl-fix-hanging-brace-when-indent nil
@@ -59,12 +64,3 @@
     (advice-add #'cperl-electric-else    :override f)
     (advice-add #'cperl-electric-pod     :override f))
   (add-hook 'cperl-mode-hook #'cperl-mode-setup))
-
-(use-package perl5db-as-repl
-  :after cperl-mode
-  ;; NOTE:
-  ;;  This package not included in the `MELPA'.
-  ;;:ensure t
-  :init
-  (unless (package-installed-p 'perl5db-as-repl)
-    (quelpa '(perl5db-as-repl :fetcher gitlab :repo "vmfhrmfoaj/perl5db-as-repl"))))
