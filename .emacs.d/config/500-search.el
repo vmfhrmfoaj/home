@@ -2,12 +2,10 @@
   :ensure t
   :defer t
   :config
-  (defn helm-ag--custom-do-ag-candidate-process ()
+  (defn helm-ag--custom-do-ag-candidate-process (dir)
     "TODO"
     (let* ((non-essential nil)
-           (default-directory (or helm-ag--default-directory
-                                  helm-ag--last-default-directory
-                                  default-directory))
+           (default-directory dir)
            (cmd-args (helm-ag--construct-do-ag-command helm-pattern)))
       (when cmd-args
         (let ((proc (apply #'start-file-process "helm-do-ag" nil cmd-args)))
