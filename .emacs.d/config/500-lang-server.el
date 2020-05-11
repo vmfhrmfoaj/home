@@ -396,10 +396,12 @@
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
   (advice-add #'lsp-describe-thing-at-point :after #'lps--focus-lsp-help-buffer)
-  (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx)
-  (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx)
-  (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx)
-  (advice-add #'lsp-find-type-definition :around #'lsp--wrap-find-xxx))
+
+  (when (featurep 'dumb-jump)
+    (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx)
+    (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx)
+    (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx)
+    (advice-add #'lsp-find-type-definition :around #'lsp--wrap-find-xxx)))
 
 (use-package lsp-perl
   :defer t

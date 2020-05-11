@@ -135,11 +135,12 @@
   (add-hook 'magit-log-mode-hook    #'persp-add-buffer-without-switch)
   (add-hook 'magit-status-mode-hook #'persp-add-buffer-without-switch)
   (add-hook 'after-init-hook (-partial #'persp-mode 1))
-  (add-hook 'find-file-hook
-            (lambda ()
-              (let ((root (or (persp-current-project)
-                              (projectile-project-root))))
-                (setq-local dumb-jump-project root))))
+  (when (featurep 'dumb-jump)
+    (add-hook 'find-file-hook
+              (lambda ()
+                (let ((root (or (persp-current-project)
+                                (projectile-project-root))))
+                  (setq-local dumb-jump-project root)))))
 
   (advice-add #'make-process :around #'persp--wrap-make-process)
   (advice-add #'persp-switch :after #'persp-add-all-proj-buffer))
