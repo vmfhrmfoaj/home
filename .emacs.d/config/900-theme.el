@@ -45,7 +45,8 @@
    '(font-lock-function-name-face ((t :inherit bold)))
    '(font-lock-regexp-grouping-construct ((t :inherit bold :weight semi-bold)))
    '(font-lock-type-face ((t :weight unspecified)))
-   '(font-lock-warning-face ((t :weight bold :weight semi-bold))))
+   '(font-lock-variable-name-face ((t :weight semi-bold)))
+   '(font-lock-warning-face ((t :weight semi-bold))))
 
   (defvar local-variable-name-light-fg-color
     (saturate-color (color-from 'font-lock-variable-name-face :foreground 7) -20)
