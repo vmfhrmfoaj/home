@@ -287,7 +287,7 @@
     "Fall back to `dumb-jump-go'."
     (let ((pos (point))
           (cur-buf (current-buffer)))
-      (ignore-errors (not (apply f args)))
+      (apply f args)
       (when (and (eq cur-buf (current-buffer))
                  (eq pos (point)))
         (ignore-errors (ring-remove xref--marker-ring 0))
@@ -311,7 +311,7 @@
        ;;  `setf' is macro. I think the problem  too early expand the macro.
        ;; (eval '(setf (flymake--backend-state-diags state) (-distinct diags)))
        (aset state 4 nil)
-       (flymake-delete-own-overlays)))
+       (mapc #'delete-overlay (flymake--overlays))))
 
   (defn lsp--custom-handle-signature-update (signature)
     "Use `eldoc' instead `iv'."

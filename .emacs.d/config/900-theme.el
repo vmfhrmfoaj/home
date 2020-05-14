@@ -1,6 +1,7 @@
 (use-package twilight-bright-theme
   :ensure t
   :config
+  (load-theme 'twilight-bright t)
   (custom-set-faces
    '(bold ((t :weight bold)))
    '(cursor ((t :background "sky blue")))
