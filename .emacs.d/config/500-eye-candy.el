@@ -16,6 +16,52 @@
 
   (make-thread #'auto-dim-other-buffers-mode))
 
+(use-package composite
+  :defer t
+  :if (version<= "27.0" emacs-version)
+  :init
+  (defvar composition-ligature-table (make-char-table nil))
+
+  :hook
+  (((prog-mode conf-mode nxml-mode markdown-mode help-mode)
+    . (lambda () (setq-local composition-function-table composition-ligature-table))))
+
+  :config
+  ;; support ligatures, some toned down to prevent hang
+  (let ((alist
+         '((33 . ".\\(?:\\(==\\|[!=]\\)[!=]?\\)")
+           (35 . ".\\(?:\\(###?\\|_(\\|[(:=?[_{]\\)[#(:=?[_{]?\\)")
+           (36 . ".\\(?:\\(>\\)>?\\)")
+           (37 . ".\\(?:\\(%\\)%?\\)")
+           (38 . ".\\(?:\\(&\\)&?\\)")
+           (42 . ".\\(?:\\(\\*\\*\\|[*>]\\)[*>]?\\)")
+           ;; (42 . ".\\(?:\\(\\*\\*\\|[*/>]\\).?\\)")
+           (43 . ".\\(?:\\([>]\\)>?\\)")
+           ;; (43 . ".\\(?:\\(\\+\\+\\|[+>]\\).?\\)")
+           (45 . ".\\(?:\\(-[->]\\|<<\\|>>\\|[-<>|~]\\)[-<>|~]?\\)")
+           ;; (46 . ".\\(?:\\(\\.[.<]\\|[-.=]\\)[-.<=]?\\)")
+           (46 . ".\\(?:\\(\\.<\\|[-=]\\)[-<=]?\\)")
+           (47 . ".\\(?:\\(//\\|==\\|[=>]\\)[/=>]?\\)")
+           ;; (47 . ".\\(?:\\(//\\|==\\|[*/=>]\\).?\\)")
+           (48 . ".\\(?:\\(x[a-fA-F0-9]\\).?\\)")
+           (58 . ".\\(?:\\(::\\|[:<=>]\\)[:<=>]?\\)")
+           (59 . ".\\(?:\\(;\\);?\\)")
+           (60 . ".\\(?:\\(!--\\|\\$>\\|\\*>\\|\\+>\\|-[-<>|]\\|/>\\|<[-<=]\\|=[<>|]\\|==>?\\||>\\||||?\\|~[>~]\\|[$*+/:<=>|~-]\\)[$*+/:<=>|~-]?\\)")
+           (61 . ".\\(?:\\(!=\\|/=\\|:=\\|<<\\|=[=>]\\|>>\\|[=>]\\)[=<>]?\\)")
+           (62 . ".\\(?:\\(->\\|=>\\|>[-=>]\\|[-:=>]\\)[-:=>]?\\)")
+           (63 . ".\\(?:\\([.:=?]\\)[.:=?]?\\)")
+           (91 . ".\\(?:\\(|\\)[]|]?\\)")
+           ;; (92 . ".\\(?:\\([\\n]\\)[\\]?\\)")
+           (94 . ".\\(?:\\(=\\)=?\\)")
+           (95 . ".\\(?:\\(|_\\|[_]\\)_?\\)")
+           (119 . ".\\(?:\\(ww\\)w?\\)")
+           (123 . ".\\(?:\\(|\\)[|}]?\\)")
+           (124 . ".\\(?:\\(->\\|=>\\||[-=>]\\||||*>\\|[]=>|}-]\\).?\\)")
+           (126 . ".\\(?:\\(~>\\|[-=>@~]\\)[-=>@~]?\\)"))))
+    (dolist (char-regexp alist)
+      (set-char-table-range composition-ligature-table (car char-regexp)
+                            `([,(cdr char-regexp) 0 font-shape-gstring])))))
+
 (use-package diminish
   :ensure t
   :config
@@ -284,17 +330,8 @@
 (use-package spaceline
   :ensure t
   :config
-  (defn spaceline--wrap-unicode-number (fn str)
-    "TODO"
-    (let ((ret (funcall fn str)))
-      (if (<= 11 (string-to-number str))
-          ret
-        (propertize ret 'display '(raise 0.05)))))
-
   (require 'spaceline-config)
-  (setq spaceline-window-numbers-unicode t)
-
-  (advice-add #'spaceline--unicode-number :around #'spaceline--wrap-unicode-number)
+  (setq spaceline-window-numbers-unicode nil)
 
   (make-thread
    (lambda ()
