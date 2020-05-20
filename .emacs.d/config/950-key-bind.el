@@ -32,7 +32,6 @@
                (unless (or helm-alive-p
                            evil-ex-current-buffer)
                  (evil-local-set-key 'normal (kbd "<escape>") #'abort-recursive-edit)
-                 (evil-local-set-key 'insert (kbd "TAB") #'minibuffer-complete)
                  (evil-local-set-key 'normal (kbd "RET") #'exit-minibuffer)
                  (evil-local-set-key 'insert (kbd "RET") #'exit-minibuffer)))
              (local-set-key (kbd "C-a") #'beginning-of-line)
@@ -305,7 +304,7 @@
   (define-key evil-inner-text-objects-map "U" 'evil-inner-sexp)
   (evil-define-key 'normal 'global
     "gr" #'eldoc-refresh
-    (kbd "TAB") #'indent-for-tab-command
+    (kbd "<tab>") #'indent-for-tab-command
     (kbd "C-d") (lambda () (interactive) (up-list nil t))
     (kbd "C-u") (lambda () (interactive) (backward-up-list nil t)))
   (evil-define-key 'insert 'global
@@ -313,7 +312,7 @@
     (kbd "C-a") #'beginning-of-line-text
     (kbd "C-e") #'end-of-line)
   (evil-define-key 'visual 'global
-    (kbd "TAB") #'indent-region
+    (kbd "<tab>") #'indent-region
     (kbd "v") #'er/expand-region))
 
 (use-package evil-ex
@@ -365,7 +364,7 @@
 (use-package helm-company
   :defer t
   :config
-  (evil-global-set-key 'insert (kbd "TAB") #'company-indent-or-helm-company)
+  (evil-global-set-key 'insert (kbd "<tab>") #'company-indent-or-helm-company)
   (define-key company-active-map (kbd "C-s") #'helm-company-plus))
 
 (use-package helm-files
@@ -375,36 +374,21 @@
                      helm-read-file-map))
     (when evil-want-minibuffer
       (evil-define-key 'normal map
-        (kbd "TAB") #'helm-ff-TAB)
+        (kbd "<tab>") #'helm-ff-TAB)
       (evil-define-key 'insert map
-        (kbd "TAB") #'helm-ff-TAB))
+        (kbd "<tab>") #'helm-ff-TAB))
     (define-key map (kbd "C-u") #'helm-find-files-up-one-level)
     (define-key map [C-backspace] #'backward-kill-word)))
 
 (use-package helm-mode
   :defer t
   :config
-  (defn helm-minibuffer-complete ()
-    "TODO"
-    (interactive)
-    (when helm-alive-p
-      (cond
-       ((or (s-equals?      "*helm find files*"     helm-buffer)
-            (s-equals?      "*helm-mode-lsp*"       helm-buffer)
-            (s-starts-with? "*helm-mode-projectile" helm-buffer)
-            (s-starts-with? "*helm-mode-neo-buffer" helm-buffer))
-        (call-interactively #'helm-ff-TAB)
-        t)
-       (t (call-interactively #'helm-select-action) t))))
-
-  ;; NOTE
-  ;;  A function binded to "TAB" key in `helm-find-files-map` was not fired.
-  ;;  So I workaround to fix it.
-  (advice-add #'minibuffer-complete :before-until #'helm-minibuffer-complete)
-
   (global-set-key (kbd "M-x") #'helm-M-x)
   (global-set-key (kbd "C-x C-f") #'helm-find-files)
   (when evil-want-minibuffer
+    (evil-define-key 'insert helm-map
+      (kbd "<backtab>") #'helm-previous-line
+      (kbd "<tab>") #'helm-next-line)
     (evil-define-key 'normal helm-map
       "k" #'helm-previous-line
       "j" #'helm-next-line
@@ -412,7 +396,8 @@
       "G" #'helm-end-of-buffer
       (kbd "C-g") #'helm-keyboard-quit
       (kbd "RET") #'helm-maybe-exit-minibuffer
-      (kbd "<escape>") #'helm-keyboard-quit))
+      (kbd "<escape>") #'helm-keyboard-quit
+      (kbd "<tab>") #'helm-select-action))
   (define-key helm-map (kbd "<escape>") #'helm-keyboard-quit))
 
 (use-package helm-occur
@@ -420,13 +405,20 @@
   :config
   (define-key helm-occur-map (kbd "C-c C-e") #'helm-occur-edit))
 
+(use-package helm-projectile
+  :defer t
+  :config
+  (evil-define-key 'insert helm-projectile-find-file-map
+    (kbd "<backtab>") #'helm-previous-line
+    (kbd "<tab>") #'helm-next-line))
+
 (use-package help-mode
   :defer t
   :config
   (evil-set-initial-state 'help-mode 'normal)
   (evil-define-key 'normal help-mode-map
-    (kbd "TAB")   #'forward-button
-    (kbd "S-TAB") #'backward-button
+    (kbd "<backtab>") #'backward-button
+    (kbd "<tab>") #'forward-button
     (kbd "M-,") #'help-go-back
     (kbd "q") #'quit-window))
 
@@ -437,7 +429,7 @@
     (kbd "C-c o") #'neotree-enter-horizontal-split
     (kbd "C-u") #'neotree-select-up-node
     (kbd "RET") #'neotree-enter
-    (kbd "TAB") #'neotree-toggle-maximize
+    (kbd "<tab>") #'neotree-toggle-maximize
     (kbd "+") #'neotree-create-dir
     (kbd "C") #'neotree-copy-node
     (kbd "R") #'neotree-rename-node
@@ -672,7 +664,7 @@
   :defer t
   :config
   (evil-define-key 'normal 'profiler-report-mode-map
-    (kbd "TAB") #'profiler-report-expand-entry))
+    (kbd "<tab>") #'profiler-report-expand-entry))
 
 (use-package psysh
   :defer t
