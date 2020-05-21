@@ -114,6 +114,19 @@ _setup_for_kotlin() {
     fi
 }
 
+_setup_for_lua() {
+    _is_shim 'asdf'
+    if [ $? -ne 0 ]; then
+        local lua_home=$(asdf where lua 2>/dev/null)
+        if [ -d "${lua_home}" ]; then
+            local luarocks_bin="${lua_home}/luarocks/bin";
+            if [ -d "${luarocks_bin}" ]; then
+                _add_to_path "${luarocks_bin}"
+            fi
+        fi
+    fi
+}
+
 _setup_for_nodejs() {
     _is_shim 'asdf'
     if [ $? -ne 0 ]; then
@@ -291,6 +304,7 @@ _setup_for_xorg
 # depend on `asdf`
 _setup_for_java
 _setup_for_kotlin
+_setup_for_lua
 _setup_for_nodejs
 
 # for only terminal environment
