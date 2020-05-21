@@ -4,10 +4,7 @@
   (load-theme 'twilight-bright t)
   (custom-set-faces
    '(bold ((t :weight bold)))
-   ;; NOTE
-   ;;  Currently, Emacs can't render italic font when using 'Cascadia Code' font.
-   ;;  I workaround that use another font to render italic font.
-   `(italic ((t :font ,(font-spec :family "Liberation Mono" :slant 'italic))))
+   `(italic ((t :slant italic)))
    '(cursor ((t :background "sky blue")))
    '(link ((t :underline t)))
    '(shadow ((t :inherit default :foreground "gray55")))
