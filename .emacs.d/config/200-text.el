@@ -3,6 +3,11 @@
   :defer t
   :mode "\\.wikicreole\\'")
 
+(use-package doc-view
+  :defer t
+  :config
+  (setq doc-view-continuous t))
+
 (use-package markdown-mode
   :ensure t
   :defer t

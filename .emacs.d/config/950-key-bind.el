@@ -297,6 +297,23 @@
   (evil-define-key 'normal cider-stacktrace-mode-map
     (kbd "q") #'evil-delete-buffer))
 
+(use-package doc-view
+  :defer t
+  :config
+  (evil-set-initial-state 'doc-view-mode 'normal)
+  (evil-define-key 'normal doc-view-mode-map
+    "+" #'doc-view-enlarge
+    "=" #'doc-view-enlarge
+    "0" #'doc-view-scale-reset
+    "-" #'doc-view-shrink
+    "gg" #'doc-view-first-page
+    (kbd "M-p") #'doc-view-previous-page
+    "k" #'doc-view-previous-line-or-previous-page
+    "j" #'doc-view-next-line-or-next-page
+    (kbd "M-n") #'doc-view-next-page
+    "G" #'doc-view-last-page
+    "q" #'evil-delete-buffer))
+
 (use-package evil
   :defer t
   :config
