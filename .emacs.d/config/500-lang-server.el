@@ -59,6 +59,10 @@
                     :multi-root t
                     :server-id 'iph)))
 
+(use-package lsp-java
+  :ensure t
+  :defer t)
+
 (use-package lsp-mode
   :ensure t
   :hook ((c-mode          . lsp)
