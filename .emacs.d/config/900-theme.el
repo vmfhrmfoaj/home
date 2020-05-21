@@ -7,7 +7,7 @@
    ;; NOTE
    ;;  Currently, Emacs can't render italic font when using 'Cascadia Code' font.
    ;;  I workaround that use another font to render italic font.
-   `(italic ((t :font ,(font-spec :family "Source Code Pro" :slant 'italic))))
+   `(italic ((t :font ,(font-spec :family "Liberation Mono" :slant 'italic))))
    '(cursor ((t :background "sky blue")))
    '(link ((t :underline t)))
    '(shadow ((t :inherit default :foreground "gray55")))
@@ -39,7 +39,7 @@
   :defer t
   :config
   (custom-set-faces
-   `(focus-unfocused ((t :foreground "#a49da5" :weight light)))))
+   `(focus-unfocused ((t :foreground "#a49da5")))))
 
 (use-package font-lock
   :defer t
@@ -47,7 +47,8 @@
   (custom-set-faces
    '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight light)))
    '(font-lock-function-name-face ((t :inherit bold)))
-   '(font-lock-regexp-grouping-construct ((t :inherit bold)))
+   '(font-lock-regexp-grouping-backslash ((t :inherit font-lock-string-face :background "#E1F2D6")))
+   '(font-lock-regexp-grouping-construct ((t :inherit font-lock-string-face :background "#E1F2D6")))
    '(font-lock-type-face ((t :weight unspecified)))
    '(font-lock-variable-name-face ((t :foreground "#607596")))
    '(font-lock-warning-face ((t :inherit (bold italic)))))
