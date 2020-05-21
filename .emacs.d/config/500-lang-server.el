@@ -70,10 +70,11 @@
          (cperl-mode      . lsp)
          (js-mode         . lsp)
          (js2-mode        . lsp)
+         (latex-mode      . lsp)
          (php-mode        . lsp)
          (rust-mode       . lsp)
-         (typescript-mode . lsp)
-         (sh-mode         . lsp))
+         (sh-mode         . lsp)
+         (typescript-mode . lsp))
   :config
   (defvar lsp--custom-render--regex-1-for-php
     (concat "```php[ \t\r\n]*"                     ; ```php
