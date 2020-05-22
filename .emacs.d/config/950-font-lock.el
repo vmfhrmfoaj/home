@@ -1231,11 +1231,21 @@
      ("\\(?:\\s(\\|\\s-\\)\\(\\!\\)"
       (1 'font-lock-negation-char-face))
      ("^\\s-*use\\s-+\\(?:[_0-9A-Za-z]+::\\)+\\s-*{"
-      ("\\_<[_0-9A-Za-z]+\\_>"
+      (,(byte-compile
+         (lambda (limit)
+           (ignore-errors
+             (when font-lock--skip
+               (error ""))
+             (when (re-search-forward "\\_<[_0-9A-Za-z]+\\_>" limit t)
+               (skip-chars-forward "^," limit)
+               (when (looking-at-p ",")
+                 (forward-char))
+               t))))
        (save-excursion
+         (setq font-lock--anchor-beg-point (point))
          (safe-up-list-1)
          (point))
-       nil
+       (goto-char font-lock--anchor-beg-point)
        (0 font-lock-constant-face t)))
      ("\\(?:let\\|for\\)\\s-+[({]\\(.+?\\)[})]\\s-+\\(?:=\\|in\\)"
       ("\\([_0-9A-Za-z]+\\)"
