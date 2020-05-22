@@ -4,8 +4,9 @@
   (load-theme 'twilight-bright t)
   (custom-set-faces
    '(bold ((t :weight bold)))
-   `(italic ((t :slant italic)))
+   '(italic ((t :slant italic)))
    '(cursor ((t :background "sky blue")))
+   `(fixed-pitch-serif ((t :font ,alternative-font)))
    '(link ((t :underline t)))
    '(shadow ((t :inherit default :foreground "gray55")))
    '(show-paren-match ((t :inherit bold :underline t)))
@@ -124,6 +125,15 @@
    '(lsp-face-highlight-read    ((t :inherit (highlight underline))))
    '(lsp-face-highlight-textual ((t :inherit (highlight underline))))
    '(lsp-face-highlight-write   ((t :inherit (highlight underline bold))))))
+
+(use-package lsp-ui
+  :defer t
+  :config
+  (custom-set-faces
+   `(lsp-diagnostic-level-1 ((t :inherit compilation-error   :font ,alternative-font)))
+   `(lsp-diagnostic-level-2 ((t :inherit compilation-warning :font ,alternative-font)))
+   `(lsp-diagnostic-level-3 ((t :inherit compilation-info    :font ,alternative-font)))
+   `(lsp-diagnostic-level-4 ((t :inherit compilation-info    :font ,alternative-font)))))
 
 (use-package magit
   :defer t

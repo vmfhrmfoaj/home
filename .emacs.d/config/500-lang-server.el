@@ -427,6 +427,20 @@
 (use-package lsp-ui
   :ensure t
   :defer t
+  :init
+  (defface lsp-diagnostic-level-1
+    '((t (:inherit compilation-error)))
+    "TODO")
+  (defface lsp-diagnostic-level-2
+    '((t (:inherit compilation-warning)))
+    "TODO")
+  (defface lsp-diagnostic-level-3
+    '((t (:inherit compilation-info)))
+    "TODO")
+  (defface lsp-diagnostic-level-4
+    '((t (:inherit compilation-info)))
+    "TODO")
+
   :config
   (defn lsp-ui-sideline--custom-diagnostics (fn bol eol)
     (if (and (or (eq lsp-diagnostic-package :auto)
@@ -449,15 +463,14 @@
                                     (s-trim)
                                     (s-split "[\r\n]+")
                                     (-remove #'s-blank-str?)))
-                (face (let ((level (lsp-diagnostic-severity diagnostic)))
-                        (cond
-                         ((eq 4 level) `(:inherit compilation-info :weight light))
-                         ((eq 3 level) `(:inherit compilation-info :weight light))
-                         ((eq 2 level) `(:inherit compilation-warning :weight light))
-                         ((eq 1 level) `(:inherit compilation-error :weight light)))))
+                (face (->> diagnostic
+                           (lsp-diagnostic-severity)
+                           (number-to-string)
+                           (concat "lsp-diagnostic-level-")
+                           (intern)))
                 (margin (lsp-ui-sideline--margin-width)))
             (dolist (message (->> (-drop 1 messages)
-                                  (--map (concat it (propertize " ↩ " 'face `(:inherit shadow :family "Dejavu Sans Mono" :weight ,(face-attribute 'default :weight)))))
+                                  (--map (concat it " ↩ "))
                                   (-cons* (-first-item messages))))
               (let* ((len (length message))
                      (string (concat (propertize " " 'display `(space :align-to (- right-fringe ,(lsp-ui-sideline--align len margin))))
