@@ -130,10 +130,10 @@
   :defer t
   :config
   (custom-set-faces
-   `(lsp-diagnostic-level-1 ((t :inherit compilation-error   :font ,alternative-font)))
-   `(lsp-diagnostic-level-2 ((t :inherit compilation-warning :font ,alternative-font)))
-   `(lsp-diagnostic-level-3 ((t :inherit compilation-info    :font ,alternative-font)))
-   `(lsp-diagnostic-level-4 ((t :inherit compilation-info    :font ,alternative-font)))))
+   `(lsp-diagnostic-level-1 ((t :inherit compilation-error   :font ,alternative-font :weight light)))
+   `(lsp-diagnostic-level-2 ((t :inherit compilation-warning :font ,alternative-font :weight light)))
+   `(lsp-diagnostic-level-3 ((t :inherit compilation-info    :font ,alternative-font :weight light)))
+   `(lsp-diagnostic-level-4 ((t :inherit compilation-info    :font ,alternative-font :weight light)))))
 
 (use-package magit
   :defer t
