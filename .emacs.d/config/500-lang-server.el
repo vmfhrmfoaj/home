@@ -48,15 +48,18 @@
   :defer t
   :config
   (lsp-register-client
-   (make-lsp-client :new-connection (lsp-stdio-connection (lambda () lsp-intelephense-server-command))
+   (make-lsp-client :new-connection (lsp-stdio-connection (-const lsp-intelephense-server-command))
                     :major-modes '(php-mode)
                     :priority -1
-                    :notification-handlers (ht ("indexingStarted" #'ignore) ("indexingEnded" #'ignore))
+                    :notification-handlers (ht ("indexingStarted" #'ignore)
+                                               ("indexingEnded" #'ignore))
                     :initialization-options (lambda ()
                                               (list :globalStoragePath lsp-intelephense-storage-path
                                                     :storagePath lsp-intelephense-storage-path
+                                                    :licenceKey lsp-intelephense-licence-key
                                                     :clearCache lsp-intelephense-clear-cache))
-                    :multi-root t
+                    :multi-root lsp-intelephense-multi-root
+                    :completion-in-comments? t
                     :server-id 'iph)))
 
 (use-package lsp-java
