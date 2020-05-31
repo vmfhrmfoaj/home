@@ -13,3 +13,7 @@
   :defer t
   :config
   (setq markdown-fontify-code-blocks-natively t))
+
+(use-package latex-mode
+  :defer t
+  :mode "\\.tex\\'")

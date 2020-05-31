@@ -619,6 +619,18 @@
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode 'js-mode))
 
+(use-package latex-mode
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'latex-mode
+    "mgg" #'lsp-find-definition
+    "mgd" #'lsp-find-declaration
+    "mgi" #'lsp-find-implementation
+    "mgt" #'lsp-find-type-definition)
+  (which-key-declare-prefixes-for-mode 'latex-mode
+    (concat evil-leader/leader "mg") "goto")
+  (evil-leader/set-major-leader-for-mode 'latex-mode))
+
 (use-package lsp-mode
   :defer t
   :config
