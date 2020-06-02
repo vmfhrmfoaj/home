@@ -285,18 +285,25 @@
                   (other (or (buf-visit-time other) 0)))
               (time-less-p other it)))))
 
-(defn switch-to-previous-buffer (&optional win)
+(defn switch-to-previous-buffer-in (bufs)
   "TODO"
-  (interactive)
   (unless (window-dedicated-p)
     (let ((cur-buf (current-buffer)))
-      (-when-let (prev-buf (or (->> (buffer-list)
-                                    (--remove (string-match-p exclude-alt-buf-regex (buffer-name it)))
-                                    (-remove #'minibufferp)
-                                    (--remove-first (eq cur-buf it))
-                                    (sort-buffer-by-visit-time)
-                                    (-first-item))))
+      (-when-let (prev-buf (->> bufs
+                                (--remove (string-match-p exclude-alt-buf-regex (buffer-name it)))
+                                (-remove #'minibufferp)
+                                (--remove-first (eq cur-buf it))
+                                (sort-buffer-by-visit-time)
+                                (-first-item)))
         (switch-to-buffer prev-buf nil t)))))
+
+(defn switch-to-previous-buffer (&optional bufs)
+  "TODO"
+  (interactive)
+  (->> (buffer-list)
+       (--remove (string-match-p exclude-alt-buf-regex (buffer-name it)))
+       (-remove #'minibufferp)
+       (switch-to-previous-buffer-in)))
 
 
 (defn get-scratch-buffer-create ()

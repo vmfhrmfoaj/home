@@ -4,6 +4,13 @@
   :diminish ""
   :commands (projectile-project-root)
   :config
+  (defn projectile-switch-to-previous-buffer ()
+    "TODO"
+    (interactive)
+    (condition-case nil
+        (switch-to-previous-buffer-in (projectile-project-buffers))
+      (error (switch-to-previous-buffer-in (buffer-list)))))
+
   (defn projectile-project-files-custom-filter (files)
     "TODO"
     (-if-let (regex (-some->> (projectile-paths-to-ignore)

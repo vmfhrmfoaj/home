@@ -97,7 +97,9 @@
   (evil-leader/set-major-leader ",")
   (evil-leader/set-key
     "<SPC>" #'helm-M-x
-    "TAB" #'switch-to-previous-buffer
+    "TAB" (if (package-installed-p 'projectile)
+              #'projectile-switch-to-previous-buffer
+            #'switch-to-previous-buffer)
     "!" #'shell-command
     ";" #'comment-it
     "0" #'winum-select-window-0
@@ -669,7 +671,7 @@
 (use-package profiler
   :defer t
   :config
-  (evil-define-key 'normal 'profiler-report-mode-map
+  (evil-define-key 'normal profiler-report-mode-map
     (kbd "<tab>") #'profiler-report-expand-entry))
 
 (use-package psysh
