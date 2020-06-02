@@ -358,7 +358,11 @@
       (pop-to-buffer buf)))
 
   (setq lsp-diagnostic-package :flymake
+        lsp-enable-imenu nil
+        lsp-enable-indentation nil
+        lsp-enable-links nil
         lsp-enable-on-type-formatting nil
+        lsp-enable-symbol-highlighting nil
         lsp-file-watch-threshold nil
         lsp-rust-server 'rust-analyzer)
 
