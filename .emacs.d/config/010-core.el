@@ -130,12 +130,6 @@
                                    (side . bottom)))))
       (helm-default-display-buffer buffer resume)))
 
-  (defn helm-persistent-action-display-window-for-neotree (&rest _)
-    "TODO"
-    (with-helm-window
-      (when (string-match-p "\\*.*NeoTree" (buffer-name helm-current-buffer))
-        (get-buffer-window helm-current-buffer))))
-
   (defface helm-match-selection
     `((t (:inherit helm-match)))
     "TODO"
@@ -234,8 +228,6 @@
                (setq gc-cons-threshold (* 1024 1024 32))
                (garbage-collect))))
 
-  (advice-add #'helm-persistent-action-display-window :before-until
-              #'helm-persistent-action-display-window-for-neotree)
   (advice-add #'helm-initialize-overlays :after #'helm-custom-initialize-overlays)
   (advice-add #'helm-mark-current-line   :after #'helm-custom-mark-current-line)
   (advice-add #'helm-initialize :after #'helm--update-last-search-buffer)

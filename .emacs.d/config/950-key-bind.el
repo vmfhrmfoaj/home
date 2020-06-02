@@ -144,7 +144,6 @@
     ;; file
     "ff" #'helm-find-files
     "fr" #'helm-recentf
-    "ft" #'neotree
     "fy" #'kill-new-buffer-file-name
 
     ;; git
@@ -193,7 +192,6 @@
     "pl" #'helm-persp-create-&-switch-project
     "pp" #'helm-persp
     "pq" #'persp-kill-cur-persp
-    "pt" #'neotree-project-dir
 
     ;; register/rings/resume
     "rk" #'helm-show-kill-ring
@@ -439,23 +437,6 @@
     (kbd "<tab>") #'forward-button
     (kbd "M-,") #'help-go-back
     (kbd "q") #'quit-window))
-
-(use-package neotree
-  :defer t
-  :config
-  (evil-define-key 'normal neotree-mode-map
-    (kbd "C-c o") #'neotree-enter-horizontal-split
-    (kbd "C-u") #'neotree-select-up-node
-    (kbd "RET") #'neotree-enter
-    (kbd "<tab>") #'neotree-toggle-maximize
-    (kbd "+") #'neotree-create-dir
-    (kbd "C") #'neotree-copy-node
-    (kbd "R") #'neotree-rename-node
-    (kbd "c") #'neotree-create-node
-    (kbd "h") #'neotree-back
-    (kbd "l") #'neotree-enter
-    (kbd "x") #'neotree-delete-node
-    (kbd "q") #'neotree-hide))
 
 (use-package magit
   :defer t

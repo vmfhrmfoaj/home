@@ -12,7 +12,7 @@
         blink-cursor-delay 3
         create-lockfiles nil
         comment-fill-column 100
-        exclude-alt-buf-regex "^\\s-*\\*\\s-*\\([Hh]elm\\|which-key\\|NeoTree\\)"
+        exclude-alt-buf-regex "^\\s-*\\*\\s-*\\([Hh]elm\\|which-key\\)"
         initial-major-mode 'text-mode
         initial-scratch-message ""
         ring-bell-function 'ignore))

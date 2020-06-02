@@ -37,14 +37,7 @@
 (use-package winum
   :ensure t
   :config
-  (defn winum--assign-0-to-neotree ()
-    "winum assign function for NeoTree."
-    (when (and (string-match-p "\\*NeoTree\\*" (buffer-name))
-               (not (aref (winum--get-window-vector) 0)))
-      0))
-
   (setq winum-auto-setup-mode-line nil)
-  (add-to-list 'winum-assign-functions #'winum--assign-0-to-neotree)
 
   (winum-mode))
 
