@@ -10,9 +10,11 @@
 (require 'package)
 (setq package-archives
       '(("melpa"        . "https://melpa.org/packages/")
+        ("gnu"          . "https://elpa.gnu.org/packages/")
         ("melpa-stable" . "https://stable.melpa.org/packages/"))
       package-archive-priorities
       '(("melpa"        . 10)
+        ("gnu"          .  7)
         ("melpa-stable" .  5)))
 (package-initialize)
 (unless (package-installed-p 'use-package)

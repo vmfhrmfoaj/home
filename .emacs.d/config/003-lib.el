@@ -12,12 +12,7 @@
 
 (use-package queue
   :defer t
-  ;; NOTE:
-  ;;  This package not included in the `MELPA'.
-  ;;:ensure t
-  :init
-  (unless (package-installed-p 'queue)
-    (quelpa '(queue :fetcher url :url "http://git.savannah.gnu.org/cgit/emacs/elpa.git/plain/packages/queue/queue.el" :version original))))
+  :ensure t)
 
 (use-package s
   :ensure t)
@@ -33,10 +28,5 @@
 
 (use-package undo-tree
   :defer t
-  ;; NOTE:
-  ;;  This package not included in the `MELPA'.
-  ;;:ensure t
-  :init
-  (unless (package-installed-p 'undo-tree)
-    (quelpa '(undo-tree :fetcher url :url "http://git.savannah.gnu.org/cgit/emacs/elpa.git/plain/packages/undo-tree/undo-tree.el"))))
+  :ensure t)
 

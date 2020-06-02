@@ -333,10 +333,6 @@
 
 (use-package vi-tilde-fringe
   :if (fboundp 'define-fringe-bitmap)
-  ;; NOTE:
-  ;;  This package not included in the `MELPA'.
-  ;;:ensure t
-  :init
-  (unless (package-installed-p 'vi-tilde-fringe)
-    (quelpa '(vi-tilde-fringe :fetcher github :repo "syl20bnr/vi-tilde-fringe")))
-  (make-thread #'global-vi-tilde-fringe-mode))
+  :ensure t
+  :config
+  (global-vi-tilde-fringe-mode))
