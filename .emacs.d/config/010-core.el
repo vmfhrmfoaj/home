@@ -225,11 +225,11 @@
   (add-hook 'helm-before-initialize-hook
             (byte-compile
              (lambda ()
-               (setq gc-cons-threshold (* 1024 1024 128)))))
+               (setq gc-cons-threshold (* 4 gc-cons-threshold)))))
   (add-hook 'helm-cleanup-hook
             (byte-compile
              (lambda ()
-               (setq gc-cons-threshold (* 1024 1024 32))
+               (setq gc-cons-threshold (default-value 'gc-cons-threshold))
                (garbage-collect))))
 
   (advice-add #'helm-initialize-overlays :after #'helm-custom-initialize-overlays)
