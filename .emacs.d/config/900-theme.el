@@ -1,59 +1,77 @@
-(use-package twilight-bright-theme
+(use-package twilight-anti-bright-theme
   :ensure t
   :config
-  (load-theme 'twilight-bright t)
+  (setq frame-background-mode 'dark)
+  (mapc #'frame-set-background-mode (frame-list))
+  (load-theme 'twilight-anti-bright t)
   (custom-set-faces
    '(bold ((t :weight bold)))
+   '(default ((((background dark)) :foreground "#D1D2D2")))
    '(italic ((t :slant italic)))
    '(cursor ((t :background "sky blue")))
    `(fixed-pitch-serif ((t :font ,alternative-font)))
    '(link ((t :underline t)))
-   '(shadow ((t :inherit default :foreground "gray55")))
+   '(shadow ((((background light)) :inherit default :foreground "gray55")
+             (((background dark))  :inherit default :foreground "gray65")))
    '(show-paren-match ((t :inherit bold :underline t)))
    '(trailing-whitespace ((t :background "gray65")))))
+
+(use-package font-lock
+  :config
+  (custom-set-faces
+   '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight light)))
+   '(font-lock-function-name-face ((t :inherit bold)))
+   '(font-lock-regexp-grouping-backslash ((((background light)) :inherit font-lock-string-face :background "#E1F2D6")))
+   '(font-lock-regexp-grouping-construct ((((background light)) :inherit font-lock-string-face :background "#E1F2D6")))
+   '(font-lock-type-face ((((background dark)) :foreground "#B63F1E") (t :weight unspecified)))
+   '(font-lock-variable-name-face ((((background light)) :foreground "#607596")))
+   '(font-lock-warning-face ((t :inherit (bold italic)))))
+
+  (defvar local-variable-name-light-fg-color
+    (saturate-color (color-from 'font-lock-variable-name-face :foreground (if (eq frame-background-mode 'light) 7 -7)) -20)
+    "A foreground color for the local variable such as parameters"))
+
 
 (use-package auto-dim-other-buffers
   :defer t
   :config
   (custom-set-faces
    `(auto-dim-other-buffers-face
-     ((t :foreground ,(color-from 'default :foreground +4)
-         :background ,(color-from 'default :background -2))))))
+     ((((background light))
+       :foreground ,(color-from 'default :foreground +4)
+       :background ,(color-from 'default :background -2))
+      (((background dark))
+       :foreground ,(color-from 'default :foreground -5)
+       :background ,(color-from 'default :background +1))))))
 
 (use-package clojure-mode
   :defer t
   :config
   (custom-set-faces
    '(cider-fringe-good-face ((t :inherit success)))
-   '(clojure-define-type-face ((t :inherit (font-lock-type-face))))
-   '(clojure-defining-spec-face ((t :inherit (clojure-keyword-face))))
-   `(clojure-fn-parameter-face ((((class color) (background light)) :foreground ,local-variable-name-light-fg-color :weight ,(face-attribute 'default :weight))))
+   '(clojure-define-type-face ((t :inherit font-lock-type-face)))
+   '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
+   `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face
+                                   :foreground ,local-variable-name-light-fg-color
+                                   :weight ,(face-attribute 'default :weight))))
    '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
    '(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
    '(clojure-side-effect-face ((t :inherit (bold italic font-lock-warning-face))))
    '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))))
 
+(use-package elisp-mode
+  :defer t
+  :config
+  (custom-set-faces
+   `(lisp-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face
+                                               :foreground ,local-variable-name-light-fg-color
+                                               :weight ,(face-attribute 'default :weight))))))
+
 (use-package focus
   :defer t
   :config
   (custom-set-faces
-   `(focus-unfocused ((t :foreground "#a49da5")))))
-
-(use-package font-lock
-  :defer t
-  :config
-  (custom-set-faces
-   '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight light)))
-   '(font-lock-function-name-face ((t :inherit bold)))
-   '(font-lock-regexp-grouping-backslash ((t :inherit font-lock-string-face :background "#E1F2D6")))
-   '(font-lock-regexp-grouping-construct ((t :inherit font-lock-string-face :background "#E1F2D6")))
-   '(font-lock-type-face ((t :weight unspecified)))
-   '(font-lock-variable-name-face ((t :foreground "#607596")))
-   '(font-lock-warning-face ((t :inherit (bold italic)))))
-
-  (defvar local-variable-name-light-fg-color
-    (saturate-color (color-from 'font-lock-variable-name-face :foreground 7) -20)
-    "A foreground color for the local variable such as parameters"))
+   `(focus-unfocused ((((background light)) :foreground "#A49DA5")))))
 
 (use-package flymake
   :defer t
@@ -65,7 +83,13 @@
   :defer t
   :config
   (custom-set-faces
-   '(fringe ((t :background "gray98")))))
+   '(fringe ((((background light)) :background "gray98")))))
+
+(use-package git-commit
+  :defer t
+  :config
+  (custom-set-faces
+   '(git-commit-summary ((t :inherit font-lock-function-name-face :weight normal)))))
 
 (use-package helm
   :defer t
@@ -80,13 +104,13 @@
   :defer t
   :config
   (custom-set-faces
-   '(hl-line ((t :background "#eef7fd")))))
+   '(hl-line ((((background light)) :background "#EEF7FD")))))
 
 (use-package hl-todo
   :defer t
   :config
   (custom-set-faces
-   '(hl-todo ((t :inherit bold :weight semi-bold :foreground "#cc9393")))))
+   '(hl-todo ((t :inherit bold :weight semi-bold :foreground "#CC9393")))))
 
 (use-package iedit
   :defer t
@@ -98,7 +122,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(isearch ((t :inherit bold :background "magenta3" :foreground "white")))))
+   '(isearch ((((background light)) :inherit bold :background "magenta3" :foreground "white")))))
 
 (use-package php-mode
   :defer t
@@ -116,7 +140,8 @@
   :config
   (custom-set-faces
    '(linum ((((class color) (background light) (min-colors 548)) :inherit (shadow default) :background "gray97")
-            (((class color) (background light) (min-colors 256)) :inherit (shadow default) :background "color-255")))))
+            (((class color) (background light) (min-colors 256)) :inherit (shadow default) :background "color-255")
+            (t :inherit default)))))
 
 (use-package lsp-mode
   :defer t
@@ -139,7 +164,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(magit-diff-context-highlight ((((class color) (background light)) :background "#fbfeee" :foreground "#a4c207")))
+   '(magit-diff-context-highlight ((((class color) (background light)) :background "#FBFEEE" :foreground "#A4C207")))
    '(magit-diff-file-heading ((t :inherit bold)))
    '(magit-hash ((((class color) (background light)) :foreground "gray60" :weight light)))
    '(magit-log-author ((((class color) (background light)) :foreground "firebrick" :weight light)))
@@ -150,5 +175,5 @@
   :defer t
   :config
   (custom-set-faces
-   `(sh-heredoc     ((t :background "#fcf7f2" :foreground "tan1")))
-   `(sh-quoted-exec ((t :background "#faecfa" :foreground "magenta")))))
+   `(sh-heredoc     ((t :background "#FCF7F2" :foreground "tan1")))
+   `(sh-quoted-exec ((t :background "#FAECFA" :foreground "magenta")))))

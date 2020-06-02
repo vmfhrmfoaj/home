@@ -1,5 +1,5 @@
 (when window-system
-  (let* ((two-horizontal-window-setup t)
+  (let* ((two-horizontal-window-setup nil)
          (min-col-width 170)
          (workarea (-some->> main-monitor (assoc 'workarea) (-drop 1)))
          (main-monitor-l (nth 0 workarea))
