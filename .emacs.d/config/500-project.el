@@ -121,9 +121,6 @@
 
   (setq persp-autokill-buffer-on-remove #'kill-weak
         persp-auto-resume-time -1
-        ;; TODO
-        ;;  change mode-line format for `persp-mode'
-        ;; persp-lighter "Ⓟ"
         persp-before-switch-functions #'persp-update-sorted-names
         persp-lighter nil
         persp-nil-name "~/"
