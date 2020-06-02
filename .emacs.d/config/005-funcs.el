@@ -261,33 +261,40 @@
 (defn buf-visit-time (buf &optional win)
   "TODO"
   (ignore-errors
-    (with-current-buffer (or buf (current-buffer))
-      (if (and (< 1 (length (window-list)))
-               (not (eq 'all win)))
-          (plist-get buf-visit-time (or win (selected-window)))
-        (-some->> buf-visit-time
-                  (-partition 2)
-                  (-map #'-second-item)
-                  (--sort (time-less-p other it))
-                  (-first-item))))))
+    (let ((buf (if (stringp buf)
+                   (get-buffer buf)
+                 buf)))
+     (with-current-buffer (or buf (current-buffer))
+       (if (and (< 1 (length (window-list)))
+                (not (eq 'all win)))
+           (plist-get buf-visit-time (or win (selected-window)))
+         (-some->> buf-visit-time
+           (-partition 2)
+           (-map #'-second-item)
+           (--sort (time-less-p other it))
+           (-first-item)))))))
 
 
 (defvar exclude-alt-buf-regex ""
   "TODO")
+
+(defn sort-buffer-by-visit-time (bufs)
+  "TODO"
+  (-some->> bufs
+    (--sort (let ((it    (or (buf-visit-time it)    0))
+                  (other (or (buf-visit-time other) 0)))
+              (time-less-p other it)))))
 
 (defn switch-to-previous-buffer (&optional win)
   "TODO"
   (interactive)
   (unless (window-dedicated-p)
     (let ((cur-buf (current-buffer)))
-      (-when-let (prev-buf (or (->> (helm-buffer-list)
-                                    (--remove (string-match-p exclude-alt-buf-regex it))
-                                    (-map #'get-buffer)
+      (-when-let (prev-buf (or (->> (buffer-list)
+                                    (--remove (string-match-p exclude-alt-buf-regex (buffer-name it)))
                                     (-remove #'minibufferp)
                                     (--remove-first (eq cur-buf it))
-                                    (--sort (let ((it    (or (buf-visit-time it)    0))
-                                                  (other (or (buf-visit-time other) 0)))
-                                              (time-less-p other it)))
+                                    (sort-buffer-by-visit-time)
                                     (-first-item))))
         (switch-to-buffer prev-buf nil t)))))
 
@@ -297,9 +304,7 @@
   (interactive)
   (pop-to-buffer (get-buffer-create "*scratch*"))
   (unless (eq 'markdown-mode major-mode)
-    (markdown-mode))
-  (when (fboundp #'persp-add-buffer-without-switch)
-    (persp-add-buffer-without-switch)))
+    (markdown-mode)))
 
 (defn kill-new-buffer-file-name ()
   "TODO"

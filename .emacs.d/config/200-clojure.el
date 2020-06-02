@@ -81,7 +81,7 @@
       (while target-modes
         (let ((target-mode (car target-modes)))
           (setq target-modes (cdr target-modes))
-          (when (-some->> (helm-buffer-list)
+          (when (-some->> (buffer-list)
                           (--filter (with-current-buffer it
                                       (or (eq target-mode    major-mode)
                                           (eq 'clojurec-mode major-mode))))
@@ -91,11 +91,6 @@
                           (-first-item)
                           (funcall display-fn))
             (setq target-modes nil))))))
-
-  (defn cider-add-cur-buf-into-persp (&rest _)
-    "TODO"
-    (unless (string-equal persp-nil-name (persp-current-name))
-      (persp-add-buffer (current-buffer))))
 
   (defn cider-expected-ns-for-cljs (path)
     "TODO"
@@ -132,8 +127,6 @@
                                      "  (require 'figwheel-sidecar.repl-api)"
                                      "  (figwheel-sidecar.repl-api/start-figwheel!)"
                                      "  (figwheel-sidecar.repl-api/cljs-repl))"))
-  (add-hook 'cider-repl-mode-hook #'cider-add-cur-buf-into-persp)
-  (advice-add #'cider-find-var :after #'cider-add-cur-buf-into-persp)
   (advice-add #'cider-connection-type-for-buffer :before-until #'cider-conn-type-for-cljc-buffer)
   (advice-add #'cider-switch-to-repl-buffer :override #'cider-switch-to-releated-repl-buffer)
   (advice-add #'cider-switch-to-last-clojure-buffer :override #'cider-switch-to-last-clj-buf)

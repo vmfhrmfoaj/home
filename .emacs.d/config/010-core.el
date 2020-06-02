@@ -213,6 +213,10 @@
   (setq helm-autoresize-min-height 25
         helm-autoresize-max-height 45
         helm-buffer-max-length 35
+        helm-buffer-list-reorder-fn (byte-compile
+                                     (lambda (visibles others)
+                                       (nconc (sort-buffer-by-visit-time others)
+                                              (sort-buffer-by-visit-time visibles))))
         helm-display-header-line nil
         helm-split-window-inside-p t
         helm-truncate-lines t

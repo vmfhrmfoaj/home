@@ -16,6 +16,7 @@
     (when (fboundp #'eldoc-refresh)
       (eldoc-refresh)))
 
+  (advice-add #'flymake--mode-line-format :filter-return #'cdr)
   (advice-add #'flymake-goto-next-error :around #'flymake--wrap-goto-next-error)
 
   (setq flymake-fringe-indicator-position 'right-fringe))
@@ -103,6 +104,12 @@
   (defvar lsp--custom-render--regex-2-for-shell
     "^[^ :]+?:[ \t]+\\([^\r\n]+\\)"
     "TODO")
+
+  (defun lsp-custom-mode-line ()
+    "Construct the mode line text."
+    (if-let (workspaces (lsp-workspaces))
+        (propertize "LSP" 'face '(:inherit success :weight normal))
+      (propertize "LSP" 'face '(:inherit warning :weight normal))))
 
   (defn lsp--adapter-render-on-hover-content (args)
     "TODO"
@@ -264,33 +271,6 @@
                  :mode 'tick
                  :cancel-token :eldoc-hover)))))))))
 
-  (defn lsp--change-proj (cur-buf)
-    "TODO"
-    (let* ((persp-root (-some->> (persp-current-project)
-                         (file-truename)))
-           (proj-root (-some->> buffer-file-name
-                        (file-name-directory)
-                        (projectile-project-root)
-                        (file-truename))))
-      (when (and persp-root
-                 proj-root
-                 (not (s-starts-with? persp-root proj-root))
-                 (not (s-starts-with? proj-root  persp-root)))
-        (let ((buf-name (buffer-name))
-              (old-persp (get-current-persp))
-              (proj (abbreviate-file-name proj-root))
-              (pos (point)))
-          ;; NOTE
-          ;;  To switch to old buffer to store persp before switching persp.
-          ;;  `persp-add-buffer' will switch back to current buffer.
-          (switch-to-buffer cur-buf)
-          (save-excursion
-            (persp-switch proj)
-            (persp-add-buffer buf-name) ; see `switchorno' parameter
-            (switch-to-buffer buf-name)
-            (goto-char pos)
-            (persp-remove-buffer buf-name old-persp))))))
-
   (defn lsp--wrap-find-xxx (f &rest args)
     "Fall back to `dumb-jump-go'."
     (let ((pos (point))
@@ -300,8 +280,7 @@
                  (eq pos (point)))
         (ignore-errors (ring-remove xref--marker-ring 0))
         (message nil)
-        (call-interactively #'dumb-jump-go))
-      (lsp--change-proj cur-buf)))
+        (call-interactively #'dumb-jump-go))))
 
   (defn lsp--custom-document-highlight ()
     "Disable `lsp-document-highlight'."
@@ -394,6 +373,7 @@
                 (lsp-signature-activate))))
   (add-hook 'evil-insert-state-exit-hook #'lsp-signature-stop)
 
+  (advice-add #'lsp-mode-line :override #'lsp-custom-mode-line)
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
   (advice-add #'lsp--eldoc-message   :override #'lsp--custom-eldoc-message)
   (advice-add #'lsp--flymake-backend :override #'lsp--custom-flymake-backend)

@@ -1,147 +1,3 @@
-(use-package helm-projectile
-  :ensure t
-  :defer t
-  :commands (helm-projectile-find-dir
-             helm-projectile-find-file
-             helm-projectile-switch-project)
-  :config
-  (with-eval-after-load "persp-mode"
-    (setf (cdr (assq 'candidates helm-source-projectile-files-list))
-          (byte-compile
-           (lambda ()
-             (when (projectile-project-p)
-               (with-helm-current-buffer
-                 (cl-loop with root = (or (persp-current-project)
-                                          (projectile-project-root))
-                          for display in (projectile-project-files root)
-                          collect (cons display (expand-file-name display root))))))))))
-
-(use-package persp-mode
-  :ensure t
-  :config
-  (defn persp--wrap-make-process (fn &rest args)
-    "Wrap `make-process' to add a buffer of process."
-    (prog1 (apply fn args)
-      (-when-let (buf (-some-> args (plist-get :buffer) (get-buffer)))
-        (persp-add-buffer-without-switch buf))))
-
-  (defn persp-current-name ()
-    "TODO"
-    (safe-persp-name (get-frame-persp)))
-
-  (defn persp-current-project ()
-    "TODO"
-    (let ((persp-name (persp-current-name)))
-      (cond
-       ((file-exists-p persp-name)
-        persp-name)
-       (t nil))))
-
-  (defn helm-persp-do-create-&-switch-project (proj)
-    "TODO"
-    (interactive)
-    (let ((projectile-indexing-method (default-value 'projectile-indexing-method))
-          (persp-reset-windows-on-nil-window-conf t))
-      (persp-switch proj)
-      (projectile-switch-project-by-name proj)))
-
-  (defn helm-persp-create-&-switch-project ()
-    "TODO"
-    (interactive)
-    (require 'projectile)
-    (helm :sources
-          (helm-build-in-buffer-source "*Helm Create/Switch Project Perspective*"
-            :data projectile-known-projects
-            :fuzzy-match helm-projectile-fuzzy-match
-            :action '(("Create/Switch to Project Perspective" . helm-persp-do-create-&-switch-project)))))
-
-  (defn helm-persp ()
-    "TODO"
-    (interactive)
-    (helm :preselect (persp-current-name)
-          :sources
-          (helm-build-in-buffer-source (format "*Helm Perspective*: %s" (persp-current-name))
-            :data (persp-names)
-            :fuzzy-match t
-            :action '(("Switch to Perspective" . persp-switch)))))
-
-  (defn persp-switch-to-default ()
-    "TODO"
-    (interactive)
-    (persp-switch persp-nil-name))
-
-  (defn persp-kill-cur-persp ()
-    "TODO"
-    (interactive)
-    (persp-kill (persp-current-name)))
-
-  (defn persp-add-buffer-without-switch (&optional buf)
-    "TODO"
-    (persp-add-buffer (or buf (current-buffer))
-                      (get-current-persp)
-                      nil))
-
-  (defn persp-add-all-proj-buffer (&rest _)
-    "TODO"
-    (-when-let (cur-root (get-current-persp))
-      (let* ((root (aref cur-root 1))
-             (root_ (if (string-prefix-p "/" root)
-                        (concat "~/" (file-relative-name root home-dir))
-                      (file-truename root))))
-        (dolist (buf (--filter (or (projectile-project-buffer-p it root_)
-                                   (projectile-project-buffer-p it root))
-                               (buffer-list)))
-          (persp-add-buffer-without-switch buf)))))
-
-  (defvar persp-sorted-names nil
-    "TODO")
-
-  (defn persp-update-sorted-names (&rest _)
-    "TODO"
-    (let ((cur (persp-current-name)))
-      (-update->> persp-sorted-names
-                  (remove cur)
-                  (cons cur))))
-
-  (defn persp-switch-to-last-selected-persp ()
-    "TODO"
-    (interactive)
-    (let ((names persp-sorted-names)
-          (last-persp nil))
-      (while (and names (not last-persp))
-        (let ((it (car names)))
-          (if (and (member it (persp-names))
-                   (not (string-equal it (persp-current-name))))
-              (setq last-persp it)
-            (setq names (cdr names)))))
-      (when last-persp
-        (persp-switch last-persp)
-        (when global-hl-line-mode
-          (hl-line-mode 1)))))
-
-  (setq persp-autokill-buffer-on-remove #'kill-weak
-        persp-auto-resume-time -1
-        persp-before-switch-functions #'persp-update-sorted-names
-        persp-lighter nil
-        persp-nil-name "~/"
-        persp-last-selected-persp-name persp-nil-name
-        persp-set-ido-hooks t
-        wg-morph-on nil)
-
-  (add-hook 'magit-diff-mode-hook   #'persp-add-buffer-without-switch)
-  (add-hook 'magit-log-mode-hook    #'persp-add-buffer-without-switch)
-  (add-hook 'magit-status-mode-hook #'persp-add-buffer-without-switch)
-  (add-hook 'after-init-hook (-partial #'persp-mode 1))
-  (when (featurep 'dumb-jump)
-    (add-hook 'find-file-hook
-              (lambda ()
-                (let ((root (or (persp-current-project)
-                                (projectile-project-root))))
-                  (setq-local dumb-jump-project root)))))
-
-  (advice-add #'make-process :around #'persp--wrap-make-process)
-  (advice-add #'persp-switch :after #'persp-add-all-proj-buffer))
-
 (use-package projectile
   :ensure t
   :defer t
@@ -160,6 +16,35 @@
         (-remove (-partial #'string-match-p regex) files)
       files))
 
+  (defn projectile-switch-latest-open-project ()
+    "TODO"
+    (interactive)
+    (let ((cur-proj-root (projectile-project-root)))
+     (-some->> (buffer-list)
+       (sort-buffer-by-visit-time)
+       (--filter (with-current-buffer it
+                   (when-let ((proj-root (projectile-project-root)))
+                     (not (string= cur-proj-root proj-root)))))
+       (-first-item)
+       (switch-to-buffer))))
+
+  (defn projectile-action-for-custom-switch-open-project ()
+    "A `projectile' action for `projectile-custom-switch-open-project'."
+    (let* ((visible-bufs (-map #'window-buffer (window-list)))
+           (buf (-some->> (projectile-project-buffers)
+                  (sort-buffer-by-visit-time)
+                  (--remove (-contains? visible-bufs it))
+                  (-first-item))))
+      (if buf
+          (switch-to-buffer buf)
+        (projectile-find-file))))
+
+  (defn projectile-custom-switch-open-project (&optional arg)
+    "TODO"
+    (interactive)
+    (let ((projectile-switch-project-action #'projectile-action-for-custom-switch-open-project))
+      (projectile-switch-open-project)))
+
   (setq projectile-completion-system 'helm
         projectile-enable-cachig t)
 
@@ -173,4 +58,9 @@
   (advice-add #'projectile-project-files :filter-return
               #'projectile-project-files-custom-filter)
 
-  (projectile-mode 1))
+  (projectile-mode 1)
+
+  ;; NOTE
+  ;;  Switch the default project
+  (let ((projectile-switch-project-action (lambda (&rest _))))
+    (projectile-switch-project-by-name "~/")))

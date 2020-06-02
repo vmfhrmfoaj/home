@@ -232,26 +232,3 @@
     (defalias 'xref-pop-to-location #'xref--pop-to-location))
   (setq xref-show-definitions-function 'helm-xref-show-defs-27
         xref-show-xrefs-function 'helm-xref-show-xrefs-27))
-
-(use-package xref
-  :after (persp-mode projectile)
-  :config
-  (defn xref--change-persp-after-pop-marker ()
-    "TODO"
-    (let* ((persp-root (-some->> (persp-current-project)
-                         (file-truename)))
-           (proj-root (-some->> buffer-file-name
-                        (file-name-directory)
-                        (projectile-project-root)
-                        (file-truename))))
-      (when (and persp-root
-                 proj-root
-                 (not (s-starts-with? persp-root proj-root))
-                 (not (s-starts-with? proj-root  persp-root)))
-        (let ((proj (abbreviate-file-name proj-root)))
-          (switch-to-previous-buffer)
-          (persp-switch proj)))))
-
-  ;; See, `lsp--change-proj' function
-  (advice-add #'xref-pop-marker-stack :after
-              #'xref--change-persp-after-pop-marker))

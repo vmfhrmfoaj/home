@@ -100,10 +100,8 @@
 
   (defn helm-ag--custom-project-root ()
     "TODO"
-    (or (and (featurep 'persp-mode)
-             (persp-current-project))
-        (and (featurep 'projectile)
-             (projectile-project-root))))
+    (and (featurep 'projectile)
+         (projectile-project-root)))
 
   (setq helm-ag-base-command "rg"
         helm-ag-command-option "--no-heading --no-messages --smart-case"
@@ -113,7 +111,7 @@
   (advice-add #'helm-ag--propertize-candidates :override #'helm-ag--custom-propertize-candidates)
   (advice-add #'helm-do-ag--helm :before #'helm-ag--set-input-idle-delay)
   (advice-add #'helm-ag--elisp-regexp-to-pcre :filter-return #'helm-ag--elisp-regexp-to-pcre-for-ripgrep)
-  (advice-add #'helm-ag--project-root :override #'helm-ag--custom-project-root)
+  (advice-add #'helm-ag--project-root :before-until #'helm-ag--custom-project-root)
   (with-eval-after-load "vlf"
     (advice-add #'helm-ag--find-file-action :before-until #'helm-ag--find-file-action-for-vlf)))
 

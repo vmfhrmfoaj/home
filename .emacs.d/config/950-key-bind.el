@@ -125,7 +125,6 @@
 
     ;; buffer
     "bR" #'revert-buffer
-    "ba" #'persp-add-buffer
     "bb" #'helm-buffers-list
     "bd" #'evil-delete-buffer
     "bk" #'kill-buffer
@@ -179,19 +178,15 @@
     "nw" #'widen
 
     ;; project
-    "p TAB" #'persp-switch-to-last-selected-persp
-    "p~" #'persp-switch-to-default
+    "p TAB" #'projectile-switch-latest-open-project
     "p!" #'projectile-run-shell-command-in-root
     "pA" #'projectile-add-known-project
     "pD" #'projectile-remove-known-project
     "pI" #'projectile-invalidate-cache
-    "pL" #'persp-load-state-from-file
-    "pS" #'persp-save-state-to-file
-    "pd" #'helm-projectile-find-dir
-    "pf" #'helm-projectile-find-file
-    "pl" #'helm-persp-create-&-switch-project
-    "pp" #'helm-persp
-    "pq" #'persp-kill-cur-persp
+    "pd" #'projectile-find-dir
+    "pf" #'projectile-find-file
+    "pp" #'projectile-custom-switch-open-project
+    "ps" #'projectile-switch-project
 
     ;; register/rings/resume
     "rk" #'helm-show-kill-ring
