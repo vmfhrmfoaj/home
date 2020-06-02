@@ -218,6 +218,7 @@
 
     ;; window
     "w-" #'split-window-vertically
+    "w|" #'split-window-horizontally
     "wh" #'windmove-left
     "wj" #'windmove-down
     "wk" #'windmove-up

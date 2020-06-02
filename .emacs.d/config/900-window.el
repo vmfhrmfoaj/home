@@ -1,11 +1,16 @@
 (when window-system
-  (let* ((min-col-width 170)
+  (let* ((two-horizontal-window-setup t)
+         (min-col-width 170)
          (workarea (-some->> main-monitor (assoc 'workarea) (-drop 1)))
          (main-monitor-l (nth 0 workarea))
          (main-monitor-t (nth 1 workarea))
          (main-monitor-w (nth 2 workarea))
-         (main-monitor-h (nth 3 workarea)))
-    (if (<= main-monitor-w (* min-col-width (frame-char-width)))
+         (main-monitor-h (nth 3 workarea))
+         (width main-monitor-w)
+         (heigh main-monitor-h)
+         (x-pos 0))
+    (if (or two-horizontal-window-setup
+            (<= main-monitor-w (* min-col-width (frame-char-width))))
         (set-frame-parameter nil 'fullscreen 'maximized)
       (set-frame-position (selected-frame) main-monitor-l main-monitor-t)
       (let* ((h (floor (/ (float main-monitor-h) (frame-char-height))))
@@ -15,13 +20,19 @@
                     l
                   (max 0 (- main-monitor-w (frame-unit->pixel min-col-width)))))
              (w (max min-col-width (/ (- main-monitor-w l) (frame-char-width)))))
+        (setq width w
+              heigh h
+              x-pos (+ l main-monitor-l))
         (add-to-list 'default-frame-alist (cons 'width  w))
-        (add-to-list 'default-frame-alist (cons 'height h))
-        (setq split-width-threshold main-monitor-w
-              initial-frame-alist (list (cons 'top    main-monitor-t)
-                                        (cons 'left   (+ l main-monitor-l))
-                                        (cons 'width  w)
-                                        (cons 'height h)))))))
+        (add-to-list 'default-frame-alist (cons 'height h))))
+    (setq split-width-threshold (if two-horizontal-window-setup
+                                    min-col-width
+                                  main-monitor-w)
+          initial-frame-alist (list (cons 'top    main-monitor-t)
+                                    (cons 'left   x-pos)
+                                    (cons 'width  width)
+                                    (cons 'height heigh)
+                                    (cons 'undecorated t)))))
 
 (use-package winum
   :ensure t

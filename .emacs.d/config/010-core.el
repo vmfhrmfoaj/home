@@ -220,9 +220,9 @@
         helm-autoresize-max-height 45
         helm-buffer-max-length 35
         helm-display-header-line nil
-        helm-display-function #'helm-display-buffer-at-bottom
         helm-split-window-inside-p t
-        helm-truncate-lines t)
+        helm-truncate-lines t
+        helm-window-prefer-horizontal-split 'decide)
 
   (add-hook 'helm-before-initialize-hook
             (byte-compile
