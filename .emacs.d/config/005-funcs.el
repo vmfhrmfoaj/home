@@ -288,21 +288,24 @@
 (defn switch-to-previous-buffer-in (bufs)
   "TODO"
   (unless (window-dedicated-p)
-    (let ((cur-buf (current-buffer)))
+    (let ((visible-bufs (-map #'window-buffer (window-list))))
       (-when-let (prev-buf (->> bufs
-                                (--remove (string-match-p exclude-alt-buf-regex (buffer-name it)))
-                                (-remove #'minibufferp)
-                                (--remove-first (eq cur-buf it))
+                                (--remove (or (minibufferp it)
+                                              (-contains? visible-bufs it)
+                                              (->> it
+                                                   (buffer-name)
+                                                   (string-match-p "\\*.*[Hh]elm.*\\*"))))
                                 (sort-buffer-by-visit-time)
                                 (-first-item)))
-        (switch-to-buffer prev-buf nil t)))))
+        (switch-to-buffer prev-buf nil t)
+        prev-buf))))
 
 (defn switch-to-previous-buffer (&optional bufs)
   "TODO"
   (interactive)
   (->> (buffer-list)
-       (--remove (string-match-p exclude-alt-buf-regex (buffer-name it)))
-       (-remove #'minibufferp)
+       (--remove (unless (s-blank-str? exclude-alt-buf-regex)
+                   (string-match-p exclude-alt-buf-regex (buffer-name it))))
        (switch-to-previous-buffer-in)))
 
 

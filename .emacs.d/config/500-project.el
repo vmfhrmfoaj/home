@@ -8,7 +8,14 @@
     "TODO"
     (interactive)
     (condition-case nil
-        (switch-to-previous-buffer-in (projectile-project-buffers))
+        (let ((cur-proj-root (or (projectile-project-root)
+                                 (concat (s-chop-suffix "/" home-dir) "/"))))
+          (->> (buffer-list)
+               (--filter (with-current-buffer it
+                           (let ((proj-root (or (projectile-project-root)
+                                                (concat (s-chop-suffix "/" home-dir) "/"))))
+                             (string= cur-proj-root proj-root))))
+               (switch-to-previous-buffer-in)))
       (error (switch-to-previous-buffer-in (buffer-list)))))
 
   (defn projectile-project-files-custom-filter (files)
@@ -26,24 +33,28 @@
   (defn projectile-switch-latest-open-project ()
     "TODO"
     (interactive)
-    (let ((cur-proj-root (projectile-project-root)))
+    (let ((cur-proj-root (or (projectile-project-root)
+                             (concat (s-chop-suffix "/" home-dir) "/"))))
      (-some->> (buffer-list)
-       (sort-buffer-by-visit-time)
-       (--filter (with-current-buffer it
-                   (when-let ((proj-root (projectile-project-root)))
-                     (not (string= cur-proj-root proj-root)))))
-       (-first-item)
-       (switch-to-buffer))))
+       (--remove (with-current-buffer it
+                   (let ((proj-root (or (projectile-project-root)
+                                        (concat (s-chop-suffix "/" home-dir) "/"))))
+                     (string= cur-proj-root proj-root))))
+       (switch-to-previous-buffer-in))))
 
   (defn projectile-action-for-custom-switch-open-project ()
     "A `projectile' action for `projectile-custom-switch-open-project'."
-    (let* ((visible-bufs (-map #'window-buffer (window-list)))
-           (buf (-some->> (projectile-project-buffers)
-                  (sort-buffer-by-visit-time)
-                  (--remove (-contains? visible-bufs it))
-                  (-first-item))))
-      (if buf
-          (switch-to-buffer buf)
+    (let* ((cur-proj-root (projectile-project-root))
+           (buf (-some->> (buffer-list)
+                  (--filter (with-current-buffer it
+                              ;; NOTE
+                              ;;  `projectile-switch-open-project' will overwrite `default-directory' variable.
+                              (let* ((default-directory (or (-some-> (buffer-file-name) (file-name-directory)) ""))
+                                     (proj-root (or (projectile-project-root)
+                                                    (concat (s-chop-suffix "/" home-dir) "/"))))
+                                (string= cur-proj-root proj-root))))
+                  (switch-to-previous-buffer-in))))
+      (unless buf
         (projectile-find-file))))
 
   (defn projectile-custom-switch-open-project (&optional arg)
