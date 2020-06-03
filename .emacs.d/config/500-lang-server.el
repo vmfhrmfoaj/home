@@ -1,7 +1,3 @@
-(use-package company-lsp
-  :ensure t
-  :defer t)
-
 (use-package dap-mode
   :ensure t
   :defer t)
@@ -20,6 +16,11 @@
   (advice-add #'flymake-goto-next-error :around #'flymake--wrap-goto-next-error)
 
   (setq flymake-fringe-indicator-position 'right-fringe))
+
+(use-package flymake-cc
+  :defer t
+  :config
+  (advice-add #'flymake-cc :override (byte-compile (lambda (report-fn &rest _) (funcall report-fn nil)))))
 
 (use-package helm-lsp
   :ensure t
@@ -296,7 +297,7 @@
      (-when-let (state (gethash 'lsp--flymake-backend flymake--backend-state))
        ;; NOTE
        ;;  `setf' is macro. I think the problem  too early expand the macro.
-       ;; (eval '(setf (flymake--backend-state-diags state) (-distinct diags)))
+       ;; (eval '(setf (flymake--backend-state-diags state) nil))
        (aset state 4 nil)
        (mapc #'delete-overlay (flymake--overlays))))
 
@@ -364,7 +365,8 @@
         lsp-enable-on-type-formatting nil
         lsp-enable-symbol-highlighting nil
         lsp-file-watch-threshold nil
-        lsp-rust-server 'rust-analyzer)
+        lsp-rust-server 'rust-analyzer
+        read-process-output-max (* 1024 1024))
 
   (add-to-list 'lsp-language-id-configuration '(cperl-mode . "perl"))
   (add-to-list 'lsp-language-id-configuration '(".*\\.pl$" . "perl"))
