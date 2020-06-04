@@ -389,7 +389,7 @@
       (evil-define-key 'normal map
         (kbd "<tab>") #'helm-ff-TAB)
       (evil-define-key 'insert map
-        (kbd "<tab>") #'helm-ff-TAB))
+        (kbd "<tab>") #'helm-next-line))
     (define-key map (kbd "C-u") #'helm-find-files-up-one-level)
     (define-key map [C-backspace] #'backward-kill-word)))
 
