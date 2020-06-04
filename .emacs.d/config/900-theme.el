@@ -9,6 +9,7 @@
    '(default ((((background dark)) :foreground "#D1D2D2")))
    '(italic ((t :slant italic)))
    '(cursor ((t :background "sky blue")))
+   `(fixed-pitch ((t :font ,alternative-font)))
    `(fixed-pitch-serif ((t :font ,alternative-font)))
    '(link ((t :underline t)))
    '(shadow ((((background light)) :inherit default :foreground "gray55")
@@ -97,7 +98,8 @@
   (custom-set-faces
    '(helm-match ((t :inherit lazy-highlight)))
    '(helm-match-item ((t :inherit lazy-highlight)))
-   '(helm-match-selection ((t :inherit isearch)))))
+   '(helm-match-selection ((t :inherit isearch)))
+   '(helm-selection-line ((t :inherit helm-selection)))))
 
 
 (use-package hl-line
@@ -175,5 +177,7 @@
   :defer t
   :config
   (custom-set-faces
-   `(sh-heredoc     ((t :background "#FCF7F2" :foreground "tan1")))
-   `(sh-quoted-exec ((t :background "#FAECFA" :foreground "magenta")))))
+   `(sh-heredoc     ((((background light)) :background "#FCF7F2" :foreground "tan1")
+                     (((background dark)) :background "#181613" :foreground "bisque4")))
+   `(sh-quoted-exec ((((background light)) :background "#FAECFA" :foreground "magenta")
+                     (((background dark)) :background "#281411" :foreground "salmon")))))
