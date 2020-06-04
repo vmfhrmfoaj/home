@@ -215,8 +215,7 @@
         helm-buffer-max-length 35
         helm-buffer-list-reorder-fn (byte-compile
                                      (lambda (visibles others)
-                                       (nconc (sort-buffer-by-visit-time others)
-                                              (sort-buffer-by-visit-time visibles))))
+                                       (nconc (sort-buffer-by-visit-time others) visibles)))
         helm-display-header-line nil
         helm-split-window-inside-p t
         helm-truncate-lines t
