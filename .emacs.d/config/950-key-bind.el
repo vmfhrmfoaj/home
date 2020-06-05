@@ -383,13 +383,22 @@
 (use-package helm-files
   :defer t
   :config
+  (defn helm-ff-completion-or-next-line ()
+    "todo"
+    (interactive)
+    (let ((sel (helm-get-selection)))
+      (if (and (file-directory-p sel)
+               (not (string= "." (helm-basename sel))))
+          (helm-execute-persistent-action)
+        (helm-next-line))))
+
   (dolist (map (list helm-find-files-map
                      helm-read-file-map))
     (when evil-want-minibuffer
       (evil-define-key 'normal map
         (kbd "<tab>") #'helm-ff-TAB)
       (evil-define-key 'insert map
-        (kbd "<tab>") #'helm-next-line))
+        (kbd "<tab>") #'helm-ff-completion-or-next-line))
     (define-key map (kbd "C-u") #'helm-find-files-up-one-level)
     (define-key map [C-backspace] #'backward-kill-word)))
 
