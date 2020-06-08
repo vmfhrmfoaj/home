@@ -197,10 +197,11 @@
     ;; search/symbol
     "se" #'evil-multiedit-match-all
     "sf" #'helm-do-ag
-    "sF" #'helm-do-ag-this-file
+    "sF" #'helm-do-ag-with-no-ignore
     "sg" #'helm-do-grep-ag
     "sr" #'helm-resume-last-search-buffer
     "sp" #'helm-do-ag-project-root
+    "sP" #'helm-do-ag-project-root-with-no-ignore
     "ss" #'helm-occur
 
     ;; toggle

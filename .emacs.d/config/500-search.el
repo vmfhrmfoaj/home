@@ -1,6 +1,23 @@
 (use-package helm-ag
   :ensure t
   :defer t
+  :init
+  (defn helm-do-ag-with-no-ignore ()
+    "TODO"
+    (interactive)
+    (let ((helm-ag-command-option (concat "--no-ignore " helm-ag-command-option)))
+      (call-interactively #'helm-do-ag)))
+
+  (defn helm-do-ag-project-root-with-no-ignore ()
+    "TODO"
+    (interactive)
+    (let ((helm-ag-command-option (concat "--no-ignore " helm-ag-command-option)))
+      (call-interactively #'helm-do-ag-project-root)))
+
+  (setq helm-ag-base-command "rg"
+        helm-ag-command-option "--no-heading --no-messages --smart-case"
+        helm-ag-use-emacs-lisp-regexp t)
+
   :config
   (defn helm-ag--custom-do-ag-candidate-process (dir)
     "TODO"
@@ -102,10 +119,6 @@
     "TODO"
     (and (featurep 'projectile)
          (projectile-project-root)))
-
-  (setq helm-ag-base-command "rg"
-        helm-ag-command-option "--no-heading --no-messages --smart-case"
-        helm-ag-use-emacs-lisp-regexp t)
 
   (advice-add #'helm-ag--do-ag-candidate-process :override #'helm-ag--custom-do-ag-candidate-process)
   (advice-add #'helm-ag--propertize-candidates :override #'helm-ag--custom-propertize-candidates)
