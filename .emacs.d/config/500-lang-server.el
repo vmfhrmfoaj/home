@@ -348,7 +348,7 @@
               (sig-lines (->> label (s-lines))))
         (setq lsp--signature-last-index active-index)
         (concat prefix
-                (first sig-lines)
+                (-first-item sig-lines)
                 (-some->> sig-lines
                   (-drop 1)
                   (apply #'concat "\n" prefix2))))))
@@ -439,21 +439,21 @@
       (let* ((line-num (line-number-at-pos bol t))
              (diagnostics (-some->> (lsp-diagnostics)
                                     (gethash buffer-file-name)
-                                    (--filter (-when-let (range (lsp-diagnostic-range it))
+                                    (--filter (-when-let (range (lsp:diagnostic-range it))
                                                 ;; NOTE: I think, the line number of `lsp-diagnostics' is zero-based numbering.
-                                                (let ((beg (-some-> range (plist-get :start) (plist-get :line) (1+)))
-                                                      (end (-some-> range (plist-get :end)   (plist-get :line) (1+))))
+                                                (let ((beg (-some-> range (lsp:range-start) (lsp:position-line) (1+)))
+                                                      (end (-some-> range (lsp:range-start) (lsp:position-line) (1+))))
                                                   (when (<= beg line-num end)
                                                     it)))))))
         (dolist (diagnostic diagnostics)
           (let ((messages (-some->> diagnostic
-                                    (lsp-diagnostic-message)
+                                    (lsp:diagnostic-message)
                                     (s-replace-regexp "[ \t]+" " ")
                                     (s-trim)
                                     (s-split "[\r\n]+")
                                     (-remove #'s-blank-str?)))
                 (face (->> diagnostic
-                           (lsp-diagnostic-severity)
+                           (lsp:diagnostic-severity?)
                            (number-to-string)
                            (concat "lsp-diagnostic-level-")
                            (intern)))
