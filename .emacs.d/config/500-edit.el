@@ -1,5 +1,6 @@
 (use-package editorconfig
   :ensure t
+  :hook ((autoconf-mode . editorconfig-mode-apply))
   :config
   (editorconfig-mode 1))
 
