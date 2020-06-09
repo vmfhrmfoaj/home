@@ -319,15 +319,21 @@
   :ensure t
   :config
   (require 'spaceline-config)
-  (setq spaceline-window-numbers-unicode nil)
+  (setq spaceline-window-numbers-unicode t)
 
   (make-thread
    (lambda ()
-     (let ((fmt (spaceline-emacs-theme)))
+     (let ((fmt (apply #'spaceline--theme
+                       '((((window-number
+                            projectile-root) :separator "|")
+                          buffer-modified)
+                         :face highlight-face
+                         :priority 100)
+                       '((buffer-id remote-host)
+                         :priority 98))))
        (dolist (buf (buffer-list))
          (with-current-buffer buf
            (setq mode-line-format fmt)))
-       (spaceline-toggle-hud-off)
        (force-mode-line-update t)
        (spaceline-helm-mode)))))
 

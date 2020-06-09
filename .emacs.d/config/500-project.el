@@ -63,8 +63,15 @@
     (let ((projectile-switch-project-action #'projectile-action-for-custom-switch-open-project))
       (projectile-switch-open-project)))
 
+  (defn projectile-custom-project-name (project-root)
+    "TODO"
+    (if (string= home-dir (s-chop-suffix "/" project-root))
+        "home"
+      (file-name-nondirectory (directory-file-name project-root))))
+
   (setq projectile-completion-system 'helm
-        projectile-enable-cachig t)
+        projectile-enable-cachig t
+        projectile-project-name-function #'projectile-custom-project-name)
 
   (add-hook 'find-file-hook
             (lambda ()
