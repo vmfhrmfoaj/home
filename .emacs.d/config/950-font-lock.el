@@ -135,7 +135,7 @@
         (1 'font-lock-type-face))
        ("\\(?:\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\|\\$\\|\\\\\\)"
         (1 'shadow))
-       ("\\([&|*]\\|::\\|[-=]>\\)"
+       ("\\([\\&|*]\\|::\\|[-=]>\\)"
         (1 'shadow))
        ("\\([*@$%]+\\)\\(?:[:_0-9a-zA-Z]\\|\\s(\\)"
         (1 'shadow))))
@@ -1183,6 +1183,10 @@
 (use-package rpm-spec-mode
   :defer t
   :config
+  (font-lock-add-keywords
+   'rpm-spec-mode
+   '(("^%prein"
+      (0 'rpm-spec-section-face))))
   (font-lock-add-keywords
    'rpm-spec-mode
    '(("\\(#?'\\|[.,/<>]\\|\\s(\\|\\s)\\)"

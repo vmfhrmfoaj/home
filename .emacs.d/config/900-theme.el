@@ -6,15 +6,16 @@
   (load-theme 'twilight-anti-bright t)
   (custom-set-faces
    '(bold ((t :weight bold)))
-   '(default ((((background dark)) :foreground "#D1D2D2")))
+   '(default ((((background dark)) :foreground "#cfd0d0")))
    '(italic ((t :slant italic)))
    '(cursor ((t :background "sky blue")))
    `(fixed-pitch ((t :font ,alternative-font)))
    `(fixed-pitch-serif ((t :font ,alternative-font)))
    '(link ((t :underline t)))
    '(shadow ((((background light)) :inherit default :foreground "gray55")
-             (((background dark))  :inherit default :foreground "gray65")))
-   '(show-paren-match ((t :inherit bold :underline t)))
+             (((background dark))  :inherit default :foreground "#a5a6a6")))
+   '(show-paren-match ((((background light)) :inherit bold :underline t)
+                       (((background dark))  :inherit bold :underline t :foreground "firebrick1")))
    '(trailing-whitespace ((t :background "gray65")))))
 
 (use-package font-lock
@@ -22,9 +23,9 @@
   (custom-set-faces
    '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight light)))
    '(font-lock-function-name-face ((t :inherit bold)))
-   '(font-lock-regexp-grouping-backslash ((((background light)) :inherit font-lock-string-face :background "#E1F2D6")))
-   '(font-lock-regexp-grouping-construct ((((background light)) :inherit font-lock-string-face :background "#E1F2D6")))
-   '(font-lock-type-face ((((background dark)) :foreground "#B63F1E") (t :weight unspecified)))
+   '(font-lock-regexp-grouping-backslash ((((background light)) :inherit font-lock-string-face :background "#e1f2d6")))
+   '(font-lock-regexp-grouping-construct ((((background light)) :inherit font-lock-string-face :background "#e1f2d6")))
+   '(font-lock-type-face ((((background dark)) :foreground "#b63f1e") (t :weight unspecified)))
    '(font-lock-variable-name-face ((((background light)) :foreground "#607596")))
    '(font-lock-warning-face ((t :inherit (bold italic)))))
 
@@ -72,7 +73,7 @@
   :defer t
   :config
   (custom-set-faces
-   `(focus-unfocused ((((background light)) :foreground "#A49DA5")))))
+   `(focus-unfocused ((((background light)) :foreground "#a49da5")))))
 
 (use-package flymake
   :defer t
@@ -106,13 +107,13 @@
   :defer t
   :config
   (custom-set-faces
-   '(hl-line ((((background light)) :background "#EEF7FD")))))
+   '(hl-line ((((background light)) :background "#eef7fd")))))
 
 (use-package hl-todo
   :defer t
   :config
   (custom-set-faces
-   '(hl-todo ((t :inherit bold :weight semi-bold :foreground "#CC9393")))))
+   '(hl-todo ((t :inherit bold :weight semi-bold :foreground "#cc9393")))))
 
 (use-package iedit
   :defer t
@@ -166,18 +167,41 @@
   :defer t
   :config
   (custom-set-faces
-   '(magit-diff-context-highlight ((((class color) (background light)) :background "#FBFEEE" :foreground "#A4C207")))
+   '(magit-diff-context-highlight ((((class color) (background light)) :background "#fbfeee" :foreground "#a4c207")))
    '(magit-diff-file-heading ((t :inherit bold)))
    '(magit-hash ((((class color) (background light)) :foreground "gray60" :weight light)))
    '(magit-log-author ((((class color) (background light)) :foreground "firebrick" :weight light)))
    '(magit-log-date ((((class color) (background light)) :foreground "gray30" :weight light)))
    '(magit-section-highlight ((((class color) (background light)) :inherit hl-line :distant-foreground "black")))))
 
+(use-package rpm-spec-mode
+  :defer t
+  :config
+  (custom-set-faces
+   '(rpm-spec-ghost-face ((t :inherit shadow)))
+   '(rpm-spec-macro-face ((t :inherit font-lock-keyword-face)))
+   '(rpm-spec-package-face ((t :inherit font-lock-constant-face)))
+   '(rpm-spec-section-face ((t :inherit font-lock-function-name-face)))
+   '(rpm-spec-tag-face ((t :inherit font-lock-builtin-face)))
+   '(rpm-spec-var-face ((t :inherit font-lock-variable-name-face)))))
+
 (use-package sh-script
   :defer t
   :config
   (custom-set-faces
-   `(sh-heredoc     ((((background light)) :background "#FCF7F2" :foreground "tan1")
+   `(sh-heredoc     ((((background light)) :background "#fcf7f2" :foreground "tan1")
                      (((background dark)) :background "#181613" :foreground "bisque4")))
-   `(sh-quoted-exec ((((background light)) :background "#FAECFA" :foreground "magenta")
+   `(sh-quoted-exec ((((background light)) :background "#faecfa" :foreground "magenta")
                      (((background dark)) :background "#281411" :foreground "salmon")))))
+
+(use-package whitespace
+  :defer t
+  :config
+  (custom-set-faces
+   '(whitespace-big-indent ((((background dark)) :foreground "firebrick2")))
+   '(whitespace-hspace ((((background dark)) :foreground "firebrick4")))
+   '(whitespace-indentation ((((background dark)) :foreground "firebrick4")))
+   '(whitespace-newline ((((background dark)) :foreground "firebrick4")))
+   '(whitespace-space ((((background dark)) :foreground "firebrick4")))
+   '(whitespace-tab ((((background dark)) :foreground "firebrick4")))
+   '(whitespace-trailing ((((background dark)) :inverse-video t :foreground "firebrick4")))))
