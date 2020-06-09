@@ -20,20 +20,20 @@
        (while (or (not isearch-success) isearch-error) (isearch-pop-state))
        (isearch-update)))))
 (remove-hook 'minibuffer-setup-hook #'evil-initialize)
+(when evil-want-minibuffer
+  (evil-define-key 'normal minibuffer-local-map
+    (kbd "<escape>") #'abort-recursive-edit
+    (kbd "RET") #'exit-minibuffer)
+  (evil-define-key 'insert minibuffer-local-map
+    (kbd "RET") #'exit-minibuffer
+    (kbd "<tab>") #'completion-at-point))
 (add-hook 'minibuffer-setup-hook
           (byte-compile
            (lambda ()
              (when evil-want-minibuffer
                (evil-initialize)
                (set (make-local-variable 'evil-echo-state) nil)
-               (evil-insert 1)
-               ;; FIXME
-               ;;  Not working `minibuffer-local-map'
-               (unless (or helm-alive-p
-                           evil-ex-current-buffer)
-                 (evil-local-set-key 'normal (kbd "<escape>") #'abort-recursive-edit)
-                 (evil-local-set-key 'normal (kbd "RET") #'exit-minibuffer)
-                 (evil-local-set-key 'insert (kbd "RET") #'exit-minibuffer)))
+               (evil-insert 1))
              (local-set-key (kbd "C-a") #'beginning-of-line)
              (local-set-key (kbd "C-b") #'backward-char)
              (local-set-key (kbd "C-h") #'backward-delete-char))))
@@ -388,8 +388,9 @@
     "todo"
     (interactive)
     (let ((sel (helm-get-selection)))
-      (if (and (file-directory-p sel)
-               (not (string= "." (helm-basename sel))))
+      (if (and (not (s-ends-with? "/" (or helm-input "/")))
+               (file-directory-p sel)
+               (not (string-match-p "^\\(\\.\\|\\.\\.\\)$" (helm-basename sel))))
           (helm-execute-persistent-action)
         (helm-next-line))))
 
