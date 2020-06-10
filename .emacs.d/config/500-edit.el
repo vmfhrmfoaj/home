@@ -1,7 +1,7 @@
 (use-package editorconfig
   :ensure t
   :hook ((autoconf-mode . editorconfig-mode-apply))
-  :config
+  :init
   (editorconfig-mode 1))
 
 (use-package evil-surround
