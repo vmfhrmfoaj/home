@@ -59,8 +59,7 @@ So, replaced `evil-jump-item' to this function."
        ((eq pos end)
         (goto-char end))
        (t
-        (sp-down-sexp)
-        (forward-char -1)))))
+        (sp-backward-up-sexp)))))
 
   (setq sp-highlight-pair-overlay nil
         sp-highlight-wrap-overlay nil
