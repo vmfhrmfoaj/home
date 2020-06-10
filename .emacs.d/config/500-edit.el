@@ -46,6 +46,22 @@
     (interactive "P")
     (sp-wrap-with-pair "("))
 
+  (defn sp--simulate-evil-jump-item ()
+    "Sometimes `evil-jump-item' does not jump to the correct position.
+So, replaced `evil-jump-item' to this function."
+    (interactive)
+    (-let (((beg end beg-len end-len) sp-show-pair-previous-match-positions)
+           (pos (point)))
+      (cond
+       ((eq pos beg)
+        (goto-char end)
+        (forward-char (- end-len)))
+       ((eq pos end)
+        (goto-char end))
+       (t
+        (sp-down-sexp)
+        (forward-char -1)))))
+
   (setq sp-highlight-pair-overlay nil
         sp-highlight-wrap-overlay nil
         sp-highlight-wrap-tag-overlay nil)

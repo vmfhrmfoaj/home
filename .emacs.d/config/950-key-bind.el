@@ -317,6 +317,7 @@
   (define-key evil-outer-text-objects-map "U" 'evil-a-sexp)
   (define-key evil-inner-text-objects-map "U" 'evil-inner-sexp)
   (evil-define-key 'normal 'global
+    "%" #'sp--simulate-evil-jump-item
     "gr" #'eldoc-refresh
     (kbd "<tab>") #'indent-for-tab-command
     (kbd "C-d") (lambda () (interactive) (up-list nil t))
