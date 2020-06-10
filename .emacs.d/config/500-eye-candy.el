@@ -323,14 +323,14 @@
 
   (make-thread
    (lambda ()
-     (let ((fmt (apply #'spaceline--theme
-                       '((((window-number
-                            projectile-root) :separator "|")
-                          buffer-modified)
-                         :face highlight-face
-                         :priority 100)
-                       '((buffer-id remote-host)
-                         :priority 98))))
+     (let ((fmt (spaceline--theme
+                 '((((window-number
+                      projectile-root) :separator "|")
+                    buffer-modified)
+                   :face highlight-face
+                   :priority 100)
+                 '((buffer-id remote-host)
+                   :priority 98))))
        (dolist (buf (buffer-list))
          (with-current-buffer buf
            (setq mode-line-format fmt)))
