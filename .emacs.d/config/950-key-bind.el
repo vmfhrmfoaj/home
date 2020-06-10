@@ -143,9 +143,11 @@
     "ep" #'previous-error
 
     ;; file
+    "fR" #'rename-current-buffer-file
+    "fY" #'kill-new-buffer-file-name
     "ff" #'helm-find-files
     "fr" #'helm-recentf
-    "fy" #'kill-new-buffer-file-name
+    "fy" #'projectile-kill-new-buffer-file-name
 
     ;; git
     "gb" #'magit-blame-addition
@@ -398,8 +400,6 @@
   (dolist (map (list helm-find-files-map
                      helm-read-file-map))
     (when evil-want-minibuffer
-      (evil-define-key 'normal map
-        (kbd "<tab>") #'helm-ff-TAB)
       (evil-define-key 'insert map
         (kbd "<tab>") #'helm-ff-completion-or-next-line))
     (define-key map (kbd "C-u") #'helm-find-files-up-one-level)
@@ -422,7 +422,11 @@
       (kbd "C-g") #'helm-keyboard-quit
       (kbd "RET") #'helm-maybe-exit-minibuffer
       (kbd "<escape>") #'helm-keyboard-quit
-      (kbd "<tab>") #'helm-select-action))
+      (kbd "<backtab>") #'helm-previous-line
+      (kbd "<tab>") #'helm-next-line
+      (kbd "C-c <tab>") #'helm-select-action)
+    (define-key helm-map (kbd "C-i") nil)
+    (define-key helm-map (kbd "C-c <tab>") #'helm-select-action))
   (define-key helm-map (kbd "<escape>") #'helm-keyboard-quit))
 
 (use-package helm-occur

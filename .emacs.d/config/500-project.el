@@ -69,6 +69,14 @@
         "home"
       (file-name-nondirectory (directory-file-name project-root))))
 
+  (defn projectile-kill-new-buffer-file-name ()
+    "TODO"
+    (interactive)
+    (-when-let (file-name (buffer-file-name))
+      (message (kill-new (-if-let (root (projectile-project-root))
+                             (s-chop-prefix root file-name)
+                           file-name)))))
+
   (setq projectile-completion-system 'helm
         projectile-enable-cachig t
         projectile-project-name-function #'projectile-custom-project-name)
