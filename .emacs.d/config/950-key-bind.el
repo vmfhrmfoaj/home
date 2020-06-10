@@ -485,19 +485,6 @@
   (evil-define-key 'normal alchemist-help-minor-mode-map
     (kbd "q") #'evil-delete-buffer))
 
-(use-package cc-mode
-  :defer t
-  :config
-  (dolist (mode '(c-mode c++-mode java-mode))
-    (evil-leader/set-key-for-mode mode
-      "mgg" #'lsp-find-definition
-      "mgd" #'lsp-find-declaration
-      "mgi" #'lsp-find-implementation
-      "mgt" #'lsp-find-type-definition)
-    (which-key-declare-prefixes-for-mode mode
-      (concat evil-leader/leader "mg") "goto")
-    (evil-leader/set-major-leader-for-mode mode)))
-
 (use-package clojure-mode
   :defer t
   :config
@@ -524,15 +511,7 @@
   :defer t
   :config
   (define-key cperl-mode-map (kbd "{") nil) ; disable `cperl-electric-lbrace'
-  (evil-define-key 'normal cperl-mode-map (kbd "M-,") #'pop-tag-mark)
-  (evil-leader/set-key-for-mode 'cperl-mode
-    "mgg" #'lsp-find-definition
-    "mgd" #'lsp-find-declaration
-    "mgi" #'lsp-find-implementation
-    "mgt" #'lsp-find-type-definition)
-  (which-key-declare-prefixes-for-mode 'cperl-mode
-    (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode 'cperl-mode))
+  (evil-define-key 'normal cperl-mode-map (kbd "M-,") #'pop-tag-mark))
 
 (use-package ediff
   :defer t
@@ -602,30 +581,6 @@
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode 'go-mode))
 
-(use-package js
-  :defer t
-  :config
-  (evil-leader/set-key-for-mode 'js-mode
-    "mgg" #'lsp-find-definition
-    "mgd" #'lsp-find-declaration
-    "mgi" #'lsp-find-implementation
-    "mgt" #'lsp-find-type-definition)
-  (which-key-declare-prefixes-for-mode 'js-mode
-    (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode 'js-mode))
-
-(use-package latex-mode
-  :defer t
-  :config
-  (evil-leader/set-key-for-mode 'latex-mode
-    "mgg" #'lsp-find-definition
-    "mgd" #'lsp-find-declaration
-    "mgi" #'lsp-find-implementation
-    "mgt" #'lsp-find-type-definition)
-  (which-key-declare-prefixes-for-mode 'latex-mode
-    (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode 'latex-mode))
-
 (use-package lsp-mode
   :defer t
   :config
@@ -671,16 +626,11 @@
   :defer t
   :config
   (evil-leader/set-key-for-mode 'php-mode
-    "mgg" #'lsp-find-definition
-    "mgd" #'lsp-find-declaration
-    "mgi" #'lsp-find-implementation
-    "mgt" #'lsp-find-type-definition
-    "mrr" #'psysh
-    "mrR" #'psysh-restart
-    "mrs" #'psysh-show)
+    "mRr" #'psysh
+    "mRR" #'psysh-restart
+    "mRs" #'psysh-show)
   (which-key-declare-prefixes-for-mode 'php-mode
-    (concat evil-leader/leader "mg") "goto"
-    (concat evil-leader/leader "mr") "REPL")
+    (concat evil-leader/leader "mR") "REPL")
   (evil-leader/set-major-leader-for-mode 'php-mode)
   (define-key php-mode-map [tab] nil))
 
@@ -704,18 +654,6 @@
             (lambda ()
               (evil-local-set-key 'normal (kbd "q") #'quit-window))))
 
-(use-package rust-mode
-  :defer t
-  :config
-  (evil-leader/set-key-for-mode 'rust-mode
-    "mgg" #'lsp-find-definition
-    "mgd" #'lsp-find-declaration
-    "mgi" #'lsp-find-implementation
-    "mgt" #'lsp-find-type-definition)
-  (which-key-declare-prefixes-for-mode 'rust-mode
-    (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode 'rust-mode))
-
 (use-package sh-script
   :defer t
   :config
@@ -724,18 +662,6 @@
   (which-key-declare-prefixes-for-mode 'sh-mode
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode 'sh-mode))
-
-(use-package typescript-mode
-  :defer t
-  :config
-  (evil-leader/set-key-for-mode 'typescript-mode
-    "mgg" #'lsp-find-definition
-    "mgd" #'lsp-find-declaration
-    "mgi" #'lsp-find-implementation
-    "mgt" #'lsp-find-type-definition)
-  (which-key-declare-prefixes-for-mode 'typescript-mode
-    (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode 'typescript-mode))
 
 (use-package view
   :defer t

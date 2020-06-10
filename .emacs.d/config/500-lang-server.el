@@ -22,10 +22,6 @@
   :config
   (advice-add #'flymake-cc :override (byte-compile (lambda (report-fn &rest _) (funcall report-fn nil)))))
 
-(use-package helm-lsp
-  :ensure t
-  :commands helm-lsp-workspace-symbol)
-
 (use-package lsp-clients
   :defer t
   :config
@@ -80,6 +76,9 @@
          (rust-mode       . lsp)
          (sh-mode         . lsp)
          (typescript-mode . lsp))
+  :init
+  (setq lsp-keymap-prefix nil)
+
   :config
   (defvar lsp--custom-render--regex-1-for-php
     (concat "```php[ \t\r\n]*"                     ; ```php
@@ -358,18 +357,136 @@
     (-when-let (buf (get-buffer "*lsp-help*"))
       (pop-to-buffer buf)))
 
+  (defmacro lsp-custom-define-conditional-key (key def cond &rest bindings)
+    "In KEYMAP, define key sequence KEY as DEF conditionally.
+This is like `define-key', except the definition disappears
+whenever COND evaluates to nil.
+BINDINGS is a list of (key def cond)."
+    (declare (indent defun)
+             (debug (form form form form &rest sexp)))
+    `(-some->> ',(->> (cl-list* key def cond bindings)
+                      (-partition 3))
+       (-mapcat (-lambda ((key def cond)) (when cond (list key def))))
+       (apply #'evil-leader/set-key-for-mode major-mode)))
+
+  (defn lsp--custom-setup-key ()
+    (lsp-custom-define-conditional-key
+      ;; sessions
+      "msr" lsp-workspace-restart (lsp-workspaces)
+      "mss" lsp t
+      "msq" lsp-workspace-shutdown (lsp-workspaces)
+      "msd" lsp-describe-session t
+      "msD" lsp-disconnect (lsp-workspaces)
+      ;; formatting
+      "m==" lsp-format-buffer (or (lsp-feature? "textDocument/rangeFormatting") (lsp-feature? "textDocument/formatting"))
+      "m=r" lsp-format-region (lsp-feature? "textDocument/rangeFormatting")
+      ;; folders
+      "mFa" lsp-workspace-folders-add t
+      "mFr" lsp-workspace-folders-remove t
+      "mFb" lsp-workspace-blacklist-remove t
+      ;; toggles
+      "mTl" lsp-lens-mode (lsp-feature? "textDocument/codeLens")
+      "mTL" lsp-toggle-trace-io t
+      "mTh" lsp-toggle-symbol-highlight (lsp-feature? "textDocument/documentHighlight")
+      "mTS" lsp-ui-sideline-mode (featurep 'lsp-ui-sideline)
+      "mTd" lsp-ui-doc-mode (featurep 'lsp-ui-doc)
+      "mTs" lsp-toggle-signature-auto-activate (lsp-feature? "textDocument/signatureHelp")
+      "mTf" lsp-toggle-on-type-formatting (lsp-feature? "textDocument/onTypeFormatting")
+      "mTT" lsp-treemacs-sync-mode (featurep 'lsp-treemacs)
+      ;; goto
+      "mgg" lsp-find-definition (lsp-feature? "textDocument/definition")
+      "mgr" lsp-find-references (lsp-feature? "textDocument/references")
+      "mgi" lsp-find-implementation (lsp-feature? "textDocument/implementation")
+      "mgt" lsp-find-type-definition (lsp-feature? "textDocument/typeDefinition")
+      "mgd" lsp-find-declaration (lsp-feature? "textDocument/declaration")
+      "mgh" lsp-treemacs-call-hierarchy (and (lsp-feature? "callHierarchy/incomingCalls") (fboundp 'lsp-treemacs-call-hierarchy))
+      "mga" xref-find-apropos (lsp-feature? "workspace/symbol")
+      "mge" lsp-treemacs-errors-list (fboundp 'lsp-treemacs-errors-list)
+      ;; help
+      "mhh" lsp-describe-thing-at-point (lsp-feature? "textDocument/hover")
+      "mhs" lsp-signature-activate (lsp-feature? "textDocument/signatureHelp")
+      "mhg" lsp-ui-doc-glance (and (featurep 'lsp-ui-doc) (lsp-feature? "textDocument/hover"))
+      ;; refactoring
+      "mrr" lsp-rename (lsp-feature? "textDocument/rename")
+      "mro" lsp-organize-imports (lsp-feature? "textDocument/rename")
+      ;; actions
+      "maa" lsp-execute-code-action (lsp-feature? "textDocument/codeAction")
+      "mal" lsp-avy-lens (and lsp-lens-mode (featurep 'avy))
+      "mah" lsp-document-highlight (lsp-feature? "textDocument/documentHighlight")
+      ;; peeks
+      "mGg" lsp-ui-peek-find-definitions (and (lsp-feature? "textDocument/definition") (fboundp 'lsp-ui-peek-find-definitions))
+      "mGr" lsp-ui-peek-find-references (and (fboundp 'lsp-ui-peek-find-references) (lsp-feature? "textDocument/references"))
+      "mGi" lsp-ui-peek-find-implementation (and (fboundp 'lsp-ui-peek-find-implementation) (lsp-feature? "textDocument/implementation"))
+      "mGs" lsp-ui-peek-find-workspace-symbol (and (fboundp 'lsp-ui-peek-find-workspace-symbol) (lsp-feature? "workspace/symbol")))
+    (which-key-declare-prefixes-for-mode major-mode
+      (concat evil-leader/leader "ms")  "sessions"
+      (concat evil-leader/leader "mss") "start server"
+      (concat evil-leader/leader "msr") "restart server"
+      (concat evil-leader/leader "msq") "shutdown server"
+      (concat evil-leader/leader "msd") "describe session"
+      (concat evil-leader/leader "msD") "disconnect"
+      (concat evil-leader/leader "mF")  "folders"
+      (concat evil-leader/leader "mFa") "add folder"
+      (concat evil-leader/leader "mFr") "remove folder"
+      (concat evil-leader/leader "mFb") "un-blacklist folder"
+      (concat evil-leader/leader "m=")  "formatting"
+      (concat evil-leader/leader "m=r") "format region"
+      (concat evil-leader/leader "m==") "format buffer"
+      (concat evil-leader/leader "mT")  "toggle"
+      (concat evil-leader/leader "mTl") "toggle lenses"
+      (concat evil-leader/leader "mTh") "toggle highlighting"
+      (concat evil-leader/leader "mTL") "toggle log io"
+      (concat evil-leader/leader "mTs") "toggle signature"
+      (concat evil-leader/leader "mTS") "toggle sideline"
+      (concat evil-leader/leader "mTd") "toggle documentation popup"
+      (concat evil-leader/leader "mTp") "toggle signature help"
+      (concat evil-leader/leader "mTf") "toggle on type formatting"
+      (concat evil-leader/leader "mTT") "toggle treemacs integration"
+      (concat evil-leader/leader "mg")  "goto"
+      (concat evil-leader/leader "mgg") "find definitions"
+      (concat evil-leader/leader "mgr") "find references"
+      (concat evil-leader/leader "mgi") "find implementations"
+      (concat evil-leader/leader "mgd") "find declarations"
+      (concat evil-leader/leader "mgt") "find type definition"
+      (concat evil-leader/leader "mgh") "call hierarchy"
+      (concat evil-leader/leader "mga") "find symbol in workspace"
+      (concat evil-leader/leader "mgA") "find symbol in all workspaces"
+      (concat evil-leader/leader "mge") "show errors"
+      (concat evil-leader/leader "mh")  "help"
+      (concat evil-leader/leader "mhh") "describe symbol at point"
+      (concat evil-leader/leader "mhs") "signature help"
+      (concat evil-leader/leader "mr")  "refactor"
+      (concat evil-leader/leader "mrr") "rename"
+      (concat evil-leader/leader "mro") "organize imports"
+      (concat evil-leader/leader "ma")  "code actions"
+      (concat evil-leader/leader "maa") "code actions"
+      (concat evil-leader/leader "mal") "lens"
+      (concat evil-leader/leader "mah") "highlight symbol"
+      (concat evil-leader/leader "mG")  "peek"
+      (concat evil-leader/leader "mGg") "peek definitions"
+      (concat evil-leader/leader "mGr") "peek references"
+      (concat evil-leader/leader "mGi") "peek implementations"
+      (concat evil-leader/leader "mGs") "peek workspace symbol")
+    (evil-leader/set-major-leader-for-mode major-mode))
+
   (setq lsp-diagnostic-package :flymake
         lsp-enable-imenu nil
         lsp-enable-indentation nil
         lsp-enable-links nil
-        lsp-enable-on-type-formatting nil
         lsp-enable-symbol-highlighting nil
         lsp-file-watch-threshold nil
-        lsp-rust-server 'rust-analyzer
-        read-process-output-max (* 1024 1024))
+        lsp-rust-server 'rust-analyzer)
+
+  (make-local-variable 'lsp-enable-on-type-formatting)
+  (setq-default lsp-enable-on-type-formatting t)
 
   (add-to-list 'lsp-language-id-configuration '(cperl-mode . "perl"))
   (add-to-list 'lsp-language-id-configuration '(".*\\.pl$" . "perl"))
+  (let ((hooks '(c-mode-hook c++-mode-hook objc-mode-hook))
+        (hook-fn (lambda ()
+                   (setq-local lsp-enable-on-type-formatting nil))))
+    (dolist (hook hooks)
+      (add-to-list hook hook-fn)))
 
   (add-hook 'evil-insert-state-entry-hook
             (lambda ()
@@ -378,6 +495,7 @@
                          (null lsp-signature-mode))
                 (lsp-signature-activate))))
   (add-hook 'evil-insert-state-exit-hook #'lsp-signature-stop)
+  (add-hook 'lsp-mode-hook #'lsp--custom-setup-key)
 
   (advice-add #'lsp-mode-line :override #'lsp-custom-mode-line)
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)

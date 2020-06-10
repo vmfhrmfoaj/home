@@ -10,11 +10,12 @@
         backup-directory-alist `((".*" . ,backup-dir))
         blink-cursor-blinks 0
         blink-cursor-delay 3
-        create-lockfiles nil
         comment-fill-column 100
+        create-lockfiles nil
         exclude-alt-buf-regex "^\\s-*\\*\\s-*\\([Hh]elm\\|which-key\\)"
         initial-major-mode 'text-mode
         initial-scratch-message ""
+        read-process-output-max (* 1024 1024)
         ring-bell-function 'ignore))
 
 (put 'dired-find-alternate-file 'disabled nil)
