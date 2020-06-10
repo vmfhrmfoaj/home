@@ -56,8 +56,8 @@ EOF
             chmod +x "${HOME}/.shim/asdf"
         fi
     fi
-    [ -f "${asdf_home}/asdf.sh" ]               && source "${asdf_home}/asdf.sh"
-    [ -f "${asdf_home}/completions/asdf.bash" ] && source "${asdf_home}/completions/asdf.bash"
+    [ -r "${asdf_home}/asdf.sh" ]               && source "${asdf_home}/asdf.sh"
+    [ -r "${asdf_home}/completions/asdf.bash" ] && source "${asdf_home}/completions/asdf.bash"
 }
 
 _setup_for_clojure() {
@@ -177,7 +177,7 @@ EOF
             chmod +x "${HOME}/.shim/perlbrew"
         fi
     fi
-    [ -f "${PERLBREW_ROOT}/etc/bashrc" ] && source "${PERLBREW_ROOT}/etc/bashrc"
+    [ -r "${PERLBREW_ROOT}/etc/bashrc" ] && source "${PERLBREW_ROOT}/etc/bashrc"
 }
 
 _setup_for_rust() {
@@ -187,7 +187,7 @@ _setup_for_rust() {
         if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
             # see, https://github.com/rust-lang/rustup.rs/issues/953#issuecomment-318650338
             curl 'https://sh.rustup.rs' -sSf | RUSTUP_INIT_SKIP_PATH_CHECK=yes sh -s -- --no-modify-path --default-toolchain nightly
-            if [ -f "${HOME}/.cargo/env" ]; then
+            if [ -r "${HOME}/.cargo/env" ]; then
                 source "${HOME}/.cargo/env"
                 rustup toolchain add stable
                 rustup toolchain add nightly
@@ -206,7 +206,7 @@ if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
     rm -rf \${HOME}/.cargo
     rm -rf \${HOME}/.rustup
     curl 'https://sh.rustup.rs' -sSf | RUSTUP_INIT_SKIP_PATH_CHECK=yes sh -s -- --no-modify-path --default-toolchain nightly
-    if [ -f "\${HOME}/.cargo/env" ]; then
+    if [ -r "\${HOME}/.cargo/env" ]; then
         source "${HOME}/.cargo/env"
         rustup toolchain add stable
         rustup toolchain add nightly
@@ -222,9 +222,9 @@ EOF
             cp "${HOME}/.shim/cargo" "${HOME}/.shim/rustup"
         fi
     fi
-    [ -f "${HOME}/.cargo/env" ] && source "${HOME}/.cargo/env"
+    [ -r "${HOME}/.cargo/env" ] && source "${HOME}/.cargo/env"
     which rustup > /dev/null 2>&1
-    if [ $? -eq 0 ] && [ ! -f  "${HOME}/.oh-my-zsh/custom/plugins/rustup/_rustup" ]; then
+    if [ $? -eq 0 ] && [ ! -r  "${HOME}/.oh-my-zsh/custom/plugins/rustup/_rustup" ]; then
         mkdir -p "${HOME}/.oh-my-zsh/custom/plugins/rustup"
         rustup completions zsh > "${HOME}/.oh-my-zsh/custom/plugins/rustup/_rustup"
         rm -rf "${HOME}/.zcompdump*"
@@ -253,7 +253,7 @@ _setup_for_term() {
     if [ 'OK' = "$(_is_ssh_agent_running)" ]; then
         return 0
     fi
-    if [ -f "${cache_file}" ]; then
+    if [ -r "${cache_file}" ]; then
         source "${cache_file}"
         if [ 'OK' = "$(_is_ssh_agent_running)" ]; then
             return 0

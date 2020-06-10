@@ -1,17 +1,17 @@
-if [ -f /etc/os-release ]; then
+if [ -r /etc/os-release ]; then
   # for Arch Linux
   if [ $(grep -c 'Arch Linux' /etc/os-release) -gt 0 ]; then
     # NOTE
     #  you may need run following command: 'sudo pkgfile --update'
-    if [ -f /usr/share/doc/pkgfile/command-not-found.zsh ]; then
+    if [ -r /usr/share/doc/pkgfile/command-not-found.zsh ]; then
       source /usr/share/doc/pkgfile/command-not-found.zsh
     fi
   fi
 
   # for Gento Linux
   if [ $(grep -c 'gentoo' /etc/os-release) -gt 0 ]; then
-    if [ -f /etc/profile.env ]; then
-      source /etc/profile.env
+    if [ -r /etc/profile ]; then
+      source /etc/profile
     fi
     autoload -U compinit promptinit
     compinit
@@ -112,7 +112,7 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-[ -f "${HOME}"/.script/setup ] && source "${HOME}"/.script/setup
-[ -f "${HOME}"/.zsh_profile ] && source "${HOME}"/.zsh_profile
-[ -f "${HOME}"/.zsh_untracked_profile ] && source "${HOME}"/.zsh_untracked_profile
+[ -r "${HOME}"/.script/setup ] && source "${HOME}"/.script/setup
+[ -r "${HOME}"/.zsh_profile ] && source "${HOME}"/.zsh_profile
+[ -r "${HOME}"/.zsh_untracked_profile ] && source "${HOME}"/.zsh_untracked_profile
 
