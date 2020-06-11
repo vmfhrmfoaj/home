@@ -197,18 +197,18 @@
 
   (defn lsp--custom-hover ()
     "Display hover info (based on `textDocument/hover')."
-    (let* ((symbol-bounds (bounds-of-thing-at-point 'symbol))
-           (symbol (when symbol-bounds
-                     (buffer-substring-no-properties (car symbol-bounds) (cdr symbol-bounds)))))
-      (if (and lsp--hover-saved-symbol (string= lsp--hover-saved-symbol symbol)
-               lsp--hover-saved-bounds (lsp--point-in-bounds-p lsp--hover-saved-bounds))
-          (lsp--eldoc-message lsp--eldoc-saved-message)
-        (lsp--reset-hover-cache)
-        (if (or (not symbol)
-                (and (derived-mode-p 'rust-mode)
-                     (string-match-p  lsp--hover-exclude-regex-for-rust symbol)))
-            (lsp--eldoc-message nil)
-          (when lsp-eldoc-enable-hover
+    (when lsp-eldoc-enable-hover
+      (let* ((symbol-bounds (bounds-of-thing-at-point 'symbol))
+             (symbol (when symbol-bounds
+                       (buffer-substring-no-properties (car symbol-bounds) (cdr symbol-bounds)))))
+        (if (and lsp--hover-saved-symbol (string= lsp--hover-saved-symbol symbol)
+                 lsp--hover-saved-bounds (lsp--point-in-bounds-p lsp--hover-saved-bounds))
+            (lsp--eldoc-message lsp--eldoc-saved-message)
+          (lsp--reset-hover-cache)
+          (if (or (not symbol)
+                  (and (derived-mode-p 'rust-mode)
+                       (string-match-p  lsp--hover-exclude-regex-for-rust symbol)))
+              (lsp--eldoc-message nil)
             (setq lsp--hover-saved-symbol symbol)
             (cond
              ((member major-mode '(c-mode c++-mode))
@@ -265,8 +265,11 @@
                                                     (lsp--render-on-hover-content contents
                                                                                   lsp-eldoc-render-all)))
                          (error
-                          (lsp--reset-hover-cache)
-                          (lsp--eldoc-message nil))))))
+                          (progn
+                            (and (s-equals? eldoc-last-message
+                                            lsp--eldoc-saved-message)
+                                 (lsp--eldoc-message nil))
+                            (lsp--reset-hover-cache)))))))
                  :error-handler #'lsp--custom-hover-err-handler
                  :mode 'tick
                  :cancel-token :eldoc-hover)))))))))
@@ -299,23 +302,6 @@
        ;; (eval '(setf (flymake--backend-state-diags state) nil))
        (aset state 4 nil)
        (mapc #'delete-overlay (flymake--overlays))))
-
-  (defn lsp--custom-handle-signature-update (signature)
-    "Use `eldoc' instead `iv'."
-    (let ((message (lsp--signature->message signature)))
-      (if (s-present? message)
-          (eldoc-message message)
-        (lsp-signature-stop))))
-
-  (defn lsp-custom-signature-stop ()
-    "Use `eldoc' instead `iv'."
-    (interactive)
-    (lsp-cancel-request-by-token :signature)
-    (with-current-buffer (or lsp--signature-last-buffer (current-buffer))
-      (remove-hook 'lsp-on-idle-hook #'lsp-signature t))
-    (remove-hook 'post-command-hook #'lsp--signature-maybe-stop)
-    (eldoc-message nil)
-    (lsp-signature-mode -1))
 
   (defn lsp--custom-signature->message (signature-help)
     "Customize to remove the document in the signature"
@@ -475,13 +461,31 @@ BINDINGS is a list of (key def cond)."
       (evil-leader/set-major-leader-for-mode major-mode)
       (message "Finshed LSP key bindings for '%s'" major-mode)))
 
+  (defvar lsp-evil-state-watchdog nil
+    "TODO")
+
+  (defn lsp--check-evil-state ()
+    "TODO"
+    (when (eq 'normal evil-state)
+      (when (timerp lsp-evil-state-watchdog)
+        (cancel-timer lsp-evil-state-watchdog)
+        (setq lsp-evil-state-watchdog nil))
+      (lsp-signature-stop)
+      (setq lsp-eldoc-enable-hover
+            (default-value 'lsp-eldoc-enable-hover))))
+
   (setq lsp-diagnostic-package :flymake
         lsp-enable-imenu nil
         lsp-enable-indentation nil
         lsp-enable-links nil
         lsp-enable-symbol-highlighting nil
         lsp-file-watch-threshold nil
-        lsp-rust-server 'rust-analyzer)
+        lsp-rust-server 'rust-analyzer
+        lsp-signature-function #'eldoc-message)
+
+  (make-local-variable 'lsp-evil-state-watchdog)
+  (make-local-variable 'lsp-eldoc-enable-hover)
+  (setq-default lsp-eldoc-enable-hover t)
 
   (make-local-variable 'lsp-enable-on-type-formatting)
   (setq-default lsp-enable-on-type-formatting t)
@@ -494,24 +498,39 @@ BINDINGS is a list of (key def cond)."
     (dolist (hook hooks)
       (add-to-list hook hook-fn)))
 
-  (add-hook 'evil-insert-state-entry-hook
+  (add-hook 'lsp-mode-hook
             (lambda ()
-              (when (and lsp-signature-auto-activate
-                         (lsp-feature? "textDocument/signatureHelp")
-                         (null lsp-signature-mode))
-                (lsp-signature-activate))))
-  (add-hook 'evil-insert-state-exit-hook #'lsp-signature-stop)
-  (add-hook 'lsp-mode-hook #'lsp--custom-setup-key)
+              (lsp--custom-setup-key)
+              (add-hook 'evil-insert-state-entry-hook
+                        (lambda ()
+                          (when (and lsp-signature-auto-activate
+                                     (lsp-feature? "textDocument/signatureHelp")
+                                     (null lsp-signature-mode))
+                            (setq lsp-eldoc-enable-hover nil
+                                  lsp-evil-state-watchdog (run-at-time 1 1 #'lsp--check-evil-state))
+                            (lsp-signature-activate)))
+                        nil t)
+              (add-hook 'evil-insert-state-exit-hook
+                        (lambda ()
+                          (when (timerp lsp-evil-state-watchdog)
+                            (cancel-timer lsp-evil-state-watchdog)
+                            (setq lsp-evil-state-watchdog nil))
+                          (lsp-signature-stop)
+                          (setq lsp-eldoc-enable-hover (default-value 'lsp-eldoc-enable-hover)))
+                        nil t)
+              (add-hook 'kill-buffer-hook
+                        (lambda ()
+                          (when (timerp lsp-evil-state-watchdog)
+                            (cancel-timer lsp-evil-state-watchdog)))
+                        nil t)))
 
   (advice-add #'lsp-mode-line :override #'lsp-custom-mode-line)
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
   (advice-add #'lsp--eldoc-message   :override #'lsp--custom-eldoc-message)
   (advice-add #'lsp--flymake-backend :override #'lsp--custom-flymake-backend)
-  (advice-add #'lsp--handle-signature-update :override #'lsp--custom-handle-signature-update)
-  (advice-add #'lsp-signature-stop :override #'lsp-custom-signature-stop)
-  (advice-add #'lsp--signature->message :override #'lsp--custom-signature->message)
   (advice-add #'lsp--flymake-update-diagnostics :before #'lsp--clear-flymake-diags)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
+  (advice-add #'lsp--signature->message :override #'lsp--custom-signature->message)
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
   (advice-add #'lsp-describe-thing-at-point :after #'lps--focus-lsp-help-buffer)
 
