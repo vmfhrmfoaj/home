@@ -461,19 +461,6 @@ BINDINGS is a list of (key def cond)."
       (evil-leader/set-major-leader-for-mode major-mode)
       (message "Finshed LSP key bindings for '%s'" major-mode)))
 
-  (defvar lsp-evil-state-watchdog nil
-    "TODO")
-
-  (defn lsp--check-evil-state ()
-    "TODO"
-    (when (eq 'normal evil-state)
-      (when (timerp lsp-evil-state-watchdog)
-        (cancel-timer lsp-evil-state-watchdog)
-        (setq lsp-evil-state-watchdog nil))
-      (lsp-signature-stop)
-      (setq lsp-eldoc-enable-hover
-            (default-value 'lsp-eldoc-enable-hover))))
-
   (setq lsp-diagnostic-package :flymake
         lsp-enable-imenu nil
         lsp-enable-indentation nil
@@ -483,12 +470,8 @@ BINDINGS is a list of (key def cond)."
         lsp-rust-server 'rust-analyzer
         lsp-signature-function #'eldoc-message)
 
-  (make-local-variable 'lsp-evil-state-watchdog)
-  (make-local-variable 'lsp-eldoc-enable-hover)
-  (setq-default lsp-eldoc-enable-hover t)
-
-  (make-local-variable 'lsp-enable-on-type-formatting)
-  (setq-default lsp-enable-on-type-formatting t)
+  (setq-default lsp-eldoc-enable-hover t
+                lsp-enable-on-type-formatting t)
 
   (add-to-list 'lsp-language-id-configuration '(cperl-mode . "perl"))
   (add-to-list 'lsp-language-id-configuration '(".*\\.pl$" . "perl"))
@@ -506,22 +489,13 @@ BINDINGS is a list of (key def cond)."
                           (when (and lsp-signature-auto-activate
                                      (lsp-feature? "textDocument/signatureHelp")
                                      (null lsp-signature-mode))
-                            (setq lsp-eldoc-enable-hover nil
-                                  lsp-evil-state-watchdog (run-at-time 1 1 #'lsp--check-evil-state))
+                            (setq-local lsp-eldoc-enable-hover nil)
                             (lsp-signature-activate)))
                         nil t)
               (add-hook 'evil-insert-state-exit-hook
                         (lambda ()
-                          (when (timerp lsp-evil-state-watchdog)
-                            (cancel-timer lsp-evil-state-watchdog)
-                            (setq lsp-evil-state-watchdog nil))
-                          (lsp-signature-stop)
-                          (setq lsp-eldoc-enable-hover (default-value 'lsp-eldoc-enable-hover)))
-                        nil t)
-              (add-hook 'kill-buffer-hook
-                        (lambda ()
-                          (when (timerp lsp-evil-state-watchdog)
-                            (cancel-timer lsp-evil-state-watchdog)))
+                          (setq lsp-eldoc-enable-hover (default-value 'lsp-eldoc-enable-hover))
+                          (lsp-signature-stop))
                         nil t)))
 
   (advice-add #'lsp-mode-line :override #'lsp-custom-mode-line)
