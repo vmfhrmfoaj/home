@@ -1,10 +1,18 @@
+(use-package twilight-bright-theme
+  :disabled t
+  :ensure t
+  :config
+  (setq frame-background-mode 'light)
+  (load-theme 'twilight-bright t))
+
 (use-package twilight-anti-bright-theme
   :ensure t
   :config
   (setq frame-background-mode 'dark)
-  (mapc #'frame-set-background-mode (frame-list))
-  (load-theme 'twilight-anti-bright t)
-  (custom-set-faces
+  (load-theme 'twilight-anti-bright t))
+
+(mapc #'frame-set-background-mode (frame-list))
+(custom-set-faces
    '(bold ((t :weight bold)))
    '(cursor ((t :background "sky blue")))
    '(default ((((background dark)) :foreground "#cfd0d0")))
@@ -17,7 +25,7 @@
              (((background dark))  :inherit default :foreground "#a5a6a6")))
    '(show-paren-match ((((background light)) :inherit bold :underline t)
                        (((background dark))  :inherit bold :underline t :foreground "firebrick1")))
-   '(trailing-whitespace ((t :background "gray65")))))
+   '(trailing-whitespace ((t :background "gray65"))))
 
 (use-package font-lock
   :config
