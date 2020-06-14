@@ -33,7 +33,7 @@
              (when evil-want-minibuffer
                (evil-initialize)
                (set (make-local-variable 'evil-echo-state) nil)
-               (evil-insert 1))
+               (evil-insert-state))
              (local-set-key (kbd "C-a") #'beginning-of-line)
              (local-set-key (kbd "C-b") #'backward-char)
              (local-set-key (kbd "C-h") #'backward-delete-char))))
@@ -411,6 +411,9 @@
   (global-set-key (kbd "M-x") #'helm-M-x)
   (global-set-key (kbd "C-x C-f") #'helm-find-files)
   (when evil-want-minibuffer
+    (evil-define-key 'insert minibuffer-inactive-mode-map
+      (kbd "<backtab>") #'helm-previous-line
+      (kbd "<tab>") #'helm-next-line)
     (evil-define-key 'insert helm-map
       (kbd "<backtab>") #'helm-previous-line
       (kbd "<tab>") #'helm-next-line)
