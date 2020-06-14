@@ -17,7 +17,7 @@
    '(cursor ((t :background "sky blue")))
    '(default ((((background dark)) :foreground "#cfd0d0")))
    `(fixed-pitch ((t :font ,alternative-font)))
-   `(fixed-pitch-serif ((t :font ,alternative-font)))
+   `(fixed-pitch-serif ((t :inherit fixed-pitch)))
    '(italic ((t :slant italic)))
    '(link ((t :underline t)))
    `(region ((t :distant-foreground ,(color-from 'default :foreground))))
@@ -167,14 +167,10 @@
   :defer t
   :config
   (custom-set-faces
-   `(lsp-diagnostic-level-1 ((((background light)) :inherit compilation-error :font ,alternative-font :weight light)
-                             (((background dark)) :foreground "#8a2507" :font ,alternative-font)))
-   `(lsp-diagnostic-level-2 ((((background light)) :inherit compilation-warning :font ,alternative-font :weight light)
-                             (((background dark)) :foreground "#b26200" :font ,alternative-font)))
-   `(lsp-diagnostic-level-3 ((((background light)) :inherit compilation-info :font ,alternative-font :weight light)
-                             (((background dark)) :foreground "#007f00" :font ,alternative-font)))
-   `(lsp-diagnostic-level-4 ((((background light)) :inherit compilation-info :font ,alternative-font :weight light)
-                             (((background dark)) :foreground "#007f00" :font ,alternative-font)))))
+   `(lsp-diagnostic-level-1 ((((background dark)) :foreground "#8a2507")))
+   `(lsp-diagnostic-level-2 ((((background dark)) :foreground "#b26200")))
+   `(lsp-diagnostic-level-3 ((((background dark)) :foreground "#007f00")))
+   `(lsp-diagnostic-level-4 ((((background dark)) :foreground "#007f00")))))
 
 (use-package magit
   :defer t
