@@ -167,10 +167,14 @@
   :defer t
   :config
   (custom-set-faces
-   `(lsp-diagnostic-level-1 ((t :inherit compilation-error   :font ,alternative-font :weight light)))
-   `(lsp-diagnostic-level-2 ((t :inherit compilation-warning :font ,alternative-font :weight light)))
-   `(lsp-diagnostic-level-3 ((t :inherit compilation-info    :font ,alternative-font :weight light)))
-   `(lsp-diagnostic-level-4 ((t :inherit compilation-info    :font ,alternative-font :weight light)))))
+   `(lsp-diagnostic-level-1 ((((background light)) :inherit compilation-error :font ,alternative-font :weight light)
+                             (((background dark)) :foreground "#8a2507" :font ,alternative-font)))
+   `(lsp-diagnostic-level-2 ((((background light)) :inherit compilation-warning :font ,alternative-font :weight light)
+                             (((background dark)) :foreground "#b26200" :font ,alternative-font)))
+   `(lsp-diagnostic-level-3 ((((background light)) :inherit compilation-info :font ,alternative-font :weight light)
+                             (((background dark)) :foreground "#007f00" :font ,alternative-font)))
+   `(lsp-diagnostic-level-4 ((((background light)) :inherit compilation-info :font ,alternative-font :weight light)
+                             (((background dark)) :foreground "#007f00" :font ,alternative-font)))))
 
 (use-package magit
   :defer t
