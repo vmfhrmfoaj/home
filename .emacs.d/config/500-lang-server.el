@@ -576,7 +576,7 @@ BINDINGS is a list of (key def cond)."
                            (intern)))
                 (margin (lsp-ui-sideline--margin-width)))
             (dolist (message (->> (-drop 1 messages)
-                                  (--map (concat it " ↩ "))
+                                  (--map (concat it " ┘"))
                                   (-cons* (-first-item messages))))
               (let* ((len (length message))
                      (string (concat (propertize " " 'display `(space :align-to (- right-fringe ,(lsp-ui-sideline--align len margin))))
