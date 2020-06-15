@@ -1,5 +1,5 @@
 (defvar default-font
-  (font-spec :family "Cascadia Code" :size 14)
+  (font-spec :family "Fantasque Sans Mono" :size 16)
   "TODO")
 (defvar alternative-font
   (font-spec :family "Source Code Pro" :size 13)
@@ -10,7 +10,7 @@
 
 (when window-system
   (prefer-coding-system 'utf-8)
-  (setq-default line-spacing 1)
+  (setq-default line-spacing 0)
   (set-face-font 'default default-font)
   (set-fontset-font t '(#xE000 . #xF8FF) default-font) ; for ligature
   (set-fontset-font "fontset-default" '(#xE000 . #xF8FF) default-font) ; for ligature
