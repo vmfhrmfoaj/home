@@ -6,32 +6,29 @@
          (main-monitor-t (nth 1 workarea))
          (main-monitor-w (nth 2 workarea))
          (main-monitor-h (nth 3 workarea))
-         (width main-monitor-w)
-         (heigh main-monitor-h)
+         (width  (floor (/ (float main-monitor-w) (frame-char-width))))
+         (height (floor (/ (float main-monitor-h) (frame-char-height))))
          (x-pos 0))
     (if (or two-horizontal-window-setup
             (<= main-monitor-w (* min-col-width (frame-char-width))))
         (set-frame-parameter nil 'fullscreen 'maximized)
       (set-frame-position (selected-frame) main-monitor-l main-monitor-t)
-      (let* ((h (floor (/ (float main-monitor-h) (frame-char-height))))
-             (l (/ main-monitor-w 2.0))
+      (let* ((l (/ main-monitor-w 2.0))
              (l (floor (- l (* (frame-unit->pixel min-col-width) 0.4))))
              (l (if (< 0 (- main-monitor-w (+ l (frame-unit->pixel min-col-width))))
                     l
-                  (max 0 (- main-monitor-w (frame-unit->pixel min-col-width)))))
-             (w (max min-col-width (/ (- main-monitor-w l) (frame-char-width)))))
-        (setq width w
-              heigh h
+                  (max 0 (- main-monitor-w (frame-unit->pixel min-col-width))))))
+        (setq width (max min-col-width (/ (- main-monitor-w l) (frame-char-width)))
               x-pos (+ l main-monitor-l))
-        (add-to-list 'default-frame-alist (cons 'width  w))
-        (add-to-list 'default-frame-alist (cons 'height h))))
+        (add-to-list 'default-frame-alist (cons 'width  width))
+        (add-to-list 'default-frame-alist (cons 'height height))))
     (setq split-width-threshold (if two-horizontal-window-setup
                                     min-col-width
                                   main-monitor-w)
           initial-frame-alist (list (cons 'top    main-monitor-t)
                                     (cons 'left   x-pos)
                                     (cons 'width  width)
-                                    (cons 'height heigh)
+                                    (cons 'height height)
                                     (cons 'undecorated t)))))
 
 (use-package winum
