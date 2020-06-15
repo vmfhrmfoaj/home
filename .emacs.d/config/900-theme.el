@@ -1,11 +1,11 @@
 (use-package twilight-bright-theme
-  :disabled t
   :ensure t
   :config
   (setq frame-background-mode 'light)
   (load-theme 'twilight-bright t))
 
 (use-package twilight-anti-bright-theme
+  :disabled t
   :ensure t
   :config
   (setq frame-background-mode 'dark)
@@ -35,11 +35,12 @@
    '(font-lock-regexp-grouping-backslash ((((background light)) :inherit font-lock-string-face :background "#e1f2d6")))
    '(font-lock-regexp-grouping-construct ((((background light)) :inherit font-lock-string-face :background "#e1f2d6")))
    '(font-lock-type-face ((((background dark)) :foreground "#b63f1e") (t :weight unspecified)))
-   '(font-lock-variable-name-face ((((background light)) :foreground "#607596")))
    '(font-lock-warning-face ((t :inherit (bold italic)))))
 
   (defvar local-variable-name-light-fg-color
-    (saturate-color (color-from 'font-lock-variable-name-face :foreground (if (eq frame-background-mode 'light) 7 -7)) -20)
+    (saturate-color (color-from 'font-lock-variable-name-face :foreground
+                                (if (eq frame-background-mode 'light) 7 -7))
+                    (if (eq frame-background-mode 'light) -10 -20))
     "A foreground color for the local variable such as parameters"))
 
 
@@ -167,10 +168,14 @@
   :defer t
   :config
   (custom-set-faces
-   `(lsp-diagnostic-level-1 ((((background dark)) :foreground "#8a2507")))
-   `(lsp-diagnostic-level-2 ((((background dark)) :foreground "#b26200")))
-   `(lsp-diagnostic-level-3 ((((background dark)) :foreground "#007f00")))
-   `(lsp-diagnostic-level-4 ((((background dark)) :foreground "#007f00")))))
+   `(lsp-diagnostic-level-1 ((((background light)) :inherit compilation-error :font ,alternative-font :weight light)
+                             (((background dark)) :foreground "#8a2507" :font ,alternative-font)))
+   `(lsp-diagnostic-level-2 ((((background light)) :inherit compilation-warning :font ,alternative-font :weight light)
+                             (((background dark)) :foreground "#b26200" :font ,alternative-font)))
+   `(lsp-diagnostic-level-3 ((((background light)) :inherit compilation-info :font ,alternative-font :weight light)
+                             (((background dark)) :foreground "#007f00" :font ,alternative-font)))
+   `(lsp-diagnostic-level-4 ((((background light)) :inherit compilation-info :font ,alternative-font :weight light)
+                             (((background dark)) :foreground "#007f00" :font ,alternative-font)))))
 
 (use-package magit
   :defer t
