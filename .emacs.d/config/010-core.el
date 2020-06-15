@@ -217,7 +217,6 @@
                                      (lambda (visibles others)
                                        (nconc (sort-buffer-by-visit-time others) visibles)))
 
-        helm-completion-style 'helm
         helm-display-header-line nil
         helm-split-window-inside-p t
         helm-truncate-lines t
