@@ -40,9 +40,29 @@
 (add-hook 'help-mode-hook #'visual-line-mode)
 (add-hook 'after-init-hook
           (lambda ()
+            (setq in-switch-to-buffer nil)
             (advice-add #'select-frame      :after #'update-buf-visit-time)
             (advice-add #'select-window     :after #'update-buf-visit-time)
             (advice-add #'set-window-buffer :after #'update-buf-visit-time)
-            (advice-add #'switch-to-buffer  :after #'update-buf-visit-time)
+            (advice-add #'switch-to-buffer :around
+                        (lambda (fn buf &rest args)
+                          (when-let ((win (and (null in-switch-to-buffer)
+                                               (->> (window-list)
+                                                    (--filter (-> it (window-buffer) (eq buf)))
+                                                    (-first-item)))))
+                            (let ((cur-buf (current-buffer))
+                                  (in-switch-to-buffer t))
+                              (with-selected-window win
+                                (switch-to-buffer cur-buf))))
+                          (apply fn buf args)
+                          (update-buf-visit-time)))
+            (advice-add #'pop-to-buffer :around
+                        (byte-compile
+                         (lambda (fn buf &rest args)
+                           (if-let ((win (->> (window-list)
+                                              (--filter (-> it (window-buffer) (eq buf)))
+                                              (-first-item))))
+                               (select-window win)
+                             (apply fn buf args)))))
             (setq gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect)))
           :append)
