@@ -300,7 +300,7 @@
         (switch-to-buffer prev-buf nil t)
         prev-buf))))
 
-(defn switch-to-previous-buffer (&optional bufs)
+(defn switch-to-previous-buffer ()
   "TODO"
   (interactive)
   (->> (buffer-list)
