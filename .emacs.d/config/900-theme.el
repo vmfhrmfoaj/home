@@ -183,6 +183,7 @@
   (custom-set-faces
    '(magit-diff-context-highlight ((((class color) (background light)) :background "#fbfeee" :foreground "#a4c207")))
    '(magit-diff-file-heading ((t :inherit bold)))
+   '(magit-diff-removed-highlight ((((class color) (background light)) :background "#e8b9b9" :foreground "#aa2222")))
    '(magit-hash ((((class color) (background light)) :foreground "gray60" :weight light)))
    '(magit-log-author ((((class color) (background light)) :foreground "firebrick" :weight light)))
    '(magit-log-date ((((class color) (background light)) :foreground "gray30" :weight light)))
