@@ -60,7 +60,7 @@
            (line (plist-get result :line))
            (pos (->> (plist-get result :context)
                      (s-split helm-dumb-jump--keyword)
-                     (first)
+                     (-first-item)
                      (length))))
       (dumb-jump-goto-file-line path line pos)))
 
