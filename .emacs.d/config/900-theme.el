@@ -13,19 +13,19 @@
 
 (mapc #'frame-set-background-mode (frame-list))
 (custom-set-faces
-   '(bold ((t :weight bold)))
-   '(cursor ((t :background "sky blue")))
-   '(default ((((background dark)) :foreground "#cfd0d0")))
-   `(fixed-pitch ((t :font ,alternative-font)))
-   `(fixed-pitch-serif ((t :inherit fixed-pitch)))
-   '(italic ((t :slant italic)))
-   '(link ((t :underline t)))
-   `(region ((t :distant-foreground ,(color-from 'default :foreground))))
-   '(shadow ((((background light)) :inherit default :foreground "gray55")
-             (((background dark))  :inherit default :foreground "#a5a6a6")))
-   '(show-paren-match ((((background light)) :inherit bold :underline t)
-                       (((background dark))  :inherit bold :underline t :foreground "firebrick1")))
-   '(trailing-whitespace ((t :background "gray65"))))
+ '(bold ((t :weight bold)))
+ '(cursor ((t :background "sky blue")))
+ '(default ((((background dark)) :foreground "#cfd0d0")))
+ `(fixed-pitch ((t :font ,alternative-font)))
+ `(fixed-pitch-serif ((t :inherit fixed-pitch)))
+ '(italic ((t :slant italic)))
+ '(link ((t :underline t)))
+ `(region ((t :distant-foreground ,(color-from 'default :foreground))))
+ '(shadow ((((background light)) :inherit default :foreground "gray55")
+           (((background dark))  :inherit default :foreground "#a5a6a6")))
+ '(show-paren-match ((((background light)) :inherit bold :underline t)
+                     (((background dark))  :inherit bold :underline t :foreground "firebrick1")))
+ '(trailing-whitespace ((t :background "gray65"))))
 
 (use-package font-lock
   :config

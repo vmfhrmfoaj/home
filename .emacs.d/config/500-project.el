@@ -3,7 +3,7 @@
   :defer t
   :diminish ""
   :commands (projectile-project-root)
-  :config
+  :init
   (defn projectile-switch-to-previous-buffer ()
     "TODO"
     (interactive)
@@ -18,6 +18,7 @@
                (switch-to-previous-buffer-in)))
       (error (switch-to-previous-buffer-in (buffer-list)))))
 
+  :config
   (defn projectile-project-files-custom-filter (files)
     "TODO"
     (-if-let (regex (-some->> (projectile-paths-to-ignore)
