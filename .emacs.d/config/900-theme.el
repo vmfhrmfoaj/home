@@ -1,11 +1,11 @@
 (use-package twilight-bright-theme
+  :disabled t
   :ensure t
   :config
   (setq frame-background-mode 'light)
   (load-theme 'twilight-bright t))
 
 (use-package twilight-anti-bright-theme
-  :disabled t
   :ensure t
   :config
   (setq frame-background-mode 'dark)
@@ -169,13 +169,13 @@
   :config
   (custom-set-faces
    `(lsp-diagnostic-level-1 ((((background light)) :inherit compilation-error :font ,alternative-font :weight light)
-                             (((background dark)) :foreground "#8a2507" :font ,alternative-font)))
+                             (((background dark)) :foreground "#8a2507")))
    `(lsp-diagnostic-level-2 ((((background light)) :inherit compilation-warning :font ,alternative-font :weight light)
-                             (((background dark)) :foreground "#b26200" :font ,alternative-font)))
+                             (((background dark)) :foreground "#b26200")))
    `(lsp-diagnostic-level-3 ((((background light)) :inherit compilation-info :font ,alternative-font :weight light)
-                             (((background dark)) :foreground "#007f00" :font ,alternative-font)))
+                             (((background dark)) :foreground "#007f00")))
    `(lsp-diagnostic-level-4 ((((background light)) :inherit compilation-info :font ,alternative-font :weight light)
-                             (((background dark)) :foreground "#007f00" :font ,alternative-font)))))
+                             (((background dark)) :foreground "#007f00")))))
 
 (use-package magit
   :defer t
