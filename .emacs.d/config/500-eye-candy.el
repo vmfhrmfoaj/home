@@ -120,7 +120,7 @@
   :ensure t
   :after evil
   :config
-  (setq evil-goggles-duration 0.2)
+  (setq evil-goggles-duration 0.15)
 
   (add-hook 'minibuffer-setup-hook
             (lambda ()
