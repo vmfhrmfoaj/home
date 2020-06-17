@@ -22,6 +22,7 @@
        :background ,(color-from 'default :background +2))))))
 
 (use-package clojure-mode
+  :disabled t
   :defer t
   :config
   (custom-set-faces

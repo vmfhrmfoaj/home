@@ -1,4 +1,5 @@
 (use-package company-go
+  :disabled t
   :ensure t
   :defer t
   :config
@@ -8,11 +9,13 @@
               (add-to-list 'company-backends #'company-go))))
 
 (use-package go-eldoc
+  :disabled t
   :ensure t
   :defer t
   :hook (go-mode . go-eldoc-setup))
 
 (use-package go-guru
+  :disabled t
   :ensure t
   :defer t
   :hook (go-mode . go-guru-hl-identifier-mode)
@@ -20,6 +23,7 @@
   (setq go-guru-hl-identifier-idle-time 0.3))
 
 (use-package go-mode
+  :disabled t
   :ensure t
   :defer t
   :config

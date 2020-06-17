@@ -25,6 +25,7 @@
         :append)))))
 
 (use-package elixir-mode
+  :disabled t
   :defer t
   :config
   (defface elixir-argument-name-face
@@ -142,6 +143,7 @@
    :append))
 
 (use-package clojure-mode
+  :disabled t
   :defer t
   :config
   (defface clojure-defining-spec-face
@@ -996,6 +998,7 @@
      :append)))
 
 (use-package go-mode
+  :disabled t
   :defer t
   :config
   (defface go-argument-name-face

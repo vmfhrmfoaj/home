@@ -1,4 +1,5 @@
 (use-package cider
+  :disabled t
   :ensure t
   :defer t
   :config
@@ -136,6 +137,7 @@
               (setq-local evil-lookup-func #'cider-doc-at-point))))
 
 (use-package cider-mode
+  :disabled t
   :defer t
   :config
   (setq cider-dynamic-indentation nil
@@ -151,6 +153,7 @@
               (eldoc-mode 1))))
 
 (use-package cider-repl
+  :disabled t
   :defer t
   :config
   (add-hook 'cider-repl-mode-hook
@@ -159,6 +162,7 @@
               (eldoc-mode 1))))
 
 (use-package clojure-mode
+  :disabled t
   :ensure t
   :defer t
   :config
@@ -368,6 +372,7 @@ This is customized version of `clojure-find-ns' to improve some performance."
               #'clojure-correct-font-lock-syntatic-face))
 
 (use-package edn
+  :disabled t
   :ensure t
   :defer t
   :config
@@ -391,5 +396,6 @@ This is customized version of `clojure-find-ns' to improve some performance."
   (edn-add-writer #'edn-reader-macro-p #'edn-reader-macro))
 
 (use-package helm-cider-cheatsheet
+  :disabled t
   :ensure helm-cider
   :defer t)

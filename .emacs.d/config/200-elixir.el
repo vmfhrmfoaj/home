@@ -1,4 +1,5 @@
 (use-package elixir-mode
+  :disabled t
   :ensure t
   :defer t
   :config
@@ -6,6 +7,7 @@
   (add-hook 'elixir-mode-hook #'highlight-numbers-mode))
 
 (use-package alchemist
+  :disabled t
   :ensure t
   :defer t
   :diminish ""
