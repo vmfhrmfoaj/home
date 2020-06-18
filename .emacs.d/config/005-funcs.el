@@ -159,24 +159,6 @@
     (error nil)))
 
 
-(defn pixel->frame-unit (pixel)
-  "TODO"
-  (round (/ pixel (/ (float (frame-pixel-width)) (frame-width)))))
-
-(defn frame-unit->pixel (frame-unit)
-  "TODO"
-  (round (* frame-unit (/ (float (frame-pixel-width)) (frame-width)))))
-
-(defn custom-display-pixel-width ()
-  "TODO"
-  (->> (--filter (-when-let (frames (-> (assoc 'frames it) cdr))
-                   (--some? (eq (selected-frame) it) frames))
-                 (display-monitor-attributes-list))
-       (-first-item)
-       (assoc 'geometry)
-       (cdr)
-       (nth 2)))
-
 (defvar rsync-retry-coutner 3
   "TODO")
 
