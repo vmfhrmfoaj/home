@@ -2,7 +2,8 @@
   :ensure t
   :defer t
   :diminish ""
-  :commands (projectile-project-root)
+  :commands (projectile-project-root
+             projectile-project-buffers)
   :init
   (defn projectile-switch-to-previous-buffer ()
     "TODO"
@@ -17,6 +18,21 @@
                              (string= cur-proj-root proj-root))))
                (switch-to-previous-buffer-in)))
       (error (switch-to-previous-buffer-in (buffer-list)))))
+
+  (defvar helm-source-project-buffers-list nil)
+
+  (defn helm-project-buffers-list ()
+    "Customize `helm-buffers-list' for `projectile'"
+    (interactive)
+    (unless helm-source-project-buffers-list
+      (setq helm-source-project-buffers-list
+            (helm-make-source "Project Buffers" 'helm-source-buffers
+              :buffer-list (-compose (-partial #'-map #'buffer-name) #'projectile-project-buffers))))
+    (helm :sources 'helm-source-project-buffers-list
+          :buffer "*helm project buffers*"
+          :keymap helm-buffer-map
+          :truncate-lines helm-buffers-truncate-lines
+          :left-margin-width helm-buffers-left-margin-width))
 
   :config
   (defn projectile-project-files-custom-filter (files)

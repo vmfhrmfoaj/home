@@ -127,7 +127,8 @@
 
     ;; buffer
     "bR" #'revert-buffer
-    "bb" #'helm-buffers-list
+    "ba" #'helm-buffers-list
+    "bb" #'helm-project-buffers-list
     "bd" #'evil-delete-buffer
     "bk" #'kill-buffer
     "bs" #'get-scratch-buffer-create
@@ -436,13 +437,6 @@
   :defer t
   :config
   (define-key helm-occur-map (kbd "C-c C-e") #'helm-occur-edit))
-
-(use-package helm-projectile
-  :defer t
-  :config
-  (evil-define-key 'insert helm-projectile-find-file-map
-    (kbd "<backtab>") #'helm-previous-line
-    (kbd "<tab>") #'helm-next-line))
 
 (use-package help-mode
   :defer t
