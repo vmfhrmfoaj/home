@@ -118,6 +118,8 @@
 (defn color-from (face attr &optional p)
   "TODO"
   (let ((color (custom-face-attribute face attr)))
+    (when (listp color)
+      (setq color (plist-get color :color)))
     (if (not p)
         color
       (let ((fn (cond

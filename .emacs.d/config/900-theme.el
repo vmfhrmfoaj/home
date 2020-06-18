@@ -1,8 +1,11 @@
-(use-package color-theme-sanityinc-tomorrow
+(use-package base16-theme
   :ensure t
   :config
   (setq frame-background-mode 'dark)
-  (load-theme 'sanityinc-tomorrow-night t))
+  (load-theme 'base16-tomorrow-night t)
+
+  (custom-set-faces
+   '(shadow ((t :foreground "#a6a9a7")))))
 
 (use-package font-lock
   :config
@@ -37,6 +40,17 @@
    '(clojure-side-effect-face ((t :inherit (bold italic font-lock-warning-face))))
    '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))))
 
+(use-package diff-mode
+  :defer t
+  :config
+  (custom-set-faces
+   '(diff-added   ((t :foreground "#b5bd68")))
+   '(diff-removed ((t :foreground "#de935f")))
+   '(diff-changed ((t :foreground "#81a2be")))
+   '(diff-refine-added   ((t :foreground "#8abeb7")))
+   '(diff-refine-removed ((t :foreground "#cc6666")))
+   '(diff-refine-changed ((t :foreground "#f0c674")))))
+
 (use-package elisp-mode
   :defer t
   :config
@@ -57,13 +71,23 @@
    '(evil-goggles-undo-redo-add-face    ((t (:inherit diff-refine-added   :inverse-video t))))
    '(evil-goggles-undo-redo-change-face ((t (:inherit diff-refine-changed :inverse-video t))))))
 
+(use-package flymake
+  :defer t
+  :config
+  (custom-set-faces
+   `(flymake-warnline ((t :underline (:style wave :color ,(color-from 'flymake-warnline :underline)))))
+   `(flymake-errline  ((t :underline (:style wave :color ,(color-from 'flymake-errline  :underline)))))
+   `(flymake-warning  ((t :underline (:style wave :color ,(color-from 'flymake-warning  :underline)))))
+   `(flymake-error    ((t :underline (:style wave :color ,(color-from 'flymake-error    :underline)))))))
+
 (use-package helm
   :defer t
   :config
   (custom-set-faces
-   '(helm-match ((t :inherit lazy-highlight)))
+   '(helm-match ((t :inherit lazy-highlight :foreground unspecified)))
    '(helm-match-item ((t :inherit lazy-highlight)))
    '(helm-match-selection ((t :inherit isearch :weight bold)))
+   '(helm-selection ((t :inherit highlight :weight normal)))
    '(helm-selection-line ((t :inherit helm-selection :weight bold)))))
 
 (use-package hl-line
@@ -78,11 +102,49 @@
   (custom-set-faces
    '(iedit-occurrence ((t :inherit highlight :underline t)))))
 
+(use-package isearch
+  :defer t
+  :config
+  (custom-set-faces
+   '(lazy-highlight ((t :weight bold)))))
+
+(use-package linum
+  :defer t
+  :config
+  (custom-set-faces
+   '(linum ((t :inherit default :background "#222427" :foreground "#969896")))))
+
+(use-package magit
+  :defer t
+  :config
+  (custom-set-faces
+   '(magit-diff-context           ((t :foreground "#969896")))
+   '(magit-diff-context-highlight ((t :background "#282a2e" :foreground "#969896")))
+   '(magit-diff-hunk-heading           ((t :background "#373b41" :foreground "#c5c8c6")))
+   '(magit-diff-hunk-heading-highlight ((t :background "#373b41")))
+   '(magit-diff-file-heading ((t :weight normal)))
+   '(magit-diff-added   ((t :inherit diff-added)))
+   '(magit-diff-removed ((t :inherit diff-removed)))
+   '(magit-diff-added-highlight   ((t :inherit diff-added   :background "#282a2e")))
+   '(magit-diff-removed-highlight ((t :inherit diff-removed :background "#282a2e")))
+   '(magit-section-highlight ((t :weight bold)))))
+
 (use-package php-mode
   :defer t
   :config
   (custom-set-faces
    '(php-passive-assign-variable-face ((t :inherit font-lock-variable-name-face)))))
+
+(use-package rpm-spec-mode
+  :defer t
+  :config
+  (custom-set-faces
+   '(rpm-spec-ghost-face ((t :inherit shadow)))
+   '(rpm-spec-macro-face ((t :inherit font-lock-keyword-face)))
+   '(rpm-spec-package-face ((t :inherit font-lock-constant-face)))
+   '(rpm-spec-section-face ((t :inherit font-lock-function-name-face)))
+   '(rpm-spec-tag-face ((t :inherit font-lock-builtin-face)))
+   '(rpm-spec-var-face ((t :inherit font-lock-variable-name-face)))))
 
 (use-package lsp-mode
   :defer t

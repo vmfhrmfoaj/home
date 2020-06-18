@@ -535,16 +535,16 @@ BINDINGS is a list of (key def cond)."
   :defer t
   :init
   (defface lsp-diagnostic-level-1
-    '((t (:inherit compilation-error)))
+    '((t (:inherit compilation-error :weight normal)))
     "TODO")
   (defface lsp-diagnostic-level-2
-    '((t (:inherit compilation-warning)))
+    '((t (:inherit compilation-warning :weight normal)))
     "TODO")
   (defface lsp-diagnostic-level-3
-    '((t (:inherit compilation-info)))
+    '((t (:inherit compilation-info :weight normal)))
     "TODO")
   (defface lsp-diagnostic-level-4
-    '((t (:inherit compilation-info)))
+    '((t (:inherit compilation-info :weight normal)))
     "TODO")
 
   :config
