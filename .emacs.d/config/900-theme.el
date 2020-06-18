@@ -1,7 +1,8 @@
 (use-package base16-theme
   :ensure t
   :config
-  (setq frame-background-mode 'dark)
+  (setq frame-background-mode 'dark
+        x-underline-at-descent-line t)
   (load-theme 'base16-tomorrow-night t)
 
   (custom-set-faces
@@ -9,6 +10,9 @@
 
 (use-package font-lock
   :config
+  (custom-set-faces
+   '(font-lock-comment-delimiter-face ((t :foreground "#5a5b5a"))))
+
   (defvar local-variable-name-light-fg-color
     (saturate-color (color-from 'font-lock-variable-name-face :foreground
                                 (if (eq frame-background-mode 'light) 7 -7))
@@ -47,9 +51,9 @@
    '(diff-added   ((t :foreground "#b5bd68")))
    '(diff-removed ((t :foreground "#de935f")))
    '(diff-changed ((t :foreground "#81a2be")))
-   '(diff-refine-added   ((t :foreground "#8abeb7")))
-   '(diff-refine-removed ((t :foreground "#cc6666")))
-   '(diff-refine-changed ((t :foreground "#f0c674")))))
+   '(diff-refine-added   ((t :foreground "#8abeb7" :underline t)))
+   '(diff-refine-removed ((t :foreground "#cc6666" :underline t)))
+   '(diff-refine-changed ((t :foreground "#f0c674" :underline t)))))
 
 (use-package elisp-mode
   :defer t
@@ -62,14 +66,15 @@
 (use-package evil-goggles
   :defer t
   :config
-  (custom-set-faces
-   '(evil-goggles-delete-face ((t (:inherit diff-refine-removed :inverse-video t))))
-   '(evil-goggles-change-face ((t (:inherit diff-refine-removed :inverse-video t))))
-   '(evil-goggles-paste-face  ((t (:inherit diff-refine-added   :inverse-video t))))
-   '(evil-goggles-yank-face   ((t (:inherit diff-refine-changed :inverse-video t))))
-   '(evil-goggles-undo-redo-remove-face ((t (:inherit diff-refine-removed :inverse-video t))))
-   '(evil-goggles-undo-redo-add-face    ((t (:inherit diff-refine-added   :inverse-video t))))
-   '(evil-goggles-undo-redo-change-face ((t (:inherit diff-refine-changed :inverse-video t))))))
+  (let ((common-style '(:underline unspecified :slant unspecified :overline unspecified :box unspecified :inverse-video t)))
+    (custom-set-faces
+     `(evil-goggles-delete-face ((t :inherit diff-refine-removed ,@common-style)))
+     `(evil-goggles-change-face ((t :inherit diff-refine-removed ,@common-style)))
+     `(evil-goggles-paste-face  ((t :inherit diff-refine-added   ,@common-style)))
+     `(evil-goggles-yank-face   ((t :inherit diff-refine-changed ,@common-style)))
+     '(evil-goggles-undo-redo-remove-face ((t :inherit evil-goggles-delete-face)))
+     '(evil-goggles-undo-redo-add-face    ((t :inherit evil-goggles-paste-face)))
+     '(evil-goggles-undo-redo-change-face ((t :inherit evil-goggles-change-face))))))
 
 (use-package flymake
   :defer t
