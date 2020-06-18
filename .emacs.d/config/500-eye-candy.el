@@ -126,8 +126,7 @@
             (lambda ()
               (setq-local evil-goggles-duration 0.001)))
 
-  (evil-goggles-use-diff-faces)
-  (make-thread #'evil-goggles-mode))
+  (evil-goggles-mode))
 
 (use-package focus
   :ensure t
