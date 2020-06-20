@@ -86,18 +86,6 @@
 (use-package helm
   :ensure t
   :config
-  (defn helm-bufferp (buf)
-    "TODO"
-    (when (and (bufferp buf)
-               (string-match-p "\\*.*[Hh]elm.*\\*" (buffer-name buf)))
-      t))
-
-  (defn helm-occur-current-bufferp (buf)
-    "TODO"
-    (when (and (string= helm-buffer "*helm occur*")
-          (equal helm-current-buffer buf))
-      t))
-
   (defvar helm-search-buffer-regex (regexp-opt '("*helm-ag*" "*helm occur*"))
     "TODO")
 

@@ -1,21 +1,3 @@
-(use-package auto-dim-other-buffers
-  :ensure t
-  :defer t
-  :init
-  (defn auto-dim-other-initial-setup ()
-    (remove-hook 'window-configuration-change-hook #'auto-dim-other-initial-setup)
-    (require 'auto-dim-other-buffers))
-
-  (add-hook 'after-init-hook
-            (lambda () (add-hook 'window-configuration-change-hook #'auto-dim-other-initial-setup)))
-
-  :config
-  (advice-add #'adob--never-dim-p :before-until #'helm-bufferp)
-  (with-eval-after-load "helm-occur"
-    (advice-add #'adob--never-dim-p :before-until #'helm-occur-current-bufferp))
-
-  (auto-dim-other-buffers-mode))
-
 (use-package composite
   :defer t
   :if (version<= "27.0" emacs-version)
