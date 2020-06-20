@@ -26,7 +26,7 @@
   (setq-default evil-want-minibuffer t)
   (setq-default evil-symbol-word-search t)
 
-  (make-thread #'evil-mode))
+  (evil-mode))
 
 (use-package evil-ex
   :ensure evil

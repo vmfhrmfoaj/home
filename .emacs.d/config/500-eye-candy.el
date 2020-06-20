@@ -14,7 +14,7 @@
   (with-eval-after-load "helm-occur"
     (advice-add #'adob--never-dim-p :before-until #'helm-occur-current-bufferp))
 
-  (make-thread #'auto-dim-other-buffers-mode))
+  (auto-dim-other-buffers-mode))
 
 (use-package composite
   :defer t
@@ -328,7 +328,7 @@
   :config
   (setq hl-line-sticky-flag nil)
 
-  (make-thread #'global-hl-line-mode))
+  (global-hl-line-mode))
 
 (use-package hl-todo
   :ensure t
