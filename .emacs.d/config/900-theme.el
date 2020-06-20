@@ -92,7 +92,7 @@
    '(helm-match ((t :inherit lazy-highlight :foreground unspecified)))
    '(helm-match-item ((t :inherit lazy-highlight)))
    '(helm-match-selection ((t :inherit isearch :weight bold)))
-   '(helm-selection ((t :inherit highlight :weight normal)))
+   '(helm-selection ((t :inherit highlight :weight bold)))
    '(helm-selection-line ((t :inherit helm-selection :weight bold)))))
 
 (use-package hl-line
