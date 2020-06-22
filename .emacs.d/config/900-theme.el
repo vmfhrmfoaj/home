@@ -19,15 +19,6 @@
                     (if (eq frame-background-mode 'light) -10 -20))
     "A foreground color for the local variable such as parameters"))
 
-(use-package auto-dim-other-buffers
-  :defer t
-  :config
-  (custom-set-faces
-   `(auto-dim-other-buffers-face
-     ((((background dark))
-       :foreground ,(color-from 'default :foreground -10)
-       :background ,(color-from 'default :background +2))))))
-
 (use-package clojure-mode
   :disabled t
   :defer t
