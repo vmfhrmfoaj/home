@@ -19,6 +19,7 @@
         ring-bell-function 'ignore))
 
 (put 'dired-find-alternate-file 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
 
 (blink-cursor-mode 1)
 (global-subword-mode 1)
