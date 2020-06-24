@@ -123,6 +123,11 @@
     "TODO"
     :group 'helm-faces)
 
+  (defface helm-other-buffer
+    `((t (:inherit shadow)))
+    "TODO"
+    :group 'helm-faces)
+
   (defvar helm-match-selection-overlays nil
     "TODO")
 
@@ -197,6 +202,8 @@
                       (overlay-put ov 'priority 2)))
                 (error (helm--remove-custom-overlays)))))))))
 
+  (defvar-local helm-face-remap-cookie nil)
+
   (require 'helm-config)
   (setq helm-autoresize-min-height 25
         helm-autoresize-max-height 45
@@ -213,10 +220,16 @@
   (add-hook 'helm-before-initialize-hook
             (byte-compile
              (lambda ()
-               (setq gc-cons-threshold (* 4 gc-cons-threshold)))))
+               (setq gc-cons-threshold (* 4 gc-cons-threshold))
+               (dolist (win (window-list))
+                 (with-current-buffer (window-buffer win)
+                   (setq helm-face-remap-cookie (face-remap-add-relative 'default 'helm-other-buffer)))))))
   (add-hook 'helm-cleanup-hook
             (byte-compile
              (lambda ()
+               (dolist (win (window-list))
+                 (with-current-buffer (window-buffer win)
+                   (face-remap-remove-relative helm-face-remap-cookie)))
                (setq gc-cons-threshold (get 'gc-cons-threshold 'default-value))
                (garbage-collect))))
 

@@ -84,7 +84,10 @@
    '(helm-match-item ((t :inherit lazy-highlight)))
    '(helm-match-selection ((t :inherit isearch :weight bold)))
    '(helm-selection ((t :inherit highlight :weight bold)))
-   '(helm-selection-line ((t :inherit helm-selection :weight bold)))))
+   '(helm-selection-line ((t :inherit helm-selection :weight bold)))
+   `(helm-other-buffer ((((background dark))
+                         :foreground ,(color-from 'default :foreground -10)
+                         :background ,(color-from 'default :background +2))))))
 
 (use-package hl-line
   :defer t
