@@ -1,9 +1,9 @@
 ;;; Copyright (c) 2014-2017, Jinseop Kim
 
 (setq custom-file "~/.emacs.d/.custom.el"
-      gc-cons-threshold (* 1024 1024 1024)
+      gc-cons-threshold (* 1024 1024 1024 2)
       inhibit-startup-screen t)
-(put 'gc-cons-threshold 'default-value (* 1024 1024 256))
+(put 'gc-cons-threshold 'default-value (* 1024 1024 512))
 (add-hook 'emacs-startup-hook (lambda () (setq-default gc-cons-threshold (get 'gc-cons-threshold 'default-value))))
 (when (file-exists-p custom-file)
   (add-hook 'emacs-startup-hook (lambda () (load custom-file))))
