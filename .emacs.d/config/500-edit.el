@@ -75,9 +75,9 @@ So, replaced `evil-jump-item' to this function."
   :ensure t
   :defer t
   :config
-  (setq  undo-tree-limit        (* 160000 4)
-         undo-tree-strong-limit (* 240000 4)
-         undo-tree-outer-limit  (* 24000000 4)))
+  (setq undo-tree-limit        (*   160000 50)
+        undo-tree-strong-limit (*   240000 50)
+        undo-tree-outer-limit  (* 24000000 50)))
 
 (use-package whitespace
   :config
