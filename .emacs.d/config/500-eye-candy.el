@@ -118,6 +118,8 @@
   (defvar focus--exclude-modes '(term-mode)
     "TODO")
 
+  (defvar-local focus-face-remap-cookie nil)
+
   (defn focus--enable ()
     "TODO"
     (unless (or (apply #'derived-mode-p focus--exclude-modes)
@@ -125,10 +127,15 @@
                 (minibufferp))
       (focus-init)
       (let ((focus-update-idle-time nil))
-        (focus-move-focus))))
+        (focus-move-focus))
+      (setq focus-face-remap-cookie
+            (face-remap-add-relative 'hl-line 'bold))))
 
   (defn focus--disable ()
     "TODO"
+    (when focus-face-remap-cookie
+      (face-remap-remove-relative focus-face-remap-cookie)
+      (setq focus-face-remap-cookie nil))
     (focus-terminate))
 
   (add-hook 'evil-insert-state-entry-hook #'focus--enable)

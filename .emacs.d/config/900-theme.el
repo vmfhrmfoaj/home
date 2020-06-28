@@ -93,7 +93,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(hl-line ((t :inherit highlight :weight bold)))))
+   '(hl-line ((t :inherit highlight)))))
 
 (use-package iedit
   :defer t
