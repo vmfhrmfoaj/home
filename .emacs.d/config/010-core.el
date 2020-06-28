@@ -229,7 +229,9 @@
              (lambda ()
                (dolist (win (window-list))
                  (with-current-buffer (window-buffer win)
-                   (face-remap-remove-relative helm-face-remap-cookie)))
+                   (when helm-face-remap-cookie
+                     (face-remap-remove-relative helm-face-remap-cookie)
+                     (setq helm-face-remap-cookie nil))))
                (setq gc-cons-threshold (get 'gc-cons-threshold 'default-value))
                (garbage-collect))))
 
