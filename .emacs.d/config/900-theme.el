@@ -152,4 +152,9 @@
   (custom-set-faces
    '(lsp-face-highlight-read    ((t :inherit highlight :underline t)))
    '(lsp-face-highlight-textual ((t :inherit highlight :underline t)))
-   '(lsp-face-highlight-write   ((t :inherit highlight :underline t :weight bold)))))
+   '(lsp-face-highlight-write   ((t :inherit highlight :underline t :weight bold)))
+   '(lsp-diagnostic-level-1     ((t (:inherit (fixed-pitch compilation-error)   :weight normal))))
+   '(lsp-diagnostic-level-2     ((t (:inherit (fixed-pitch compilation-warning) :weight normal))))
+   '(lsp-diagnostic-level-3     ((t (:inherit (fixed-pitch compilation-info)    :weight normal))))
+   '(lsp-diagnostic-level-4     ((t (:inherit (fixed-pitch compilation-info)    :weight normal))))))
+
