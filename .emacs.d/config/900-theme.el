@@ -6,7 +6,8 @@
   (load-theme 'base16-tomorrow-night t)
 
   (custom-set-faces
-   '(shadow ((t :foreground "#a6a9a7")))))
+   '(shadow ((t :foreground "#a6a9a7")))
+   '(fixed-pitch ((t :family "Dejavu Sans Mono")))))
 
 (use-package font-lock
   :config
