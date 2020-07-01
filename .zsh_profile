@@ -20,12 +20,6 @@ _setup_for_zsh() {
             'https://gist.githubusercontent.com/vmfhrmfoaj/5d638cca74fa0c4ea0420457cae831b2/raw/3eb92bee4b2efa4508cbaea91b80bafd6d6c5f0c/_perlbrew'
     fi
 
-    if [ ! -f "${plugin_dir}/podman/_podman" ]; then
-        mkdir -p "${plugin_dir}/podman/"
-        curl -fsSL -o "${plugin_dir}/podman/_podman" \
-            'https://github.com/containers/libpod/raw/master/completions/zsh/_podman'
-    fi
-
     local NEWLINE=$'\n'
     local PS1_PREFIX='%{$fg[magenta]%}(%n@%M)%{$reset_color%}'
     export PS1="${PS1_PREFIX}${NEWLINE}${PS1}"
