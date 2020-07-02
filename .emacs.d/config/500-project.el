@@ -34,6 +34,13 @@
           :truncate-lines helm-buffers-truncate-lines
           :left-margin-width helm-buffers-left-margin-width))
 
+  (defn projectile-kill-buffer (&optional buf)
+    "TODO"
+    (interactive)
+    (let ((buf (or buf (current-buffer))))
+      (projectile-switch-to-previous-buffer)
+      (kill-buffer buf)))
+
   :config
   (defn projectile-project-files-custom-filter (files)
     "TODO"

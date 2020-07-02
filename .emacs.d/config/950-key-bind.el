@@ -129,7 +129,7 @@
     "bR" #'revert-buffer
     "ba" #'helm-buffers-list
     "bb" #'helm-project-buffers-list
-    "bd" #'evil-delete-buffer
+    "bd" #'projectile-kill-buffer
     "bk" #'kill-buffer
     "bs" #'get-scratch-buffer-create
     "bl" #'switch-to-previous-buffer
