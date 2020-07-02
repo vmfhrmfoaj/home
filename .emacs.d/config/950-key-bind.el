@@ -510,6 +510,17 @@
   (define-key cperl-mode-map (kbd "{") nil) ; disable `cperl-electric-lbrace'
   (evil-define-key 'normal cperl-mode-map (kbd "M-,") #'pop-tag-mark))
 
+(use-package dired
+  :config
+  (defn dired-alternate-up-directory ()
+    "TODO"
+    (interactive)
+    (let* ((dir (dired-current-directory))
+	       (up (file-name-directory (directory-file-name dir))))
+      (find-alternate-file up)))
+
+  (evil-define-key 'normal dired-mode-map (kbd "C-u") #'dired-alternate-up-directory))
+
 (use-package ediff
   :defer t
   :config
