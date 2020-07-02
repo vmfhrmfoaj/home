@@ -328,7 +328,8 @@
   (evil-define-key 'insert 'global
     (kbd "C-h") #'backward-delete-char
     (kbd "C-a") #'beginning-of-line-text
-    (kbd "C-e") #'end-of-line)
+    (kbd "C-e") #'end-of-line
+    (kbd "C-v") #'yank)
   (evil-define-key 'visual 'global
     (kbd "<tab>") #'indent-region
     (kbd "v") #'er/expand-region))
