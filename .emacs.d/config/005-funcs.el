@@ -278,7 +278,7 @@
                                               (-contains? visible-bufs it)
                                               (->> it
                                                    (buffer-name)
-                                                   (string-match-p "\\*.*[Hh]elm.*\\*"))))
+                                                   (string-match-p "\\*\\(.*[Hh]elm.*\\|which-key\\)\\*"))))
                                 (sort-buffer-by-visit-time)
                                 (-first-item)))
         (switch-to-buffer prev-buf nil t)
