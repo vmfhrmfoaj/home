@@ -155,10 +155,22 @@
               (linum-relative-mode)))
 
   :config
-  (defn linum-delay-schedule-timeout ()
+  (defn linum-delay-schedule-timeout (&optional win)
     "TODO"
     (setq linum-schedule-timer nil)
-    (linum-update-current))
+    (let ((win (or win (selected-window))))
+      (with-current-buffer (window-buffer win)
+        (when linum-mode
+          (setq linum-relative-last-pos
+                (if (linum-relative-in-helm-p)
+                    (helm-candidate-number-at-point)
+                  (line-number-at-pos))
+                linum-available linum-overlays)
+          (setq linum-overlays nil)
+          (save-excursion
+            (linum-update-window win))
+          (mapc #'delete-overlay linum-available)))
+      (setq linum-available nil)))
 
   (defn linum-delay-schedule ()
     "TODO"
@@ -167,12 +179,14 @@
         (cancel-timer linum-schedule-timer))
       (if (eq 'insert evil-state)
           (linum-update-current)
-        (let ((timer (run-with-idle-timer linum-delay nil #'linum-delay-schedule-timeout)))
+        (let ((timer (run-with-idle-timer linum-delay nil #'linum-delay-schedule-timeout (selected-window))))
           (setq-local linum-schedule-timer timer)))))
 
   (setq linum-delay 0.1
-        linum-relative-current-symbol ""
-        linum-schedule-timer nil)
+        linum-relative-current-symbol "")
+
+  (defvar-local linum-schedule-timer nil
+    "TODO")
 
   (advice-add #'linum-relative-in-helm-p :override (-const nil))
   (advice-add #'linum-schedule :override #'linum-delay-schedule))
