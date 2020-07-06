@@ -108,11 +108,11 @@
   (custom-set-faces
    '(lazy-highlight ((t :weight bold)))))
 
-(use-package linum
+(use-package display-line-numbers
   :defer t
   :config
   (custom-set-faces
-   '(linum ((t :inherit default :background "#222427" :foreground "#969896")))))
+   '(line-number ((t :background "#222427" :foreground "#787978")))))
 
 (use-package magit
   :defer t
@@ -157,4 +157,3 @@
    '(lsp-diagnostic-level-2     ((t (:inherit (fixed-pitch compilation-warning) :weight normal))))
    '(lsp-diagnostic-level-3     ((t (:inherit (fixed-pitch compilation-info)    :weight normal))))
    '(lsp-diagnostic-level-4     ((t (:inherit (fixed-pitch compilation-info)    :weight normal))))))
-

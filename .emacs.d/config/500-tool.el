@@ -22,6 +22,22 @@
   :config
   (atomic-chrome-start-server))
 
+(use-package display-line-numbers
+  :hook ((prog-mode . enable-display-line-numbers))
+  :config
+  (defn enable-display-line-numbers ()
+    "Turn on `display-line-numbers-mode'."
+    (let ((buf-name (buffer-name)))
+      (when (and (stringp buf-name)
+                 (not (string-match-p "^\\s-*\\*" buf-name))
+                 (not (minibufferp)))
+        (setq display-line-numbers-width
+              (max 3 (length (number-to-string (count-lines (point-min) (point-max))))))
+        (display-line-numbers-mode)
+        (setq display-line-numbers 'visual))))
+
+  (setq-default display-line-numbers-width-start nil))
+
 (use-package ediff
   :defer t
   :config
@@ -132,64 +148,6 @@
 (use-package helm-mt
   :ensure t
   :defer t)
-
-(use-package linum-relative
-  :ensure t
-  :defer t
-  :init
-  (defn set-linum-rel-fmt-for-cur-file ()
-    "TODO"
-    (setq-local linum-relative-format
-                (concat "%"
-                        (-> (count-lines (point-min) (point-max))
-                            (number-to-string)
-                            (length)
-                            (min 5)
-                            (max 3)
-                            (number-to-string))
-                        "s")))
-
-  (add-hook 'prog-mode-hook
-            (lambda ()
-              (set-linum-rel-fmt-for-cur-file)
-              (linum-relative-mode)))
-
-  :config
-  (defn linum-delay-schedule-timeout (&optional win)
-    "TODO"
-    (setq linum-schedule-timer nil)
-    (let ((win (or win (selected-window))))
-      (with-current-buffer (window-buffer win)
-        (when linum-mode
-          (setq linum-relative-last-pos
-                (if (linum-relative-in-helm-p)
-                    (helm-candidate-number-at-point)
-                  (line-number-at-pos))
-                linum-available linum-overlays)
-          (setq linum-overlays nil)
-          (save-excursion
-            (linum-update-window win))
-          (mapc #'delete-overlay linum-available)))
-      (setq linum-available nil)))
-
-  (defn linum-delay-schedule ()
-    "TODO"
-    (unless (eq 'self-insert-command this-command)
-      (when linum-schedule-timer
-        (cancel-timer linum-schedule-timer))
-      (if (eq 'insert evil-state)
-          (linum-update-current)
-        (let ((timer (run-with-idle-timer linum-delay nil #'linum-delay-schedule-timeout (selected-window))))
-          (setq-local linum-schedule-timer timer)))))
-
-  (setq linum-delay 0.1
-        linum-relative-current-symbol "")
-
-  (defvar-local linum-schedule-timer nil
-    "TODO")
-
-  (advice-add #'linum-relative-in-helm-p :override (-const nil))
-  (advice-add #'linum-schedule :override #'linum-delay-schedule))
 
 (use-package multi-term
   :ensure t
