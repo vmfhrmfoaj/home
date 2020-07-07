@@ -86,7 +86,7 @@
 (use-package helm
   :ensure t
   :config
-  (defvar helm-search-buffer-regex (regexp-opt '("*helm-ag*" "*helm occur*"))
+  (defvar helm-search-buffer-regex (regexp-opt '("*helm-ag*" "*helm occur*" "*helm-xref*"))
     "TODO")
 
   (defvar helm-last-search-buffer nil
