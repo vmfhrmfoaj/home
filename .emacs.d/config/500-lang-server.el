@@ -573,13 +573,17 @@ BINDINGS is a list of (key def cond)."
                            (lsp:diagnostic-severity?)
                            (number-to-string)
                            (concat "lsp-diagnostic-level-")
-                           (intern)))
-                (margin (lsp-ui-sideline--margin-width)))
+                           (intern))))
             (dolist (message (->> (-drop 1 messages)
                                   (--map (concat it " ┘"))
                                   (-cons* (-first-item messages))))
               (let* ((len (length message))
-                     (string (concat (propertize " " 'display `(space :align-to (- right-fringe ,(lsp-ui-sideline--align len margin))))
+                     ;; NOTE
+                     ;;  I use 'Source Code Pro' font for `lsp-ui-sideline`.
+                     ;;  This font is not the default font, also its size is also different from the default font size.
+                     ;;  You should adjust the magic value for you.
+                     (magic 0.81)
+                     (string (concat (propertize " " 'display `(space :align-to (- right-fringe ,(ceiling (* len magic)))))
                                      (progn
                                        (add-face-text-property 0 len 'lsp-ui-sideline-global nil message)
                                        (add-face-text-property 0 len face t message)
