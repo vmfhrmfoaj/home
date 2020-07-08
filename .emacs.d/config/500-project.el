@@ -63,12 +63,12 @@
     (interactive)
     (let ((cur-proj-root (or (projectile-project-root)
                              (concat (s-chop-suffix "/" home-dir) "/"))))
-     (-some->> (buffer-list)
-       (--remove (with-current-buffer it
-                   (let ((proj-root (or (projectile-project-root)
-                                        (concat (s-chop-suffix "/" home-dir) "/"))))
-                     (string= cur-proj-root proj-root))))
-       (switch-to-previous-buffer-in))))
+      (-some->> (buffer-list)
+        (--remove (with-current-buffer it
+                    (let ((proj-root (or (projectile-project-root)
+                                         (concat (s-chop-suffix "/" home-dir) "/"))))
+                      (string= cur-proj-root proj-root))))
+        (switch-to-previous-buffer-in))))
 
   (defn projectile-action-for-custom-switch-open-project ()
     "A `projectile' action for `projectile-custom-switch-open-project'."
@@ -105,6 +105,43 @@
                              (s-chop-prefix root file-name)
                            file-name)))))
 
+  (defn projectile-custom-project-root (&optional dir)
+    "Fix for improving the performance of `projectile-project-root'."
+    ;; the cached value will be 'none in the case of no project root (this is to
+    ;; ensure it is not reevaluated each time when not inside a project) so use
+    ;; cl-subst to replace this 'none value with nil so a nil value is used
+    ;; instead
+    (let ((dir (or dir default-directory)))
+      ;; Back out of any archives, the project will live on the outside and
+      ;; searching them is slow.
+      (when (and (fboundp 'tramp-archive-file-name-archive)
+                 (tramp-archive-file-name-p dir))
+        (setq dir (file-name-directory (tramp-archive-file-name-archive dir))))
+      (cl-subst nil 'none
+                ;; The `is-local' and `is-connected' variables are
+                ;; used to fix the behavior where Emacs hangs
+                ;; because of Projectile when you open a file over
+                ;; TRAMP. It basically prevents Projectile from
+                ;; trying to find information about files for which
+                ;; it's not possible to get that information right
+                ;; now.
+                (or (let ((is-local (not (file-remote-p dir)))      ;; `true' if the file is local
+                          (is-connected (file-remote-p dir nil t))) ;; `true' if the file is remote AND we are connected to the remote
+                      (when (or is-local is-connected)
+                        (cl-some
+                         (lambda (func)
+                           (let* ((cache-key (format "%s-%s" func dir))
+                                  (cache-value (gethash cache-key projectile-project-root-cache :no-matched)))
+                             (if (eq :no-matched cache-value)
+                               (let ((value (funcall func (file-truename dir))))
+                                 (puthash cache-key value projectile-project-root-cache)
+                                 value)
+                               cache-value)))
+                         projectile-project-root-files-functions)))
+                    ;; set cached to none so is non-nil so we don't try
+                    ;; and look it up again
+                    'none))))
+
   (setq projectile-completion-system 'helm
         projectile-enable-cachig t
         projectile-project-name-function #'projectile-custom-project-name)
@@ -116,11 +153,17 @@
                               (file-name-directory)
                               (projectile-project-root)))))
 
-  (advice-add #'projectile-project-files :filter-return
-              #'projectile-project-files-custom-filter)
+  (advice-add #'projectile-project-files :filter-return #'projectile-project-files-custom-filter)
+  (advice-add #'projectile-project-root :override #'projectile-custom-project-root)
 
   (advice-add #'projectile-project-buffer-p :before-while
               (byte-compile (lambda (buf root) root)))
+
+  (advice-add #'projectile-project-name :filter-return
+              (byte-compile
+               (lambda (proj-name)
+                 "To cache project name."
+                 (setq-local projectile-project-name proj-name))))
 
   (projectile-mode 1)
 
