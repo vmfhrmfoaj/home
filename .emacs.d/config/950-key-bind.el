@@ -561,13 +561,14 @@
 
 ;; Key binding for the major mode
 
-(use-package alchemist-help
+(use-package cc-mode
   :defer t
   :config
-  (evil-define-key 'normal alchemist-help-minor-mode-map
-    (kbd "q") #'evil-delete-buffer))
+  (dolist (mode '(c-mode c++-mode java-mode))
+    (lsp--custom-setup-key mode)))
 
 (use-package clojure-mode
+  :disabled t
   :defer t
   :config
   (dolist (mode '(clojure-mode clojurec-mode clojurescript-mode))
@@ -677,12 +678,17 @@
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode 'go-mode))
 
-(use-package js-mdoe
+(use-package js
   :defer t
   :config
-  (lsp--custom-setup-key 'js-mode)
   (evil-leader/set-key-for-mode 'js-mode
-    "m=!" #'web-beautify-js))
+    "m=!" #'web-beautify-js)
+  (lsp--custom-setup-key 'js-mode))
+
+(use-package latex-mode
+  :defer t
+  :config
+  (lsp--custom-setup-key 'latex-mode))
 
 (use-package markdown-mode
   :defer t
@@ -738,7 +744,7 @@
     "mRs" #'psysh-show)
   (which-key-declare-prefixes-for-mode 'php-mode
     (concat evil-leader/leader "mR") "REPL")
-  (evil-leader/set-major-leader-for-mode 'php-mode)
+  (lsp--custom-setup-key 'php-mode)
   (define-key php-mode-map [tab] nil))
 
 (use-package profiler
@@ -766,7 +772,12 @@
     "mgg" #'dumb-jump-go)
   (which-key-declare-prefixes-for-mode 'sh-mode
     (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode 'sh-mode))
+  (lsp--custom-setup-key 'sh-mode))
+
+(use-package typescript-mode
+  :defer t
+  :config
+  (lsp--custom-setup-key 'typescript-mode))
 
 (use-package view
   :defer t
