@@ -449,17 +449,94 @@
     (kbd "M-,") #'help-go-back
     (kbd "q") #'quit-window))
 
-(use-package magit
+(use-package lsp-mode
   :defer t
+  :init
+  (defmacro lsp-define-cond-key-fn (fn cond)
+    "Create a function with condition."
+    `(lambda ()
+       (interactive)
+       (when ,cond
+         (call-interactively ,fn))))
+
+  (defn lsp--custom-setup-key (mode)
+    "Set up keys for `lsp-mode'."
+    (evil-leader/set-key-for-mode mode
+      ;; sessions
+      "msr" #'lsp-workspace-restart
+      "mss" #'lsp
+      "msq" #'lsp-workspace-shutdown
+      "msd" #'lsp-describe-session
+      "msD" #'lsp-disconnect
+
+      ;; formatting
+      "m==" #'lsp-format-buffer
+      "m=r" #'lsp-format-region
+
+      ;; folders
+      "mFa" #'lsp-workspace-folders-add
+      "mFr" #'lsp-workspace-folders-remove
+      "mFb" #'lsp-workspace-blacklist-remove
+
+      ;; toggles
+      "mTf" (lsp-define-cond-key-fn #'lsp-toggle-on-type-formatting (lsp-feature? "textDocument/onTypeFormatting"))
+      "mTT" #'lsp-treemacs-sync-mode
+
+      ;; goto
+      "mgg" (lsp-define-cond-key-fn #'lsp-find-definition (lsp-feature? "textDocument/definition"))
+      "mgr" (lsp-define-cond-key-fn #'lsp-find-references (lsp-feature? "textDocument/references"))
+      "mgi" (lsp-define-cond-key-fn #'lsp-find-implementation (lsp-feature? "textDocument/implementation"))
+      "mgt" (lsp-define-cond-key-fn #'lsp-find-type-definition (lsp-feature? "textDocument/typeDefinition"))
+      "mgd" (lsp-define-cond-key-fn #'lsp-find-declaration (lsp-feature? "textDocument/declaration"))
+      "mgh" (lsp-define-cond-key-fn #'lsp-treemacs-call-hierarchy
+                                    (and (lsp-feature? "callHierarchy/incomingCalls")
+                                         (fboundp 'lsp-treemacs-call-hierarchy)))
+      "mga" (lsp-define-cond-key-fn #'xref-find-apropos (lsp-feature? "workspace/symbol"))
+      "mge" (lsp-define-cond-key-fn #'lsp-treemacs-errors-list (fboundp 'lsp-treemacs-errors-list))
+
+      ;; help
+      "mhh" (lsp-define-cond-key-fn #'lsp-describe-thing-at-point (lsp-feature? "textDocument/hover"))
+      "mhs" (lsp-define-cond-key-fn #'lsp-signature-activate (lsp-feature? "textDocument/signatureHelp"))
+      "mhg" (lsp-define-cond-key-fn #'lsp-ui-doc-glance (and (featurep 'lsp-ui-doc) (lsp-feature? "textDocument/hover")))
+
+      ;; refactoring
+      "mrr" (lsp-define-cond-key-fn #'lsp-rename (lsp-feature? "textDocument/rename"))
+      "mro" (lsp-define-cond-key-fn #'lsp-organize-imports (lsp-feature? "textDocument/rename"))
+
+      ;; actions
+      "maa" (lsp-define-cond-key-fn #'lsp-execute-code-action (lsp-feature? "textDocument/codeAction"))
+      "mah" (lsp-define-cond-key-fn #'lsp-document-highlight (lsp-feature? "textDocument/documentHighlight"))
+
+      ;; peeks
+      "mGg" (lsp-define-cond-key-fn #'lsp-ui-peek-find-definitions
+                                    (and (lsp-feature? "textDocument/definition")
+                                         (fboundp 'lsp-ui-peek-find-definitions)))
+      "mGr" (lsp-define-cond-key-fn #'lsp-ui-peek-find-references
+                                    (and (fboundp 'lsp-ui-peek-find-references)
+                                         (lsp-feature? "textDocument/references")))
+      "mGi" (lsp-define-cond-key-fn #'lsp-ui-peek-find-implementation
+                                    (and (fboundp 'lsp-ui-peek-find-implementation)
+                                         (lsp-feature? "textDocument/implementation")))
+      "mGs" (lsp-define-cond-key-fn #'lsp-ui-peek-find-workspace-symbol
+                                    (and (fboundp 'lsp-ui-peek-find-workspace-symbol)
+                                         (lsp-feature? "workspace/symbol"))))
+    (which-key-declare-prefixes-for-mode mode
+      (concat evil-leader/leader "ms")  "sessions"
+      (concat evil-leader/leader "mF")  "folders"
+      (concat evil-leader/leader "m=")  "formatting"
+      (concat evil-leader/leader "mT")  "toggle"
+      (concat evil-leader/leader "mg")  "goto"
+      (concat evil-leader/leader "mh")  "help"
+      (concat evil-leader/leader "mr")  "refactor"
+      (concat evil-leader/leader "ma")  "code actions"
+      (concat evil-leader/leader "mG")  "peek")
+    (evil-leader/set-major-leader-for-mode mode))
+
   :config
-  (evil-magit-define-key 'normal 'magit-mode-map "M-p" #'magit-section-backward)
-  (evil-magit-define-key 'normal 'magit-mode-map "M-n" #'magit-section-forward)
-  (evil-magit-define-key 'normal 'magit-mode-map "M-P" #'magit-section-backward-sibling)
-  (evil-magit-define-key 'normal 'magit-mode-map "M-N" #'magit-section-forward-sibling)
-  (define-key transient-base-map (kbd "C-g")      #'transient-quit-all)
-  (define-key transient-base-map (kbd "<escape>") #'transient-quit-one)
-  (define-key transient-map (kbd "C-g")      #'transient-quit-all)
-  (define-key transient-map (kbd "<escape>") #'transient-quit-one))
+  (add-hook 'lsp-mode-hook
+            (lambda ()
+              (evil-local-set-key 'normal [remap next-error]     #'flymake-goto-next-error)
+              (evil-local-set-key 'normal [remap previous-error] #'flymake-goto-prev-error))))
 
 (use-package magit-svn
   :after evil-magit
@@ -593,16 +670,9 @@
 (use-package js2-mdoe
   :defer t
   :config
+  (lsp--custom-setup-key 'js2-mode)
   (evil-leader/set-key-for-mode 'js2-mode
-    "m=" #'web-beautify-js))
-
-(use-package lsp-mode
-  :defer t
-  :config
-  (add-hook 'lsp-mode-hook
-            (lambda ()
-              (evil-local-set-key 'normal [remap next-error]     #'flymake-goto-next-error)
-              (evil-local-set-key 'normal [remap previous-error] #'flymake-goto-prev-error))))
+    "m=!" #'web-beautify-js))
 
 (use-package markdown-mode
   :defer t
@@ -612,6 +682,18 @@
   (which-key-declare-prefixes-for-mode 'markdown-mode
     (concat evil-leader/leader "ms") "Show")
   (evil-leader/set-major-leader-for-mode 'markdown-mode))
+
+(use-package magit
+  :defer t
+  :config
+  (evil-magit-define-key 'normal 'magit-mode-map "M-p" #'magit-section-backward)
+  (evil-magit-define-key 'normal 'magit-mode-map "M-n" #'magit-section-forward)
+  (evil-magit-define-key 'normal 'magit-mode-map "M-P" #'magit-section-backward-sibling)
+  (evil-magit-define-key 'normal 'magit-mode-map "M-N" #'magit-section-forward-sibling)
+  (define-key transient-base-map (kbd "C-g")      #'transient-quit-all)
+  (define-key transient-base-map (kbd "<escape>") #'transient-quit-one)
+  (define-key transient-map (kbd "C-g")      #'transient-quit-all)
+  (define-key transient-map (kbd "<escape>") #'transient-quit-one))
 
 (use-package multi-term
   :defer t
@@ -662,12 +744,10 @@
     (kbd "M-p") #'comint-previous-input
     (kbd "M-n") #'comint-next-input))
 
-(use-package racer
+(use-package rust-mode
   :defer t
   :config
-  (add-hook 'racer-help-mode-hook
-            (lambda ()
-              (evil-local-set-key 'normal (kbd "q") #'quit-window))))
+  (lsp--custom-setup-key 'rust-mode))
 
 (use-package sh-script
   :defer t
