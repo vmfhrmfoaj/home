@@ -1,6 +1,6 @@
 (when window-system
-  (let* ((two-horizontal-window-setup nil)
-         (min-col-w 160)
+  (let* ((min-col-w 140)
+         (min-col-pixel (* min-col-w (frame-char-width)))
          (workarea (-some->> main-monitor (assoc 'workarea) (-drop 1)))
          (main-monitor-x (nth 0 workarea))
          (main-monitor-y (nth 1 workarea))
@@ -9,16 +9,16 @@
          (x main-monitor-x)
          (w (/ main-monitor-w (frame-char-width)))
          (h (/ main-monitor-h (frame-char-height))))
-    (if (or two-horizontal-window-setup
-            (<= main-monitor-w (* min-col-w (frame-char-width))))
+    (if (<= main-monitor-w min-col-pixel)
         (set-frame-parameter nil 'fullscreen 'maximized)
-      (setq x (+ main-monitor-x (floor (* main-monitor-w 0.225)))
-            w (/ (- main-monitor-w x) (frame-char-width))))
+      (setq x (+ main-monitor-x (floor (* main-monitor-w 0.21)))
+            w (/ (- main-monitor-w x) (frame-char-width)))
+      (when (< w min-col-w)
+        (setq w min-col-w
+              x (+ main-monitor-x (- main-monitor-w min-col-pixel)))))
     (add-to-list 'default-frame-alist (cons 'width  w))
     (add-to-list 'default-frame-alist (cons 'height h))
-    (setq split-width-threshold (if two-horizontal-window-setup
-                                    min-col-w
-                                  main-monitor-w)
+    (setq split-width-threshold main-monitor-w
           initial-frame-alist (list (cons 'top    main-monitor-y)
                                     (cons 'left   x)
                                     (cons 'width  w)
