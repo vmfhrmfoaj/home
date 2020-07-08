@@ -266,6 +266,13 @@
 
 ;; Key binding for the minor mode
 
+(use-package alchemist-help
+  :disabled t
+  :defer t
+  :config
+  (evil-define-key 'normal alchemist-help-minor-mode-map
+    (kbd "q") #'evil-delete-buffer))
+
 (use-package company
   :defer t
   :config
@@ -640,6 +647,7 @@
   (evil-leader/set-major-leader-for-mode 'lisp-interaction-mode))
 
 (use-package elixir-mode
+  :disabled t
   :defer t
   :config
   (evil-leader/set-key-for-mode 'elixir-mode
@@ -649,6 +657,7 @@
   (evil-leader/set-major-leader-for-mode 'elixir-mode))
 
 (use-package elm-mode
+  :disabled t
   :defer t
   :config
   (evil-leader/set-key-for-mode 'elm-mode
@@ -658,6 +667,7 @@
   (evil-leader/set-major-leader-for-mode 'elm-mode))
 
 (use-package go-mode
+  :disabled t
   :defer t
   :config
   (evil-leader/set-key-for-mode 'go-mode
@@ -667,11 +677,11 @@
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode 'go-mode))
 
-(use-package js2-mdoe
+(use-package js-mdoe
   :defer t
   :config
-  (lsp--custom-setup-key 'js2-mode)
-  (evil-leader/set-key-for-mode 'js2-mode
+  (lsp--custom-setup-key 'js-mode)
+  (evil-leader/set-key-for-mode 'js-mode
     "m=!" #'web-beautify-js))
 
 (use-package markdown-mode

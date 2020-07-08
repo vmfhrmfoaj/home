@@ -70,7 +70,6 @@
          (c++-mode        . lsp)
          (cperl-mode      . lsp)
          (js-mode         . lsp)
-         (js2-mode        . lsp)
          (latex-mode      . lsp)
          (php-mode        . lsp)
          (rust-mode       . lsp)

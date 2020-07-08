@@ -4,27 +4,10 @@
   (setq css-indent-offset 2))
 
 (use-package js
-  :disabled t
   :defer t
   :config
   (setq-default js-indent-level 4)
   (add-hook 'js-mode-hook
-            (lambda ()
-              (when (bound-and-true-p lsp-mode)
-                (setq-local evil-lookup-func #'lsp-describe-thing-at-point)))))
-
-(use-package js2-mode
-  :ensure t
-  :defer t
-  :mode (("\\.jsm?\\'" . js2-mode)
-         ("\\.json\\'" . js2-mode)
-         ("\\.jsx\\'"  . js2-minor-mode))
-
-  :config
-  (defconst js--prettify-symbols-alist nil)
-  (setq-default js-indent-level 4
-                js2-basic-offset 4)
-  (add-hook 'js2-mode-hook
             (lambda ()
               (when (bound-and-true-p lsp-mode)
                 (setq-local evil-lookup-func #'lsp-describe-thing-at-point)))))
@@ -48,6 +31,7 @@
                 (setq-local evil-lookup-func #'lsp-describe-thing-at-point)))))
 
 (use-package vue-mode
+  :disabled t
   :ensure t
   :defer t)
 
