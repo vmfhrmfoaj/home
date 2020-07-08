@@ -282,14 +282,16 @@
             (run-with-idle-timer
              focus-update-idle-time
              nil
-             (lambda (fn)
-               (setq focus--update-timer nil)
-               (condition-case nil
-                   (funcall fn)
-                 (error (progn
-                          (focus-terminate)
-                          (focus-init)
-                          (funcall fn)))))
+             (lambda (buf fn)
+               (with-current-buffer buf
+                 (setq focus--update-timer nil)
+                 (condition-case nil
+                     (funcall fn)
+                   (error (progn
+                            (focus-terminate)
+                            (focus-init)
+                            (funcall fn))))))
+             (current-buffer)
              fn))))
 
   (setq focus-update-idle-time 0.2)
