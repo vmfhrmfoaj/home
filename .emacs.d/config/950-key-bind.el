@@ -590,6 +590,12 @@
     (concat evil-leader/leader "mg") "goto")
   (evil-leader/set-major-leader-for-mode 'go-mode))
 
+(use-package js2-mdoe
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'js2-mode
+    "m=" #'web-beautify-js))
+
 (use-package lsp-mode
   :defer t
   :config
