@@ -12,7 +12,8 @@
 (use-package font-lock
   :config
   (custom-set-faces
-   '(font-lock-comment-delimiter-face ((t :foreground "#5a5b5a"))))
+   '(font-lock-comment-delimiter-face ((t :foreground "#5a5b5a")))
+   '(font-lock-doc-face ((t :foreground "#b1b3b1"))))
 
   (defvar local-variable-name-light-fg-color
     (saturate-color (color-from 'font-lock-variable-name-face :foreground
