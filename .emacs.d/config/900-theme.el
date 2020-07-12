@@ -81,6 +81,7 @@
   :defer t
   :config
   (custom-set-faces
+   '(helm-ff-file-extension ((t :inherit helm-ff-file :foreground "#608580")))
    '(helm-match ((t :inherit lazy-highlight :foreground unspecified)))
    '(helm-match-item ((t :inherit lazy-highlight)))
    '(helm-match-selection ((t :inherit isearch :weight bold)))
