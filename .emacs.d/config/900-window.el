@@ -11,7 +11,7 @@
          (h (/ main-monitor-h (frame-char-height))))
     (if (<= main-monitor-w min-col-pixel)
         (set-frame-parameter nil 'fullscreen 'maximized)
-      (setq x (+ main-monitor-x (floor (* main-monitor-w 0.21)))
+      (setq x (+ main-monitor-x (floor (* main-monitor-w 0.225)))
             w (/ (- main-monitor-w x) (frame-char-width)))
       (when (< w min-col-w)
         (setq w min-col-w
