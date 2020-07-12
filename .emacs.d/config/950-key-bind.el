@@ -189,7 +189,7 @@
     "pD" #'projectile-remove-known-project
     "pI" #'projectile-invalidate-cache
     "pd" #'projectile-find-dir
-    "pf" #'projectile-find-file
+    "pf" #'helm-project-find-files
     "pp" #'projectile-custom-switch-open-project
     "ps" #'projectile-switch-project
 

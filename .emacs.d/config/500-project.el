@@ -38,6 +38,44 @@
           :truncate-lines helm-buffers-truncate-lines
           :left-margin-width helm-buffers-left-margin-width))
 
+  (defvar helm-source-project-find-files nil)
+
+  (defn helm-project-find-files ()
+    "Customize `helm-find-files' for `projectile'"
+    (interactive)
+    (unless helm-source-project-find-files
+      (setq helm-source-project-find-files
+            (helm-make-source "Project Files" 'helm-source-sync
+              :candidates
+              (lambda ()
+                (when-let ((proj-root (projectile-project-root)))
+                  (->> (projectile-project-files proj-root)
+                       (--map (let ((it (propertize (concat proj-root it)
+                                                    'face 'helm-ff-file
+                                                    'proj-path proj-root)))
+                                (when (string-match "\\(.\\)?\\.\\([_0-9A-Za-z]+\\)$" it)
+                                  (let ((beg (match-beginning 2))
+                                        (end (match-end 2)))
+                                    (when (string-equal (match-string 1 it) "/")
+                                      (setq beg (1- beg)))
+                                    (add-face-text-property
+                                     beg end 'helm-ff-file-extension nil it)))
+                                it)))))
+              :real-to-display
+              (lambda (c)
+                (-when-let (len (-some->> c (get-text-property 0 'proj-path) (length)))
+                  (substring c len)))
+
+              :display-to-real
+              (lambda (c)
+                (if-let ((proj-root (get-text-property 0 'root-path c)))
+                    (concat proj-root "/" c)
+                  c))
+              :action (lambda (path)
+                        (find-file path)))))
+    (helm :sources 'helm-source-project-find-files
+          :buffer "*helm project files*"))
+
   (defn projectile-kill-buffer (&optional buf)
     "TODO"
     (interactive)
