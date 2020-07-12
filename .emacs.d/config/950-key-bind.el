@@ -331,7 +331,8 @@
     "gr" #'eldoc-refresh
     (kbd "<tab>") #'indent-for-tab-command
     (kbd "C-d") (lambda () (interactive) (up-list nil t))
-    (kbd "C-u") (lambda () (interactive) (backward-up-list nil t)))
+    (kbd "C-u") (lambda () (interactive) (backward-up-list nil t))
+    (kbd "C-h c") #'describe-char)
   (evil-define-key 'insert 'global
     (kbd "C-h") #'backward-delete-char
     (kbd "C-a") #'beginning-of-line-text
