@@ -1,5 +1,6 @@
 (use-package css-mode
   :defer t
+  :mode "\\.wxss\\'"
   :config
   (setq css-indent-offset 2))
 
@@ -42,7 +43,7 @@
 (use-package web-mode
   :ensure t
   :defer t
-  :mode "\\.html\\.eex\\'"
+  :mode "\\.\\(html\\|eex\\|wxml\\)\\'"
   :config
   (setq web-mode-markup-indent-offset 2
         web-mode-css-indent-offset 2
