@@ -180,6 +180,16 @@
                     ;; and look it up again
                     'none))))
 
+  (defun projectile-custom-kill-buffers (&optional proj-root)
+    "Kill all project buffers without exception"
+    (interactive)
+    (let ((proj-root (projectile-ensure-project (or proj-root (projectile-project-root)))))
+      (->> (buffer-list)
+           (--filter (with-current-buffer it
+                       (-when-let (cur-proj-root (projectile-project-root))
+                         (string-equal proj-root cur-proj-root))))
+           (-map #'kill-buffer))))
+
   (setq projectile-completion-system 'helm
         projectile-enable-cachig t
         projectile-project-name-function #'projectile-custom-project-name)
@@ -195,13 +205,15 @@
   (advice-add #'projectile-project-root :override #'projectile-custom-project-root)
 
   (advice-add #'projectile-project-buffer-p :before-while
-              (byte-compile (lambda (buf root) root)))
+              (byte-compile (lambda (buf root) "filter nil to avoid type error" root)))
 
   (advice-add #'projectile-project-name :filter-return
               (byte-compile
                (lambda (proj-name)
                  "To cache project name."
                  (setq-local projectile-project-name proj-name))))
+
+  (advice-add #'projectile-kill-buffers :override #'projectile-custom-kill-buffers)
 
   (projectile-mode 1)
 

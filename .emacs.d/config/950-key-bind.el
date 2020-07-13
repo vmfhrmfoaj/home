@@ -190,6 +190,7 @@
     "pI" #'projectile-invalidate-cache
     "pd" #'projectile-find-dir
     "pf" #'helm-project-find-files
+    "pk" #'projectile-kill-buffers
     "pp" #'projectile-custom-switch-open-project
     "ps" #'projectile-switch-project
 
