@@ -1,29 +1,28 @@
 (when window-system
-  (let* ((min-col-w 140)
-         (min-col-pixel (* min-col-w (frame-char-width)))
+  (let* ((min-w (* 140 (frame-char-width)))
          (workarea (-some->> main-monitor (assoc 'workarea) (-drop 1)))
          (main-monitor-x (nth 0 workarea))
          (main-monitor-y (nth 1 workarea))
          (main-monitor-w (nth 2 workarea))
          (main-monitor-h (nth 3 workarea))
          (x main-monitor-x)
-         (w (/ main-monitor-w (frame-char-width)))
-         (h (/ main-monitor-h (frame-char-height))))
-    (if (<= main-monitor-w min-col-pixel)
+         (y main-monitor-y)
+         (w main-monitor-w)
+         (h main-monitor-h))
+    (if (<= main-monitor-w min-w)
         (set-frame-parameter nil 'fullscreen 'maximized)
       (setq x (+ main-monitor-x (floor (* main-monitor-w 0.225)))
-            w (/ (- main-monitor-w x) (frame-char-width)))
-      (when (< w min-col-w)
-        (setq w min-col-w
-              x (+ main-monitor-x (- main-monitor-w min-col-pixel)))))
-    (add-to-list 'default-frame-alist (cons 'width  w))
-    (add-to-list 'default-frame-alist (cons 'height h))
-    (setq split-width-threshold main-monitor-w
-          initial-frame-alist (list (cons 'top    main-monitor-y)
-                                    (cons 'left   x)
-                                    (cons 'width  w)
-                                    (cons 'height h)
-                                    (cons 'undecorated t)))))
+            w (- main-monitor-w x))
+      (when (< w min-w)
+        (setq w min-w
+              x (+ main-monitor-x (- main-monitor-w min-w)))))
+    (add-to-list 'default-frame-alist `(width  . (text-pixels . ,w)))
+    (add-to-list 'default-frame-alist `(height . (text-pixels . ,h)))
+    (setq frame-resize-pixelwise t
+          initial-frame-alist (list `(top  . ,y)
+                                    `(left . ,x)
+                                    '(undecorated . t))
+          split-width-threshold main-monitor-w)))
 
 (use-package winum
   :ensure t
