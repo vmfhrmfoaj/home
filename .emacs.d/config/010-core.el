@@ -213,6 +213,7 @@
                                        (nconc (sort-buffer-by-visit-time others) visibles)))
 
         helm-display-header-line nil
+        helm-ff-keep-cached-candidates nil
         helm-split-window-inside-p t
         helm-truncate-lines t
         helm-window-prefer-horizontal-split 'decide)
