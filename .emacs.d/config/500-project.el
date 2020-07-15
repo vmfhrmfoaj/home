@@ -40,6 +40,18 @@
 
   (defvar helm-source-project-find-files nil)
 
+  (defface helm-ff-file-dir
+    '((t (:inherit helm-ff-file)))
+    "TODO")
+
+  (defface helm-ff-executable-dir
+    '((t (:inherit helm-ff-executable)))
+    "TODO")
+
+  (defface helm-ff-executable-file-extension
+    '((t (:inherit helm-ff-file-extension)))
+    "TODO")
+
   (defn helm-project-find-files ()
     "Customize `helm-find-files' for `projectile'"
     (interactive)
@@ -50,16 +62,19 @@
               (lambda ()
                 (when-let ((proj-root (projectile-project-root)))
                   (->> (projectile-project-files proj-root)
-                       (--map (let ((it (propertize (concat proj-root it)
-                                                    'face 'helm-ff-file
-                                                    'proj-path proj-root)))
-                                (when (string-match "\\(.\\)?\\.\\([_0-9A-Za-z]+\\)$" it)
-                                  (let ((beg (match-beginning 2))
-                                        (end (match-end 2)))
-                                    (when (string-equal (match-string 1 it) "/")
-                                      (setq beg (1- beg)))
-                                    (add-face-text-property
-                                     beg end 'helm-ff-file-extension nil it)))
+                       (--map (let* ((faces (cond
+                                             ((file-executable-p (concat proj-root it))
+                                              '(helm-ff-executable-dir helm-ff-executable helm-ff-executable-file-extension))
+                                             (t
+                                              '(helm-ff-file-dir       helm-ff-file       helm-ff-file-extension))))
+                                     (dir-name  (-some-> it (file-name-directory) (propertize 'face (car  faces))))
+                                     (file-name (-some-> it (file-name-base)      (propertize 'face (cadr faces))))
+                                     (ext-name  (-some-> it (file-name-extension) (->> (concat ".")) (propertize 'face (caddr faces))))
+                                     (it (propertize (concat proj-root
+                                                             dir-name
+                                                             file-name
+                                                             ext-name)
+                                                     'proj-path proj-root)))
                                 it)))))
               :real-to-display
               (lambda (c)
