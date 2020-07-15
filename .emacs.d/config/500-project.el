@@ -199,11 +199,13 @@
     "Kill all project buffers without exception"
     (interactive)
     (let ((proj-root (projectile-ensure-project (or proj-root (projectile-project-root)))))
-      (->> (buffer-list)
-           (--filter (with-current-buffer it
-                       (-when-let (cur-proj-root (projectile-project-root))
-                         (string-equal proj-root cur-proj-root))))
-           (-map #'kill-buffer))))
+      (--each
+        (--filter (with-current-buffer it
+                    (-when-let (cur-proj-root (projectile-project-root))
+                      (string-equal proj-root cur-proj-root)))
+                  (buffer-list))
+        (let ((kill-buffer-query-functions nil))
+          (kill-buffer it)))))
 
   (setq projectile-completion-system 'helm
         projectile-enable-cachig t
