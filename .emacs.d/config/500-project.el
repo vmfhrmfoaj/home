@@ -61,21 +61,21 @@
               :candidates
               (lambda ()
                 (when-let ((proj-root (projectile-project-root)))
-                  (->> (projectile-project-files proj-root)
-                       (--map (let* ((faces (cond
-                                             ((file-executable-p (concat proj-root it))
-                                              '(helm-ff-executable-dir helm-ff-executable helm-ff-executable-file-extension))
-                                             (t
-                                              '(helm-ff-file-dir       helm-ff-file       helm-ff-file-extension))))
-                                     (dir-name  (-some-> it (file-name-directory) (propertize 'face (car  faces))))
-                                     (file-name (-some-> it (file-name-base)      (propertize 'face (cadr faces))))
-                                     (ext-name  (-some-> it (file-name-extension) (->> (concat ".")) (propertize 'face (caddr faces))))
-                                     (it (propertize (concat proj-root
-                                                             dir-name
-                                                             file-name
-                                                             ext-name)
-                                                     'proj-path proj-root)))
-                                it)))))
+                  (-some->> (projectile-project-files proj-root)
+                    (--map (let* ((faces (cond
+                                          ((file-executable-p (concat proj-root it))
+                                           '(helm-ff-executable-dir helm-ff-executable helm-ff-executable-file-extension))
+                                          (t
+                                           '(helm-ff-file-dir       helm-ff-file       helm-ff-file-extension))))
+                                  (dir-name  (-some-> it (file-name-directory) (propertize 'face (car  faces))))
+                                  (file-name (-some-> it (file-name-base)      (propertize 'face (cadr faces))))
+                                  (ext-name  (-some-> it (file-name-extension) (->> (concat ".")) (propertize 'face (caddr faces))))
+                                  (it (propertize (concat proj-root
+                                                          dir-name
+                                                          file-name
+                                                          ext-name)
+                                                  'proj-path proj-root)))
+                             it)))))
               :real-to-display
               (lambda (c)
                 (-when-let (len (-some->> c (get-text-property 0 'proj-path) (length)))
@@ -86,8 +86,8 @@
                 (if-let ((proj-root (get-text-property 0 'root-path c)))
                     (concat proj-root "/" c)
                   c))
-              :action (lambda (path)
-                        (find-file path)))))
+
+              :action #'find-file)))
     (helm :sources 'helm-source-project-find-files
           :buffer "*helm project files*"))
 
