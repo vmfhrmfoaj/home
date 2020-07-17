@@ -209,7 +209,8 @@
 
   (setq projectile-completion-system 'helm
         projectile-enable-cachig t
-        projectile-project-name-function #'projectile-custom-project-name)
+        projectile-project-name-function #'projectile-custom-project-name
+        projectile-switch-project-action #'helm-project-find-files)
 
   (add-hook 'find-file-hook
             (lambda ()
