@@ -204,7 +204,8 @@
                     (-when-let (cur-proj-root (projectile-project-root))
                       (string-equal proj-root cur-proj-root)))
                   (buffer-list))
-        (let ((kill-buffer-query-functions nil))
+        (let ((kill-buffer-query-functions nil)
+              (lsp-restart 'ignore))
           (kill-buffer it)))))
 
   (setq projectile-completion-system 'helm
