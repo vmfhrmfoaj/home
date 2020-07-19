@@ -198,14 +198,13 @@
   (defun projectile-custom-kill-buffers (&optional proj-root)
     "Kill all project buffers without exception"
     (interactive)
-    (let ((proj-root (projectile-ensure-project (or proj-root (projectile-project-root)))))
+    (-when-let (proj-root (projectile-ensure-project (or proj-root (projectile-project-root))))
       (--each
-        (--filter (with-current-buffer it
-                    (-when-let (cur-proj-root (projectile-project-root))
-                      (string-equal proj-root cur-proj-root)))
-                  (buffer-list))
-        (let ((kill-buffer-query-functions nil)
-              (lsp-restart 'ignore))
+          (--filter (with-current-buffer it
+                      (-when-let (cur-proj-root (projectile-project-root))
+                        (string-equal proj-root cur-proj-root)))
+                    (buffer-list))
+        (let ((confirm-kill-processes nil))
           (kill-buffer it)))))
 
   (setq projectile-completion-system 'helm

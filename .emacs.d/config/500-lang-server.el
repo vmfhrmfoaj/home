@@ -348,6 +348,7 @@
         lsp-enable-links nil
         lsp-enable-symbol-highlighting nil
         lsp-file-watch-threshold nil
+        lsp-restart 'ignore
         lsp-rust-server 'rust-analyzer
         lsp-signature-function #'eldoc-message)
 
