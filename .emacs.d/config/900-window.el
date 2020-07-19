@@ -1,5 +1,6 @@
 (when window-system
   (let* ((min-w (* 140 (frame-char-width)))
+         (ratio 0.225)
          (workarea (-some->> main-monitor (assoc 'workarea) (-drop 1)))
          (main-monitor-x (nth 0 workarea))
          (main-monitor-y (nth 1 workarea))
@@ -11,7 +12,7 @@
          (h main-monitor-h))
     (if (<= main-monitor-w min-w)
         (set-frame-parameter nil 'fullscreen 'maximized)
-      (setq x (+ main-monitor-x (floor (* main-monitor-w 0.225)))
+      (setq x (+ main-monitor-x (floor (* main-monitor-w ratio)))
             w (- main-monitor-w x))
       (when (< w min-w)
         (setq w min-w
