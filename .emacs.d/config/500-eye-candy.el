@@ -130,7 +130,7 @@
       (let ((focus-update-idle-time nil))
         (focus-move-focus))
       (setq focus-face-remap-cookie
-            (face-remap-add-relative 'hl-line 'bold))))
+            (face-remap-add-relative 'hl-line-evil-insert 'bold))))
 
   (defn focus--disable ()
     "TODO"

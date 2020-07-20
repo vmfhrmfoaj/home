@@ -29,11 +29,12 @@
    '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))))
 
 (use-package display-line-numbers
-  :defer t
   :config
   (custom-set-faces
-   `(line-number ((t :inherit (shadow default) :background "#fdfdfd")))
-   `(line-number-current-line ((t :inherit line-number :weight bold :foreground "gray45")))))
+   '(line-number ((t :inherit (default) :background "gray99" :foreground "gray80")))
+   `(line-number-current-line ((t :inherit (hl-line line-number)
+                                  :background "#f1f8fd"
+                                  :foreground ,(color-from 'line-number :foreground -5))))))
 
 (use-package evil-goggles
   :defer t
@@ -94,15 +95,21 @@
    '(helm-match ((t :inherit lazy-highlight :foreground unspecified)))
    '(helm-match-item ((t :inherit lazy-highlight)))
    '(helm-match-selection ((t :inherit isearch :weight bold)))
+   '(helm-moccur-buffer ((t :inherit shadow)))
    '(helm-selection ((t :inherit hl-line :weight bold)))
    '(helm-selection-line ((t :inherit helm-selection :weight bold)))
-   '(helm-other-buffer ((t :background "grey98")))))
+   `(helm-other-buffer ((t :background "gray98" :foreground ,(color-from 'default :foreground 5))))))
 
 (use-package hl-line
   :defer t
+  :init
+  (defface hl-line-evil-insert
+    '((t (:weight unspecified)))
+    "TODO")
+
   :config
   (custom-set-faces
-   '(hl-line ((t :background "#eef7fd")))))
+   '(hl-line ((t :inherit hl-line-evil-insert :background "#eef7fd")))))
 
 (use-package hl-todo
   :defer t
