@@ -272,6 +272,12 @@ _setup_for_ssh() {
         if [ -z "${GTK_BACKEND}" ]; then
             export GDK_BACKEND=x11
         fi
+        if [ -z "${XDG_CURRENT_DESKTOP}" ]; then
+            # NOTE
+            #  `gnome-control-center` will throw an error.
+            #  see, https://bugzilla.redhat.com/show_bug.cgi?id=1645855
+            export XDG_CURRENT_DESKTOP=gnome
+        fi
     fi
 }
 
