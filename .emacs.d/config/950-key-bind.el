@@ -333,11 +333,14 @@
     (kbd "<tab>") #'indent-for-tab-command
     (kbd "C-d") (lambda () (interactive) (up-list nil t))
     (kbd "C-u") (lambda () (interactive) (backward-up-list nil t))
-    (kbd "C-h c") #'describe-char)
+    (kbd "C-h c") #'describe-char
+    (kbd "C-s") #'save-buffer
+    (kbd "C-s-SPC") #'mark-sexp)
   (evil-define-key 'insert 'global
     (kbd "C-h") #'backward-delete-char
     (kbd "C-a") #'beginning-of-line-text
     (kbd "C-e") #'end-of-line
+    (kbd "C-s") #'save-buffer
     (kbd "C-v") #'yank)
   (evil-define-key 'visual 'global
     (kbd "<tab>") #'indent-region
