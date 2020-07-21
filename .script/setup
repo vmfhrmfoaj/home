@@ -279,7 +279,7 @@ _setup_for_ssh() {
             # NOTE
             #  `gnome-control-center` will throw an error.
             #  see, https://bugzilla.redhat.com/show_bug.cgi?id=1645855
-            export XDG_CURRENT_DESKTOP=gnome
+            export XDG_CURRENT_DESKTOP=GNOME
         fi
     fi
 }
