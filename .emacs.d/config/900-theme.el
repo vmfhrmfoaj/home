@@ -6,6 +6,10 @@
    '(bold ((t :weight bold)))
    '(italic ((t :slant italic)))
    '(cursor ((t :background "sky blue")))
+   '(line-number ((t :inherit (default) :background "gray99" :foreground "gray80")))
+   `(line-number-current-line ((t :inherit (hl-line line-number)
+                                  :background "#f1f8fd"
+                                  :foreground ,(color-from 'line-number :foreground -5))))
    '(fixed-pitch ((t :family "Dejavu Sans Mono")))
    '(link ((t :underline t)))
    '(shadow ((t :inherit default :foreground "gray55")))
@@ -27,14 +31,6 @@
    '(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
    '(clojure-side-effect-face ((t :inherit (bold italic font-lock-warning-face))))
    '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))))
-
-(use-package display-line-numbers
-  :config
-  (custom-set-faces
-   '(line-number ((t :inherit (default) :background "gray99" :foreground "gray80")))
-   `(line-number-current-line ((t :inherit (hl-line line-number)
-                                  :background "#f1f8fd"
-                                  :foreground ,(color-from 'line-number :foreground -5))))))
 
 (use-package evil-goggles
   :defer t
