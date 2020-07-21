@@ -222,7 +222,10 @@ EOF
             cp "${HOME}/.shim/cargo" "${HOME}/.shim/rustup"
         fi
     fi
-    [ -r "${HOME}/.cargo/env" ] && source "${HOME}/.cargo/env"
+    if [ -r "${HOME}/.cargo/env" ]; then
+        source "${HOME}/.cargo/env"
+        export CARGO_TARGET_DIR=/tmp/cargo
+    fi
     which rustup > /dev/null 2>&1
     if [ $? -eq 0 ] && [ ! -r  "${HOME}/.oh-my-zsh/custom/plugins/rustup/_rustup" ]; then
         mkdir -p "${HOME}/.oh-my-zsh/custom/plugins/rustup"
