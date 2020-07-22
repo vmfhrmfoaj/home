@@ -1,5 +1,5 @@
 (defvar default-font
-  (font-spec :family "Cascadia Code" :size 16)
+  (font-spec :family "Cascadia Code" :size 15)
   "TODO")
 
 (when window-system
