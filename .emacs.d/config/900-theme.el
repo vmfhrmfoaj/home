@@ -128,11 +128,7 @@
   :config
   (custom-set-faces
    '(php-passive-assign-variable-face ((t :inherit font-lock-variable-name-face)))
-   `(php-variable-name ((((class color) (background light))
-                         :foreground ,(-> 'font-lock-variable-name-face
-                                          (color-from :foreground 30)
-                                          (saturate-color 10)
-                                          (mix-color (color-from 'font-lock-string-face :foreground -30))))))))
+   `(php-variable-name ((t :inherit font-lock-variable-name-face)))))
 
 (use-package lsp-mode
   :defer t

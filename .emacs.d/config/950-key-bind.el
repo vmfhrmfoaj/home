@@ -430,7 +430,11 @@
       (kbd "<tab>") #'helm-next-line)
     (evil-define-key 'insert helm-map
       (kbd "<backtab>") #'helm-previous-line
-      (kbd "<tab>") #'helm-next-line)
+      (kbd "<tab>") #'helm-next-line
+      (kbd "RET") #'helm-maybe-exit-minibuffer
+      (kbd "M-a") #'helm-toggle-all-marks
+      (kbd "M-M") #'helm-toggle-visible-mark-backward
+      (kbd "M-m") #'helm-toggle-visible-mark-forward)
     (evil-define-key 'normal helm-map
       "k" #'helm-previous-line
       "j" #'helm-next-line
@@ -441,7 +445,10 @@
       (kbd "<escape>") #'helm-keyboard-quit
       (kbd "<backtab>") #'helm-previous-line
       (kbd "<tab>") #'helm-next-line
-      (kbd "C-c <tab>") #'helm-select-action)
+      (kbd "C-c <tab>") #'helm-select-action
+      (kbd "M-a") #'helm-toggle-all-marks
+      (kbd "M-M") #'helm-toggle-visible-mark-backward
+      (kbd "M-m") #'helm-toggle-visible-mark-forward)
     (define-key helm-map (kbd "C-i") nil)
     (define-key helm-map (kbd "C-c <tab>") #'helm-select-action))
   (define-key helm-map (kbd "<escape>") #'helm-keyboard-quit))

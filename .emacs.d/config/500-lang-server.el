@@ -106,9 +106,8 @@
 
   (defun lsp-custom-mode-line ()
     "Construct the mode line text."
-    (if-let (workspaces (lsp-workspaces))
-        (propertize "LSP" 'face '(:inherit success :weight normal))
-      (propertize "LSP" 'face '(:inherit warning :weight normal))))
+    (unless (workspaces (lsp-workspaces))
+      (propertize "LSP:disconnected" 'face 'warning)))
 
   (defn lsp--adapter-render-on-hover-content (args)
     "TODO"
@@ -473,7 +472,7 @@
                      ;;  I use 'Source Code Pro' font for `lsp-ui-sideline`.
                      ;;  This font is not the default font, also its size is also different from the default font size.
                      ;;  You should adjust the magic value for you.
-                     (magic 0.78)
+                     (magic 0.781)
                      (string (concat (propertize " " 'display `(space :align-to (- right-fringe ,(* len magic))))
                                      (progn
                                        (add-face-text-property 0 len 'lsp-ui-sideline-global nil message)

@@ -13,15 +13,6 @@
               (when (bound-and-true-p lsp-mode)
                 (setq-local evil-lookup-func #'lsp-describe-thing-at-point)))))
 
-(use-package mmm-mode
-  :defer t
-  ;; NOTE:
-  ;;  This package not included in the `MELPA'.
-  ;;:ensure t
-  :init
-  (unless (package-installed-p 'mmm-mode)
-    (quelpa '(mmm-mode :fetcher github :repo "purcell/mmm-mode"))))
-
 (use-package typescript-mode
   :ensure t
   :defer t
