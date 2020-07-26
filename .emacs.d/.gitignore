@@ -1,5 +1,6 @@
 /.cache
 /.custom.el
+/.dap-breakpoints
 /.lsp-*
 /.trello
 /bookmarks
