@@ -296,11 +296,14 @@
   (defn lsp--clear-flymake-diags ()
      "Remove duplicated items in `diags' of `flymake--backend-state'."
      (-when-let (state (gethash 'lsp--flymake-backend flymake--backend-state))
-       ;; NOTE
-       ;;  `setf' is macro. I think the problem  too early expand the macro.
-       ;; (eval '(setf (flymake--backend-state-diags state) nil))
-       (aset state 4 nil)
-       (mapc #'delete-overlay (flymake--overlays))))
+       (-when-let (diags (flymake--backend-state-diags state))
+         ;; NOTE
+         ;;  `setf' is macro. I think the problem  too early expand the macro.
+         (eval '(setf (flymake--backend-state-diags state) (-distinct diags))))
+       ;; TODO
+       ;;  This may be need.
+       ;; (mapc #'delete-overlay (flymake--overlays))
+       ))
 
   (defn lsp--custom-signature->message (signature-help)
     "Customize to remove the document in the signature"
@@ -471,7 +474,7 @@
                      ;;  I use 'Source Code Pro' font for `lsp-ui-sideline`.
                      ;;  This font is not the default font, also its size is also different from the default font size.
                      ;;  You should adjust the magic value for you.
-                     (magic 0.781)
+                     (magic 0.79)
                      (string (concat (propertize " " 'display `(space :align-to (- right-fringe ,(* len magic))))
                                      (progn
                                        (add-face-text-property 0 len 'lsp-ui-sideline-global nil message)
