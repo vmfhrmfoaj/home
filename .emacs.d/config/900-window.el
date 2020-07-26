@@ -33,6 +33,7 @@
   (winum-mode))
 
 (use-package zoom
+  :disabled t
   :ensure t
   :defer t
   :init
