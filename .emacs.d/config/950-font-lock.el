@@ -998,7 +998,6 @@
      :append)))
 
 (use-package go-mode
-  :disabled t
   :defer t
   :config
   (defface go-argument-name-face

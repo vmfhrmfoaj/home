@@ -69,6 +69,7 @@
   :hook ((c-mode          . lsp)
          (c++-mode        . lsp)
          (cperl-mode      . lsp)
+         (go-mode         . lsp)
          (js-mode         . lsp)
          (latex-mode      . lsp)
          (php-mode        . lsp)
@@ -352,15 +353,10 @@
         lsp-signature-function #'eldoc-message)
 
   (setq-default lsp-eldoc-enable-hover t
-                lsp-enable-on-type-formatting t)
+                lsp-enable-on-type-formatting nil)
 
   (add-to-list 'lsp-language-id-configuration '(cperl-mode . "perl"))
   (add-to-list 'lsp-language-id-configuration '(".*\\.pl$" . "perl"))
-  (let ((hooks '(c-mode-hook c++-mode-hook objc-mode-hook))
-        (hook-fn (lambda ()
-                   (setq-local lsp-enable-on-type-formatting nil))))
-    (dolist (hook hooks)
-      (add-to-list hook hook-fn)))
 
   (add-hook 'helm-company-after-completion-hooks
             (lambda ()
@@ -370,6 +366,9 @@
                          (null lsp-signature-mode))
                 (lsp-signature-activate))))
   (add-hook 'lsp-mode-hook
+            (cond
+             ((eq major-mode 'go-mode)
+              (setq-local lsp-eldoc-render-all t)))
             (lambda ()
               (add-hook 'evil-insert-state-entry-hook
                         (lambda ()
