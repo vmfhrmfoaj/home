@@ -22,10 +22,16 @@
 (put 'narrow-to-region 'disabled nil)
 
 (blink-cursor-mode 1)
-(global-subword-mode 1)
 (global-auto-revert-mode 1)
 (prefer-coding-system 'utf-8)
 (recentf-mode 1)
+
+(define-category ?U "Uppercase")
+(define-category ?u "Lowercase")
+(modify-category-entry (cons ?A ?Z) ?U)
+(modify-category-entry (cons ?a ?z) ?u)
+(push '(?u . ?U) evil-cjk-word-separating-categories)
+(global-subword-mode 1)
 
 (when (eq system-type 'darwin)
   (setq mac-command-modifier 'meta
