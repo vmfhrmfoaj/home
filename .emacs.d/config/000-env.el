@@ -5,8 +5,16 @@
 (add-hook 'emacs-startup-hook
           (lambda ()
             (let* ((setup-file (concat home-dir "/.script/setup"))
-                   (cmd (concat "bash -c 'source " setup-file "; printenv PATH'")))
-              (when-let ((path (and (file-exists-p setup-file)
-                                    (string-trim (shell-command-to-string cmd)))))
-                (setenv "PATH" path)
-                (setq-default exec-path (split-string path ":"))))))
+                   (env-vars '("PATH" "GOPATH" "GO111MODULE" "CARGO_ROOT_TARGET_DIR"))
+                   (cmd (concat (apply #'concat "bash -c 'source " setup-file "; printenv " (-interpose " " env-vars)) "'")))
+              (--each
+                  (->> cmd
+                       (shell-command-to-string)
+                       (string-trim )
+                       (s-split "\n")
+                       (-interleave env-vars)
+                       (-partition 2))
+                (let ((k (car  it))
+                      (v (cadr it)))
+                  (setenv k v)))
+              (setq-default exec-path (split-string (getenv "PATH") ":")))))
