@@ -98,6 +98,18 @@
       (projectile-switch-to-previous-buffer)
       (kill-buffer buf)))
 
+  (defn projectile-switch-latest-open-project ()
+    "TODO"
+    (interactive)
+    (let ((cur-proj-root (or (projectile-project-root)
+                             (concat (s-chop-suffix "/" home-dir) "/"))))
+      (-some->> (buffer-list)
+        (--remove (with-current-buffer it
+                    (let ((proj-root (or (projectile-project-root)
+                                         (concat (s-chop-suffix "/" home-dir) "/"))))
+                      (string= cur-proj-root proj-root))))
+        (switch-to-previous-buffer-in))))
+
   :config
   (defn projectile-project-files-custom-filter (files)
     "TODO"
@@ -110,18 +122,6 @@
                               (apply #'concat)))
         (-remove (-partial #'string-match-p regex) files)
       files))
-
-  (defn projectile-switch-latest-open-project ()
-    "TODO"
-    (interactive)
-    (let ((cur-proj-root (or (projectile-project-root)
-                             (concat (s-chop-suffix "/" home-dir) "/"))))
-      (-some->> (buffer-list)
-        (--remove (with-current-buffer it
-                    (let ((proj-root (or (projectile-project-root)
-                                         (concat (s-chop-suffix "/" home-dir) "/"))))
-                      (string= cur-proj-root proj-root))))
-        (switch-to-previous-buffer-in))))
 
   (defn projectile-action-for-custom-switch-open-project ()
     "A `projectile' action for `projectile-custom-switch-open-project'."
