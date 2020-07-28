@@ -6,11 +6,11 @@
           (lambda ()
             (let* ((setup-file (concat home-dir "/.script/setup"))
                    (env-vars '("PATH" "GOPATH" "GO111MODULE" "CARGO_ROOT_TARGET_DIR"))
-                   (cmd (concat (apply #'concat "bash -c 'source " setup-file "; printenv " (-interpose " " env-vars)) "'")))
+                   (cmd (concat (apply #'concat "bash -c 'source " setup-file " >/dev/null 2>&1; printenv " (-interpose " " env-vars)) "'")))
               (--each
                   (->> cmd
                        (shell-command-to-string)
-                       (string-trim )
+                       (string-trim)
                        (s-split "\n")
                        (-interleave env-vars)
                        (-partition 2))
