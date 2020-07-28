@@ -363,10 +363,10 @@
                          (null lsp-signature-mode))
                 (lsp-signature-activate))))
   (add-hook 'lsp-mode-hook
-            (cond
-             ((eq major-mode 'go-mode)
-              (setq-local lsp-eldoc-render-all t)))
             (lambda ()
+              (cond
+               ((eq major-mode 'go-mode)
+                (setq-local lsp-eldoc-render-all t)))
               (add-hook 'evil-insert-state-entry-hook
                         (lambda ()
                           (when (and lsp-mode
