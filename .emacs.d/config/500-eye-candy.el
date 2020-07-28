@@ -364,6 +364,7 @@
          (with-current-buffer buf
            (setq mode-line-format fmt)))
        (spaceline-toggle-hud-off)
+       (spaceline-toggle-version-control-off)
        (force-mode-line-update t)
        (spaceline-helm-mode)))))
 

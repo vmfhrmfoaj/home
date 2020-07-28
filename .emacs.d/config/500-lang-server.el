@@ -105,11 +105,6 @@
     "^[^ :]+?:[ \t]+\\([^\r\n]+\\)"
     "TODO")
 
-  (defun lsp-custom-mode-line ()
-    "Construct the mode line text."
-    (unless (workspaces (lsp-workspaces))
-      (propertize "LSP:disconnected" 'face 'warning)))
-
   (defn lsp--adapter-render-on-hover-content (args)
     "TODO"
     (let ((contents (car args)))
@@ -302,8 +297,7 @@
          (eval '(setf (flymake--backend-state-diags state) (-distinct diags))))
        ;; TODO
        ;;  This may be need.
-       ;; (mapc #'delete-overlay (flymake--overlays))
-       ))
+       (mapc #'delete-overlay (flymake--overlays))))
 
   (defn lsp--custom-signature->message (signature-help)
     "Customize to remove the document in the signature"
@@ -390,7 +384,6 @@
                             (lsp-signature-stop)))
                         nil t)))
 
-  (advice-add #'lsp-mode-line :override #'lsp-custom-mode-line)
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
   (advice-add #'lsp--eldoc-message   :override #'lsp--custom-eldoc-message)
   (advice-add #'lsp--flymake-backend :override #'lsp--custom-flymake-backend)
