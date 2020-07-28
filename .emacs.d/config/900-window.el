@@ -1,6 +1,6 @@
 (when window-system
   (let* ((min-w (* 140 (frame-char-width)))
-         (ratio 0.24)
+         (ratio 0.23)
          (workarea (-some->> main-monitor (assoc 'workarea) (-drop 1)))
          (main-monitor-x (nth 0 workarea))
          (main-monitor-y (nth 1 workarea))

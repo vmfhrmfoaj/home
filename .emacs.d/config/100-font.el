@@ -1,5 +1,5 @@
 (defvar default-font
-  (font-spec :family "Cascadia Code" :size 15)
+  (font-spec :family "Fantasque Sans Mono" :size 17)
   "TODO")
 
 (when window-system
@@ -15,5 +15,5 @@
   (let ((font (font-spec :family "Noto Sans CJK SC" :size 15)))
     (set-fontset-font "fontset-default" 'bopomofo font)
     (set-fontset-font "fontset-default" 'han      font))
-  (add-to-list 'face-font-rescale-alist '("DejaVu Sans Mono" . 0.95))
-  (add-to-list 'face-font-rescale-alist '("Noto Sans Mono"   . 0.85)))
+  (add-to-list 'face-font-rescale-alist '("DejaVu Sans Mono" . 0.85))
+  (add-to-list 'face-font-rescale-alist '("Noto Sans Mono"   . 0.7)))
