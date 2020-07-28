@@ -224,7 +224,9 @@ EOF
             fi
         fi
     fi
-    if [ ! -x "${HOME}/.bin/cargo" ]; then
+    which rustc >/dev/null 2>&1
+    if [ $? -eq 0 ] && [ ! -x "${HOME}/.bin/cargo" ]; then
+        mkdir -p "${HOME}/.bin"
         cat > "${HOME}/.bin/cargo" <<\EOF
 #!/bin/bash
 
