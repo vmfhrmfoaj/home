@@ -344,9 +344,9 @@ _setup_for_xorg() {
 # add dirs to PATH
 _add_to_path '/sbin'
 _add_to_path '/usr/sbin'
+
+# add shim dir to PATH
 _add_to_path "${HOME}/.shim"
-_add_to_path "${HOME}/.bin"
-_add_to_path "${HOME}/.local/bin"
 
 # basic setup
 _setup_for_android
@@ -364,6 +364,10 @@ _setup_for_java
 _setup_for_kotlin
 _setup_for_lua
 _setup_for_nodejs
+
+# add user binary dirs to PATH
+_add_to_path "${HOME}/.local/bin"
+_add_to_path "${HOME}/.bin"
 
 # for only terminal environment
 if [ -t 1 ] && [ -n "${SHELL}" ]; then
