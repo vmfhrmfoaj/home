@@ -345,6 +345,7 @@
         lsp-enable-links nil
         lsp-enable-symbol-highlighting nil
         lsp-file-watch-threshold nil
+        lsp-idle-delay 0.2
         lsp-restart 'ignore
         lsp-rust-server 'rust-analyzer
         lsp-signature-function #'eldoc-message)
