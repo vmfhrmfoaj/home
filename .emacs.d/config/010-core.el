@@ -23,8 +23,9 @@
                  (point))))
       (list beg end type :expanded t)))
 
-  (setq-default evil-want-minibuffer t)
-  (setq-default evil-symbol-word-search t)
+  (setq-default evil-echo-state nil
+                evil-symbol-word-search t
+                evil-want-minibuffer t)
 
   (evil-mode))
 
