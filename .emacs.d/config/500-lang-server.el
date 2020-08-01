@@ -384,6 +384,11 @@
                             (setq lsp-eldoc-enable-hover (default-value 'lsp-eldoc-enable-hover))
                             (lsp-signature-stop)))
                         nil t)))
+  (add-hook 'lsp-after-diagnostics-hook
+            (byte-compile
+             (lambda ()
+               (when (and lsp-ui-sideline-mode (not (buffer-modified-p)))
+                 (lsp-ui-sideline--diagnostics-changed)))))
 
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
   (advice-add #'lsp--eldoc-message   :override #'lsp--custom-eldoc-message)
