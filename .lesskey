@@ -1,2 +1,2 @@
-U back-scroll
-D forw-scroll
+^k back-scroll
+^j forw-scroll

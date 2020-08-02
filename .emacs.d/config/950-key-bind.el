@@ -329,15 +329,15 @@
   (define-key evil-inner-text-objects-map "U" 'evil-inner-sexp)
   (evil-define-key 'normal 'global
     "%" #'sp--simulate-evil-jump-item
-    "D" #'evil-scroll-page-down
-    "U" #'evil-scroll-page-up
     "gr" #'eldoc-refresh
     (kbd "<tab>") #'indent-for-tab-command
     (kbd "C-d") (lambda () (interactive) (up-list nil t))
     (kbd "C-u") (lambda () (interactive) (backward-up-list nil t))
     (kbd "C-h c") #'describe-char
     (kbd "C-s") #'save-buffer
-    (kbd "C-s-SPC") #'mark-sexp)
+    (kbd "C-s-SPC") #'mark-sexp
+    (kbd "C-k") #'evil-scroll-page-up
+    (kbd "C-j") #'evil-scroll-page-down)
   (evil-define-key 'insert 'global
     (kbd "C-h") #'backward-delete-char
     (kbd "C-a") #'beginning-of-line-text
