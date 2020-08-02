@@ -127,13 +127,36 @@
           (unless (s-blank? msg)
             (eldoc-message msg))))))
 
+  (defn eldoc-custom-schedule-timer ()
+    "Ensure `eldoc-timer' is running.
+
+If the user has changed `eldoc-idle-delay', update the timer to
+reflect the change."
+    (when (timerp eldoc-timer)
+      (cancel-timer eldoc-timer))
+    (setq eldoc-timer
+          (run-with-idle-timer
+	       eldoc-idle-delay nil
+	       (lambda (buf)
+             (when (eq (current-buffer) buf)
+               (setq eldoc-timer nil)
+               (eldoc-refresh)))
+           (current-buffer)))
+
+    ;; If user has changed the idle delay, update the timer.
+    (cond ((not (= eldoc-idle-delay eldoc-current-idle-delay))
+           (setq eldoc-current-idle-delay eldoc-idle-delay)
+           (timer-set-idle-time eldoc-timer eldoc-idle-delay t))))
+
   (setq eldoc-idle-delay 0.2)
 
   (add-hook 'eldoc-mode-hook
             (lambda ()
               (eldoc-add-command 'eldoc-refresh)
               (eldoc-refresh))
-            :append))
+            :append)
+
+  (advice-add #'eldoc-schedule-timer :override #'eldoc-custom-schedule-timer))
 
 (use-package expand-region
   :ensure t
