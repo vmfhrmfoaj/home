@@ -4,7 +4,7 @@
   :init
   (defvar composition-ligature-table (make-char-table nil))
 
-  (defvar fantasque-sans-mono-ligature-regex
+  (defvar ligature-regex
     ;; 1. https://github.com/tonsky/FiraCode/wiki/Emacs-instructions#using-composition-char-table
     ;; 2. https://github.com/belluzj/fantasque-sans/issues/64
     ;; 3. https://github.com/belluzj/fantasque-sans/pull/114
@@ -19,48 +19,12 @@
       (126 . ".\\(?:\\(?:~>\\)\\|[>~]\\)")               ; ~>, ~~>
       ) "TODO")
 
-  (defvar cascadia-code-ligature-regex
-   '(( 33 . ".\\(?:\\(==\\|[!=]\\)[!=]?\\)")
-     ( 35 . ".\\(?:\\(###?\\|_(\\|[(:=?[_{]\\)[#(:=?[_{]?\\)")
-     ( 36 . ".\\(?:\\(>\\)>?\\)")
-     ( 37 . ".\\(?:\\(%\\)%?\\)")
-     ( 38 . ".\\(?:\\(&\\)&?\\)")
-     ( 42 . ".\\(?:\\(\\*\\*\\|[*>]\\)[*>]?\\)")
-     ( 42 . ".\\(?:\\(\\*\\*\\|[*/>]\\).?\\)")
-     ( 43 . ".\\(?:\\([>]\\)>?\\)")
-     ( 43 . ".\\(?:\\(\\+\\+\\|[+>]\\).?\\)")
-     ( 45 . ".\\(?:\\(-[->]\\|<<\\|>>\\|[-<>|~]\\)[-<>|~]?\\)")
-     ( 46 . ".\\(?:\\(\\.[.<]\\|[-.=]\\)[-.<=]?\\)")
-     ( 46 . ".\\(?:\\(\\.<\\|[-=]\\)[-<=]?\\)")
-     ( 47 . ".\\(?:\\(//\\|==\\|[=>]\\)[/=>]?\\)")
-     ( 47 . ".\\(?:\\(//\\|==\\|[*/=>]\\).?\\)")
-     ( 48 . ".\\(?:\\(x[a-fA-F0-9]\\).?\\)")
-     ( 58 . ".\\(?:\\(::\\|[:<=>]\\)[:<=>]?\\)")
-     ( 59 . ".\\(?:\\(;\\);?\\)")
-     ( 60 . ".\\(?:\\(!--\\|\\$>\\|\\*>\\|\\+>\\|-[-<>|]\\|/>\\|<[-<=]\\|=[<>|]\\|==>?\\||>\\||||?\\|~[>~]\\|[$*+/:<=>|~-]\\)[$*+/:<=>|~-]?\\)")
-     ( 61 . ".\\(?:\\(!=\\|/=\\|:=\\|<<\\|=[=>]\\|>>\\|[=>]\\)[=<>]?\\)")
-     ( 62 . ".\\(?:\\(->\\|=>\\|>[-=>]\\|[-:=>]\\)[-:=>]?\\)")
-     ( 63 . ".\\(?:\\([.:=?]\\)[.:=?]?\\)")
-     ( 91 . ".\\(?:\\(|\\)[]|]?\\)")
-     ( 92 . ".\\(?:\\([\\n]\\)[\\]?\\)")
-     ( 94 . ".\\(?:\\(=\\)=?\\)")
-     ( 95 . ".\\(?:\\(|_\\|[_]\\)_?\\)")
-     (119 . ".\\(?:\\(ww\\)w?\\)")
-     (123 . ".\\(?:\\(|\\)[|}]?\\)")
-     (124 . ".\\(?:\\(->\\|=>\\||[-=>]\\||||*>\\|[]=>|}-]\\).?\\)")
-     (126 . ".\\(?:\\(~>\\|[-=>@~]\\)[-=>@~]?\\)"))
-   "TODO")
-
   :hook
   (((prog-mode conf-mode nxml-mode markdown-mode help-mode)
     . (lambda () (setq-local composition-function-table composition-ligature-table))))
 
   :config
-  (-when-let (alist (cond
-                     ((eq (intern "Cascadia Code")       (font-get default-font :family))
-                      cascadia-code-ligature-regex)
-                     ((eq (intern "Fantasque Sans Mono") (font-get default-font :family))
-                      fantasque-sans-mono-ligature-regex)))
+  (-when-let (alist ligature-regex)
     (dolist (char-regexp alist)
       (set-char-table-range composition-ligature-table (car char-regexp)
                             `([,(cdr char-regexp) 0 font-shape-gstring]))))
