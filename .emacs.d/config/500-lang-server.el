@@ -93,7 +93,7 @@
     "TODO")
 
   (defvar lsp--custom-render--regex-for-rust
-    (concat "```rust[ \t\r\n]*"      ; ```rust
+    (concat "```rust[ \t\r\n]+"      ; ```rust
             "\\(\\(?:\n\\|.\\)+?\\)" ; <CONTENTS>
             "[ \t\r\n]*?```")        ; ```
     "TODO")
@@ -113,11 +113,15 @@
              (hash-table-p contents))
         (puthash "language" "rust" contents)
         (when (string= "markdown" (or (gethash "kind" contents) ""))
-          (let ((md (gethash "value" contents)))
-            (when (string-match lsp--custom-render--regex-for-rust md)
-              (let ((val (match-string 1 md)))
+          (let ((md (gethash "value" contents))
+                (i 0)
+                (val nil))
+            (while (string-match lsp--custom-render--regex-for-rust md i)
+              (setq val (concat val (when val "\n") (match-string 1 md)))
+              (setq i (match-end 0)))
+            (when val
                 (remhash "kind" contents)
-                (puthash "value" val contents))))))
+                (puthash "value" val contents)))))
        ((and (derived-mode-p 'sh-mode)
              (hash-table-p contents))
         (puthash "language" "shellscript" contents)
