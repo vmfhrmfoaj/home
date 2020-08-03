@@ -82,10 +82,9 @@
   :config
   (custom-set-faces
    '(helm-ff-file-dir       ((t :inherit helm-ff-file :foreground "#dbbd32")))
-   '(helm-ff-file-extension ((t :inherit helm-ff-file)))
+   '(helm-ff-file-extension ((t :inherit font-lock-constant-face)))
    '(helm-ff-executable     ((t :inherit helm-ff-executable :foreground "#5f9411")))
    '(helm-ff-executable-dir ((t :inherit helm-ff-executable :foreground "#7ea940")))
-   '(helm-ff-executable-file-extension ((t :inherit helm-ff-executable)))
    '(helm-match ((t :inherit lazy-highlight :foreground unspecified)))
    '(helm-match-item ((t :inherit lazy-highlight)))
    '(helm-match-selection ((t :inherit isearch :weight bold)))

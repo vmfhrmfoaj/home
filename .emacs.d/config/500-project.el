@@ -48,10 +48,6 @@
     '((t (:inherit helm-ff-executable)))
     "TODO")
 
-  (defface helm-ff-executable-file-extension
-    '((t (:inherit helm-ff-file-extension)))
-    "TODO")
-
   (defn helm-project-find-files ()
     "Customize `helm-find-files' for `projectile'"
     (interactive)
@@ -64,7 +60,7 @@
                   (-some->> (projectile-project-files proj-root)
                     (--map (let* ((faces (cond
                                           ((file-executable-p (concat proj-root it))
-                                           '(helm-ff-executable-dir helm-ff-executable helm-ff-executable-file-extension))
+                                           '(helm-ff-executable-dir helm-ff-executable helm-ff-file-extension))
                                           (t
                                            '(helm-ff-file-dir       helm-ff-file       helm-ff-file-extension))))
                                   (dir-name  (-some-> it (file-name-directory) (propertize 'face (car  faces))))
