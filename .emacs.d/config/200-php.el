@@ -1,8 +1,12 @@
 (use-package php-mode
   :ensure t
   :defer t
-  :mode ("\\.php\\'" . php-mode)
+  :mode ("\\.php\\|ant\\'" . php-mode)
   :init
+  (with-eval-after-load "dumb-jump"
+    (add-to-list 'dumb-jump-language-file-exts
+                 '(:language "php" :ext "ant" :agtype "php" :rgtype "php")))
+
   (add-hook 'php-mode-hook
             (lambda ()
               (with-eval-after-load "lsp-mode"
