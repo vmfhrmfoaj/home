@@ -1,0 +1,2 @@
+;;; Generated package description from /home/vmfhrmfoaj/.emacs.d/elpa/spinner-20200319.2032/spinner.el  -*- no-byte-compile: t -*-
+(define-package "spinner" "20200319.2032" "Add spinners and progress-bars to the mode-line for ongoing operations" '((emacs "24.3")) :authors '(("Artur Malabarba" . "emacs@endlessparentheses.com")) :maintainer '("Artur Malabarba" . "emacs@endlessparentheses.com") :keywords '("processes" "mode-line") :url "https://github.com/Malabarba/spinner.el")

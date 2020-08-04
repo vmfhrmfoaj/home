@@ -1,0 +1,2 @@
+;;; Generated package description from /home/vmfhrmfoaj/.emacs.d/elpa/creole-mode-20130722.50/creole-mode.el  -*- no-byte-compile: t -*-
+(define-package "creole-mode" "20130722.50" "a markup mode for creole" 'nil :commit "b5e79b2ec5f19fb5aacf689b5febc3e0b61515c4" :keywords '("hypermedia" "wp") :authors '(("Nic Ferrier" . "nferrier@ferrier.me.uk")) :maintainer '("Nic Ferrier" . "nferrier@ferrier.me.uk") :url "https://github.com/nicferrier/creole-mode")
