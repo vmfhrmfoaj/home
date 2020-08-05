@@ -1,6 +1,6 @@
 (when window-system
   (prefer-coding-system 'utf-8)
-  (setq-default line-spacing 1)
+  (setq-default line-spacing 2)
   (let ((font (font-spec :family "Cascadia Code" :size 15)))
     (set-face-font 'default font)
     (set-fontset-font t '(#xE000 . #xF8FF) font)                  ; for ligature
