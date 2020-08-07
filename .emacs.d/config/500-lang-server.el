@@ -477,8 +477,8 @@
                      ;;  I use 'Source Code Pro' font for `lsp-ui-sideline`.
                      ;;  This font is not the default font, also its size is also different from the default font size.
                      ;;  You should adjust the magic value for you.
-                     (magic 0.915)
-                     (string (concat (propertize " " 'display `(space :align-to (- right-fringe ,(1+ (* len magic)))))
+                     (magic 0.88)
+                     (string (concat (propertize " " 'display `(space :align-to (- right-fringe ,(+ 1 (* len magic)))))
                                      (progn
                                        (add-face-text-property 0 len 'lsp-ui-sideline-global nil message)
                                        (add-face-text-property 0 len face t message)
