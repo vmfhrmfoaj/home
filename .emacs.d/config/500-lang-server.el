@@ -287,12 +287,12 @@
     "Disable `lsp-document-highlight'."
     (interactive))
 
-  (defn lsp--custom-flymake-backend (report-fn &rest _args)
+  (defn lsp-diagnostics--custom-flymake-backend (report-fn &rest _args)
     "Custom `flymake' backend for ."
-    (setq lsp--flymake-report-fn report-fn)
-    (lsp--flymake-update-diagnostics))
+    (setq lsp-diagnostics--flymake-report-fn report-fn)
+    (lsp-diagnostics--flymake-update-diagnostics))
 
-  (defn lsp--clear-flymake-diags ()
+  (defn lsp-diagnostics--clear-flymake-diags ()
      "Remove duplicated items in `diags' of `flymake--backend-state'."
      (-when-let (state (gethash 'lsp--flymake-backend flymake--backend-state))
        (-when-let (diags (flymake--backend-state-diags state))
@@ -396,8 +396,8 @@
 
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
   (advice-add #'lsp--eldoc-message   :override #'lsp--custom-eldoc-message)
-  (advice-add #'lsp--flymake-backend :override #'lsp--custom-flymake-backend)
-  (advice-add #'lsp--flymake-update-diagnostics :before #'lsp--clear-flymake-diags)
+  (advice-add #'lsp-diagnostics--flymake-backend :override #'lsp-diagnostics--custom-flymake-backend)
+  (advice-add #'lsp-diagnostics--flymake-update-diagnostics :before #'lsp-diagnostics--clear-flymake-diags)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
   (advice-add #'lsp--signature->message :override #'lsp--custom-signature->message)
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
