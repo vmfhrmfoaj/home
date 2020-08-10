@@ -5549,7 +5549,14 @@ textDocument/didOpen for the new file."
 PARAMS are the `workspace/configuration' request params"
   (->> items
        (-map (-lambda ((&ConfigurationItem :section?))
-               (gethash section? (lsp-configuration-section section?))))
+               (-let* ((path-parts (split-string section? "\\."))
+                       (path-without-last (s-join "." (-slice path-parts 0 -1)))
+                       (path-parts-len (length path-parts)))
+                 (cond
+                  ((<= path-parts-len 1)
+                   (apply 'ht-get* `(,(lsp-configuration-section section?) ,@path-parts)))
+                  ((> path-parts-len 1)
+                   (apply 'ht-get* `(,(lsp-configuration-section path-without-last) ,@path-parts)))))))
        (apply #'vector)))
 
 (defun lsp--send-request-response (workspace recv-time request response)
@@ -7361,7 +7368,7 @@ This avoids overloading the server with many files when starting Emacs."
 
 ;; lsp internal validation.
 
-(defmacro lsp--validate (&rest checks)
+(defmacro lsp--doctor (&rest checks)
   `(-let [buf (current-buffer)]
      (with-current-buffer (get-buffer-create "*lsp-performance*")
        (with-help-window (current-buffer)
@@ -7373,10 +7380,15 @@ This avoids overloading the server with many files when starting Emacs."
                                       (propertize "ERROR" 'face 'error)))))
                  (-partition 2 checks))))))
 
-(defun lsp-diagnose ()
+(defvar company-backends)
+
+(define-obsolete-function-alias 'lsp-diagnose
+  'lsp-doctor "lsp-mode 7.1")
+
+(defun lsp-doctor ()
   "Validate performance settings."
   (interactive)
-  (lsp--validate
+  (lsp--doctor
    "Checking for Native JSON support" (functionp 'json-serialize)
    "Checking emacs version has `read-process-output-max'" (boundp 'read-process-output-max)
    "Using company-capf" (-contains? company-backends 'company-capf)
