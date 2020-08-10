@@ -113,6 +113,13 @@ postexec() {
     title $TABNAME $TABNAME
 }
 
+# Workaround to fix an error of systemctl completion
+#  copied from https://github.com/ohmyzsh/ohmyzsh/issues/8751#issuecomment-616009741
+_systemctl_unit_state() {
+    typeset -gA _sys_unit_state
+    _sys_unit_state=( $(__systemctl list-unit-files "$PREFIX*" | awk '{print $1, $2}') )
+}
+
 _setup_for_zsh
 zle -N zle-keymap-select
 export DISABLE_AUTO_TITLE="true"
