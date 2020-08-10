@@ -219,23 +219,30 @@
         helm-truncate-lines t
         helm-window-prefer-horizontal-split 'decide)
 
-  (add-hook 'helm-before-initialize-hook
-            (byte-compile
-             (lambda ()
-               (setq gc-cons-threshold (* 4 gc-cons-threshold))
-               (dolist (win (window-list))
-                 (with-current-buffer (window-buffer win)
-                   (setq helm-face-remap-cookie (face-remap-add-relative 'default 'helm-other-buffer)))))))
+  (add-hook 'helm-before-initialize-hook (lambda () (setq gc-cons-threshold (* 4 gc-cons-threshold))))
+
+  (defvar helm-dim-buffers nil)
+
+  (add-hook 'minibuffer-setup-hook
+            (lambda ()
+              (when helm-alive-p
+                (let ((helm-window (helm-window)))
+                  (dolist (win (window-list))
+                    (when-let ((buf (and (not (eq win helm-window))
+                                         (window-buffer win))))
+                      (with-current-buffer buf
+                        (ignore-errors (setq helm-face-remap-cookie (face-remap-add-relative 'default 'helm-other-buffer))))
+                      (add-to-list 'helm-dim-buffers buf)))))))
   (add-hook 'helm-cleanup-hook
-            (byte-compile
-             (lambda ()
-               (dolist (win (window-list))
-                 (with-current-buffer (window-buffer win)
-                   (when helm-face-remap-cookie
-                     (face-remap-remove-relative helm-face-remap-cookie)
-                     (setq helm-face-remap-cookie nil))))
-               (setq gc-cons-threshold (get 'gc-cons-threshold 'default-value))
-               (garbage-collect))))
+            (lambda ()
+              (dolist (buf helm-dim-buffers)
+                (with-current-buffer buf
+                  (when helm-face-remap-cookie
+                    (ignore-errors (face-remap-remove-relative helm-face-remap-cookie))
+                    (setq helm-face-remap-cookie nil))))
+              (setq helm-dim-buffers nil)
+              (setq gc-cons-threshold (get 'gc-cons-threshold 'default-value))
+              (garbage-collect)))
 
   (advice-add #'helm-initialize-overlays :after #'helm-custom-initialize-overlays)
   (advice-add #'helm-mark-current-line   :after #'helm-custom-mark-current-line)

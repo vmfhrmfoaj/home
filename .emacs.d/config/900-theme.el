@@ -74,7 +74,6 @@
    `(flymake-error    ((t :underline (:style wave :color ,(color-from 'flymake-error    :underline)))))))
 
 (use-package helm
-  :defer t
   :config
   (custom-set-faces
    '(helm-match ((t :inherit lazy-highlight :foreground unspecified)))
