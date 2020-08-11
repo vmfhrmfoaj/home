@@ -1,6 +1,6 @@
 (defvar home-dir (getenv "HOME"))
 
-(setq HHKB? t)
+(setq HHKB? nil)
 
 (add-hook 'emacs-startup-hook
           (lambda ()
