@@ -4,8 +4,8 @@
 
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/projectile
-;; Package-Version: 20200802.1502
-;; Package-Commit: 7ed2ce31ef7db12f3c9bfede6bd0678cf18d261e
+;; Package-Version: 20200810.1245
+;; Package-Commit: 2eaf2c0e2d42457b55068d92659ef14195e12918
 ;; Keywords: project, convenience
 ;; Version: 2.3.0-snapshot
 ;; Package-Requires: ((emacs "25.1") (pkg-info "0.4"))
@@ -2702,6 +2702,12 @@ test/impl/other files as below:
                                   :project-file "Pipfile"
                                   :compile "pipenv run build"
                                   :test "pipenv run test"
+                                  :test-prefix "test_"
+                                  :test-suffix "_test")
+(projectile-register-project-type 'python-poetry '("poetry.lock")
+                                  :project-file "poetry.lock"
+                                  :compile "poetry build"
+                                  :test "poetry run python -m unittest discover"
                                   :test-prefix "test_"
                                   :test-suffix "_test")
 ;; Java & friends

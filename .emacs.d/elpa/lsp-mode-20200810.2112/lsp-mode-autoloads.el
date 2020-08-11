@@ -231,6 +231,13 @@ Click lsp lens using `avy' package." t nil)
 
 ;;;***
 
+;;;### (autoloads nil "lsp-lua" "lsp-lua.el" (0 0 0 0))
+;;; Generated autoloads from lsp-lua.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "lsp-lua" '("lsp-clients-")))
+
+;;;***
+
 ;;;### (autoloads nil "lsp-mode" "lsp-mode.el" (0 0 0 0))
 ;;; Generated autoloads from lsp-mode.el
 (put 'lsp-enable-file-watchers 'safe-local-variable #'booleanp)
@@ -385,7 +392,8 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 ;;;***
 
-;;;### (autoloads nil nil ("lsp-mode-pkg.el" "lsp.el") (0 0 0 0))
+;;;### (autoloads nil nil ("lsp-mode-pkg.el" "lsp-svelte.el" "lsp.el")
+;;;;;;  (0 0 0 0))
 
 ;;;***
 
