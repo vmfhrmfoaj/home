@@ -608,7 +608,9 @@
   :defer t
   :config
   (define-key cperl-mode-map (kbd "{") nil) ; disable `cperl-electric-lbrace'
-  (evil-define-key 'normal cperl-mode-map (kbd "M-,") #'pop-tag-mark))
+  (evil-define-key 'normal cperl-mode-map
+    (kbd "M-,") #'pop-tag-mark)
+  (lsp--custom-setup-key 'cperl-mode))
 
 (use-package dired
   :config
