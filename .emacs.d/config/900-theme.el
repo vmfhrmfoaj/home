@@ -103,6 +103,15 @@
   (custom-set-faces
    '(hl-line ((t :inherit hl-line-evil-insert)))))
 
+(use-package highlight-parentheses
+  :defer t
+  :config
+  (let ((base-color "#82aaff"))
+    (setq hl-paren-colors
+          (--iterate (saturate-color (dim-color it 10) -20)
+                     (apply 'color-rgb-to-hex-2-dig (color-name-to-rgb base-color))
+                     4))))
+
 (use-package iedit
   :defer t
   :config
