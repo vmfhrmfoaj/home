@@ -6,7 +6,8 @@
   (load-theme 'base16-material-palenight t)
 
   (custom-set-faces
-   '(fixed-pitch ((t :family "Dejavu Sans Mono")))))
+   '(fixed-pitch ((t :family "Dejavu Sans Mono")))
+   `(region ((t :background ,(color-from 'default :background -2))))))
 
 (use-package font-lock
   :config
