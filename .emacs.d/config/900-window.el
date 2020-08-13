@@ -1,3 +1,8 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (when window-system
   (let* ((min-w (* 140 (frame-char-width)))
          (ratio 0.23)
@@ -37,7 +42,7 @@
   :ensure t
   :defer t
   :init
-  (defn zoom-initial-setup ()
+  (defun zoom-initial-setup ()
     (remove-hook 'window-configuration-change-hook #'zoom-initial-setup)
     (require 'zoom))
 
@@ -46,11 +51,11 @@
              (add-hook 'window-configuration-change-hook #'zoom-initial-setup)))
 
   :config
-  (defn zoom--handler-wrapper-for-helm (f &optional ignored)
+  (defun zoom--handler-wrapper-for-helm (f &optional ignored)
     (unless (helm--alive-p)
       (funcall f ignored)))
 
-  (defn zoom--update-for-helm ()
+  (defun zoom--update-for-helm ()
     "Update the window layout in the current frame. (custom ver)"
     (let ((zoom-mode nil)
           (window-configuration-change-hook nil)

@@ -1,3 +1,8 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (use-package dumb-jump
   :ensure t
   :config
@@ -11,13 +16,13 @@
     '((t (:inherit highlight)))
     "TODO")
 
-  (defn helm-dumb-jump--after-get-results (info)
+  (defun helm-dumb-jump--after-get-results (info)
     "TODO"
     (setq helm-dumb-jump--proj (plist-get info :root)
           helm-dumb-jump--keyword (plist-get info :symbol))
     info)
 
-  (defn helm-dumb-jump--action (find-file-fn candidate)
+  (defun helm-dumb-jump--action (find-file-fn candidate)
     "TODO"
     (let* ((candidate (helm-grep-split-line candidate))
            (file (nth 0 candidate))
@@ -36,7 +41,7 @@
       (with-demoted-errors "Error running `dumb-jump-after-jump-hook': %S"
         (run-hooks 'dumb-jump-after-jump-hook))))
 
-  (defn helm-dumb-jump--insert-file (file)
+  (defun helm-dumb-jump--insert-file (file)
     "TODO"
     (let ((def-dir default-directory))
       (switch-to-buffer (get-buffer-create "*helm-dumb-jump: persistent*"))
@@ -47,11 +52,11 @@
       (set-auto-mode)
       (font-lock-fontify-buffer)))
 
-  (defn helm-dumb-jump--persistent-action (candidate)
+  (defun helm-dumb-jump--persistent-action (candidate)
     "TODO"
     (helm-dumb-jump--action #'helm-dumb-jump--insert-file candidate))
 
-  (defn helm-dumb-jump--result-follow (result &optional use-tooltip proj)
+  (defun helm-dumb-jump--result-follow (result &optional use-tooltip proj)
     "TODO"
     (let* ((path (plist-get result :path))
            (path (if (file-name-absolute-p path)
@@ -64,7 +69,7 @@
                      (length))))
       (dumb-jump-goto-file-line path line pos)))
 
-  (defn helm-dumb-jump--prompt-user-for-choice (proj results)
+  (defun helm-dumb-jump--prompt-user-for-choice (proj results)
     "TODO"
     (when (eq 'helm dumb-jump-selector)
       (let ((proj-regex (concat "^" (regexp-quote proj) "/*"))
@@ -105,7 +110,7 @@
               :buffer "*helm-dumb-jump*"))
       t))
 
-  (defn dumb-jump--custom-get-language (file)
+  (defun dumb-jump--custom-get-language (file)
     "Get language from FILE extension and then fallback to using 'major-mode' name."
     (let* ((languages (-distinct
                        (--map (plist-get it :language)
@@ -119,7 +124,7 @@
   (defvar dumb-jump-search-current-directory-first nil
     "TODO")
 
-  (defn dumb-jump--custom-fetch-file-results (&optional prompt)
+  (defun dumb-jump--custom-fetch-file-results (&optional prompt)
     "TODO"
     (let* ((cur-file (or (buffer-file-name) ""))
            (cur-dir (file-name-directory cur-file))
@@ -139,7 +144,7 @@
                             (plist-put config :exclude))))
         (dumb-jump-fetch-results cur-file proj-root lang config prompt))))
 
-  (defn dumb-jump--custom-fetch-results (cur-file proj-root lang config &optional prompt)
+  (defun dumb-jump--custom-fetch-results (cur-file proj-root lang config &optional prompt)
     "Fix for `config'."
     (let* ((cur-line (if prompt 0 (dumb-jump-get-point-line)))
            (look-for-start (when (not prompt)

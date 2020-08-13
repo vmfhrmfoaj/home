@@ -1,3 +1,8 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (use-package evil-magit
   :ensure t
   :after magit)
@@ -6,7 +11,7 @@
   :ensure t
   :defer t
   :config
-  (defn git-timemachine--custom-blame ()
+  (defun git-timemachine--custom-blame ()
     "Call ‘magit-blame’ on current revision."
     (interactive)
     (if (fboundp 'magit-blame-addition)
@@ -21,7 +26,7 @@
   :ensure t
   :defer t
   :init
-  (defn git-gutter-fringe+-setup ()
+  (defun git-gutter-fringe+-setup ()
     (remove-hook 'find-file-hook #'git-gutter-fringe+-setup)
     (require 'git-gutter-fringe+)
     (git-gutter+-mode 1))
@@ -64,7 +69,7 @@
     `((t (:inherit font-lock-variable-name-face :weight ,(face-attribute 'default :weight))))
     "TODO")
 
-  (defn magit-log-propertize-keywords-for-conventional-commits (msg)
+  (defun magit-log-propertize-keywords-for-conventional-commits (msg)
     "TODO"
     (ignore-errors
       (let ((type  "[^:() ]+")
@@ -82,7 +87,7 @@
                                msg)))))
     msg)
 
-  (defn magit-setup ()
+  (defun magit-setup ()
     (remove-hook 'magit-mode-hook #'magit-setup)
     (require 'helm nil t))
 

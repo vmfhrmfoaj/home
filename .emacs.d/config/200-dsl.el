@@ -1,3 +1,8 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (use-package capnp-mode
   :defer t
   ;; NOTE:

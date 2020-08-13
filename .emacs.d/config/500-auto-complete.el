@@ -1,3 +1,8 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (use-package company
   :ensure t
   :hook (prog-mode . company-mode-on)
@@ -18,7 +23,7 @@
   :ensure t
   :after (company helm)
   :config
-  (defn helm-company-plus ()
+  (defun helm-company-plus ()
     "TODO"
     (interactive)
     (unless company-candidates
@@ -50,7 +55,7 @@
                    (lsp-feature? "textDocument/signatureHelp"))
           (lsp-signature-activate)))))
 
-  (defn helm-company-complete-common ()
+  (defun helm-company-complete-common ()
     "TODO"
     (interactive)
     (if (and (not (cdr company-candidates))
@@ -58,7 +63,7 @@
         (helm-company-plus)
       (company--insert-candidate company-common)))
 
-  (defn company-indent-or-helm-company ()
+  (defun company-indent-or-helm-company ()
     "TODO"
     (interactive)
     (cond

@@ -1,3 +1,8 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (use-package projectile
   :ensure t
   :defer t
@@ -5,7 +10,7 @@
   :commands (projectile-project-root
              projectile-project-buffers)
   :init
-  (defn projectile-switch-to-previous-buffer ()
+  (defun projectile-switch-to-previous-buffer ()
     "TODO"
     (interactive)
     (condition-case nil
@@ -21,7 +26,7 @@
 
   (defvar helm-source-project-buffers-list nil)
 
-  (defn helm-project-buffers-list ()
+  (defun helm-project-buffers-list ()
     "Customize `helm-buffers-list' for `projectile'"
     (interactive)
     (unless helm-source-project-buffers-list
@@ -48,7 +53,7 @@
     '((t (:inherit helm-ff-executable)))
     "TODO")
 
-  (defn helm-project-find-files ()
+  (defun helm-project-find-files ()
     "Customize `helm-find-files' for `projectile'"
     (interactive)
     (unless helm-source-project-find-files
@@ -87,14 +92,14 @@
     (helm :sources 'helm-source-project-find-files
           :buffer "*helm project files*"))
 
-  (defn projectile-kill-buffer (&optional buf)
+  (defun projectile-kill-buffer (&optional buf)
     "TODO"
     (interactive)
     (let ((buf (or buf (current-buffer))))
       (projectile-switch-to-previous-buffer)
       (kill-buffer buf)))
 
-  (defn projectile-switch-latest-open-project ()
+  (defun projectile-switch-latest-open-project ()
     "TODO"
     (interactive)
     (let ((cur-proj-root (or (projectile-project-root)
@@ -107,7 +112,7 @@
         (switch-to-previous-buffer-in))))
 
   :config
-  (defn projectile-project-files-custom-filter (files)
+  (defun projectile-project-files-custom-filter (files)
     "TODO"
     (-if-let (regex (-some->> (projectile-paths-to-ignore)
                               (--map (->> it
@@ -119,7 +124,7 @@
         (-remove (-partial #'string-match-p regex) files)
       files))
 
-  (defn projectile-action-for-custom-switch-open-project ()
+  (defun projectile-action-for-custom-switch-open-project ()
     "A `projectile' action for `projectile-custom-switch-open-project'."
     (let* ((cur-proj-root (projectile-project-root))
            (buf (-some->> (buffer-list)
@@ -134,19 +139,19 @@
       (unless buf
         (projectile-find-file))))
 
-  (defn projectile-custom-switch-open-project (&optional arg)
+  (defun projectile-custom-switch-open-project (&optional arg)
     "TODO"
     (interactive)
     (let ((projectile-switch-project-action #'projectile-action-for-custom-switch-open-project))
       (projectile-switch-open-project)))
 
-  (defn projectile-custom-project-name (project-root)
+  (defun projectile-custom-project-name (project-root)
     "TODO"
     (if (string= home-dir (s-chop-suffix "/" project-root))
         "home"
       (file-name-nondirectory (directory-file-name project-root))))
 
-  (defn projectile-kill-new-buffer-file-name ()
+  (defun projectile-kill-new-buffer-file-name ()
     "TODO"
     (interactive)
     (-when-let (file-name (buffer-file-name))
@@ -154,7 +159,7 @@
                              (s-chop-prefix root file-name)
                            file-name)))))
 
-  (defn projectile-custom-project-root (&optional dir)
+  (defun projectile-custom-project-root (&optional dir)
     "Fix for improving the performance of `projectile-project-root'."
     ;; the cached value will be 'none in the case of no project root (this is to
     ;; ensure it is not reevaluated each time when not inside a project) so use

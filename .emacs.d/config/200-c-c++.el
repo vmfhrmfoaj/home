@@ -1,7 +1,12 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (use-package cc-mode
   :defer t
   :config
-  (defn man-at-point ()
+  (defun man-at-point ()
     (interactive)
     (let ((thing (thing-at-point 'symbol)))
       (man (concat "--sections=2 3 " thing))))

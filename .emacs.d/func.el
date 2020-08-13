@@ -1,3 +1,17 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (require 'use-package))
+
+(use-package dash
+  :ensure t)
+
+(use-package dash-functional
+  :ensure t)
+
+(use-package s
+  :ensure t)
+
 (when window-system
   (defvar main-monitor
     (let ((get-resolution (lambda (it) (->> it (nth 1) (-take-last 2) (apply #'*)))))
@@ -30,38 +44,13 @@
   "TODO"
   `(setq ,(-first-item thread) (->> ,@thread)))
 
-(setq-default byte-compile-warnings nil)
-
-(defun byte-compile-with-thread (symbol)
-  "TODO"
-  (make-thread
-   `(lambda ()
-      (let ((byte-compile-warnings nil)
-            (byte-compile-log nil))
-        (byte-compile #',symbol)
-        (-when-let (buf (get-buffer byte-compile-log-buffer))
-          (-> buf
-              (get-buffer-window)
-              (delete-window))
-          (kill-buffer buf))))))
-(byte-compile #'byte-compile-with-thread)
-
-(defmacro defn (name args &optional docstr &rest body)
-  "TODO"
-  (declare (doc-string 3) (indent 2))
-  `(prog1
-       ,(if docstr
-            `(defun ,name ,args ,docstr ,@body)
-          `(defun ,name ,args ,@body))
-     (byte-compile-with-thread #',name)))
-
 
 (require 'color)
 
-(defn color-rgb-to-hex-2-dig (R G B)
+(defun color-rgb-to-hex-2-dig (R G B)
   (color-rgb-to-hex R G B 2))
 
-(defn dim-color (color p)
+(defun dim-color (color p)
   "TODO"
   (->> color
        (color-name-to-rgb)
@@ -70,7 +59,7 @@
        (apply #'color-hsl-to-rgb)
        (apply #'color-rgb-to-hex-2-dig)))
 
-(defn light-color (color p)
+(defun light-color (color p)
   "TODO"
   (->> color
        (color-name-to-rgb)
@@ -79,7 +68,7 @@
        (apply #'color-hsl-to-rgb)
        (apply #'color-rgb-to-hex-2-dig)))
 
-(defn saturate-color (color p)
+(defun saturate-color (color p)
   "TODO"
   (->> color
        (color-name-to-rgb)
@@ -88,7 +77,7 @@
        (apply #'color-hsl-to-rgb)
        (apply #'color-rgb-to-hex-2-dig)))
 
-(defn mix-color (color-a color-b)
+(defun mix-color (color-a color-b)
   "TODO"
   (let ((rgb-a (color-name-to-rgb color-a))
         (rgb-b (color-name-to-rgb color-b)))
@@ -96,13 +85,13 @@
          (--map (/ it 2))
          (apply #'color-rgb-to-hex-2-dig))))
 
-(defn mix-colors (color &rest colors)
+(defun mix-colors (color &rest colors)
   "TODO"
   (if (not colors)
       color
     (-reduce-from #'mix-color color colors)))
 
-(defn custom-face-attribute (face attr)
+(defun custom-face-attribute (face attr)
   "TODO"
   (let ((val (face-attribute face attr)))
     (if (not (eq val 'unspecified))
@@ -115,7 +104,7 @@
                 (throw 'break val)))
             (face-attribute 'default attr)))))))
 
-(defn color-from (face attr &optional p s)
+(defun color-from (face attr &optional p s)
   "TODO"
   (let ((color (custom-face-attribute face attr)))
     (when (listp color)
@@ -132,7 +121,7 @@
     color))
 
 
-(defn in-comment? ()
+(defun in-comment? ()
   "TODO"
   (comment-only-p (save-excursion
                     (goto-char (match-beginning 0))
@@ -142,19 +131,19 @@
 (setq-default font-lock--skip nil)
 (make-local-variable 'font-lock--skip)
 
-(defn safe-up-list-1 ()
+(defun safe-up-list-1 ()
   "TODO"
   (condition-case nil
       (up-list)
     (error (setq font-lock--skip t))))
 
-(defn safe-down-list-1 ()
+(defun safe-down-list-1 ()
   "TODO"
   (condition-case nil
       (down-list)
     (error (setq font-lock--skip t))))
 
-(defn safe-regexp? (regex)
+(defun safe-regexp? (regex)
   "TODO"
   (condition-case nil
       (progn (string-match-p regex "") t)
@@ -183,7 +172,7 @@
 (defvar rsync-ignore-patterns '(".git" ".svn")
   "TODO")
 
-(defn rsync-remote-dir (&optional buf)
+(defun rsync-remote-dir (&optional buf)
   "TODO"
   (let* ((buf (or (and buf (get-buffer buf))
                   (current-buffer)))
@@ -230,7 +219,7 @@
   "TODO")
 (make-local-variable 'buf-visit-time)
 
-(defn update-buf-visit-time (&rest _)
+(defun update-buf-visit-time (&rest _)
   "TODO"
   (ignore-errors
     (let ((cur-win (selected-window))
@@ -244,7 +233,7 @@
         (-update-> buf-visit-time
                    (plist-put cur-win cur-time))))))
 
-(defn buf-visit-time (buf &optional win)
+(defun buf-visit-time (buf &optional win)
   "TODO"
   (ignore-errors
     (let ((buf (if (stringp buf)
@@ -264,14 +253,14 @@
 (defvar exclude-alt-buf-regex ""
   "TODO")
 
-(defn sort-buffer-by-visit-time (bufs)
+(defun sort-buffer-by-visit-time (bufs)
   "TODO"
   (-some->> bufs
     (--sort (let ((it    (or (buf-visit-time it)    0))
                   (other (or (buf-visit-time other) 0)))
               (time-less-p other it)))))
 
-(defn switch-to-previous-buffer-in (bufs)
+(defun switch-to-previous-buffer-in (bufs)
   "TODO"
   (unless (window-dedicated-p)
     (let ((visible-bufs (-map #'window-buffer (window-list))))
@@ -286,7 +275,7 @@
         (switch-to-buffer prev-buf nil t)
         prev-buf))))
 
-(defn switch-to-previous-buffer ()
+(defun switch-to-previous-buffer ()
   "TODO"
   (interactive)
   (->> (buffer-list)
@@ -295,14 +284,14 @@
        (switch-to-previous-buffer-in)))
 
 
-(defn get-scratch-buffer-create ()
+(defun get-scratch-buffer-create ()
   "TODO"
   (interactive)
   (pop-to-buffer (get-buffer-create "*scratch*"))
   (unless (eq 'markdown-mode major-mode)
     (markdown-mode)))
 
-(defn kill-new-buffer-file-name ()
+(defun kill-new-buffer-file-name ()
   "TODO"
   (interactive)
   (-when-let (file-name (buffer-file-name))
@@ -328,19 +317,19 @@
                    name (file-name-nondirectory new-name)))))))
 
 
-(defn enabled? (mode-status)
+(defun enabled? (mode-status)
   "TODO"
   (cond ((symbolp mode-status) mode-status)
         ((numberp mode-status) (not (zerop mode-status)))
         (t nil)))
 
-(defn disable-modes (modes)
+(defun disable-modes (modes)
   "TODO"
   (--map (and (symbol-value it)
               (funcall it 0))
          modes))
 
-(defn restore-modes (modes status)
+(defun restore-modes (modes status)
   "TODO"
   (--map (and (cdr it)
               (funcall (car it) (cdr it)))
@@ -357,7 +346,7 @@
 
 (put 'with-disable-modes 'lisp-indent-function 'defun)
 
-(defn comment-it ()
+(defun comment-it ()
   "TODO"
   (interactive)
   (if (region-active-p)

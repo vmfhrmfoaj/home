@@ -1,3 +1,8 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (when window-system
   (prefer-coding-system 'utf-8)
   (setq-default line-spacing 0)

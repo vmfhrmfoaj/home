@@ -1,3 +1,8 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (use-package composite
   :defer t
   :if (version<= "27.0" emacs-version)
@@ -86,7 +91,7 @@
 
   (defvar-local focus-face-remap-cookie nil)
 
-  (defn focus--enable ()
+  (defun focus--enable ()
     "TODO"
     (unless (or (apply #'derived-mode-p focus--exclude-modes)
                 (bound-and-true-p helm-alive-p)
@@ -97,7 +102,7 @@
       (setq focus-face-remap-cookie
             (face-remap-add-relative 'hl-line-evil-insert 'bold))))
 
-  (defn focus--disable ()
+  (defun focus--disable ()
     "TODO"
     (when focus-face-remap-cookie
       (face-remap-remove-relative focus-face-remap-cookie)
@@ -108,7 +113,7 @@
   (add-hook 'evil-insert-state-exit-hook  #'focus--disable)
 
   :config
-  (defn focus--tex-thing ()
+  (defun focus--tex-thing ()
     "TODO"
     (ignore-errors
       (let* ((regx  (concat "^\\(?:[[:cntrl:]]\\)*$"))
@@ -122,7 +127,7 @@
                       (point))))
         (cons beg end))))
 
-  (defn focus--text-thing ()
+  (defun focus--text-thing ()
     "TODO"
     (ignore-errors
       (save-excursion
@@ -134,7 +139,7 @@
                      (point))))
           (cons beg end)))))
 
-  (defn focus--list+-thing ()
+  (defun focus--list+-thing ()
     "TODO"
     (ignore-errors
       (save-excursion
@@ -153,7 +158,7 @@
                      (point))))
           (cons beg end)))))
 
-  (defn focus--lisp-thing ()
+  (defun focus--lisp-thing ()
     "TODO"
     (ignore-errors
       (save-excursion
@@ -169,7 +174,7 @@
           (cons beg end)))))
 
   (with-eval-after-load "clojure-mode"
-    (defn focus--clojure-thing ()
+    (defun focus--clojure-thing ()
       "TODO"
       (ignore-errors
         (save-excursion
@@ -192,7 +197,7 @@
   (let ((form
          '(progn
             (unless (fboundp 'focus--c-style-thing)
-              (defn focus--c-style-thing ()
+              (defun focus--c-style-thing ()
                 "TODO"
                 (ignore-errors
                   (save-excursion
@@ -232,13 +237,13 @@
   (defvar-local focus--update-timer nil
     "TODO")
 
-  (defn focus--clear-update-timer ()
+  (defun focus--clear-update-timer ()
     "Clear `focus--update-timer`."
     (when focus--update-timer
       (cancel-timer focus--update-timer)
       (setq focus--update-timer nil)))
 
-  (defn focus--wrap-move-focus (fn)
+  (defun focus--wrap-move-focus (fn)
     "Delay to update `focus-pre-overlay' and `focus-post-overlay'."
     (when focus--update-timer
       (cancel-timer focus--update-timer))
@@ -291,7 +296,7 @@
   :ensure t
   :hook (prog-mode . hl-todo-mode)
   :config
-  (defn hl-todo--setup-custom ()
+  (defun hl-todo--setup-custom ()
     "TODO"
     (font-lock-remove-keywords nil hl-todo--keywords)
     (setq hl-todo--keywords

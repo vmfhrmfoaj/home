@@ -1,14 +1,19 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (use-package helm-ag
   :ensure t
   :defer t
   :init
-  (defn helm-do-ag-with-no-ignore ()
+  (defun helm-do-ag-with-no-ignore ()
     "TODO"
     (interactive)
     (let ((helm-ag-command-option (concat "--no-ignore " helm-ag-command-option)))
       (call-interactively #'helm-do-ag)))
 
-  (defn helm-do-ag-project-root-with-no-ignore ()
+  (defun helm-do-ag-project-root-with-no-ignore ()
     "TODO"
     (interactive)
     (let ((helm-ag-command-option (concat "--no-ignore " helm-ag-command-option)))
@@ -19,7 +24,7 @@
         helm-ag-use-emacs-lisp-regexp t)
 
   :config
-  (defn helm-ag--custom-do-ag-candidate-process (dir)
+  (defun helm-ag--custom-do-ag-candidate-process (dir)
     "TODO"
     (let* ((non-essential nil)
            (default-directory dir)
@@ -40,11 +45,11 @@
                  (ignore-errors
                    (helm-ag--do-ag-propertize helm-input))))))))))
 
-  (defn helm-ag--elisp-regexp-to-pcre-for-ripgrep (pattern)
+  (defun helm-ag--elisp-regexp-to-pcre-for-ripgrep (pattern)
     "Improve `helm-ag--elisp-regexp-to-pcre' for ripgrep."
     (s-replace-all '(("\\s-" . "[[:space:]]")) pattern))
 
-  (defn helm-ag--find-file-action-for-vlf (candidate find-func this-file &optional persistent)
+  (defun helm-ag--find-file-action-for-vlf (candidate find-func this-file &optional persistent)
     "antoehr version of `helm-ag--find-file-action' for `vlf-mode'."
     (when vlf-mode
       (when (memq 'pt helm-ag--command-features)
@@ -68,7 +73,7 @@
                (goto-char (match-beginning 0))))
         t)))
 
-  (defn helm-ag--custom-propertize-candidates (input)
+  (defun helm-ag--custom-propertize-candidates (input)
     "TODO"
     (save-excursion
       (goto-char (point-min))
@@ -110,12 +115,12 @@
                      (put-text-property start bound 'helm-cand-num num))
                    (forward-line 1))))))
 
-  (defn helm-ag--set-input-idle-delay (&rest _)
+  (defun helm-ag--set-input-idle-delay (&rest _)
     "Locally set `helm-input-idle-delay' to `helm-grep-input-idle-delay'."
     (helm-set-local-variable
      'helm-input-idle-delay helm-grep-input-idle-delay))
 
-  (defn helm-ag--custom-project-root ()
+  (defun helm-ag--custom-project-root ()
     "TODO"
     (and (featurep 'projectile)
          (projectile-project-root)))
@@ -136,13 +141,13 @@
 (use-package helm-occur
   :defer t
   :config
-  (defn helm-occur--switch-to-helm-window-after-action (&rest _)
+  (defun helm-occur--switch-to-helm-window-after-action (&rest _)
     "Return the focus to `helm-window' to avoid flickering."
     (global-hl-line-highlight)
     (-when-let (win (helm-window))
       (select-window win)))
 
-  (defn helm-occur--edit (candidate)
+  (defun helm-occur--edit (candidate)
     "TODO"
     (let ((buf-name "*hmoccur*"))
       (ignore-errors (kill-buffer buf-name))
@@ -153,7 +158,7 @@
           (local-set-key (kbd "C-c C-c") (lambda () (interactive) (wgrep-finish-edit) (kill-buffer-and-window)))
           (local-set-key (kbd "C-c C-k") (lambda () (interactive)                     (kill-buffer-and-window)))))))
 
-  (defn helm-occur-edit ()
+  (defun helm-occur-edit ()
     "TODO"
     (interactive)
     (helm-exit-and-execute-action 'helm-occur--edit))

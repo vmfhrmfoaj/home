@@ -1,3 +1,8 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (use-package cperl-mode
   :defer t
   :mode "\\.\\(p[lm]x?\\|P[LM]X?\\)\\'"
@@ -9,7 +14,7 @@
   (add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
 
   :config
-  (defn cperl-beginning-of-defun ()
+  (defun cperl-beginning-of-defun ()
     "TODO"
     (let ((cur-pos (point))
           (beg-pos (line-beginning-position))
@@ -28,7 +33,7 @@
              (and (zerop n)
                   (message "Not found starting of the subroutine."))))))))
 
-  (defn cperl-end-of-defun ()
+  (defun cperl-end-of-defun ()
     "TODO"
     (let ((cur-pos (point))
           (beg-pos (line-beginning-position))
@@ -41,7 +46,7 @@
                  (up-list)))
         (re-search-forward regex nil t))))
 
-  (defn cperl-mode-setup ()
+  (defun cperl-mode-setup ()
     "TODO"
     (setq-local beginning-of-defun-function #'cperl-beginning-of-defun)
     (setq-local end-of-defun-function       #'cperl-end-of-defun))

@@ -1,3 +1,8 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (defvar home-dir (getenv "HOME"))
 
 (setq HHKB? nil)

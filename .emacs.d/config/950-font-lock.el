@@ -1,13 +1,18 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (setq font-lock--anchor-beg-point nil
       font-lock--local-limit nil)
 (make-local-variable 'font-lock--local-limit)
 (make-local-variable 'font-lock--anchor-beg-point)
 
-(defn fake-match-2 ()
+(defun fake-match-2 ()
   "TODO"
   (-repeat 2 (point-min-marker)))
 
-(defn fake-match-4 ()
+(defun fake-match-4 ()
   "TODO"
   (-repeat 4 (point-min-marker)))
 
@@ -208,7 +213,7 @@
     '("binding" "doseq" "dotimes" "for" "let" "if-let" "if-some" "when-let" "when-some" "loop" "with-redefs")
     "List of Clojure binding form.")
 
-  (defn clojure-forward-sexp (&optional n)
+  (defun clojure-forward-sexp (&optional n)
     "TODO"
     (or n (setq n 1))
     (while (not (zerop n))
@@ -251,7 +256,7 @@
          (core-ns? (concat "\\(?:" core-ns "\\)?"))
          (if-kw   (regexp-opt '("if" "if-some" "if-let" "if-not")))
          (oop-kw  (regexp-opt '("definterface" "defprotocol" "defrecord" "deftype" "extend-protocol" "extend-type" "proxy" "reify")))
-         (def-kw  (regexp-opt '("defmacro" "defn" "defn-" "defmethod" "defrecord" "deftype") t))
+         (def-kw  (regexp-opt '("defmacro" "defun" "defun-" "defmethod" "defrecord" "deftype") t))
          (cond-kw (regexp-opt '("case" "cond" "condp" "cond->" "cond->>"
                                 "for" "if" "if-let" "if-not" "recur" "throw" "when"
                                 "loop" "when-let" "when-not" "while") t))
@@ -936,7 +941,7 @@
           (1 'font-lock-constant-face))
          ("(\\(assert\\)"
           (1 'font-lock-variable-name-face))
-         (,(concat "(defn" whitespace+ "\\(" symbol "\\)")
+         (,(concat "(defun" whitespace+ "\\(" symbol "\\)")
           (1 'font-lock-function-name-face))
          ;; local variables
          (,(concat "(\\(lexical-\\|when-\\|if-\\)?let\\*?" whitespace+ "(")
@@ -966,7 +971,7 @@
              (goto-char elisp--binding-form-point))
            (1 'lisp-local-binding-variable-name-face)))
          ;; function arguments
-         (,(concat "\\(defn\\|defun\\|lambda\\)" whitespace+ "\\(" symbol whitespace+ "\\)?(")
+         (,(concat "\\(defun\\|defun\\|lambda\\)" whitespace+ "\\(" symbol whitespace+ "\\)?(")
           (,(byte-compile
              (-partial
               (lambda (symbol limit)
@@ -1228,11 +1233,11 @@
          (match-end 2))
        (goto-char font-lock--anchor-beg-point)
        (0 'font-lock-variable-name-face)))
-     ("\\([&*:']\\|::\\|[-=]>\\)"
+     ("\\([&*']\\|::\\)[^ \t\r\n]"
       (1 'shadow))
-     ("\\(?:^\\s-*\\|[^ \t\r\n]\\)\\(>+\\)"
+     ("\\(?:^\\s-*\\|[^ \t\r\n]\\)\\(>+\\|:\\)"
       (1 'shadow))
-     ("\\_<\\(_\\|\\.\\.\\)\\_>"
+     ("\\_<\\(_\\|\\.\\.\\|[-=]>\\)\\_>"
       (1 'shadow))
      ("\\(?:\\s(\\|\\s-\\)\\(\\!\\)\\(?:\\s-\\|\\s(\\|[A-Za-z]\\)"
       (1 'font-lock-negation-char-face))

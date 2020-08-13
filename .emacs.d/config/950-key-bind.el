@@ -1,3 +1,90 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el")
+  (require 'evil)
+  (require 'lsp-mode))
+
+(defmacro lsp-define-cond-key-fn (fn cond)
+  "Create a function with condition."
+  `(lambda ()
+     (interactive)
+     (when ,cond
+       (call-interactively ,fn))))
+
+(defun lsp--custom-setup-key (mode)
+  "Set up keys for `lsp-mode'."
+  (evil-leader/set-key-for-mode mode
+    ;; sessions
+    "msr" #'lsp-workspace-restart
+    "mss" #'lsp
+    "msq" #'lsp-workspace-shutdown
+    "msd" #'lsp-describe-session
+    "msD" #'lsp-disconnect
+
+    ;; formatting
+    "m==" #'lsp-format-buffer
+    "m=r" #'lsp-format-region
+
+    ;; folders
+    "mFa" #'lsp-workspace-folders-add
+    "mFr" #'lsp-workspace-folders-remove
+    "mFb" #'lsp-workspace-blacklist-remove
+
+    ;; toggles
+    "mTf" (lsp-define-cond-key-fn #'lsp-toggle-on-type-formatting (lsp-feature? "textDocument/onTypeFormatting"))
+    "mTT" #'lsp-treemacs-sync-mode
+
+    ;; goto
+    "mgg" (lsp-define-cond-key-fn #'lsp-find-definition (lsp-feature? "textDocument/definition"))
+    "mgr" (lsp-define-cond-key-fn #'lsp-find-references (lsp-feature? "textDocument/references"))
+    "mgi" (lsp-define-cond-key-fn #'lsp-find-implementation (lsp-feature? "textDocument/implementation"))
+    "mgt" (lsp-define-cond-key-fn #'lsp-find-type-definition (lsp-feature? "textDocument/typeDefinition"))
+    "mgd" (lsp-define-cond-key-fn #'lsp-find-declaration (lsp-feature? "textDocument/declaration"))
+    "mgh" (lsp-define-cond-key-fn #'lsp-treemacs-call-hierarchy
+                                  (and (lsp-feature? "callHierarchy/incomingCalls")
+                                       (fboundp 'lsp-treemacs-call-hierarchy)))
+    "mga" (lsp-define-cond-key-fn #'xref-find-apropos (lsp-feature? "workspace/symbol"))
+    "mge" (lsp-define-cond-key-fn #'lsp-treemacs-errors-list (fboundp 'lsp-treemacs-errors-list))
+
+    ;; help
+    "mhh" (lsp-define-cond-key-fn #'lsp-describe-thing-at-point (lsp-feature? "textDocument/hover"))
+    "mhs" (lsp-define-cond-key-fn #'lsp-signature-activate (lsp-feature? "textDocument/signatureHelp"))
+    "mhg" (lsp-define-cond-key-fn #'lsp-ui-doc-glance (and (featurep 'lsp-ui-doc) (lsp-feature? "textDocument/hover")))
+
+    ;; refactoring
+    "mrr" (lsp-define-cond-key-fn #'lsp-rename (lsp-feature? "textDocument/rename"))
+    "mro" (lsp-define-cond-key-fn #'lsp-organize-imports (lsp-feature? "textDocument/rename"))
+
+    ;; actions
+    "maa" (lsp-define-cond-key-fn #'lsp-execute-code-action (lsp-feature? "textDocument/codeAction"))
+    "mah" (lsp-define-cond-key-fn #'lsp-document-highlight (lsp-feature? "textDocument/documentHighlight"))
+
+    ;; peeks
+    "mGg" (lsp-define-cond-key-fn #'lsp-ui-peek-find-definitions
+                                  (and (lsp-feature? "textDocument/definition")
+                                       (fboundp 'lsp-ui-peek-find-definitions)))
+    "mGr" (lsp-define-cond-key-fn #'lsp-ui-peek-find-references
+                                  (and (fboundp 'lsp-ui-peek-find-references)
+                                       (lsp-feature? "textDocument/references")))
+    "mGi" (lsp-define-cond-key-fn #'lsp-ui-peek-find-implementation
+                                  (and (fboundp 'lsp-ui-peek-find-implementation)
+                                       (lsp-feature? "textDocument/implementation")))
+    "mGs" (lsp-define-cond-key-fn #'lsp-ui-peek-find-workspace-symbol
+                                  (and (fboundp 'lsp-ui-peek-find-workspace-symbol)
+                                       (lsp-feature? "workspace/symbol"))))
+  (which-key-declare-prefixes-for-mode mode
+    (concat evil-leader/leader "ms")  "sessions"
+    (concat evil-leader/leader "mF")  "folders"
+    (concat evil-leader/leader "m=")  "formatting"
+    (concat evil-leader/leader "mT")  "toggle"
+    (concat evil-leader/leader "mg")  "goto"
+    (concat evil-leader/leader "mh")  "help"
+    (concat evil-leader/leader "mr")  "refactor"
+    (concat evil-leader/leader "ma")  "code actions"
+    (concat evil-leader/leader "mG")  "peek")
+  (evil-leader--set-major-leader-for-mode mode))
+
 ;; for HHKB
 (when HHKB?
   (global-set-key (kbd "<S-kp-multiply>") "#")
@@ -45,21 +132,21 @@
   (defvar evil-leader/major-leader ","
     "TODO")
 
-  (defn evil-leader/set-major-leader (key)
+  (defun evil-leader/set-major-leader (key)
     "TODO"
     (let ((old-m-leader evil-leader/major-leader))
       (setq evil-leader/major-leader key)
       (dolist (mode (-map #'car evil-leader--mode-maps))
-        (evil-leader/set-major-leader-for-mode mode))))
+        (evil-leader--set-major-leader-for-mode mode))))
 
-  (defn evil-leader/set-major-leader-for-mode (mode)
+  (defun evil-leader--set-major-leader-for-mode (mode)
     "TODO"
     (let ((map-name (intern (format "evil-leader-for-%s-map" mode))))
       (-when-let (map (-some->> evil-leader--mode-maps
-                                (assoc mode)
-                                (-drop 1)
-                                (assoc 109) ; 109 = "m"
-                                (-drop 1)))
+                        (assoc mode)
+                        (-drop 1)
+                        (assoc 109) ; 109 = "m"
+                        (-drop 1)))
         ;; for evil-leader
         (eval
          `(progn
@@ -79,7 +166,7 @@
                        its-vals)))
           (setcdr it (append its-vals its-new-vals))))))
 
-  (defn evil-leader/set-local-key (&rest bindings)
+  (defun evil-leader--set-local-key (&rest bindings)
     (let* ((prefix (concat evil-leader/leader "m"))
            (bindings (->> bindings
                           (-partition 2)
@@ -297,7 +384,7 @@
     (concat evil-leader/leader "mg") "goto"
     (concat evil-leader/leader "ms") "set/change"
     (concat evil-leader/leader "mr") "REPL")
-  (evil-leader/set-major-leader-for-mode 'cider-repl-mode))
+  (evil-leader--set-major-leader-for-mode 'cider-repl-mode))
 
 (use-package cider-stacktrace
   :defer t
@@ -403,7 +490,7 @@
 (use-package helm-files
   :defer t
   :config
-  (defn helm-ff-completion-or-next-line ()
+  (defun helm-ff-completion-or-next-line ()
     "todo"
     (interactive)
     (let ((sel (helm-get-selection)))
@@ -472,87 +559,6 @@
 
 (use-package lsp-mode
   :defer t
-  :init
-  (defmacro lsp-define-cond-key-fn (fn cond)
-    "Create a function with condition."
-    `(lambda ()
-       (interactive)
-       (when ,cond
-         (call-interactively ,fn))))
-
-  (defn lsp--custom-setup-key (mode)
-    "Set up keys for `lsp-mode'."
-    (evil-leader/set-key-for-mode mode
-      ;; sessions
-      "msr" #'lsp-workspace-restart
-      "mss" #'lsp
-      "msq" #'lsp-workspace-shutdown
-      "msd" #'lsp-describe-session
-      "msD" #'lsp-disconnect
-
-      ;; formatting
-      "m==" #'lsp-format-buffer
-      "m=r" #'lsp-format-region
-
-      ;; folders
-      "mFa" #'lsp-workspace-folders-add
-      "mFr" #'lsp-workspace-folders-remove
-      "mFb" #'lsp-workspace-blacklist-remove
-
-      ;; toggles
-      "mTf" (lsp-define-cond-key-fn #'lsp-toggle-on-type-formatting (lsp-feature? "textDocument/onTypeFormatting"))
-      "mTT" #'lsp-treemacs-sync-mode
-
-      ;; goto
-      "mgg" (lsp-define-cond-key-fn #'lsp-find-definition (lsp-feature? "textDocument/definition"))
-      "mgr" (lsp-define-cond-key-fn #'lsp-find-references (lsp-feature? "textDocument/references"))
-      "mgi" (lsp-define-cond-key-fn #'lsp-find-implementation (lsp-feature? "textDocument/implementation"))
-      "mgt" (lsp-define-cond-key-fn #'lsp-find-type-definition (lsp-feature? "textDocument/typeDefinition"))
-      "mgd" (lsp-define-cond-key-fn #'lsp-find-declaration (lsp-feature? "textDocument/declaration"))
-      "mgh" (lsp-define-cond-key-fn #'lsp-treemacs-call-hierarchy
-                                    (and (lsp-feature? "callHierarchy/incomingCalls")
-                                         (fboundp 'lsp-treemacs-call-hierarchy)))
-      "mga" (lsp-define-cond-key-fn #'xref-find-apropos (lsp-feature? "workspace/symbol"))
-      "mge" (lsp-define-cond-key-fn #'lsp-treemacs-errors-list (fboundp 'lsp-treemacs-errors-list))
-
-      ;; help
-      "mhh" (lsp-define-cond-key-fn #'lsp-describe-thing-at-point (lsp-feature? "textDocument/hover"))
-      "mhs" (lsp-define-cond-key-fn #'lsp-signature-activate (lsp-feature? "textDocument/signatureHelp"))
-      "mhg" (lsp-define-cond-key-fn #'lsp-ui-doc-glance (and (featurep 'lsp-ui-doc) (lsp-feature? "textDocument/hover")))
-
-      ;; refactoring
-      "mrr" (lsp-define-cond-key-fn #'lsp-rename (lsp-feature? "textDocument/rename"))
-      "mro" (lsp-define-cond-key-fn #'lsp-organize-imports (lsp-feature? "textDocument/rename"))
-
-      ;; actions
-      "maa" (lsp-define-cond-key-fn #'lsp-execute-code-action (lsp-feature? "textDocument/codeAction"))
-      "mah" (lsp-define-cond-key-fn #'lsp-document-highlight (lsp-feature? "textDocument/documentHighlight"))
-
-      ;; peeks
-      "mGg" (lsp-define-cond-key-fn #'lsp-ui-peek-find-definitions
-                                    (and (lsp-feature? "textDocument/definition")
-                                         (fboundp 'lsp-ui-peek-find-definitions)))
-      "mGr" (lsp-define-cond-key-fn #'lsp-ui-peek-find-references
-                                    (and (fboundp 'lsp-ui-peek-find-references)
-                                         (lsp-feature? "textDocument/references")))
-      "mGi" (lsp-define-cond-key-fn #'lsp-ui-peek-find-implementation
-                                    (and (fboundp 'lsp-ui-peek-find-implementation)
-                                         (lsp-feature? "textDocument/implementation")))
-      "mGs" (lsp-define-cond-key-fn #'lsp-ui-peek-find-workspace-symbol
-                                    (and (fboundp 'lsp-ui-peek-find-workspace-symbol)
-                                         (lsp-feature? "workspace/symbol"))))
-    (which-key-declare-prefixes-for-mode mode
-      (concat evil-leader/leader "ms")  "sessions"
-      (concat evil-leader/leader "mF")  "folders"
-      (concat evil-leader/leader "m=")  "formatting"
-      (concat evil-leader/leader "mT")  "toggle"
-      (concat evil-leader/leader "mg")  "goto"
-      (concat evil-leader/leader "mh")  "help"
-      (concat evil-leader/leader "mr")  "refactor"
-      (concat evil-leader/leader "ma")  "code actions"
-      (concat evil-leader/leader "mG")  "peek")
-    (evil-leader/set-major-leader-for-mode mode))
-
   :config
   (add-hook 'lsp-mode-hook
             (lambda ()
@@ -602,7 +608,7 @@
       (concat evil-leader/leader "mg") "goto"
       (concat evil-leader/leader "mh") "help"
       (concat evil-leader/leader "mr") "REPL")
-    (evil-leader/set-major-leader-for-mode mode)))
+    (evil-leader--set-major-leader-for-mode mode)))
 
 (use-package cperl-mode
   :defer t
@@ -614,7 +620,7 @@
 
 (use-package dired
   :config
-  (defn dired-alternate-up-directory ()
+  (defun dired-alternate-up-directory ()
     "TODO"
     (interactive)
     (let* ((dir (dired-current-directory))
@@ -649,7 +655,7 @@
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto"
     (concat evil-leader/leader "mr") "REPL")
-  (evil-leader/set-major-leader-for-mode 'emacs-lisp-mode)
+  (evil-leader--set-major-leader-for-mode 'emacs-lisp-mode)
 
   ;; lisp-interaction-mode
   (evil-leader/set-key-for-mode 'lisp-interaction-mode
@@ -661,7 +667,7 @@
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto"
     (concat evil-leader/leader "mr") "REPL")
-  (evil-leader/set-major-leader-for-mode 'lisp-interaction-mode))
+  (evil-leader--set-major-leader-for-mode 'lisp-interaction-mode))
 
 (use-package elixir-mode
   :disabled t
@@ -671,7 +677,7 @@
     "mgg" #'dumb-jump-go)
   (which-key-declare-prefixes-for-mode 'elixir-mode
     (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode 'elixir-mode))
+  (evil-leader--set-major-leader-for-mode 'elixir-mode))
 
 (use-package elm-mode
   :disabled t
@@ -681,7 +687,7 @@
     "mgg" #'dumb-jump-go)
   (which-key-declare-prefixes-for-mode 'elm-mode
     (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode 'elm-mode))
+  (evil-leader--set-major-leader-for-mode 'elm-mode))
 
 (use-package go-mode
   :disabled t
@@ -692,7 +698,7 @@
     "mgG" #'go-guru-definition-other-window)
   (which-key-declare-prefixes-for-mode 'go-mode
     (concat evil-leader/leader "mg") "goto")
-  (evil-leader/set-major-leader-for-mode 'go-mode))
+  (evil-leader--set-major-leader-for-mode 'go-mode))
 
 (use-package js
   :defer t
@@ -713,7 +719,7 @@
     "msp" #'markdown-preview)
   (which-key-declare-prefixes-for-mode 'markdown-mode
     (concat evil-leader/leader "ms") "Show")
-  (evil-leader/set-major-leader-for-mode 'markdown-mode))
+  (evil-leader--set-major-leader-for-mode 'markdown-mode))
 
 (use-package magit
   :defer t
@@ -817,7 +823,7 @@
 (use-package ztree-view
   :defer t
   :config
-  (defn ztree-back-node (&optional node)
+  (defun ztree-back-node (&optional node)
     (interactive)
     (let ((line (line-number-at-pos)))
       (-when-let (node (or node (ztree-find-node-in-line line)))
@@ -828,7 +834,7 @@
           (ztree-do-toggle-expand-state (ztree-find-node-in-line line) nil))
         (ztree-refresh-buffer line))))
 
-  (defn ztree-enter-node (&optional node)
+  (defun ztree-enter-node (&optional node)
     (interactive)
     (let ((line (line-number-at-pos)))
       (-when-let (node (or node (ztree-find-node-in-line line)))

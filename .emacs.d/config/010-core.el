@@ -1,3 +1,8 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (use-package evil
   :ensure t
   :config
@@ -35,7 +40,7 @@
   (defvar-local evil-ex--gl-preview-point nil
     "TODO")
 
-  (defn evil-ex-update-for--goto-line-preview (&optional beg end len string)
+  (defun evil-ex-update-for--goto-line-preview (&optional beg end len string)
     "TODO"
     ;; (print (list 'env (selected-window) (current-buffer) evil-ex-current-buffer '|
     ;;              'parameters beg end len string '|
@@ -57,7 +62,7 @@
             (when (and (bound-and-true-p global-hl-line-mode) global-hl-line-mode)
               (global-hl-line-highlight)))))))
 
-  (defn abort-recursive-edit-for-evil-ex ()
+  (defun abort-recursive-edit-for-evil-ex ()
     "TODO"
     (interactive)
     (-when-let (win (-some->> (window-list)
@@ -93,14 +98,14 @@
   (defvar helm-last-search-buffer nil
     "TODO")
 
-  (defn helm--update-last-search-buffer (&rest _)
+  (defun helm--update-last-search-buffer (&rest _)
     "TODO"
     (interactive)
     (when (and (stringp helm-last-buffer)
                (string-match-p helm-search-buffer-regex helm-last-buffer))
       (setq helm-last-search-buffer helm-last-buffer)))
 
-  (defn helm-resume-last-search-buffer ()
+  (defun helm-resume-last-search-buffer ()
     "TODO"
     (interactive)
     ;; NOTE
@@ -111,7 +116,7 @@
       (setq helm-last-buffer helm-last-search-buffer)
       (call-interactively #'helm-resume)))
 
-  (defn helm-display-buffer-at-bottom (buffer &optional resume)
+  (defun helm-display-buffer-at-bottom (buffer &optional resume)
     "TODO"
     (let ((display-buffer-alist '(("\\*.*[Hh]elm.*\\*"
                                    (display-buffer-in-side-window)
@@ -137,19 +142,19 @@
 
   (make-local-variable 'helm-match-selection-overlays)
 
-  (defn helm-custom-initialize-overlays (_buffer)
+  (defun helm-custom-initialize-overlays (_buffer)
     "TODO"
     (dolist (ov helm-match-selection-overlays)
       (delete-overlay ov))
     (setq helm-match-selection-overlays nil))
 
-  (defn helm--remove-custom-overlays ()
+  (defun helm--remove-custom-overlays ()
     "TODO"
     (dolist (ov helm-match-selection-overlays)
       (delete-overlay ov))
     (setq helm-match-selection-overlays nil))
 
-  (defn helm--pattern-to-regex-list (pattern)
+  (defun helm--pattern-to-regex-list (pattern)
     "TODO"
     (unless (s-blank-str? pattern)
       (->> pattern
@@ -158,7 +163,7 @@
            (--mapcat (s-split "\\s-+" it))
            (-remove #'s-blank-str?))))
 
-  (defn helm-custom-mark-current-line (&optional _resumep _nomouse)
+  (defun helm-custom-mark-current-line (&optional _resumep _nomouse)
     "TODO"
     (helm--remove-custom-overlays)
     (let ((pattern (if (let ((case-fold-search t))

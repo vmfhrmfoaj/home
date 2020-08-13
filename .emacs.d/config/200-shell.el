@@ -1,3 +1,8 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (use-package sh-script
   :defer t
   :mode ("\\.env\\'" . sh-mode)

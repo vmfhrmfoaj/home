@@ -1,3 +1,8 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (use-package editorconfig
   :ensure t
   :hook ((autoconf-mode . editorconfig-mode-apply))
@@ -8,7 +13,7 @@
   :ensure t
   :after evil
   :config
-  (defn evil-surround-region-for-hkkb (args)
+  (defun evil-surround-region-for-hkkb (args)
     "TODO"
     (if (> 4 (length args))
         args
@@ -23,7 +28,7 @@
             (-replace-at 3 new-char args)
           args))))
 
-  (defn evil-surround-chnage-for-hkkb (args)
+  (defun evil-surround-chnage-for-hkkb (args)
     (interactive (list (read-key)))
     args)
 
@@ -41,12 +46,12 @@
 (use-package smartparens-config
   :ensure smartparens
   :config
-  (defn sp-wrap-sexp (&optional arg)
+  (defun sp-wrap-sexp (&optional arg)
     "TODO"
     (interactive "P")
     (sp-wrap-with-pair "("))
 
-  (defn sp--simulate-evil-jump-item ()
+  (defun sp--simulate-evil-jump-item ()
     "Sometimes `evil-jump-item' does not jump to the correct position.
 So, replaced `evil-jump-item' to this function."
     (interactive)

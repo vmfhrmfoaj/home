@@ -1,3 +1,8 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (use-package php-mode
   :ensure t
   :defer t
@@ -20,7 +25,7 @@
   :ensure t
   :defer t
   :config
-  (defn psysh-show ()
+  (defun psysh-show ()
     (interactive)
     (-when-let (buf (get-buffer (concat "*" (car (psysh--detect-buffer)) "*")))
       (switch-to-buffer buf)))

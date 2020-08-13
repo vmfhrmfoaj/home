@@ -1,6 +1,7 @@
 ;;; Copyright (c) 2014-2017, Jinseop Kim
 
-(setq custom-file "~/.emacs.d/.custom.el"
+(setq comp-deferred-compilation t
+      custom-file "~/.emacs.d/.custom.el"
       gc-cons-threshold (* 1024 1024 1024 2)
       inhibit-startup-screen t)
 (put 'gc-cons-threshold 'default-value (* 1024 1024 512))

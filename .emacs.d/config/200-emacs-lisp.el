@@ -1,13 +1,18 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (use-package elisp-mode
   :config
-  (defn emacs-lisp-REPL-buffer ()
+  (defun emacs-lisp-REPL-buffer ()
     "TODO"
     (interactive)
     (pop-to-buffer (get-buffer-create "*emacs-lisp REPL*"))
     (unless (eq 'lisp-interaction-mode major-mode)
       (lisp-interaction-mode)))
 
-  (defn emacs-lisp-REPL-eval-print-this-sexp ()
+  (defun emacs-lisp-REPL-eval-print-this-sexp ()
     "TODO"
     (interactive)
     (while (ignore-errors (backward-up-list 1 t) t))
@@ -23,7 +28,7 @@
       (newline)
       (goto-char pos)))
 
-  (defn emacs-lisp-evil-lookup-func ()
+  (defun emacs-lisp-evil-lookup-func ()
     "TODO"
     (call-interactively #'elisp-slime-nav-describe-elisp-thing-at-point)
     (-when-let (buf (->> (window-list)

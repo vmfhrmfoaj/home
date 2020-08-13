@@ -1,3 +1,8 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (add-hook 'after-save-hook #'rsync-remote-dir)
 (add-hook 'after-revert-hook #'rsync-remote-dir)
 (add-hook 'emacs-startup-hook
@@ -13,7 +18,7 @@
   :ensure t
   :defer t
   :init
-  (defn atomic-chrome-setup ()
+  (defun atomic-chrome-setup ()
     (remove-hook 'focus-out-hook #'atomic-chrome-setup)
     (require 'atomic-chrome))
 
@@ -25,7 +30,7 @@
 (use-package display-line-numbers
   :hook ((prog-mode . enable-display-line-numbers))
   :config
-  (defn enable-display-line-numbers ()
+  (defun enable-display-line-numbers ()
     "Turn on `display-line-numbers-mode'."
     (let ((buf-name (buffer-name)))
       (when (and (stringp buf-name)
@@ -50,7 +55,7 @@
   (defvar ediff--frame-status nil
     "TODO")
 
-  (defn ediff-addtional-setup (&rest _)
+  (defun ediff-addtional-setup (&rest _)
     "TODO"
     (setq ediff--exclude-mode-status (-map #'symbol-value ediff-exclude-modes)
           ediff--win-conf (current-window-configuration))
@@ -64,7 +69,7 @@
         (toggle-frame-fullscreen))
        (t nil))))
 
-  (defn ediff-addtional-cleanup (&rest _)
+  (defun ediff-addtional-cleanup (&rest _)
     "TODO"
     (restore-modes ediff-exclude-modes ediff--exclude-mode-status)
     (-when-let (conf ediff--win-conf)
@@ -78,7 +83,7 @@
      (t nil))
     (setq ediff--frame-status nil))
 
-  (defn ediff-reset-text-size ()
+  (defun ediff-reset-text-size ()
     "TODO"
     (interactive)
     (ediff-barf-if-not-control-buffer)
@@ -86,7 +91,7 @@
       (with-current-buffer buf
         (text-scale-increase 0))))
 
-  (defn ediff-increase-text-size ()
+  (defun ediff-increase-text-size ()
     "TODO"
     (interactive)
     (ediff-barf-if-not-control-buffer)
@@ -94,7 +99,7 @@
       (with-current-buffer buf
         (text-scale-increase 0.5))))
 
-  (defn ediff-decrease-text-size ()
+  (defun ediff-decrease-text-size ()
     "TODO"
     (interactive)
     (ediff-barf-if-not-control-buffer)
@@ -113,7 +118,7 @@
 (use-package eldoc
   :defer t
   :config
-  (defn eldoc-refresh ()
+  (defun eldoc-refresh-for-emacs-27 ()
     (interactive)
     (when (or eldoc-mode
               (and global-eldoc-mode
@@ -127,7 +132,34 @@
           (unless (s-blank? msg)
             (eldoc-message msg))))))
 
-  (defn eldoc-custom-schedule-timer ()
+  (defun eldoc-refresh-for-emacs-28 (&optional interactive)
+    (interactive '(t))
+    (when (timerp eldoc-timer)
+      (cancel-timer eldoc-timer)
+      (setq eldoc-timer nil))
+    (let ((token (eldoc--request-state)))
+      (cond (interactive
+             (setq eldoc--last-request-state token)
+             (eldoc--invoke-strategy))
+            ((not (eldoc--request-docs-p token))
+             ;; Erase the last message if we won't display a new one.
+             (when eldoc-last-message
+               (eldoc--message nil)))
+            (t
+             (let ((non-essential t))
+               (setq eldoc--last-request-state token)
+               ;; Only keep looking for the info as long as the user hasn't
+               ;; requested our attention.  This also locally disables
+               ;; inhibit-quit.
+               (while-no-input
+                 (eldoc--invoke-strategy)))))))
+
+  (defalias 'eldoc-refresh
+    (if (version<= emacs-version "28.0.50")
+        #'eldoc-refresh-for-emacs-28
+      #'eldoc-refresh-for-emacs-27))
+
+  (defun eldoc-custom-schedule-timer ()
     "Ensure `eldoc-timer' is running.
 
 If the user has changed `eldoc-idle-delay', update the timer to
@@ -190,7 +222,7 @@ reflect the change."
 (use-package server
   :defer t
   :init
-  (defn emacs-server-setup ()
+  (defun emacs-server-setup ()
     (remove-hook 'focus-out-hook #'emacs-server-setup)
     (require 'server))
 
@@ -223,12 +255,12 @@ reflect the change."
 (use-package vlf-setup
   :ensure vlf
   :config
-  (defn vlf-custom-beginning-of-file ()
+  (defun vlf-custom-beginning-of-file ()
     (interactive)
     (vlf-beginning-of-file)
     (beginning-of-buffer))
 
-  (defn vlf-custom-end-of-file ()
+  (defun vlf-custom-end-of-file ()
     (interactive)
     (vlf-end-of-file)
     (end-of-buffer))

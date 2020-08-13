@@ -1,21 +1,18 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (use-package async
   :ensure t
   :defer t
   :init
   (dired-async-mode 1))
 
-(use-package dash
-  :ensure t)
-
-(use-package dash-functional
-  :ensure t)
-
 (use-package queue
   :defer t
   :ensure t)
 
-(use-package s
-  :ensure t)
 
 (use-package spinner
   :defer t

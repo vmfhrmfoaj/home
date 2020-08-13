@@ -1,3 +1,8 @@
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (load-file "~/.emacs.d/func.el"))
+
 (use-package dap-mode
   :ensure t
   :defer t)
@@ -5,7 +10,7 @@
 (use-package flymake
   :defer t
   :config
-  (defn flymake--wrap-goto-next-error (fn &rest args)
+  (defun flymake--wrap-goto-next-error (fn &rest args)
     "TODO"
     (cl-letf (((symbol-function #'message) (-const t)))
       (apply fn args))
@@ -105,7 +110,7 @@
     "^[^ :]+?:[ \t]+\\([^\r\n]+\\)"
     "TODO")
 
-  (defn lsp--adapter-render-on-hover-content (args)
+  (defun lsp--adapter-render-on-hover-content (args)
     "TODO"
     (let ((contents (car args)))
       (cond
@@ -158,7 +163,7 @@
           (apply #'list contents (cdr args))
         (apply #'list (-interpose "\n" (append contents nil)) (cdr args)))))
 
-  (defn lsp--custom-eldoc-message (&optional msg)
+  (defun lsp--custom-eldoc-message (&optional msg)
     "Show MSG in eldoc."
     (setq lsp--eldoc-saved-message msg)
     (let ((lines (s-lines (or msg "")))
@@ -178,7 +183,7 @@
   (defvar-local lsp--hover-saved-symbol nil
     "TODO")
 
-  (defn lsp--reset-hover-cache ()
+  (defun lsp--reset-hover-cache ()
     "Clear `lsp--hover-saved-bounds' and `lsp--eldoc-saved-message'"
     (setq lsp--hover-saved-bounds nil
           lsp--eldoc-saved-message nil
@@ -188,12 +193,12 @@
     (regexp-opt '("match" "let" "for" "if" "=") 'symbols)
     "TODO")
 
-  (defn lsp--custom-hover-err-handler (_)
+  (defun lsp--custom-hover-err-handler (_)
     "TODO"
     (lsp--reset-hover-cache)
     (lsp--eldoc-message nil))
 
-  (defn lsp--custom-hover ()
+  (defun lsp--custom-hover ()
     "Display hover info (based on `textDocument/hover')."
     (when lsp-eldoc-enable-hover
       (let* ((symbol-bounds (bounds-of-thing-at-point 'symbol))
@@ -272,7 +277,7 @@
                  :mode 'tick
                  :cancel-token :eldoc-hover)))))))))
 
-  (defn lsp--wrap-find-xxx (f &rest args)
+  (defun lsp--wrap-find-xxx (f &rest args)
     "Fall back to `dumb-jump-go'."
     (let ((pos (point))
           (cur-buf (current-buffer)))
@@ -283,16 +288,16 @@
         (message nil)
         (call-interactively #'dumb-jump-go))))
 
-  (defn lsp--custom-document-highlight ()
+  (defun lsp--custom-document-highlight ()
     "Disable `lsp-document-highlight'."
     (interactive))
 
-  (defn lsp-diagnostics--custom-flymake-backend (report-fn &rest _args)
+  (defun lsp-diagnostics--custom-flymake-backend (report-fn &rest _args)
     "Custom `flymake' backend for ."
     (setq lsp-diagnostics--flymake-report-fn report-fn)
     (lsp-diagnostics--flymake-update-diagnostics))
 
-  (defn lsp-diagnostics--clear-flymake-diags ()
+  (defun lsp-diagnostics--clear-flymake-diags ()
      "Remove duplicated items in `diags' of `flymake--backend-state'."
      (-when-let (state (gethash 'lsp--flymake-backend flymake--backend-state))
        (-when-let (diags (flymake--backend-state-diags state))
@@ -303,7 +308,7 @@
        ;;  This may be need.
        (mapc #'delete-overlay (flymake--overlays))))
 
-  (defn lsp--custom-signature->message (signature-help)
+  (defun lsp--custom-signature->message (signature-help)
     "Customize to remove the document in the signature"
     (setq lsp--signature-last signature-help)
     (when (and signature-help (not (seq-empty-p (gethash "signatures" signature-help))))
@@ -338,7 +343,7 @@
                   (-drop 1)
                   (apply #'concat "\n" prefix2))))))
 
-  (defn lps--focus-lsp-help-buffer (&rest _)
+  (defun lps--focus-lsp-help-buffer (&rest _)
     "Force on '*lsp-help*' buffer"
     (-when-let (buf (get-buffer "*lsp-help*"))
       (pop-to-buffer buf)))
@@ -443,7 +448,7 @@
     "TODO")
 
   :config
-  (defn lsp-ui-sideline--custom-diagnostics (fn bol eol)
+  (defun lsp-ui-sideline--custom-diagnostics (fn bol eol)
     (if (and (or (eq lsp-diagnostic-package :auto)
                  (eq lsp-diagnostic-package :flycheck))
              (functionp 'flycheck-mode))
