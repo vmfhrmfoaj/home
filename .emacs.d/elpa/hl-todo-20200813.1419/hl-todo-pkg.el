@@ -1,0 +1,2 @@
+;;; Generated package description from /home/vmfhrmfoaj/.emacs.d/elpa/hl-todo-20200813.1419/hl-todo.el  -*- no-byte-compile: t -*-
+(define-package "hl-todo" "20200813.1419" "highlight TODO and similar keywords" '((emacs "25")) :commit "b57a3592ebadf3b4cd032394b38073fc9c0eaaaf" :keywords '("convenience") :authors '(("Jonas Bernoulli" . "jonas@bernoul.li")) :maintainer '("Jonas Bernoulli" . "jonas@bernoul.li") :url "https://github.com/tarsius/hl-todo")

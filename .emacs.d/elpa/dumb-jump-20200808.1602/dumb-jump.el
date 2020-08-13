@@ -398,8 +398,8 @@ or most optimal searcher."
 
     (:type "function" :supports ("ag" "grep" "rg" "git-grep") :language "clojure"
            :regex "\\(defn-?\\s+JJJ\\j"
-           :tests ("(defn test [foo]" "(defn- test [foo]")
-           :not ("(defn test? [foo]" "(defn- test? [foo]"))
+           :tests ("(defun test [foo]" "(defn- test [foo]")
+           :not ("(defun test? [foo]" "(defn- test? [foo]"))
 
     (:type "function" :supports ("ag" "grep" "rg" "git-grep") :language "clojure"
            :regex "\\(defmacro\\s+JJJ\\j"
