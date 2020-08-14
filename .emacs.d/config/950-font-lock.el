@@ -833,7 +833,7 @@
         ;; Improve docstring
         (,(concat "(defprotocol" whitespace+ symbol "\\>")
          ,(let ((meta?+symbol (concat "(" meta? symbol "\\>")))
-            (lambda ( limit)
+            (lambda (limit)
               (ignore-errors
                 (when font-lock--skip
                   (error ""))
@@ -949,7 +949,7 @@
          ;; function arguments
          (,(concat "\\(defun\\|defun\\|lambda\\)" whitespace+ "\\(" symbol whitespace+ "\\)?(")
           (,(let ((symbol (concat "\\(" symbol "\\)\\>")))
-              (lambda (symbol limit)
+              (lambda (limit)
                 (ignore-errors
                   (when font-lock--skip
                     (error ""))
