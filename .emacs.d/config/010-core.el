@@ -226,7 +226,11 @@
         helm-truncate-lines t
         helm-window-prefer-horizontal-split 'decide)
 
-  (add-hook 'helm-before-initialize-hook (lambda () (setq gc-cons-threshold (* 4 gc-cons-threshold))))
+  (add-hook 'helm-before-initialize-hook
+            (lambda ()
+              ;; NOTE
+              ;;  I suspect `native-comp' has a bug that releated garbage collection.
+              (setq gc-cons-threshold (* 30 gc-cons-threshold))))
 
   (defvar helm-dim-buffers nil)
 
