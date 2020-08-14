@@ -65,7 +65,7 @@
         cperl-merge-trailing-else nil)
   (with-eval-after-load "smartparens"
     (add-to-list 'sp-sexp-prefix '(cperl-mode regexp "\\(?:qw\\)")))
-  (let ((f (byte-compile (-const nil))))
+  (let ((f (-const nil)))
     (advice-add #'cperl-electric-keyword :override f)
     (advice-add #'cperl-electric-else    :override f)
     (advice-add #'cperl-electric-pod     :override f))

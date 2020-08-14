@@ -74,18 +74,16 @@
     (abort-recursive-edit))
 
   (advice-add #'evil-ex-setup :before
-              (byte-compile
-               (lambda ()
-                 "setup for `evil-ex-update-for--goto-line-preview' function."
-                 (with-current-buffer evil-ex-current-buffer
-                   (setq-local evil-ex--gl-preview-point nil)))))
+              (lambda ()
+                "setup for `evil-ex-update-for--goto-line-preview' function."
+                (with-current-buffer evil-ex-current-buffer
+                  (setq-local evil-ex--gl-preview-point nil))))
   (advice-add #'evil-ex-update :after #'evil-ex-update-for--goto-line-preview)
   (advice-add #'evil-ex-execute :before
-              (byte-compile
-               (lambda (_)
-                 "restore the position of the cursor for `evil-ex-update-for--goto-line-preview' function."
-                 (when evil-ex--gl-preview-point
-                   (goto-char evil-ex--gl-preview-point)))))
+              (lambda (_)
+                "restore the position of the cursor for `evil-ex-update-for--goto-line-preview' function."
+                (when evil-ex--gl-preview-point
+                  (goto-char evil-ex--gl-preview-point))))
 
   (setq evil-ex-visual-char-range t))
 
@@ -214,9 +212,8 @@
   (setq helm-autoresize-min-height 25
         helm-autoresize-max-height 45
         helm-buffer-max-length 35
-        helm-buffer-list-reorder-fn (byte-compile
-                                     (lambda (visibles others)
-                                       (nconc (sort-buffer-by-visit-time others) visibles)))
+        helm-buffer-list-reorder-fn (lambda (visibles others)
+                                      (nconc (sort-buffer-by-visit-time others) visibles))
 
         helm-display-header-line nil
         helm-ff-keep-cached-candidates nil

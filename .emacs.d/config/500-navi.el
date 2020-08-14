@@ -102,11 +102,10 @@
                          "Open file other window" (-partial #'helm-dumb-jump--action #'find-file-other-window))
                 :persistent-action #'helm-dumb-jump--persistent-action
                 :match-part
-                (byte-compile
-                 (lambda (candidate)
-                   (if (string-match "^.+?:[0-9]+:\\(.+\\)$" candidate)
-                       (match-string 1 candidate)
-                     candidate))))
+                (lambda (candidate)
+                  (if (string-match "^.+?:[0-9]+:\\(.+\\)$" candidate)
+                      (match-string 1 candidate)
+                    candidate)))
               :buffer "*helm-dumb-jump*"))
       t))
 

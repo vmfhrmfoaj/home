@@ -2,7 +2,7 @@
 
 (eval-when-compile
   (load-file "~/.emacs.d/func.el")
-  (require 'evil)
+  (require 'evil-core)
   (require 'lsp-mode))
 
 (defmacro lsp-define-cond-key-fn (fn cond)
@@ -85,6 +85,7 @@
     (concat evil-leader/leader "mG")  "peek")
   (evil-leader--set-major-leader-for-mode mode))
 
+
 ;; for HHKB
 (when HHKB?
   (global-set-key (kbd "<S-kp-multiply>") "#")
@@ -99,13 +100,12 @@
 ;; minibuffer
 (define-key isearch-mode-map (kbd "C-g") #'isearch-cancel)
 (define-key isearch-mode-map (kbd "C-h")
-  (byte-compile
-   (lambda ()
-     (interactive)
-     (if (and isearch-success (not isearch-error))
-         (isearch-delete-char)
-       (while (or (not isearch-success) isearch-error) (isearch-pop-state))
-       (isearch-update)))))
+  (lambda ()
+    (interactive)
+    (if (and isearch-success (not isearch-error))
+        (isearch-delete-char)
+      (while (or (not isearch-success) isearch-error) (isearch-pop-state))
+      (isearch-update))))
 (remove-hook 'minibuffer-setup-hook #'evil-initialize)
 (when evil-want-minibuffer
   (evil-define-key 'normal minibuffer-local-map
@@ -115,27 +115,29 @@
     (kbd "RET") #'exit-minibuffer
     (kbd "<tab>") #'completion-at-point))
 (add-hook 'minibuffer-setup-hook
-          (byte-compile
-           (lambda ()
-             (when evil-want-minibuffer
-               (evil-initialize)
-               (set (make-local-variable 'evil-echo-state) nil)
-               (evil-insert-state))
-             (local-set-key (kbd "C-a") #'beginning-of-line)
-             (local-set-key (kbd "C-b") #'backward-char)
-             (local-set-key (kbd "C-h") #'backward-delete-char))))
+          (lambda ()
+            (when evil-want-minibuffer
+              (evil-initialize)
+              (set (make-local-variable 'evil-echo-state) nil)
+              (evil-insert-state))
+            (local-set-key (kbd "C-a") #'beginning-of-line)
+            (local-set-key (kbd "C-b") #'backward-char)
+            (local-set-key (kbd "C-h") #'backward-delete-char)))
 
 (use-package bind-map
   :ensure t
-  :after evil-leader
-  :config
-  (defvar evil-leader/major-leader ","
-    "TODO")
+  :after evil-leader)
 
-  (defun evil-leader/set-major-leader (key)
+(defvar evil-leader--major-leader ","
+  "TODO")
+
+(use-package evil-leader
+  :ensure t
+  :config
+  (defun evil-leader--set-major-leader (key)
     "TODO"
-    (let ((old-m-leader evil-leader/major-leader))
-      (setq evil-leader/major-leader key)
+    (let ((old-m-leader evil-leader--major-leader))
+      (setq evil-leader--major-leader key)
       (dolist (mode (-map #'car evil-leader--mode-maps))
         (evil-leader--set-major-leader-for-mode mode))))
 
@@ -152,7 +154,7 @@
          `(progn
             (defvar ,map-name ',map)
             (bind-map ,map-name
-              :evil-keys (,evil-leader/major-leader)
+              :evil-keys (,evil-leader--major-leader)
               :evil-states (normal)
               :major-modes (,mode)))))
       ;; for which-key
@@ -162,7 +164,7 @@
                (its-new-vals
                 (--map (let ((prefix (caar it))
                              (more (cdr it)))
-                         (cons (list (s-replace (concat evil-leader " m") evil-leader/major-leader prefix)) more))
+                         (cons (list (s-replace (concat evil-leader " m") evil-leader--major-leader prefix)) more))
                        its-vals)))
           (setcdr it (append its-vals its-new-vals))))))
 
@@ -173,15 +175,12 @@
                           (--map (cons (concat evil-leader/leader (car it)) (cdr it)))
                           (--mapcat (if (not (s-starts-with? prefix (car it)))
                                         (list it)
-                                      (list it (cons (s-replace prefix evil-leader/major-leader (car it)) (cdr it))))))))
+                                      (list it (cons (s-replace prefix evil-leader--major-leader (car it)) (cdr it))))))))
       (dolist (binding bindings)
-        (evil-local-set-key 'normal (car binding) (cadr binding))))))
+        (evil-local-set-key 'normal (car binding) (cadr binding)))))
 
-(use-package evil-leader
-  :ensure t
-  :config
   (evil-leader/set-leader "<SPC>")
-  (evil-leader/set-major-leader ",")
+  (evil-leader--set-major-leader ",")
   (evil-leader/set-key
     "<SPC>" #'helm-M-x
     "TAB" (if (package-installed-p 'projectile)
@@ -368,6 +367,7 @@
   (define-key company-active-map (kbd "SPC") #'company-abort-and-insert-space))
 
 (use-package cider-repl
+  :disabled t
   :defer t
   :config
   (evil-leader/set-key-for-mode 'cider-repl-mode
@@ -387,6 +387,7 @@
   (evil-leader--set-major-leader-for-mode 'cider-repl-mode))
 
 (use-package cider-stacktrace
+  :disabled t
   :defer t
   :config
   (evil-define-key 'normal cider-stacktrace-mode-map
@@ -443,12 +444,11 @@
     (evil-define-key 'normal evil-ex-completion-map
       (kbd "<escape>") #'abort-recursive-edit-for-evil-ex)
     (evil-define-key 'insert evil-ex-completion-map
-      (kbd "<escape>") (byte-compile
-                        (lambda ()
-                          (interactive)
-                          (if evil-ex-expression
-                              (evil-normal-state)
-                            (abort-recursive-edit-for-evil-ex)))))))
+      (kbd "<escape>") (lambda ()
+                         (interactive)
+                         (if evil-ex-expression
+                             (evil-normal-state)
+                           (abort-recursive-edit-for-evil-ex))))))
 
 (use-package evil-surround
   :defer t
@@ -500,13 +500,12 @@
           (helm-execute-persistent-action)
         (helm-next-line))))
 
-  (dolist (map (list helm-find-files-map
-                     helm-read-file-map))
+  (--each (list helm-find-files-map helm-read-file-map)
     (when evil-want-minibuffer
-      (evil-define-key 'insert map
+      (evil-define-key* 'insert it
         (kbd "<tab>") #'helm-ff-completion-or-next-line))
-    (define-key map (kbd "C-u") #'helm-find-files-up-one-level)
-    (define-key map [C-backspace] #'backward-kill-word)))
+    (define-key it (kbd "C-u") #'helm-find-files-up-one-level)
+    (define-key it [C-backspace] #'backward-kill-word)))
 
 (use-package helm-mode
   :defer t
@@ -573,10 +572,10 @@
 (use-package magit-blame
   :defer t
   :config
-  (dolist (key '("p" "P" "n" "N" "b" "r" "f" "B"))
-    (-when-let (f (lookup-key magit-blame-read-only-mode-map (kbd key)))
-      (evil-define-key 'normal magit-blame-mode-map (kbd (concat "M-" key)) f))
-    (define-key magit-blame-read-only-mode-map (kbd key) nil)))
+  (--each '("p" "P" "n" "N" "b" "r" "f" "B")
+    (when-let ((f (lookup-key magit-blame-read-only-mode-map (kbd it))))
+      (evil-define-key* 'normal magit-blame-mode-map (kbd (concat "M-" it)) f))
+    (define-key magit-blame-read-only-mode-map (kbd it) nil)))
 
 
 ;; Key binding for the major mode
@@ -633,14 +632,13 @@
   :defer t
   :config
   (advice-add #'ediff-setup-keymap :after
-              (byte-compile
-               (lambda ()
-                 (define-key ediff-mode-map (kbd "J") #'ediff-jump-to-difference)
-                 (define-key ediff-mode-map (kbd "k") #'ediff-previous-difference)
-                 (define-key ediff-mode-map (kbd "j") #'ediff-next-difference)
-                 (define-key ediff-mode-map (kbd "0") #'ediff-reset-text-size)
-                 (define-key ediff-mode-map (kbd "+") #'ediff-increase-text-size)
-                 (define-key ediff-mode-map (kbd "-") #'ediff-decrease-text-size)))))
+              (lambda ()
+                (define-key ediff-mode-map (kbd "J") #'ediff-jump-to-difference)
+                (define-key ediff-mode-map (kbd "k") #'ediff-previous-difference)
+                (define-key ediff-mode-map (kbd "j") #'ediff-next-difference)
+                (define-key ediff-mode-map (kbd "0") #'ediff-reset-text-size)
+                (define-key ediff-mode-map (kbd "+") #'ediff-increase-text-size)
+                (define-key ediff-mode-map (kbd "-") #'ediff-decrease-text-size))))
 
 (use-package elisp-mode
   :defer t
@@ -820,10 +818,7 @@
               (evil-local-set-key 'normal (kbd "gg") #'vlf-custom-beginning-of-file)
               (evil-local-set-key 'normal (kbd "G")  #'vlf-custom-end-of-file))))
 
-(use-package ztree-view
-  :defer t
-  :config
-  (defun ztree-back-node (&optional node)
+(defun ztree-back-node (&optional node)
     (interactive)
     (let ((line (line-number-at-pos)))
       (-when-let (node (or node (ztree-find-node-in-line line)))
@@ -834,17 +829,20 @@
           (ztree-do-toggle-expand-state (ztree-find-node-in-line line) nil))
         (ztree-refresh-buffer line))))
 
-  (defun ztree-enter-node (&optional node)
-    (interactive)
-    (let ((line (line-number-at-pos)))
-      (-when-let (node (or node (ztree-find-node-in-line line)))
-        (if (funcall ztree-node-is-expandable-fun node)
-            (progn
-              (ztree-do-toggle-expand-state node t)
-              (ztree-refresh-buffer line))
-          (when ztree-node-action-fun
-            (funcall ztree-node-action-fun node t))))))
+(defun ztree-enter-node (&optional node)
+  (interactive)
+  (let ((line (line-number-at-pos)))
+    (-when-let (node (or node (ztree-find-node-in-line line)))
+      (if (funcall ztree-node-is-expandable-fun node)
+          (progn
+            (ztree-do-toggle-expand-state node t)
+            (ztree-refresh-buffer line))
+        (when ztree-node-action-fun
+          (funcall ztree-node-action-fun node t))))))
 
+(use-package ztree-view
+  :defer t
+  :config
   (add-hook 'ztreediff-mode-hook
             (lambda ()
               (evil-local-set-key 'normal (kbd "RET") #'ztree-perform-action)

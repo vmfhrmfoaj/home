@@ -21,8 +21,8 @@
 (package-initialize)
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
-  (package-install 'use-package))
-(require 'use-package)
+  (package-install 'use-package)
+  (require 'use-package))
 (use-package init-loader
   :ensure t
   :config

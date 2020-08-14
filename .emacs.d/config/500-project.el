@@ -32,11 +32,10 @@
     (unless helm-source-project-buffers-list
       (setq helm-source-project-buffers-list
             (helm-make-source "Project Buffers" 'helm-source-buffers
-              :buffer-list (byte-compile
-                            (lambda ()
-                              (-map #'buffer-name
-                                    (or (projectile-project-buffers)
-                                        (buffer-list))))))))
+              :buffer-list (lambda ()
+                             (-map #'buffer-name
+                                   (or (projectile-project-buffers)
+                                       (buffer-list)))))))
     (helm :sources 'helm-source-project-buffers-list
           :buffer "*helm project buffers*"
           :keymap helm-buffer-map
@@ -224,13 +223,12 @@
   (advice-add #'projectile-project-root :override #'projectile-custom-project-root)
 
   (advice-add #'projectile-project-buffer-p :before-while
-              (byte-compile (lambda (buf root) "filter nil to avoid type error" root)))
+              (lambda (buf root) "filter nil to avoid type error" root))
 
   (advice-add #'projectile-project-name :filter-return
-              (byte-compile
-               (lambda (proj-name)
-                 "To cache project name."
-                 (setq-local projectile-project-name proj-name))))
+              (lambda (proj-name)
+                "To cache project name."
+                (setq-local projectile-project-name proj-name)))
 
   (advice-add #'projectile-kill-buffers :override #'projectile-custom-kill-buffers)
 

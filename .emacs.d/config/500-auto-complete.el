@@ -80,11 +80,10 @@
           (helm-company-complete-common))))))
 
   (add-hook 'helm-cleanup-hook
-            (byte-compile
-             (lambda ()
-               (with-helm-current-buffer
-                 (unless (minibufferp)
-                   (company-abort))))))
+            (lambda ()
+              (with-helm-current-buffer
+                (unless (minibufferp)
+                  (company-abort)))))
   ;; NOTE
   ;;  Turn company popup off completely.
   (add-hook 'company-mode-hook

@@ -215,9 +215,8 @@
                   (shell-command-to-string
                    (concat rsync-remote-notify-cmd "'" res "'")))))))))))
 
-(defvar buf-visit-time nil
+(defvar-local buf-visit-time nil
   "TODO")
-(make-local-variable 'buf-visit-time)
 
 (defun update-buf-visit-time (&rest _)
   "TODO"
