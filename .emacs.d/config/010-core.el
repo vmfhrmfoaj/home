@@ -206,6 +206,11 @@
                       (overlay-put ov 'priority 2)))
                 (error (helm--remove-custom-overlays)))))))))
 
+  (defun helm--custom-symbol-name (obj)
+    (if (symbolp obj)
+        (symbol-name obj)
+      "Anonymous"))
+
   (defvar-local helm-face-remap-cookie nil)
 
   (require 'helm-config)
@@ -249,6 +254,7 @@
   (advice-add #'helm-initialize-overlays :after #'helm-custom-initialize-overlays)
   (advice-add #'helm-mark-current-line   :after #'helm-custom-mark-current-line)
   (advice-add #'helm-initialize :after #'helm--update-last-search-buffer)
+  (advice-add #'helm-symbol-name :override #'helm--custom-symbol-name)
 
   (make-thread (lambda ()
                  (helm-mode 1)
