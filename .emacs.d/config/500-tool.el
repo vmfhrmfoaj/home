@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
 (eval-when-compile
-  (load-file "~/.emacs.d/func.el"))
+  (load-file "~/.emacs.d/config/func.el"))
 
 (add-hook 'after-save-hook #'rsync-remote-dir)
 (add-hook 'after-revert-hook #'rsync-remote-dir)

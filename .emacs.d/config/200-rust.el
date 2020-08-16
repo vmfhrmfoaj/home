@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
 (eval-when-compile
-  (load-file "~/.emacs.d/func.el"))
+  (load-file "~/.emacs.d/config/func.el"))
 
 (use-package cargo
   :ensure t

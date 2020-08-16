@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
 (eval-when-compile
-  (load-file "~/.emacs.d/func.el"))
+  (load-file "~/.emacs.d/config/func.el"))
 
 (use-package dap-mode
   :ensure t
@@ -17,10 +17,14 @@
     (when (fboundp #'eldoc-refresh)
       (eldoc-refresh)))
 
+  (setq flymake-fringe-indicator-position 'right-fringe)
+
   (advice-add #'flymake--mode-line-format :filter-return #'cdr)
   (advice-add #'flymake-goto-next-error :around #'flymake--wrap-goto-next-error)
 
-  (setq flymake-fringe-indicator-position 'right-fringe))
+  (add-hook 'flymake-mode-hook
+            (lambda ()
+              (remove-hook 'eldoc-documentation-functions #'flymake-eldoc-function t))))
 
 (use-package flymake-cc
   :defer t

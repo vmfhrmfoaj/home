@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
 (eval-when-compile
-  (load-file "~/.emacs.d/func.el"))
+  (load-file "~/.emacs.d/config/func.el"))
 
 (when window-system
   (prefer-coding-system 'utf-8)
