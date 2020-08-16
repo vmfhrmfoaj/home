@@ -8,7 +8,7 @@
   :config
   (setq frame-background-mode 'dark
         x-underline-at-descent-line t)
-  (load-theme 'base16-material-palenight t)
+  (load-theme 'base16-eighties t)
 
   (custom-set-faces
    '(fixed-pitch ((t :family "Dejavu Sans Mono")))
@@ -112,7 +112,7 @@
 (use-package highlight-parentheses
   :defer t
   :config
-  (let ((base-color "#82aaff"))
+  (let ((base-color (color-from 'show-paren-match :background)))
     (setq hl-paren-colors
           (--iterate (saturate-color (dim-color it 10) -20)
                      (apply 'color-rgb-to-hex-2-dig (color-name-to-rgb base-color))
@@ -134,8 +134,8 @@
   :defer t
   :config
   (custom-set-faces
-   '(line-number ((t :background "#363452")))
-   '(line-number-current-line ((t :inherit (hl-line line-number) :foreground "#959dcb" :inverse-video unspecified)))))
+   `(line-number ((t :background ,(color-from 'default :background 2))))
+   '(line-number-current-line ((t :inherit (hl-line line-number) :inverse-video unspecified)))))
 
 (use-package magit
   :defer t
