@@ -8,7 +8,7 @@
   :config
   (setq frame-background-mode 'dark
         x-underline-at-descent-line t)
-  (load-theme 'base16-eighties t)
+  (load-theme 'base16-material-vivid t)
 
   (custom-set-faces
    '(fixed-pitch ((t :family "Dejavu Sans Mono")))
@@ -17,7 +17,8 @@
 (use-package font-lock
   :config
   (custom-set-faces
-   `(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground ,(color-from 'font-lock-comment-face :foreground -10)))))
+   '(font-lock-keyword-face ((t :foreground "#835ec4")))
+   `(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground ,(color-from 'font-lock-comment-face :foreground -5)))))
 
   (defvar local-variable-name-light-fg-color
     (color-from 'font-lock-variable-name-face :foreground
@@ -93,10 +94,10 @@
 (use-package helm-files
   :defer t
   :config
- (custom-set-faces
-   `(helm-ff-file-dir       ((t :inherit helm-ff-file :foreground ,(color-from 'helm-ff-file :foreground -15 -40))))
+  (custom-set-faces
+   `(helm-ff-file-dir       ((t :inherit helm-ff-file :foreground ,(color-from 'helm-ff-file :foreground -10 -20))))
    '(helm-ff-file-extension ((t :inherit font-lock-constant-face)))
-   `(helm-ff-executable-dir ((t :inherit helm-ff-executable :foreground ,(color-from 'helm-ff-executable :foreground -15 -40))))))
+   `(helm-ff-executable-dir ((t :inherit helm-ff-executable :foreground ,(color-from 'helm-ff-executable :foreground -10 -20))))))
 
 (use-package hl-line
   :defer t
