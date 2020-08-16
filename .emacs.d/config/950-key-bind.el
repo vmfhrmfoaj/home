@@ -213,8 +213,7 @@
 
     ;; buffer
     "bR" #'revert-buffer
-    "ba" #'helm-buffers-list
-    "bb" #'helm-project-buffers-list
+    "bb" #'helm-buffers-list
     "bd" #'projectile-kill-buffer
     "bk" #'kill-buffer
     "bs" #'get-scratch-buffer-create
@@ -274,6 +273,7 @@
     "pA" #'projectile-add-known-project
     "pD" #'projectile-remove-known-project
     "pI" #'projectile-invalidate-cache
+    "pb" #'helm-project-buffers-list
     "pd" #'projectile-find-dir
     "pf" #'helm-project-find-files
     "pk" #'projectile-kill-buffers
