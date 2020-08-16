@@ -25,5 +25,8 @@
 
 (use-package undo-tree
   :defer t
-  :ensure t)
+  :ensure t
+  :config
+  (setq undo-tree-auto-save-history t
+        undo-tree-history-directory-alist backup-directory-alist))
 
