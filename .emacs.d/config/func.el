@@ -1,6 +1,6 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-when-compile
+(eval-and-compile
   (require 'use-package))
 
 (use-package dash
