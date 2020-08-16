@@ -230,15 +230,14 @@ EOF
         cat > "${HOME}/.bin/cargo" <<\EOF
 #!/bin/bash
 
-cur_dir=$(pwd)
-cd $(dirname $0)
-export PATH=$(echo "${PATH}" | sed "s@$(pwd):@@g")
-cd "${cur_dir}"
+export PATH=$(echo "${PATH}" | sed "s@$(dirname $0):@@g")
 
 if [ -n "${CARGO_ROOT_TARGET_DIR}" ] && [ -z "${CARGO_TARGET_DIR}" ]; then
-    root=$(cargo locate-project | jq -r '.root' | xargs dirname)
-    encoded_root=$(echo -n ${root} | sha1sum | cut -d' ' -f1)
-    export CARGO_TARGET_DIR="${CARGO_ROOT_TARGET_DIR}/$(basename ${root})-${encoded_root}"
+    root=$(cargo locate-project 2>/dev/null | jq -r '.root' | xargs -r dirname)
+    if [ -d "${root}" ]; then
+        encoded_root=$(echo -n ${root} | sha1sum | cut -d' ' -f1)
+        export CARGO_TARGET_DIR="${CARGO_ROOT_TARGET_DIR}/$(basename ${root})-${encoded_root}"
+    fi
 fi
 
 exec cargo $@
