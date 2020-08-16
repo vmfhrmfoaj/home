@@ -11,8 +11,10 @@
   (load-theme 'base16-material-vivid t)
 
   (custom-set-faces
+   '(default ((t :foreground "#979ca0")))
    '(fixed-pitch ((t :family "Dejavu Sans Mono")))
-   `(region ((t :background ,(color-from 'default :background -2))))))
+   `(region ((t :background ,(color-from 'default :background -2))))
+   '(shadow ((t :foreground "#696a70")))))
 
 (use-package font-lock
   :config
