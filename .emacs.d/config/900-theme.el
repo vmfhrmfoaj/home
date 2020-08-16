@@ -88,7 +88,7 @@
    '(helm-match ((t :inherit lazy-highlight :foreground unspecified)))
    '(helm-match-item ((t :inherit lazy-highlight)))
    '(helm-match-selection ((t :inherit isearch :weight bold)))
-   '(helm-selection ((t :inherit hl-line :weight bold)))
+   '(helm-selection ((t :inherit hl-line :weight bold :distant-foreground unspecified)))
    '(helm-selection-line ((t :inherit helm-selection :weight bold)))
    `(helm-other-buffer ((t :foreground ,(color-from 'default :foreground -10 -15)
                            :background ,(color-from 'default :background +2))))))
@@ -110,7 +110,7 @@
 
   :config
   (custom-set-faces
-   '(hl-line ((t :inherit hl-line-evil-insert)))))
+   `(hl-line ((t :inherit hl-line-evil-insert :distant-foreground ,(color-from 'default :foreground))))))
 
 (use-package highlight-parentheses
   :defer t
