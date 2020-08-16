@@ -10,8 +10,8 @@
   (dired-async-mode 1))
 
 (use-package queue
-  :defer t
-  :ensure t)
+  :ensure t
+  :defer t)
 
 
 (use-package spinner
@@ -24,9 +24,6 @@
     (quelpa '(spinner :fetcher github :repo "Malabarba/spinner.el"))))
 
 (use-package undo-tree
-  :defer t
   :ensure t
-  :config
-  (setq undo-tree-auto-save-history t
-        undo-tree-history-directory-alist backup-directory-alist))
+  :defer t)
 

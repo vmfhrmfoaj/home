@@ -76,6 +76,13 @@ So, replaced `evil-jump-item' to this function."
   (ignore-errors
     (ad-remove-advice #'company--insert-candidate 'after 'sp-company--insert-candidate)))
 
+(use-package undo-tree
+  :ensure t
+  :defer t
+  :config
+  (setq undo-tree-auto-save-history t
+        undo-tree-history-directory-alist backup-directory-alist))
+
 (use-package whitespace
   :config
   (setq-default whitespace-line-column 120)
