@@ -13,13 +13,18 @@
   (custom-set-faces
    '(default ((t :foreground "#979ca0")))
    '(fixed-pitch ((t :family "Dejavu Sans Mono")))
-   `(region ((t :background ,(color-from 'default :background -2))))
-   '(shadow ((t :foreground "#696a70")))))
+   `(region ((t :background ,(color-from 'default :background -2)))))
+
+  (custom-set-faces
+   `(shadow ((t :foreground ,(color-from 'default :foreground -18))))))
 
 (use-package font-lock
   :config
   (custom-set-faces
    '(font-lock-keyword-face ((t :foreground "#835ec4")))
+   `(font-lock-comment-face ((t :foreground ,(color-from 'font-lock-doc-face :foreground -7)))))
+
+  (custom-set-faces
    `(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground ,(color-from 'font-lock-comment-face :foreground -5)))))
 
   (defvar local-variable-name-light-fg-color
@@ -88,7 +93,7 @@
    '(helm-match ((t :inherit lazy-highlight :foreground unspecified)))
    '(helm-match-item ((t :inherit lazy-highlight)))
    '(helm-match-selection ((t :inherit isearch :weight bold)))
-   '(helm-selection ((t :inherit hl-line :weight bold :distant-foreground unspecified)))
+   `(helm-selection ((t :inherit hl-line :weight bold :distant-foreground ,(color-from 'default :foreground))))
    '(helm-selection-line ((t :inherit helm-selection :weight bold)))
    `(helm-other-buffer ((t :foreground ,(color-from 'default :foreground -10 -15)
                            :background ,(color-from 'default :background +2))))))
@@ -110,7 +115,7 @@
 
   :config
   (custom-set-faces
-   `(hl-line ((t :inherit hl-line-evil-insert :distant-foreground ,(color-from 'default :foreground))))))
+   '(hl-line ((t :inherit hl-line-evil-insert)))))
 
 (use-package highlight-parentheses
   :defer t
