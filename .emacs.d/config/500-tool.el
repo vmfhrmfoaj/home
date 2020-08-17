@@ -180,7 +180,8 @@ reflect the change."
            (setq eldoc-current-idle-delay eldoc-idle-delay)
            (timer-set-idle-time eldoc-timer eldoc-idle-delay t))))
 
-  (setq eldoc-idle-delay 0.2)
+  (setq eldoc-idle-delay 0.2
+        eldoc-echo-area-use-multiline-p max-mini-window-height)
 
   (add-hook 'eldoc-mode-hook
             (lambda ()

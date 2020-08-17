@@ -167,7 +167,7 @@
           (apply #'list contents (cdr args))
         (apply #'list (-interpose "\n" (append contents nil)) (cdr args)))))
 
-  (defun lsp--custom-eldoc-message (&optional msg)
+  (defun lsp--custom-eldoc-message-emacs-27 (&optional msg)
     "Show MSG in eldoc."
     (setq lsp--eldoc-saved-message msg)
     (let ((lines (s-lines (or msg "")))
@@ -183,6 +183,11 @@
                               (-snoc (-take (max 1 (1- max-line)) lines) (propertize "(...)" 'face 'shadow)))
                             (-interpose "\n")
                             (apply #'concat))))))
+
+  (defun lsp--custom-eldoc-message-emacs-28 (&optional msg)
+    "Show MSG in eldoc."
+    (setq lsp--eldoc-saved-message msg)
+    (eldoc--handle-docs (when msg (list (cons msg nil)))))
 
   (defvar-local lsp--hover-saved-symbol nil
     "TODO")
@@ -402,8 +407,12 @@
               (when (and lsp-ui-sideline-mode (not (buffer-modified-p)))
                 (lsp-ui-sideline--diagnostics-changed))))
 
+  (advice-add #'lsp--eldoc-message :override
+              (if (version<= emacs-version "28.0.50")
+                  #'lsp--custom-eldoc-message-emacs-28
+               #'lsp--custom-eldoc-message-emacs-27))
+
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
-  (advice-add #'lsp--eldoc-message   :override #'lsp--custom-eldoc-message)
   (advice-add #'lsp-diagnostics--flymake-backend :override #'lsp-diagnostics--custom-flymake-backend)
   (advice-add #'lsp-diagnostics--flymake-update-diagnostics :before #'lsp-diagnostics--clear-flymake-diags)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)

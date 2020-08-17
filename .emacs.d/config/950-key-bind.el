@@ -215,6 +215,7 @@
     "bR" #'revert-buffer
     "bb" #'helm-buffers-list
     "bd" #'projectile-kill-buffer
+    "be" #'eldoc-doc-buffer
     "bk" #'kill-buffer
     "bs" #'get-scratch-buffer-create
     "bl" #'switch-to-previous-buffer
