@@ -48,7 +48,7 @@
               :candidate-number-limit helm-company-candidate-number-limit)
         (when (or (not (featurep 'yasnippet))
                   (null yas--active-snippets)
-                  (not (looking-back "\\s(")))
+                  (not (looking-back "[<\[({]")))
           (evil-normal-state))
         (when (and (featurep 'lsp)
                    lsp-signature-auto-activate
