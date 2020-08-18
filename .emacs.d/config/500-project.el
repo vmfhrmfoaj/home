@@ -33,9 +33,11 @@
       (setq helm-source-project-buffers-list
             (helm-make-source "Project Buffers" 'helm-source-buffers
               :buffer-list (lambda ()
-                             (-map #'buffer-name
-                                   (or (projectile-project-buffers)
-                                       (buffer-list)))))))
+                             (->> (or (projectile-project-buffers)
+                                      (buffer-list))
+                                  (sort-buffer-by-visit-time)
+                                  (-rotate -1)
+                                  (-map #'buffer-name))))))
     (helm :sources 'helm-source-project-buffers-list
           :buffer "*helm project buffers*"
           :keymap helm-buffer-map
