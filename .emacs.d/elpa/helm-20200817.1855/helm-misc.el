@@ -331,19 +331,40 @@ Default action change TZ environment variable locally to emacs."
 (defvar epa-protocol)
 (defvar epa-last-coding-system-specified)
 (defvar mail-header-separator)
-(declare-function epg-list-keys            "epg")
-(declare-function epg-make-context         "epg")
-(declare-function epg-key-sub-key-list     "epg")
-(declare-function epg-sub-key-id           "epg")
-(declare-function epg-key-user-id-list     "epg")
-(declare-function epg-user-id-string       "epg")
-(declare-function epg-user-id-validity     "epg")
-(declare-function epa-sign-region          "epg")
-(declare-function epa--read-signature-type "epg")
+(declare-function epg-list-keys             "epg")
+(declare-function epg-make-context          "epg")
+(declare-function epg-key-sub-key-list      "epg")
+(declare-function epg-sub-key-id            "epg")
+(declare-function epg-key-user-id-list      "epg")
+(declare-function epg-user-id-string        "epg")
+(declare-function epg-user-id-validity      "epg")
+(declare-function epa-sign-region           "epg")
+(declare-function epa--read-signature-type  "epg")
+(declare-function epa-display-error         "epg")
+(declare-function epg-export-keys-to-string "epg")
+(declare-function epg-context-armor         "epg")
+
+(defvar helm-epa--list-only-secrets nil
+  "[INTERNAL] Used to pass MODE argument to `epg-list-keys'.")
+
+(defcustom helm-epa-actions '(("Show key" . epa--show-key)
+                              ("encrypt file with key" . helm-epa-encrypt-file)
+                              ("Copy keys to kill ring" . helm-epa-kill-keys-armor))
+  "Actions for `helm-list-epg-keys'."
+  :type '(alist :key-type string :value-type symbol)
+  :group 'helm-misc)
+
+(defclass helm-epa (helm-source-sync)
+  ((init :initform (lambda ()
+                     (require 'epg)
+                     (require 'epa)))
+   (candidates :initform 'helm-epg-get-key-list))
+  "Allow building helm sources for GPG keys.")
 
 (defun helm-epg-get-key-list ()
   "Build candidate list for `helm-list-epg-keys'."
-  (cl-loop with all-keys = (epg-list-keys (epg-make-context epa-protocol))
+  (cl-loop with all-keys = (epg-list-keys (epg-make-context epa-protocol)
+                                          nil helm-epa--list-only-secrets)
            for key in all-keys
            for sublist = (car (epg-key-sub-key-list key))
            for subkey-id = (epg-sub-key-id sublist)
@@ -367,14 +388,57 @@ Default action change TZ environment variable locally to emacs."
                                   uid 'face 'font-lock-warning-face))
                          key)))
 
+(defun helm-epa-select-keys (_context prompt &optional names secret)
+  "A helm replacement for `epa-select-keys'."
+  (let ((helm-epa--list-only-secrets secret))
+    (helm :sources (helm-make-source "Epa select keys" 'helm-epa)
+          :default (if (stringp names) names (regexp-opt names))
+          :prompt prompt
+          :buffer "*helm epa*")))
+
+(define-minor-mode helm-epa-mode
+  "Enable helm completion on gpg keys in epa functions."
+  :group 'helm-misc
+  :global t
+  (if helm-epa-mode
+      (advice-add 'epa-select-keys :override #'helm-epa-select-keys)
+    (advice-remove 'epa-select-keys #'helm-epa-select-keys)))
+
+(defun helm-epa-action-transformer (actions _candidate)
+  "Helm epa action transformer function."
+  (cond ((with-helm-current-buffer
+           (derived-mode-p 'message-mode 'mail-mode))
+         (helm-append-at-nth
+          actions '(("Sign mail with key" . helm-epa-mail-sign)
+                    ("Encrypt mail with key" . helm-epa-mail-encrypt))
+          3))
+        (t actions)))
+
 (defun helm-epa-encrypt-file (candidate)
   "Select a file to encrypt with key CANDIDATE."
-  (let ((file (helm-read-file-name "Encrypt file: ")))
-    (epa-encrypt-file file candidate)))
+  (let ((file (helm-read-file-name "Encrypt file: "))
+        (key (epg-sub-key-id (car (epg-key-sub-key-list candidate))))
+        (id  (epg-user-id-string (car (epg-key-user-id-list candidate)))))
+    (epa-encrypt-file file candidate)
+    (message "File encrypted with key `%s %s'" key id)))
+
+(defun helm-epa-kill-keys-armor (_candidate)
+  "Copy marked keys to kill ring."
+  (let ((keys (helm-marked-candidates))
+        (context (epg-make-context epa-protocol)))
+    (with-no-warnings
+      (setf (epg-context-armor context) t))
+    (condition-case error
+	(kill-new (epg-export-keys-to-string context keys))
+      (error
+       (epa-display-error context)
+       (signal (car error) (cdr error))))))
 
 (defun helm-epa-mail-sign (candidate)
   "Sign email with key CANDIDATE."
-  (let (start end mode)
+  (let ((key (epg-sub-key-id (car (epg-key-sub-key-list candidate))))
+        (id  (epg-user-id-string (car (epg-key-user-id-list candidate))))
+        start end mode)
     (save-excursion
       (goto-char (point-min))
       (if (search-forward mail-header-separator nil t)
@@ -391,7 +455,8 @@ Default action change TZ environment variable locally to emacs."
     ;; TODO Make non-interactive functions to replace epa-sign-region
     ;; and epa-encrypt-region and inline them.
     (with-suppressed-warnings ((interactive-only epa-sign-region))
-      (epa-sign-region start end candidate mode))))
+      (epa-sign-region start end candidate mode))
+    (message "Mail signed with key `%s %s'" key id)))
 
 (defun helm-epa-mail-encrypt (candidate)
   "Encrypt email with key CANDIDATE."
@@ -406,25 +471,21 @@ Default action change TZ environment variable locally to emacs."
 	    (or coding-system-for-write
 		(select-safe-coding-system start end))))
     ;; Don't let some read-only text stop us from encrypting.
-    (let ((inhibit-read-only t))
+    (let ((inhibit-read-only t)
+          (key (epg-sub-key-id (car (epg-key-sub-key-list candidate))))
+          (id  (epg-user-id-string (car (epg-key-user-id-list candidate)))))
       (with-suppressed-warnings ((interactive-only epa-encrypt-region))
-        (epa-encrypt-region start end candidate nil nil)))))
+        (epa-encrypt-region start end candidate nil nil))
+      (message "Mail encrypted with key `%s %s'" key id))))
 
 (defun helm-list-epg-keys ()
   "List all gpg keys.
 This is the helm interface for `epa-list-keys'."
   (interactive)
   (helm :sources
-        (helm-build-sync-source "Epg list keys"
-          :init (lambda ()
-                  (require 'epg)
-                  (require 'epa))
-          :candidates 'helm-epg-get-key-list
-          :action '(("Show key" . epa--show-key)
-                    ("encrypt file with key" . helm-epa-encrypt-file)
-                    ;; TODO filter these actions according to context.
-                    ("Sign mail with key" . helm-epa-mail-sign)
-                    ("Encrypt mail with key" . helm-epa-mail-encrypt)))
+        (helm-make-source "Epg list keys" 'helm-epa
+          :action-transformer 'helm-epa-action-transformer
+          :action 'helm-epa-actions)
         :buffer "*helm epg list keys*"))
 
 (provide 'helm-misc)

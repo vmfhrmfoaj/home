@@ -30,7 +30,7 @@
 ;;;### (autoloads nil "lsp-clients" "lsp-clients.el" (0 0 0 0))
 ;;; Generated autoloads from lsp-clients.el
 
-(register-definition-prefixes "lsp-clients" '("lsp-"))
+(register-definition-prefixes "lsp-clients" '("lsp-clients-"))
 
 ;;;***
 
@@ -254,6 +254,14 @@ Narrow to the symbol range on breadcrumb at SYMBOL-POSITION.
 
 ;;;***
 
+;;;### (autoloads nil "lsp-javascript" "lsp-javascript.el" (0 0 0
+;;;;;;  0))
+;;; Generated autoloads from lsp-javascript.el
+
+(register-definition-prefixes "lsp-javascript" '("lsp-"))
+
+;;;***
+
 ;;;### (autoloads nil "lsp-json" "lsp-json.el" (0 0 0 0))
 ;;; Generated autoloads from lsp-json.el
 
@@ -353,6 +361,13 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 \(fn &optional ARG)" t nil)
 
 (register-definition-prefixes "lsp-modeline" '("lsp-"))
+
+;;;***
+
+;;;### (autoloads nil "lsp-ocaml" "lsp-ocaml.el" (0 0 0 0))
+;;; Generated autoloads from lsp-ocaml.el
+
+(register-definition-prefixes "lsp-ocaml" '("lsp-ocaml-l"))
 
 ;;;***
 
