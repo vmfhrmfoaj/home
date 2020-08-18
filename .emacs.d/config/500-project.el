@@ -110,19 +110,6 @@
                       (string= cur-proj-root proj-root))))
         (switch-to-previous-buffer-in))))
 
-  :config
-  (defun projectile-project-files-custom-filter (files)
-    "TODO"
-    (-if-let (regex (-some->> (projectile-paths-to-ignore)
-                              (--map (->> it
-                                          (s-chop-prefix (file-truename (projectile-project-root)))
-                                          (concat "^")))
-                              (append (projectile-patterns-to-ignore))
-                              (-interpose "\\|")
-                              (apply #'concat)))
-        (-remove (-partial #'string-match-p regex) files)
-      files))
-
   (defun projectile-action-for-custom-switch-open-project ()
     "A `projectile' action for `projectile-custom-switch-open-project'."
     (let* ((cur-proj-root (projectile-project-root))
@@ -143,6 +130,19 @@
     (interactive)
     (let ((projectile-switch-project-action #'projectile-action-for-custom-switch-open-project))
       (projectile-switch-open-project)))
+
+  :config
+  (defun projectile-project-files-custom-filter (files)
+    "TODO"
+    (-if-let (regex (-some->> (projectile-paths-to-ignore)
+                              (--map (->> it
+                                          (s-chop-prefix (file-truename (projectile-project-root)))
+                                          (concat "^")))
+                              (append (projectile-patterns-to-ignore))
+                              (-interpose "\\|")
+                              (apply #'concat)))
+        (-remove (-partial #'string-match-p regex) files)
+      files))
 
   (defun projectile-custom-project-name (project-root)
     "TODO"

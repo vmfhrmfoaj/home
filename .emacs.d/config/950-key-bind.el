@@ -274,12 +274,12 @@
     "pA" #'projectile-add-known-project
     "pD" #'projectile-remove-known-project
     "pI" #'projectile-invalidate-cache
+    "pS" #'projectile-switch-project
     "pb" #'helm-project-buffers-list
     "pd" #'projectile-find-dir
     "pf" #'helm-project-find-files
     "pk" #'projectile-kill-buffers
-    "pp" #'projectile-custom-switch-open-project
-    "ps" #'projectile-switch-project
+    "ps" #'projectile-custom-switch-open-project
 
     ;; register/rings/resume
     "rk" #'helm-show-kill-ring
