@@ -364,6 +364,9 @@
 (use-package company
   :defer t
   :config
+  (evil-global-set-key 'insert (kbd "<tab>") #'company-indent-or-complete-common)
+  (define-key company-active-map (kbd "<tab>")     #'company-complete-common-or-cycle)
+  (define-key company-active-map (kbd "<backtab>") #'company-select-previous)
   (define-key company-active-map (kbd "C-h") nil)
   (define-key company-active-map (kbd "SPC") #'company-abort-and-insert-space))
 
@@ -423,7 +426,6 @@
     (kbd "C-d") (lambda () (interactive) (up-list nil t))
     (kbd "C-u") (lambda () (interactive) (backward-up-list nil t))
     (kbd "C-h c") #'describe-char
-    (kbd "C-s") #'save-buffer
     (kbd "C-s-SPC") #'mark-sexp
     (kbd "C-k") #'evil-scroll-page-up
     (kbd "C-j") #'evil-scroll-page-down)
@@ -431,7 +433,6 @@
     (kbd "C-h") #'backward-delete-char
     (kbd "C-a") #'beginning-of-line-text
     (kbd "C-e") #'end-of-line
-    (kbd "C-s") #'save-buffer
     (kbd "C-v") #'yank)
   (evil-define-key 'visual 'global
     (kbd "<tab>") #'indent-region
@@ -481,12 +482,6 @@
       (kbd "C-u") #'helm-ag--do-ag-up-one-level))
   (define-key helm-ag-map    (kbd "C-u") #'helm-ag--up-one-level)
   (define-key helm-do-ag-map (kbd "C-u") #'helm-ag--do-ag-up-one-level))
-
-(use-package helm-company
-  :defer t
-  :config
-  (evil-global-set-key 'insert (kbd "<tab>") #'company-indent-or-helm-company)
-  (define-key company-active-map (kbd "C-s") #'helm-company-plus))
 
 (use-package helm-files
   :defer t

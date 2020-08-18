@@ -374,13 +374,6 @@
   (add-to-list 'lsp-language-id-configuration '(cperl-mode . "perl"))
   (add-to-list 'lsp-language-id-configuration '(".*\\.pl$" . "perl"))
 
-  (add-hook 'helm-company-after-completion-hooks
-            (lambda ()
-              (when (and lsp-mode
-                         lsp-signature-auto-activate
-                         (lsp-feature? "textDocument/signatureHelp")
-                         (null lsp-signature-mode))
-                (lsp-signature-activate))))
   (add-hook 'lsp-mode-hook
             (lambda ()
               (cond
