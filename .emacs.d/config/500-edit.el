@@ -81,7 +81,12 @@ So, replaced `evil-jump-item' to this function."
   :defer t
   :config
   (setq undo-tree-auto-save-history t
-        undo-tree-history-directory-alist backup-directory-alist))
+        undo-tree-history-directory-alist backup-directory-alist)
+
+  (advice-add #'undo-tree-load-history-from-hook :around
+              (lambda (fn &rest args)
+                "wrap with `ignore-errors'"
+                (ignore-errors (apply fn args)))))
 
 (use-package whitespace
   :config
