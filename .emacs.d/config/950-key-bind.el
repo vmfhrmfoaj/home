@@ -305,6 +305,7 @@
 
     ;; window
     "w-" #'split-window-vertically
+    "w=" #'balance-windows
     "w|" #'split-window-horizontally
     "wh" #'windmove-left
     "wj" #'windmove-down
