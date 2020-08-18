@@ -86,8 +86,7 @@
   :defer t
   :commands (focus-init focus-terminate)
   :init
-  (defvar focus--exclude-modes '(term-mode)
-    "TODO")
+  (defvar focus--exclude-modes '(term-mode))
 
   (defvar-local focus-face-remap-cookie nil)
 
@@ -97,17 +96,18 @@
                 (bound-and-true-p helm-alive-p)
                 (minibufferp))
       (focus-init)
-      (let ((focus-update-idle-time nil))
-        (focus-move-focus))
+      (focus-move-focus)
       (setq focus-face-remap-cookie
-            (face-remap-add-relative 'hl-line-evil-insert 'bold))))
+            (face-remap-add-relative 'hl-line-evil-insert 'bold))
+      (redisplay t)))
 
   (defun focus--disable ()
     "TODO"
     (when focus-face-remap-cookie
       (face-remap-remove-relative focus-face-remap-cookie)
       (setq focus-face-remap-cookie nil))
-    (focus-terminate))
+    (focus-terminate)
+    (redisplay t))
 
   (add-hook 'evil-insert-state-entry-hook #'focus--enable)
   (add-hook 'evil-insert-state-exit-hook  #'focus--disable)
@@ -173,22 +173,22 @@
                      (point))))
           (cons beg end)))))
 
-  (with-eval-after-load "clojure-mode"
-    (defun focus--clojure-thing ()
-      "TODO"
-      (ignore-errors
-        (save-excursion
-          (let ((beg (progn
-                       (ignore-errors
-                         (while (progn
-                                  (backward-up-list 1 t t)
-                                  (not (looking-at-p "(\\([-0-9A-Za-z]+/\\)?\\(let\\|loop\\|doseq\\|fn\\|def[a-z]*\\)\\_>")))))
-                       (point)))
-                (end (progn
-                       (forward-list)
-                       (point))))
-            (cons beg end)))))
+  (defun focus--clojure-thing ()
+    "TODO"
+    (ignore-errors
+      (save-excursion
+        (let ((beg (progn
+                     (ignore-errors
+                       (while (progn
+                                (backward-up-list 1 t t)
+                                (not (looking-at-p "(\\([-0-9A-Za-z]+/\\)?\\(let\\|loop\\|doseq\\|fn\\|def[a-z]*\\)\\_>")))))
+                     (point)))
+              (end (progn
+                     (forward-list)
+                     (point))))
+          (cons beg end)))))
 
+  (with-eval-after-load "clojure-mode"
     (put 'clojure 'bounds-of-thing-at-point #'focus--clojure-thing)
     (put 'list+   'bounds-of-thing-at-point #'focus--list+-thing)
     (add-to-list 'focus-mode-to-thing '(clojure-mode    . clojure))
@@ -234,47 +234,12 @@
     (eval-after-load "rust-mode"
       (append form '((add-to-list 'focus-mode-to-thing '(rust-mode . c-style))))))
 
-  (defvar-local focus--update-timer nil
-    "TODO")
-
-  (defun focus--clear-update-timer ()
-    "Clear `focus--update-timer`."
-    (when focus--update-timer
-      (cancel-timer focus--update-timer)
-      (setq focus--update-timer nil)))
-
-  (defun focus--wrap-move-focus (fn)
-    "Delay to update `focus-pre-overlay' and `focus-post-overlay'."
-    (when focus--update-timer
-      (cancel-timer focus--update-timer))
-    (if (not focus-update-idle-time)
-        (funcall fn)
-      (setq focus--update-timer
-            (run-with-idle-timer
-             focus-update-idle-time
-             nil
-             (lambda (buf fn)
-               (with-current-buffer buf
-                 (setq focus--update-timer nil)
-                 (condition-case nil
-                     (funcall fn)
-                   (error (progn
-                            (focus-terminate)
-                            (focus-init)
-                            (funcall fn))))))
-             (current-buffer)
-             fn))))
-
-  (setq focus-update-idle-time 0.2)
   (add-to-list 'focus-mode-to-thing '(emacs-lisp-mode . lisp))
   (add-to-list 'focus-mode-to-thing '(tex-mode . tex-sentence))
   (add-to-list 'focus-mode-to-thing '(text-mode . sentence+))
   (put 'tex-sentence 'bounds-of-thing-at-point #'focus--tex-thing)
   (put 'sentence+    'bounds-of-thing-at-point #'focus--text-thing)
-  (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing)
-
-  (advice-add #'focus-terminate :after #'focus--clear-update-timer)
-  (advice-add #'focus-move-focus :around #'focus--wrap-move-focus))
+  (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing))
 
 (use-package highlight-parentheses
   :ensure t
