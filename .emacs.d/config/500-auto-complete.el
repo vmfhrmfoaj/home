@@ -20,7 +20,12 @@
         company-dabbrev-ignore-case t
         company-dabbrev-code-ignore-case t
         company-etags-ignore-case t
-        company-echo-delay 0.2))
+        company-echo-delay 0.2)
+
+  (add-hook 'evil-normal-state-entry-hook
+            (lambda ()
+              (when (company--active-p)
+                (company-cancel)))))
 
 (use-package yasnippet
   :ensure t
