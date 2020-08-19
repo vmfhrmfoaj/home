@@ -5,8 +5,8 @@
 ;; Author: Justin Burkett <justin@burkett.cc>
 ;; Maintainer: Justin Burkett <justin@burkett.cc>
 ;; URL: https://github.com/justbur/emacs-which-key
-;; Package-Version: 20200721.1927
-;; Package-Commit: 3642c11d5ef9be3c6fb9edb8fd5ec3c370abd889
+;; Package-Version: 20200817.2358
+;; Package-Commit: e48e190a75a0c176e1deac218b891e77792d6921
 ;; Version: 3.3.2
 ;; Keywords:
 ;; Package-Requires: ((emacs "24.4"))
@@ -1499,33 +1499,40 @@ local bindings coming first. Within these categories order using
 (defun which-key--replace-in-repl-list-once (key-binding repls)
   (cl-dolist (repl repls)
     (when (which-key--match-replacement key-binding repl)
-      (cl-return (which-key--replace-in-binding key-binding repl)))))
+      (cl-return `(replaced . ,(which-key--replace-in-binding key-binding repl))))))
 
 (defun which-key--replace-in-repl-list-many (key-binding repls)
-  (dolist (repl repls key-binding)
-    (when (which-key--match-replacement key-binding repl)
-      (setq key-binding (which-key--replace-in-binding key-binding repl)))))
+  (let (found)
+    (dolist (repl repls)
+      (when (which-key--match-replacement key-binding repl)
+        (setq found 't)
+        (setq key-binding (which-key--replace-in-binding key-binding repl))))
+    (when found `(replaced . ,key-binding))))
 
 (defun which-key--maybe-replace (key-binding &optional prefix)
   "Use `which-key--replacement-alist' to maybe replace KEY-BINDING.
 KEY-BINDING is a cons cell of the form \(KEY . BINDING\) each of
 which are strings. KEY is of the form produced by `key-binding'."
-  (let* ((pseudo-binding (which-key--get-pseudo-binding key-binding prefix))
-         replaced-key-binding)
+  (let* ((pseudo-binding (which-key--get-pseudo-binding key-binding prefix)))
     (if pseudo-binding
         pseudo-binding
       (let* ((replacer (if which-key-allow-multiple-replacements
                            #'which-key--replace-in-repl-list-many
                          #'which-key--replace-in-repl-list-once)))
-        (setq replaced-key-binding
-              (apply replacer
-                     (list key-binding
-                           (cdr-safe (assq major-mode which-key-replacement-alist)))))
-        ;; terminate early if we're only looking for one replacement and we found it
-        (if (and replaced-key-binding (not which-key-allow-multiple-replacements))
-            replaced-key-binding
-          (setq key-binding (or replaced-key-binding key-binding))
-          (or (apply replacer (list key-binding which-key-replacement-alist)) key-binding))))))
+        (pcase
+            (apply replacer
+                   (list key-binding
+                         (cdr-safe (assq major-mode which-key-replacement-alist))))
+          (`(replaced . ,repl)
+           (if which-key-allow-multiple-replacements
+               (pcase (apply replacer (list repl which-key-replacement-alist))
+                 (`(replaced . ,repl) repl)
+                 ('() repl))
+             repl))
+          ('()
+           (pcase (apply replacer (list key-binding which-key-replacement-alist))
+             (`(replaced . ,repl) repl)
+             ('() key-binding))))))))
 
 (defsubst which-key--current-key-list (&optional key-str)
   (append (listify-key-sequence (which-key--current-prefix))

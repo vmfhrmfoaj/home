@@ -27,10 +27,15 @@
 
 ;;;***
 
-;;;### (autoloads nil "lsp-clients" "lsp-clients.el" (0 0 0 0))
-;;; Generated autoloads from lsp-clients.el
+;;;### (autoloads nil "lsp-clangd" "lsp-clangd.el" (0 0 0 0))
+;;; Generated autoloads from lsp-clangd.el
 
-(register-definition-prefixes "lsp-clients" '("lsp-clients-"))
+(autoload 'lsp-cpp-flycheck-clang-tidy-error-explainer "lsp-clangd" "\
+Explain a clang-tidy ERROR by scraping documentation from llvm.org.
+
+\(fn ERROR)" nil nil)
+
+(register-definition-prefixes "lsp-clangd" '("lsp-c"))
 
 ;;;***
 
@@ -66,18 +71,6 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 (add-hook 'lsp-configure-hook (lambda nil (when (and lsp-auto-configure lsp-completion-enable) (lsp-completion--enable))))
 
 (register-definition-prefixes "lsp-completion" '("lsp-completion-"))
-
-;;;***
-
-;;;### (autoloads nil "lsp-cpp" "lsp-cpp.el" (0 0 0 0))
-;;; Generated autoloads from lsp-cpp.el
-
-(autoload 'lsp-cpp-flycheck-clang-tidy-error-explainer "lsp-cpp" "\
-Explain a clang-tidy ERROR by scraping documentation from llvm.org.
-
-\(fn ERROR)" nil nil)
-
-(register-definition-prefixes "lsp-cpp" '("lsp-cpp-flycheck-clang-tidy--"))
 
 ;;;***
 

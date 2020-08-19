@@ -558,6 +558,26 @@ Preconfigured helm for stumpwm commands." t nil)
 (autoload 'helm-minibuffer-history "helm-misc" "\
 Preconfigured `helm' for `minibuffer-history'." t nil)
 
+(defvar helm-epa-mode nil "\
+Non-nil if Helm-Epa mode is enabled.
+See the `helm-epa-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `helm-epa-mode'.")
+
+(custom-autoload 'helm-epa-mode "helm-misc" nil)
+
+(autoload 'helm-epa-mode "helm-misc" "\
+Enable helm completion on gpg keys in epa functions.
+
+If called interactively, enable Helm-Epa mode if ARG is positive,
+and disable it if ARG is zero or negative.  If called from Lisp,
+also enable the mode if ARG is omitted or nil, and toggle it if
+ARG is `toggle'; disable the mode otherwise.
+
+\(fn &optional ARG)" t nil)
+
 (register-definition-prefixes "helm-misc" '("helm-"))
 
 ;;;***
