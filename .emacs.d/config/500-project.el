@@ -203,8 +203,9 @@
     (-when-let (proj-root (projectile-ensure-project (or proj-root (projectile-project-root))))
       (--each
           (--filter (with-current-buffer it
-                      (-when-let (cur-proj-root (projectile-project-root))
-                        (string-equal proj-root cur-proj-root)))
+                      (when-let ((cur-proj-root (projectile-project-root)))
+                        (or (string-equal cur-proj-root proj-root)
+                            (string-equal cur-proj-root default-directory))))
                     (buffer-list))
         (let ((confirm-kill-processes nil))
           (kill-buffer it)))))
