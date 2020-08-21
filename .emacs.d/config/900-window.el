@@ -5,7 +5,7 @@
 
 (when window-system
   (let* ((min-w (* 140 (frame-char-width)))
-         (ratio 0.23)
+         (ratio 0.25)
          (workarea (-some->> main-monitor (assoc 'workarea) (-drop 1)))
          (main-monitor-x (nth 0 workarea))
          (main-monitor-y (nth 1 workarea))
@@ -15,13 +15,13 @@
          (y main-monitor-y)
          (w main-monitor-w)
          (h main-monitor-h))
-    (if (<= main-monitor-w min-w)
-        (set-frame-parameter nil 'fullscreen 'maximized)
-      (setq x (+ main-monitor-x (floor (* main-monitor-w ratio)))
-            w (- main-monitor-w x))
-      (when (< w min-w)
-        (setq w min-w
-              x (+ main-monitor-x (- main-monitor-w min-w)))))
+    (setq x (+ main-monitor-x (floor (* main-monitor-w ratio)))
+          w (- main-monitor-w x))
+    (when (or (<= main-monitor-w min-w)
+              (< w min-w))
+      (set-frame-parameter nil 'fullscreen 'maximized)
+      (setq w main-monitor-w
+            x main-monitor-x))
     (add-to-list 'default-frame-alist `(width  . (text-pixels . ,w)))
     (add-to-list 'default-frame-alist `(height . (text-pixels . ,h)))
     (setq frame-resize-pixelwise t
