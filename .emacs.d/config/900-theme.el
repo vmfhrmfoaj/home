@@ -115,7 +115,7 @@
 
   :config
   (custom-set-faces
-   '(hl-line ((t :inherit hl-line-evil-insert)))))
+   '(hl-line ((t :inherit hl-line-evil-insert :inverse-video nil)))))
 
 (use-package highlight-parentheses
   :defer t
