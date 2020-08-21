@@ -4,8 +4,8 @@
 
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/projectile
-;; Package-Version: 20200819.531
-;; Package-Commit: 46d2010c6a6cccfc4be72317f10ea99fd041ab54
+;; Package-Version: 20200820.907
+;; Package-Commit: 494b561233c1b55976149a0dd76fcc4ab4928066
 ;; Keywords: project, convenience
 ;; Version: 2.3.0-snapshot
 ;; Package-Requires: ((emacs "25.1") (pkg-info "0.4"))
@@ -61,12 +61,14 @@
 (declare-function make-term "term")
 (declare-function term-mode "term")
 (declare-function term-char-mode "term")
+(declare-function term-ansi-make-term "term")
 (declare-function eshell-search-path "esh-ext")
 (declare-function vc-dir "vc-dir")
 (declare-function vc-dir-busy "vc-dir")
 (declare-function string-trim "subr-x")
 (declare-function fileloop-continue "fileloop")
 (declare-function fileloop-initialize-replace "fileloop")
+(declare-function tramp-archive-file-name-p "tramp-archive")
 
 (declare-function ggtags-ensure-project "ext:ggtags")
 (declare-function ggtags-update-tags "ext:ggtags")
@@ -389,7 +391,8 @@ Regular expressions can be used."
     "_darcs"
     ".tox"
     ".svn"
-    ".stack-work")
+    ".stack-work"
+    ".ccls-cache")
   "A list of directories globally ignored by projectile.
 
 Regular expressions can be used."
@@ -2811,7 +2814,7 @@ test/impl/other files as below:
 (projectile-register-project-type 'emacs-eldev (lambda () (or (projectile-verify-file "Eldev")
                                                               (projectile-verify-file "Eldev-local")))
                                   :project-file "Eldev"
-                                  :compile "eldev package"
+                                  :compile "eldev compile"
                                   :test "eldev test"
                                   :run "eldev emacs"
                                   :package "eldev package")

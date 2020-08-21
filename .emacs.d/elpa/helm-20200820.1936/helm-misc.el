@@ -350,7 +350,7 @@ Default action change TZ environment variable locally to emacs."
 (defcustom helm-epa-actions '(("Show key" . epa--show-key)
                               ("encrypt file with key" . helm-epa-encrypt-file)
                               ("Copy keys to kill ring" . helm-epa-kill-keys-armor))
-  "Actions for `helm-list-epg-keys'."
+  "Actions for `helm-epa-list-keys'."
   :type '(alist :key-type string :value-type symbol)
   :group 'helm-misc)
 
@@ -358,11 +358,11 @@ Default action change TZ environment variable locally to emacs."
   ((init :initform (lambda ()
                      (require 'epg)
                      (require 'epa)))
-   (candidates :initform 'helm-epg-get-key-list))
+   (candidates :initform 'helm-epa-get-key-list))
   "Allow building helm sources for GPG keys.")
 
-(defun helm-epg-get-key-list ()
-  "Build candidate list for `helm-list-epg-keys'."
+(defun helm-epa-get-key-list ()
+  "Build candidate list for `helm-epa-list-keys'."
   (cl-loop with all-keys = (epg-list-keys (epg-make-context epa-protocol)
                                           nil helm-epa--list-only-secrets)
            for key in all-keys
@@ -393,8 +393,16 @@ Default action change TZ environment variable locally to emacs."
   (let ((helm-epa--list-only-secrets secret))
     (helm :sources (helm-make-source "Epa select keys" 'helm-epa)
           :default (if (stringp names) names (regexp-opt names))
-          :prompt prompt
+          :prompt (and prompt (helm-epa--format-prompt prompt))
           :buffer "*helm epa*")))
+
+(defun helm-epa--format-prompt (prompt)
+  (let ((split (split-string prompt "\n")))
+    (if (cdr split)
+        (format "%s\n(%s): "
+                (replace-regexp-in-string "\\.[\t ]*\\'" "" (car split))
+                (replace-regexp-in-string "\\.[\t ]*\\'" "" (cadr split)))
+      (format "%s: " (replace-regexp-in-string "\\.[\t ]*\\'" "" (car split))))))
 
 (defun helm-epa--read-signature-type ()
   "A helm replacement for `epa--read-signature-type'."
@@ -495,7 +503,8 @@ Default action change TZ environment variable locally to emacs."
         (epa-encrypt-region start end candidate nil nil))
       (message "Mail encrypted with key `%s %s'" key id))))
 
-(defun helm-list-epg-keys ()
+;;;###autoload
+(defun helm-epa-list-keys ()
   "List all gpg keys.
 This is the helm interface for `epa-list-keys'."
   (interactive)

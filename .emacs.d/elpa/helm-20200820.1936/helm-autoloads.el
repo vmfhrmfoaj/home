@@ -578,6 +578,10 @@ ARG is `toggle'; disable the mode otherwise.
 
 \(fn &optional ARG)" t nil)
 
+(autoload 'helm-epa-list-keys "helm-misc" "\
+List all gpg keys.
+This is the helm interface for `epa-list-keys'." t nil)
+
 (register-definition-prefixes "helm-misc" '("helm-"))
 
 ;;;***
