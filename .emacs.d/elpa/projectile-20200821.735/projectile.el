@@ -4,8 +4,8 @@
 
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/projectile
-;; Package-Version: 20200820.907
-;; Package-Commit: 494b561233c1b55976149a0dd76fcc4ab4928066
+;; Package-Version: 20200821.735
+;; Package-Commit: b49a0034fb8f2fb602cb093fa721515f87183eaa
 ;; Keywords: project, convenience
 ;; Version: 2.3.0-snapshot
 ;; Package-Requires: ((emacs "25.1") (pkg-info "0.4"))
@@ -3669,7 +3669,7 @@ to run the replacement."
                                   (goto-char (match-beginning 0))))
             tags-loop-operate `(perform-replace ',old-text ',new-text t nil nil
                                                 nil multi-query-replace-map))
-      (tags-loop-continue (or (cons 'list files) t)))))
+      (with-no-warnings (tags-loop-continue (or (cons 'list files) t))))))
 
 ;;;###autoload
 (defun projectile-replace-regexp (&optional arg)
@@ -3697,7 +3697,8 @@ to run the replacement."
           (cl-remove-if
            #'file-directory-p
            (mapcar #'projectile-expand-root (projectile-dir-files directory)))))
-    (tags-query-replace old-text new-text nil (cons 'list files))))
+    ;; FIXME: Probably would fail on Emacs 27+, fourth argument is gone.
+    (with-no-warnings (tags-query-replace old-text new-text nil (cons 'list files)))))
 
 ;;;###autoload
 (defun projectile-kill-buffers ()

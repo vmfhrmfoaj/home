@@ -391,7 +391,7 @@ Necessary since root icons are not rectangular."
     (treemacs-create-icon :file "vsc/locale.png"    :extensions ("locale"))
     (treemacs-create-icon :file "vsc/manifest.png"  :extensions ("manifest"))
     (treemacs-create-icon :file "vsc/maven.png"     :extensions ("pom.xml" "maven.config" "extensions.xml" "settings.xml"))
-    (treemacs-create-icon :file "vsc/meson.png"     :extensions ("meson"))
+    (treemacs-create-icon :file "vsc/meson.png"     :extensions ("meson" "meson.build"))
     (treemacs-create-icon :file "vsc/nginx.png"     :extensions ("nginx.conf" "nginx"))
     (treemacs-create-icon :file "vsc/npm.png"       :extensions ("npmignore" "npmrc" "package.json" "package-lock.json" "npm-shrinwrap.json"))
     (treemacs-create-icon :file "vsc/wasm.png"      :extensions ("wasm" "wat"))
@@ -433,11 +433,10 @@ Uses `treemacs-icon-fallback' as fallback."
   (inline-letevals (file)
     (inline-quote
      (let ((file-downcased (-> ,file (treemacs--filename) (downcase))))
-       (ht-get treemacs-icons
-               file-downcased
-               (ht-get treemacs-icons
-                       (treemacs--file-extension file-downcased)
-                       (with-no-warnings treemacs-icon-fallback)))))))
+       (or (ht-get treemacs-icons file-downcased)
+           (ht-get treemacs-icons
+                   (treemacs--file-extension file-downcased)
+                   (with-no-warnings treemacs-icon-fallback)))))))
 
 ;;;###autoload
 (defun treemacs-resize-icons (size)

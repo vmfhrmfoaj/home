@@ -260,11 +260,12 @@ positive, and disable it if ARG is zero or negative.  If called
 from Lisp, also enable the mode if ARG is omitted or nil, and
 toggle it if ARG is `toggle'; disable the mode otherwise.
 
-You will probably don't want to start this mode directly but instead
-customize `helm-ff-keep-cached-candidates' to a non nil value to
-enable it.
-With `helm-ff-keep-cached-candidates' set to a nil value the mode will
-disable itself.
+You probably don't want to start this mode directly.  Instead you
+should customize `helm-ff-keep-cached-candidates' to a non nil
+value to enable it.
+
+With `helm-ff-keep-cached-candidates' set to a nil value the mode
+will disable itself.
 
 When Emacs is idle, refresh the cache all the
 `helm-ff-refresh-cache-delay' seconds then stop when done or after
