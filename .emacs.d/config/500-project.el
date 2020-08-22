@@ -204,8 +204,8 @@
       (--each
           (--filter (with-current-buffer it
                       (when-let ((cur-proj-root (projectile-project-root)))
-                        (or (string-equal cur-proj-root proj-root)
-                            (string-equal cur-proj-root default-directory))))
+                        (or (string-equal cur-proj-root     proj-root)
+                            (string-equal default-directory proj-root))))
                     (buffer-list))
         (let ((confirm-kill-processes nil))
           (kill-buffer it)))))
