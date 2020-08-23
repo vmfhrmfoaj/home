@@ -16,7 +16,7 @@
    `(region ((t :background ,(color-from 'default :background -2)))))
 
   (custom-set-faces
-   `(shadow ((t :foreground ,(color-from 'default :foreground -18))))))
+   `(shadow ((t :foreground ,(color-from 'default :foreground -15))))))
 
 (use-package font-lock
   :config

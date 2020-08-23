@@ -1204,13 +1204,13 @@
          (match-end 2))
        (goto-char font-lock--anchor-beg-point)
        (0 'font-lock-variable-name-face)))
-     ("\\([&*']\\|::\\)[^ \t\r\n]"
+     ("\\(&\\|&?\\*+\\|::\\)[_0-9A-Za-z]"
       (1 'shadow))
      ("\\(?:^\\s-*\\|[^ \t\r\n]\\)\\(>+\\|:\\)"
       (1 'shadow))
      ("\\_<\\(_\\|\\.\\.\\|[-=]>\\)\\_>"
       (1 'shadow))
-     ("\\(?:\\s(\\|\\s-\\)\\(\\!\\)\\(?:\\s-\\|\\s(\\|[A-Za-z]\\)"
+     ("\\(?:\\s(\\|\\s-\\)\\(\\!\\)\\(?:\\s-\\|\\s(\\|[_0-9A-Za-z]\\)"
       (1 'font-lock-negation-char-face))
      ("^\\s-*use\\s-+\\(?:[_0-9A-Za-z]+::\\)+\\s-*{"
       (,(lambda (limit)
