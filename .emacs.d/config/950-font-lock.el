@@ -1187,7 +1187,9 @@
       (0 'shadow))))
   (font-lock-add-keywords
    'rust-mode
-   `(("\\_>:\\s-+\\(?:[*&]mut\\s-+\\)?\\([_0-9A-Za-z]+\\)\\_>"
+   `(("macro_rules!\\s-+\\([_0-9A-Za-z]+!?\\)"
+      1 'font-lock-function-name-face)
+     ("\\_>:\\s-+\\(?:[*&]mut\\s-+\\)?\\([_0-9A-Za-z]+\\)\\_>"
       (1 'font-lock-type-face))
      (")\\s-+->\\s-+\\(?:[*&]mut\\s-+\\)?\\(?:[_0-9A-Za-z]::\\)*\\([_0-9A-Za-z]+\\)\\_>"
       (1 'font-lock-type-face))

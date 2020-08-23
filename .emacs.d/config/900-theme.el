@@ -21,8 +21,9 @@
 (use-package font-lock
   :config
   (custom-set-faces
+   `(font-lock-comment-face ((t :foreground ,(color-from 'font-lock-doc-face :foreground -7))))
    '(font-lock-keyword-face ((t :foreground "#835ec4")))
-   `(font-lock-comment-face ((t :foreground ,(color-from 'font-lock-doc-face :foreground -7)))))
+   '(font-lock-preprocessor-face ((t :inherit font-lock-builtin-face :foreground unspecified))))
 
   (custom-set-faces
    `(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground ,(color-from 'font-lock-comment-face :foreground -5)))))
@@ -122,9 +123,9 @@
   :config
   (let ((base-color (color-from 'show-paren-match :background)))
     (setq hl-paren-colors
-          (--iterate (saturate-color (dim-color it 10) -20)
+          (--iterate (saturate-color (dim-color it 10) -10)
                      (apply 'color-rgb-to-hex-2-dig (color-name-to-rgb base-color))
-                     4))))
+                     3))))
 
 (use-package iedit
   :defer t

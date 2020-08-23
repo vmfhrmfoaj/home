@@ -183,9 +183,7 @@
   (evil-leader--set-major-leader ",")
   (evil-leader/set-key
     "<SPC>" #'helm-M-x
-    "TAB" (if (package-installed-p 'projectile)
-              #'projectile-switch-to-previous-buffer
-            #'switch-to-previous-buffer)
+    "TAB" #'switch-to-previous-buffer
     "!" #'shell-command
     ";" #'comment-it
     "0" #'winum-select-window-0
