@@ -133,7 +133,7 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 ;;;### (autoloads nil "lsp-elixir" "lsp-elixir.el" (0 0 0 0))
 ;;; Generated autoloads from lsp-elixir.el
 
-(register-definition-prefixes "lsp-elixir" '("lsp-clients-elixir-server-executable"))
+(register-definition-prefixes "lsp-elixir" '("lsp-"))
 
 ;;;***
 
