@@ -21,7 +21,7 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "cargo" '("cargo-minor-mode")))
+(register-definition-prefixes "cargo" '("cargo-minor-mode"))
 
 ;;;***
 
@@ -175,7 +175,7 @@ Cargo: Upgrade dependencies as specified in the local manifest file
 (autoload 'cargo-process-repeat "cargo-process" "\
 Run the last cargo-process command." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "cargo-process" '("cargo-" "manifest-path-argument" "rustc-errno" "set-rust-backtrace")))
+(register-definition-prefixes "cargo-process" '("cargo-" "manifest-path-argument" "rustc-errno" "set-rust-backtrace"))
 
 ;;;***
 

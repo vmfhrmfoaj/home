@@ -357,6 +357,13 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 ;;;***
 
+;;;### (autoloads nil "lsp-nix" "lsp-nix.el" (0 0 0 0))
+;;; Generated autoloads from lsp-nix.el
+
+(register-definition-prefixes "lsp-nix" '("lsp-nix-server-path"))
+
+;;;***
+
 ;;;### (autoloads nil "lsp-ocaml" "lsp-ocaml.el" (0 0 0 0))
 ;;; Generated autoloads from lsp-ocaml.el
 
