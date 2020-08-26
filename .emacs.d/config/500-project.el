@@ -200,15 +200,25 @@
   (defun projectile-custom-kill-buffers (&optional proj-root)
     "Kill all project buffers without exception"
     (interactive)
-    (-when-let (proj-root (projectile-ensure-project (or proj-root (projectile-project-root))))
-      (--each
-          (--filter (with-current-buffer it
-                      (when-let ((cur-proj-root (projectile-project-root)))
-                        (or (string-equal cur-proj-root     proj-root)
-                            (string-equal default-directory proj-root))))
-                    (buffer-list))
-        (let ((confirm-kill-processes nil))
-          (kill-buffer it)))))
+    (-when-let (proj-root (or proj-root (projectile-project-root)))
+      (let ((alive-buf-list nil))
+        (--each
+            (--filter (with-current-buffer it
+                        (when-let ((cur-proj-root (projectile-project-root)))
+                          (string-equal proj-root cur-proj-root)))
+                      (buffer-list))
+          (let ((confirm-kill-processes nil))
+            (kill-buffer it))))))
+
+  (defun projectile-custom-open-projects ()
+    "Return a list of all open projects.
+An open project is a project with any open buffers expect `mini-buffer'."
+    (->> (buffer-list)
+         (-remove #'minibufferp)
+         (--map (when-let ((proj (projectile-project-p)))
+                  (abbreviate-file-name proj)))
+         (-non-nil)
+         (-distinct)))
 
   (setq projectile-completion-system 'helm
         projectile-enable-cachig t
@@ -234,6 +244,7 @@
                 (setq-local projectile-project-name proj-name)))
 
   (advice-add #'projectile-kill-buffers :override #'projectile-custom-kill-buffers)
+  (advice-add #'projectile-open-projects :override #'projectile-custom-open-projects)
 
   (projectile-mode 1)
 

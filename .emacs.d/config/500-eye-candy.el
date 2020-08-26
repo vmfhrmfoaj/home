@@ -239,7 +239,9 @@
   (add-to-list 'focus-mode-to-thing '(text-mode . sentence+))
   (put 'tex-sentence 'bounds-of-thing-at-point #'focus--tex-thing)
   (put 'sentence+    'bounds-of-thing-at-point #'focus--text-thing)
-  (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing))
+  (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing)
+
+  (advice-add #'focus-move-focus :before-until #'company--active-p))
 
 (use-package highlight-parentheses
   :ensure t
