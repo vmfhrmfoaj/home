@@ -155,7 +155,7 @@
                  (eldoc--invoke-strategy)))))))
 
   (defalias 'eldoc-refresh
-    (if (version<= emacs-version "28.0.50")
+    (if (version<= "28.0.50" emacs-version)
         #'eldoc-refresh-for-emacs-28
       #'eldoc-refresh-for-emacs-27))
 
