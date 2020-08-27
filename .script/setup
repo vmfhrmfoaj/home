@@ -25,11 +25,11 @@ _add_to_path() {
 }
 
 _setup_for_android() {
-    local android_home="${HOME}/.android/sdk"
+    local android_home="${HOME}/.android"
     if [ -d ${android_home} ]; then
         export ANDROID_HOME="${android_home}"
-        _add_to_path "${android_home}/tools/bin"
-        _add_to_path "${android_home}/platform-tools"
+        _add_to_path "${android_home}/tools/bin" 'yes'
+        _add_to_path "${android_home}/platform-tools" 'yes'
     fi
 }
 
