@@ -5,12 +5,13 @@
   (require 'evil-core)
   (require 'lsp-mode))
 
-(defmacro lsp-define-cond-key-fn (fn cond)
+(defmacro lsp-define-cond-key-fn (fn cond &optional fallback)
   "Create a function with condition."
   `(lambda ()
      (interactive)
-     (when ,cond
-       (call-interactively ,fn))))
+     (if ,cond
+         (call-interactively ,fn)
+       (and ,fallback (call-interactively ,fallback)))))
 
 (defun lsp--custom-setup-key (mode)
   "Set up keys for `lsp-mode'."
@@ -36,7 +37,7 @@
     "mTT" #'lsp-treemacs-sync-mode
 
     ;; goto
-    "mgg" (lsp-define-cond-key-fn #'lsp-find-definition (lsp-feature? "textDocument/definition"))
+    "mgg" (lsp-define-cond-key-fn #'lsp-find-definition (lsp-feature? "textDocument/definition") #'dumb-jump-go)
     "mgr" (lsp-define-cond-key-fn #'lsp-find-references (lsp-feature? "textDocument/references"))
     "mgi" (lsp-define-cond-key-fn #'lsp-find-implementation (lsp-feature? "textDocument/implementation"))
     "mgt" (lsp-define-cond-key-fn #'lsp-find-type-definition (lsp-feature? "textDocument/typeDefinition"))
