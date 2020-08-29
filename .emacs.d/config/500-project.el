@@ -215,10 +215,11 @@
 An open project is a project with any open buffers expect `mini-buffer'."
     (->> (buffer-list)
          (-remove #'minibufferp)
-         (--map (when-let ((proj (projectile-project-p)))
-                  (abbreviate-file-name proj)))
-         (-non-nil)
-         (-distinct)))
+         (--map (with-current-buffer it
+                  (when-let ((proj (projectile-project-p)))
+                    (abbreviate-file-name proj))))
+         (-distinct)
+         (-non-nil)))
 
   (setq projectile-completion-system 'helm
         projectile-enable-cachig t
