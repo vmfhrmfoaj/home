@@ -407,9 +407,9 @@
                 (lsp-ui-sideline--diagnostics-changed))))
 
   (advice-add #'lsp--eldoc-message :override
-              (if (version<= emacs-version "28.0.50")
+              (if (version<= "28.0.50" emacs-version)
                   #'lsp--custom-eldoc-message-emacs-28
-               #'lsp--custom-eldoc-message-emacs-27))
+                #'lsp--custom-eldoc-message-emacs-27))
 
   (advice-add #'lsp--document-highlight :override #'lsp--custom-document-highlight)
   (advice-add #'lsp-diagnostics--flymake-backend :override #'lsp-diagnostics--custom-flymake-backend)
