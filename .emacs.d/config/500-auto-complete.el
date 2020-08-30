@@ -30,6 +30,27 @@
               (when (company--active-p)
                 (company-cancel)))))
 
+(use-package helm-company
+  :ensure t
+  :after (company helm)
+  :config
+  (defun company-helm-candidates ()
+    "TODO"
+    (interactive)
+    (when (and company-candidates
+               company-point)
+      (helm :sources 'helm-source-company
+            :buffer  "*helm company*"
+            :input (unless (s-blank-str? company-prefix)
+                     (-> company-prefix
+                         (regexp-quote)
+                         (concat " ")
+                         (propertize 'rear-nonsticky '(read-only intangible)
+                                     'read-only t
+                                     'intangible t))))
+      (company-abort)
+      (company-complete-common))))
+
 (use-package yasnippet
   :ensure t
   :hook (prog-mode . yas-minor-mode-on))

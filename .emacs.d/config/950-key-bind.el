@@ -371,6 +371,7 @@
   (define-key company-active-map (kbd "<tab>")     #'company-complete-common-or-cycle)
   (define-key company-active-map (kbd "<backtab>") #'company-select-previous)
   (define-key company-active-map (kbd "C-h") nil)
+  (define-key company-active-map (kbd "C-s") #'company-helm-candidates)
   (define-key company-active-map (kbd "SPC") #'company-abort-and-insert-space))
 
 (use-package cider-repl
