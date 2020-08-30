@@ -1,7 +1,10 @@
 ;; -*- lexical-binding: t; -*-
 
 (eval-and-compile
-  (load-file "~/.emacs.d/config/func.el"))
+  (eval-when-compile
+    (unless (file-exists-p "~/.emacs.d/config/func.elc")
+      (byte-compile-file "~/.emacs.d/config/func.el")))
+  (load-file "~/.emacs.d/config/func.elc"))
 
 (setq font-lock--anchor-beg-point nil
       font-lock--local-limit nil)
@@ -16,18 +19,18 @@
   "TODO"
   (-repeat 4 (point-min-marker)))
 
-(use-package cc-mode
-  :defer t
-  :config
-  (add-hook
-   'c-mode-common-hook
-   (lambda ()
-     (when (member major-mode '(c-mode c++-mode))
-       (font-lock-add-keywords
-        nil
-        `(("\\([&|*]\\|::\\|[-=]>\\)"
-           (1 'shadow)))
-        :append)))))
+;; (use-package cc-mode
+;;   :defer t
+;;   :config
+;;   (add-hook
+;;    'c-mode-common-hook
+;;    (lambda ()
+;;      (when (member major-mode '(c-mode c++-mode))
+;;        (font-lock-add-keywords
+;;         nil
+;;         `(("\\([&|*]\\|::\\|[-=]>\\)"
+;;            (1 'shadow)))
+;;         :append)))))
 
 (use-package elixir-mode
   :disabled t

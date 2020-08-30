@@ -1,7 +1,10 @@
 ;; -*- lexical-binding: t; -*-
 
 (eval-and-compile
-  (load-file "~/.emacs.d/config/func.el"))
+  (eval-when-compile
+    (unless (file-exists-p "~/.emacs.d/config/func.elc")
+      (byte-compile-file "~/.emacs.d/config/func.el")))
+  (load-file "~/.emacs.d/config/func.elc"))
 
 (use-package dumb-jump
   :ensure t
@@ -73,7 +76,7 @@
     "TODO"
     (when (eq 'helm dumb-jump-selector)
       (let ((proj-regex (concat "^" (regexp-quote proj) "/*"))
-            candidates)
+            (candidates nil))
         (dolist (res results)
           (let ((path (s-replace-regexp proj-regex "" (plist-get res :path)))
                 (line-num (number-to-string (plist-get res :line)))
@@ -87,11 +90,10 @@
                                  (propertize (substring line (match-beginning 0) (match-end 0))
                                              'face 'helm-dumb-jump-keyword)
                                  (substring line (match-end 0)))))
-            (add-to-list 'candidates
-                         (concat (propertize path 'face 'helm-moccur-buffer) ":"
-                                 (propertize line-num 'face 'helm-grep-lineno) ":"
-                                 line)
-                         t)))
+            (-update-> candidates
+                       (-concat (-list (concat (propertize path     'face 'helm-moccur-buffer) ":"
+                                               (propertize line-num 'face 'helm-grep-lineno)   ":"
+                                               line))))))
         ;; (helm-set-local-variable
         ;;  'helm-cur-line-highlight-symbols '(helm-dumb-jump--keyword))
         (helm :sources

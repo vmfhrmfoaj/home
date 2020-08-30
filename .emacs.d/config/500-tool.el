@@ -1,7 +1,10 @@
 ;; -*- lexical-binding: t; -*-
 
 (eval-and-compile
-  (load-file "~/.emacs.d/config/func.el"))
+  (eval-when-compile
+    (unless (file-exists-p "~/.emacs.d/config/func.elc")
+      (byte-compile-file "~/.emacs.d/config/func.el")))
+  (load-file "~/.emacs.d/config/func.elc"))
 
 (add-hook 'after-save-hook #'rsync-remote-dir)
 (add-hook 'after-revert-hook #'rsync-remote-dir)
@@ -29,7 +32,7 @@
 
 (use-package display-line-numbers
   :hook ((prog-mode . enable-display-line-numbers))
-  :config
+  :init
   (defun enable-display-line-numbers ()
     "Turn on `display-line-numbers-mode'."
     (let ((buf-name (buffer-name)))

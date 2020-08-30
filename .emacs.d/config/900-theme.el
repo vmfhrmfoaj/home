@@ -1,7 +1,10 @@
 ;; -*- lexical-binding: t; -*-
 
 (eval-and-compile
-  (load-file "~/.emacs.d/config/func.el"))
+  (eval-when-compile
+    (unless (file-exists-p "~/.emacs.d/config/func.elc")
+      (byte-compile-file "~/.emacs.d/config/func.el")))
+  (load-file "~/.emacs.d/config/func.elc"))
 
 (use-package base16-theme
   :ensure t
@@ -16,7 +19,9 @@
    `(region ((t :background ,(color-from 'default :background -2)))))
 
   (custom-set-faces
-   `(shadow ((t :foreground ,(color-from 'default :foreground -15))))))
+   `(shadow ((t :foreground ,(color-from 'default :foreground -15))))
+   `(line-number ((t :background ,(color-from 'default :background 2))))
+   '(line-number-current-line ((t :inherit (hl-line line-number) :inverse-video unspecified)))))
 
 (use-package font-lock
   :config
@@ -138,13 +143,6 @@
   :config
   (custom-set-faces
    '(lazy-highlight ((t :weight bold)))))
-
-(use-package display-line-numbers
-  :defer t
-  :config
-  (custom-set-faces
-   `(line-number ((t :background ,(color-from 'default :background 2))))
-   '(line-number-current-line ((t :inherit (hl-line line-number) :inverse-video unspecified)))))
 
 (use-package magit
   :defer t
