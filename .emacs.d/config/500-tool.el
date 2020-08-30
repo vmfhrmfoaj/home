@@ -121,6 +121,11 @@
 (use-package eldoc
   :defer t
   :config
+  (defvar eldoc-refresh-last-pos nil)
+
+  (defun eldoc-refresh-pos ()
+    (list (buffer-name) (point)))
+
   (defun eldoc-refresh-for-emacs-27 ()
     (interactive)
     (when (or eldoc-mode
@@ -129,11 +134,15 @@
       (when (timerp eldoc-timer)
         (cancel-timer eldoc-timer)
         (setq eldoc-timer nil))
-      (when (and (not (interactive-p))
-                 (functionp eldoc-documentation-function))
-        (let ((msg (funcall eldoc-documentation-function)))
-          (unless (s-blank? msg)
-            (eldoc-message msg))))))
+      (when-let ((msg (and (functionp eldoc-documentation-function)
+                           (funcall eldoc-documentation-function))))
+        (if (interactive-p)
+            (eldoc-message msg)
+          (let ((pos (eldoc-refresh-pos)))
+            (when (and (not (s-blank-str? msg))
+                       (not (equal eldoc-refresh-last-pos pos)))
+              (setq eldoc-refresh-last-pos pos)
+              (eldoc-message msg)))))))
 
   (defun eldoc-refresh-for-emacs-28 (&optional interactive)
     (interactive '(t))
