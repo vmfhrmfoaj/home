@@ -311,10 +311,30 @@ confirm the selection and finish the completion.
 
 \(fn COMMAND)" nil nil)
 
-(autoload 'company-tng-configure-default "company-tng" "\
-Applies the default configuration to enable company-tng." nil nil)
+(define-obsolete-function-alias 'company-tng-configure-default 'company-tng-mode "0.9.14" "\
+Applies the default configuration to enable company-tng.")
 
-(register-definition-prefixes "company-tng" '("company-tng--"))
+(defvar company-tng-mode nil "\
+Non-nil if Company-Tng mode is enabled.
+See the `company-tng-mode' command
+for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `company-tng-mode'.")
+
+(custom-autoload 'company-tng-mode "company-tng" nil)
+
+(autoload 'company-tng-mode "company-tng" "\
+This minor mode enables `company-tng-frontend'.
+
+If called interactively, enable Company-Tng mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
+
+\(fn &optional ARG)" t nil)
+
+(register-definition-prefixes "company-tng" '("company-tng-"))
 
 ;;;***
 
