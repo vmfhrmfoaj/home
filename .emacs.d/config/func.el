@@ -1,7 +1,8 @@
 ;; -*- lexical-binding: t; -*-
 
 (eval-and-compile
-  (require 'use-package)
+  (eval-when-compile
+    (require 'use-package))
 
   (use-package dash :ensure t)
   (use-package dash-functional :ensure t)
