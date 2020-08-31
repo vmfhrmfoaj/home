@@ -2,10 +2,10 @@
 
 (eval-and-compile
   (eval-when-compile
-    (require 'evil-core)
-    (require 'lsp-mode)
     (unless (file-exists-p "~/.emacs.d/config/func.elc")
       (byte-compile-file "~/.emacs.d/config/func.el")))
+  (require 'evil-core)
+  (require 'lsp-mode)
   (load-file "~/.emacs.d/config/func.elc"))
 
 (defmacro lsp-define-cond-key-fn (fn cond &optional fallback)
