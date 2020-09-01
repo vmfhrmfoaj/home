@@ -97,6 +97,12 @@ _install_vs_code_from_tar() {
         >&2 echo "Can't create a symbolic link at '${sym_file}'"
         return 255;
     fi
+    cat > ${target_dir}/bin/code-wrapper <<\EOF
+#!/bin/bash
+cd $(dirname $0)
+source ~/.script/setup
+exec ./code $@
+EOF
     cat > "${HOME}/.local/share/applications/visual-studio-code.desktop" <<EOF
 [Desktop Entry]
 Type=Application
@@ -106,7 +112,7 @@ GenericName=VS Code
 Comment=Multiplatform Visual Studio Code from Microsoft
 Icon=${target_dir}/resources/app/resources/linux/code.png
 TryExec=${target_dir}/bin/code
-Exec=${target_dir}/bin/code %F
+Exec=${target_dir}/bin/code-wrapper %F
 Terminal=true
 MimeType=text/css;text/english;text/html;text/plain;text/x-c;text/x-chdr;text/x-csrc;text/x-c++;text/x-c++hdr;text/x-c++src;text/x-java;text/x-makefile;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;
 Categories=Development;IDE;TextEditor;
@@ -117,20 +123,35 @@ EOF
     read yn
     if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
         local extensions=(
+            bmewburn.vscode-intelephense-client
             bungcip.better-toml
-            EditorConfig.EditorConfig
+            coolbear.systemd-unit-file
+            DavidAnson.vscode-markdownlint
+            dbaeumer.vscode-eslint
+            DotJoshJohnson.xml
             eamodio.gitlens
+            EditorConfig.EditorConfig
             georgewfraser.vscode-tree-sitter
+            HookyQR.beautify
+            LaurentTreguier.rpm-spec
+            mads-hartmann.bash-ide-vscode
+            maelvalais.autoconf
+            matklad.rust-analyzer
+            ms-python.python
             ms-vscode-remote.remote-containers
             ms-vscode-remote.remote-ssh
             ms-vscode-remote.remote-ssh-edit
             ms-vscode-remote.remote-wsl
             ms-vscode-remote.vscode-remote-extensionpack
+            ms-vscode.cpptools
+            ms-vscode.vscode-typescript-tslint-plugin
+            msjsdiag.debugger-for-chrome
             PKief.material-icon-theme
             ryuta46.multi-command
             shardulm94.trailing-spaces
             slevesque.vscode-hexdump
             vadimcn.vscode-lldb
+            vangware.dark-plus-material
             vscodevim.vim)
         for ext in "${extensions[@]}"; do
             ${target_dir}/bin/code --install-extension ${ext}

@@ -1,15 +1,29 @@
 {
     // Appearance
     "editor.fontFamily": "'Cascadia Code', 'Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
-    "editor.fontSize": 15,
+    "editor.fontSize": 13,
     "editor.fontLigatures": true,
+    "editor.fontWeight": "600",
     "editor.wordWrapColumn": 120,
     "terminal.integrated.fontFamily": "Cascadia Code",
-    "terminal.integrated.fontSize": 13,
+    "terminal.integrated.fontSize": 12,
     "window.titleBarStyle": "custom",
     "window.menuBarVisibility": "default",
-    "workbench.colorTheme": "Atom One Light",
+    "workbench.colorTheme": "Dark+ Material",
     "workbench.iconTheme": "material-icon-theme",
+    "workbench.colorCustomizations": {
+        "[Dark+ Material]": {
+            "editor.foreground": "#a7a7a7",
+            "statusBar.background": "#424242",
+            "statusBar.noFolderBackground": "#424242",
+            "statusBarItem.remoteForeground": "#424242",
+            "statusBarItem.remoteBackground": "#4ca1fb",
+
+            // Rust Analyzer
+            "rust_analyzer.inlayHints.foreground": "#777",
+            "rust_analyzer.inlayHints.foreground.typeHints": "#577e71",
+        },
+    },
 
     // Edit
     "breadcrumbs.enabled": true,
@@ -119,12 +133,8 @@
     // Remote Development
     "remote.SSH.showLoginTerminal": true,
 
-    // Rust Language Server
-    "rust-client.enableMultiProjectSetup": true,
     // Rust Analyzer
-    "rust-analyzer.serverPath": "rust-analyzer",
-    "rust-analyzer.displayInlayHints": false,
-    "rust-analyzer.highlightingOn": true,
+    "rust-analyzer.inlayHints.parameterHints": false,
 
     // Vim
     "workbench.list.keyboardNavigation": "simple", // see, https://github.com/Microsoft/vscode/issues/66995#issuecomment-457123611
@@ -138,6 +148,7 @@
     "vim.visualstar": true,
     "vim.handleKeys": {
         "<C-d>": false,
+        "<C-f>": false,
         "<C-k>": false,
         "<C-t>": false,
         "<C-w>": false,

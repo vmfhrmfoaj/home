@@ -10,12 +10,12 @@
    // Emacs keybinding
    {
       "key": "ctrl+h",
-      "command": "deleteLeft",
-      "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
+      "command": "-editor.action.startFindReplaceAction"
    },
    {
       "key": "ctrl+h",
-      "command": "-editor.action.startFindReplaceAction"
+      "command": "deleteLeft",
+      "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
    },
 
    // Tab
@@ -23,6 +23,11 @@
       "key": "tab",
       "command": "tab",
       "when": "editorTextFocus && !editorReadonly && vim.mode == 'Insert' && !suggestWidgetVisible"
+   },
+   {
+      "key": "tab",
+      "command": "workbench.action.quickOpenNavigateNext",
+      "when": "inQuickOpen"
    },
 
    // for suggestion popup
@@ -122,4 +127,3 @@
       "command": "workbench.action.editor.previousChange",
       "when": "editorTextFocus"
    },
-]
