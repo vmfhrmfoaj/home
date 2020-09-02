@@ -9,6 +9,7 @@
     "terminal.integrated.fontSize": 12,
     "window.titleBarStyle": "custom",
     "window.menuBarVisibility": "default",
+    "window.zoomLevel": 0,
     "workbench.colorTheme": "Dark+ Material",
     "workbench.iconTheme": "material-icon-theme",
     "workbench.colorCustomizations": {
@@ -29,10 +30,15 @@
     "breadcrumbs.enabled": true,
     "workbench.editor.enablePreview": false,
     "editor.lineNumbers": "relative",
+    "editor.renderLineHighlight": "all",
     "editor.renderWhitespace": "selection",
     "editor.minimap.enabled": false,
     "editor.quickSuggestionsDelay": 10,
     "editor.suggestSelection": "first",
+
+    // Misc.
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
 
     ///
     /// Extentions
@@ -569,6 +575,4 @@
             ]
         },
     ],
-    "window.zoomLevel": 0,
-    "explorer.confirmDelete": false,
 }

@@ -99,9 +99,9 @@ _install_vs_code_from_tar() {
     fi
     cat > ${target_dir}/bin/code-wrapper <<\EOF
 #!/bin/bash
-cd $(dirname $0)
+DIR=$(dirname $0)
 source ~/.script/setup
-exec ./code $@
+exec "${DIR}/code" $@
 EOF
     cat > "${HOME}/.local/share/applications/visual-studio-code.desktop" <<EOF
 [Desktop Entry]
