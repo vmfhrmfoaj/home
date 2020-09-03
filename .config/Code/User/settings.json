@@ -1,9 +1,9 @@
 {
     // Appearance
-    "editor.fontFamily": "'Cascadia Code', 'Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontFamily": "'Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "editor.fontSize": 13,
     "editor.fontLigatures": true,
-    "editor.fontWeight": "600",
+    "editor.fontWeight": "500",
     "editor.wordWrapColumn": 120,
     "terminal.integrated.fontFamily": "Cascadia Code",
     "terminal.integrated.fontSize": 12,
@@ -14,6 +14,7 @@
     "workbench.iconTheme": "material-icon-theme",
     "workbench.colorCustomizations": {
         "[Dark+ Material]": {
+            "editorCursor.foreground": "#ccc",
             "editor.foreground": "#a7a7a7",
             "statusBar.background": "#424242",
             "statusBar.noFolderBackground": "#424242",
@@ -151,6 +152,7 @@
     "vim.useSystemClipboard": true,
     "vim.useCtrlKeys": true,
     "vim.hlsearch": true,
+    "vim.highlightedyank.enable": true,
     "vim.visualstar": true,
     "vim.handleKeys": {
         "<C-d>": false,
