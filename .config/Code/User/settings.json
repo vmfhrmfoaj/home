@@ -27,8 +27,10 @@
         },
     },
 
+    "keyboard.dispatch": "keyCode",
+
     // Edit
-    "breadcrumbs.enabled": true,
+    "breadcrumbs.enabled": false,
     "workbench.editor.enablePreview": false,
     "editor.lineNumbers": "relative",
     "editor.renderLineHighlight": "all",
@@ -577,4 +579,5 @@
             ]
         },
     ],
+    "workbench.sideBar.location": "left",
 }
