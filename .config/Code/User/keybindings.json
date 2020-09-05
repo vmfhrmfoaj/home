@@ -33,7 +33,7 @@
       "when": "textInputFocus && hasSearchResult && searchViewletVisible && vim.active && vim.mode == 'Normal'"
    },
 
-   // for Vim
+   // Vim
    {
       "key": "enter",
       "command": "multiCommand.vimSelectedSuggestionAndEscape",
@@ -93,5 +93,31 @@
       "key": "ctrl+k",
       "command": "selectPrevSuggestion",
       "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+   },
+
+   // HHKB Pro2
+   {
+      "key": "shift+NumPad_Add",
+      "command": "type",
+      "args": { "text": "=" },
+      "when": "editorTextFocus"
+   },
+   {
+      "key": "shift+NumPad_Subtract",
+      "command": "type",
+      "args": { "text": "_" },
+      "when": "editorTextFocus"
+   },
+   {
+      "key": "shift+NumPad_Divide",
+      "command": "type",
+      "args": { "text": "\\" },
+      "when": "editorTextFocus"
+   },
+   {
+      "key": "shift+numpad_multiply",
+      "command": "type",
+      "args": { "text": "#" },
+      "when": "editorTextFocus"
    },
 ]

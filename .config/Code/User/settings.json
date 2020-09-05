@@ -1,21 +1,21 @@
 {
     // Appearance
-    "editor.fontFamily": "'Fira Code', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
-    "editor.fontSize": 13,
+    "editor.fontFamily": "'Fantasque Sans Mono', monospace",
+    "editor.fontSize": 14,
     "editor.fontLigatures": true,
-    "editor.fontWeight": "500",
     "editor.wordWrapColumn": 120,
-    "terminal.integrated.fontFamily": "Cascadia Code",
-    "terminal.integrated.fontSize": 12,
+    "terminal.integrated.fontSize": 13,
     "window.titleBarStyle": "custom",
     "window.menuBarVisibility": "default",
     "window.zoomLevel": 0,
+    "workbench.sideBar.location": "left",
     "workbench.colorTheme": "Dark+ Material",
     "workbench.iconTheme": "material-icon-theme",
     "workbench.colorCustomizations": {
         "[Dark+ Material]": {
-            "editorCursor.foreground": "#ccc",
-            "editor.foreground": "#a7a7a7",
+            "editor.foreground": "#a8a8a8",
+            "editorCursor.foreground": "#eee",
+
             "statusBar.background": "#424242",
             "statusBar.noFolderBackground": "#424242",
             "statusBarItem.remoteForeground": "#424242",
@@ -27,7 +27,11 @@
         },
     },
 
-    "keyboard.dispatch": "keyCode",
+    "editor.tokenColorCustomizations": {
+        "[Dark+ Material]": {
+            "functions": "#f5e239"
+        }
+    },
 
     // Edit
     "breadcrumbs.enabled": false,
@@ -579,5 +583,4 @@
             ]
         },
     ],
-    "workbench.sideBar.location": "left",
 }
