@@ -1,7 +1,8 @@
 {
     // Appearance
     "editor.fontFamily": "'Fantasque Sans Mono', monospace",
-    "editor.fontSize": 14,
+    "editor.fontSize": 13,
+    "editor.fontWeight": "bold",
     "editor.fontLigatures": true,
     "editor.wordWrapColumn": 120,
     "terminal.integrated.fontSize": 13,
@@ -29,7 +30,7 @@
 
     "editor.tokenColorCustomizations": {
         "[Dark+ Material]": {
-            "functions": "#f5e239"
+            "functions": "#f4e139",
         }
     },
 
