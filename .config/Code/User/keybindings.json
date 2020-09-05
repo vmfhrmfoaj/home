@@ -11,6 +11,13 @@
       "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
    },
 
+   // Customized
+   {
+      "key": "enter",
+      "command": "multiCommand.revealReferenceAndHide",
+      "when": "listFocus && referenceSearchVisible && !inputFocus"
+   }
+
    // Tab and Shift + Tab
    {
       "key": "tab",

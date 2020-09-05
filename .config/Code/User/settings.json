@@ -52,9 +52,9 @@
     ///
 
     // C/C++
-    "C_Cpp.default.intelliSenseMode": "clang-x64",
     "C_Cpp.updateChannel": "Default",
-    "C_Cpp.enhancedColorization": "Disabled",
+    // CMake
+    "cmake.configureOnOpen": true,
 
     // Gitlens
     "gitlens.codeLens.enabled": false,
@@ -138,6 +138,13 @@
                 "workbench.action.openPreviousRecentlyUsedEditorInGroup"
             ]
         },
+        {
+            "command": "multiCommand.revealReferenceAndHide",
+            "sequence": [
+                "revealReference",
+                "closeReferenceSearch"
+            ]
+        },
     ],
 
     // Python
@@ -167,7 +174,7 @@
         "<C-t>": false,
         "<C-w>": false,
     },
-    // - https://github.com/VSpaceCode/VSpaceCode
+
     "vim.leader": "<space>",
     "vim.visualModeKeyBindingsNonRecursive": [
     ],
@@ -189,20 +196,6 @@
                 }
             ]
         },
-        {
-            "before": [
-                "<leader>",
-                "j",
-                "="
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "editor.action.format",
-                    "args": []
-                }
-            ]
-        }
     ],
     "vim.normalModeKeyBindingsNonRecursive": [
         {
@@ -211,6 +204,19 @@
         },
     ],
     "vim.normalModeKeyBindings": [
+        {
+            "before": [
+                "g",
+                "D"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "editor.action.referenceSearch.trigger",
+                    "args": []
+                },
+            ]
+        },
         {
             "before": [
                 "g",
@@ -253,110 +259,6 @@
         {
             "before": [
                 "<leader>",
-                "1"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.focusFirstEditorGroup",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "2"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.focusSecondEditorGroup",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "3"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.focusThirdEditorGroup",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "4"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.focusFourthEditorGroup",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "5"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.focusFifthEditorGroup",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "6"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.focusSixthEditorGroup",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "7"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.focusSeventhEditorGroup",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "8"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.focusEighthEditorGroup",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
                 "f",
                 "y"
             ],
@@ -378,206 +280,6 @@
             "commands": [
                 {
                     "command": "editor.action.insertSnippet",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "j",
-                "="
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "editor.action.formatDocument",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "leader",
-                "j",
-                "j"
-            ],
-            "after": [
-                "leader",
-                "leader",
-                "s"
-            ]
-        },
-        {
-            "before": [
-                "leader",
-                "j",
-                "l"
-            ],
-            "after": [
-                "leader",
-                "leader",
-                "leader",
-                "b",
-                "d",
-                "j",
-                "k"
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "j",
-                "n"
-            ],
-            "after": [
-                "i",
-                "<enter>",
-                "<esc>",
-                "l"
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "j",
-                "o"
-            ],
-            "after": [
-                "i",
-                "<enter>",
-                "<esc>",
-                "l",
-                "k"
-            ]
-        },
-        {
-            "before": [
-                "leader",
-                "j",
-                "w"
-            ],
-            "after": [
-                "leader",
-                "leader",
-                "leader",
-                "b",
-                "d",
-                "w"
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "q",
-                "q"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.closeWindow",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "q",
-                "r"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.reloadWindow",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "W",
-                "-"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.splitEditorDown",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "W",
-                "/"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.splitEditorRight",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "W",
-                "="
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.evenEditorWidths",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "W",
-                "d"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.closeEditorsInGroup",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "W",
-                "m"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.maximizeEditor",
-                    "args": []
-                },
-                {
-                    "command": "workbench.action.closePanel",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "x",
-                "s"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "editor.action.sortLinesAscending",
                     "args": []
                 }
             ]
