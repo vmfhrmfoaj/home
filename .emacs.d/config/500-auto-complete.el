@@ -16,10 +16,11 @@
     (company-abort)
     (execute-kbd-macro (kbd "SPC")))
 
-  (setq company-idle-delay 0.1
+  (setq company-idle-delay 0
         company-minimum-prefix-length 1
         company-selection-wrap-around t
         company-dabbrev-downcase nil
+        company-dabbrev-minimum-length 2
         company-dabbrev-ignore-case t
         company-dabbrev-code-ignore-case t
         company-etags-ignore-case t
@@ -48,8 +49,9 @@
                          (propertize 'rear-nonsticky '(read-only intangible)
                                      'read-only t
                                      'intangible t))))
-      (company-abort)
-      (company-complete-common))))
+      (unless (looking-back "\\([,;]\\|\\s)\\)")
+        (company-abort)
+        (company-complete-common)))))
 
 (use-package yasnippet
   :ensure t

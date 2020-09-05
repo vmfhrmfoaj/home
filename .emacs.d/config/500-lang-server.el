@@ -387,19 +387,30 @@
                 (setq-local lsp-eldoc-render-all t)))
               (add-hook 'evil-insert-state-entry-hook
                         (lambda ()
-                          (when (and lsp-mode
-                                     lsp-signature-auto-activate
-                                     (lsp-feature? "textDocument/signatureHelp")
-                                     (null lsp-signature-mode))
-                            (setq-local lsp-eldoc-enable-hover nil)
-                            (lsp-signature-activate)))
+                          (when lsp-mode
+                            (when (and lsp-signature-auto-activate
+                                       (lsp-feature? "textDocument/signatureHelp")
+                                       (null lsp-signature-mode))
+                              (setq-local lsp-eldoc-enable-hover nil)
+                              (lsp-signature-activate))
+                            (when lsp-ui-sideline-mode
+                              (lsp-ui-sideline-mode -1))))
                         nil t)
               (add-hook 'evil-insert-state-exit-hook
                         (lambda ()
+                          (when lsp-mode
+                            (when lsp-signature-auto-activate
+                              (setq lsp-eldoc-enable-hover (default-value 'lsp-eldoc-enable-hover))
+                              (lsp-signature-stop))
+                            (unless lsp-ui-sideline-mode
+                              (lsp-ui-sideline-mode 1))))
+                        nil t)
+              (add-hook 'evil-operator-state-entry-hook
+                        (lambda ()
                           (when (and lsp-mode
-                                     lsp-signature-auto-activate)
-                            (setq lsp-eldoc-enable-hover (default-value 'lsp-eldoc-enable-hover))
-                            (lsp-signature-stop)))
+                                     lsp-ui-sideline-mode)
+                            (lsp-ui-sideline--delete-ov)
+                            (setq lsp-ui-sideline--tag nil)))
                         nil t)))
   (add-hook 'lsp-after-diagnostics-hook
             (lambda ()
