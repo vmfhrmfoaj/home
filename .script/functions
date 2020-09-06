@@ -21,8 +21,8 @@ _install_android_studio_from_tar() {
     ln -rs "${target_dir}/bin/studio.sh" "${sym_file}"
     cat > "${HOME}/.local/share/applications/android-studio.desktop" <<EOF
 [Desktop Entry]
+Version=1.0
 Type=Application
-Version=$(grep -Po '(?<="version":)[ ]*"[^ ]*"' "${target_dir}/product-info.json" | grep -o '[^" ]*')
 Name=Android Stuio
 Comment=Android Studio provides the fastest tools for building apps on every type of Android device.
 Icon=android-studio
@@ -59,8 +59,8 @@ _install_atom_from_tar() {
     fi
     cat > "${HOME}/.local/share/applications/atom.desktop" <<EOF
 [Desktop Entry]
+Version=1.0
 Type=Application
-Version=$(${target_dir}/atom --version | awk '{ if ($0 ~ /Atom/) { print gensub(/Atom\s*:\s*([.0-9]+)$/, "\\1", "g", $0); }}')
 Name=Atom
 Comment=A hackable text editor for the 21st Century
 Icon=atom
@@ -97,16 +97,17 @@ _install_vs_code_from_tar() {
         >&2 echo "Can't create a symbolic link at '${sym_file}'"
         return 255;
     fi
-    cat > ${target_dir}/bin/code-wrapper <<\EOF
+    cat > "${target_dir}/bin/code-wrapper" <<\EOF
 #!/bin/bash
 DIR=$(dirname $0)
 source ~/.script/setup
 exec "${DIR}/code" $@
 EOF
+    chmod +x "${target_dir}/bin/code-wrapper"
     cat > "${HOME}/.local/share/applications/visual-studio-code.desktop" <<EOF
 [Desktop Entry]
+Version=1.0
 Type=Application
-Version=$(${target_dir}/bin/code --version | head -1)
 Name=Visual Studio Code
 GenericName=VS Code
 Comment=Multiplatform Visual Studio Code from Microsoft
@@ -131,7 +132,6 @@ EOF
             DotJoshJohnson.xml
             eamodio.gitlens
             EditorConfig.EditorConfig
-            georgewfraser.vscode-tree-sitter
             HookyQR.beautify
             LaurentTreguier.rpm-spec
             mads-hartmann.bash-ide-vscode
@@ -143,6 +143,7 @@ EOF
             ms-vscode-remote.remote-ssh-edit
             ms-vscode-remote.remote-wsl
             ms-vscode-remote.vscode-remote-extensionpack
+            ms-vscode.cmake-tools
             ms-vscode.cpptools
             ms-vscode.vscode-typescript-tslint-plugin
             msjsdiag.debugger-for-chrome
@@ -150,11 +151,99 @@ EOF
             ryuta46.multi-command
             shardulm94.trailing-spaces
             slevesque.vscode-hexdump
+            uloco.theme-bluloco-light
             vadimcn.vscode-lldb
-            vangware.dark-plus-material
             vscodevim.vim)
         for ext in "${extensions[@]}"; do
             ${target_dir}/bin/code --install-extension ${ext}
+        done
+    fi
+    update-desktop-database "${HOME}/.local/share/applications"
+    return 0
+}
+
+_install_vs_code_insiders_from_tar() {
+    local tar_file=$1
+    local target_dir=${2:-"${HOME}/.vscode-insiders"}
+    if [ -z "${tar_file}" ]; then
+        echo "Usage: $0 [TAR_FILE] [TARGET_DIR]?"
+        return 255
+    fi
+
+    mkdir -p "${target_dir}"
+    tar -C "${target_dir}" -xf "${tar_file}" --strip-components=1 'VSCode-linux-x64'
+    if [ $? -ne 0 ]; then
+        >&2 echo "Can't unpack '${tar_file}' to '${target_dir}'"
+        return 255;
+    fi
+
+    local sym_file="${HOME}/.bin/code-insiders"
+    mkdir -p $(dirname "${sym_file}")
+    rm -rf "${sym_file}"
+    ln -rs "${target_dir}/bin/code-insiders" "${sym_file}"
+    if [ $? -ne 0 ]; then
+        >&2 echo "Can't create a symbolic link at '${sym_file}'"
+        return 255;
+    fi
+    cat > ${target_dir}/bin/code-wrapper <<\EOF
+#!/bin/bash
+DIR=$(dirname $0)
+source ~/.script/setup
+exec "${DIR}/code-insiders" $@
+EOF
+    chmod +x "${target_dir}/bin/code-wrapper"
+    cat > "${HOME}/.local/share/applications/visual-studio-code-insiders.desktop" <<EOF
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Visual Studio Code Insiders
+GenericName=VS Code Insiders
+Comment=Multiplatform Visual Studio Code Insiders from Microsoft
+Icon=${target_dir}/resources/app/resources/linux/code.png
+TryExec=${target_dir}/bin/code-insiders
+Exec=${target_dir}/bin/code-wrapper %F
+Terminal=true
+MimeType=text/css;text/english;text/html;text/plain;text/x-c;text/x-chdr;text/x-csrc;text/x-c++;text/x-c++hdr;text/x-c++src;text/x-java;text/x-makefile;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;
+Categories=Development;IDE;TextEditor;
+StartupWMClass=Code - Insiders
+EOF
+
+    echo -n "Do you want to install extensions? (Y or N): "
+    read yn
+    if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
+        local extensions=(
+            bmewburn.vscode-intelephense-client
+            bungcip.better-toml
+            coolbear.systemd-unit-file
+            DavidAnson.vscode-markdownlint
+            dbaeumer.vscode-eslint
+            DotJoshJohnson.xml
+            eamodio.gitlens
+            EditorConfig.EditorConfig
+            HookyQR.beautify
+            LaurentTreguier.rpm-spec
+            mads-hartmann.bash-ide-vscode
+            maelvalais.autoconf
+            matklad.rust-analyzer
+            ms-python.python
+            ms-vscode-remote.remote-containers
+            ms-vscode-remote.remote-ssh
+            ms-vscode-remote.remote-ssh-edit
+            ms-vscode-remote.remote-wsl
+            ms-vscode-remote.vscode-remote-extensionpack
+            ms-vscode.cmake-tools
+            ms-vscode.cpptools
+            ms-vscode.vscode-typescript-tslint-plugin
+            msjsdiag.debugger-for-chrome
+            PKief.material-icon-theme
+            ryuta46.multi-command
+            shardulm94.trailing-spaces
+            slevesque.vscode-hexdump
+            uloco.theme-bluloco-light
+            vadimcn.vscode-lldb
+            vscodevim.vim)
+        for ext in "${extensions[@]}"; do
+            ${target_dir}/bin/code-insiders --install-extension ${ext}
         done
     fi
     update-desktop-database "${HOME}/.local/share/applications"

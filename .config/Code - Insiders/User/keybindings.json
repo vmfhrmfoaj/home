@@ -1,0 +1,130 @@
+// Place your key bindings in this file to override the defaults
+[
+   // Emacs keybinding
+   {
+      "key": "ctrl+h",
+      "command": "-editor.action.startFindReplaceAction"
+   },
+   {
+      "key": "ctrl+h",
+      "command": "deleteLeft",
+      "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
+   },
+
+   // Customized
+   {
+      "key": "enter",
+      "command": "multiCommand.revealReferenceAndHide",
+      "when": "listFocus && referenceSearchVisible && !inputFocus"
+   }
+
+   // Tab and Shift + Tab
+   {
+      "key": "tab",
+      "command": "tab",
+      "when": "editorTextFocus && !editorReadonly && vim.mode == 'Insert' && !suggestWidgetVisible"
+   },
+   {
+      "key": "tab",
+      "command": "workbench.action.quickOpenSelectNext",
+      "when": "inQuickOpen"
+   },
+   {
+      "key": "tab",
+      "command": "search.action.focusNextSearchResult",
+      "when": "textInputFocus && hasSearchResult && searchViewletVisible && vim.active && vim.mode == 'Normal'"
+   },
+   {
+      "key": "shift+tab",
+      "command": "search.action.focusPreviousSearchResult",
+      "when": "textInputFocus && hasSearchResult && searchViewletVisible && vim.active && vim.mode == 'Normal'"
+   },
+
+   // Vim
+   {
+      "key": "enter",
+      "command": "multiCommand.vimSelectedSuggestionAndEscape",
+      "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.mode == 'Insert'"
+   },
+   {
+      "key": "escape",
+      "command": "multiCommand.vimNohAndEscape",
+      "when": "editorTextFocus && vim.active && vim.mode == 'Normal' && !renameInputVisible && !editorHasSelection && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !markersNavigationVisible && !parameterHintsVisible && !referenceSearchVisible"
+   },
+   {
+      "key": "ctrl+shift+f",
+      "command": "multiCommand.vimFindInFiles",
+      "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+   },
+   {
+      "key": "ctrl+pageup",
+      "command": "multiCommand.vimPreviousEditor",
+      "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+   },
+   {
+      "key": "ctrl+pagedown",
+      "command": "multiCommand.vimNextEditor",
+      "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+   },
+   {
+      "key": "ctrl+p",
+      "command": "multiCommand.vimQuickOpen",
+      "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+   },
+   {
+      "key": "ctrl+tab",
+      "command": "multiCommand.vimOpenNextRecentlyUsedEditorInGroup",
+      "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+   },
+   {
+      "key": "ctrl+shift+tab",
+      "command": "multiCommand.vimOpenPreviousRecentlyUsedEditorInGroup",
+      "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+   },
+   {
+      "key": "ctrl+j",
+      "command": "workbench.action.quickOpenSelectNext",
+      "when": "inQuickOpen"
+   },
+   {
+      "key": "ctrl+k",
+      "command": "workbench.action.quickOpenSelectPrevious",
+      "when": "inQuickOpen"
+   },
+   {
+      "key": "ctrl+j",
+      "command": "selectNextSuggestion",
+      "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+   },
+   {
+      "key": "ctrl+k",
+      "command": "selectPrevSuggestion",
+      "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+   },
+
+   // HHKB Pro2
+   {
+      "key": "shift+NumPad_Add",
+      "command": "type",
+      "args": { "text": "=" },
+      "when": "editorTextFocus"
+   },
+   {
+      "key": "shift+NumPad_Subtract",
+      "command": "type",
+      "args": { "text": "_" },
+      "when": "editorTextFocus"
+   },
+   {
+      "key": "shift+NumPad_Divide",
+      "command": "type",
+      "args": { "text": "\\" },
+      "when": "editorTextFocus"
+   },
+   {
+      "key": "shift+numpad_multiply",
+      "command": "type",
+      "args": { "text": "#" },
+      "when": "editorTextFocus"
+   },
+]

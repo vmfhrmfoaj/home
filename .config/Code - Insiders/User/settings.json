@@ -1,0 +1,277 @@
+{
+    // Appearance
+    "editor.fontFamily": "'Cascadia Code', monospace",
+    "editor.fontSize": 13,
+    "editor.fontLigatures": true,
+    "editor.wordWrapColumn": 120,
+    "terminal.integrated.fontSize": 12,
+    "window.titleBarStyle": "custom",
+    "window.menuBarVisibility": "default",
+    "window.zoomLevel": 0,
+    "workbench.sideBar.location": "left",
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.colorTheme": "Bluloco Light Italic",
+    "workbench.colorCustomizations": {
+        "[Bluloco Light Italic]": {
+            "activityBar.background": "#c2c4c7",
+            "statusBar.background": "#c2c4c7",
+            "statusBar.border": "#c2c4c7",
+            "statusBarItem.remoteBackground": "#0099e1",
+
+            // Rust Analyzer
+            "rust_analyzer.inlayHints.foreground": "#d5275399",
+        },
+    },
+    // Edit
+    "breadcrumbs.enabled": false,
+    "workbench.editor.enablePreview": false,
+    "editor.lineNumbers": "relative",
+    "editor.renderWhitespace": "selection",
+    "editor.minimap.enabled": false,
+    "editor.quickSuggestionsDelay": 10,
+    "editor.suggestSelection": "first",
+
+    // Misc.
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
+
+    ///
+    /// Extentions
+    ///
+
+    // C/C++
+    "C_Cpp.updateChannel": "Insiders",
+    // CMake
+    "cmake.configureOnOpen": true,
+
+    // Gitlens
+    "gitlens.codeLens.enabled": false,
+    "gitlens.currentLine.enabled": false,
+    "gitlens.statusBar.format": "${author}(${agoOrDate}): \"${message}\"",
+
+    // Markdownlint
+    "markdownlint.config": {
+        "MD024": false,
+    },
+
+    // multi-command
+    "multiCommand.commands": [
+        {
+            "command": "multiCommand.vimNohAndEscape",
+            "sequence": [
+                "extension.vim_ctrl+h",
+                "extension.vim_escape"
+            ]
+        },
+        {
+            "command": "multiCommand.vimFindInFiles",
+            "sequence": [
+                "extension.vim_escape",
+                "workbench.action.findInFiles"
+            ]
+        },
+        {
+            "command": "multiCommand.vimSelectedSuggestionAndEscape",
+            "sequence": [
+                "acceptSelectedSuggestionOnEnter",
+                "extension.vim_escape"
+            ]
+        },
+        {
+            "command": "multiCommand.gitStageSelectedRanges",
+            "sequence": [
+                "git.stageSelectedRanges",
+                "extension.vim_escape"
+            ]
+        },
+        {
+            "command": "multiCommand.gitUnstageSelectedRanges",
+            "sequence": [
+                "git.unstageSelectedRanges",
+                "extension.vim_escape"
+            ]
+        },
+        {
+            "command": "multiCommand.vimPreviousEditor",
+            "sequence": [
+                "extension.vim_escape",
+                "workbench.action.previousEditor"
+            ]
+        },
+        {
+            "command": "multiCommand.vimNextEditor",
+            "sequence": [
+                "extension.vim_escape",
+                "workbench.action.nextEditor"
+            ]
+        },
+        {
+            "command": "multiCommand.vimQuickOpen",
+            "sequence": [
+                "extension.vim_escape",
+                "workbench.action.quickOpen",
+            ]
+        },
+        {
+            "command": "multiCommand.vimOpenNextRecentlyUsedEditorInGroup",
+            "sequence": [
+                "extension.vim_escape",
+                "workbench.action.openNextRecentlyUsedEditorInGroup"
+            ]
+        },
+        {
+            "command": "multiCommand.vimOpenPreviousRecentlyUsedEditorInGroup",
+            "sequence": [
+                "extension.vim_escape",
+                "workbench.action.openPreviousRecentlyUsedEditorInGroup"
+            ]
+        },
+        {
+            "command": "multiCommand.revealReferenceAndHide",
+            "sequence": [
+                "revealReference",
+                "closeReferenceSearch"
+            ]
+        },
+    ],
+
+    // Python
+    "python.jediEnabled": false,
+
+    // Remote Development
+    "remote.SSH.showLoginTerminal": true,
+
+    // Rust Analyzer
+    "rust-analyzer.inlayHints.chainingHints": false,
+    "rust-analyzer.inlayHints.parameterHints": false,
+
+    // Vim
+    "workbench.list.keyboardNavigation": "simple", // see, https://github.com/Microsoft/vscode/issues/66995#issuecomment-457123611
+    "vim.sneak": true,
+    "vim.camelCaseMotion.enable": true,
+    "vim.sneakUseIgnorecaseAndSmartcase": true,
+    "vim.incsearch": true,
+    "vim.useSystemClipboard": true,
+    "vim.useCtrlKeys": true,
+    "vim.hlsearch": true,
+    "vim.highlightedyank.enable": true,
+    "vim.visualstar": true,
+    "vim.handleKeys": {
+        "<C-d>": false,
+        "<C-f>": false,
+        "<C-k>": false,
+        "<C-t>": false,
+        "<C-w>": false,
+    },
+
+    "vim.leader": "<space>",
+    "vim.visualModeKeyBindingsNonRecursive": [
+    ],
+    "vim.visualModeKeyBindings": [
+        {
+            "before": [
+                "<leader>",
+                ";"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "editor.action.commentLine",
+                    "args": []
+                },
+                {
+                    "command": "extension.vim_escape",
+                    "args": []
+                }
+            ]
+        },
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": ["<C-h>"],
+            "commands": [":nohl"]
+        },
+    ],
+    "vim.normalModeKeyBindings": [
+        {
+            "before": [
+                "g",
+                "D"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "editor.action.referenceSearch.trigger",
+                    "args": []
+                },
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "x"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "editor.action.openLink",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                ";",
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "editor.action.commentLine",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "0"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "workbench.action.focusSideBar",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "f",
+                "y"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "workbench.action.files.copyPathOfActiveFile",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "i",
+                "s"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "editor.action.insertSnippet",
+                    "args": []
+                }
+            ]
+        },
+    ],
+}
