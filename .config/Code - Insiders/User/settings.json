@@ -13,10 +13,17 @@
     "workbench.colorTheme": "Bluloco Light Italic",
     "workbench.colorCustomizations": {
         "[Bluloco Light Italic]": {
+            // Customization
             "activityBar.background": "#c2c4c7",
             "statusBar.background": "#c2c4c7",
             "statusBar.border": "#c2c4c7",
-            "statusBarItem.remoteBackground": "#0099e1",
+            "editor.selectionHighlightBackground": "#00000010", // fix for overlay
+
+            // Insiders
+            "activityBar.activeBorder": "#24bfa5",
+            "activityBarBadge.background": "#24bfa5",
+            "badge.background": "#24bfa5",
+            "statusBarItem.remoteBackground": "#24bfa5",
 
             // Rust Analyzer
             "rust_analyzer.inlayHints.foreground": "#d5275399",

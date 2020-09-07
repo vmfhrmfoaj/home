@@ -10,28 +10,24 @@
     "window.menuBarVisibility": "default",
     "window.zoomLevel": 0,
     "workbench.sideBar.location": "left",
-    "workbench.colorTheme": "Dark+ Material",
     "workbench.iconTheme": "material-icon-theme",
+    "workbench.colorTheme": "Bluloco Light Italic",
     "workbench.colorCustomizations": {
-        "[Dark+ Material]": {
-            "editor.foreground": "#a8a8a8",
-            "editorCursor.foreground": "#eee",
+        "[Bluloco Light Italic]": {
+            // Customization
+            "activityBar.background": "#c2c4c7",
+            "statusBar.background": "#c2c4c7",
+            "statusBar.border": "#c2c4c7",
 
-            "statusBar.background": "#424242",
-            "statusBar.noFolderBackground": "#424242",
-            "statusBarItem.remoteForeground": "#424242",
-            "statusBarItem.remoteBackground": "#4ca1fb",
+            // Insiders
+            "activityBar.activeBorder": "#24bfa5",
+            "activityBarBadge.background": "#24bfa5",
+            "badge.background": "#24bfa5",
+            "statusBarItem.remoteBackground": "#24bfa5",
 
             // Rust Analyzer
-            "rust_analyzer.inlayHints.foreground": "#777",
-            "rust_analyzer.inlayHints.foreground.typeHints": "#577e71",
+            "rust_analyzer.inlayHints.foreground": "#d5275399",
         },
-    },
-
-    "editor.tokenColorCustomizations": {
-        "[Dark+ Material]": {
-            "functions": "#f4e139",
-        }
     },
 
     // Edit
