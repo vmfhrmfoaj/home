@@ -1,8 +1,9 @@
 {
     // Appearance
-    "editor.fontFamily": "'Cascadia Code', monospace",
+    "editor.fontFamily": "'Fira Code', monospace",
     "editor.fontSize": 13,
     "editor.fontLigatures": true,
+    "editor.fontWeight": "bold",
     "editor.wordWrapColumn": 120,
     "terminal.integrated.fontSize": 12,
     "window.titleBarStyle": "custom",

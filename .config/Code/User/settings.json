@@ -1,9 +1,9 @@
 {
     // Appearance
-    "editor.fontFamily": "'Fantasque Sans Mono', monospace",
+    "editor.fontFamily": "'Fira Code', monospace",
     "editor.fontSize": 13,
-    "editor.fontWeight": "bold",
     "editor.fontLigatures": true,
+    "editor.fontWeight": "bold",
     "editor.wordWrapColumn": 120,
     "terminal.integrated.fontSize": 13,
     "window.titleBarStyle": "custom",
@@ -18,12 +18,7 @@
             "activityBar.background": "#c2c4c7",
             "statusBar.background": "#c2c4c7",
             "statusBar.border": "#c2c4c7",
-
-            // Insiders
-            "activityBar.activeBorder": "#24bfa5",
-            "activityBarBadge.background": "#24bfa5",
-            "badge.background": "#24bfa5",
-            "statusBarItem.remoteBackground": "#24bfa5",
+            "editor.selectionHighlightBackground": "#00000010", // fix for overlay
 
             // Rust Analyzer
             "rust_analyzer.inlayHints.foreground": "#d5275399",
