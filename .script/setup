@@ -140,12 +140,14 @@ _setup_for_lua() {
 }
 
 _setup_for_nodejs() {
-    _is_shim 'asdf'
-    if [ $? -ne 0 ]; then
-        local nodejs_home=$(asdf where nodejs 2>/dev/null)
-        if [ -d "${nodejs_home}/.npm/bin" ]; then
-            _add_to_path "${nodejs_home}/.npm/bin"
+    which npm >/dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        local npm_prefix="${HOME}/.npm-global"
+        if [ ! -d "${npm_prefix}" ]; then
+            mkdir -p "${npm_prefix}"
+            npm config set prefix "${npm_prefix}"
         fi
+        _add_to_path "${npm_prefix}/bin"
     fi
 }
 
@@ -355,6 +357,7 @@ _setup_for_go
 _setup_for_locale
 _setup_for_perlbrew
 _setup_for_rust
+_setup_for_nodejs
 _setup_for_xorg
 
 # depend on `asdf`
@@ -362,7 +365,6 @@ _setup_for_deno
 _setup_for_java
 _setup_for_kotlin
 _setup_for_lua
-_setup_for_nodejs
 
 # add user binary dirs to PATH
 _add_to_path "${HOME}/.local/bin"
