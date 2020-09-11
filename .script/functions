@@ -191,12 +191,8 @@ _install_vs_code_insiders_from_tar() {
 #!/bin/bash
 DIR=$(dirname $0)
 source ~/.script/setup
-if [ "${XDG_SESSION_TYPE}" = 'wayland' ]; then
-    gl='egl'
-else
-    gl='desktop'
-fi
-exec "${DIR}/code-insiders" --use-gl=${gl} --ignore-gpu-blacklist --enable-gpu-rasterization --enable-zero-copy --enable-oop-rasterization $@
+switches='--use-gl=desktop --ignore-gpu-blacklist --enable-gpu-rasterization --enable-zero-copy --enable-oop-rasterization'
+exec "${DIR}/code-insiders" ${switches} $@
 EOF
     chmod +x "${target_dir}/bin/code-wrapper"
     cat > "${HOME}/.local/share/applications/visual-studio-code-insiders.desktop" <<EOF
@@ -273,9 +269,9 @@ EOF
             'v8_context_snapshot.bin'
             'vk_swiftshader_icd.json')
         for file in "${files[@]}"; do
-            rm -rf "${file}"
+            rm -rf "${target_dir}/${file}"
         done
-        cp -r "${system_electron}/"* "${target_dir}"
+        cp -r "${system_electron}/"* "${target_dir}/"
         sed -i -e 's@$VSCODE_PATH/code-insiders@$VSCODE_PATH/electron@g' "${target_dir}/bin/code-insiders"
     fi
 
