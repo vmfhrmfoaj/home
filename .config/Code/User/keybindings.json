@@ -16,7 +16,7 @@
       "key": "enter",
       "command": "multiCommand.revealReferenceAndHide",
       "when": "listFocus && referenceSearchVisible && !inputFocus"
-   }
+   },
 
    // Tab and Shift + Tab
    {

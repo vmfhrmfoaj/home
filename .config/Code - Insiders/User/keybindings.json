@@ -16,7 +16,7 @@
       "key": "enter",
       "command": "multiCommand.revealReferenceAndHide",
       "when": "listFocus && referenceSearchVisible && !inputFocus"
-   }
+   },
 
    // Tab and Shift + Tab
    {
@@ -32,13 +32,25 @@
    {
       "key": "tab",
       "command": "search.action.focusNextSearchResult",
-      "when": "textInputFocus && hasSearchResult && searchViewletVisible && vim.active && vim.mode == 'Normal'"
+      "when": "editorTextFocus && hasSearchResult && searchViewletVisible && vim.active && vim.mode == 'Normal'"
    },
    {
       "key": "shift+tab",
       "command": "search.action.focusPreviousSearchResult",
-      "when": "textInputFocus && hasSearchResult && searchViewletVisible && vim.active && vim.mode == 'Normal'"
+      "when": "editorTextFocus && hasSearchResult && searchViewletVisible && vim.active && vim.mode == 'Normal'"
    },
+   {
+      "key": "tab",
+      "command": "editor.action.marker.next",
+      "when": "editorTextFocus && !searchViewletVisible && vim.active && vim.mode == 'Normal'"
+   },
+   {
+      "key": "shift+tab",
+      "command": "editor.action.marker.prev",
+      "when": "editorTextFocus && !searchViewletVisible && vim.active && vim.mode == 'Normal'"
+   },
+
+
 
    // Vim
    {
@@ -100,6 +112,16 @@
       "key": "ctrl+k",
       "command": "selectPrevSuggestion",
       "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+   },
+   {
+      "key": "ctrl+j",
+      "command": "workbench.action.compareEditor.nextChange",
+      "when": "textCompareEditorVisible"
+   },
+   {
+      "key": "ctrl+k",
+      "command": "workbench.action.compareEditor.previousChange",
+      "when": "textCompareEditorVisible"
    },
 
    // HHKB Pro2

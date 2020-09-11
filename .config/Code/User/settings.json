@@ -18,7 +18,12 @@
             "activityBar.background": "#c2c4c7",
             "statusBar.background": "#c2c4c7",
             "statusBar.border": "#c2c4c7",
+            "statusBar.noFolderBackground": "#c2c4c7",
+            "statusBar.noFolderBorder": "#c2c4c7",
             "editor.selectionHighlightBackground": "#00000010", // fix for overlay
+
+            // Stable
+            "statusBarItem.remoteBackground": "#22a4f1",
 
             // Rust Analyzer
             "rust_analyzer.inlayHints.foreground": "#d5275399",
