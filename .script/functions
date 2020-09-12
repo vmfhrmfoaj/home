@@ -81,6 +81,7 @@ _install_vs_code_from_tar() {
         echo "Usage: $0 [TAR_FILE] [TARGET_DIR]?"
         return 255
     fi
+    local system_electron=${3:-''}
 
     mkdir -p "${target_dir}"
     tar -C "${target_dir}" -xf "${tar_file}" --strip-components=1 'VSCode-linux-x64'
@@ -159,6 +160,31 @@ EOF
         done
     fi
     update-desktop-database "${HOME}/.local/share/applications"
+
+    if [ -n "${system_electron}" ]; then
+        local files=(
+            'chrome_100_percent.pak'
+            'chrome_200_percent.pak'
+            'chrome-sandbox'
+            'code-insiders'
+            'icudtl.dat'
+            'libEGL.so'
+            'libffmpeg.so'
+            'libGLESv2.so'
+            'libvk_swiftshader.so'
+            'libvulkan.so'
+            'locales'
+            'snapshot_blob.bin'
+            'swiftshader'
+            'v8_context_snapshot.bin'
+            'vk_swiftshader_icd.json')
+        for file in "${files[@]}"; do
+            rm -rf "${target_dir}/${file}"
+        done
+        cp -r "${system_electron}/"* "${target_dir}/"
+        sed -i -e 's@$VSCODE_PATH/code@$VSCODE_PATH/electron@g' "${target_dir}/bin/code"
+    fi
+
     return 0
 }
 
