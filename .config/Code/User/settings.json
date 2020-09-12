@@ -5,7 +5,7 @@
     "editor.fontLigatures": true,
     "editor.fontWeight": "bold",
     "editor.wordWrapColumn": 120,
-    "terminal.integrated.fontSize": 13,
+    "terminal.integrated.fontSize": 12,
     "window.titleBarStyle": "custom",
     "window.menuBarVisibility": "default",
     "window.zoomLevel": 0,
@@ -34,7 +34,6 @@
     "breadcrumbs.enabled": false,
     "workbench.editor.enablePreview": false,
     "editor.lineNumbers": "relative",
-    "editor.renderLineHighlight": "all",
     "editor.renderWhitespace": "selection",
     "editor.minimap.enabled": false,
     "editor.quickSuggestionsDelay": 10,
@@ -151,6 +150,7 @@
     "remote.SSH.showLoginTerminal": true,
 
     // Rust Analyzer
+    "rust-analyzer.inlayHints.chainingHints": false,
     "rust-analyzer.inlayHints.parameterHints": false,
 
     // Vim
@@ -163,6 +163,7 @@
     "vim.useCtrlKeys": true,
     "vim.hlsearch": true,
     "vim.highlightedyank.enable": true,
+    "vim.surround": true,
     "vim.visualstar": true,
     "vim.handleKeys": {
         "<C-d>": false,

@@ -49,7 +49,16 @@
       "command": "editor.action.marker.prev",
       "when": "editorTextFocus && !searchViewletVisible && vim.active && vim.mode == 'Normal'"
    },
-
+   {
+      "key": "tab",
+      "command": "workbench.action.compareEditor.nextChange",
+      "when": "textCompareEditorVisible"
+   },
+   {
+      "key": "shift+tab",
+      "command": "workbench.action.compareEditor.previousChange",
+      "when": "textCompareEditorVisible"
+   },
 
 
    // Vim
@@ -112,16 +121,6 @@
       "key": "ctrl+k",
       "command": "selectPrevSuggestion",
       "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
-   },
-   {
-      "key": "ctrl+j",
-      "command": "workbench.action.compareEditor.nextChange",
-      "when": "textCompareEditorVisible"
-   },
-   {
-      "key": "ctrl+k",
-      "command": "workbench.action.compareEditor.previousChange",
-      "when": "textCompareEditorVisible"
    },
 
    // HHKB Pro2
