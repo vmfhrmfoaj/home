@@ -59,7 +59,14 @@
       "command": "workbench.action.compareEditor.previousChange",
       "when": "textCompareEditorVisible"
    },
-
+   {
+      "key": "ctrl+tab",
+      "command": "workbench.action.nextEditor"
+   },
+   {
+      "key": "ctrl+shift+tab",
+      "command": "workbench.action.previousEditor"
+   },
 
    // Vim
    {
