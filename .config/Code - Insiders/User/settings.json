@@ -32,14 +32,18 @@
             "rust_analyzer.inlayHints.foreground": "#d5275399",
         },
     },
+
     // Edit
     "breadcrumbs.enabled": false,
     "workbench.editor.enablePreview": false,
+    "editor.detectIndentation": false,
+    "editor.insertSpaces": true,
     "editor.lineNumbers": "relative",
     "editor.renderWhitespace": "selection",
     "editor.minimap.enabled": false,
     "editor.quickSuggestionsDelay": 10,
     "editor.suggestSelection": "first",
+    "editor.tabSize": 4,
 
     // Misc.
     "explorer.confirmDelete": false,
@@ -126,14 +130,14 @@
             "command": "multiCommand.vimOpenNextRecentlyUsedEditorInGroup",
             "sequence": [
                 "extension.vim_escape",
-                "workbench.action.openNextRecentlyUsedEditorInGroup"
+                "workbench.action.nextEditor"
             ]
         },
         {
             "command": "multiCommand.vimOpenPreviousRecentlyUsedEditorInGroup",
             "sequence": [
                 "extension.vim_escape",
-                "workbench.action.openPreviousRecentlyUsedEditorInGroup"
+                "workbench.action.previousEditor"
             ]
         },
         {
@@ -141,6 +145,20 @@
             "sequence": [
                 "revealReference",
                 "closeReferenceSearch"
+            ]
+        },
+        {
+            "command": "multiCommand.goNextChangeAndShow",
+            "sequence": [
+                "workbench.action.editor.nextChange",
+                "editor.action.dirtydiff.next"
+            ]
+        },
+        {
+            "command": "multiCommand.goPreviousChangeAndShow",
+            "sequence": [
+                "workbench.action.editor.previousChange",
+                "editor.action.dirtydiff.previous"
             ]
         },
     ],
@@ -169,15 +187,11 @@
     "vim.visualstar": true,
     "vim.handleKeys": {
         "<C-d>": false,
-        "<C-f>": false,
-        "<C-k>": false,
         "<C-t>": false,
         "<C-w>": false,
     },
 
     "vim.leader": "<space>",
-    "vim.visualModeKeyBindingsNonRecursive": [
-    ],
     "vim.visualModeKeyBindings": [
         {
             "before": [
@@ -201,6 +215,10 @@
         {
             "before": ["<C-h>"],
             "commands": [":nohl"]
+        },
+        {
+            "before": ["K"],
+            "after": ["g", "h"]
         },
     ],
     "vim.normalModeKeyBindings": [
@@ -239,19 +257,6 @@
             "commands": [
                 {
                     "command": "editor.action.commentLine",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "0"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.focusSideBar",
                     "args": []
                 }
             ]
