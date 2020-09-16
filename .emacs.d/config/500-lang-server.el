@@ -93,21 +93,21 @@
 
   :config
   (defvar lsp--custom-render--regex-1-for-php
-    (concat "```php[ \t\r\n]*"                     ; ```php
+    (concat "\\(?:^\\|\n\\)````php\n"              ; ```php
             "\\(?:[ \t\r\n]*<\\?php[ \t\r\n]*\\)?" ; <?php
             "\\(\\(?:\n\\|.\\)+?\\)"               ; <CONTENTS>
             "\\(?:[ \t\r\n]*{\\s-*}[ \t\r\n]*\\)?" ; { }
             "[ \t\r\n]*\\(?:[ \t\r\n]*\\?>"        ; ?>
-            "[ \t\r\n]*\\)?```")                   ; ```
+            "[ \t\r\n]*\\)?```\\(?:\n\\|$\\)")     ; ```
     "TODO")
   (defvar lsp--custom-render--regex-2-for-php
     "\\(?:_@var_\\|_@param_\\)\\s-*`?\\s-*\\(.+?\\)\\s-*`?$"
     "TODO")
 
   (defvar lsp--custom-render--regex-for-rust
-    (concat "```rust[ \t\r\n]+"      ; ```rust
-            "\\(\\(?:\n\\|.\\)+?\\)" ; <CONTENTS>
-            "[ \t\r\n]*?```")        ; ```
+    (concat "```rust\n"                 ; ```rust
+            "\\(\\(?:\n\\|.\\)*?\\)"    ; <CONTENTS>
+            "```")                      ; ```
     "TODO")
 
   (defvar lsp--custom-render--regex-1-for-shell
@@ -131,9 +131,11 @@
                 (val nil))
             (while (and (< i 2)
                         (string-match lsp--custom-render--regex-for-rust md p))
-              (setq val (concat val (when val "\n") (match-string 1 md)))
-              (setq p (match-end 0))
-              (setq i (1+ i)))
+              (let ((ms (s-trim (match-string 1 md))))
+                (setq val (concat val (when val "\n") ms))
+                (setq p (match-end 0))
+                (unless (s-blank-p ms)
+                  (setq i (1+ i)))))
             (when val
               (remhash "kind" contents)
               (puthash "value" val contents)))))
@@ -470,51 +472,53 @@
     "TODO")
 
   :config
-  (defun lsp-ui-sideline--custom-diagnostics (fn bol eol)
+  (defun lsp-ui-sideline--custom-diagnostics (fn buf bol eol)
     (if (and (or (eq lsp-diagnostic-package :auto)
                  (eq lsp-diagnostic-package :flycheck))
              (functionp 'flycheck-mode))
         (funcall fn bol eol)
-      (let* ((line-num (line-number-at-pos bol t))
-             (diagnostics (-some->> (lsp-diagnostics)
-                                    (gethash buffer-file-name)
-                                    (--filter (-when-let (range (lsp:diagnostic-range it))
-                                                ;; NOTE: I think, the line number of `lsp-diagnostics' is zero-based numbering.
-                                                (let ((beg (-some-> range (lsp:range-start) (lsp:position-line) (1+)))
-                                                      (end (-some-> range (lsp:range-start) (lsp:position-line) (1+))))
-                                                  (when (<= beg line-num end)
-                                                    it)))))))
-        (dolist (diagnostic diagnostics)
-          (let ((messages (-some->> diagnostic
-                                    (lsp:diagnostic-message)
-                                    (s-replace-regexp "[ \t]+" " ")
-                                    (s-trim)
-                                    (s-split "[\r\n]+")
-                                    (-remove #'s-blank-str?)))
-                (face (->> diagnostic
-                           (lsp:diagnostic-severity?)
-                           (number-to-string)
-                           (concat "lsp-diagnostic-level-")
-                           (intern))))
-            (dolist (message (->> (-drop 1 messages)
-                                  (--map (concat it " ┘"))
-                                  (-cons* (-first-item messages))))
-              (let* ((len (length message))
-                     ;; NOTE
-                     ;;  I use 'Source Code Pro' font for `lsp-ui-sideline`.
-                     ;;  This font is not the default font, also its size is also different from the default font size.
-                     ;;  You should adjust the magic value for you.
-                     (magic 0.781)
-                     (string (concat (propertize " " 'display `(space :align-to (- right-fringe ,(+ 1 (* len magic)))))
-                                     (progn
-                                       (add-face-text-property 0 len 'lsp-ui-sideline-global nil message)
-                                       (add-face-text-property 0 len face t message)
-                                       message))))
-                (-when-let (pos-ov (lsp-ui-sideline--find-line len bol eol))
-                  (let ((ov (and pos-ov (make-overlay (car pos-ov) (car pos-ov)))))
-                    (overlay-put ov 'after-string string)
-                    (overlay-put ov 'kind 'diagnotics)
-                    (push ov lsp-ui-sideline--ovs))))))))))
+      (when (and lsp-ui-sideline-show-diagnostics
+                 (eq (current-buffer) buf))
+        (let* ((line-num (line-number-at-pos bol t))
+               (diagnostics (-some->> (lsp-diagnostics)
+                              (gethash buffer-file-name)
+                              (--filter (-when-let (range (lsp:diagnostic-range it))
+                                          ;; NOTE: I think, the line number of `lsp-diagnostics' is zero-based numbering.
+                                          (let ((beg (-some-> range (lsp:range-start) (lsp:position-line) (1+)))
+                                                (end (-some-> range (lsp:range-start) (lsp:position-line) (1+))))
+                                            (when (<= beg line-num end)
+                                              it)))))))
+          (dolist (diagnostic diagnostics)
+            (let ((messages (-some->> diagnostic
+                              (lsp:diagnostic-message)
+                              (s-replace-regexp "[ \t]+" " ")
+                              (s-trim)
+                              (s-split "[\r\n]+")
+                              (-remove #'s-blank-str?)))
+                  (face (->> diagnostic
+                             (lsp:diagnostic-severity?)
+                             (number-to-string)
+                             (concat "lsp-diagnostic-level-")
+                             (intern))))
+              (dolist (message (->> (-drop 1 messages)
+                                    (--map (concat it " ┘"))
+                                    (-cons* (-first-item messages))))
+                (let* ((len (length message))
+                       ;; NOTE
+                       ;;  I use 'Source Code Pro' font for `lsp-ui-sideline`.
+                       ;;  This font is not the default font, also its size is also different from the default font size.
+                       ;;  You should adjust the magic value for you.
+                       (magic 0.781)
+                       (string (concat (propertize " " 'display `(space :align-to (- right-fringe ,(+ 1 (* len magic)))))
+                                       (progn
+                                         (add-face-text-property 0 len 'lsp-ui-sideline-global nil message)
+                                         (add-face-text-property 0 len face t message)
+                                         message))))
+                  (-when-let (pos-ov (lsp-ui-sideline--find-line len bol eol))
+                    (let ((ov (and pos-ov (make-overlay (car pos-ov) (car pos-ov)))))
+                      (overlay-put ov 'after-string string)
+                      (overlay-put ov 'kind 'diagnotics)
+                      (push ov lsp-ui-sideline--ovs)))))))))))
 
   (setq lsp-ui-doc-enable nil
         lsp-ui-sideline-show-code-actions nil

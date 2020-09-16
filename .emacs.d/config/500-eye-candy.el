@@ -99,6 +99,7 @@
                 (bound-and-true-p helm-alive-p)
                 (minibufferp))
       (focus-init)
+      (remove-hook 'post-command-hook 'focus-move-focus t)
       (focus-move-focus)
       (setq focus-face-remap-cookie
             (face-remap-add-relative 'hl-line-evil-insert 'bold))
@@ -242,9 +243,7 @@
   (add-to-list 'focus-mode-to-thing '(text-mode . sentence+))
   (put 'tex-sentence 'bounds-of-thing-at-point #'focus--tex-thing)
   (put 'sentence+    'bounds-of-thing-at-point #'focus--text-thing)
-  (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing)
-
-  (advice-add #'focus-move-focus :before-until #'company--active-p))
+  (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing))
 
 (use-package highlight-parentheses
   :ensure t

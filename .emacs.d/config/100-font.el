@@ -22,4 +22,4 @@
   (let ((font (font-spec :family "Noto Sans CJK SC" :size 12)))
     (set-fontset-font "fontset-default" 'bopomofo font)
     (set-fontset-font "fontset-default" 'han      font))
-  (add-to-list 'face-font-rescale-alist '("Noto Sans Mono" . 0.85)))
+  (add-to-list 'face-font-rescale-alist '("Noto Sans Mono" . 0.9)))
