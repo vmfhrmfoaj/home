@@ -6,38 +6,21 @@
       (byte-compile-file "~/.emacs.d/config/func.el")))
   (load-file "~/.emacs.d/config/func.elc"))
 
-(use-package base16-theme
+(use-package twilight-bright-theme
   :ensure t
   :config
-  (setq frame-background-mode 'dark
-        x-underline-at-descent-line t)
-  (load-theme 'base16-material-vivid t)
-
+  (load-theme 'twilight-bright t)
   (custom-set-faces
-   '(default ((t :foreground "#979ca0")))
+   '(bold ((t :weight bold)))
+   '(italic ((t :slant italic)))
+   '(cursor ((t :background "sky blue")))
+   '(line-number ((t :inherit (default) :background "gray99" :foreground "gray80")))
+   '(line-number-current-line ((t :inherit (hl-line line-number) :background "#f1f8fd" :foreground "gray75")))
    '(fixed-pitch ((t :family "Dejavu Sans Mono")))
-   `(region ((t :background ,(color-from 'default :background -2)))))
-
-  (custom-set-faces
-   `(shadow ((t :foreground ,(color-from 'default :foreground -15))))
-   `(line-number ((t :background ,(color-from 'default :background 2))))
-   '(line-number-current-line ((t :inherit (hl-line line-number) :inverse-video unspecified)))))
-
-(use-package font-lock
-  :config
-  (custom-set-faces
-   `(font-lock-comment-face ((t :foreground ,(color-from 'font-lock-doc-face :foreground -7))))
-   '(font-lock-keyword-face ((t :foreground "#835ec4")))
-   '(font-lock-preprocessor-face ((t :inherit font-lock-builtin-face :foreground unspecified))))
-
-  (custom-set-faces
-   `(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground ,(color-from 'font-lock-comment-face :foreground -5)))))
-
-  (defvar local-variable-name-light-fg-color
-    (color-from 'font-lock-variable-name-face :foreground
-                (if (eq frame-background-mode 'light) 7 -10)
-                (if (eq frame-background-mode 'light) -10 -30))
-    "A foreground color for the local variable such as parameters"))
+   '(link ((t :underline t)))
+   '(shadow ((t :inherit default :foreground "gray55")))
+   '(show-paren-match ((t :inherit bold :underline t)))
+   '(trailing-whitespace ((t :background "gray65")))))
 
 (use-package clojure-mode
   :disabled t
@@ -45,31 +28,15 @@
   :config
   (custom-set-faces
    '(cider-fringe-good-face ((t :inherit success)))
-   '(clojure-define-type-face ((t :inherit font-lock-type-face)))
-   '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
-   `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face
-                                   :foreground ,local-variable-name-light-fg-color
-                                   :weight ,(face-attribute 'default :weight))))
+   '(clojure-define-type-face ((t :inherit (font-lock-type-face))))
+   '(clojure-defining-spec-face ((t :inherit (clojure-keyword-face))))
+   `(clojure-fn-parameter-face ((((class color) (background light))
+                                 :foreground ,local-variable-name-light-fg-color
+                                 :weight ,(face-attribute 'default :weight))))
    '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
    '(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
    '(clojure-side-effect-face ((t :inherit (bold italic font-lock-warning-face))))
    '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))))
-
-(use-package diff-mode
-  :defer t
-  :config
-  (custom-set-faces
-   `(diff-refine-added   ((t :foreground ,(color-from 'diff-added   :foreground 15) :underline t)))
-   `(diff-refine-removed ((t :foreground ,(color-from 'diff-removed :foreground 10) :underline t)))
-   `(diff-refine-changed ((t :foreground ,(color-from 'diff-changed :foreground 10) :underline t)))))
-
-(use-package elisp-mode
-  :defer t
-  :config
-  (custom-set-faces
-   `(lisp-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face
-                                               :foreground ,local-variable-name-light-fg-color
-                                               :weight ,(face-attribute 'default :weight))))))
 
 (use-package evil-goggles
   :defer t
@@ -84,33 +51,55 @@
      '(evil-goggles-undo-redo-add-face    ((t :inherit evil-goggles-paste-face)))
      '(evil-goggles-undo-redo-change-face ((t :inherit evil-goggles-change-face))))))
 
+(use-package focus
+  :defer t
+  :config
+  (custom-set-faces
+   `(focus-unfocused ((t :foreground "#a49da5")))))
+
+(use-package font-lock
+  :defer t
+  :config
+  (custom-set-faces
+   '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight normal)))
+   '(font-lock-function-name-face ((t :inherit bold)))
+   '(font-lock-regexp-grouping-backslash ((t :inherit font-lock-string-face :background "#E1F2D6")))
+   '(font-lock-regexp-grouping-construct ((t :inherit font-lock-string-face :background "#E1F2D6")))
+   '(font-lock-type-face ((t :weight unspecified)))
+   '(font-lock-variable-name-face ((t :foreground "#607596")))
+   '(font-lock-warning-face ((t :inherit (bold italic)))))
+
+  (defvar local-variable-name-light-fg-color
+    (saturate-color (color-from 'font-lock-variable-name-face :foreground 7) -20)
+    "A foreground color for the local variable such as parameters"))
+
 (use-package flymake
   :defer t
   :config
   (custom-set-faces
-   `(flymake-warnline ((t :underline (:style wave :color ,(color-from 'flymake-warnline :underline)))))
-   `(flymake-errline  ((t :underline (:style wave :color ,(color-from 'flymake-errline  :underline)))))
-   `(flymake-warning  ((t :underline (:style wave :color ,(color-from 'flymake-warning  :underline)))))
-   `(flymake-error    ((t :underline (:style wave :color ,(color-from 'flymake-error    :underline)))))))
+   '(flymake-warning ((t :underline (:style wave :color "gold"))))))
 
-(use-package helm
-  :config
-  (custom-set-faces
-   '(helm-match ((t :inherit lazy-highlight :foreground unspecified)))
-   '(helm-match-item ((t :inherit lazy-highlight)))
-   '(helm-match-selection ((t :inherit isearch :weight bold)))
-   `(helm-selection ((t :inherit hl-line :weight bold :distant-foreground ,(color-from 'default :foreground))))
-   '(helm-selection-line ((t :inherit helm-selection :weight bold)))
-   `(helm-other-buffer ((t :foreground ,(color-from 'default :foreground -10 -15)
-                           :background ,(color-from 'default :background +2))))))
-
-(use-package helm-files
+(use-package fringe
   :defer t
   :config
   (custom-set-faces
-   `(helm-ff-file-dir       ((t :inherit helm-ff-file :foreground ,(color-from 'helm-ff-file :foreground -10 -20))))
+   '(fringe ((t :background "gray98")))))
+
+(use-package helm
+  :defer t
+  :config
+  (custom-set-faces
+   '(helm-ff-file-dir       ((t :inherit helm-ff-file :foreground "#dbbd32")))
    '(helm-ff-file-extension ((t :inherit font-lock-constant-face)))
-   `(helm-ff-executable-dir ((t :inherit helm-ff-executable :foreground ,(color-from 'helm-ff-executable :foreground -10 -20))))))
+   '(helm-ff-executable     ((t :inherit helm-ff-executable :foreground "#5f9411")))
+   '(helm-ff-executable-dir ((t :inherit helm-ff-executable :foreground "#7ea940")))
+   '(helm-match ((t :inherit lazy-highlight :foreground unspecified)))
+   '(helm-match-item ((t :inherit lazy-highlight)))
+   '(helm-match-selection ((t :inherit isearch :weight bold)))
+   '(helm-moccur-buffer ((t :inherit shadow)))
+   '(helm-selection ((t :inherit hl-line :weight bold)))
+   '(helm-selection-line ((t :inherit helm-selection :weight bold)))
+   `(helm-other-buffer ((t :background "gray98" :foreground ,(color-from 'default :foreground 5))))))
 
 (use-package hl-line
   :defer t
@@ -121,68 +110,64 @@
 
   :config
   (custom-set-faces
-   '(hl-line ((t :inherit hl-line-evil-insert :inverse-video nil)))))
+   '(hl-line ((t :inherit hl-line-evil-insert :background "#eef7fd" :weight bold)))))
 
-(use-package highlight-parentheses
+(use-package hl-todo
   :defer t
   :config
-  (let ((base-color (color-from 'show-paren-match :background)))
-    (setq hl-paren-colors
-          (--iterate (saturate-color (dim-color it 10) -10)
-                     (apply 'color-rgb-to-hex-2-dig (color-name-to-rgb base-color))
-                     3))))
+  (custom-set-faces
+   '(hl-todo ((t :inherit bold :weight semi-bold :foreground "#cc9393")))))
 
 (use-package iedit
   :defer t
   :config
   (custom-set-faces
-   '(iedit-occurrence ((t :inherit highlight :underline t)))))
+   '(iedit-occurrence ((t :inherit (highlight underline bold))))))
 
 (use-package isearch
   :defer t
   :config
   (custom-set-faces
-   '(lazy-highlight ((t :weight bold)))))
-
-(use-package magit
-  :defer t
-  :config
-  (let ((highlight-bg (color-from 'hl-line :background -5)))
-    (custom-set-faces
-     `(magit-diff-context-highlight ((t :background ,highlight-bg)))
-     `(magit-diff-hunk-heading-highlight ((t :background ,highlight-bg)))
-     '(magit-diff-file-heading ((t :weight normal)))
-     '(magit-diff-added   ((t :inherit diff-added)))
-     '(magit-diff-removed ((t :inherit diff-removed)))
-     `(magit-diff-added-highlight   ((t :inherit diff-added   :background ,highlight-bg)))
-     `(magit-diff-removed-highlight ((t :inherit diff-removed :background ,highlight-bg)))
-     '(magit-section-highlight ((t :inherit hl-line))))))
+   '(isearch ((t :inherit bold :background "magenta3" :foreground "white")))))
 
 (use-package php-mode
   :defer t
   :config
   (custom-set-faces
-   '(php-passive-assign-variable-face ((t :inherit font-lock-variable-name-face)))))
-
-(use-package rpm-spec-mode
-  :defer t
-  :config
-  (custom-set-faces
-   '(rpm-spec-ghost-face ((t :inherit shadow)))
-   '(rpm-spec-macro-face ((t :inherit font-lock-keyword-face)))
-   '(rpm-spec-package-face ((t :inherit font-lock-constant-face)))
-   '(rpm-spec-section-face ((t :inherit font-lock-function-name-face)))
-   '(rpm-spec-tag-face ((t :inherit font-lock-builtin-face)))
-   '(rpm-spec-var-face ((t :inherit font-lock-variable-name-face)))))
+   '(php-passive-assign-variable-face ((t :inherit font-lock-variable-name-face)))
+   `(php-variable-name ((t :inherit font-lock-variable-name-face)))))
 
 (use-package lsp-mode
   :defer t
   :config
   (custom-set-faces
-   '(lsp-face-highlight-read    ((t :inherit highlight :underline t)))
-   '(lsp-face-highlight-textual ((t :inherit highlight :underline t)))
-   '(lsp-face-highlight-write   ((t :inherit highlight :underline t :weight bold)))
-   '(lsp-diagnostic-level-1     ((t (:inherit compilation-error   :family "Noto Sans Mono" :weight light))))
-   '(lsp-diagnostic-level-2     ((t (:inherit compilation-warning :family "Noto Sans Mono" :weight light))))
-   '(lsp-diagnostic-level-3     ((t (:inherit compilation-info    :family "Noto Sans Mono" :weight light))))
-   '(lsp-diagnostic-level-4     ((t (:inherit compilation-info    :family "Noto Sans Mono" :weight light))))))
+   '(lsp-face-highlight-read    ((t :inherit (highlight underline))))
+   '(lsp-face-highlight-textual ((t :inherit (highlight underline))))
+   '(lsp-face-highlight-write   ((t :inherit (highlight underline bold))))))
+
+(use-package lsp-ui
+  :defer t
+  :config
+  (custom-set-faces
+   '(lsp-diagnostic-level-1     ((t (:inherit compilation-error   :family "Noto Sans Mono" :weight normal))))
+   '(lsp-diagnostic-level-2     ((t (:inherit compilation-warning :family "Noto Sans Mono" :weight normal))))
+   '(lsp-diagnostic-level-3     ((t (:inherit compilation-info    :family "Noto Sans Mono" :weight normal))))
+   '(lsp-diagnostic-level-4     ((t (:inherit compilation-info    :family "Noto Sans Mono" :weight normal))))))
+
+(use-package magit
+  :defer t
+  :config
+  (custom-set-faces
+   '(magit-diff-context-highlight ((((class color) (background light)) :background "#fbfeee" :foreground "#a4c207")))
+   '(magit-diff-file-heading ((t :inherit bold)))
+   '(magit-hash ((((class color) (background light)) :foreground "gray60" :weight light)))
+   '(magit-log-author ((((class color) (background light)) :foreground "firebrick" :weight light)))
+   '(magit-log-date ((((class color) (background light)) :foreground "gray30" :weight light)))
+   '(magit-section-highlight ((((class color) (background light)) :inherit hl-line :distant-foreground "black")))))
+
+(use-package sh-script
+  :defer t
+  :config
+  (custom-set-faces
+   `(sh-heredoc     ((t :background "#fcf7f2" :foreground "tan1")))
+   `(sh-quoted-exec ((t :background "#faecfa" :foreground "magenta")))))

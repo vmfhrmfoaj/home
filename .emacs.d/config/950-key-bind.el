@@ -370,6 +370,8 @@
   (evil-global-set-key 'insert (kbd "<tab>") #'company-indent-or-complete-common)
   (define-key company-active-map (kbd "<tab>")     #'company-complete-common-or-cycle)
   (define-key company-active-map (kbd "<backtab>") #'company-select-previous)
+  (define-key company-active-map (kbd "C-j") #'company-select-next)
+  (define-key company-active-map (kbd "C-k") #'company-select-previous)
   (define-key company-active-map (kbd "C-h") nil)
   (define-key company-active-map (kbd "C-s") #'company-helm-candidates)
   (define-key company-active-map (kbd "SPC") #'company-abort-and-insert-space))
@@ -515,10 +517,14 @@
   (when evil-want-minibuffer
     (evil-define-key 'insert minibuffer-inactive-mode-map
       (kbd "<backtab>") #'helm-previous-line
-      (kbd "<tab>") #'helm-next-line)
+      (kbd "<tab>") #'helm-next-line
+      (kbd "C-k") #'helm-previous-line
+      (kbd "C-j") #'helm-next-line)
     (evil-define-key 'insert helm-map
       (kbd "<backtab>") #'helm-previous-line
       (kbd "<tab>") #'helm-next-line
+      (kbd "C-k") #'helm-previous-line
+      (kbd "C-j") #'helm-next-line
       (kbd "RET") #'helm-maybe-exit-minibuffer
       (kbd "M-a") #'helm-toggle-all-marks
       (kbd "M-M") #'helm-toggle-visible-mark-backward
@@ -533,6 +539,8 @@
       (kbd "<escape>") #'helm-keyboard-quit
       (kbd "<backtab>") #'helm-previous-line
       (kbd "<tab>") #'helm-next-line
+      (kbd "C-k") #'helm-previous-line
+      (kbd "C-j") #'helm-next-line
       (kbd "C-c <tab>") #'helm-select-action
       (kbd "M-a") #'helm-toggle-all-marks
       (kbd "M-M") #'helm-toggle-visible-mark-backward
