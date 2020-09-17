@@ -34,6 +34,9 @@
   :config
   (advice-add #'flymake-cc :override (lambda (report-fn &rest _) (funcall report-fn nil))))
 
+(use-package helm-lsp
+  :ensure t)
+
 (use-package lsp-clients
   :defer t
   :config
@@ -177,20 +180,24 @@
 
   (defun lsp--custom-eldoc-message-emacs-27 (&optional msg)
     "Show MSG in eldoc."
-    (setq lsp--eldoc-saved-message msg)
-    (let ((lines (s-lines (or msg "")))
-          (max-line (cond
-                     ((floatp max-mini-window-height)
-                      (ceiling (* (frame-height) max-mini-window-height)))
-                     ((numberp max-mini-window-height)
-                      max-mini-window-height)
-                     (t 10))))
-      (eldoc-message (when lines
-                       (->> (if (<= (length lines) max-line)
-                                lines
-                              (-snoc (-take (max 1 (1- max-line)) lines) (propertize "(...)" 'face 'shadow)))
-                            (-interpose "\n")
-                            (apply #'concat))))))
+    (let ((pos (eldoc-refresh-pos)))
+      (when (and eldoc-refresh-last-pos
+                 (not (equal eldoc-refresh-last-pos pos)))
+        (setq eldoc-refresh-last-pos pos
+              lsp--eldoc-saved-message msg)
+        (let ((lines (s-lines (or msg "")))
+              (max-line (cond
+                         ((floatp max-mini-window-height)
+                          (ceiling (* (frame-height) max-mini-window-height)))
+                         ((numberp max-mini-window-height)
+                          max-mini-window-height)
+                         (t 10))))
+          (eldoc-message (when lines
+                           (->> (if (<= (length lines) max-line)
+                                    lines
+                                  (-snoc (-take (max 1 (1- max-line)) lines) (propertize "(...)" 'face 'shadow)))
+                                (-interpose "\n")
+                                (apply #'concat))))))))
 
   (defun lsp--custom-eldoc-message-emacs-28 (&optional msg)
     "Show MSG in eldoc."
@@ -432,11 +439,10 @@
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
   (advice-add #'lsp-describe-thing-at-point :after #'lps--focus-lsp-help-buffer)
 
-  (when (featurep 'dumb-jump)
-    (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx)
-    (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx)
-    (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx)
-    (advice-add #'lsp-find-type-definition :around #'lsp--wrap-find-xxx)))
+  (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx)
+  (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx)
+  (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx)
+  (advice-add #'lsp-find-type-definition :around #'lsp--wrap-find-xxx))
 
 (use-package lsp-perl
   :defer t

@@ -153,6 +153,13 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 ;;;***
 
+;;;### (autoloads nil "dap-netcore" "dap-netcore.el" (0 0 0 0))
+;;; Generated autoloads from dap-netcore.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dap-netcore" '("dap-netcore-")))
+
+;;;***
+
 ;;;### (autoloads nil "dap-node" "dap-node.el" (0 0 0 0))
 ;;; Generated autoloads from dap-node.el
 
