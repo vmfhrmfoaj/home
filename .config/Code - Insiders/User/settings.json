@@ -1,49 +1,116 @@
 {
     // Appearance
-    "editor.fontFamily": "'Fira Code', monospace",
+    "editor.fontFamily": "'Cascadia Code', monospace",
     "editor.fontSize": 13,
     "editor.fontLigatures": true,
-    "editor.fontWeight": "bold",
+    "editor.fontWeight": "600",
     "editor.wordWrapColumn": 120,
+    "editor.rulers": [120],
     "terminal.integrated.fontSize": 12,
     "window.titleBarStyle": "custom",
     "window.menuBarVisibility": "default",
     "window.zoomLevel": 0,
     "workbench.sideBar.location": "left",
     "workbench.iconTheme": "material-icon-theme",
-    "workbench.colorTheme": "Bluloco Light Italic",
+    "workbench.colorTheme": "Visual Studio Dark",
+
     "workbench.colorCustomizations": {
+        // Insiders
+        "activityBar.activeBorder": "#24bfa5",
+        "activityBarBadge.background": "#24bfa5",
+        "statusBarItem.remoteBackground": "#24bfa5",
+        "[Visual Studio Dark]": {
+            "statusBar.background": "#333",
+            "statusBar.noFolderBackground": "#333",
+            "statusBar.noFolderBorder": "#333",
+            "editor.lineHighlightBorder": "#1e1e1e",
+            "editorRuler.foreground": "#5a5a5a20",
+        },
         "[Bluloco Light Italic]": {
-            // Customization
             "activityBar.background": "#c2c4c7",
             "statusBar.background": "#c2c4c7",
             "statusBar.border": "#c2c4c7",
             "statusBar.noFolderBackground": "#c2c4c7",
             "statusBar.noFolderBorder": "#c2c4c7",
             "editor.selectionHighlightBackground": "#00000010", // fix for overlay
-
-            // Insiders
-            "activityBar.activeBorder": "#24bfa5",
-            "activityBarBadge.background": "#24bfa5",
-            "badge.background": "#24bfa5",
-            "statusBarItem.remoteBackground": "#24bfa5",
-
-            // Rust Analyzer
+            "editorRuler.foreground": "#d5d7d830",
             "rust_analyzer.inlayHints.foreground": "#d5275399",
         },
+    },
+    "editor.semanticTokenColorCustomizations": {
+        "[Visual Studio Dark]": {
+            "enabled": true,
+            "rules": {
+                "*.mutable": {
+                    "underline": true,
+                },
+                "*.unsafe": {
+                    "bold": true,
+                    "italic": true,
+                },
+                "punctuation": {
+                    "foreground": "#a9a9a9",
+                },
+            },
+        },
+    },
+    "editor.tokenColorCustomizations": {
+        "[Visual Studio Dark]": {
+            "keywords": "#c586c0",
+            "comments": {
+                "fontStyle": "italic"
+            },
+            "textMateRules": [
+                {
+                    "scope": [
+                        // Rust
+                        "keyword.operator.sigil.rust",
+                        "keyword.operator.misc.rust",
+                        // C/C++
+                        "punctuation.terminator.statement.c",
+                        "punctuation.separator.delimiter.c",
+                        "punctuation.separator.pointer-access.c",
+                        "punctuation.section.block.begin.bracket.curly.c",
+                        "punctuation.section.block.end.bracket.curly.c",
+                        "punctuation.section.parameters.begin.bracket.round.c",
+                        "punctuation.section.parameters.end.bracket.round.c",
+                        "punctuation.section.arguments.begin.bracket.round.c",
+                        "punctuation.section.arguments.end.bracket.round.c",
+                        "punctuation.section.parens.begin.bracket.round.c",
+                        "punctuation.section.parens.end.bracket.round.c",
+                        "punctuation.definition.begin.bracket.square.c",
+                        "punctuation.definition.end.bracket.square.c",
+                        // Shell
+                        "punctuation.definition.variable.shell",
+                        "punctuation.definition.group.shell",
+                        "punctuation.definition.arguments.shell",
+                        "punctuation.definition.logical-expression.shell",
+                        "keyword.operator.list.shell",
+                        "keyword.operator.pipe.shell",
+                        "keyword.operator.redirect.shell",
+                        "keyword.operator.heredoc.shell",
+                        "punctuation.definition.subshell.shell",
+                    ],
+                    "settings": {
+                        "foreground": "#a9a9a9",
+                    }
+                },
+            ]
+        }
     },
 
     // Edit
     "breadcrumbs.enabled": false,
-    "workbench.editor.enablePreview": false,
     "editor.detectIndentation": false,
     "editor.insertSpaces": true,
     "editor.lineNumbers": "relative",
+    "editor.renderLineHighlight": "gutter",
     "editor.renderWhitespace": "selection",
     "editor.minimap.enabled": false,
     "editor.quickSuggestionsDelay": 10,
     "editor.suggestSelection": "first",
     "editor.tabSize": 4,
+    "workbench.editor.enablePreview": false,
 
     // Misc.
     "explorer.confirmDelete": false,
@@ -71,13 +138,6 @@
     // multi-command
     "multiCommand.commands": [
         {
-            "command": "multiCommand.vimNohAndEscape",
-            "sequence": [
-                "extension.vim_ctrl+h",
-                "extension.vim_escape"
-            ]
-        },
-        {
             "command": "multiCommand.vimFindInFiles",
             "sequence": [
                 "extension.vim_escape",
@@ -88,6 +148,13 @@
             "command": "multiCommand.vimSelectedSuggestionAndEscape",
             "sequence": [
                 "acceptSelectedSuggestionOnEnter",
+                "extension.vim_escape"
+            ]
+        },
+        {
+            "command": "multiCommand.vimCancelSuggestionAndEscape",
+            "sequence": [
+                "hideSuggestWidget",
                 "extension.vim_escape"
             ]
         },
@@ -161,6 +228,67 @@
                 "editor.action.dirtydiff.previous"
             ]
         },
+        {
+            "command": "multiCommand.vimEscapeAndFind",
+            "sequence": [
+                "extension.vim_escape",
+                "actions.find"
+            ]
+        },
+        {
+            "command": "multiCommand.findAndNextMatchFindAction",
+            "sequence": [
+                "actions.find",
+                "editor.action.nextMatchFindAction",
+                "workbench.action.focusActiveEditorGroup"
+            ]
+        },
+        {
+            "command": "multiCommand.findAndPreviousMatchFindAction",
+            "sequence": [
+                "actions.find",
+                "editor.action.previousMatchFindAction",
+                "workbench.action.focusActiveEditorGroup"
+            ]
+        },
+        {
+            "command": "multiCommand.hideSearchBoxAndNextMatchFindAction",
+            "sequence": [
+                "closeFindWidget",
+                "editor.action.nextMatchFindAction"
+            ]
+        },
+        {
+            "command": "multiCommand.hideSearchBoxAndPreviousMatchFindAction",
+            "sequence": [
+                "closeFindWidget",
+                "editor.action.previousMatchFindAction"
+            ]
+        },
+        {
+            "command": "multiCommand.cancelFindWidget",
+            "sequence": [
+                "closeFindWidget",
+                "cancelSelection",
+            ]
+        },
+        {
+            "command": "multiCommand.vimMarkAndFind",
+            "sequence": [
+                {"command": "type", "args": {"text": "m"}},
+                {"command": "type", "args": {"text": "0"}},
+                "actions.find"
+            ]
+        },
+        {
+            "command": "multiCommand.vimCancelFindWidgetAndGoBack",
+            "sequence": [
+                "closeFindWidget",
+                "cancelSelection",
+                {"command": "type", "args": {"text": "`"}},
+                {"command": "type", "args": {"text": "0"}},
+            ]
+        },
     ],
 
     // Python
@@ -187,8 +315,10 @@
     "vim.visualstar": true,
     "vim.handleKeys": {
         "<C-d>": false,
+        "<C-f>": false,
         "<C-t>": false,
         "<C-w>": false,
+        "<C-z>": false,
     },
 
     "vim.leader": "<space>",
@@ -214,14 +344,86 @@
     "vim.normalModeKeyBindingsNonRecursive": [
         {
             "before": ["<C-h>"],
-            "commands": [":nohl"]
+            "commands": [
+                {
+                    "command": "closeFindWidget",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": ["<C-r>"],
+            "commands": [
+                {
+                    "command": "redo",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": ["*"],
+            "commands": [
+                {
+                    "command": "multiCommand.findAndNextMatchFindAction",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": ["/"],
+            "commands": [
+                {
+                    "command": "multiCommand.vimMarkAndFind",
+                    "args": []
+                }
+            ]
         },
         {
             "before": ["K"],
             "after": ["g", "h"]
         },
+        {
+            "before": ["N"],
+            "commands": [
+                {
+                    "command": "editor.action.previousMatchFindAction",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": ["n"],
+            "commands": [
+                {
+                    "command": "editor.action.nextMatchFindAction",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": ["u"],
+            "commands": [
+                {
+                    "command": "undo",
+                    "args": []
+                }
+            ]
+        },
     ],
     "vim.normalModeKeyBindings": [
+        {
+            "before": [
+                "g",
+                ";"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "workbench.action.navigateToLastEditLocation",
+                    "args": []
+                },
+            ]
+        },
         {
             "before": [
                 "g",
@@ -285,6 +487,20 @@
             "commands": [
                 {
                     "command": "editor.action.insertSnippet",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "r",
+                "r"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "editor.action.rename",
                     "args": []
                 }
             ]

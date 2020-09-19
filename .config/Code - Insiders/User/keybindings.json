@@ -1,197 +1,232 @@
 // Place your key bindings in this file to override the defaults
 [
-   // Emacs keybinding
-   {
-      "key": "ctrl+h",
-      "command": "-editor.action.startFindReplaceAction"
-   },
-   {
-      "key": "ctrl+h",
-      "command": "deleteLeft",
-      "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
-   },
+    // Emacs keybinding
+    {
+        "key": "ctrl+h",
+        "command": "-editor.action.startFindReplaceAction"
+    },
+    {
+        "key": "ctrl+h",
+        "command": "deleteLeft",
+        "when": "textInputFocus && !editorReadonly && vim.mode == 'Insert'"
+    },
 
-   // Customized
-   {
-      "key": "enter",
-      "command": "multiCommand.revealReferenceAndHide",
-      "when": "listFocus && referenceSearchVisible && !inputFocus"
-   },
-   {
-      "key": "alt+n",
-      "command": "editor.action.marker.next",
-      "when": "editorTextFocus && !searchViewletVisible && vim.active && vim.mode == 'Normal'"
-   },
-   {
-      "key": "alt+p",
-      "command": "editor.action.marker.prev",
-      "when": "editorTextFocus && !searchViewletVisible && vim.active && vim.mode == 'Normal'"
-   },
-   {
-      "key": "shift-=",
-      "command": "git.stageChange",
-      "when": "dirtyDiffVisible"
-   },
-   {
-      "key": "ctrl+shift+q",
-      "command": "workbench.action.toggleMaximizedPanel",
-      "when": "terminalFocus"
-   },
+    // Customized
+    {
+        "key": "enter",
+        "command": "multiCommand.revealReferenceAndHide",
+        "when": "listFocus && referenceSearchVisible && !inputFocus"
+    },
+    {
+        "key": "enter",
+        "command": "multiCommand.cancelFindWidget",
+        "when": "vim.active && findInputFocussed"
+    },
+    {
+        "key": "alt+n",
+        "command": "editor.action.marker.next",
+        "when": "editorTextFocus && !searchViewletVisible && vim.active && vim.mode == 'Normal'"
+    },
+    {
+        "key": "alt+p",
+        "command": "editor.action.marker.prev",
+        "when": "editorTextFocus && !searchViewletVisible && vim.active && vim.mode == 'Normal'"
+    },
+    {
+        "key": "shift-=",
+        "command": "git.stageChange",
+        "when": "dirtyDiffVisible"
+    },
+    {
+        "key": "ctrl+shift+q",
+        "command": "workbench.action.toggleMaximizedPanel",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+f",
+        "command": "multiCommand.vimEscapeAndFind",
+        "when": "editorTextFocus && !searchViewletVisible && !findInputFocussed && vim.active && vim.mode == 'Insert'"
+    },
+    {
+        "key": "escape",
+        "command": "multiCommand.cancelFindWidget",
+        "when": "editorTextFocus && findWidgetVisible && !findInputFocussed"
+    },
+    {
+        "key": "escape",
+        "command": "multiCommand.vimCancelFindWidgetAndGoBack",
+        "when": "findInputFocussed"
+    },
 
-   // Tab and Shift + Tab
-   {
-      "key": "ctrl+tab",
-      "command": "workbench.action.nextEditor",
-      "when": "!sideBarFocus || !vim.active || vim.mode != 'Insert'"
-   },
-   {
-      "key": "ctrl+shift+tab",
-      "command": "workbench.action.previousEditor",
-      "when": "!sideBarFocus || !vim.active || vim.mode != 'Insert'"
-   },
-   {
-      "key": "ctrl+tab",
-      "command": "multiCommand.vimOpenNextRecentlyUsedEditorInGroup",
-      "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
-   },
-   {
-      "key": "ctrl+shift+tab",
-      "command": "multiCommand.vimOpenPreviousRecentlyUsedEditorInGroup",
-      "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
-   },
-   {
-      "key": "ctrl+tab",
-      "command": "workbench.action.focusFirstEditorGroup",
-      "when": "sideBarFocus"
-   },
-   {
-      "key": "tab",
-      "command": "tab",
-      "when": "editorTextFocus && !editorReadonly && vim.mode == 'Insert' && !suggestWidgetVisible"
-   },
-   {
-      "key": "tab",
-      "command": "workbench.action.quickOpenSelectNext",
-      "when": "inQuickOpen"
-   },
-   {
-      "key": "tab",
-      "command": "search.action.focusNextSearchResult",
-      "when": "editorTextFocus && hasSearchResult && searchViewletVisible && vim.active && vim.mode == 'Normal'"
-   },
-   {
-      "key": "shift+tab",
-      "command": "search.action.focusPreviousSearchResult",
-      "when": "editorTextFocus && hasSearchResult && searchViewletVisible && vim.active && vim.mode == 'Normal'"
-   },
-   {
-      "key": "tab",
-      "command": "multiCommand.goNextChangeAndShow",
-      "when": "editorTextFocus && !searchViewletVisible && vim.active && vim.mode == 'Normal'"
-   },
-   {
-      "key": "shift+tab",
-      "command": "multiCommand.goPreviousChangeAndShow",
-      "when": "editorTextFocus && !searchViewletVisible && vim.active && vim.mode == 'Normal'"
-   },
-   {
-      "key": "tab",
-      "command": "workbench.action.compareEditor.nextChange",
-      "when": "textCompareEditorVisible"
-   },
-   {
-      "key": "shift+tab",
-      "command": "workbench.action.compareEditor.previousChange",
-      "when": "textCompareEditorVisible"
-   },
-   {
-      "key": "tab",
-      "command": "list.focusDown",
-      "when": "hasSearchResult && searchViewletFocus && !inputBoxFocus"
-   },
-   {
-      "key": "shift+tab",
-      "command": "list.focusUp",
-      "when": "hasSearchResult && searchViewletFocus && !inputBoxFocus"
-   },
+    // Tab and Shift + Tab
+    {
+        "key": "ctrl+tab",
+        "command": "workbench.action.nextEditor",
+        "when": "!sideBarFocus || !vim.active || vim.mode != 'Insert'"
+    },
+    {
+        "key": "ctrl+shift+tab",
+        "command": "workbench.action.previousEditor",
+        "when": "!sideBarFocus || !vim.active || vim.mode != 'Insert'"
+    },
+    {
+        "key": "ctrl+tab",
+        "command": "multiCommand.vimOpenNextRecentlyUsedEditorInGroup",
+        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+    },
+    {
+        "key": "ctrl+shift+tab",
+        "command": "multiCommand.vimOpenPreviousRecentlyUsedEditorInGroup",
+        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+    },
+    {
+        "key": "ctrl+tab",
+        "command": "workbench.action.focusFirstEditorGroup",
+        "when": "sideBarFocus"
+    },
+    {
+        "key": "tab",
+        "command": "tab",
+        "when": "editorTextFocus && !editorReadonly && vim.mode == 'Insert' && !suggestWidgetVisible"
+    },
 
-   // Vim
-   {
-      "key": "enter",
-      "command": "multiCommand.vimSelectedSuggestionAndEscape",
-      "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.mode == 'Insert'"
-   },
-   {
-      "key": "escape",
-      "command": "multiCommand.vimNohAndEscape",
-      "when": "editorTextFocus && vim.active && vim.mode == 'Normal' && !renameInputVisible && !editorHasSelection && !accessibilityHelpWidgetVisible && !breakpointWidgetVisible && !markersNavigationVisible && !parameterHintsVisible && !referenceSearchVisible"
-   },
-   {
-      "key": "ctrl+shift+f",
-      "command": "multiCommand.vimFindInFiles",
-      "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
-   },
-   {
-      "key": "ctrl+p",
-      "command": "multiCommand.vimQuickOpen",
-      "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
-   },
+    // Vim
+    {
+        "key": "enter",
+        "command": "multiCommand.vimSelectedSuggestionAndEscape",
+        "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.mode == 'Insert'"
+    },
+    {
+        "key": "escape",
+        "command": "multiCommand.vimCancelSuggestionAndEscape",
+        "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.mode == 'Insert'"
+    },
+    {
+        "key": "ctrl+shift+f",
+        "command": "multiCommand.vimFindInFiles",
+        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+    },
+    {
+        "key": "ctrl+p",
+        "command": "multiCommand.vimQuickOpen",
+        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+    },
+    {
+        "key": "shift+3",
+        "command": "multiCommand.findAndPreviousMatchFindAction",
+        "when": "editorTextFocus && !findInputFocussed && vim.active && vim.mode == 'Normal'"
+    },
+    {
+        "key": "shift+3",
+        "command": "editor.action.previousMatchFindAction",
+        "when": "editorTextFocus && findWidgetVisible && vim.active && vim.mode == 'Normal'"
+    },
 
-   // H/J/K/L
-   {
-      "key": "ctrl+j",
-      "command": "workbench.action.quickOpenSelectNext",
-      "when": "inQuickOpen"
-   },
-   {
-      "key": "ctrl+k",
-      "command": "workbench.action.quickOpenSelectPrevious",
-      "when": "inQuickOpen"
-   },
-   {
-      "key": "ctrl+j",
-      "command": "selectNextSuggestion",
-      "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
-   },
-   {
-      "key": "ctrl+k",
-      "command": "selectPrevSuggestion",
-      "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
-   },
-   {
-      "key": "ctrl+j",
-      "command": "search.focus.nextInputBox",
-      "when": "inSearchEditor && inputBoxFocus || inputBoxFocus && searchViewletVisible"
-   },
-   {
-      "key": "ctrl+k",
-      "command": "search.focus.previousInputBox",
-      "when": "inSearchEditor && inputBoxFocus || inputBoxFocus && searchViewletVisible"
-   },
+    // H/J/K/L
+    {
+        "key": "ctrl+j",
+        "command": "workbench.action.quickOpenSelectNext",
+        "when": "inQuickOpen"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "workbench.action.quickOpenSelectPrevious",
+        "when": "inQuickOpen"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "selectNextSuggestion",
+        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "selectPrevSuggestion",
+        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "search.focus.nextInputBox",
+        "when": "inSearchEditor && inputBoxFocus || inputBoxFocus && searchViewletVisible"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "search.focus.previousInputBox",
+        "when": "inSearchEditor && inputBoxFocus || inputBoxFocus && searchViewletVisible"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "editor.action.nextMatchFindAction",
+        "when": "editorFocus && findInputFocussed"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "editor.action.previousMatchFindAction",
+        "when": "editorFocus && findInputFocussed"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "search.action.focusNextSearchResult",
+        "when": "editorTextFocus && hasSearchResult && searchViewletVisible && !findInputFocussed && vim.active && vim.mode == 'Normal'"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "search.action.focusPreviousSearchResult",
+        "when": "editorTextFocus && hasSearchResult && searchViewletVisible && !findInputFocussed && vim.active && vim.mode == 'Normal'"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "multiCommand.goNextChangeAndShow",
+        "when": "editorTextFocus && !searchViewletVisible && !findInputFocussed && vim.active && vim.mode == 'Normal'"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "multiCommand.goPreviousChangeAndShow",
+        "when": "editorTextFocus && !searchViewletVisible && !findInputFocussed && vim.active && vim.mode == 'Normal'"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "workbench.action.compareEditor.nextChange",
+        "when": "textCompareEditorVisible"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "workbench.action.compareEditor.previousChange",
+        "when": "textCompareEditorVisible"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "list.focusDown",
+        "when": "hasSearchResult && searchViewletFocus && !inputBoxFocus"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "list.focusUp",
+        "when": "hasSearchResult && searchViewletFocus && !inputBoxFocus"
+    },
 
-   // HHKB Pro2
-   {
-      "key": "shift+NumPad_Add",
-      "command": "type",
-      "args": { "text": "=" },
-      "when": "editorTextFocus"
-   },
-   {
-      "key": "shift+NumPad_Subtract",
-      "command": "type",
-      "args": { "text": "_" },
-      "when": "editorTextFocus"
-   },
-   {
-      "key": "shift+NumPad_Divide",
-      "command": "type",
-      "args": { "text": "\\" },
-      "when": "editorTextFocus"
-   },
-   {
-      "key": "shift+numpad_multiply",
-      "command": "type",
-      "args": { "text": "#" },
-      "when": "editorTextFocus"
-   },
+    // HHKB Pro2
+    {
+        "key": "shift+NumPad_Add",
+        "command": "type",
+        "args": { "text": "=" },
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "shift+NumPad_Subtract",
+        "command": "type",
+        "args": { "text": "_" },
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "shift+NumPad_Divide",
+        "command": "type",
+        "args": { "text": "\\" },
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "shift+numpad_multiply",
+        "command": "type",
+        "args": { "text": "#" },
+        "when": "editorTextFocus"
+    },
 ]
