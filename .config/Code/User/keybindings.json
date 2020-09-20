@@ -19,7 +19,7 @@
     },
     {
         "key": "enter",
-        "command": "multiCommand.cancelFindWidget",
+        "command": "multiCommand.vimCancelFindWidget",
         "when": "vim.active && findInputFocussed"
     },
     {
@@ -49,7 +49,7 @@
     },
     {
         "key": "escape",
-        "command": "multiCommand.cancelFindWidget",
+        "command": "multiCommand.vimCancelFindWidget",
         "when": "editorTextFocus && findWidgetVisible && !findInputFocussed"
     },
     {
@@ -110,16 +110,6 @@
         "key": "ctrl+p",
         "command": "multiCommand.vimQuickOpen",
         "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
-    },
-    {
-        "key": "shift+3",
-        "command": "multiCommand.findAndPreviousMatchFindAction",
-        "when": "editorTextFocus && !findInputFocussed && vim.active && vim.mode == 'Normal'"
-    },
-    {
-        "key": "shift+3",
-        "command": "editor.action.previousMatchFindAction",
-        "when": "editorTextFocus && findWidgetVisible && vim.active && vim.mode == 'Normal'"
     },
 
     // H/J/K/L

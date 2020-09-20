@@ -7,63 +7,88 @@
     "editor.wordWrapColumn": 120,
     "editor.rulers": [120],
     "terminal.integrated.fontSize": 12,
+    "terminal.integrated.fontWeight": "600",
     "window.titleBarStyle": "custom",
     "window.menuBarVisibility": "default",
     "window.zoomLevel": 0,
     "workbench.sideBar.location": "left",
+    "workbench.colorTheme": "Visual Studio Light",
     "workbench.iconTheme": "material-icon-theme",
-    "workbench.colorTheme": "Visual Studio Dark",
 
     "workbench.colorCustomizations": {
-        // Stable
         "statusBarItem.remoteBackground": "#22a4f1",
+        "rust_analyzer.inlayHints.foreground": "#d4d4d4",
         "[Visual Studio Dark]": {
             "statusBar.background": "#333",
             "statusBar.noFolderBackground": "#333",
             "statusBar.noFolderBorder": "#333",
             "editor.lineHighlightBorder": "#1e1e1e",
             "editorRuler.foreground": "#5a5a5a20",
+            "rust_analyzer.inlayHints.foreground": "#878787",
         },
-        "[Bluloco Light Italic]": {
-            "activityBar.background": "#c2c4c7",
-            "statusBar.background": "#c2c4c7",
-            "statusBar.border": "#c2c4c7",
-            "statusBar.noFolderBackground": "#c2c4c7",
-            "statusBar.noFolderBorder": "#c2c4c7",
-            "editor.selectionHighlightBackground": "#00000010", // fix for overlay
-            "editorRuler.foreground": "#d5d7d830",
-            "rust_analyzer.inlayHints.foreground": "#d5275399",
+        "[Visual Studio Light]": {
+            "activityBar.activeBackground": "#f2f2f2",
+            "activityBar.background": "#dddddd",
+            "activityBar.foreground": "#333333",
+            "statusBar.noFolderBackground": "#dddddd",
+            "statusBar.background": "#dddddd",
+            "statusBar.foreground": "#333333",
+            "editorRuler.foreground": "#d3d3d330",
+            "editor.lineHighlightBackground": "#e4e6f1",
+            "scrollbar.shadow": "#ffffff00",
         },
     },
     "editor.semanticTokenColorCustomizations": {
+        "rules": {
+            "*.mutable": {
+                "underline": true,
+            },
+            "*.unsafe": {
+                "bold": true,
+                "italic": true,
+            },
+        },
         "[Visual Studio Dark]": {
-            "enabled": true,
             "rules": {
-                "*.mutable": {
-                    "underline": true,
-                },
-                "*.unsafe": {
-                    "bold": true,
-                    "italic": true,
-                },
-                "punctuation": {
-                    "foreground": "#a9a9a9",
-                },
+                "type": "#4ec9b0",
+                "punctuation": "#a9a9a9",
+                "macro": "#d4d4d4",
+                "enumMember": "#d4d4d4",
+            },
+        },
+        "[Visual Studio Light]": {
+            "rules": {
+                "type": "#267F99",
+                "punctuation": "#747474",
+                "macro": "#000000",
+                "enumMember": "#000000",
             },
         },
     },
     "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "constant.other.placeholder.c",
+                "settings": {
+                    "fontStyle": "italic"
+                }
+            },
+        ],
         "[Visual Studio Dark]": {
             "keywords": "#c586c0",
             "comments": {
+                "foreground": "#a9a9a9",
                 "fontStyle": "italic"
             },
             "textMateRules": [
                 {
+                    "scope": ["entity.name.function.preprocessor"],
+                    "settings": {
+                        "foreground": "#d4d4d4",
+                    }
+                },
+                {
                     "scope": [
-                        // Rust
-                        "keyword.operator.sigil.rust",
-                        "keyword.operator.misc.rust",
                         // C/C++
                         "punctuation.terminator.statement.c",
                         "punctuation.separator.delimiter.c",
@@ -93,8 +118,66 @@
                         "foreground": "#a9a9a9",
                     }
                 },
+                {
+                    "scope": "storage.type.built-in.primitive.c",
+                    "settings": {
+                        "foreground": "#4ec9b0",
+                    }
+                },
             ]
-        }
+        },
+        "[Visual Studio Light]": {
+            "keywords": "#af00db",
+            "comments": {
+                "foreground": "#747474",
+                "fontStyle": "italic"
+            },
+            "textMateRules": [
+                {
+                    "scope": ["entity.name.function.preprocessor"],
+                    "settings": {
+                        "foreground": "#000000",
+                    }
+                },
+                {
+                    "scope": [
+                        // C/C++
+                        "punctuation.terminator.statement.c",
+                        "punctuation.separator.delimiter.c",
+                        "punctuation.separator.pointer-access.c",
+                        "punctuation.section.block.begin.bracket.curly.c",
+                        "punctuation.section.block.end.bracket.curly.c",
+                        "punctuation.section.parameters.begin.bracket.round.c",
+                        "punctuation.section.parameters.end.bracket.round.c",
+                        "punctuation.section.arguments.begin.bracket.round.c",
+                        "punctuation.section.arguments.end.bracket.round.c",
+                        "punctuation.section.parens.begin.bracket.round.c",
+                        "punctuation.section.parens.end.bracket.round.c",
+                        "punctuation.definition.begin.bracket.square.c",
+                        "punctuation.definition.end.bracket.square.c",
+                        // Shell
+                        "punctuation.definition.variable.shell",
+                        "punctuation.definition.group.shell",
+                        "punctuation.definition.arguments.shell",
+                        "punctuation.definition.logical-expression.shell",
+                        "keyword.operator.list.shell",
+                        "keyword.operator.pipe.shell",
+                        "keyword.operator.redirect.shell",
+                        "keyword.operator.heredoc.shell",
+                        "punctuation.definition.subshell.shell",
+                    ],
+                    "settings": {
+                        "foreground": "#747474",
+                    }
+                },
+                {
+                    "scope": "storage.type.built-in.primitive.c",
+                    "settings": {
+                        "foreground": "#267F99",
+                    }
+                },
+            ]
+        },
     },
 
     // Edit
@@ -234,7 +317,7 @@
             ]
         },
         {
-            "command": "multiCommand.findAndNextMatchFindAction",
+            "command": "multiCommand.vimFindAndNextMatchFindAction",
             "sequence": [
                 "actions.find",
                 "editor.action.nextMatchFindAction",
@@ -242,7 +325,7 @@
             ]
         },
         {
-            "command": "multiCommand.findAndPreviousMatchFindAction",
+            "command": "multiCommand.vimFindAndPreviousMatchFindAction",
             "sequence": [
                 "actions.find",
                 "editor.action.previousMatchFindAction",
@@ -250,24 +333,11 @@
             ]
         },
         {
-            "command": "multiCommand.hideSearchBoxAndNextMatchFindAction",
-            "sequence": [
-                "closeFindWidget",
-                "editor.action.nextMatchFindAction"
-            ]
-        },
-        {
-            "command": "multiCommand.hideSearchBoxAndPreviousMatchFindAction",
-            "sequence": [
-                "closeFindWidget",
-                "editor.action.previousMatchFindAction"
-            ]
-        },
-        {
-            "command": "multiCommand.cancelFindWidget",
+            "command": "multiCommand.vimCancelFindWidget",
             "sequence": [
                 "closeFindWidget",
                 "cancelSelection",
+                "extension.vim_escape",
             ]
         },
         {
@@ -359,10 +429,19 @@
             ]
         },
         {
+            "before": ["#"],
+            "commands": [
+                {
+                    "command": "multiCommand.vimFindAndPreviousMatchFindAction",
+                    "args": []
+                }
+            ]
+        },
+        {
             "before": ["*"],
             "commands": [
                 {
-                    "command": "multiCommand.findAndNextMatchFindAction",
+                    "command": "multiCommand.vimFindAndNextMatchFindAction",
                     "args": []
                 }
             ]
