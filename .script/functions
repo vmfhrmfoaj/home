@@ -137,6 +137,7 @@ EOF
             'DotJoshJohnson.xml'
             'eamodio.gitlens'
             'EditorConfig.EditorConfig'
+            'golang.go'
             'HookyQR.beautify'
             'LaurentTreguier.rpm-spec'
             'mads-hartmann.bash-ide-vscode'
@@ -192,7 +193,7 @@ EOF
     local new='".mtku { text-decoration: underline; text-underline-position: initial; text-decoration-style: dotted; }"'
     local file="${target_dir}/resources/app/out/vs/workbench/workbench.desktop.main.js"
     grep -F "${old}" "${file}" >/dev/null
-    if [ $0 -eq 0 ];
+    if [ $? -eq 0 ]; then
         sed -i "s/${old}/${new}/g" "${file}"
     else
         echo "'.mtku' style was changed!"
@@ -265,6 +266,7 @@ EOF
             'DotJoshJohnson.xml'
             'eamodio.gitlens'
             'EditorConfig.EditorConfig'
+            'golang.go'
             'HookyQR.beautify'
             'LaurentTreguier.rpm-spec'
             'mads-hartmann.bash-ide-vscode'
@@ -320,7 +322,7 @@ EOF
     local new='".mtku { text-decoration: underline; text-underline-position: initial; text-decoration-style: dotted; }"'
     local file="${target_dir}/resources/app/out/vs/workbench/workbench.desktop.main.js"
     grep -F "${old}" "${file}" >/dev/null
-    if [ $0 -eq 0 ];
+    if [ $? -eq 0 ]; then
         sed -i "s/${old}/${new}/g" "${file}"
     else
         echo "'.mtku' style was changed!"
