@@ -37,6 +37,7 @@
             "editorRuler.foreground": "#d3d3d330",
             "editor.lineHighlightBackground": "#e4e6f1",
             "scrollbar.shadow": "#ffffff00",
+            "rust_analyzer.inlayHints.foreground": "#267F9999",
         },
     },
     "editor.semanticTokenColorCustomizations": {
@@ -51,7 +52,11 @@
         },
         "[Visual Studio Dark]": {
             "rules": {
+                "enum": "#4ec9b0",
+                "interface": "#4ec9b0",
                 "type": "#4ec9b0",
+                "typeAlias": "#4ec9b0",
+                "typeParameter": "#4ec9b0",
                 "punctuation": "#a9a9a9",
                 "macro": "#d4d4d4",
                 "enumMember": "#d4d4d4",
@@ -59,10 +64,18 @@
         },
         "[Visual Studio Light]": {
             "rules": {
+                "enum": "#267F99",
+                "interface": "#267F99",
                 "type": "#267F99",
+                "struct": "#267F99",
+                "typeAlias": "#267F99",
+                "typeParameter": "#267F99",
                 "punctuation": "#747474",
                 "macro": "#000000",
                 "enumMember": "#000000",
+                "*.unsafe": {
+                    "foreground": "#ff0000"
+                },
             },
         },
     },
@@ -135,27 +148,62 @@
             },
             "textMateRules": [
                 {
-                    "scope": ["entity.name.function.preprocessor"],
+                    "scope": [
+                        "entity.name.function.preprocessor",
+                        // C/C++
+                        "meta.preprocessor.macro.cpp",
+                        "storage.modifier.pointer.cpp",
+                        "variable.parameter.preprocessor.cpp",
+                        "variable.other.object.access.cpp",
+                        "variable.other.property.cpp",
+                    ],
                     "settings": {
                         "foreground": "#000000",
                     }
                 },
                 {
+                    "scope": "meta.attribute.rust",
+                    "settings": {
+                        "foreground": "#222222",
+                    }
+                },
+                {
+                    "scope": "punctuation.section.embedded",
+                    "settings":{
+                        "foreground": "#a31515",
+                        "fontStyle": "italic",
+                    },
+                },
+                {
                     "scope": [
                         // C/C++
                         "punctuation.terminator.statement.c",
+                        "punctuation.terminator.statement.cpp",
                         "punctuation.separator.delimiter.c",
                         "punctuation.separator.pointer-access.c",
+                        "punctuation.separator.pointer-access.cpp",
                         "punctuation.section.block.begin.bracket.curly.c",
                         "punctuation.section.block.end.bracket.curly.c",
                         "punctuation.section.parameters.begin.bracket.round.c",
                         "punctuation.section.parameters.end.bracket.round.c",
                         "punctuation.section.arguments.begin.bracket.round.c",
                         "punctuation.section.arguments.end.bracket.round.c",
+                        "punctuation.section.arguments.begin.bracket.round.initializer.cpp",
+                        "punctuation.section.arguments.end.bracket.round.initializer.cpp",
+                        "punctuation.section.parameters.begin.bracket.round.cpp",
+                        "punctuation.section.parameters.end.bracket.round.cpp",
+                        "punctuation.section.parameters.begin.bracket.round.function.pointer.cpp",
+                        "punctuation.section.parameters.end.bracket.round.function.pointer.cpp",
                         "punctuation.section.parens.begin.bracket.round.c",
                         "punctuation.section.parens.end.bracket.round.c",
+                        "punctuation.section.parens.begin.bracket.round.cpp",
+                        "punctuation.section.parens.end.bracket.round.cpp",
+                        "punctuation.section.parens.begin.bracket.round.function.pointer.cpp",
+                        "punctuation.section.parens.end.bracket.round.function.pointer.cpp",
                         "punctuation.definition.begin.bracket.square.c",
                         "punctuation.definition.end.bracket.square.c",
+                        "punctuation.definition.parameters.begin.preprocessor.cpp",
+                        "punctuation.definition.parameters.end.preprocessor.cpp",
                         // Shell
                         "punctuation.definition.variable.shell",
                         "punctuation.definition.group.shell",
@@ -212,6 +260,9 @@
     "gitlens.currentLine.enabled": false,
     "gitlens.statusBar.format": "${author}(${agoOrDate}): \"${message}\"",
 
+    // Go
+    "go.formatTool": "goimports",
+
     // Markdownlint
     "markdownlint.config": {
         "MD024": false,
@@ -223,49 +274,49 @@
             "command": "multiCommand.vimFindInFiles",
             "sequence": [
                 "extension.vim_escape",
-                "workbench.action.findInFiles"
+                "workbench.action.findInFiles",
             ]
         },
         {
             "command": "multiCommand.vimSelectedSuggestionAndEscape",
             "sequence": [
                 "acceptSelectedSuggestionOnEnter",
-                "extension.vim_escape"
+                "extension.vim_escape",
             ]
         },
         {
             "command": "multiCommand.vimCancelSuggestionAndEscape",
             "sequence": [
                 "hideSuggestWidget",
-                "extension.vim_escape"
+                "extension.vim_escape",
             ]
         },
         {
             "command": "multiCommand.gitStageSelectedRanges",
             "sequence": [
                 "git.stageSelectedRanges",
-                "extension.vim_escape"
+                "extension.vim_escape",
             ]
         },
         {
             "command": "multiCommand.gitUnstageSelectedRanges",
             "sequence": [
                 "git.unstageSelectedRanges",
-                "extension.vim_escape"
+                "extension.vim_escape",
             ]
         },
         {
             "command": "multiCommand.vimPreviousEditor",
             "sequence": [
                 "extension.vim_escape",
-                "workbench.action.previousEditor"
+                "workbench.action.previousEditor",
             ]
         },
         {
             "command": "multiCommand.vimNextEditor",
             "sequence": [
                 "extension.vim_escape",
-                "workbench.action.nextEditor"
+                "workbench.action.nextEditor",
             ]
         },
         {
@@ -279,42 +330,42 @@
             "command": "multiCommand.vimOpenNextRecentlyUsedEditorInGroup",
             "sequence": [
                 "extension.vim_escape",
-                "workbench.action.nextEditor"
+                "workbench.action.nextEditor",
             ]
         },
         {
             "command": "multiCommand.vimOpenPreviousRecentlyUsedEditorInGroup",
             "sequence": [
                 "extension.vim_escape",
-                "workbench.action.previousEditor"
+                "workbench.action.previousEditor",
             ]
         },
         {
             "command": "multiCommand.revealReferenceAndHide",
             "sequence": [
                 "revealReference",
-                "closeReferenceSearch"
+                "closeReferenceSearch",
             ]
         },
         {
             "command": "multiCommand.goNextChangeAndShow",
             "sequence": [
                 "workbench.action.editor.nextChange",
-                "editor.action.dirtydiff.next"
+                "editor.action.dirtydiff.next",
             ]
         },
         {
             "command": "multiCommand.goPreviousChangeAndShow",
             "sequence": [
                 "workbench.action.editor.previousChange",
-                "editor.action.dirtydiff.previous"
+                "editor.action.dirtydiff.previous",
             ]
         },
         {
             "command": "multiCommand.vimEscapeAndFind",
             "sequence": [
                 "extension.vim_escape",
-                "actions.find"
+                "actions.find",
             ]
         },
         {
@@ -322,7 +373,7 @@
             "sequence": [
 				"actions.find",
                 "editor.action.nextMatchFindAction",
-                "workbench.action.focusActiveEditorGroup"
+                "workbench.action.focusActiveEditorGroup",
             ]
         },
         {
@@ -330,7 +381,7 @@
             "sequence": [
                 "actions.find",
                 "editor.action.previousMatchFindAction",
-                "workbench.action.focusActiveEditorGroup"
+                "workbench.action.focusActiveEditorGroup",
             ]
         },
         {
@@ -339,13 +390,16 @@
                 "closeFindWidget",
                 "cancelSelection",
                 "extension.vim_escape",
+                {"command": "type", "args": {"text": "q"}},
+                {"command": "type", "args": {"text": "z"}},
+                {"command": "type", "args": {"text": "q"}},
             ]
         },
         {
             "command": "multiCommand.vimMarkAndFind",
             "sequence": [
                 {"command": "type", "args": {"text": "m"}},
-                {"command": "type", "args": {"text": "0"}},
+                {"command": "type", "args": {"text": "z"}},
                 "actions.find"
             ]
         },
@@ -354,14 +408,18 @@
             "sequence": [
                 "closeFindWidget",
                 "cancelSelection",
+                "extension.vim_escape",
                 {"command": "type", "args": {"text": "`"}},
-                {"command": "type", "args": {"text": "0"}},
+                {"command": "type", "args": {"text": "z"}},
+                {"command": "type", "args": {"text": "q"}},
+                {"command": "type", "args": {"text": "z"}},
+                {"command": "type", "args": {"text": "q"}},
             ]
         },
     ],
 
     // Python
-    "python.jediEnabled": false,
+    "python.languageServer": "Microsoft",
 
     // Remote Development
     "remote.SSH.showLoginTerminal": true,
@@ -405,6 +463,42 @@
                 },
                 {
                     "command": "extension.vim_escape",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": ["*"],
+            "commands": [
+                {
+                    "command": "multiCommand.vimFindAndNextMatchFindAction",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": ["#"],
+            "commands": [
+                {
+                    "command": "multiCommand.vimFindAndPreviousMatchFindAction",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": ["N"],
+            "commands": [
+                {
+                    "command": "editor.action.previousMatchFindAction",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": ["n"],
+            "commands": [
+                {
+                    "command": "editor.action.nextMatchFindAction",
                     "args": []
                 }
             ]

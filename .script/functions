@@ -186,6 +186,10 @@ EOF
             rm -rf "${target_dir}/${file}"
         done
         cp -r "${system_electron}/"* "${target_dir}/"
+        # use system libraries
+        rm -f "${target_dir}/libffmpeg.so"
+        rm -f "${target_dir}/libEGL.so"
+        rm -f "${target_dir}/libGLESv2.so"
         sed -i -e 's@$VSCODE_PATH/code@$VSCODE_PATH/electron@g' "${target_dir}/bin/code"
     fi
 
@@ -197,6 +201,16 @@ EOF
         sed -i "s/${old}/${new}/g" "${file}"
     else
         echo "'.mtku' style was changed!"
+    fi
+
+    local old='"\[Unsupported\]"'
+    local new='"\[Customized\]"'
+    local file="${target_dir}/resources/app/out/vs/workbench/workbench.desktop.main.nls.js"
+    grep -E "${old}" "${file}" >/dev/null
+    if [ $? -eq 0 ]; then
+        sed -i "s/${old}/${new}/g" "${file}"
+    else
+        echo "'titlebarPart' style was changed!"
     fi
 
     return 0
@@ -235,7 +249,7 @@ _install_vs_code_insiders_from_tar() {
 DIR=$(dirname $0)
 source ~/.script/setup
 switches='--use-gl=desktop --ignore-gpu-blacklist --enable-gpu-rasterization --enable-zero-copy --enable-oop-rasterization'
-exec "${DIR}/code-insiders" ${switches} $@
+exec "${DIR}/code-insiders" $@ ${switches}
 EOF
     chmod +x "${target_dir}/bin/code-wrapper"
     cat > "${HOME}/.local/share/applications/visual-studio-code-insiders.desktop" <<EOF
@@ -315,17 +329,31 @@ EOF
             rm -rf "${target_dir}/${file}"
         done
         cp -r "${system_electron}/"* "${target_dir}/"
+        # use system libraries
+        rm -f "${target_dir}/libffmpeg.so"
+        rm -f "${target_dir}/libEGL.so"
+        rm -f "${target_dir}/libGLESv2.so"
         sed -i -e 's@$VSCODE_PATH/code-insiders@$VSCODE_PATH/electron@g' "${target_dir}/bin/code-insiders"
     fi
 
     local old='".mtku { text-decoration: underline; text-underline-position: under; }"'
     local new='".mtku { text-decoration: underline; text-underline-position: initial; text-decoration-style: dotted; }"'
     local file="${target_dir}/resources/app/out/vs/workbench/workbench.desktop.main.js"
-    grep -F "${old}" "${file}" >/dev/null
+    grep -E "${old}" "${file}" >/dev/null
     if [ $? -eq 0 ]; then
         sed -i "s/${old}/${new}/g" "${file}"
     else
         echo "'.mtku' style was changed!"
+    fi
+
+    local old='"\[Unsupported\]"'
+    local new='"\[Customized\]"'
+    local file="${target_dir}/resources/app/out/vs/workbench/workbench.desktop.main.nls.js"
+    grep -E "${old}" "${file}" >/dev/null
+    if [ $? -eq 0 ]; then
+        sed -i "s/${old}/${new}/g" "${file}"
+    else
+        echo "'titlebarPart' style was changed!"
     fi
 
     return 0
