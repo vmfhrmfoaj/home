@@ -145,15 +145,6 @@
    '(lsp-face-highlight-textual ((t :inherit (highlight underline))))
    '(lsp-face-highlight-write   ((t :inherit (highlight underline bold))))))
 
-(use-package lsp-ui
-  :defer t
-  :config
-  (custom-set-faces
-   '(lsp-diagnostic-level-1     ((t (:inherit compilation-error   :family "Noto Sans Mono" :weight normal))))
-   '(lsp-diagnostic-level-2     ((t (:inherit compilation-warning :family "Noto Sans Mono" :weight normal))))
-   '(lsp-diagnostic-level-3     ((t (:inherit compilation-info    :family "Noto Sans Mono" :weight normal))))
-   '(lsp-diagnostic-level-4     ((t (:inherit compilation-info    :family "Noto Sans Mono" :weight normal))))))
-
 (use-package magit
   :defer t
   :config

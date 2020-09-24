@@ -9,7 +9,7 @@
 (when window-system
   (prefer-coding-system 'utf-8)
   (setq-default line-spacing 0)
-  (let ((font (font-spec :family "Fira Code"
+  (let ((font (font-spec :family "Cascadia Code"
                          :size 14
                          :weight 'semi-bold)))
     (set-face-font 'default font)
