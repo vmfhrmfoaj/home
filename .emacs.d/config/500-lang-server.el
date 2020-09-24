@@ -90,7 +90,7 @@
     (-when-let (buf (get-buffer "*lsp-help*"))
       (pop-to-buffer buf)))
 
-  (defun lsp--custom-eldoc-message (&optional msg)
+  (defun lsp--custom-eldoc-message-emacs-27 (&optional msg)
     "Show MSG in eldoc."
     (let ((pos (eldoc-refresh-pos)))
       (when (and eldoc-refresh-last-pos
@@ -111,6 +111,19 @@
                                 (-interpose "\n")
                                 (apply #'concat))))))))
 
+  (defun lsp--custom-eldoc-message-emacs-28 (&optional msg)
+    "Show MSG in eldoc."
+    (setq lsp--eldoc-saved-message msg)
+    (eldoc-message msg))
+
+  (defalias 'lsp--custom-eldoc-message
+    (if (version<= "28.0.50" emacs-version)
+        #'lsp--custom-eldoc-message-emacs-28
+      #'lsp--custom-eldoc-message-emacs-27))
+
+  (defun lsp--signature->message-filter (msg)
+    (replace-in-string " │ " " | " msg))
+
   (setq lsp-diagnostic-package :flycheck
         lsp-enable-imenu nil
         lsp-enable-indentation nil
@@ -119,7 +132,13 @@
         lsp-file-watch-threshold nil
         lsp-idle-delay 0.2
         lsp-restart 'ignore
-        lsp-rust-server 'rust-analyzer)
+        lsp-rust-server 'rust-analyzer
+        lsp-signature-function (lambda (msg)
+                                 (when lsp--on-idle-timer
+                                   (cancel-timer lsp--on-idle-timer))
+                                 (when eldoc-timer
+                                   (cancel-timer eldoc-timer))
+                                 (lsp--custom-eldoc-message msg)))
 
   (setq-default lsp-eldoc-enable-hover t
                 lsp-enable-on-type-formatting nil)
@@ -135,22 +154,22 @@
               (add-hook 'evil-insert-state-entry-hook
                         (lambda ()
                           (when lsp-mode
+                            (when lsp-ui-sideline-mode
+                              (lsp-ui-sideline-mode -1))
                             (when (and lsp-signature-auto-activate
                                        (lsp-feature? "textDocument/signatureHelp")
                                        (null lsp-signature-mode))
                               (setq-local lsp-eldoc-enable-hover nil)
-                              (lsp-signature-activate))
-                            (when lsp-ui-sideline-mode
-                              (lsp-ui-sideline-mode -1))))
+                              (lsp-signature-activate))))
                         nil t)
               (add-hook 'evil-insert-state-exit-hook
                         (lambda ()
+                          (unless lsp-ui-sideline-mode
+                            (lsp-ui-sideline-mode 1))
                           (when lsp-mode
                             (when lsp-signature-auto-activate
                               (setq lsp-eldoc-enable-hover (default-value 'lsp-eldoc-enable-hover))
-                              (lsp-signature-stop))
-                            (unless lsp-ui-sideline-mode
-                              (lsp-ui-sideline-mode 1))))
+                              (lsp-signature-stop))))
                         nil t)
               (add-hook 'evil-operator-state-entry-hook
                         (lambda ()
@@ -159,14 +178,11 @@
                             (lsp-ui-sideline--delete-ov)
                             (setq lsp-ui-sideline--tag nil)))
                         nil t)))
-  (add-hook 'lsp-after-diagnostics-hook
-            (lambda ()
-              (when (and lsp-ui-sideline-mode (not (buffer-modified-p)))
-                (lsp-ui-sideline--diagnostics-changed))))
 
-  (advice-add #'lsp--eldoc-message :override #'lsp--custom-eldoc-message)
+  (advice-add #'lsp--eldoc-message :override 'lsp--custom-eldoc-message)
+
+  (advice-add #'lsp--signature->message :filter-return #'lsp--signature->message-filter)
   (advice-add #'lsp-describe-thing-at-point :after #'lps--focus-lsp-help-buffer)
-
   (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx)

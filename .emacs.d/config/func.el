@@ -244,7 +244,7 @@
            (-first-item)))))))
 
 
-(defvar exclude-alt-buf-regex ""
+(defvar exclude-alt-buf-regex "\\(^\\*.*?\\*$\\)"
   "TODO")
 
 (defun sort-buffer-by-visit-time (bufs)

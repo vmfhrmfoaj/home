@@ -61,7 +61,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight normal)))
+   '(font-lock-comment-face ((t :background unspecified :slant unspecified)))
    '(font-lock-function-name-face ((t :inherit bold)))
    '(font-lock-regexp-grouping-backslash ((t :inherit font-lock-string-face :background "#E1F2D6")))
    '(font-lock-regexp-grouping-construct ((t :inherit font-lock-string-face :background "#E1F2D6")))
@@ -95,22 +95,22 @@
    '(helm-ff-executable-dir ((t :inherit helm-ff-executable :foreground "#7ea940")))
    '(helm-match ((t :inherit lazy-highlight :foreground unspecified)))
    '(helm-match-item ((t :inherit lazy-highlight)))
-   '(helm-match-selection ((t :inherit isearch :weight bold)))
+   '(helm-match-selection ((t :inherit isearch :weight semi-bold)))
    '(helm-moccur-buffer ((t :inherit shadow)))
-   '(helm-selection ((t :inherit hl-line :weight bold)))
-   '(helm-selection-line ((t :inherit helm-selection :weight bold)))
+   '(helm-selection ((t :inherit hl-line :weight semi-bold)))
+   '(helm-selection-line ((t :inherit helm-selection :weight semi-bold)))
    `(helm-other-buffer ((t :background "gray98" :foreground ,(color-from 'default :foreground 5))))))
 
 (use-package hl-line
   :defer t
   :init
   (defface hl-line-evil-insert
-    '((t (:weight unspecified)))
+    '((t (:weight semi-bold)))
     "TODO")
 
   :config
   (custom-set-faces
-   '(hl-line ((t :inherit hl-line-evil-insert :background "#eef7fd" :weight bold)))))
+   '(hl-line ((t :background "#eef7fd" :weight unspecified)))))
 
 (use-package hl-todo
   :defer t

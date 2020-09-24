@@ -557,8 +557,8 @@
 
   (add-hook 'lsp-mode-hook
             (lambda ()
-              (evil-local-set-key 'normal [remap next-error]     #'flymake-goto-next-error)
-              (evil-local-set-key 'normal [remap previous-error] #'flymake-goto-prev-error)))
+              (evil-local-set-key 'normal [remap next-error]     #'flycheck-next-error)
+              (evil-local-set-key 'normal [remap previous-error] #'flycheck-previous-error)))
   (add-hook 'lsp-after-open-hook #'lsp--custom-setup-key))
 
 (use-package magit-svn

@@ -171,27 +171,6 @@
         #'eldoc-refresh-for-emacs-28
       #'eldoc-refresh-for-emacs-27))
 
-  (defun eldoc-custom-schedule-timer ()
-    "Ensure `eldoc-timer' is running.
-
-If the user has changed `eldoc-idle-delay', update the timer to
-reflect the change."
-    (when (timerp eldoc-timer)
-      (cancel-timer eldoc-timer))
-    (setq eldoc-timer
-          (run-with-idle-timer
-	       eldoc-idle-delay nil
-	       (lambda (buf)
-             (when (eq (current-buffer) buf)
-               (setq eldoc-timer nil)
-               (eldoc-refresh)))
-           (current-buffer)))
-
-    ;; If user has changed the idle delay, update the timer.
-    (cond ((not (= eldoc-idle-delay eldoc-current-idle-delay))
-           (setq eldoc-current-idle-delay eldoc-idle-delay)
-           (timer-set-idle-time eldoc-timer eldoc-idle-delay t))))
-
   (setq eldoc-idle-delay 0.2
         eldoc-echo-area-use-multiline-p max-mini-window-height)
 
@@ -199,9 +178,7 @@ reflect the change."
             (lambda ()
               (eldoc-add-command 'eldoc-refresh)
               (eldoc-refresh))
-            :append)
-
-  (advice-add #'eldoc-schedule-timer :override #'eldoc-custom-schedule-timer))
+            :append))
 
 (use-package expand-region
   :ensure t
