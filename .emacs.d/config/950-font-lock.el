@@ -1220,11 +1220,7 @@
           (ignore-errors
             (when font-lock--skip
               (error ""))
-            (when (re-search-forward "\\_<[_0-9A-Za-z]+\\_>" limit t)
-              (skip-chars-forward "^," limit)
-              (when (looking-at-p ",")
-                (forward-char))
-              t)))
+            (re-search-forward "\\_<[_0-9A-Za-z]+\\_>" limit t)))
        (save-excursion
          (setq font-lock--anchor-beg-point (point))
          (safe-up-list-1)

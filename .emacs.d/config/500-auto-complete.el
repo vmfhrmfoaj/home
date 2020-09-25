@@ -16,13 +16,14 @@
     (company-abort)
     (execute-kbd-macro (kbd "SPC")))
 
-  (setq company-idle-delay 0
+  (setq company-idle-delay 0.3
         company-minimum-prefix-length 1
         company-selection-wrap-around t
         company-dabbrev-downcase nil
-        company-dabbrev-minimum-length 2
+        company-dabbrev-minimum-length 1
         company-dabbrev-ignore-case t
         company-dabbrev-code-ignore-case t
+        company-dabbrev-other-buffers nil
         company-etags-ignore-case t
         company-echo-delay 0.2)
 

@@ -61,7 +61,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(font-lock-comment-face ((t :background unspecified :slant unspecified)))
+   '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight normal)))
    '(font-lock-function-name-face ((t :inherit bold)))
    '(font-lock-regexp-grouping-backslash ((t :inherit font-lock-string-face :background "#E1F2D6")))
    '(font-lock-regexp-grouping-construct ((t :inherit font-lock-string-face :background "#E1F2D6")))
@@ -95,17 +95,17 @@
    '(helm-ff-executable-dir ((t :inherit helm-ff-executable :foreground "#7ea940")))
    '(helm-match ((t :inherit lazy-highlight :foreground unspecified)))
    '(helm-match-item ((t :inherit lazy-highlight)))
-   '(helm-match-selection ((t :inherit isearch :weight semi-bold)))
+   '(helm-match-selection ((t :inherit isearch :weight bold)))
    '(helm-moccur-buffer ((t :inherit shadow)))
-   '(helm-selection ((t :inherit hl-line :weight semi-bold)))
-   '(helm-selection-line ((t :inherit helm-selection :weight semi-bold)))
+   '(helm-selection ((t :inherit hl-line :weight bold)))
+   '(helm-selection-line ((t :inherit helm-selection :weight bold)))
    `(helm-other-buffer ((t :background "gray98" :foreground ,(color-from 'default :foreground 5))))))
 
 (use-package hl-line
   :defer t
   :init
   (defface hl-line-evil-insert
-    '((t (:weight semi-bold)))
+    '((t (:weight bold)))
     "TODO")
 
   :config
@@ -116,7 +116,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(hl-todo ((t :inherit bold :weight semi-bold :foreground "#cc9393")))))
+   '(hl-todo ((t :inherit bold :weight bold :foreground "#cc9393")))))
 
 (use-package iedit
   :defer t
@@ -151,9 +151,9 @@
   (custom-set-faces
    '(magit-diff-context-highlight ((((class color) (background light)) :background "#fbfeee" :foreground "#a4c207")))
    '(magit-diff-file-heading ((t :inherit bold)))
-   '(magit-hash ((((class color) (background light)) :foreground "gray60" :weight light)))
-   '(magit-log-author ((((class color) (background light)) :foreground "firebrick" :weight light)))
-   '(magit-log-date ((((class color) (background light)) :foreground "gray30" :weight light)))
+   '(magit-hash ((((class color) (background light)) :foreground "gray60" :weight normal)))
+   '(magit-log-author ((((class color) (background light)) :foreground "firebrick" :weight normal)))
+   '(magit-log-date ((((class color) (background light)) :foreground "gray30" :weight normal)))
    '(magit-section-highlight ((((class color) (background light)) :inherit hl-line :distant-foreground "black")))))
 
 (use-package sh-script

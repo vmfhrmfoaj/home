@@ -293,7 +293,9 @@
   (define-key company-active-map (kbd "C-k") #'company-select-previous)
   (define-key company-active-map (kbd "C-h") nil)
   (define-key company-active-map (kbd "C-s") #'company-helm-candidates)
-  (define-key company-active-map (kbd "SPC") #'company-abort-and-insert-space))
+  (define-key company-active-map (kbd "SPC") #'company-abort-and-insert-space)
+  (define-key company-active-map (kbd "<S-return>") (lambda () (interactive) (company-cancel) (newline-and-indent)))
+  (define-key company-active-map (kbd "<C-return>") (lambda () (interactive) (company-complete-selection) (evil-normal-state))))
 
 (use-package cider-repl
   :disabled t

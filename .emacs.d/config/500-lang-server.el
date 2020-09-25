@@ -90,6 +90,100 @@
     (-when-let (buf (get-buffer "*lsp-help*"))
       (pop-to-buffer buf)))
 
+  (defvar lsp--custom-render--regex-1-for-php
+    (concat "\\(?:^\\|\n\\)````php\n"              ; ```php
+            "\\(?:[ \t\r\n]*<\\?php[ \t\r\n]*\\)?" ; <?php
+            "\\(\\(?:\n\\|.\\)+?\\)"               ; <CONTENTS>
+            "\\(?:[ \t\r\n]*{\\s-*}[ \t\r\n]*\\)?" ; { }
+            "[ \t\r\n]*\\(?:[ \t\r\n]*\\?>"        ; ?>
+            "[ \t\r\n]*\\)?```\\(?:\n\\|$\\)")     ; ```
+    "TODO")
+  (defvar lsp--custom-render--regex-2-for-php
+    "\\(?:_@var_\\|_@param_\\)\\s-*`?\\s-*\\(.+?\\)\\s-*`?$"
+    "TODO")
+
+  (defvar lsp--custom-render--regex-for-rust
+    (concat "^[ \t\r\n]*"
+            "```rust\n"                 ; ```rust
+            "\\(\\(?:\n\\|.\\)+?\\)\n"  ; <CONTENTS>
+            "```")                      ; ```
+    "TODO")
+
+  (defvar lsp--custom-render--regex-1-for-shell
+    "^SYNOPSIS[ \t\r]*\n[ \t\r]*\\(\\(?:.\\|[\r\n]+\\)+?\\)[ \t\r]*\n[ \t\r]*\n"
+    "TODO")
+  (defvar lsp--custom-render--regex-2-for-shell
+    "^[^ :]+?:[ \t]+\\([^\r\n]+\\)"
+    "TODO")
+
+  (defun lsp--adapter-render-on-hover-content (args)
+    "TODO"
+    (let ((contents (car args)))
+      (cond
+       ((and (derived-mode-p 'rust-mode)
+             (hash-table-p contents))
+        (when (string= "markdown" (or (gethash "kind" contents) ""))
+          (let ((md (gethash "value" contents)))
+            (when (and (string-match lsp--custom-render--regex-for-rust md)
+                       (= (match-beginning 0) 0))
+              (when-let ((val (match-string 1 md)))
+                (when (string-match lsp--custom-render--regex-for-rust md (match-end 0))
+                  (setq val (concat val "\n" (match-string 1 md))))
+                (puthash "language" "rust" contents)
+                (remhash "kind" contents)
+                (puthash "value" val contents))))))
+       ((and (derived-mode-p 'sh-mode)
+             (hash-table-p contents))
+        (puthash "language" "shellscript" contents)
+        (when (string= "markdown" (or (gethash "kind" contents) ""))
+          (let ((md (gethash "value" contents)))
+            (when (or (string-match lsp--custom-render--regex-1-for-shell md)
+                      (string-match lsp--custom-render--regex-2-for-shell md))
+              (remhash "kind" contents)
+              (puthash "value"
+                       (->> md
+                            (match-string 1)
+                            (s-lines)
+                            (-map #'s-trim)
+                            (-interpose "\n")
+                            (apply #'concat))
+                       contents)))))
+       ((and (derived-mode-p 'php-mode)
+             (hash-table-p contents))
+        (puthash "language" "php" contents)
+        (when (string= "markdown" (or (gethash "kind" contents) ""))
+          (let ((md (gethash "value" contents)))
+            (when (or (string-match lsp--custom-render--regex-1-for-php md)
+                      (string-match lsp--custom-render--regex-2-for-php md))
+              (remhash "kind" contents)
+              (puthash "value"
+                       (->> md
+                            (match-string 1)
+                            (s-lines)
+                            (-map #'s-trim)
+                            (apply #'concat)
+                            (s-replace "," ", "))
+                       contents))))))
+      (if (not (listp contents))
+          (apply #'list contents (cdr args))
+        (apply #'list (-interpose "\n" (append contents nil)) (cdr args)))))
+
+  (defun lsp--sanitate-hover-saved-bounds ()
+    "Clear `lsp--hover-saved-bounds' if "
+    (when (and lsp--hover-saved-bounds
+               (derived-mode-p 'rust-mode))
+      (let ((cur (point))
+            (beg (car lsp--hover-saved-bounds))
+            (end (cdr lsp--hover-saved-bounds)))
+        (print (buffer-substring-no-properties beg end))
+        (save-excursion
+          (goto-char beg)
+          (when (cond
+                 ((< (line-end-position) end) t)
+                 ((and (string-match-p "[;?.()]" (char-to-string (char-after end)))
+                       (not (string-match-p "[;?.()]" (char-to-string (char-after cur)))))))
+            (setq lsp--hover-saved-bounds nil))))))
+
   (defun lsp--custom-eldoc-message-emacs-27 (&optional msg)
     "Show MSG in eldoc."
     (let ((pos (eldoc-refresh-pos)))
@@ -139,18 +233,23 @@
                                  (when eldoc-timer
                                    (cancel-timer eldoc-timer))
                                  (lsp--custom-eldoc-message msg)))
-
   (setq-default lsp-eldoc-enable-hover t
                 lsp-enable-on-type-formatting nil)
 
   (add-to-list 'lsp-language-id-configuration '(cperl-mode . "perl"))
   (add-to-list 'lsp-language-id-configuration '(".*\\.pl$" . "perl"))
 
+  (lsp-register-custom-settings
+   '(("gopls.completeUnimported" t t)
+     ("gopls.staticcheck" t t)))
+
   (add-hook 'lsp-mode-hook
             (lambda ()
               (cond
                ((eq major-mode 'go-mode)
-                (setq-local lsp-eldoc-render-all t)))
+                (setq-local lsp-eldoc-render-all t)
+                (add-hook 'before-save-hook #'lsp-format-buffer t t)
+                (add-hook 'before-save-hook #'lsp-organize-imports t t)))
               (add-hook 'evil-insert-state-entry-hook
                         (lambda ()
                           (when lsp-mode
@@ -180,8 +279,9 @@
                         nil t)))
 
   (advice-add #'lsp--eldoc-message :override 'lsp--custom-eldoc-message)
-
+  (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
   (advice-add #'lsp--signature->message :filter-return #'lsp--signature->message-filter)
+  (advice-add #'lsp-hover :before #'lsp--sanitate-hover-saved-bounds)
   (advice-add #'lsp-describe-thing-at-point :after #'lps--focus-lsp-help-buffer)
   (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx)

@@ -8,4 +8,9 @@
 
 (use-package go-mode
   :ensure t
-  :defer t)
+  :defer t
+  :config
+  (add-hook 'go-mode-hook
+            (lambda ()
+              (with-eval-after-load "lsp-mode"
+                (setq-local evil-lookup-func #'lsp-describe-thing-at-point)))))
