@@ -274,7 +274,7 @@ SYMBOL with `flycheck-def-executable-var'.
 
 (function-put 'flycheck-define-checker 'doc-string-elt '2)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flycheck" '("flycheck-" "help-flycheck-checker-d" "list-flycheck-errors")))
+(register-definition-prefixes "flycheck" '("flycheck-" "help-flycheck-checker-d" "list-flycheck-errors"))
 
 ;;;***
 
@@ -282,14 +282,14 @@ SYMBOL with `flycheck-def-executable-var'.
 ;;;;;;  (0 0 0 0))
 ;;; Generated autoloads from flycheck-buttercup.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flycheck-buttercup" '("flycheck-buttercup-format-error-list")))
+(register-definition-prefixes "flycheck-buttercup" '("flycheck-buttercup-format-error-list"))
 
 ;;;***
 
 ;;;### (autoloads nil "flycheck-ert" "flycheck-ert.el" (0 0 0 0))
 ;;; Generated autoloads from flycheck-ert.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "flycheck-ert" '("flycheck-er")))
+(register-definition-prefixes "flycheck-ert" '("flycheck-er"))
 
 ;;;***
 

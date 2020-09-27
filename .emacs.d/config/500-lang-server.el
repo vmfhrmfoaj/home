@@ -126,7 +126,7 @@
           (let ((md (gethash "value" contents)))
             (when (and (string-match lsp--custom-render--regex-for-rust md)
                        (= (match-beginning 0) 0))
-              (when-let ((val (match-string 1 md)))
+              (let ((val (match-string 1 md)))
                 (when (string-match lsp--custom-render--regex-for-rust md (match-end 0))
                   (setq val (concat val "\n" (match-string 1 md))))
                 (puthash "language" "rust" contents)
@@ -175,13 +175,11 @@
       (let ((cur (point))
             (beg (car lsp--hover-saved-bounds))
             (end (cdr lsp--hover-saved-bounds)))
-        (print (buffer-substring-no-properties beg end))
         (save-excursion
           (goto-char beg)
-          (when (cond
-                 ((< (line-end-position) end) t)
-                 ((and (string-match-p "[;?.()]" (char-to-string (char-after end)))
-                       (not (string-match-p "[;?.()]" (char-to-string (char-after cur)))))))
+          (when (or (< (line-end-position) end)
+                    (and (not (string-match-p "[;?.()]" (char-to-string (char-after cur))))
+                         (string-match-p "[;?.()]" (char-to-string (char-after end)))))
             (setq lsp--hover-saved-bounds nil))))))
 
   (defun lsp--custom-eldoc-message-emacs-27 (&optional msg)
@@ -225,14 +223,7 @@
         lsp-enable-symbol-highlighting nil
         lsp-file-watch-threshold nil
         lsp-idle-delay 0.2
-        lsp-restart 'ignore
-        lsp-rust-server 'rust-analyzer
-        lsp-signature-function (lambda (msg)
-                                 (when lsp--on-idle-timer
-                                   (cancel-timer lsp--on-idle-timer))
-                                 (when eldoc-timer
-                                   (cancel-timer eldoc-timer))
-                                 (lsp--custom-eldoc-message msg)))
+        lsp-restart 'ignore)
   (setq-default lsp-eldoc-enable-hover t
                 lsp-enable-on-type-formatting nil)
 
@@ -255,20 +246,17 @@
                           (when lsp-mode
                             (when lsp-ui-sideline-mode
                               (lsp-ui-sideline-mode -1))
-                            (when (and lsp-signature-auto-activate
-                                       (lsp-feature? "textDocument/signatureHelp")
+                            (when (and (lsp-feature? "textDocument/signatureHelp")
                                        (null lsp-signature-mode))
-                              (setq-local lsp-eldoc-enable-hover nil)
                               (lsp-signature-activate))))
                         nil t)
               (add-hook 'evil-insert-state-exit-hook
                         (lambda ()
                           (unless lsp-ui-sideline-mode
                             (lsp-ui-sideline-mode 1))
-                          (when lsp-mode
-                            (when lsp-signature-auto-activate
-                              (setq lsp-eldoc-enable-hover (default-value 'lsp-eldoc-enable-hover))
-                              (lsp-signature-stop))))
+                          (when (and lsp-mode
+                                     lsp-signature-mode)
+                            (lsp-signature-stop)))
                         nil t)
               (add-hook 'evil-operator-state-entry-hook
                         (lambda ()
@@ -312,3 +300,8 @@
         lsp-ui-sideline-show-code-actions nil
         lsp-ui-sideline-show-hover nil
         lsp-ui-sideline-show-symbol nil))
+
+(use-package lv
+  :defer t
+  :config
+  (setq lv-use-separator t))
