@@ -53,16 +53,6 @@
     // Vim
     {
         "key": "escape",
-        "command": "multiCommand.vimCancelFindWidget",
-        "when": "vim.active && editorTextFocus && findWidgetVisible && !findInputFocussed"
-    },
-    {
-        "key": "escape",
-        "command": "multiCommand.vimCancelFindWidgetAndGoBack",
-        "when": "vim.active && findInputFocussed"
-    },
-    {
-        "key": "escape",
         "command": "multiCommand.vimCancelSuggestionAndEscape",
         "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.active && vim.mode == 'Insert'"
     },
@@ -70,11 +60,6 @@
         "key": "enter",
         "command": "multiCommand.vimSelectedSuggestionAndEscape",
         "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.active && vim.mode == 'Insert'"
-    },
-    {
-        "key": "enter",
-        "command": "multiCommand.vimCancelFindWidget",
-        "when": "vim.active && findInputFocussed"
     },
     {
         "key": "enter",
@@ -137,16 +122,6 @@
         "key": "ctrl+k",
         "command": "search.focus.previousInputBox",
         "when": "inputBoxFocus && searchViewletVisible"
-    },
-    {
-        "key": "ctrl+j",
-        "command": "editor.action.nextMatchFindAction",
-        "when": "editorFocus && findInputFocussed"
-    },
-    {
-        "key": "ctrl+k",
-        "command": "editor.action.previousMatchFindAction",
-        "when": "editorFocus && findInputFocussed"
     },
     {
         "key": "ctrl+j",
