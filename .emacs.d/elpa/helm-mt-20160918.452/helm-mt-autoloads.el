@@ -21,7 +21,7 @@ PREFIX is passed on to `helm-mt/term-source-terminal-not-found'.
 
 \(fn &optional PREFIX)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "helm-mt" '("helm-mt/")))
+(register-definition-prefixes "helm-mt" '("helm-mt/"))
 
 ;;;***
 

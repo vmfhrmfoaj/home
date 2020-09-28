@@ -9,7 +9,7 @@
 ;;;### (autoloads nil "websocket" "websocket.el" (0 0 0 0))
 ;;; Generated autoloads from websocket.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "websocket" '("websocket-")))
+(register-definition-prefixes "websocket" '("websocket-"))
 
 ;;;***
 

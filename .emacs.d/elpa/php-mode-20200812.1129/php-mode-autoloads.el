@@ -40,7 +40,7 @@ Find php.ini FILE by `php --ini'.
 
 \(fn &optional FILE)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "php" '("php-")))
+(register-definition-prefixes "php" '("php-"))
 
 ;;;***
 
@@ -58,9 +58,12 @@ positive, and disable it if ARG is zero or negative.  If called
 from Lisp, also enable the mode if ARG is omitted or nil, and
 toggle it if ARG is `toggle'; disable the mode otherwise.
 
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "php-align" '("php-align-")))
+(register-definition-prefixes "php-align" '("php-align-"))
 
 ;;;***
 
@@ -69,7 +72,7 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 
 (let ((loads (get 'php-faces 'custom-loads))) (if (member '"php-face" loads) nil (put 'php-faces 'custom-loads (cons '"php-face" loads))))
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "php-face" '("php-annotations-annotation-face")))
+(register-definition-prefixes "php-face" '("php-annotations-annotation-face"))
 
 ;;;***
 
@@ -77,7 +80,7 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 ;;;;;;  0 0 0))
 ;;; Generated autoloads from php-local-manual.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "php-local-manual" '("php-local-manual-search")))
+(register-definition-prefixes "php-local-manual" '("php-local-manual-search"))
 
 ;;;***
 
@@ -103,7 +106,7 @@ Major mode for editing PHP code.
 
 (add-to-list 'auto-mode-alist '("\\.\\(?:php[s345]?\\|phtml\\)\\'" . php-mode-maybe))
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "php-mode" '("php-")))
+(register-definition-prefixes "php-mode" '("php-"))
 
 ;;;***
 
@@ -111,7 +114,7 @@ Major mode for editing PHP code.
 ;;;;;;  0))
 ;;; Generated autoloads from php-mode-debug.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "php-mode-debug" '("php-mode-debug")))
+(register-definition-prefixes "php-mode-debug" '("php-mode-debug"))
 
 ;;;***
 
@@ -217,7 +220,7 @@ Return list of bootstrap script." nil nil)
 (autoload 'php-project-get-root-dir "php-project" "\
 Return path to current PHP project." nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "php-project" '("php-project-")))
+(register-definition-prefixes "php-project" '("php-project-"))
 
 ;;;***
 

@@ -20,7 +20,7 @@ For details see `https://github.com/toml-lang/toml'.
 
 (add-to-list 'auto-mode-alist '("\\.toml\\'" . toml-mode))
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "toml-mode" '("toml-mode-")))
+(register-definition-prefixes "toml-mode" '("toml-mode-"))
 
 ;;;***
 

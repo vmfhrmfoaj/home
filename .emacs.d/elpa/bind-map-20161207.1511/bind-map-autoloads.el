@@ -143,7 +143,7 @@ series of KEY DEF pairs. Each KEY should be a string suitable for
 
 \(fn MAP KEY DEF &rest BINDINGS)" nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "bind-map" '("bind-map-")))
+(register-definition-prefixes "bind-map" '("bind-map-"))
 
 ;;;***
 

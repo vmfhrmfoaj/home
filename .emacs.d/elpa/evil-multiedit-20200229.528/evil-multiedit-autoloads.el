@@ -51,7 +51,7 @@ with behavior when exiting vanilla insert state." t nil)
 Abort the current multiedit session without switching to normal mode." nil nil)
  (autoload 'evil-multiedit-ex-match "evil-multiedit" nil t)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "evil-multiedit" '("evil-multiedit-" "iedit-o")))
+(register-definition-prefixes "evil-multiedit" '("evil-multiedit-" "iedit-o"))
 
 ;;;***
 

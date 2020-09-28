@@ -19,7 +19,7 @@ Search word around and display result with buffer." t nil)
 (autoload 'osx-dictionary-get-all-dictionaries "osx-dictionary" "\
 Get all dictionaries as a list." nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "osx-dictionary" '("osx-dictionary-")))
+(register-definition-prefixes "osx-dictionary" '("osx-dictionary-"))
 
 ;;;***
 

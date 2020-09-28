@@ -18,6 +18,9 @@ positive, and disable it if ARG is zero or negative.  If called
 from Lisp, also enable the mode if ARG is omitted or nil, and
 toggle it if ARG is `toggle'; disable the mode otherwise.
 
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
 \(fn &optional ARG)" t nil)
 
 (define-obsolete-function-alias 'turn-on-elisp-slime-nav-mode 'elisp-slime-nav-mode "2020-01-30")
@@ -44,7 +47,7 @@ Argument SYM-NAME is the thing to find.
 
 \(fn SYM-NAME)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "elisp-slime-nav" '("elisp-slime-nav-")))
+(register-definition-prefixes "elisp-slime-nav" '("elisp-slime-nav-"))
 
 ;;;***
 

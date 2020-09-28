@@ -17,7 +17,7 @@ Load configuration files in INIT-DIR.
 (autoload 'init-loader-show-log "init-loader" "\
 Show init-loader log buffer." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "init-loader" '("init-loader-")))
+(register-definition-prefixes "init-loader" '("init-loader-"))
 
 ;;;***
 

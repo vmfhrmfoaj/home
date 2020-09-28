@@ -11,7 +11,17 @@
   :defer t)
 
 (use-package flycheck
-  :ensure t)
+  :ensure t
+  :defer t
+  :config
+  (setq flycheck-display-errors-delay 0.2))
+
+(use-package flycheck-pos-tip
+  :ensure t
+  :after flycheck
+  :hook (flycheck-mode . flycheck-pos-tip-mode)
+  :config
+  (setq flycheck-pos-tip-timeout 0))
 
 (use-package helm-lsp
   :ensure t)
@@ -233,17 +243,29 @@
 
   (defun lsp--signature->message-filter (msg)
     (if (stringp msg)
-        (replace-in-string " │ " " | " msg)
+        (s-replace " │ " " | " msg)
       msg))
 
-  (setq lsp-diagnostic-package :flycheck
+  (setq lsp-diagnostics-provider :flycheck
         lsp-enable-imenu nil
         lsp-enable-indentation nil
         lsp-enable-links nil
         lsp-enable-symbol-highlighting nil
         lsp-file-watch-threshold nil
         lsp-idle-delay 0.2
-        lsp-restart 'ignore)
+        lsp-restart 'ignore
+        lsp-rust-server 'rust-analyzer
+        lsp-signature-function (lambda (msg)
+                                 (when lsp--on-idle-timer
+                                   (cancel-timer lsp--on-idle-timer)
+                                   (setq lsp--on-idle-timer nil))
+                                 (when eldoc-timer
+                                   (cancel-timer eldoc-timer)
+                                   (setq eldoc-timer nil))
+                                 (when flycheck--idle-trigger-timer
+                                   (cancel-timer flycheck--idle-trigger-timer)
+                                   (setq flycheck--idle-trigger-timer nil))
+                                 (eldoc-message msg)))
   (setq-default lsp-eldoc-enable-hover t
                 lsp-enable-on-type-formatting nil)
 
@@ -264,19 +286,23 @@
               (add-hook 'evil-insert-state-entry-hook
                         (lambda ()
                           (when lsp-mode
+                            (setq flycheck-display-errors-function nil)
                             (when lsp-ui-sideline-mode
                               (lsp-ui-sideline-mode -1))
                             (when (and (lsp-feature? "textDocument/signatureHelp")
                                        (null lsp-signature-mode))
+                              (setq-local lsp-eldoc-enable-hover nil)
                               (lsp-signature-activate))))
                         nil t)
               (add-hook 'evil-insert-state-exit-hook
                         (lambda ()
+                          (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages)
                           (unless lsp-ui-sideline-mode
                             (lsp-ui-sideline-mode 1))
                           (when (and lsp-mode
                                      lsp-signature-mode)
-                            (lsp-signature-stop)))
+                            (lsp-signature-stop)
+                            (setq lsp-eldoc-enable-hover (default-value 'lsp-eldoc-enable-hover))))
                         nil t)
               (add-hook 'evil-operator-state-entry-hook
                         (lambda ()
@@ -318,10 +344,11 @@
   :config
   (setq lsp-ui-doc-enable nil
         lsp-ui-sideline-show-code-actions nil
+        lsp-ui-sideline-show-diagnostics nil
         lsp-ui-sideline-show-hover nil
         lsp-ui-sideline-show-symbol nil))
 
-(use-package lv
+(use-package pos-tip
   :defer t
   :config
-  (setq lv-use-separator t))
+  (advice-add #'pos-tip-show :override #'pos-tip-show-no-propertize))

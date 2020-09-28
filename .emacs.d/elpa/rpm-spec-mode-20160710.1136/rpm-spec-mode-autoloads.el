@@ -24,7 +24,7 @@ with no args, if that value is non-nil." t nil)
 
 \(fn)" nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "rpm-spec-mode" '("rpm-")))
+(register-definition-prefixes "rpm-spec-mode" '("rpm-"))
 
 ;;;***
 

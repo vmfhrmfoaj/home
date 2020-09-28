@@ -32,6 +32,7 @@
       (list beg end type :expanded t)))
 
   (setq-default evil-echo-state nil
+                evil-move-beyond-eol t
                 evil-symbol-word-search t
                 evil-want-minibuffer t)
 

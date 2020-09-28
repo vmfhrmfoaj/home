@@ -34,6 +34,9 @@ positive, and disable it if ARG is zero or negative.  If called
 from Lisp, also enable the mode if ARG is omitted or nil, and
 toggle it if ARG is `toggle'; disable the mode otherwise.
 
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
 To disable EditorConfig in some buffers, modify
 `editorconfig-exclude-modes' or `editorconfig-exclude-regexps'.
 
@@ -58,7 +61,7 @@ version in the echo area and the messages buffer.
 
 \(fn &optional SHOW-VERSION)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "editorconfig" '("editorconfig-")))
+(register-definition-prefixes "editorconfig" '("editorconfig-"))
 
 ;;;***
 
@@ -73,7 +76,7 @@ Major mode for editing .editorconfig files.
 
 (add-to-list 'auto-mode-alist '("\\.editorconfig\\'" . editorconfig-conf-mode))
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "editorconfig-conf-mode" '("editorconfig-conf-mode-")))
+(register-definition-prefixes "editorconfig-conf-mode" '("editorconfig-conf-mode-"))
 
 ;;;***
 
@@ -108,7 +111,7 @@ hash object instead.
 
 \(fn &optional FILE CONFNAME CONFVERSION)" nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "editorconfig-core" '("editorconfig-core--")))
+(register-definition-prefixes "editorconfig-core" '("editorconfig-core--"))
 
 ;;;***
 
@@ -116,7 +119,7 @@ hash object instead.
 ;;;;;;  (0 0 0 0))
 ;;; Generated autoloads from editorconfig-core-handle.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "editorconfig-core-handle" '("editorconfig-core-handle")))
+(register-definition-prefixes "editorconfig-core-handle" '("editorconfig-core-handle"))
 
 ;;;***
 
@@ -142,7 +145,7 @@ be used:
 
 \(fn STRING PATTERN)" nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "editorconfig-fnmatch" '("editorconfig-fnmatch-")))
+(register-definition-prefixes "editorconfig-fnmatch" '("editorconfig-fnmatch-"))
 
 ;;;***
 

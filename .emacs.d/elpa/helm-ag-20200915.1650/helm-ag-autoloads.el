@@ -55,7 +55,7 @@ Not documented, QUERY.
 
 \(fn &optional QUERY)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "helm-ag" '("helm-")))
+(register-definition-prefixes "helm-ag" '("helm-"))
 
 ;;;***
 

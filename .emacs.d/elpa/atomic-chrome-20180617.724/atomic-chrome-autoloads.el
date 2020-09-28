@@ -15,7 +15,7 @@ Start websocket server for atomic-chrome.  Fails silently if a server is already
 (autoload 'atomic-chrome-stop-server "atomic-chrome" "\
 Stop websocket server for atomic-chrome." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "atomic-chrome" '("atomic-chrome-" "global-atomic-chrome-edit-mode")))
+(register-definition-prefixes "atomic-chrome" '("atomic-chrome-" "global-atomic-chrome-edit-mode"))
 
 ;;;***
 

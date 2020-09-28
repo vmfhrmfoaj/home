@@ -17,6 +17,9 @@ positive, and disable it if ARG is zero or negative.  If called
 from Lisp, also enable the mode if ARG is omitted or nil, and
 toggle it if ARG is `toggle'; disable the mode otherwise.
 
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
 \(fn &optional ARG)" t nil)
 
 (autoload 'ztree-diff "ztree-diff" "\
@@ -26,7 +29,7 @@ Argument DIR2 right directory.
 
 \(fn DIR1 DIR2)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ztree-diff" '("ztree")))
+(register-definition-prefixes "ztree-diff" '("ztree"))
 
 ;;;***
 
@@ -34,7 +37,7 @@ Argument DIR2 right directory.
 ;;;;;;  0 0 0))
 ;;; Generated autoloads from ztree-diff-model.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ztree-diff-model" '("ztree-di")))
+(register-definition-prefixes "ztree-diff-model" '("ztree-di"))
 
 ;;;***
 
@@ -46,14 +49,14 @@ Create an interactive buffer with the directory tree of the PATH given.
 
 \(fn PATH)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ztree-dir" '("ztree")))
+(register-definition-prefixes "ztree-dir" '("ztree"))
 
 ;;;***
 
 ;;;### (autoloads nil "ztree-util" "ztree-util.el" (0 0 0 0))
 ;;; Generated autoloads from ztree-util.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ztree-util" '("ztree-")))
+(register-definition-prefixes "ztree-util" '("ztree-"))
 
 ;;;***
 
@@ -68,7 +71,7 @@ A major mode for displaying the directory tree in text mode.
 (autoload 'ztree-view-on-window-configuration-changed "ztree-view" "\
 Hook called then window configuration changed to resize buffer's contents" nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ztree-view" '("ztree")))
+(register-definition-prefixes "ztree-view" '("ztree"))
 
 ;;;***
 

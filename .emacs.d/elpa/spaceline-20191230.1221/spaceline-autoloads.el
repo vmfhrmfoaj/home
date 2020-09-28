@@ -9,7 +9,7 @@
 ;;;### (autoloads nil "spaceline" "spaceline.el" (0 0 0 0))
 ;;; Generated autoloads from spaceline.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "spaceline" '("spaceline-")))
+(register-definition-prefixes "spaceline" '("spaceline-"))
 
 ;;;***
 
@@ -52,6 +52,9 @@ positive, and disable it if ARG is zero or negative.  If called
 from Lisp, also enable the mode if ARG is omitted or nil, and
 toggle it if ARG is `toggle'; disable the mode otherwise.
 
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
 \(fn &optional ARG)" t nil)
 
 (defvar spaceline-info-mode nil "\
@@ -73,9 +76,12 @@ positive, and disable it if ARG is zero or negative.  If called
 from Lisp, also enable the mode if ARG is omitted or nil, and
 toggle it if ARG is `toggle'; disable the mode otherwise.
 
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "spaceline-config" '("spaceline--")))
+(register-definition-prefixes "spaceline-config" '("spaceline--"))
 
 ;;;***
 
@@ -83,7 +89,7 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 ;;;;;;  (0 0 0 0))
 ;;; Generated autoloads from spaceline-segments.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "spaceline-segments" '("spaceline-")))
+(register-definition-prefixes "spaceline-segments" '("spaceline-"))
 
 ;;;***
 

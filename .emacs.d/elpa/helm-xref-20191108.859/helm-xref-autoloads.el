@@ -9,7 +9,7 @@
 ;;;### (autoloads nil "helm-xref" "helm-xref.el" (0 0 0 0))
 ;;; Generated autoloads from helm-xref.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "helm-xref" '("helm-xref-")))
+(register-definition-prefixes "helm-xref" '("helm-xref-"))
 
 ;;;***
 

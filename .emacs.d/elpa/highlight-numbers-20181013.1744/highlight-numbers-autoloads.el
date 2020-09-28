@@ -21,7 +21,7 @@ the mode if ARG is omitted or nil, and toggle it if ARG is `toggle'.
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "highlight-numbers" '("highlight-numbers-")))
+(register-definition-prefixes "highlight-numbers" '("highlight-numbers-"))
 
 ;;;***
 

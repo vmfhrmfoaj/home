@@ -18,7 +18,7 @@ go back to evil-magit behavior." t nil)
 (autoload 'evil-magit-revert "evil-magit" "\
 Revert changes by evil-magit that affect default evil+magit behavior." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "evil-magit" '("evil-magit-")))
+(register-definition-prefixes "evil-magit" '("evil-magit-"))
 
 ;;;***
 

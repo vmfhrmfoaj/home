@@ -14,7 +14,7 @@ Setup wgrep preparation." nil nil)
 
 (add-hook 'grep-setup-hook 'wgrep-setup)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "wgrep" '("wgrep-")))
+(register-definition-prefixes "wgrep" '("wgrep-"))
 
 ;;;***
 

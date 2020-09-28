@@ -18,6 +18,9 @@ is positive, and disable it if ARG is zero or negative.  If
 called from Lisp, also enable the mode if ARG is omitted or nil,
 and toggle it if ARG is `toggle'; disable the mode otherwise.
 
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
 \(fn &optional ARG)" t nil)
 
 (put 'global-highlight-parentheses-mode 'globalized-minor-mode t)
@@ -44,7 +47,7 @@ See `highlight-parentheses-mode' for more information on Highlight-Parentheses m
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "highlight-parentheses" '("highlight-parentheses-" "hl-paren-face")))
+(register-definition-prefixes "highlight-parentheses" '("highlight-parentheses-" "hl-paren-face"))
 
 ;;;***
 

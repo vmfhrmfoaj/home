@@ -10,7 +10,7 @@
 ;;; Generated autoloads from dap-java.el
 (with-eval-after-load 'lsp-java (require 'dap-java))
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dap-java" '("dap-java-")))
+(register-definition-prefixes "dap-java" '("dap-java-"))
 
 ;;;***
 
@@ -25,9 +25,12 @@ positive, and disable it if ARG is zero or negative.  If called
 from Lisp, also enable the mode if ARG is omitted or nil, and
 toggle it if ARG is `toggle'; disable the mode otherwise.
 
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "lsp-java" '("lsp-java-")))
+(register-definition-prefixes "lsp-java" '("lsp-java-"))
 
 ;;;***
 
@@ -42,9 +45,12 @@ positive, and disable it if ARG is zero or negative.  If called
 from Lisp, also enable the mode if ARG is omitted or nil, and
 toggle it if ARG is `toggle'; disable the mode otherwise.
 
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "lsp-java-boot" '("lsp-java-boot-")))
+(register-definition-prefixes "lsp-java-boot" '("lsp-java-boot-"))
 
 ;;;***
 
@@ -59,11 +65,14 @@ positive, and disable it if ARG is zero or negative.  If called
 from Lisp, also enable the mode if ARG is omitted or nil, and
 toggle it if ARG is `toggle'; disable the mode otherwise.
 
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
 \(fn &optional ARG)" t nil)
 
 (autoload 'lsp-jt-browser "lsp-jt" nil t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "lsp-jt" '("lsp-jt-")))
+(register-definition-prefixes "lsp-jt" '("lsp-jt-"))
 
 ;;;***
 

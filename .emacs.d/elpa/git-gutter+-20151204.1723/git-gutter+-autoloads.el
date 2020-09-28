@@ -17,6 +17,9 @@ positive, and disable it if ARG is zero or negative.  If called
 from Lisp, also enable the mode if ARG is omitted or nil, and
 toggle it if ARG is `toggle'; disable the mode otherwise.
 
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
 \(fn &optional ARG)" t nil)
 
 (defvar global-git-gutter+-mode nil "\
@@ -37,6 +40,9 @@ positive, and disable it if ARG is zero or negative.  If called
 from Lisp, also enable the mode if ARG is omitted or nil, and
 toggle it if ARG is `toggle'; disable the mode otherwise.
 
+The mode's hook is called both when the mode is enabled and when
+it is disabled.
+
 \\{global-git-gutter+-mode-map}
 
 \(fn &optional ARG)" t nil)
@@ -44,7 +50,7 @@ toggle it if ARG is `toggle'; disable the mode otherwise.
 (autoload 'git-gutter+-commit "git-gutter+" "\
 Commit staged changes. If nothing is staged, ask to stage the current buffer." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "git-gutter+" '("git-gutter+-")))
+(register-definition-prefixes "git-gutter+" '("git-gutter+-"))
 
 ;;;***
 

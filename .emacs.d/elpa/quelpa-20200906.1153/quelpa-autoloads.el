@@ -78,7 +78,7 @@ With prefix FORCE, packages will all be upgraded discarding local changes.
 
 \(fn &optional FORCE)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "quelpa" '("quelpa-")))
+(register-definition-prefixes "quelpa" '("quelpa-"))
 
 ;;;***
 

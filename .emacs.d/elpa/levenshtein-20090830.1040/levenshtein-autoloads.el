@@ -9,7 +9,7 @@
 ;;;### (autoloads nil "levenshtein" "levenshtein.el" (0 0 0 0))
 ;;; Generated autoloads from levenshtein.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "levenshtein" '("levenshtein-distance")))
+(register-definition-prefixes "levenshtein" '("levenshtein-distance"))
 
 ;;;***
 

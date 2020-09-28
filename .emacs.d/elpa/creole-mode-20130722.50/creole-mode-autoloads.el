@@ -18,7 +18,7 @@ Edit files written in WikiCreole form.
 
 \(fn)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "creole-mode" '("creole-mode")))
+(register-definition-prefixes "creole-mode" '("creole-mode"))
 
 ;;;***
 

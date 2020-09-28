@@ -7,6 +7,7 @@
   (load-file "~/.emacs.d/config/func.elc"))
 
 (use-package capnp-mode
+  :disabled t
   :defer t
   ;; NOTE:
   ;;  This package not included in the `MELPA'.

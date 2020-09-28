@@ -42,7 +42,7 @@ Queries for any of the four available help topics and prints out the appropriate
 
 (add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-mode))
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "cmake-mode" '("cmake-")))
+(register-definition-prefixes "cmake-mode" '("cmake-"))
 
 ;;;***
 

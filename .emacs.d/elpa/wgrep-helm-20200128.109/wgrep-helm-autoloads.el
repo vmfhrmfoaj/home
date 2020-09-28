@@ -15,7 +15,7 @@
 
 (add-hook 'helm-occur-mode-hook 'wgrep-helm-setup)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "wgrep-helm" '("wgrep-helm-")))
+(register-definition-prefixes "wgrep-helm" '("wgrep-helm-"))
 
 ;;;***
 

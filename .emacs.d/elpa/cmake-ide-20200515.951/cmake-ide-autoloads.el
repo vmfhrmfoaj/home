@@ -30,7 +30,7 @@ Compile the project." t nil)
 (autoload 'cmake-ide-maybe-start-rdm "cmake-ide" "\
 Start the rdm (rtags) server." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "cmake-ide" '("cide--" "cmake-")))
+(register-definition-prefixes "cmake-ide" '("cide--" "cmake-"))
 
 ;;;***
 

@@ -36,8 +36,13 @@
 (use-package winum
   :ensure t
   :config
-  (setq winum-auto-setup-mode-line nil)
+  (setq winum-auto-setup-mode-line nil
+        winum-auto-assign-0-to-minibuffer nil)
 
+  (defun winum-assign-0-to-treemacs ()
+    (when (string-match-p "^\\s-*\\*Treemacs-Scoped-Buffer-" (buffer-name)) 0))
+
+  (add-to-list 'winum-assign-functions #'winum-assign-0-to-treemacs)
   (winum-mode))
 
 (use-package zoom

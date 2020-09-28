@@ -10,7 +10,7 @@
 ;;;;;;  (0 0 0 0))
 ;;; Generated autoloads from git-gutter-fringe+.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "git-gutter-fringe+" '("git-gutter")))
+(register-definition-prefixes "git-gutter-fringe+" '("git-gutter"))
 
 ;;;***
 

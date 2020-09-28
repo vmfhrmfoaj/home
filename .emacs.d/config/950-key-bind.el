@@ -134,7 +134,8 @@
 
     ;; buffer
     "bR" #'revert-buffer
-    "bb" #'helm-buffers-list
+    "ba" #'helm-buffers-list
+    "bb" #'helm-project-buffers-list
     "bd" #'projectile-kill-buffer
     "be" #'eldoc-doc-buffer
     "bk" #'kill-buffer
@@ -197,7 +198,6 @@
     "pD" #'projectile-remove-known-project
     "pI" #'projectile-invalidate-cache
     "pS" #'projectile-switch-project
-    "pb" #'helm-project-buffers-list
     "pd" #'projectile-find-dir
     "pf" #'helm-project-find-files
     "pk" #'projectile-kill-buffers
@@ -581,8 +581,8 @@
 (use-package treemacs-evil
   :defer t
   :config
-  (evil-define-key 'treemacs treemacs-mode-map (kbd "h") nil)
-  (evil-define-key 'treemacs treemacs-mode-map (kbd "l") nil)
+  (evil-define-key 'treemacs treemacs-mode-map (kbd "h") #'treemacs-close-node)
+  (evil-define-key 'treemacs treemacs-mode-map (kbd "l") #'treemacs-open-node)
   (evil-define-key 'treemacs treemacs-mode-map (kbd "q") #'treemacs-kill-buffer))
 
 

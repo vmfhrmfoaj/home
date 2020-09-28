@@ -238,7 +238,6 @@
 
 (use-package treemacs
   :ensure t
-  :defer t
   :init
   (defun treemacs-current-directory ()
     (interactive)
@@ -249,19 +248,67 @@
        (treemacs--add-root-element (treemacs-project->create!
                                     :name (file-name-nondirectory (s-chop-suffix "/" default-directory))
                                     :path default-directory
-                                    :path-status (treemacs--get-path-status default-directory))))
-      (when-let ((pos (next-single-property-change (point-min) :project)))
-        (ignore-errors
-          (treemacs--expand-root-node pos))
-        (treemacs-next-line 1)))))
+                                    :path-status (treemacs--get-path-status default-directory)))
+       (when-let ((pos (next-single-property-change (point-min) :project)))
+         (ignore-errors
+           (treemacs--expand-root-node pos))
+         (treemacs-next-line 1)))))
+
+  (defun treemacs-close-node (&optional arg)
+    (interactive "P")
+    (treemacs-do-for-button-state
+     :on-root-node-open   (treemacs--collapse-root-node btn arg)
+     :on-dir-node-open    (treemacs--collapse-dir-node btn arg)
+     :on-file-node-open   (treemacs--collapse-file-node btn arg)
+     :on-file-node-closed (treemacs-collapse-parent-node arg)
+     :on-tag-node-open    (treemacs--collapse-tag-node btn arg)
+     :on-tag-node-closed  (treemacs-collapse-parent-node arg)
+     :on-tag-node-leaf    (treemacs-collapse-parent-node arg)
+     :on-nil              (treemacs-pulse-on-failure "There is nothing to do here.")))
+
+  (defun treemacs-open-node (&optional arg)
+    (interactive "P")
+    (treemacs-do-for-button-state
+     :on-root-node-closed (treemacs--expand-root-node btn)
+     :on-dir-node-closed  (treemacs--expand-dir-node btn :recursive arg)
+     :on-file-node-closed (treemacs--expand-file-node btn arg)
+     :on-tag-node-closed  (treemacs--expand-tag-node btn arg)
+     :on-tag-node-leaf    (progn
+                            (other-window 1)
+                            (treemacs--goto-tag btn))
+     :on-nil              (treemacs-pulse-on-failure "There is nothing to do here.")))
+
+  (setq treemacs-RET-actions-config
+        (let ((visit-fn (lambda (&optional arg)
+                          (treemacs-visit-node-default arg)
+                          (treemacs-select-window)
+                          (treemacs-kill-buffer)))
+              (visit-prefer-fn (lambda (&optional arg)
+                                 (treemacs-toggle-node-prefer-tag-visit arg)
+                                 (treemacs-select-window)
+                                 (treemacs-kill-buffer))))
+         `((root-node-open   . treemacs-toggle-node)
+           (root-node-closed . treemacs-toggle-node)
+           (dir-node-open    . treemacs-toggle-node)
+           (dir-node-closed  . treemacs-toggle-node)
+           (file-node-open   . ,visit-fn)
+           (file-node-closed . ,visit-fn)
+           (tag-node-open    . ,visit-prefer-fn)
+           (tag-node-closed  . ,visit-prefer-fn)
+           (tag-node         . ,visit-fn)))))
+
+(use-package treemacs-compatibility
+  :after winum
+  :config
+  (-update->> winum-ignored-buffers-regexp (--remove (string-equal " \\*Treemacs-Scoped-Buffer-" it))))
 
 (use-package treemacs-evil
   :ensure t
-  :defer t)
+  :after treemacs)
 
 (use-package treemacs-projectile
   :ensure t
-  :defer t
+  :after treemacs
   :init
   (defun treemacs-projectile-current ()
     (interactive)
@@ -272,11 +319,11 @@
        (treemacs--add-root-element (treemacs-project->create!
                                     :name (projectile-project-name)
                                     :path proj-root
-                                    :path-status (treemacs--get-path-status proj-root))))
-      (when-let ((pos (next-single-property-change (point-min) :project)))
-        (ignore-errors
-          (treemacs--expand-root-node pos))
-        (treemacs-next-line 1)))))
+                                    :path-status (treemacs--get-path-status proj-root)))
+       (when-let ((pos (next-single-property-change (point-min) :project)))
+         (ignore-errors
+           (treemacs--expand-root-node pos))
+         (treemacs-next-line 1))))))
 
 (use-package vlf-setup
   :ensure vlf

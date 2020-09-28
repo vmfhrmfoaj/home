@@ -144,7 +144,7 @@ Hide all posframe frames." t nil)
 (autoload 'posframe-delete-all "posframe" "\
 Delete all posframe frames and buffers." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "posframe" '("posframe-")))
+(register-definition-prefixes "posframe" '("posframe-"))
 
 ;;;***
 
