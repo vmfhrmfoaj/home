@@ -106,7 +106,7 @@
   (evil-leader--set-major-leader ",")
   (evil-leader/set-key
     "<SPC>" #'helm-M-x
-    "TAB" #'switch-to-previous-buffer
+    "TAB" #'projectile-switch-to-previous-buffer
     "!" #'shell-command
     ";" #'comment-it
     "0" #'winum-select-window-0
@@ -155,6 +155,7 @@
     "fY" #'kill-new-buffer-file-name
     "ff" #'helm-find-files
     "fr" #'helm-recentf
+    "ft" #'treemacs-current-directory
     "fy" #'projectile-kill-new-buffer-file-name
 
     ;; git
@@ -201,6 +202,7 @@
     "pf" #'helm-project-find-files
     "pk" #'projectile-kill-buffers
     "ps" #'projectile-custom-switch-open-project
+    "pt" #'treemacs-projectile-current
 
     ;; register/rings/resume
     "rk" #'helm-show-kill-ring
@@ -576,6 +578,13 @@
       (evil-define-key* 'normal magit-blame-mode-map (kbd (concat "M-" it)) f))
     (define-key magit-blame-read-only-mode-map (kbd it) nil)))
 
+(use-package treemacs-evil
+  :defer t
+  :config
+  (evil-define-key 'treemacs treemacs-mode-map (kbd "h") nil)
+  (evil-define-key 'treemacs treemacs-mode-map (kbd "l") nil)
+  (evil-define-key 'treemacs treemacs-mode-map (kbd "q") #'treemacs-kill-buffer))
+
 
 ;; Key binding for the major mode
 
@@ -700,7 +709,8 @@
   :defer t
   :config
   (evil-leader/set-key-for-mode 'markdown-mode
-    "msp" #'markdown-preview)
+    "msp" #'markdown-preview
+    "mso" #'markdown-open-link-at-point)
   (which-key-declare-prefixes-for-mode 'markdown-mode
     (concat evil-leader/leader "ms") "Show")
   (evil-leader--set-major-leader-for-mode 'markdown-mode))

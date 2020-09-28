@@ -23,7 +23,6 @@
         company-dabbrev-minimum-length 1
         company-dabbrev-ignore-case t
         company-dabbrev-code-ignore-case t
-        company-dabbrev-other-buffers nil
         company-etags-ignore-case t
         company-echo-delay 0.2)
 

@@ -215,36 +215,20 @@
 
 (defun update-buf-visit-time (&rest _)
   "TODO"
-  (ignore-errors
-    (let ((cur-win (selected-window))
-          (cur-time (current-time)))
-      (if (window-dedicated-p cur-win)
-          (setq buf-visit-time nil)
-        (-update->> buf-visit-time
-                    (-partition 2)
-                    (--filter (window-live-p (-first-item it)))
-                    (-mapcat #'identity))
-        (-update-> buf-visit-time
-                   (plist-put cur-win cur-time))))))
+  (setq buf-visit-time (current-time)))
 
-(defun buf-visit-time (buf &optional win)
+(defun buf-visit-time (buf)
   "TODO"
-  (ignore-errors
-    (let ((buf (if (stringp buf)
-                   (get-buffer buf)
-                 buf)))
-     (with-current-buffer (or buf (current-buffer))
-       (if (and (< 1 (length (window-list)))
-                (not (eq 'all win)))
-           (plist-get buf-visit-time (or win (selected-window)))
-         (-some->> buf-visit-time
-           (-partition 2)
-           (-map #'-second-item)
-           (--sort (time-less-p other it))
-           (-first-item)))))))
+  (condition-case err
+      (let ((buf (if (stringp buf)
+                     (get-buffer buf)
+                   buf)))
+        (with-current-buffer (or buf (current-buffer))
+          buf-visit-time))
+    (error (error err))))
 
 
-(defvar exclude-alt-buf-regex "\\(^\\*.*?\\*$\\)"
+(defvar exclude-prev-buf-regex "^$"
   "TODO")
 
 (defun sort-buffer-by-visit-time (bufs)
@@ -258,24 +242,25 @@
   "TODO"
   (unless (window-dedicated-p)
     (let ((visible-bufs (-map #'window-buffer (window-list))))
-      (-when-let (prev-buf (->> bufs
-                                (--remove (or (minibufferp it)
-                                              (-contains? visible-bufs it)
-                                              (->> it
-                                                   (buffer-name)
-                                                   (string-match-p "\\*\\(.*[Hh]elm.*\\|which-key\\)\\*"))))
-                                (sort-buffer-by-visit-time)
-                                (-first-item)))
-        (switch-to-buffer prev-buf nil t)
-        prev-buf))))
+      (-when-let (bufs (->> bufs
+                            (--filter (buffer-live-p it))
+                            (--remove (or (minibufferp it)
+                                          (string-match-p exclude-prev-buf-regex (buffer-name it))))
+                            (sort-buffer-by-visit-time)))
+        (if-let ((prev-buf (->> bufs
+                             (--remove (-contains? visible-bufs it))
+                             (-first-item))))
+            (progn
+              (switch-to-buffer prev-buf nil t)
+              prev-buf)
+          (let ((visible-prev-buf (-first-item bufs)))
+            (pop-to-buffer visible-prev-buf)
+            visible-prev-buf))))))
 
 (defun switch-to-previous-buffer ()
   "TODO"
   (interactive)
-  (->> (buffer-list)
-       (--remove (unless (s-blank-str? exclude-alt-buf-regex)
-                   (string-match-p exclude-alt-buf-regex (buffer-name it))))
-       (switch-to-previous-buffer-in)))
+  (switch-to-previous-buffer-in (buffer-list)))
 
 
 (defun get-scratch-buffer-create ()

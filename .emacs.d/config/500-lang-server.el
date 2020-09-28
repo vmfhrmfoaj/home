@@ -16,6 +16,11 @@
 (use-package helm-lsp
   :ensure t)
 
+(use-package lsp-clangd
+  :defer t
+  :config
+  (add-to-list 'lsp-clients-clangd-args "--header-insertion=never"))
+
 (use-package lsp-clients
   :defer t
   :config
@@ -85,10 +90,23 @@
         (message nil)
         (call-interactively #'dumb-jump-go))))
 
-  (defun lps--focus-lsp-help-buffer (&rest _)
+  (defun lps--focus-and-update-lsp-help-buffer (&rest _)
     "Force on '*lsp-help*' buffer"
     (-when-let (buf (get-buffer "*lsp-help*"))
-      (pop-to-buffer buf)))
+      (pop-to-buffer buf)
+      (let ((buffer-read-only nil)
+            (beg (next-single-property-change (point-min) 'help-echo)))
+        (while (and beg (< beg (point-max)))
+          (let ((end (next-single-property-change (1+ beg) 'help-echo))
+                (url (get-text-property beg 'help-echo)))
+            (when (string-match-p "^https?://" url)
+              (make-text-button beg end
+                                'action
+                                (lambda (&rest _)
+                                  (browse-url--browser url))
+                                'help-echo url
+                                'follow-link t))
+            (setq beg (next-single-property-change (1+ end) 'help-echo)))))))
 
   (defvar lsp--custom-render--regex-1-for-php
     (concat "\\(?:^\\|\n\\)````php\n"              ; ```php
@@ -214,7 +232,9 @@
       #'lsp--custom-eldoc-message-emacs-27))
 
   (defun lsp--signature->message-filter (msg)
-    (replace-in-string " │ " " | " msg))
+    (if (stringp msg)
+        (replace-in-string " │ " " | " msg)
+      msg))
 
   (setq lsp-diagnostic-package :flycheck
         lsp-enable-imenu nil
@@ -270,7 +290,7 @@
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
   (advice-add #'lsp--signature->message :filter-return #'lsp--signature->message-filter)
   (advice-add #'lsp-hover :before #'lsp--sanitate-hover-saved-bounds)
-  (advice-add #'lsp-describe-thing-at-point :after #'lps--focus-lsp-help-buffer)
+  (advice-add #'lsp-describe-thing-at-point :after #'lps--focus-and-update-lsp-help-buffer)
   (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx)

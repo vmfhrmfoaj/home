@@ -187,6 +187,7 @@
   (setq expand-region-contract-fast-key "v"))
 
 (use-package gnuplot
+  :disabled t
   :ensure t
   :defer t)
 
@@ -234,6 +235,48 @@
           (concat "-o ControlMaster=auto "
                   "-o ControlPath='" home-dir "/.ssh/sockets/%%r@%%h-%%p' "
                   "-o ControlPersist=600 "))))
+
+(use-package treemacs
+  :ensure t
+  :defer t
+  :init
+  (defun treemacs-current-directory ()
+    (interactive)
+    (when default-directory
+      (treemacs--setup-buffer)
+      (treemacs-mode)
+      (treemacs-with-writable-buffer
+       (treemacs--add-root-element (treemacs-project->create!
+                                    :name (file-name-nondirectory (s-chop-suffix "/" default-directory))
+                                    :path default-directory
+                                    :path-status (treemacs--get-path-status default-directory))))
+      (when-let ((pos (next-single-property-change (point-min) :project)))
+        (ignore-errors
+          (treemacs--expand-root-node pos))
+        (treemacs-next-line 1)))))
+
+(use-package treemacs-evil
+  :ensure t
+  :defer t)
+
+(use-package treemacs-projectile
+  :ensure t
+  :defer t
+  :init
+  (defun treemacs-projectile-current ()
+    (interactive)
+    (let ((proj-root (projectile-project-root)))
+      (treemacs--setup-buffer)
+      (treemacs-mode)
+      (treemacs-with-writable-buffer
+       (treemacs--add-root-element (treemacs-project->create!
+                                    :name (projectile-project-name)
+                                    :path proj-root
+                                    :path-status (treemacs--get-path-status proj-root))))
+      (when-let ((pos (next-single-property-change (point-min) :project)))
+        (ignore-errors
+          (treemacs--expand-root-node pos))
+        (treemacs-next-line 1)))))
 
 (use-package vlf-setup
   :ensure vlf

@@ -982,84 +982,17 @@
 (use-package go-mode
   :defer t
   :config
-  (defface go-argument-name-face
-    '((t (:inherit font-lock-variable-name-face)))
-    "TODO")
-
-  ;; prepend
   (font-lock-add-keywords
    'go-mode
-   (let* ((symbol  "\\_<[_A-Za-z][_0-9A-Za-z]*\\_>")
-          (type-prefix "\\(?:\\(?:\\[\\]\\|map\\[[_.0-9A-Za-z]+\\]\\)\\*?\\)")
-          (type-suffix "\\(?:{[^}\r\n]*}\\)")
-          (user-type "[_.0-9A-Za-z]+")
-          (system-type (regexp-opt '("bool" "string"
-                                     "int" "int8" "int16" "int32" "int64"
-                                     "uint" "uint8" "uint16" "uint32" "uint64"
-                                     "byte" "rune" "uintptr"
-                                     "float32" "float64"
-                                     "complex64" "complex128")))
-          (type (concat type-prefix "?\\(?:" user-type "\\|" system-type "\\)" type-suffix "?"))
-          (whitespace "[ \t]")
-          (whitespace* (concat whitespace "*"))
-          (whitespace+ (concat whitespace "+")))
-     `(;; highlight strucut
-       (,(concat "\\_<struct" whitespace* "{")
-        (,(lambda (limit)
-            (comment-forward (point-max))
-            (while (and (re-search-forward (concat symbol "\\(,\\)?" whitespace+) limit t)
-                        (string= "," (match-string 1))))
-            (re-search-forward (concat whitespace* type-prefix "?\\(" symbol "\\)") limit t))
-         (save-excursion
-           (setq font-lock--anchor-beg-point (point))
-           (up-list)
-           (point))
-         (goto-char font-lock--anchor-beg-point)
-         (1 'font-lock-type-face)))
-       ;; highlight variables
-       (,(concat "\\_<var" whitespace+ "\\(" symbol "\\)" whitespace+ type-prefix "?\\(" symbol "\\)")
-        (1 'font-lock-variable-name-face)
-        (2 'font-lock-type-face))
-       (,(concat "\\_<var" whitespace+ "\\(" symbol "\\)")
-        (1 'font-lock-variable-name-face))
-       (,(concat symbol "\\(?:," whitespace* symbol "\\)*" whitespace* "\\(:=\\)")
-        (,symbol
-         (progn
-           (goto-char (setq font-lock--anchor-beg-point (match-beginning 0)))
-           (match-beginning 1))
-         (goto-char font-lock--anchor-beg-point)
-         (0 'font-lock-variable-name-face)))
-       ;; highlight arguments
-       (,(concat "\\(\\_<func\\>\\)" whitespace* "\\(([^()]+)\\)?" whitespace* symbol whitespace* "\\(([^()]+)\\)?")
-        (,(lambda (limit)
-            (when (null font-lock--local-limit)
-              (skip-chars-forward "^(" limit)
-              (when (< (point) limit)
-                (save-excursion
-                  (forward-char)
-                  (up-list)
-                  (setq font-lock--local-limit (point)))))
-            (when (and font-lock--local-limit
-                       (re-search-forward type font-lock--local-limit t))
-              (unless (looking-at-p ",\\|\\s)")
-                (skip-chars-forward "^," font-lock--local-limit)
-                (when (<= font-lock--local-limit (point))
-                  (setq font-lock--local-limit nil)))
-              t))
-         (progn
-           (setq font-lock--anchor-beg-point (match-end 1)
-                 font-lock--local-limit nil)
-           (prog1 (point)
-             (goto-char font-lock--anchor-beg-point)))
-         (goto-char font-lock--anchor-beg-point)
-         (0 'go-argument-name-face)))))))
+   '(("\\<\\(_\\)\\>\\s-*\\(?:,\\|:?=\\)"
+      (1 'shadow t)))))
 
 (use-package js
   :defer t
   :config
   (font-lock-add-keywords
    'js-mode
-   `(("\\(?:async\\|export\\)\\s-+function\\s-+\\([_0-9A-Za-z]+\\)\\>"
+   '(("\\(?:async\\|export\\)\\s-+function\\s-+\\([_0-9A-Za-z]+\\)\\>"
       (1 'font-lock-function-name-face)))))
 
 (use-package php-mode

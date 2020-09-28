@@ -20,7 +20,7 @@
         blink-cursor-delay 3
         comment-fill-column 100
         create-lockfiles nil
-        exclude-alt-buf-regex "^\\s-*\\*\\s-*\\([Hh]elm\\|which-key\\)"
+        exclude-prev-buf-regex "^\\(\\s-*\\*\\|\\s-*markdown-code-fontification:\\|\\s-*magit:\\)"
         initial-major-mode 'text-mode
         initial-scratch-message ""
         read-process-output-max (* 1024 1024)
