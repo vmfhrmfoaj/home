@@ -12,36 +12,10 @@ tramp
 .dir-locals.el
 .projectile
 
-# Emacs org-mode
-.org-id-locations
-*_archive
-
-# Emacs flymake-mode
-*_flymake.*
-
-# Emacs eshell files
-/eshell/history
-/eshell/lastdir
-
-# ELPA packages
-/elpa/
-
-# RefTeX files
-*.rel
-
-# AUCTeX auto folder
-/auto/
-
-# Cask packages
-.cask/
-
 # MacOS
 .DS_Store
 .AppleDouble
 .LSOverride
-
-# Icon must end with two \r
-Icon
 
 # Thumbnails
 ._*
@@ -80,3 +54,6 @@ cscope.po.out
 .classpath
 .project
 .settings/
+
+# VS Code
+.vscode/
