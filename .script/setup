@@ -265,9 +265,10 @@ EOF
 _setup_for_go() {
     export GOPATH="${HOME}/.go"
     export GO111MODULE=on
-    if [ -d "${GOPATH}/bin" ]; then
-        _add_to_path "${GOPATH}/bin"
+    if [ ! -d "${GOPATH}/bin" ]; then
+        mkdir -p "${GOPATH}/bin"
     fi
+    _add_to_path "${GOPATH}/bin"
 }
 
 _setup_for_schroot() {
