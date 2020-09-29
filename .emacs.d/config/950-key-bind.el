@@ -150,6 +150,7 @@
     ;; error
     "en" #'next-error
     "ep" #'previous-error
+    "el" #'flycheck-list-errors
 
     ;; file
     "fR" #'rename-current-buffer-file
@@ -490,63 +491,65 @@
 (use-package lsp-mode
   :defer t
   :config
+  (defvar lsp--custom-setup-key-status '())
+
   (defun lsp--custom-setup-key ()
     "Set up keys for `lsp-mode'."
-    (evil-leader/set-key-for-mode major-mode
-      ;; sessions
-      "msr" #'lsp-workspace-restart
-      "mss" #'lsp
-      "msq" #'lsp-workspace-shutdown
-      "msd" #'lsp-describe-session
-      "msD" #'lsp-disconnect
+    (unless (member major-mode lsp--custom-setup-key-status)
+      (evil-leader/set-key-for-mode major-mode
+        ;; sessions
+        "msr" #'lsp-workspace-restart
+        "mss" #'lsp
+        "msq" #'lsp-workspace-shutdown
+        "msd" #'lsp-describe-session
+        "msD" #'lsp-disconnect
 
-      ;; formatting
-      "m==" #'lsp-format-buffer
-      "m=r" #'lsp-format-region
+        ;; formatting
+        "m==" #'lsp-format-buffer
+        "m=r" #'lsp-format-region
 
-      ;; folders
-      "mFa" #'lsp-workspace-folders-add
-      "mFr" #'lsp-workspace-folders-remove
-      "mFb" #'lsp-workspace-blacklist-remove
+        ;; folders
+        "mFa" #'lsp-workspace-folders-add
+        "mFr" #'lsp-workspace-folders-remove
+        "mFb" #'lsp-workspace-blacklist-remove
 
-      ;; toggles
-      "mTf" (if (lsp-feature? "textDocument/onTypeFormatting") #'lsp-toggle-on-type-formatting)
-      "mTT" #'lsp-treemacs-sync-mode
+        ;; toggles
+        "mTf" (if (lsp-feature? "textDocument/onTypeFormatting") #'lsp-toggle-on-type-formatting)
+        "mTT" #'lsp-treemacs-sync-mode
 
-      ;; goto
-      "mgg" (if (lsp-feature? "textDocument/definition") #'lsp-find-definition #'dumb-jump-go)
-      "mgr" (if (lsp-feature? "textDocument/references") #'lsp-find-references)
-      "mgi" (if (lsp-feature? "textDocument/implementation") #'lsp-find-implementation)
-      "mgt" (if (lsp-feature? "textDocument/typeDefinition") #'lsp-find-type-definition)
-      "mgd" (if (lsp-feature? "textDocument/declaration") #'lsp-find-declaration)
-      "mgh" (if (and (lsp-feature? "callHierarchy/incomingCalls")
-                     (fboundp 'lsp-treemacs-call-hierarchy))
-                #'lsp-treemacs-call-hierarchy)
-      "mga" (if (lsp-feature? "workspace/symbol") #'xref-find-apropos)
+        ;; goto
+        "mgg" (if (lsp-feature? "textDocument/definition") #'lsp-find-definition #'dumb-jump-go)
+        "mgr" (if (lsp-feature? "textDocument/references") #'lsp-find-references)
+        "mgi" (if (lsp-feature? "textDocument/implementation") #'lsp-find-implementation)
+        "mgt" (if (lsp-feature? "textDocument/typeDefinition") #'lsp-find-type-definition)
+        "mgd" (if (lsp-feature? "textDocument/declaration") #'lsp-find-declaration)
+        "mgh" (if (and (lsp-feature? "callHierarchy/incomingCalls")
+                       (fboundp 'lsp-treemacs-call-hierarchy))
+                  #'lsp-treemacs-call-hierarchy)
+        "mga" (if (lsp-feature? "workspace/symbol") #'xref-find-apropos)
 
-      ;; help
-      "mhh" (if (lsp-feature? "textDocument/hover") #'lsp-describe-thing-at-point)
-      "mhs" (if (lsp-feature? "textDocument/signatureHelp") #'lsp-signature-activate)
-      "mhg" (if (and (featurep 'lsp-ui-doc)
-                     (lsp-feature? "textDocument/hover"))
-                #'lsp-ui-doc-glance)
+        ;; help
+        "mhh" (if (lsp-feature? "textDocument/hover") #'lsp-describe-thing-at-point)
+        "mhs" (if (lsp-feature? "textDocument/signatureHelp") #'lsp-signature-activate)
+        "mhg" (if (and (featurep 'lsp-ui-doc)
+                       (lsp-feature? "textDocument/hover"))
+                  #'lsp-ui-doc-glance)
 
-      ;; refactoring
-      "mrr" (if (lsp-feature? "textDocument/rename") #'lsp-rename)
-      "mro" (if (lsp-feature? "textDocument/rename") #'lsp-organize-imports)
+        ;; refactoring
+        "mrr" (if (lsp-feature? "textDocument/rename") #'lsp-rename)
+        "mro" (if (lsp-feature? "textDocument/rename") #'lsp-organize-imports)
 
-      ;; actions
-      "maa" (if (lsp-feature? "textDocument/codeAction") #'lsp-execute-code-action)
-      "mah" (if (lsp-feature? "textDocument/documentHighlight") #'lsp-document-highlight)
+        ;; actions
+        "maa" (if (lsp-feature? "textDocument/codeAction") #'lsp-execute-code-action)
+        "mah" (if (lsp-feature? "textDocument/documentHighlight") #'lsp-document-highlight)
 
-      ;; peeks
-      "mGs" (if (and (fboundp 'helm-lsp-workspace-symbol)
-                     (lsp-feature? "workspace/symbol"))
-                #'helm-lsp-workspace-symbol)
-      "mGS" (if (and (fboundp 'helm-lsp-global-workspace-symbol)
-                     (lsp-feature? "workspace/symbol"))
-                #'helm-lsp-global-workspace-symbol))
-    (unless (assq major-mode which-key-replacement-alist)
+        ;; peeks
+        "mGs" (if (and (fboundp 'helm-lsp-workspace-symbol)
+                       (lsp-feature? "workspace/symbol"))
+                  #'helm-lsp-workspace-symbol)
+        "mGS" (if (and (fboundp 'helm-lsp-global-workspace-symbol)
+                       (lsp-feature? "workspace/symbol"))
+                  #'helm-lsp-global-workspace-symbol))
       (which-key-declare-prefixes-for-mode major-mode
         (concat evil-leader/leader "ms")  "sessions"
         (concat evil-leader/leader "mF")  "folders"
@@ -557,7 +560,8 @@
         (concat evil-leader/leader "mr")  "refactor"
         (concat evil-leader/leader "ma")  "code actions"
         (concat evil-leader/leader "mG")  "peek")
-      (evil-leader--set-major-leader-for-mode major-mode)))
+      (evil-leader--set-major-leader-for-mode major-mode)
+      (add-to-list 'lsp--custom-setup-key-status major-mode)))
 
   (add-hook 'lsp-mode-hook
             (lambda ()
@@ -687,17 +691,6 @@
   (which-key-declare-prefixes-for-mode 'elm-mode
     (concat evil-leader/leader "mg") "goto")
   (evil-leader--set-major-leader-for-mode 'elm-mode))
-
-(use-package go-mode
-  :disabled t
-  :defer t
-  :config
-  (evil-leader/set-key-for-mode 'go-mode
-    "mgg" #'go-guru-definition
-    "mgG" #'go-guru-definition-other-window)
-  (which-key-declare-prefixes-for-mode 'go-mode
-    (concat evil-leader/leader "mg") "goto")
-  (evil-leader--set-major-leader-for-mode 'go-mode))
 
 (use-package js
   :defer t

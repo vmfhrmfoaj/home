@@ -239,26 +239,38 @@
 (use-package treemacs
   :ensure t
   :init
+  (defun treemacs-reset-workspace-and-create-fake ()
+    (setq treemacs--workspaces nil
+          treemacs-override-workspace (treemacs-workspace->create! :name "Fake"))
+    (add-to-list 'treemacs--workspaces treemacs-override-workspace))
+
   (defun treemacs-current-directory ()
     (interactive)
-    (when default-directory
-      (treemacs--setup-buffer)
-      (treemacs-mode)
-      (treemacs-with-writable-buffer
-       (treemacs--add-root-element (treemacs-project->create!
-                                    :name (file-name-nondirectory (s-chop-suffix "/" default-directory))
-                                    :path default-directory
-                                    :path-status (treemacs--get-path-status default-directory)))
-       (when-let ((pos (next-single-property-change (point-min) :project)))
-         (ignore-errors
-           (treemacs--expand-root-node pos))
-         (treemacs-next-line 1)))))
+    (when-let ((file (buffer-file-name)))
+      (let ((dir (s-chop-suffix "/" (file-name-directory file))))
+        (treemacs-reset-workspace-and-create-fake)
+        (treemacs--setup-buffer)
+        (treemacs-mode)
+        (treemacs-with-writable-buffer
+         (let ((treemacs-proj (treemacs-project->create!
+                               :name (file-name-nondirectory dir)
+                               :path dir
+                               :path-status (treemacs--get-path-status dir))))
+           (treemacs--add-project-to-current-workspace treemacs-proj)
+           (treemacs--add-root-element treemacs-proj))
+         (when-let ((pos (next-single-property-change (point-min) :project)))
+           (ignore-errors
+             (treemacs--expand-root-node pos))
+           (goto-char (point-min))
+           (when (re-search-forward (regexp-quote (file-name-nondirectory file)) (point-max) nil)
+             (beginning-of-line-text)))))))
 
   (defun treemacs-close-node (&optional arg)
     (interactive "P")
     (treemacs-do-for-button-state
      :on-root-node-open   (treemacs--collapse-root-node btn arg)
      :on-dir-node-open    (treemacs--collapse-dir-node btn arg)
+     :on-dir-node-closed  (treemacs-collapse-parent-node arg)
      :on-file-node-open   (treemacs--collapse-file-node btn arg)
      :on-file-node-closed (treemacs-collapse-parent-node arg)
      :on-tag-node-open    (treemacs--collapse-tag-node btn arg)
@@ -270,7 +282,7 @@
     (interactive "P")
     (treemacs-do-for-button-state
      :on-root-node-closed (treemacs--expand-root-node btn)
-     :on-dir-node-closed  (treemacs--expand-dir-node btn :recursive arg)
+     :on-dir-node-closed  (treemacs--expand-dir-node btn)
      :on-file-node-closed (treemacs--expand-file-node btn arg)
      :on-tag-node-closed  (treemacs--expand-tag-node btn arg)
      :on-tag-node-leaf    (progn
@@ -278,6 +290,7 @@
                             (treemacs--goto-tag btn))
      :on-nil              (treemacs-pulse-on-failure "There is nothing to do here.")))
 
+  :config
   (setq treemacs-RET-actions-config
         (let ((visit-fn (lambda (&optional arg)
                           (treemacs-visit-node-default arg)
@@ -312,18 +325,36 @@
   :init
   (defun treemacs-projectile-current ()
     (interactive)
-    (let ((proj-root (projectile-project-root)))
-      (treemacs--setup-buffer)
-      (treemacs-mode)
-      (treemacs-with-writable-buffer
-       (treemacs--add-root-element (treemacs-project->create!
-                                    :name (projectile-project-name)
-                                    :path proj-root
-                                    :path-status (treemacs--get-path-status proj-root)))
-       (when-let ((pos (next-single-property-change (point-min) :project)))
-         (ignore-errors
-           (treemacs--expand-root-node pos))
-         (treemacs-next-line 1))))))
+    (when-let ((proj-root (s-chop-suffix "/" (projectile-project-root))))
+      (let ((file (buffer-file-name)))
+        (treemacs-reset-workspace-and-create-fake)
+        (treemacs--setup-buffer)
+        (treemacs-mode)
+        (treemacs-with-writable-buffer
+         (let ((treemacs-proj (treemacs-project->create!
+                                      :name (projectile-project-name)
+                                      :path proj-root
+                                      :path-status (treemacs--get-path-status proj-root))))
+           (treemacs--add-project-to-current-workspace treemacs-proj)
+           (treemacs--add-root-element treemacs-proj))
+         (when-let ((pos (next-single-property-change (point-min) :project)))
+           (ignore-errors
+             (treemacs--expand-root-node pos))
+           (if (s-blank? file)
+               (treemacs-next-line 1)
+             (catch 'stop
+               (goto-char (point-min))
+               (dolist (part (->> proj-root
+                                  (file-relative-name file)
+                                  (s-split "/")
+                                  (-non-nil)
+                                  (-map #'regexp-quote)))
+                 (unless (re-search-forward part (point-max) nil)
+                   (throw 'stop))
+                 (beginning-of-line-text)
+                 (let ((btn (point)))
+                   (when (eq (treemacs-button-get btn :state) 'dir-node-closed)
+                     (treemacs--expand-dir-node btn :recursive nil))))))))))))
 
 (use-package vlf-setup
   :ensure vlf

@@ -51,6 +51,19 @@
                                         env))
                     :server-id 'bash-ls)))
 
+(use-package lsp-diagnostics
+  :defer t
+  :config
+  (setq lsp-diagnostics-provider :flycheck)
+  (add-hook 'lsp-diagnostics-mode-hook
+            (lambda ()
+              (when (or (eq lsp-diagnostics-provider :flycheck)
+                        (and (eq lsp-diagnostics-provider :auto)
+                             (featurep 'flycheck)))
+                (cond
+                 ((eq major-mode 'go-mode)
+                  (flycheck-add-next-checker 'lsp 'go-build)))))))
+
 (use-package lsp-intelephense
   :defer t
   :config
@@ -246,8 +259,7 @@
         (s-replace " │ " " | " msg)
       msg))
 
-  (setq lsp-diagnostics-provider :flycheck
-        lsp-enable-imenu nil
+  (setq lsp-enable-imenu nil
         lsp-enable-indentation nil
         lsp-enable-links nil
         lsp-enable-symbol-highlighting nil
@@ -282,7 +294,8 @@
                ((eq major-mode 'go-mode)
                 (setq-local lsp-eldoc-render-all t)
                 (add-hook 'before-save-hook #'lsp-format-buffer t t)
-                (add-hook 'before-save-hook #'lsp-organize-imports t t)))
+                (add-hook 'before-save-hook #'lsp-organize-imports t t)
+                (flycheck-add-next-checker 'lsp 'go-build)))
               (add-hook 'evil-insert-state-entry-hook
                         (lambda ()
                           (when lsp-mode
