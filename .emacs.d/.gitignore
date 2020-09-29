@@ -4,6 +4,7 @@
 /.lsp-*
 /.trello
 /bookmarks
+/elpa
 /places
 /projectile*
 /quelpa
