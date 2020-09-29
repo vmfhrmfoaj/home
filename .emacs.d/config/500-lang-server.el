@@ -54,7 +54,49 @@
 (use-package lsp-diagnostics
   :defer t
   :config
+  (defun lsp-diagnostics--custom-flycheck-start (checker callback)
+    "Customize `lsp-diagnostics--flycheck-start' to remove duplicated errors from `go-build' and `lsp'."
+    (remove-hook 'lsp-on-idle-hook #'lsp-diagnostics--flycheck-buffer t)
+
+    (let ((errors (->> flycheck-current-errors
+                       (--filter (and      (eq (flycheck-error-buffer  it) (current-buffer))
+                                      (not (eq (flycheck-error-checker it) checker))))
+                       (-map (-juxt #'flycheck-error-line
+                                    #'flycheck-error-column)))))
+      (->> (lsp--get-buffer-diagnostics)
+           (-map (-lambda ((&Diagnostic
+                            :message
+                            :severity?
+                            :tags?
+                            :code?
+                            :range (&Range
+                                    :start (&Position
+                                            :line      start-line
+                                            :character start-character)
+                                    :end   (&Position
+                                            :line      end-line
+                                            :character end-character))))
+                   (let ((line-beg (lsp-translate-line (1+ start-line)))
+                         (line-end (lsp-translate-line (1+ end-line)))
+                         (col-beg (1+ (lsp-translate-column start-character)))
+                         (col-end (1+ (lsp-translate-column end-character))))
+                     (unless (member (list line-beg col-beg) errors)
+                       (flycheck-error-new
+                        :buffer (current-buffer)
+                        :checker checker
+                        :filename buffer-file-name
+                        :message message
+                        :level (lsp-diagnostics--flycheck-calculate-level severity? tags?)
+                        :id code?
+                        :line     line-beg
+                        :end-line line-end
+                        :column     col-beg
+                        :end-column col-end)))))
+           (-non-nil)
+           (funcall callback 'finished))))
+
   (setq lsp-diagnostics-provider :flycheck)
+
   (add-hook 'lsp-diagnostics-mode-hook
             (lambda ()
               (when (or (eq lsp-diagnostics-provider :flycheck)
@@ -62,7 +104,13 @@
                              (featurep 'flycheck)))
                 (cond
                  ((eq major-mode 'go-mode)
-                  (flycheck-add-next-checker 'lsp 'go-build)))))))
+                  (flycheck-select-checker 'go-build)
+                  (flycheck-add-next-checker 'go-build 'lsp :append))
+                 ((eq major-mode 'rust-mode)
+                  (flycheck-select-checker 'rust-clippy)
+                  (flycheck-add-next-checker 'rust-clippy 'lsp))))))
+
+  (advice-add #'lsp-diagnostics--flycheck-start :override #'lsp-diagnostics--custom-flycheck-start))
 
 (use-package lsp-intelephense
   :defer t
@@ -294,8 +342,7 @@
                ((eq major-mode 'go-mode)
                 (setq-local lsp-eldoc-render-all t)
                 (add-hook 'before-save-hook #'lsp-format-buffer t t)
-                (add-hook 'before-save-hook #'lsp-organize-imports t t)
-                (flycheck-add-next-checker 'lsp 'go-build)))
+                (add-hook 'before-save-hook #'lsp-organize-imports t t)))
               (add-hook 'evil-insert-state-entry-hook
                         (lambda ()
                           (when lsp-mode

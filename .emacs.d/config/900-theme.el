@@ -62,6 +62,7 @@
   :config
   (custom-set-faces
    '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight normal)))
+   '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :weight light)))
    '(font-lock-function-name-face ((t :inherit bold)))
    '(font-lock-regexp-grouping-backslash ((t :inherit font-lock-string-face :background "#E1F2D6")))
    '(font-lock-regexp-grouping-construct ((t :inherit font-lock-string-face :background "#E1F2D6")))
