@@ -5,7 +5,7 @@
 !.config/gromit-mpx.cfg
 !.config/gromit-mpx.ini
 !.emacs.d/
-!.lein
+!.lein/profiles.clj
 !.script
 !.Xresources
 !.bashrc

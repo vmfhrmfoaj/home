@@ -135,7 +135,6 @@
    :append))
 
 (use-package clojure-mode
-  :disabled t
   :defer t
   :config
   (defface clojure-defining-spec-face
@@ -200,6 +199,66 @@
     '("binding" "doseq" "dotimes" "for" "let" "if-let" "if-some" "when-let" "when-some" "loop" "with-redefs")
     "List of Clojure binding form.")
 
+  (defun clojure-skip (direction-or-item &rest items)
+    "TODO"
+    (let* ((direction (if (and (numberp direction-or-item) (> 0 direction-or-item)) (- 1) (+ 1)))
+           (items     (if (numberp direction-or-item) items (cons direction-or-item items)))
+           (l items))
+      (while l
+        (skip-chars-forward " \r\t\n")
+        (cond
+         ((eq (car l) :comment)
+          (if (not (looking-at-p ";"))
+              (setq l (cdr l))
+            (setq l (-remove-item :comment items))
+            (comment-forward (point-max))))
+         ((eq (car l) :type-hint)
+          (if (not (looking-at-p "\\^"))
+              (setq l (cdr l))
+            (setq l (-remove-item :type-hint items))
+            (forward-sexp direction)))
+         ((eq (car l) :ignored-form)
+          (if (not (looking-at-p "#_\\|,"))
+              (setq l (cdr l))
+            (setq l (-remove-item :ignored-form items))
+            (or (/= 0 (skip-chars-forward ","))
+                (forward-sexp (if (looking-at-p "#_\\s(") (* direction 2) (* direction 1))))
+            (clojure-skip :ignored-form)))
+         ((eq (car l) :tagged-literal)
+          (if (not (looking-at-p "#[0-9A-Za-z]"))
+              (setq l (cdr l))
+            (setq l (-remove-item :tagged-literal items))
+            (forward-sexp direction)
+            (clojure-skip :tagged-literal)))
+         ((eq (car l) :destructuring-bind)
+          (if (not (looking-at-p "{\\|\\["))
+              (setq l (cdr l))
+            (setq l (-remove-item :destructuring-bind items))
+            (forward-sexp direction)
+            (when (car l)
+              (apply #'clojure-skip l))
+            (forward-sexp direction)
+            (clojure-skip :destructuring-bind)))
+         ((eq (car l) :string)
+          (if (not (looking-at-p "\""))
+              (setq l (cdr l))
+            (setq l (-remove-item :string items))
+            (forward-sexp direction)
+            (clojure-skip :string)))
+         ((eq (car l) :map)
+          (if (not (looking-at-p "{"))
+              (setq l (cdr l))
+            (setq l (-remove-item :map items))
+            (forward-sexp direction)
+            (clojure-skip :map)))
+         ((eq (car l) :vector)
+          (if (not (looking-at-p "\\["))
+              (setq l (cdr l))
+            (setq l (-remove-item :vector items))
+            (forward-sexp direction)
+            (clojure-skip :vector)))
+         (t (setq l (cdr l)))))))
+
   (defun clojure-forward-sexp (&optional n)
     "TODO"
     (or n (setq n 1))
@@ -231,25 +290,25 @@
   (make-local-variable 'clojure-fn-recursive--point)
   (make-local-variable 'clojure-fn-recursive--limit)
 
-  (let* ((whitespace "[ \r\t\n]")
-         (whitespace+ (concat whitespace "+"))
-         (whitespace* (concat whitespace "*"))
-         (symbol  clojure--sym-regexp)
-         (symbol? (concat "\\(?:" symbol "\\)?"))
-         (namespace  (concat "\\(?:" symbol "/\\)"))
-         (namespace? (concat namespace "?"))
-         (meta? "\\(?:\\(?:\\^{[^^]+}\\|\\^:?\\sw+\\)[ \r\n\t]+\\)?")
-         (core-ns  (concat (regexp-opt '("clojure.core" "cljs.core" "core") nil) "/"))
-         (core-ns? (concat "\\(?:" core-ns "\\)?"))
-         (if-kw   (regexp-opt '("if" "if-some" "if-let" "if-not")))
-         (oop-kw  (regexp-opt '("definterface" "defprotocol" "defrecord" "deftype" "extend-protocol" "extend-type" "proxy" "reify")))
-         (def-kw  (regexp-opt '("defmacro" "defun" "defun-" "defmethod" "defrecord" "deftype") t))
-         (cond-kw (regexp-opt '("case" "cond" "condp" "cond->" "cond->>"
-                                "for" "if" "if-let" "if-not" "recur" "throw" "when"
-                                "loop" "when-let" "when-not" "while") t))
-         (custom-kw (regexp-opt '("go-loop" "with-hard-redefs") t)))
+  (defconst clojure-font-lock-keywords
+    (let* ((whitespace "[ \r\t\n]")
+           (whitespace+ (concat whitespace "+"))
+           (whitespace* (concat whitespace "*"))
+           (symbol  clojure--sym-regexp)
+           (symbol? (concat "\\(?:" symbol "\\)?"))
+           (namespace  (concat "\\(?:" symbol "/\\)"))
+           (namespace? (concat namespace "?"))
+           (meta? "\\(?:\\(?:\\^{[^^]+}\\|\\^:?\\sw+\\)[ \r\n\t]+\\)?")
+           (core-ns  (concat (regexp-opt '("clojure.core" "cljs.core" "core") nil) "/"))
+           (core-ns? (concat "\\(?:" core-ns "\\)?"))
+           (if-kw   (regexp-opt '("if" "if-some" "if-let" "if-not")))
+           (oop-kw  (regexp-opt '("definterface" "defprotocol" "defrecord" "deftype" "extend-protocol" "extend-type" "proxy" "reify")))
+           (def-kw  (regexp-opt '("defmacro" "defn" "defn-" "defmethod" "defrecord" "deftype") t))
+           (cond-kw (regexp-opt '("case" "cond" "condp" "cond->" "cond->>"
+                                  "for" "if" "if-let" "if-not" "recur" "throw" "when"
+                                  "loop" "when-let" "when-not" "while") t))
+           (custom-kw (regexp-opt '("go-loop" "with-hard-redefs") t)))
 
-    (defconst clojure-font-lock-keywords
       `(;; Binding forms
         (,(concat "(" core-ns? (regexp-opt clojure--binding-forms) "[ \r\t\n]+\\[")
          ;; Normal bindings
@@ -385,34 +444,34 @@
 
          ;; Highlighting OOP fn parameters
          (,(let ((meta?+ns?+symbol (concat meta? "\\_<" namespace? "\\(" symbol "\\)\\>")))
-            (lambda (limit)
-              (ignore-errors
-                (when font-lock--skip
-                  (error ""))
-                (while (and (not clojure-oop-fn-recursive--point)
-                            clojure-oop-fn-form--points)
-                  (-when-let (point (car clojure-oop-fn-form--points))
-                    (setq clojure-oop-fn-form--points (cdr clojure-oop-fn-form--points))
-                    (goto-char point)
-                    (when (re-search-forward "\\[" limit 'noerr)
-                      (setq clojure-oop-fn-recursive--point (point)
-                            clojure-oop-fn-recursive--limit (save-excursion
-                                                              (up-list)
-                                                              (point)))
-                      (when (string-match-p "definterface\\|defprotocol" clojure-oop-kw--str)
-                        (setq clojure-oop-fn-form--points
-                              (cons clojure-oop-fn-recursive--limit
-                                    clojure-oop-fn-form--points))))))
-                (when clojure-oop-fn-recursive--point
-                  (if (re-search-forward meta?+ns?+symbol
-                                         (min limit clojure-oop-fn-recursive--limit) t)
-                      (when (string-match-p clojure--ignore-binding-highlight-regex
-                                            (match-string-no-properties 1))
-                        (set-match-data (fake-match-4)))
-                    (set-match-data (fake-match-4))
-                    (setq clojure-oop-fn-recursive--point nil
-                          clojure-oop-fn-recursive--limit nil))
-                  t))))
+             (lambda (limit)
+               (ignore-errors
+                 (when font-lock--skip
+                   (error ""))
+                 (while (and (not clojure-oop-fn-recursive--point)
+                             clojure-oop-fn-form--points)
+                   (-when-let (point (car clojure-oop-fn-form--points))
+                     (setq clojure-oop-fn-form--points (cdr clojure-oop-fn-form--points))
+                     (goto-char point)
+                     (when (re-search-forward "\\[" limit 'noerr)
+                       (setq clojure-oop-fn-recursive--point (point)
+                             clojure-oop-fn-recursive--limit (save-excursion
+                                                               (up-list)
+                                                               (point)))
+                       (when (string-match-p "definterface\\|defprotocol" clojure-oop-kw--str)
+                         (setq clojure-oop-fn-form--points
+                               (cons clojure-oop-fn-recursive--limit
+                                     clojure-oop-fn-form--points))))))
+                 (when clojure-oop-fn-recursive--point
+                   (if (re-search-forward meta?+ns?+symbol
+                                          (min limit clojure-oop-fn-recursive--limit) t)
+                       (when (string-match-p clojure--ignore-binding-highlight-regex
+                                             (match-string-no-properties 1))
+                         (set-match-data (fake-match-4)))
+                     (set-match-data (fake-match-4))
+                     (setq clojure-oop-fn-recursive--point nil
+                           clojure-oop-fn-recursive--limit nil))
+                   t))))
           (save-excursion
             (if (in-comment?)
                 (setq font-lock--skip t)
@@ -428,10 +487,9 @@
           (1 'clojure-fn-parameter-face)))
 
         ;; Clojure definition keywords - (DEFINITION-KEYWORD symbol ...)
-        (,(concat "(" core-ns? def-kw "\\>" whitespace+ meta? "\\(" symbol "*?\\)\\(!*\\)\\>")
+        (,(concat "(" core-ns? def-kw "\\>" whitespace+ meta? "\\(" symbol "*?!*\\)\\>")
          (1 'font-lock-keyword-face)
          (2 'font-lock-function-name-face)
-         (3 'clojure-side-effect-face t)
 
          ;; fn parameters highlight
          (,(let ((meta?+ns?+symbol (concat meta? "\\_<" namespace? "\\(" symbol "\\)\\>")))
@@ -873,7 +931,13 @@
 
         ;; side-effect
         (,(concat symbol "?\\(!+\\)\\>")
-         (1 'clojure-side-effect-face append))
+         (1 (unless (-intersection '(font-lock-comment-face
+                                     font-lock-doc-face
+                                     font-lock-doc-string-face
+                                     font-lock-string-face)
+                                   (-list (get-text-property (match-beginning 1) 'face)))
+              'clojure-side-effect-face)
+            prepend))
 
         ;; Interop type name
         (,(concat "\\(" symbol "\\(\\." symbol "\\)+\\)")
@@ -883,8 +947,8 @@
 
         ;; Custom keywords
         (,(concat "(" namespace? custom-kw)
-         (1 'font-lock-keyword-face)))
-      "Default expressions to highlight in Clojure mode.")))
+         (1 'font-lock-keyword-face))))
+    "Default expressions to highlight in Clojure mode."))
 
 (use-package elisp-mode
   :defer t

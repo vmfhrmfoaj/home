@@ -46,6 +46,7 @@
 (use-package diminish
   :ensure t
   :config
+  (with-eval-after-load "aggressive-indent"       (diminish 'aggressive-indent-mode      ""))
   (with-eval-after-load "auto-dim-other-buffers"  (diminish 'auto-dim-other-buffers-mode ""))
   (with-eval-after-load "abbrev"                  (diminish 'abbrev-mode                 ""))
   (with-eval-after-load "autorevert"              (diminish 'auto-revert-mode            ""))

@@ -23,20 +23,25 @@
    '(trailing-whitespace ((t :background "gray65")))))
 
 (use-package clojure-mode
-  :disabled t
   :defer t
   :config
   (custom-set-faces
    '(cider-fringe-good-face ((t :inherit success)))
-   '(clojure-define-type-face ((t :inherit (font-lock-type-face))))
-   '(clojure-defining-spec-face ((t :inherit (clojure-keyword-face))))
-   `(clojure-fn-parameter-face ((((class color) (background light))
-                                 :foreground ,local-variable-name-light-fg-color
-                                 :weight ,(face-attribute 'default :weight))))
+   '(clojure-define-type-face ((t :inherit font-lock-type-face)))
+   '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
+   `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face
+                                   :foreground ,local-variable-name-light-fg-color
+                                   :weight ,(face-attribute 'default :weight))))
    '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
    '(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
-   '(clojure-side-effect-face ((t :inherit (bold italic font-lock-warning-face))))
+   '(clojure-side-effect-face ((t :inherit (bold underline))))
    '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))))
+
+(use-package eldoc
+  :defer t
+  :config
+  (custom-set-faces
+   '(eldoc-highlight-function-argument ((t :inherit (bold underline))))))
 
 (use-package evil-goggles
   :defer t
@@ -71,7 +76,7 @@
    '(font-lock-warning-face ((t :inherit (bold italic)))))
 
   (defvar local-variable-name-light-fg-color
-    (saturate-color (color-from 'font-lock-variable-name-face :foreground 7) -20)
+    (saturate-color (color-from 'font-lock-variable-name-face :foreground 5) -10)
     "A foreground color for the local variable such as parameters"))
 
 (use-package flymake

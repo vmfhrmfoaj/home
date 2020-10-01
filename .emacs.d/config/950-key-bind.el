@@ -301,7 +301,6 @@
   (define-key company-active-map (kbd "<C-return>") (lambda () (interactive) (company-complete-selection) (evil-normal-state))))
 
 (use-package cider-repl
-  :disabled t
   :defer t
   :config
   (evil-leader/set-key-for-mode 'cider-repl-mode
@@ -310,9 +309,11 @@
     "mer" #'cider-eval-last-sexp-and-replace
     "mgg" #'cider-find-var-at-point
     "mrc" #'cider-repl-clear-buffer
+    "mrq" #'cider-quit
+    "mrR" #'cider-hard-restart
+    "mrr" #'cider-restart
     "mrs" #'cider-switch-to-last-clj-buf
-    "msn" #'cider-repl-set-ns
-    "mrq" #'cider-quit)
+    "msn" #'cider-repl-set-ns)
   (which-key-declare-prefixes-for-mode 'cider-repl-mode
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto"
@@ -321,7 +322,6 @@
   (evil-leader--set-major-leader-for-mode 'cider-repl-mode))
 
 (use-package cider-stacktrace
-  :disabled t
   :defer t
   :config
   (evil-define-key 'normal cider-stacktrace-mode-map
@@ -593,7 +593,6 @@
 ;; Key binding for the major mode
 
 (use-package clojure-mode
-  :disabled t
   :defer t
   :config
   (dolist (mode '(clojure-mode clojurec-mode clojurescript-mode))
@@ -605,7 +604,7 @@
       "mer" #'cider-eval-last-sexp-and-replace
       "mgg" #'cider-find-var-at-point
       "mhh" #'helm-cider-cheatsheet
-      "mrc" #'cider-connect
+      "mrS" #'cider-jack-in
       "mrs" #'cider-switch-to-releated-repl-buffer
       "mrq" #'cider-quit)
     (which-key-declare-prefixes-for-mode mode

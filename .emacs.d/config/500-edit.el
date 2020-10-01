@@ -6,6 +6,33 @@
       (byte-compile-file "~/.emacs.d/config/func.el")))
   (load-file "~/.emacs.d/config/func.elc"))
 
+(use-package aggressive-indent
+  :ensure t
+  :defer t
+  :hook ((cider-repl-mode       . aggressive-indent-mode)
+         (clojure-mode          . aggressive-indent-mode)
+         (clojurec-mode         . aggressive-indent-mode)
+         (clojurescript-mode    . aggressive-indent-mode)
+         (emacs-lisp-mode       . aggressive-indent-mode)
+         (lisp-interaction-mode . aggressive-indent-mode))
+
+  :config
+  (setq aggressive-indent-region-function #'indent-region) ; fix with below advice func
+
+  (add-hook 'aggressive-indent-mode-hook
+            (lambda ()
+              (when (and (derived-mode-p 'clojure-mode) (featurep 'cider))
+                (setq cider-dynamic-indentation nil))))
+
+  (advice-add #'indent-region :around
+              (lambda (fn &rest args)
+                "Wrap to hide 'Intending region... done' message"
+                (if aggressive-indent-mode
+                    (cl-letf (((symbol-function 'make-progress-reporter) #'ignore)
+                              ((symbol-function 'message) #'ignore))
+                      (apply fn args))
+                  (apply fn args)))))
+
 (use-package editorconfig
   :ensure t
   :hook ((autoconf-mode . editorconfig-mode-apply))
