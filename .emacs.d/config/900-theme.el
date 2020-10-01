@@ -150,8 +150,9 @@
   :defer t
   :config
   (custom-set-faces
-   '(magit-diff-context-highlight ((((class color) (background light)) :background "#fbfeee" :foreground "#a4c207")))
-   '(magit-diff-file-heading ((t :inherit bold)))
+   '(magit-diff-context-highlight ((t :background "#fbfeee" :foreground "#a4c207")))
+   '(magit-diff-added   ((t :background "#ddffdd" :foreground "#22aa22" :weight bold)))
+   '(magit-diff-removed ((t :background "#ffdddd" :foreground "#aa2222" :weight bold)))
    '(magit-hash ((((class color) (background light)) :foreground "gray60" :weight normal)))
    '(magit-log-author ((((class color) (background light)) :foreground "firebrick" :weight normal)))
    '(magit-log-date ((((class color) (background light)) :foreground "gray30" :weight normal)))

@@ -26,6 +26,13 @@
         company-etags-ignore-case t
         company-echo-delay 0.2)
 
+  (add-hook 'company-after-completion-hook
+            (lambda (_ignored)
+              (when (timerp eldoc-timer)
+                (cancel-timer eldoc-timer)
+                (setq eldoc-timer nil))
+              (run-at-time 0.1 nil (-partial #'call-interactively #'eldoc-refresh))))
+
   (add-hook 'evil-normal-state-entry-hook
             (lambda ()
               (when (company--active-p)

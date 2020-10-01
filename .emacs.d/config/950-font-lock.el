@@ -19,19 +19,6 @@
   "TODO"
   (-repeat 4 (point-min-marker)))
 
-(use-package cc-mode
-  :defer t
-  :config
-  (add-hook
-   'c-mode-common-hook
-   (lambda ()
-     (when (member major-mode '(c-mode c++-mode))
-       (font-lock-add-keywords
-        nil
-        `(("\\(::\\|[-=]>\\)"
-           (1 'shadow)))
-        :append)))))
-
 (use-package elixir-mode
   :disabled t
   :defer t
@@ -222,7 +209,6 @@
       (if (< n 0) (clojure-skip -1 :comment :ignored-form :tagged-literal))
       (setq n (funcall (if (< 0 n) '1- '1+) n))))
 
-  (setq font-lock--anchor-beg-point nil)
   (setq clojure-binding-form--recursive-point nil)
   (setq clojure-binding-form--recursive-limit nil)
   (setq clojure-oop-kw--str nil)
@@ -233,6 +219,7 @@
   (setq clojure-fn-form--multi-arity? nil)
   (setq clojure-fn-recursive--point nil)
   (setq clojure-fn-recursive--limit nil)
+
   (make-local-variable 'clojure-binding-form--recursive-point)
   (make-local-variable 'clojure-binding-form--recursive-limit)
   (make-local-variable 'clojure-oop-kw--str)
@@ -1087,7 +1074,7 @@
               "TODO"
               (font-lock-add-keywords
                nil
-               '(("\\([.,;]\\|\\s(\\|\\s)\\)"
+               '(("\\([.,;]\\|[-=]>\\|[|&:]\\{2,2\\}\\|\\s(\\|\\s)\\)"
                   (1 'shadow append)))
                :append))
             :append))
@@ -1140,11 +1127,9 @@
          (match-end 2))
        (goto-char font-lock--anchor-beg-point)
        (0 'font-lock-variable-name-face)))
-     ("\\(&\\|&?\\*+\\|::\\)[_0-9A-Za-z]"
+     ("\\(&\\|&?\\*+\\)[_0-9A-Za-z]"
       (1 'shadow))
-     ("\\(?:^\\s-*\\|[^ \t\r\n]\\)\\(>+\\|:\\)"
-      (1 'shadow))
-     ("\\_<\\(_\\|\\.\\.\\|[-=]>\\)\\_>"
+     ("\\_<\\(_\\|\\.\\.=\\)\\_>"
       (1 'shadow))
      ("\\(?:\\s(\\|\\s-\\)\\(\\!\\)\\(?:\\s-\\|\\s(\\|[_0-9A-Za-z]\\)"
       (1 'font-lock-negation-char-face))

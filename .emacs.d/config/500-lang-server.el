@@ -10,21 +10,9 @@
   :ensure t
   :defer t)
 
-(use-package flycheck
-  :ensure t
-  :defer t
-  :config
-  (setq flycheck-display-errors-delay 0.2))
-
-(use-package flycheck-pos-tip
-  :ensure t
-  :after flycheck
-  :hook (flycheck-mode . flycheck-pos-tip-mode)
-  :config
-  (setq flycheck-pos-tip-timeout 0))
-
 (use-package helm-lsp
-  :ensure t)
+  :ensure t
+  :after lsp)
 
 (use-package lsp-clangd
   :defer t
@@ -105,10 +93,12 @@
                 (cond
                  ((eq major-mode 'go-mode)
                   (flycheck-select-checker 'go-build)
-                  (flycheck-add-next-checker 'go-build 'lsp :append))
-                 ((eq major-mode 'rust-mode)
-                  (flycheck-select-checker 'rust-clippy)
-                  (flycheck-add-next-checker 'rust-clippy 'lsp))))))
+                  ;; NOTE
+                  ;;  I think, diagnosis of gopls is not stable. I don't know unstable come form gopls or `lsp-mode'.
+                  ;;  I will disabled it for now.
+                  ;; (flycheck-add-next-checker 'go-build 'lsp :append)
+                  (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t)
+                  (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))))))
 
   (advice-add #'lsp-diagnostics--flycheck-start :override #'lsp-diagnostics--custom-flycheck-start))
 
@@ -257,19 +247,38 @@
           (apply #'list contents (cdr args))
         (apply #'list (-interpose "\n" (append contents nil)) (cdr args)))))
 
-  (defun lsp--sanitate-hover-saved-bounds ()
-    "Clear `lsp--hover-saved-bounds' if "
-    (when (and lsp--hover-saved-bounds
-               (derived-mode-p 'rust-mode))
-      (let ((cur (point))
-            (beg (car lsp--hover-saved-bounds))
-            (end (cdr lsp--hover-saved-bounds)))
-        (save-excursion
-          (goto-char beg)
-          (when (or (< (line-end-position) end)
-                    (and (not (string-match-p "[;?.()]" (char-to-string (char-after cur))))
-                         (string-match-p "[;?.()]" (char-to-string (char-after end)))))
-            (setq lsp--hover-saved-bounds nil))))))
+  (defun lsp--custom-hover ()
+    "Customize `lsp-hover' for Rust lang."
+    (if (and lsp--hover-saved-bounds
+             (lsp--point-in-bounds-p lsp--hover-saved-bounds))
+        (lsp--eldoc-message lsp--eldoc-saved-message)
+      (setq lsp--eldoc-saved-message nil
+            lsp--hover-saved-bounds nil)
+      (if (looking-at "[[:space:]\n]")
+          (lsp--eldoc-message nil)
+        (when (and lsp-eldoc-enable-hover (lsp--capability :hoverProvider))
+          (let ((buf (current-buffer))
+                (cur (point)))
+            (lsp-request-async
+             "textDocument/hover"
+             (lsp--text-document-position-params)
+             (-lambda ((hover &as &Hover? :range? :contents))
+               (when hover
+                 (when range?
+                   (setq lsp--hover-saved-bounds (lsp--range-to-region range?))
+                   (when (derived-mode-p 'rust-mode)
+                     (with-current-buffer buf
+                       (when (string-match-p "[{(<=>.?;)}]"
+                                             (buffer-substring-no-properties (car lsp--hover-saved-bounds)
+                                                                             (cdr lsp--hover-saved-bounds)))
+                         (setq lsp--hover-saved-bounds (cons cur cur))))))
+                 (lsp--eldoc-message (and contents
+                                          (lsp--render-on-hover-content
+                                           contents
+                                           lsp-eldoc-render-all)))))
+             :error-handler #'ignore
+             :mode 'tick
+             :cancel-token :eldoc-hover))))))
 
   (defun lsp--custom-eldoc-message-emacs-27 (&optional msg)
     "Show MSG in eldoc."
@@ -281,7 +290,7 @@
         (let ((lines (s-lines (or msg "")))
               (max-line (cond
                          ((floatp max-mini-window-height)
-                          (ceiling (* (frame-height) max-mini-window-height)))
+                          (floor (* (frame-height) max-mini-window-height)))
                          ((numberp max-mini-window-height)
                           max-mini-window-height)
                          (t 10))))
@@ -307,14 +316,26 @@
         (s-replace " │ " " | " msg)
       msg))
 
+  (defvar lsp-signature-restart-enable nil)
+
+  (defun lsp-signature-restart ()
+    (when (and lsp-signature-restart-enable
+               (save-excursion
+                 (ignore-errors (backward-up-list))
+                 (looking-at-p "(")))
+      (ignore-errors
+        (lsp-signature-activate))))
+
   (setq lsp-enable-imenu nil
         lsp-enable-indentation nil
         lsp-enable-links nil
         lsp-enable-symbol-highlighting nil
+        lsp-enable-on-type-formatting nil
         lsp-file-watch-threshold nil
         lsp-idle-delay 0.2
         lsp-restart 'ignore
         lsp-rust-server 'rust-analyzer
+        lsp-signature-doc-lines 10
         lsp-signature-function (lambda (msg)
                                  (when lsp--on-idle-timer
                                    (cancel-timer lsp--on-idle-timer)
@@ -326,8 +347,6 @@
                                    (cancel-timer flycheck--idle-trigger-timer)
                                    (setq flycheck--idle-trigger-timer nil))
                                  (eldoc-message msg)))
-  (setq-default lsp-eldoc-enable-hover t
-                lsp-enable-on-type-formatting nil)
 
   (add-to-list 'lsp-language-id-configuration '(cperl-mode . "perl"))
   (add-to-list 'lsp-language-id-configuration '(".*\\.pl$" . "perl"))
@@ -346,23 +365,23 @@
               (add-hook 'evil-insert-state-entry-hook
                         (lambda ()
                           (when lsp-mode
-                            (setq flycheck-display-errors-function nil)
-                            (when lsp-ui-sideline-mode
-                              (lsp-ui-sideline-mode -1))
-                            (when (and (lsp-feature? "textDocument/signatureHelp")
+                            (setq flycheck-display-errors-function nil
+                                  lsp-eldoc-enable-hover nil)
+                            (when (and lsp-mode
+                                       (lsp-feature? "textDocument/signatureHelp")
                                        (null lsp-signature-mode))
-                              (setq-local lsp-eldoc-enable-hover nil)
-                              (lsp-signature-activate))))
+                              (ignore-errors
+                                (setq lsp-signature-restart-enable t)
+                                (lsp-signature-activate)))))
                         nil t)
               (add-hook 'evil-insert-state-exit-hook
                         (lambda ()
-                          (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages)
-                          (unless lsp-ui-sideline-mode
-                            (lsp-ui-sideline-mode 1))
-                          (when (and lsp-mode
-                                     lsp-signature-mode)
-                            (lsp-signature-stop)
-                            (setq lsp-eldoc-enable-hover (default-value 'lsp-eldoc-enable-hover))))
+                          (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages
+                                lsp-eldoc-enable-hover t)
+                          (when (and lsp-mode lsp-signature-mode)
+                            (ignore-errors
+                              (setq lsp-signature-restart-enable nil)
+                              (lsp-signature-stop))))
                         nil t)
               (add-hook 'evil-operator-state-entry-hook
                         (lambda ()
@@ -375,12 +394,13 @@
   (advice-add #'lsp--eldoc-message :override 'lsp--custom-eldoc-message)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
   (advice-add #'lsp--signature->message :filter-return #'lsp--signature->message-filter)
-  (advice-add #'lsp-hover :before #'lsp--sanitate-hover-saved-bounds)
   (advice-add #'lsp-describe-thing-at-point :after #'lps--focus-and-update-lsp-help-buffer)
   (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx)
-  (advice-add #'lsp-find-type-definition :around #'lsp--wrap-find-xxx))
+  (advice-add #'lsp-find-type-definition :around #'lsp--wrap-find-xxx)
+  (advice-add #'lsp-hover :override #'lsp--custom-hover)
+  (advice-add #'lsp-signature-stop :after #'lsp-signature-restart))
 
 (use-package lsp-perl
   :defer t
@@ -408,7 +428,3 @@
         lsp-ui-sideline-show-hover nil
         lsp-ui-sideline-show-symbol nil))
 
-(use-package pos-tip
-  :defer t
-  :config
-  (advice-add #'pos-tip-show :override #'pos-tip-show-no-propertize))

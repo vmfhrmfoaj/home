@@ -186,6 +186,19 @@
   :config
   (setq expand-region-contract-fast-key "v"))
 
+(use-package flycheck
+  :ensure t
+  :defer t
+  :config
+  (setq flycheck-display-errors-delay 0.2))
+
+(use-package flycheck-pos-tip
+  :ensure t
+  :after flycheck
+  :hook (flycheck-mode . flycheck-pos-tip-mode)
+  :config
+  (setq flycheck-pos-tip-timeout 0))
+
 (use-package gnuplot
   :disabled t
   :ensure t
@@ -205,6 +218,13 @@
   :if (eq 'darwin system-type)
   :ensure t
   :defer t)
+
+(use-package pos-tip
+  :defer t
+  :config
+  (advice-add #'pos-tip-show :override #'pos-tip-show-no-propertize)
+
+  (add-hook 'focus-out-hook #'pos-tip-hide))
 
 (use-package saveplace
   :config
