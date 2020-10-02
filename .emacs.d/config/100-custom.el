@@ -17,7 +17,7 @@
         auto-save-file-name-transforms `((".*" ,backup-dir t))
         backup-directory-alist `((".*" . ,backup-dir))
         blink-cursor-blinks 0
-        blink-cursor-delay 3
+        blink-cursor-delay 0
         comment-fill-column 100
         create-lockfiles nil
         exclude-prev-buf-regex "^\\(\\s-*\\*\\|\\s-*markdown-code-fontification:\\|\\s-*magit:\\)"

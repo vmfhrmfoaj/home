@@ -64,12 +64,48 @@
               (setq-local font-lock-fontify-region-function #'font-lock-default-fontify-region)
               (eldoc-mode 1)))
 
+  (advice-add #'cider--close-connection :before
+              (lambda (repl &rest _)
+                "I use my own Clojure REPL middleware, it create a temporary file.
+`cider--close-connection' send SIGKILL signal, JVM can't handle this signal.
+So, the middleware can't remove this file. I use this workaround until fixing the problem."
+                (let ((params (cider--gather-connect-params nil repl)))
+                  (when-let ((proj-dir (plist-get params :project-dir)))
+                    (delete-file (concat proj-dir "/.auto-refresh"))))))
+
   (advice-add #'cider-restart :around
               (lambda (fn &rest args)
                 "Wrap `cider-restart' to keep current namespace of REPL."
                 (let ((cur-ns (cider-current-ns)))
                   (apply fn args)
                   (cider-repl-set-ns cur-ns)))))
+
+(use-package cider-eval
+  :defer t
+  :config
+  (defconst cider-clojure-1.10.1-raw-error
+    `(sequence
+      "CompilerException Syntax error "
+      (minimal-match (zero-or-more anything))
+      "compiling "
+      (minimal-match (zero-or-more anything))
+      "at ("
+      (group-n 2 (minimal-match (zero-or-more anything)))
+      ":"
+      (group-n 3 (one-or-more digit))
+      (optional ":" (group-n 4 (one-or-more digit)))
+      ")."))
+
+  (defconst cider-clojure-compilation-regexp
+    (eval
+     `(rx bol (or ,cider-clojure-1.10.1-raw-error
+                  ,cider-clojure-1.10-error
+                  ,cider-clojure-1.9-error
+                  ,cider-clojure-warning))))
+
+  (setq cider-compilation-regexp
+        (list cider-clojure-compilation-regexp
+              2 3 4 '(1))))
 
 (use-package cider-mode
   :defer t
@@ -85,15 +121,86 @@
 (use-package cider-repl
   :defer t
   :config
+  (defun cider-repl-catch-compilation-error (_buf msg)
+    (when-let ((info (cider-extract-error-info cider-compilation-regexp msg)))
+      (let* ((file (nth 0 info))
+             (root (->> (or nrepl-project-dir
+                            (clojure-project-root-path))
+                        (file-truename)
+                        (s-chop-suffix "/")))
+             (buf (or (get-file-buffer (concat root "/src/"  file))
+                      (get-file-buffer (concat root "/test/" file))
+                      (-some->> (cider-sync-request:classpath)
+                        (--filter (s-starts-with? nrepl-project-dir it))
+                        (--map (get-file-buffer (concat it "/" file)))
+                        (-non-nil)
+                        (-first-item)))))
+        (add-to-list 'clojure--compilation-errors (cons buf info))
+        (when buf
+          (with-current-buffer buf
+            (when (bound-and-true-p flycheck-mode)
+              (flycheck-buffer)))))))
+
   (add-hook 'cider-repl-mode-hook
             (lambda ()
               (setq-local evil-lookup-func #'cider-doc-at-point)
-              (eldoc-mode 1))))
+              (eldoc-mode 1)))
+
+  (advice-add #'cider-repl-emit-stderr :after #'cider-repl-catch-compilation-error))
 
 (use-package clojure-mode
   :ensure t
   :defer t
   :config
+  (defvar clojure--compilation-errors '())
+
+  (defun clojure--flycheck-start (checker callback)
+    (->> clojure--compilation-errors
+         (--map (let* ((buf  (car it))
+                       (info (cdr it))
+                       (file (nth 0 info))
+                       (line (nth 1 info))
+                       (col  (nth 2 info))
+                       (face (nth 3 info))
+                       (note (nth 4 info))
+                       (msg (when (string-match "{.*}" note)
+                              (match-string 0 note)))
+                       (lv (cond
+                            ((eq face 'cider-warning-highlight-face) 'warning)
+                            ((eq face 'cider-error-highlight-face) 'error)
+                            (t 'info)))
+                       (end-col (if (null buf)
+                                    (1+ col)
+                                  (with-current-buffer buf
+                                    (save-excursion
+                                      (goto-line line)
+                                      (move-to-column col)
+                                      (forward-symbol 1)
+                                      (point))))))
+                  (flycheck-error-new
+                   :buffer (or buf (current-buffer))
+                   :checker checker
+                   :filename (file-name-nondirectory file)
+                   :message (or msg note)
+                   :level lv
+                   :id "Syntax error"
+                   :line line
+                   :column col
+                   :end-column end-col)))
+         (funcall callback 'finished)))
+
+  (with-eval-after-load "flycheck"
+    (unless (flycheck-valid-checker-p 'clj-cider-repl)
+      (flycheck-define-generic-checker
+          'clj-cider-repl
+        "A syntax checker using the Cider REPL provided."
+        :start #'clojure--flycheck-start
+        :modes '(clojure-mode clojurescript-mode clojurec-mode)
+        :predicate (lambda ()
+                     (when (fboundp #'cider-connected-p)
+                       (cider-connected-p)))))
+    (add-to-list 'flycheck-checkers 'clj-cider-repl))
+
   (add-hook 'clojure-mode-hook
             (lambda ()
               (when (fboundp 'eldoc-refresh)
@@ -107,7 +214,16 @@
               (setq-local font-lock-extend-region-functions
                           (remove 'clojure-font-lock-extend-region-def
                                   font-lock-extend-region-functions))
-              (flycheck-mode))
+              (when (require 'flycheck nil t)
+                (add-hook 'after-save-hook
+                          (lambda ()
+                            (setq clojure--compilation-errors nil))
+                          -100 t)
+                (flycheck-mode)
+                (if (featurep 'flycheck-clj-kondo)
+                    (dolist (checker '(clj-kondo-clj clj-kondo-cljs clj-kondo-cljc clj-kondo-edn))
+                      (flycheck-add-next-checker checker 'clj-cider-repl))
+                  (flycheck-select-checker 'clj-cider-repl))))
             :append))
 
 (use-package edn
@@ -135,7 +251,7 @@
 
 (use-package flycheck-clj-kondo
   :ensure t
-  :after flycheck)
+  :after (clojure-mode flycheck))
 
 (use-package helm-cider-cheatsheet
   :ensure helm-cider
