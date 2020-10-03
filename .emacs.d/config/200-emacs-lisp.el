@@ -9,14 +9,20 @@
 (use-package elisp-mode
   :config
   (defun emacs-lisp-REPL-buffer ()
-    "TODO"
     (interactive)
     (pop-to-buffer (get-buffer-create "*emacs-lisp REPL*"))
     (unless (eq 'lisp-interaction-mode major-mode)
       (lisp-interaction-mode)))
 
+  (defun emacs-lisp-REPL-switch-back ()
+    (interactive)
+    (->> (or (and (fboundp 'projectile-project-buffers)
+                  (projectile-project-buffers))
+             (buffer-list))
+         (--filter (with-current-buffer it (derived-mode-p 'emacs-lisp-mode)))
+         (switch-to-previous-buffer-in)))
+
   (defun emacs-lisp-REPL-eval-print-this-sexp ()
-    "TODO"
     (interactive)
     (while (ignore-errors (backward-up-list 1 t) t))
     (if (not (looking-at-p "\\s-*("))
@@ -32,7 +38,6 @@
       (goto-char pos)))
 
   (defun emacs-lisp-evil-lookup-func ()
-    "TODO"
     (call-interactively #'elisp-slime-nav-describe-elisp-thing-at-point)
     (-when-let (buf (->> (window-list)
                          (-map #'window-buffer)

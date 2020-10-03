@@ -62,4 +62,15 @@
 
 (use-package yasnippet
   :ensure t
-  :hook (prog-mode . yas-minor-mode-on))
+  :hook (prog-mode . yas-minor-mode-on)
+  :config
+  (with-eval-after-load "lsp-mode"
+    (add-hook 'yas-before-expand-snippet-hook
+              (lambda ()
+                "Enable `lsp-signature-mode'"
+                (when (and lsp-mode
+                           (lsp-feature? "textDocument/signatureHelp")
+                           (null lsp-signature-mode))
+                  (ignore-errors
+                    (setq lsp-signature-restart-enable t)
+                    (lsp-signature-activate)))))))

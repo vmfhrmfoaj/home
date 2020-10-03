@@ -148,8 +148,8 @@
     "dr" #'evil-show-registers
 
     ;; error
-    "en" #'next-error
-    "ep" #'previous-error
+    "en" #'flycheck-next-error
+    "ep" #'flycheck-previous-error
     "el" #'flycheck-list-errors
 
     ;; file
@@ -363,6 +363,7 @@
     (kbd "C-h") #'backward-delete-char
     (kbd "C-a") #'beginning-of-line-text
     (kbd "C-e") #'end-of-line
+    (kbd "C-r") #'eldoc-refresh
     (kbd "C-v") #'yank)
   (evil-define-key 'visual 'global
     (kbd "<tab>") #'indent-region
@@ -563,10 +564,6 @@
       (evil-leader--set-major-leader-for-mode major-mode)
       (add-to-list 'lsp--custom-setup-key-status major-mode)))
 
-  (add-hook 'lsp-mode-hook
-            (lambda ()
-              (evil-local-set-key 'normal [remap next-error]     #'flycheck-next-error)
-              (evil-local-set-key 'normal [remap previous-error] #'flycheck-previous-error)))
   (add-hook 'lsp-after-open-hook #'lsp--custom-setup-key))
 
 (use-package magit-svn
@@ -664,6 +661,7 @@
     "mee" #'emacs-lisp-REPL-eval-print-this-sexp
     "mgg" #'elisp-slime-nav-find-elisp-thing-at-point
     "mrc" #'erase-buffer
+    "mrs" #'emacs-lisp-REPL-switch-back
     "mrq" #'evil-delete-buffer)
   (which-key-declare-prefixes-for-mode 'lisp-interaction-mode
     (concat evil-leader/leader "me") "evaluation"
@@ -740,7 +738,7 @@
     (kbd "U") #'package-menu-mark-upgrades
     (kbd "d") #'package-menu-mark-delete
     (kbd "i") #'package-menu-mark-install
-    (kbd "q") #'kill-buffer
+    (kbd "q") #'kill-this-buffer
     (kbd "x") #'package-menu-execute))
 
 (use-package php-mode
@@ -816,4 +814,4 @@
               (evil-local-set-key 'normal (kbd "RET") #'ztree-perform-action)
               (evil-local-set-key 'normal (kbd "l") #'ztree-enter-node)
               (evil-local-set-key 'normal (kbd "h") #'ztree-back-node)
-              (evil-local-set-key 'normal (kbd "q") #'kill-buffer))))
+              (evil-local-set-key 'normal (kbd "q") #'kill-this-buffer))))

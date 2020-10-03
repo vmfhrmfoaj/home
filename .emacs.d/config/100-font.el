@@ -8,10 +8,10 @@
 
 (when window-system
   (prefer-coding-system 'utf-8)
-  (setq-default line-spacing 1)
-  (let ((font (font-spec :family "Cascadia Code" :size 14 :weight 'semi-bold)))
+  (setq-default line-spacing 0)
+  (let ((font (font-spec :family "Cascadia Code" :size 13 :weight 'semi-bold)))
     (set-face-font 'default font)
-    (set-fontset-font t '(#xE000 . #xF8FF) font)                  ; for ligature
+    (set-fontset-font nil '(#xE000 . #xF8FF) font)                ; for ligature
     (set-fontset-font "fontset-default" '(#xE000 . #xF8FF) font)) ; for ligature
   (set-fontset-font "fontset-default" 'unicode (font-spec :family "Noto Color Emoji" :size 11))
   (set-fontset-font "fontset-default" 'unicode (font-spec :family "DejaVu Sans" :size 12) nil t)

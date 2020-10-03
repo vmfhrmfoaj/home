@@ -45,7 +45,7 @@
                  (t 8)))
            (padding 2)
            (width (- max (* 2 padding)))
-           (bitmap (-repeat (+ (1- (line-pixel-height)) line-spacing)
+           (bitmap (-repeat (+ (line-pixel-height) line-spacing)
                             (apply #'concat (append (-repeat padding ".")
                                                     (-repeat width   "X")
                                                     (-repeat padding ".")))))
@@ -94,8 +94,9 @@
     (remove-hook 'magit-mode-hook #'magit-setup)
     (require 'helm nil t))
 
-  (setq magit-diff-refine-hunk t
-        magit-bury-buffer-function #'magit-mode-quit-window)
+  (setq magit-bury-buffer-function #'magit-mode-quit-window
+        magit-diff-refine-hunk t
+        magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
 
   (add-hook 'magit-mode-hook #'magit-setup)
   (-update->> magit-status-sections-hook

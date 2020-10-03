@@ -87,7 +87,7 @@ So, the middleware can't remove this file. I use this workaround until fixing th
     `(sequence
       "CompilerException Syntax error "
       (minimal-match (zero-or-more anything))
-      "compiling "
+      (any "compiling" "macroexpanding" ) space
       (minimal-match (zero-or-more anything))
       "at ("
       (group-n 2 (minimal-match (zero-or-more anything)))
@@ -113,6 +113,9 @@ So, the middleware can't remove this file. I use this workaround until fixing th
   (defun cider-doc-at-point ()
     (interactive)
     (cider-doc-lookup (cider-symbol-at-point)))
+
+  (setq cider-dynamic-indentation nil
+        cider-font-lock-dynamically '(deprecated))
 
   (add-hook 'cider-connected-hook
             (lambda ()
@@ -152,6 +155,24 @@ So, the middleware can't remove this file. I use this workaround until fixing th
   :ensure t
   :defer t
   :config
+
+  (defvar clojure-font-lock-extend-regex
+    (concat "(" (regexp-opt '("def" "extend" "proxy" "reify"))))
+
+  (defun clojure-font-lock-kw-at-point (point)
+    (goto-char point)
+    (ignore-errors
+      (beginning-of-defun))
+    (let ((beg-kw (point)))
+      (when (and (not (= point beg-kw))
+                 (looking-at clojure-font-lock-extend-regex))
+        (ignore-errors
+          ;; move forward as much as possible until failure (or success)
+          (forward-char)
+          (dotimes (_ 4)
+            (forward-sexp)))
+        (cons beg-kw (point)))))
+
   (defvar clojure--compilation-errors '())
 
   (defun clojure--flycheck-start (checker callback)
@@ -203,17 +224,6 @@ So, the middleware can't remove this file. I use this workaround until fixing th
 
   (add-hook 'clojure-mode-hook
             (lambda ()
-              (when (fboundp 'eldoc-refresh)
-                (add-hook 'evil-insert-state-entry-hook
-                          (lambda ()
-                            (when (timerp eldoc-timer)
-                              (cancel-timer eldoc-timer)
-                              (setq eldoc-timer nil))
-                            (run-at-time 0.1 nil (-partial #'call-interactively #'eldoc-refresh)))
-                          nil :local))
-              (setq-local font-lock-extend-region-functions
-                          (remove 'clojure-font-lock-extend-region-def
-                                  font-lock-extend-region-functions))
               (when (require 'flycheck nil t)
                 (add-hook 'after-save-hook
                           (lambda ()
@@ -224,7 +234,9 @@ So, the middleware can't remove this file. I use this workaround until fixing th
                     (dolist (checker '(clj-kondo-clj clj-kondo-cljs clj-kondo-cljc clj-kondo-edn))
                       (flycheck-add-next-checker checker 'clj-cider-repl))
                   (flycheck-select-checker 'clj-cider-repl))))
-            :append))
+            :append)
+
+  (advice-add #'clojure-font-lock-def-at-point :override #'clojure-font-lock-kw-at-point))
 
 (use-package edn
   :ensure t

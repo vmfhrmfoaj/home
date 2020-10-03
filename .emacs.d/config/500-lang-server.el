@@ -48,7 +48,7 @@
 
     (let ((errors (->> flycheck-current-errors
                        (--filter (and      (eq (flycheck-error-buffer  it) (current-buffer))
-                                      (not (eq (flycheck-error-checker it) checker))))
+                                           (not (eq (flycheck-error-checker it) checker))))
                        (-map (-juxt #'flycheck-error-line
                                     #'flycheck-error-column)))))
       (->> (lsp--get-buffer-diagnostics)
@@ -91,12 +91,8 @@
                         (and (eq lsp-diagnostics-provider :auto)
                              (featurep 'flycheck)))
                 (cond
-                 ((eq major-mode 'go-mode)
-                  (flycheck-select-checker 'go-build)
-                  ;; NOTE
-                  ;;  I think, diagnosis of gopls is not stable. I don't know unstable come form gopls or `lsp-mode'.
-                  ;;  I will disabled it for now.
-                  ;; (flycheck-add-next-checker 'go-build 'lsp :append)
+                 ((derived-mode-p 'go-mode)
+                  (flycheck-select-checker 'go-vet)
                   (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t)
                   (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))))))
 
@@ -263,7 +259,8 @@
              "textDocument/hover"
              (lsp--text-document-position-params)
              (-lambda ((hover &as &Hover? :range? :contents))
-               (when hover
+               (if (null hover)
+                   (lsp--eldoc-message nil)
                  (when range?
                    (setq lsp--hover-saved-bounds (lsp--range-to-region range?))
                    (when (derived-mode-p 'rust-mode)
@@ -358,15 +355,14 @@
   (add-hook 'lsp-mode-hook
             (lambda ()
               (cond
-               ((eq major-mode 'go-mode)
+               ((derived-mode-p 'go-mode)
                 (setq-local lsp-eldoc-render-all t)
                 (add-hook 'before-save-hook #'lsp-format-buffer t t)
                 (add-hook 'before-save-hook #'lsp-organize-imports t t)))
               (add-hook 'evil-insert-state-entry-hook
                         (lambda ()
                           (when lsp-mode
-                            (setq flycheck-display-errors-function nil
-                                  lsp-eldoc-enable-hover nil)
+                            (setq lsp-eldoc-enable-hover nil)
                             (when (and lsp-mode
                                        (lsp-feature? "textDocument/signatureHelp")
                                        (null lsp-signature-mode))
@@ -376,8 +372,7 @@
                         nil t)
               (add-hook 'evil-insert-state-exit-hook
                         (lambda ()
-                          (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages
-                                lsp-eldoc-enable-hover t)
+                          (setq lsp-eldoc-enable-hover t)
                           (when (and lsp-mode lsp-signature-mode)
                             (ignore-errors
                               (setq lsp-signature-restart-enable nil)

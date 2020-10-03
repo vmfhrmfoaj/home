@@ -179,6 +179,9 @@
   (defface clojure-interop-method-face
     '((t (:inherit font-lock-keyword-face)))
     "TODO")
+  (defface clojure-variable-name-face
+    '((t (:inherit font-lock-variable-name-face)))
+    "TODO")
 
   (defcustom clojure--ignore-binding-highlight-regex
     (concat "^\\("
@@ -194,10 +197,6 @@
     "TODO"
     :type 'integer
     :safe 'integerp)
-
-  (defvar clojure--binding-forms
-    '("binding" "doseq" "dotimes" "for" "let" "if-let" "if-some" "when-let" "when-some" "loop" "with-redefs")
-    "List of Clojure binding form.")
 
   (defun clojure-skip (direction-or-item &rest items)
     "TODO"
@@ -304,13 +303,15 @@
            (if-kw   (regexp-opt '("if" "if-some" "if-let" "if-not")))
            (oop-kw  (regexp-opt '("definterface" "defprotocol" "defrecord" "deftype" "extend-protocol" "extend-type" "proxy" "reify")))
            (def-kw  (regexp-opt '("defmacro" "defn" "defn-" "defmethod" "defrecord" "deftype") t))
-           (cond-kw (regexp-opt '("case" "cond" "condp" "cond->" "cond->>"
-                                  "for" "if" "if-let" "if-not" "recur" "throw" "when"
-                                  "loop" "when-let" "when-not" "while") t))
-           (custom-kw (regexp-opt '("go-loop" "with-hard-redefs") t)))
+           (important-kw (regexp-opt '("case" "cond" "condp" "cond->" "cond->>"
+                                       "for" "if" "if-let" "if-not" "recur" "throw" "when"
+                                       "when-let" "when-not" "while") t))
+           (highlight-kw (regexp-opt '("go-loop" "with-hard-redefs" "proxy" "reify") t))
+           (clojure--binding-kw
+            '("binding" "doseq" "dotimes" "for" "let" "if-let" "if-some" "when-let" "when-some" "loop" "go-loop" "with-redefs")))
 
       `(;; Binding forms
-        (,(concat "(" core-ns? (regexp-opt clojure--binding-forms) "[ \r\t\n]+\\[")
+        (,(concat "(" namespace? (regexp-opt clojure--binding-kw) "[ \r\t\n]+\\[")
          ;; Normal bindings
          (,(let ((meta?+ns?+symbol (concat meta? "\\_<" namespace? "\\(" symbol "\\)")))
              (lambda (limit)
@@ -551,6 +552,30 @@
             (goto-char font-lock--anchor-beg-point))
           (1 'clojure-fn-parameter-face)))
 
+        ;; Clojure type/protocol extention keyword
+        (,(concat "(" core-ns? "\\(" (regexp-opt '("extend" "extend-type" "extend-protocol")) "\\)\\>"
+                  whitespace+ symbol)
+         (1 'font-lock-keyword-face)
+         ;; Highlighting type or protocol
+         (,(lambda (limit)
+             (ignore-errors
+               (when font-lock--skip
+                 (error ""))
+               (when (re-search-forward symbol limit t)
+                 (forward-sexp 1)
+                 t)))
+          (save-excursion
+            (if (in-comment?)
+                (setq font-lock--skip t)
+              (setq font-lock--skip nil)
+              (setq font-lock--anchor-beg-point (point))
+              (safe-up-list-1)
+              (point)))
+          (if font-lock--skip
+              (end-of-line)
+            (goto-char font-lock--anchor-beg-point))
+          (0 'font-lock-type-face)))
+
         ;; %
         ("\\<%[&1-9]?\\>"
          (0 'clojure-special-variable-name-face))
@@ -583,7 +608,7 @@
          (1 'clojure-interop-method-face))
 
         ;; Built-in binding and flow of control forms
-        (,(concat "(" core-ns? cond-kw "\\(?:)\\|" whitespace "\\)")
+        (,(concat "(" core-ns? important-kw "\\(?:)\\|" whitespace "\\)")
          (1 'clojure-important-keywords-face))
 
         ;; Namespaced keyword - ::namespace/keyword
@@ -607,7 +632,7 @@
          (2 'font-lock-variable-name-face nil t))
 
         ;; Type definition
-        (,(concat "(" core-ns? "\\(" (regexp-opt '("defstruct" "deftype" "defprotocol" "defrecord")) "\\)\\>"
+        (,(concat "(" core-ns? "\\(defstruct\\)\\>"
                   whitespace*
                   meta?
                   "\\(" symbol "\\)?")
@@ -621,7 +646,7 @@
                   meta?
                   "\\(" symbol "\\)?")
          (1 'font-lock-keyword-face)
-         (2 'font-lock-variable-name-face nil t))
+         (2 'clojure-variable-name-face nil t))
 
         ;; (fn name? args ...)
         (,(concat "(" core-ns? "\\(fn\\)"
@@ -946,8 +971,12 @@
          (1 'font-lock-type-face nil))
 
         ;; Custom keywords
-        (,(concat "(" namespace? custom-kw)
-         (1 'font-lock-keyword-face))))
+        (,(concat "(" namespace? highlight-kw)
+         (1 'font-lock-keyword-face))
+
+        ;; punctuation
+        ("\\(\\_<[&_]\\_>\\)"
+         (1 'shadow))))
     "Default expressions to highlight in Clojure mode."))
 
 (use-package elisp-mode
@@ -967,7 +996,9 @@
             (whitespace "[ \r\t\n]")
             (whitespace+ (concat whitespace "+"))
             (whitespace* (concat whitespace "*")))
-       `(("\\s(\\(\\(?:-as\\|-some\\)?->>?\\|and\\|or\\)\\_>"
+       `(("[#']"
+          (0 'shadow))
+         ("\\s(\\(\\(?:-as\\|-some\\)?->>?\\|and\\|or\\)\\_>"
           (1 'default nil))
          ("\\(?:\\s-+\\|\\s(\\)\\<\\(nil\\|t\\)\\>"
           (1 'font-lock-constant-face))
@@ -1036,6 +1067,9 @@
   (font-lock-add-keywords
    'go-mode
    '(("\\<\\(_\\)\\>\\s-*\\(?:,\\|:?=\\)"
+      (1 'shadow t))
+     ;; slice
+     ("\\[.*?\\(:\\).*?\\]"
       (1 'shadow t)))))
 
 (use-package js

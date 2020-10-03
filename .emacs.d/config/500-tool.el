@@ -190,11 +190,17 @@
   :ensure t
   :defer t
   :config
-  (setq flycheck-display-errors-delay 0.2))
+  (setq flycheck-display-errors-delay 0.2)
+
+  (add-hook 'flycheck-mode
+            (lambda ()
+              (add-hook 'company-completion-started-hook
+                        (lambda ()
+                          (flycheck-stop))
+                        nil t))))
 
 (use-package flycheck-pos-tip
   :ensure t
-  :after flycheck
   :hook (flycheck-mode . flycheck-pos-tip-mode)
   :config
   (setq flycheck-pos-tip-timeout 0))

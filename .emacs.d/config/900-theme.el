@@ -14,13 +14,19 @@
    '(bold ((t :weight bold)))
    '(italic ((t :slant italic)))
    '(cursor ((t :background "sky blue")))
-   '(line-number ((t :inherit (default) :background "gray99" :foreground "gray80")))
-   '(line-number-current-line ((t :inherit (hl-line line-number) :background "#f1f8fd" :foreground "gray75")))
+   '(diff-added   ((t :background "#ddffdd" :foreground "#22aa22")))
+   '(diff-changed ((t :background "#ffffdd" :foreground "#aaaa22")))
+   '(diff-removed ((t :background "#ffdddd" :foreground "#aa2222")))
+   '(diff-refine-added   ((t :background "#eeffee" :foreground "#008800" :weight bold)))
+   '(diff-refine-changed ((t :background "#ffffee" :foreground "#888800" :weight bold)))
+   '(diff-refine-removed ((t :background "#ffeeee" :foreground "#880000" :weight bold)))
+   '(line-number ((t :inherit (default) :background "grey99" :foreground "grey80")))
+   '(line-number-current-line ((t :inherit (hl-line line-number) :background "#f1f8fd" :foreground "grey75")))
    '(fixed-pitch ((t :family "Dejavu Sans Mono")))
    '(link ((t :underline t)))
-   '(shadow ((t :inherit default :foreground "gray55")))
+   '(shadow ((t :inherit default :foreground "grey55")))
    '(show-paren-match ((t :inherit bold :underline t)))
-   '(trailing-whitespace ((t :background "gray65")))))
+   '(trailing-whitespace ((t :background "grey65")))))
 
 (use-package clojure-mode
   :defer t
@@ -29,10 +35,10 @@
    '(cider-fringe-good-face ((t :inherit success)))
    '(clojure-define-type-face ((t :inherit font-lock-type-face)))
    '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
-   `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face
-                                   :foreground ,local-variable-name-light-fg-color
-                                   :weight ,(face-attribute 'default :weight))))
+   `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,(face-attribute 'default :weight))))
+   '(clojure-important-keywords-face ((t :inherit font-lock-keyword-face :weight bold)))
    '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
+   '(clojure-variable-name-face ((t :inherit font-lock-variable-name-face :weight bold)))
    '(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
    '(clojure-side-effect-face ((t :inherit (bold underline))))
    '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))))
@@ -68,16 +74,12 @@
   (custom-set-faces
    '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight normal)))
    '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :weight light)))
-   '(font-lock-function-name-face ((t :inherit bold)))
+   '(font-lock-function-name-face ((t :weight bold)))
    '(font-lock-regexp-grouping-backslash ((t :inherit font-lock-string-face :background "#E1F2D6")))
    '(font-lock-regexp-grouping-construct ((t :inherit font-lock-string-face :background "#E1F2D6")))
    '(font-lock-type-face ((t :weight unspecified)))
    '(font-lock-variable-name-face ((t :foreground "#607596")))
-   '(font-lock-warning-face ((t :inherit (bold italic)))))
-
-  (defvar local-variable-name-light-fg-color
-    (saturate-color (color-from 'font-lock-variable-name-face :foreground 5) -10)
-    "A foreground color for the local variable such as parameters"))
+   '(font-lock-warning-face ((t :inherit (bold italic))))))
 
 (use-package flymake
   :defer t
@@ -89,7 +91,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(fringe ((t :background "gray98")))))
+   '(fringe ((t :background "grey98")))))
 
 (use-package helm
   :defer t
@@ -105,18 +107,18 @@
    '(helm-moccur-buffer ((t :inherit shadow)))
    '(helm-selection ((t :inherit hl-line :weight bold)))
    '(helm-selection-line ((t :inherit helm-selection :weight bold)))
-   `(helm-other-buffer ((t :background "gray98" :foreground ,(color-from 'default :foreground 5))))))
+   `(helm-other-buffer ((t :background "grey98" :foreground ,(color-from 'default :foreground 5))))))
 
 (use-package hl-line
   :defer t
   :init
   (defface hl-line-evil-insert
-    '((t (:weight bold)))
+    '((t (:background "#dfeffb")))
     "TODO")
 
   :config
   (custom-set-faces
-   '(hl-line ((t :background "#eef7fd" :weight unspecified)))))
+   '(hl-line ((t :background "#eef7fd")))))
 
 (use-package hl-todo
   :defer t
@@ -156,11 +158,16 @@
   :config
   (custom-set-faces
    '(magit-diff-context-highlight ((t :background "#fbfeee" :foreground "#a4c207")))
-   '(magit-diff-added   ((t :background "#ddffdd" :foreground "#22aa22" :weight bold)))
-   '(magit-diff-removed ((t :background "#ffdddd" :foreground "#aa2222" :weight bold)))
-   '(magit-hash ((((class color) (background light)) :foreground "gray60" :weight normal)))
+   '(magit-diff-added   ((t :background "#ddffdd" :foreground "#22aa22")))
+   '(magit-diff-removed ((t :background "#ffdddd" :foreground "#aa2222")))
+   '(magit-diff-added-highlight   ((t :background "#ddffdd" :foreground "#22aa22" :weight bold)))
+   '(magit-diff-removed-highlight ((t :background "#ffdddd" :foreground "#aa2222" :weight bold)))
+   '(magit-diff-context ((t :foreground "grey50" :weight normal)))
+   '(magit-diff-context-highlight ((t :inherit hl-line)))
+   '(magit-diff-file-heading ((t :weight semi-bold)))
+   '(magit-hash ((((class color) (background light)) :foreground "grey60" :weight normal)))
    '(magit-log-author ((((class color) (background light)) :foreground "firebrick" :weight normal)))
-   '(magit-log-date ((((class color) (background light)) :foreground "gray30" :weight normal)))
+   '(magit-log-date ((((class color) (background light)) :foreground "grey30" :weight normal)))
    '(magit-section-highlight ((((class color) (background light)) :inherit hl-line :distant-foreground "black")))))
 
 (use-package sh-script
