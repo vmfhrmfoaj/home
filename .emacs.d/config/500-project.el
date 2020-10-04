@@ -6,6 +6,10 @@
       (byte-compile-file "~/.emacs.d/config/func.el")))
   (load-file "~/.emacs.d/config/func.elc"))
 
+(use-package counsel-projectile
+  :ensure t
+  :defer t)
+
 (use-package projectile
   :ensure t
   :defer t
@@ -26,75 +30,6 @@
                              (string= cur-proj-root proj-root))))
                (switch-to-previous-buffer-in)))
       (error (switch-to-previous-buffer-in (buffer-list)))))
-
-  (defvar helm-source-project-buffers-list nil)
-
-  (defun helm-project-buffers-list ()
-    "Customize `helm-buffers-list' for `projectile'"
-    (interactive)
-    (unless helm-source-project-buffers-list
-      (setq helm-source-project-buffers-list
-            (helm-make-source "Project Buffers" 'helm-source-buffers
-              :buffer-list (lambda ()
-                             (->> (or (projectile-project-buffers)
-                                      (buffer-list))
-                                  (sort-buffer-by-visit-time)
-                                  (-rotate -1)
-                                  (-map #'buffer-name))))))
-    (helm :sources 'helm-source-project-buffers-list
-          :buffer "*helm project buffers*"
-          :keymap helm-buffer-map
-          :truncate-lines helm-buffers-truncate-lines
-          :left-margin-width helm-buffers-left-margin-width))
-
-  (defvar helm-source-project-find-files nil)
-
-  (defface helm-ff-file-dir
-    '((t (:inherit helm-ff-file)))
-    "TODO")
-
-  (defface helm-ff-executable-dir
-    '((t (:inherit helm-ff-executable)))
-    "TODO")
-
-  (defun helm-project-find-files ()
-    "Customize `helm-find-files' for `projectile'"
-    (interactive)
-    (unless helm-source-project-find-files
-      (setq helm-source-project-find-files
-            (helm-make-source "Project Files" 'helm-source-sync
-              :candidates
-              (lambda ()
-                (when-let ((proj-root (projectile-project-root)))
-                  (-some->> (projectile-project-files proj-root)
-                    (--map (let* ((faces (cond
-                                          ((file-executable-p (concat proj-root it))
-                                           '(helm-ff-executable-dir helm-ff-executable helm-ff-file-extension))
-                                          (t
-                                           '(helm-ff-file-dir       helm-ff-file       helm-ff-file-extension))))
-                                  (dir-name  (-some-> it (file-name-directory) (propertize 'face (car  faces))))
-                                  (file-name (-some-> it (file-name-base)      (propertize 'face (cadr faces))))
-                                  (ext-name  (-some-> it (file-name-extension) (->> (concat ".")) (propertize 'face (caddr faces))))
-                                  (it (propertize (concat proj-root
-                                                          dir-name
-                                                          file-name
-                                                          ext-name)
-                                                  'proj-path proj-root)))
-                             it)))))
-              :real-to-display
-              (lambda (c)
-                (-when-let (len (-some->> c (get-text-property 0 'proj-path) (length)))
-                  (substring c len)))
-
-              :display-to-real
-              (lambda (c)
-                (if-let ((proj-root (get-text-property 0 'root-path c)))
-                    (concat proj-root "/" c)
-                  c))
-
-              :action #'find-file)))
-    (helm :sources 'helm-source-project-find-files
-          :buffer "*helm project files*"))
 
   (defun projectile-kill-buffer (&optional buf)
     "TODO"
@@ -140,12 +75,12 @@
   (defun projectile-project-files-custom-filter (files)
     "TODO"
     (-if-let (regex (-some->> (projectile-paths-to-ignore)
-                              (--map (->> it
-                                          (s-chop-prefix (file-truename (projectile-project-root)))
-                                          (concat "^")))
-                              (append (projectile-patterns-to-ignore))
-                              (-interpose "\\|")
-                              (apply #'concat)))
+                      (--map (->> it
+                                  (s-chop-prefix (file-truename (projectile-project-root)))
+                                  (concat "^")))
+                      (append (projectile-patterns-to-ignore))
+                      (-interpose "\\|")
+                      (apply #'concat)))
         (-remove (-partial #'string-match-p regex) files)
       files))
 
@@ -191,9 +126,9 @@
                            (let* ((cache-key (format "%s-%s" func dir))
                                   (cache-value (gethash cache-key projectile-project-root-cache :no-matched)))
                              (if (eq :no-matched cache-value)
-                               (let ((value (funcall func (file-truename dir))))
-                                 (puthash cache-key value projectile-project-root-cache)
-                                 value)
+                                 (let ((value (funcall func (file-truename dir))))
+                                   (puthash cache-key value projectile-project-root-cache)
+                                   value)
                                cache-value)))
                          projectile-project-root-files-functions)))
                     ;; set cached to none so is non-nil so we don't try
@@ -224,10 +159,9 @@ An open project is a project with any open buffers expect `mini-buffer'."
          (-distinct)
          (-non-nil)))
 
-  (setq projectile-completion-system 'helm
+  (setq projectile-completion-system 'ivy
         projectile-enable-cachig t
-        projectile-project-name-function #'projectile-custom-project-name
-        projectile-switch-project-action #'helm-project-find-files)
+        projectile-project-name-function #'projectile-custom-project-name)
 
   (add-hook 'find-file-hook
             (lambda ()

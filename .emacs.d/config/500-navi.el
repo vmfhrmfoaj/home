@@ -9,108 +9,6 @@
 (use-package dumb-jump
   :ensure t
   :config
-  (defvar helm-dumb-jump--keyword nil
-    "TODO")
-
-  (defvar helm-dumb-jump--proj nil
-    "TODO")
-
-  (defface helm-dumb-jump-keyword
-    '((t (:inherit highlight)))
-    "TODO")
-
-  (defun helm-dumb-jump--after-get-results (info)
-    "TODO"
-    (setq helm-dumb-jump--proj (plist-get info :root)
-          helm-dumb-jump--keyword (plist-get info :symbol))
-    info)
-
-  (defun helm-dumb-jump--action (find-file-fn candidate)
-    "TODO"
-    (let* ((candidate (helm-grep-split-line candidate))
-           (file (nth 0 candidate))
-           (line (nth 1 candidate)))
-      (if (fboundp 'xref-push-marker-stack)
-          (xref-push-marker-stack)
-        (ring-insert find-tag-marker-ring (point-marker)))
-      (funcall find-file-fn (concat helm-dumb-jump--proj "/" file))
-      (goto-char (point-min))
-      (when line
-        (forward-line (1- (string-to-number line)))
-        (beginning-of-line)
-        (when (re-search-forward (regexp-quote helm-dumb-jump--keyword)
-                                 (line-end-position) 'noerr)
-          (goto-char (match-beginning 0))))
-      (with-demoted-errors "Error running `dumb-jump-after-jump-hook': %S"
-        (run-hooks 'dumb-jump-after-jump-hook))))
-
-  (defun helm-dumb-jump--insert-file (file)
-    "TODO"
-    (let ((def-dir default-directory))
-      (switch-to-buffer (get-buffer-create "*helm-dumb-jump: persistent*"))
-      (erase-buffer)
-      (setq buffer-file-name file
-            default-directory def-dir)
-      (insert-file-contents file)
-      (set-auto-mode)
-      (font-lock-fontify-buffer)))
-
-  (defun helm-dumb-jump--persistent-action (candidate)
-    "TODO"
-    (helm-dumb-jump--action #'helm-dumb-jump--insert-file candidate))
-
-  (defun helm-dumb-jump--result-follow (result &optional use-tooltip proj)
-    "TODO"
-    (let* ((path (plist-get result :path))
-           (path (if (file-name-absolute-p path)
-                     path
-                   (concat helm-dumb-jump--proj "/" (plist-get result :path))))
-           (line (plist-get result :line))
-           (pos (->> (plist-get result :context)
-                     (s-split helm-dumb-jump--keyword)
-                     (-first-item)
-                     (length))))
-      (dumb-jump-goto-file-line path line pos)))
-
-  (defun helm-dumb-jump--prompt-user-for-choice (proj results)
-    "TODO"
-    (when (eq 'helm dumb-jump-selector)
-      (let ((proj-regex (concat "^" (regexp-quote proj) "/*"))
-            (candidates nil))
-        (dolist (res results)
-          (let ((path (s-replace-regexp proj-regex "" (plist-get res :path)))
-                (line-num (number-to-string (plist-get res :line)))
-                (line (plist-get res :context))
-                (i 0)
-                match-start-pos)
-            (while (and (string-match (regexp-quote helm-dumb-jump--keyword) line i)
-                        (not (= (match-beginning 0) (match-end 0))))
-              (setq i (match-end 0)
-                    line (concat (substring line 0 (match-beginning 0))
-                                 (propertize (substring line (match-beginning 0) (match-end 0))
-                                             'face 'helm-dumb-jump-keyword)
-                                 (substring line (match-end 0)))))
-            (-update-> candidates
-                       (-concat (-list (concat (propertize path     'face 'helm-moccur-buffer) ":"
-                                               (propertize line-num 'face 'helm-grep-lineno)   ":"
-                                               line))))))
-        ;; (helm-set-local-variable
-        ;;  'helm-cur-line-highlight-symbols '(helm-dumb-jump--keyword))
-        (helm :sources
-              (helm-build-sync-source "Dump Jump"
-                :candidates candidates
-                :action (helm-make-actions
-                         "Open file"              (-partial #'helm-dumb-jump--action #'find-file)
-                         "Open file other window" (-partial #'helm-dumb-jump--action #'find-file-other-window))
-                :persistent-action #'helm-dumb-jump--persistent-action
-                :match-part
-                (lambda (candidate)
-                  (if (string-match "^.+?:[0-9]+:\\(.+\\)$" candidate)
-                      (match-string 1 candidate)
-                    candidate)))
-              :buffer "*helm-dumb-jump*"))
-      t))
-
   (defun dumb-jump--custom-get-language (file)
     "Get language from FILE extension and then fallback to using 'major-mode' name."
     (let* ((languages (-distinct
@@ -187,12 +85,12 @@
   (setq dumb-jump-git-grep-cmd "git grep --full-name"
         dumb-jump-fallback-search nil
         dumb-jump-force-searcher (cond
-                                   ((executable-find "rg") 'rg)
-                                   ((executable-find "ag") 'ag)
-                                   (t nil))
+                                  ((executable-find "rg") 'rg)
+                                  ((executable-find "ag") 'ag)
+                                  (t nil))
         dumb-jump-max-find-time 20 ; for large project such as linux kernel
         dumb-jump-search-current-directory-first t
-        dumb-jump-selector 'helm)
+        dumb-jump-selector 'ivy)
 
   (with-eval-after-load "cc-mode"
     (-update->> dumb-jump-find-rules
@@ -222,19 +120,6 @@
                        :language "perl"
                        :regex "sub\\s*JJJ\\j")))
 
-  (advice-add #'dumb-jump--result-follow :override #'helm-dumb-jump--result-follow)
   (advice-add #'dumb-jump-fetch-file-results :override #'dumb-jump--custom-fetch-file-results)
   (advice-add #'dumb-jump-fetch-results :override #'dumb-jump--custom-fetch-results)
-  (advice-add #'dumb-jump-get-results :filter-return #'helm-dumb-jump--after-get-results)
-  (advice-add #'dumb-jump-get-language :override #'dumb-jump--custom-get-language)
-  (advice-add #'dumb-jump-prompt-user-for-choice :before-until #'helm-dumb-jump--prompt-user-for-choice))
-
-(use-package helm-xref
-  :ensure t
-  :defer t
-  :commands (helm-xref-show-defs-27 helm-xref-show-xrefs-27)
-  :init
-  (when (and (not (fboundp 'xref-pop-to-location)) (fboundp 'xref--pop-to-location))
-    (defalias 'xref-pop-to-location #'xref--pop-to-location))
-  (setq xref-show-definitions-function 'helm-xref-show-defs-27
-        xref-show-xrefs-function 'helm-xref-show-xrefs-27))
+  (advice-add #'dumb-jump-get-language :override #'dumb-jump--custom-get-language))

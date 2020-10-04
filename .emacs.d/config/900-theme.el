@@ -97,22 +97,6 @@
   (custom-set-faces
    '(fringe ((t :background "grey98")))))
 
-(use-package helm
-  :defer t
-  :config
-  (custom-set-faces
-   '(helm-ff-file-dir       ((t :inherit helm-ff-file :foreground "#dbbd32")))
-   '(helm-ff-file-extension ((t :inherit font-lock-constant-face)))
-   '(helm-ff-executable     ((t :inherit helm-ff-executable :foreground "#5f9411")))
-   '(helm-ff-executable-dir ((t :inherit helm-ff-executable :foreground "#7ea940")))
-   '(helm-match ((t :inherit lazy-highlight :foreground unspecified)))
-   '(helm-match-item ((t :inherit lazy-highlight)))
-   '(helm-match-selection ((t :inherit (bold isearch))))
-   '(helm-moccur-buffer ((t :inherit shadow)))
-   '(helm-selection ((t :inherit (bold hl-line))))
-   '(helm-selection-line ((t :inherit (bold helm-selection))))
-   `(helm-other-buffer ((t :background "grey98" :foreground ,(color-from 'default :foreground 5))))))
-
 (use-package hl-line
   :defer t
   :init
@@ -141,6 +125,17 @@
   :config
   (custom-set-faces
    '(isearch ((t :inherit semi-bold :background "magenta3" :foreground "white")))))
+
+(use-package ivy
+  :defer t
+  :config
+  (custom-set-faces
+   '(ivy-current-match ((t :inherit bold :background "#e2f0fb")))
+   '(ivy-minibuffer-match-face-1 ((t :background "#d3d3d3" :foreground "#7e7e7e")))
+   '(ivy-minibuffer-match-face-2 ((t :inherit semi-bold :weight unspecified :background "#e99ce8" :foreground "#8b5d8b")))
+   '(ivy-minibuffer-match-face-3 ((t :inherit semi-bold :weight unspecified :background "#bbbbff" :foreground "#707099")))
+   '(ivy-minibuffer-match-face-4 ((t :inherit semi-bold :weight unspecified :background "#ffbbff" :foreground "#7f5d7f")))
+   ))
 
 (use-package php-mode
   :defer t

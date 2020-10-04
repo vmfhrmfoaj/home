@@ -57,10 +57,9 @@
   (with-eval-after-load "evil-goggles"            (diminish 'evil-goggles-mode           ""))
   (with-eval-after-load "flycheck"                (diminish 'flycheck-mode               ""))
   (with-eval-after-load "git-gutter+"             (diminish 'git-gutter+-mode            ""))
-  (with-eval-after-load "helm"                    (diminish 'helm-mode                   ""))
-  (with-eval-after-load "helm-files"              (diminish 'helm-ff-cache-mode          ""))
   (with-eval-after-load "highlight-parentheses"   (diminish 'highlight-parentheses-mode  ""))
   (with-eval-after-load "linum-relative"          (diminish 'linum-relative-mode         ""))
+  (with-eval-after-load "ivy"                     (diminish 'ivy-mode                    ""))
   (with-eval-after-load "magit-blame"             (diminish 'magit-blame-mode            ""))
   (with-eval-after-load "magit-svn"               (diminish 'magit-svn-mode              ""))
   (with-eval-after-load "simple"                  (diminish 'auto-fill-function          ""))
@@ -97,7 +96,6 @@
   (defun focus--enable ()
     "TODO"
     (unless (or (apply #'derived-mode-p focus--exclude-modes)
-                (bound-and-true-p helm-alive-p)
                 (minibufferp))
       (focus-init)
       (remove-hook 'post-command-hook 'focus-move-focus t)
@@ -301,8 +299,7 @@
            (setq mode-line-format fmt)))
        (spaceline-toggle-hud-off)
        (spaceline-toggle-version-control-off)
-       (force-mode-line-update t)
-       (spaceline-helm-mode)))))
+       (force-mode-line-update t)))))
 
 (use-package vi-tilde-fringe
   :if (fboundp 'define-fringe-bitmap)

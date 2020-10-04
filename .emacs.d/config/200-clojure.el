@@ -83,7 +83,6 @@
   (add-hook 'buffer-list-update-hook
             (lambda ()
               (when (and cider-mode
-                         (not (bound-and-true-p helm-alive-p))
                          (or (eq major-mode 'clojure-mode)
                              (eq major-mode 'clojurescript-mode)
                              (eq major-mode 'clojurec-mode))
@@ -303,7 +302,3 @@ So, the middleware can't remove this file. I use this workaround until fixing th
 (use-package flycheck-clj-kondo
   :ensure t
   :after (clojure-mode flycheck))
-
-(use-package helm-cider-cheatsheet
-  :ensure helm-cider
-  :defer t)

@@ -10,10 +10,6 @@
   :ensure t
   :defer t)
 
-(use-package helm-lsp
-  :ensure t
-  :after lsp)
-
 (use-package lsp-clangd
   :defer t
   :config
@@ -118,6 +114,10 @@
                     :multi-root lsp-intelephense-multi-root
                     :completion-in-comments? t
                     :server-id 'iph)))
+
+(use-package lsp-ivy
+  :ensure t
+  :after lsp-mode)
 
 (use-package lsp-java
   :ensure t

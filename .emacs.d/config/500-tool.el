@@ -210,10 +210,6 @@
   :ensure t
   :defer t)
 
-(use-package helm-mt
-  :ensure t
-  :defer t)
-
 (use-package multi-term
   :ensure t
   :defer t
@@ -317,8 +313,7 @@
      :on-nil              (treemacs-pulse-on-failure "There is nothing to do here.")))
 
   :config
-  (setq treemacs--icon-size 13
-        treemacs-RET-actions-config
+  (setq treemacs-RET-actions-config
         (let ((visit-fn (lambda (&optional arg)
                           (treemacs-visit-node-default arg)
                           (treemacs-select-window)
@@ -335,7 +330,9 @@
             (file-node-closed . ,visit-fn)
             (tag-node-open    . ,visit-prefer-fn)
             (tag-node-closed  . ,visit-prefer-fn)
-            (tag-node         . ,visit-fn)))))
+            (tag-node         . ,visit-fn))))
+
+  (treemacs-resize-icons 15))
 
 (use-package treemacs-compatibility
   :after winum

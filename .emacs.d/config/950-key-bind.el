@@ -105,7 +105,7 @@
   (evil-leader/set-leader "<SPC>")
   (evil-leader--set-major-leader ",")
   (evil-leader/set-key
-    "<SPC>" #'helm-M-x
+    "<SPC>" #'counsel-M-x
     "TAB" #'projectile-switch-to-previous-buffer
     "!" #'shell-command
     ";" #'comment-it
@@ -126,16 +126,13 @@
     ;; - calculator
     "ac" #'calc
 
-    ;; - shell
-    "as" #'helm-mt
-
     ;; - undo-tree
     "au" #'undo-tree-visualize
 
     ;; buffer
     "bR" #'revert-buffer
-    "ba" #'helm-buffers-list
-    "bb" #'helm-project-buffers-list
+    "ba" #'counsel-switch-buffer
+    "bb" #'counsel-projectile-switch-to-buffer
     "bd" #'projectile-kill-buffer
     "be" #'eldoc-doc-buffer
     "bk" #'kill-buffer
@@ -155,8 +152,8 @@
     ;; file
     "fR" #'rename-current-buffer-file
     "fY" #'kill-new-buffer-file-name
-    "ff" #'helm-find-files
-    "fr" #'helm-recentf
+    "ff" #'counsel-find-file
+    "fr" #'counsel-recentf
     "ft" #'treemacs-current-directory
     "fy" #'projectile-kill-new-buffer-file-name
 
@@ -200,24 +197,47 @@
     "pI" #'projectile-invalidate-cache
     "pS" #'projectile-switch-project
     "pd" #'projectile-find-dir
-    "pf" #'helm-project-find-files
+    "pf" #'counsel-projectile-find-file
     "pk" #'projectile-kill-buffers
     "ps" #'projectile-custom-switch-open-project
     "pt" #'treemacs-projectile-current
 
     ;; register/rings/resume
-    "rk" #'helm-show-kill-ring
-    "rl" #'helm-resume
+    ;; "rk" #'helm-show-kill-ring
+    ;; "rl" #'helm-resume
 
     ;; search/symbol
     "se" #'evil-multiedit-match-all
-    "sf" #'helm-do-ag
-    "sF" #'helm-do-ag-with-no-ignore
-    "sg" #'helm-do-grep-ag
-    "sr" #'helm-resume-last-search-buffer
-    "sp" #'helm-do-ag-project-root
-    "sP" #'helm-do-ag-project-root-with-no-ignore
-    "ss" #'helm-occur
+    "sf" (lambda (&optional dir)
+           (interactive)
+           (when (<= 4 (prefix-numeric-value current-prefix-arg))
+             (counsel-read-directory-name "rg in directory: "))
+           (counsel-rg nil (or dir default-directory)))
+    "sF" (lambda (&optional dir)
+           (interactive)
+           (when (<= 4 (prefix-numeric-value current-prefix-arg))
+             (counsel-read-directory-name "rg in directory: "))
+           (let ((counsel-rg-base-command
+                  (cond
+                   ((listp counsel-rg-base-command)
+                    (-concat (-drop-last 1 counsel-rg-base-command) '("--no-ignore" "%s")))
+                   ((stringp counsel-rg-base-command)
+                    (replace-in-string "%s" "--no-ignore %s" counsel-rg-base-command))
+                   (t '("rg" "-M" "240" "--with-filename" "--no-heading" "--line-number" "--color" "never" "--no-ignore" "%s")))))
+             (counsel-rg nil (or dir default-directory))))
+    "sr" #'ivy-resume
+    "sp" #'counsel-projectile-rg
+    "sP" (lambda ()
+           (interactive)
+           (let ((counsel-rg-base-command
+                  (cond
+                   ((listp counsel-rg-base-command)
+                    (-concat (-drop-last 1 counsel-rg-base-command) '("--no-ignore" "%s")))
+                   ((stringp counsel-rg-base-command)
+                    (replace-in-string "%s" "--no-ignore %s" counsel-rg-base-command))
+                   (t '("rg" "-M" "240" "--with-filename" "--no-heading" "--line-number" "--color" "never" "--no-ignore" "%s")))))
+             (counsel-projectile-rg)))
+    "ss" #'swiper
 
     ;; toggle
     "tl" #'toggle-truncate-lines
@@ -295,7 +315,7 @@
   (define-key company-active-map (kbd "C-j") #'company-select-next)
   (define-key company-active-map (kbd "C-k") #'company-select-previous)
   (define-key company-active-map (kbd "C-h") nil)
-  (define-key company-active-map (kbd "C-s") #'company-helm-candidates)
+  (define-key company-active-map (kbd "C-s") #'counsel-company)
   (define-key company-active-map (kbd "SPC") #'company-abort-and-insert-space)
   (define-key company-active-map (kbd "<S-return>") (lambda () (interactive) (company-cancel) (newline-and-indent)))
   (define-key company-active-map (kbd "<C-return>") (lambda () (interactive) (company-complete-selection) (evil-normal-state))))
@@ -403,91 +423,15 @@
     (kbd "M-W") #'git-timemachine-kill-revision
     (kbd "q")   #'git-timemachine-quit))
 
-(use-package helm-ag
+(use-package ivy
   :defer t
   :config
-  (when evil-want-minibuffer
-    (evil-define-key 'insert helm-ag-map
-      (kbd "C-u") #'helm-ag--up-one-level)
-    (evil-define-key 'insert helm-do-ag-map
-      (kbd "C-u") #'helm-ag--do-ag-up-one-level))
-  (define-key helm-ag-map    (kbd "C-u") #'helm-ag--up-one-level)
-  (define-key helm-do-ag-map (kbd "C-u") #'helm-ag--do-ag-up-one-level))
-
-(use-package helm-files
-  :defer t
-  :config
-  (defun helm-ff-completion-or-next-line ()
-    "todo"
-    (interactive)
-    (let ((sel (helm-get-selection)))
-      (if (and (not (s-ends-with? "/" (or helm-input "/")))
-               (file-directory-p sel)
-               (not (string-match-p "^\\(\\.\\|\\.\\.\\)$" (helm-basename sel))))
-          (helm-execute-persistent-action)
-        (helm-next-line))))
-
-  (--each (list helm-find-files-map helm-read-file-map)
-    (when evil-want-minibuffer
-      (evil-define-key* 'insert it
-        (kbd "<tab>") #'helm-ff-completion-or-next-line))
-    (define-key it (kbd "C-u") #'helm-find-files-up-one-level)
-    (define-key it [C-backspace] #'backward-kill-word)))
-
-(use-package helm-mode
-  :defer t
-  :config
-  (global-set-key (kbd "M-x") #'helm-M-x)
-  (global-set-key (kbd "C-x C-f") #'helm-find-files)
-  (when evil-want-minibuffer
-    (evil-define-key 'insert minibuffer-inactive-mode-map
-      (kbd "<backtab>") #'helm-previous-line
-      (kbd "<tab>") #'helm-next-line
-      (kbd "C-k") #'helm-previous-line
-      (kbd "C-j") #'helm-next-line)
-    (evil-define-key 'insert helm-map
-      (kbd "<backtab>") #'helm-previous-line
-      (kbd "<tab>") #'helm-next-line
-      (kbd "C-k") #'helm-previous-line
-      (kbd "C-j") #'helm-next-line
-      (kbd "RET") #'helm-maybe-exit-minibuffer
-      (kbd "M-a") #'helm-toggle-all-marks
-      (kbd "M-M") #'helm-toggle-visible-mark-backward
-      (kbd "M-m") #'helm-toggle-visible-mark-forward)
-    (evil-define-key 'normal helm-map
-      "k" #'helm-previous-line
-      "j" #'helm-next-line
-      "gg" #'helm-beginning-of-buffer
-      "G" #'helm-end-of-buffer
-      (kbd "C-g") #'helm-keyboard-quit
-      (kbd "RET") #'helm-maybe-exit-minibuffer
-      (kbd "<escape>") #'helm-keyboard-quit
-      (kbd "<backtab>") #'helm-previous-line
-      (kbd "<tab>") #'helm-next-line
-      (kbd "C-k") #'helm-previous-line
-      (kbd "C-j") #'helm-next-line
-      (kbd "C-c <tab>") #'helm-select-action
-      (kbd "M-a") #'helm-toggle-all-marks
-      (kbd "M-M") #'helm-toggle-visible-mark-backward
-      (kbd "M-m") #'helm-toggle-visible-mark-forward)
-    (define-key helm-map (kbd "C-i") nil)
-    (define-key helm-map (kbd "C-c <tab>") #'helm-select-action))
-  (define-key helm-map (kbd "<escape>") #'helm-keyboard-quit))
-
-(use-package helm-occur
-  :defer t
-  :config
-  (define-key helm-occur-map (kbd "C-c C-e") #'helm-occur-edit))
-
-(use-package help-mode
-  :defer t
-  :config
-  (evil-set-initial-state 'help-mode 'normal)
-  (evil-define-key 'normal help-mode-map
-    (kbd "<backtab>") #'backward-button
-    (kbd "<tab>") #'forward-button
-    (kbd "M-,") #'help-go-back
-    (kbd "q") #'quit-window))
+  (evil-define-key 'insert ivy-minibuffer-map
+    (kbd "C-j") #'ivy-next-line
+    (kbd "C-k") #'ivy-previous-line)
+  (evil-define-key 'normal ivy-minibuffer-map
+    (kbd "j") #'ivy-next-line
+    (kbd "k") #'ivy-previous-line))
 
 (use-package lsp-mode
   :defer t
@@ -545,12 +489,12 @@
         "mah" (if (lsp-feature? "textDocument/documentHighlight") #'lsp-document-highlight)
 
         ;; peeks
-        "mGs" (if (and (fboundp 'helm-lsp-workspace-symbol)
+        "mGs" (if (and (fboundp 'lsp-ivy-workspace-symbol)
                        (lsp-feature? "workspace/symbol"))
-                  #'helm-lsp-workspace-symbol)
-        "mGS" (if (and (fboundp 'helm-lsp-global-workspace-symbol)
+                  #'lsp-ivy-workspace-symbol)
+        "mGS" (if (and (fboundp 'lsp-ivy-global-workspace-symbol)
                        (lsp-feature? "workspace/symbol"))
-                  #'helm-lsp-global-workspace-symbol))
+                  #'lsp-ivy-global-workspace-symbol))
       (which-key-declare-prefixes-for-mode major-mode
         (concat evil-leader/leader "ms")  "sessions"
         (concat evil-leader/leader "mF")  "folders"
@@ -600,7 +544,6 @@
       "men" #'cider-eval-ns-form
       "mer" #'cider-eval-last-sexp-and-replace
       "mgg" #'cider-find-var-at-point
-      "mhh" #'helm-cider-cheatsheet
       "mrS" #'cider-jack-in
       "mrs" #'cider-switch-to-releated-repl-buffer
       "mrq" #'cider-quit)
