@@ -317,7 +317,8 @@
      :on-nil              (treemacs-pulse-on-failure "There is nothing to do here.")))
 
   :config
-  (setq treemacs-RET-actions-config
+  (setq treemacs--icon-size 13
+        treemacs-RET-actions-config
         (let ((visit-fn (lambda (&optional arg)
                           (treemacs-visit-node-default arg)
                           (treemacs-select-window)
@@ -326,15 +327,15 @@
                                  (treemacs-toggle-node-prefer-tag-visit arg)
                                  (treemacs-select-window)
                                  (treemacs-kill-buffer))))
-         `((root-node-open   . treemacs-toggle-node)
-           (root-node-closed . treemacs-toggle-node)
-           (dir-node-open    . treemacs-toggle-node)
-           (dir-node-closed  . treemacs-toggle-node)
-           (file-node-open   . ,visit-fn)
-           (file-node-closed . ,visit-fn)
-           (tag-node-open    . ,visit-prefer-fn)
-           (tag-node-closed  . ,visit-prefer-fn)
-           (tag-node         . ,visit-fn)))))
+          `((root-node-open   . treemacs-toggle-node)
+            (root-node-closed . treemacs-toggle-node)
+            (dir-node-open    . treemacs-toggle-node)
+            (dir-node-closed  . treemacs-toggle-node)
+            (file-node-open   . ,visit-fn)
+            (file-node-closed . ,visit-fn)
+            (tag-node-open    . ,visit-prefer-fn)
+            (tag-node-closed  . ,visit-prefer-fn)
+            (tag-node         . ,visit-fn)))))
 
 (use-package treemacs-compatibility
   :after winum

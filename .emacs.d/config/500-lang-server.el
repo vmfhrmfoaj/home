@@ -94,7 +94,10 @@
                  ((derived-mode-p 'go-mode)
                   (flycheck-select-checker 'go-vet)
                   (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t)
-                  (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))))))
+                  (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))
+                 ((derived-mode-p 'rust-mode)
+                  (flycheck-select-checker 'rust-clippy)
+                  (flycheck-add-next-checker 'rust-clippy 'lsp))))))
 
   (advice-add #'lsp-diagnostics--flycheck-start :override #'lsp-diagnostics--custom-flycheck-start))
 
@@ -422,4 +425,3 @@
         lsp-ui-sideline-show-diagnostics nil
         lsp-ui-sideline-show-hover nil
         lsp-ui-sideline-show-symbol nil))
-

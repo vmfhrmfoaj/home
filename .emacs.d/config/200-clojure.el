@@ -10,22 +10,36 @@
   :ensure t
   :defer t
   :config
-  (defun cider-switch-to-releated-repl-buffer (&optional set-namespace)
-    (interactive "P")
-    (if (cider-connected-p)
-        (let* ((repl-type (cider-connection-type-for-buffer))
-               (root (clojure-project-root-path))
-               (all-repl-bufs (cider-connections))
-               (prj-repl-bufs (--filter (with-current-buffer it
-                                          (string-equal root (clojure-project-root-path)))
-                                        all-repl-bufs))
-               (buffer (--first (with-current-buffer it
-                                  (string-equal repl-type cider-repl-type))
-                                (or prj-repl-bufs all-repl-bufs))))
-          (cider--switch-to-repl-buffer (or buffer
-                                            (-first-item prj-repl-bufs)
-                                            (-first-item all-repl-bufs))
-                                        set-namespace))
+  (defun cider-get-repl ()
+    (when (cider-connected-p)
+      (let* ((repl-type (cider-connection-type-for-buffer))
+             (root (clojure-project-root-path))
+             (all-repl-bufs (cider-connections))
+             (prj-repl-bufs (--filter (with-current-buffer it
+                                        (string-equal root (clojure-project-root-path)))
+                                      all-repl-bufs))
+             (buffer (--first (with-current-buffer it
+                                (string-equal repl-type cider-repl-type))
+                              (or prj-repl-bufs all-repl-bufs)))
+             (repl (or buffer
+                       (-first-item prj-repl-bufs)
+                       (-first-item all-repl-bufs))))
+        repl)))
+
+  (defun cider-set-repl-ns-to-current-ns (&optional repl)
+    (when-let ((repl (or repl (cider-get-repl))))
+      (let ((cur-ns (clojure-find-ns))
+            (repl-ns (buffer-local-value 'cider-buffer-ns repl)))
+        (when (and (stringp cur-ns) (stringp repl-ns)
+                   (not (string= cur-ns (buffer-local-value 'cider-buffer-ns repl))))
+          (cider-repl-set-ns cur-ns)))))
+
+  (defun cider-switch-to-releated-repl-buffer ()
+    (interactive)
+    (if-let ((repl (cider-get-repl)))
+        (progn
+          (cider-set-repl-ns-to-current-ns repl)
+          (cider--switch-to-repl-buffer repl nil))
       (message "Cider didn't start")))
 
   (defun cider-hard-restart (&optional repl)
@@ -63,6 +77,21 @@
               (setq-local evil-lookup-func #'cider-doc-at-point)
               (setq-local font-lock-fontify-region-function #'font-lock-default-fontify-region)
               (eldoc-mode 1)))
+
+  (defvar cider-buffer-list-update-hook-on nil)
+
+  (add-hook 'buffer-list-update-hook
+            (lambda ()
+              (when (and cider-mode
+                         (not (bound-and-true-p helm-alive-p))
+                         (or (eq major-mode 'clojure-mode)
+                             (eq major-mode 'clojurescript-mode)
+                             (eq major-mode 'clojurec-mode))
+                         (not cider-buffer-list-update-hook-on))
+                (setq cider-buffer-list-update-hook-on t)
+                (unwind-protect
+                    (cider-set-repl-ns-to-current-ns)
+                  (setq cider-buffer-list-update-hook-on nil)))))
 
   (advice-add #'cider--close-connection :before
               (lambda (repl &rest _)
@@ -103,9 +132,19 @@ So, the middleware can't remove this file. I use this workaround until fixing th
                   ,cider-clojure-1.9-error
                   ,cider-clojure-warning))))
 
+  (defun cider-handle-compilation-errors-for-flycheck (msg eval-buf)
+    (when-let ((info (cider-extract-error-info cider-compilation-regexp msg)))
+      (add-to-list 'clojure--compilation-errors (cons eval-buf info))
+      (with-current-buffer eval-buf
+        (when (bound-and-true-p flycheck-mode)
+          (flycheck-buffer)))))
+
   (setq cider-compilation-regexp
         (list cider-clojure-compilation-regexp
-              2 3 4 '(1))))
+              2 3 4 '(1)))
+
+  (with-eval-after-load "flycheck"
+    (advice-add #'cider-handle-compilation-errors :override #'cider-handle-compilation-errors-for-flycheck)))
 
 (use-package cider-mode
   :defer t
@@ -213,13 +252,13 @@ So, the middleware can't remove this file. I use this workaround until fixing th
   (with-eval-after-load "flycheck"
     (unless (flycheck-valid-checker-p 'clj-cider-repl)
       (flycheck-define-generic-checker
-          'clj-cider-repl
-        "A syntax checker using the Cider REPL provided."
-        :start #'clojure--flycheck-start
-        :modes '(clojure-mode clojurescript-mode clojurec-mode)
-        :predicate (lambda ()
-                     (when (fboundp #'cider-connected-p)
-                       (cider-connected-p)))))
+       'clj-cider-repl
+       "A syntax checker using the Cider REPL provided."
+       :start #'clojure--flycheck-start
+       :modes '(clojure-mode clojurescript-mode clojurec-mode)
+       :predicate (lambda ()
+                    (when (fboundp #'cider-connected-p)
+                      (cider-connected-p)))))
     (add-to-list 'flycheck-checkers 'clj-cider-repl))
 
   (add-hook 'clojure-mode-hook

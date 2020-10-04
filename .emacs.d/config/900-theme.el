@@ -9,6 +9,10 @@
 (use-package twilight-bright-theme
   :ensure t
   :config
+  (defface semi-bold
+    '((t (:weight semi-bold)))
+    "TODO")
+
   (load-theme 'twilight-bright t)
   (custom-set-faces
    '(bold ((t :weight bold)))
@@ -17,9 +21,9 @@
    '(diff-added   ((t :background "#ddffdd" :foreground "#22aa22")))
    '(diff-changed ((t :background "#ffffdd" :foreground "#aaaa22")))
    '(diff-removed ((t :background "#ffdddd" :foreground "#aa2222")))
-   '(diff-refine-added   ((t :background "#eeffee" :foreground "#008800" :weight bold)))
-   '(diff-refine-changed ((t :background "#ffffee" :foreground "#888800" :weight bold)))
-   '(diff-refine-removed ((t :background "#ffeeee" :foreground "#880000" :weight bold)))
+   '(diff-refine-added   ((t :inherit bold :background "#eeffee" :foreground "#008800")))
+   '(diff-refine-changed ((t :inherit bold :background "#ffffee" :foreground "#888800")))
+   '(diff-refine-removed ((t :inherit bold :background "#ffeeee" :foreground "#880000")))
    '(line-number ((t :inherit (default) :background "grey99" :foreground "grey80")))
    '(line-number-current-line ((t :inherit (hl-line line-number) :background "#f1f8fd" :foreground "grey75")))
    '(fixed-pitch ((t :family "Dejavu Sans Mono")))
@@ -36,18 +40,18 @@
    '(clojure-define-type-face ((t :inherit font-lock-type-face)))
    '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
    `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,(face-attribute 'default :weight))))
-   '(clojure-important-keywords-face ((t :inherit font-lock-keyword-face :weight bold)))
+   '(clojure-important-keywords-face ((t :inherit (semi-bold font-lock-keyword-face))))
    '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
-   '(clojure-variable-name-face ((t :inherit font-lock-variable-name-face :weight bold)))
+   '(clojure-variable-name-face ((t :inherit (bold font-lock-variable-name-face))))
    '(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
-   '(clojure-side-effect-face ((t :inherit (bold underline))))
+   '(clojure-side-effect-face ((t :inherit (semi-bold underline))))
    '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))))
 
 (use-package eldoc
   :defer t
   :config
   (custom-set-faces
-   '(eldoc-highlight-function-argument ((t :inherit (bold underline))))))
+   '(eldoc-highlight-function-argument ((t :inherit (semi-bold underline))))))
 
 (use-package evil-goggles
   :defer t
@@ -74,12 +78,12 @@
   (custom-set-faces
    '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight normal)))
    '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :weight light)))
-   '(font-lock-function-name-face ((t :weight bold)))
+   '(font-lock-function-name-face ((t :inherit bold)))
    '(font-lock-regexp-grouping-backslash ((t :inherit font-lock-string-face :background "#E1F2D6")))
    '(font-lock-regexp-grouping-construct ((t :inherit font-lock-string-face :background "#E1F2D6")))
    '(font-lock-type-face ((t :weight unspecified)))
    '(font-lock-variable-name-face ((t :foreground "#607596")))
-   '(font-lock-warning-face ((t :inherit (bold italic))))))
+   '(font-lock-warning-face ((t :inherit (semi-bold italic))))))
 
 (use-package flymake
   :defer t
@@ -103,17 +107,17 @@
    '(helm-ff-executable-dir ((t :inherit helm-ff-executable :foreground "#7ea940")))
    '(helm-match ((t :inherit lazy-highlight :foreground unspecified)))
    '(helm-match-item ((t :inherit lazy-highlight)))
-   '(helm-match-selection ((t :inherit isearch :weight bold)))
+   '(helm-match-selection ((t :inherit (bold isearch))))
    '(helm-moccur-buffer ((t :inherit shadow)))
-   '(helm-selection ((t :inherit hl-line :weight bold)))
-   '(helm-selection-line ((t :inherit helm-selection :weight bold)))
+   '(helm-selection ((t :inherit (bold hl-line))))
+   '(helm-selection-line ((t :inherit (bold helm-selection))))
    `(helm-other-buffer ((t :background "grey98" :foreground ,(color-from 'default :foreground 5))))))
 
 (use-package hl-line
   :defer t
   :init
   (defface hl-line-evil-insert
-    '((t (:background "#dfeffb")))
+    '((t (:inherit semi-bold :background "#e2f0fb")))
     "TODO")
 
   :config
@@ -124,19 +128,19 @@
   :defer t
   :config
   (custom-set-faces
-   '(hl-todo ((t :inherit bold :weight bold :foreground "#cc9393")))))
+   '(hl-todo ((t :inherit semi-bold :foreground "#cc9393")))))
 
 (use-package iedit
   :defer t
   :config
   (custom-set-faces
-   '(iedit-occurrence ((t :inherit (highlight underline bold))))))
+   '(iedit-occurrence ((t :inherit (highlight underline semi-bold))))))
 
 (use-package isearch
   :defer t
   :config
   (custom-set-faces
-   '(isearch ((t :inherit bold :background "magenta3" :foreground "white")))))
+   '(isearch ((t :inherit semi-bold :background "magenta3" :foreground "white")))))
 
 (use-package php-mode
   :defer t
@@ -151,7 +155,7 @@
   (custom-set-faces
    '(lsp-face-highlight-read    ((t :inherit (highlight underline))))
    '(lsp-face-highlight-textual ((t :inherit (highlight underline))))
-   '(lsp-face-highlight-write   ((t :inherit (highlight underline bold))))))
+   '(lsp-face-highlight-write   ((t :inherit (highlight underline semi-bold))))))
 
 (use-package magit
   :defer t
@@ -160,10 +164,10 @@
    '(magit-diff-context-highlight ((t :background "#fbfeee" :foreground "#a4c207")))
    '(magit-diff-added   ((t :background "#ddffdd" :foreground "#22aa22")))
    '(magit-diff-removed ((t :background "#ffdddd" :foreground "#aa2222")))
-   '(magit-diff-added-highlight   ((t :background "#ddffdd" :foreground "#22aa22" :weight bold)))
-   '(magit-diff-removed-highlight ((t :background "#ffdddd" :foreground "#aa2222" :weight bold)))
+   '(magit-diff-added-highlight   ((t :inherit semi-bold :background "#ddffdd" :foreground "#22aa22")))
+   '(magit-diff-removed-highlight ((t :inherit semi-bold :background "#ffdddd" :foreground "#aa2222")))
    '(magit-diff-context ((t :foreground "grey50" :weight normal)))
-   '(magit-diff-context-highlight ((t :inherit hl-line)))
+   '(magit-diff-context-highlight ((t :inherit hl-line :foreground "grey50")))
    '(magit-diff-file-heading ((t :weight semi-bold)))
    '(magit-hash ((((class color) (background light)) :foreground "grey60" :weight normal)))
    '(magit-log-author ((((class color) (background light)) :foreground "firebrick" :weight normal)))

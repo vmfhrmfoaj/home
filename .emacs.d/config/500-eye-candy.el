@@ -278,11 +278,7 @@
   (advice-add #'hl-todo--setup :after #'hl-todo--setup-custom))
 
 (use-package powerline
-  :ensure t
-  :config
-  (when window-system
-    (setq powerline-height (+ (frame-char-height) line-spacing)
-          powerline-text-scale-factor 1)))
+  :ensure t)
 
 (use-package spaceline
   :ensure t

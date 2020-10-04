@@ -50,9 +50,7 @@
 (add-hook 'help-mode-hook #'visual-line-mode)
 (add-hook 'after-init-hook
           (lambda ()
-            (advice-add #'select-frame      :after #'update-buf-visit-time)
-            (advice-add #'select-window     :after #'update-buf-visit-time)
-            (advice-add #'set-window-buffer :after #'update-buf-visit-time)
+            (add-hook 'buffer-list-update-hook #'update-buf-visit-time)
             (advice-add #'switch-to-buffer :around
                         (lambda (fn buf &rest args)
                           (if-let ((win (->> (window-list)
@@ -61,8 +59,7 @@
                               (let ((cur-buf (current-buffer)))
                                 (with-selected-window win
                                   (apply fn cur-buf args)))
-                            (apply fn buf args))
-                          (update-buf-visit-time)))
+                            (apply fn buf args))))
             (advice-add #'pop-to-buffer :around
                         (lambda (fn buf &rest args)
                           (if-let ((win (->> (window-list)
