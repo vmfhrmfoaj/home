@@ -9,27 +9,21 @@
 (use-package twilight-bright-theme
   :ensure t
   :config
-  (defface semi-bold
-    '((t (:weight semi-bold)))
-    "TODO")
-
   (load-theme 'twilight-bright t)
   (custom-set-faces
-   '(bold ((t :weight bold)))
-   '(italic ((t :slant italic)))
    '(cursor ((t :background "sky blue")))
    '(diff-added   ((t :background "#ddffdd" :foreground "#22aa22")))
    '(diff-changed ((t :background "#ffffdd" :foreground "#aaaa22")))
    '(diff-removed ((t :background "#ffdddd" :foreground "#aa2222")))
-   '(diff-refine-added   ((t :inherit bold :background "#eeffee" :foreground "#008800")))
-   '(diff-refine-changed ((t :inherit bold :background "#ffffee" :foreground "#888800")))
-   '(diff-refine-removed ((t :inherit bold :background "#ffeeee" :foreground "#880000")))
+   '(diff-refine-added   ((t :background "#eeffee" :foreground "#008800" :weight bold)))
+   '(diff-refine-changed ((t :background "#ffffee" :foreground "#888800" :weight bold)))
+   '(diff-refine-removed ((t :background "#ffeeee" :foreground "#880000" :weight bold)))
    '(line-number ((t :inherit (default) :background "grey99" :foreground "grey80")))
    '(line-number-current-line ((t :inherit (hl-line line-number) :background "#f1f8fd" :foreground "grey75")))
    '(fixed-pitch ((t :family "Dejavu Sans Mono")))
    '(link ((t :underline t)))
    '(shadow ((t :inherit default :foreground "grey55")))
-   '(show-paren-match ((t :inherit bold :underline t)))
+   '(show-paren-match ((t :weight bold :underline t)))
    '(trailing-whitespace ((t :background "grey65")))))
 
 (use-package clojure-mode
@@ -40,18 +34,18 @@
    '(clojure-define-type-face ((t :inherit font-lock-type-face)))
    '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
    `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,(face-attribute 'default :weight))))
-   '(clojure-important-keywords-face ((t :inherit (semi-bold font-lock-keyword-face))))
+   '(clojure-important-keywords-face ((t :inherit font-lock-keyword-face) :weight bold))
    '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
    '(clojure-variable-name-face ((t :inherit (bold font-lock-variable-name-face))))
    '(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
-   '(clojure-side-effect-face ((t :inherit (semi-bold underline))))
+   '(clojure-side-effect-face ((t :weight bold :underline t)))
    '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))))
 
 (use-package eldoc
   :defer t
   :config
   (custom-set-faces
-   '(eldoc-highlight-function-argument ((t :inherit (semi-bold underline))))))
+   '(eldoc-highlight-function-argument ((t :weight bold :underline t)))))
 
 (use-package evil-goggles
   :defer t
@@ -78,12 +72,12 @@
   (custom-set-faces
    '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight normal)))
    '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :weight light)))
-   '(font-lock-function-name-face ((t :inherit bold)))
+   '(font-lock-function-name-face ((t :weight bold)))
    '(font-lock-regexp-grouping-backslash ((t :inherit font-lock-string-face :background "#E1F2D6")))
    '(font-lock-regexp-grouping-construct ((t :inherit font-lock-string-face :background "#E1F2D6")))
    '(font-lock-type-face ((t :weight unspecified)))
    '(font-lock-variable-name-face ((t :foreground "#607596")))
-   '(font-lock-warning-face ((t :inherit (semi-bold italic))))))
+   '(font-lock-warning-face ((t :weight bold :underline t)))))
 
 (use-package flymake
   :defer t
@@ -101,7 +95,7 @@
   :defer t
   :init
   (defface hl-line-evil-insert
-    '((t (:inherit semi-bold :background "#e2f0fb")))
+    '((t (:background "#e2f0fb")))
     "TODO")
 
   :config
@@ -112,29 +106,38 @@
   :defer t
   :config
   (custom-set-faces
-   '(hl-todo ((t :inherit semi-bold :foreground "#cc9393")))))
+   '(hl-todo ((t :foreground "#cc9393" :weight bold)))))
 
 (use-package iedit
   :defer t
   :config
   (custom-set-faces
-   '(iedit-occurrence ((t :inherit (highlight underline semi-bold))))))
+   '(iedit-occurrence ((t :inherit (highlight underline bold))))))
 
 (use-package isearch
   :defer t
   :config
   (custom-set-faces
-   '(isearch ((t :inherit semi-bold :background "magenta3" :foreground "white")))))
+   '(isearch ((t :background "magenta3" :foreground "white" :weight bold)))))
 
 (use-package ivy
   :defer t
   :config
   (custom-set-faces
-   '(ivy-current-match ((t :inherit bold :background "#e2f0fb")))
+   '(ivy-current-match ((t :background "#9fcdf2" :foreground "white" :weight bold)))
    '(ivy-minibuffer-match-face-1 ((t :background "#d3d3d3" :foreground "#7e7e7e")))
-   '(ivy-minibuffer-match-face-2 ((t :inherit semi-bold :weight unspecified :background "#e99ce8" :foreground "#8b5d8b")))
-   '(ivy-minibuffer-match-face-3 ((t :inherit semi-bold :weight unspecified :background "#bbbbff" :foreground "#707099")))
-   '(ivy-minibuffer-match-face-4 ((t :inherit semi-bold :weight unspecified :background "#ffbbff" :foreground "#7f5d7f")))
+   '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b" :weight bold)))
+   '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :foreground "#707099" :weight bold)))
+   '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f" :weight bold)))
+   '(swiper-line-face ((t :background "#9fcdf2" :foreground "white" :weight bold)))
+   '(swiper-match-face-1 ((t :background "#d3d3d3")))
+   '(swiper-match-face-2 ((t :background "#f1c3f1" :weight bold)))
+   '(swiper-match-face-3 ((t :background "#d6d6ff" :weight bold)))
+   '(swiper-match-face-4 ((t :background "#ffd6ff" :weight bold)))
+   '(swiper-background-match-face-1 ((t :inherit swiper-match-face-1)))
+   '(swiper-background-match-face-2 ((t :inherit swiper-match-face-2)))
+   '(swiper-background-match-face-3 ((t :inherit swiper-match-face-3)))
+   '(swiper-background-match-face-4 ((t :inherit swiper-match-face-4)))
    ))
 
 (use-package php-mode
@@ -148,9 +151,9 @@
   :defer t
   :config
   (custom-set-faces
-   '(lsp-face-highlight-read    ((t :inherit (highlight underline))))
-   '(lsp-face-highlight-textual ((t :inherit (highlight underline))))
-   '(lsp-face-highlight-write   ((t :inherit (highlight underline semi-bold))))))
+   '(lsp-face-highlight-read    ((t :inherit highlight :underline t )))
+   '(lsp-face-highlight-textual ((t :inherit highlight :underline t )))
+   '(lsp-face-highlight-write   ((t :inherit highlight :underline t :weight bold)))))
 
 (use-package magit
   :defer t
@@ -159,11 +162,11 @@
    '(magit-diff-context-highlight ((t :background "#fbfeee" :foreground "#a4c207")))
    '(magit-diff-added   ((t :background "#ddffdd" :foreground "#22aa22")))
    '(magit-diff-removed ((t :background "#ffdddd" :foreground "#aa2222")))
-   '(magit-diff-added-highlight   ((t :inherit semi-bold :background "#ddffdd" :foreground "#22aa22")))
-   '(magit-diff-removed-highlight ((t :inherit semi-bold :background "#ffdddd" :foreground "#aa2222")))
+   '(magit-diff-added-highlight   ((t :background "#ddffdd" :foreground "#22aa22" :weight bold)))
+   '(magit-diff-removed-highlight ((t :background "#ffdddd" :foreground "#aa2222" :weight bold)))
    '(magit-diff-context ((t :foreground "grey50" :weight normal)))
    '(magit-diff-context-highlight ((t :inherit hl-line :foreground "grey50")))
-   '(magit-diff-file-heading ((t :weight semi-bold)))
+   '(magit-diff-file-heading ((t :weight bold)))
    '(magit-hash ((((class color) (background light)) :foreground "grey60" :weight normal)))
    '(magit-log-author ((((class color) (background light)) :foreground "firebrick" :weight normal)))
    '(magit-log-date ((((class color) (background light)) :foreground "grey30" :weight normal)))

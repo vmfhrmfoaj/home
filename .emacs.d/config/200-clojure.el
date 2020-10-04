@@ -78,19 +78,25 @@
               (setq-local font-lock-fontify-region-function #'font-lock-default-fontify-region)
               (eldoc-mode 1)))
 
-  (defvar cider-buffer-list-update-hook-on nil)
+  (defvar cider-buffer-list-update-timer nil)
 
   (add-hook 'buffer-list-update-hook
             (lambda ()
               (when (and cider-mode
                          (or (eq major-mode 'clojure-mode)
                              (eq major-mode 'clojurescript-mode)
-                             (eq major-mode 'clojurec-mode))
-                         (not cider-buffer-list-update-hook-on))
-                (setq cider-buffer-list-update-hook-on t)
-                (unwind-protect
-                    (cider-set-repl-ns-to-current-ns)
-                  (setq cider-buffer-list-update-hook-on nil)))))
+                             (eq major-mode 'clojurec-mode)))
+                (let ((buf (current-buffer)))
+                  (when (timerp cider-buffer-list-update-timer)
+                    (cancel-timer cider-buffer-list-update-timer))
+                  ;; NOTE
+                  ;;  after executing `projectile-find-file', i don't know why `buffer-list-update-hook' was called multiple times in short period of a time.
+                  ;;  below timer is workaround to avoid to call `cider-set-repl-ns-to-current-ns' multiple times.
+                  (setq cider-buffer-list-update-timer
+                        (run-with-timer 0.1 nil
+                                        (lambda ()
+                                          (with-current-buffer buf
+                                            (cider-set-repl-ns-to-current-ns)))))))))
 
   (advice-add #'cider--close-connection :before
               (lambda (repl &rest _)
