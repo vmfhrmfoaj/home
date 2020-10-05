@@ -5,7 +5,7 @@
     (unless (file-exists-p "~/.emacs.d/config/func.elc")
       (byte-compile-file "~/.emacs.d/config/func.el")))
   (require 'evil-core)
-  (require 'evil-leader)
+  (require 'evil-leader nil t)
   (load-file "~/.emacs.d/config/func.elc"))
 
 
@@ -158,8 +158,9 @@
     "fy" #'projectile-kill-new-buffer-file-name
 
     ;; git
+    "g+" #'git-gutter+-stage-hunks
     "gb" #'magit-blame-addition
-    "gS" #'git-gutter+-stage-hunks
+    "gl" #'counsel-git-log
     "gs" #'magit-status
     "gt" #'git-timemachine
     "gp" #'git-gutter+-previous-hunk
@@ -203,8 +204,8 @@
     "pt" #'treemacs-projectile-current
 
     ;; register/rings/resume
-    ;; "rk" #'helm-show-kill-ring
-    ;; "rl" #'helm-resume
+    "rk" #'counsel-yank-pop
+    "rl" #'ivy-resume
 
     ;; search/symbol
     "se" #'evil-multiedit-match-all
@@ -217,26 +218,14 @@
            (interactive)
            (when (<= 4 (prefix-numeric-value current-prefix-arg))
              (counsel-read-directory-name "rg in directory: "))
-           (let ((counsel-rg-base-command
-                  (cond
-                   ((listp counsel-rg-base-command)
-                    (-concat (-drop-last 1 counsel-rg-base-command) '("--no-ignore" "%s")))
-                   ((stringp counsel-rg-base-command)
-                    (replace-in-string "%s" "--no-ignore %s" counsel-rg-base-command))
-                   (t '("rg" "-M" "240" "--with-filename" "--no-heading" "--line-number" "--color" "never" "--no-ignore" "%s")))))
+           (let ((counsel-rg-base-command (counsel-rg-no-ignore-command)))
              (counsel-rg nil (or dir default-directory))))
-    "sr" #'ivy-resume
     "sp" #'counsel-projectile-rg
     "sP" (lambda ()
            (interactive)
-           (let ((counsel-rg-base-command
-                  (cond
-                   ((listp counsel-rg-base-command)
-                    (-concat (-drop-last 1 counsel-rg-base-command) '("--no-ignore" "%s")))
-                   ((stringp counsel-rg-base-command)
-                    (replace-in-string "%s" "--no-ignore %s" counsel-rg-base-command))
-                   (t '("rg" "-M" "240" "--with-filename" "--no-heading" "--line-number" "--color" "never" "--no-ignore" "%s")))))
+           (let ((counsel-rg-base-command (counsel-rg-no-ignore-command)))
              (counsel-projectile-rg)))
+    "sr" #'ivy-resume-sarch
     "ss" #'swiper
 
     ;; toggle
@@ -430,8 +419,9 @@
     (kbd "C-j") #'ivy-next-line
     (kbd "C-k") #'ivy-previous-line)
   (evil-define-key 'normal ivy-minibuffer-map
-    (kbd "j") #'ivy-next-line
-    (kbd "k") #'ivy-previous-line))
+    (kbd "RET") #'ivy-done
+    "j" #'ivy-next-line
+    "k" #'ivy-previous-line))
 
 (use-package lsp-mode
   :defer t
@@ -631,6 +621,16 @@
   (which-key-declare-prefixes-for-mode 'elm-mode
     (concat evil-leader/leader "mg") "goto")
   (evil-leader--set-major-leader-for-mode 'elm-mode))
+
+(use-package help-mode
+  :defer t
+  :config
+  (evil-set-initial-state 'help-mode 'normal)
+  (evil-define-key 'normal help-mode-map
+    (kbd "<backtab>") #'backward-button
+    (kbd "<tab>") #'forward-button
+    (kbd "M-,") #'help-go-back
+    (kbd "q") #'quit-window))
 
 (use-package js
   :defer t

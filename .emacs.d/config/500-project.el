@@ -8,7 +8,9 @@
 
 (use-package counsel-projectile
   :ensure t
-  :defer t)
+  :defer t
+  :config
+  (setq counsel-projectile-remove-current-buffer t))
 
 (use-package projectile
   :ensure t

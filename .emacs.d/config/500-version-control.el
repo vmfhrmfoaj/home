@@ -91,8 +91,7 @@
     msg)
 
   (defun magit-setup ()
-    (remove-hook 'magit-mode-hook #'magit-setup)
-    (require 'helm nil t))
+    (remove-hook 'magit-mode-hook #'magit-setup))
 
   (setq magit-bury-buffer-function #'magit-mode-quit-window
         magit-diff-refine-hunk t

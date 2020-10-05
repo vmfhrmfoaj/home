@@ -8,18 +8,8 @@
 
 (use-package dumb-jump
   :ensure t
+  :defer t
   :config
-  (defun dumb-jump--custom-get-language (file)
-    "Get language from FILE extension and then fallback to using 'major-mode' name."
-    (let* ((languages (-distinct
-                       (--map (plist-get it :language)
-                              dumb-jump-find-rules)))
-           (language (or (dumb-jump-get-language-from-mode) ; I just changed order of this
-                         (dumb-jump-get-language-by-filename file))))
-      (if (member language languages)
-          language
-        (format ".%s file" (or (f-ext file) "")))))
-
   (defvar dumb-jump-search-current-directory-first nil
     "TODO")
 
@@ -92,6 +82,9 @@
         dumb-jump-search-current-directory-first t
         dumb-jump-selector 'ivy)
 
+  (with-eval-after-load "ivy"
+    (add-to-list 'ivy-search-callers 'dumb-jump-ivy-jump-to-selected))
+
   (with-eval-after-load "cc-mode"
     (-update->> dumb-jump-find-rules
                 (--remove (string= "c++" (plist-get it :language)))
@@ -104,15 +97,23 @@
                                 :supports '("ag" "grep" "rg" "git-grep")
                                 :language "c++"
                                 :regex "(^\\s*#define\\s+JJJ\\\()")
+                          (list :type "type"
+                                :supports '("ag" "rg")
+                                :language "c++"
+                                :regex "\\btypedef\\b\\s+\\b(struct|enum|union)\\b\\s+\\w+\\s+JJJ")
                           ;; original
                           (list :type "type"
                                 :supports '("ag" "rg" "git-grep")
                                 :language "c++"
-                                :regex "\\b(class|struct|enum|union)\\b\\s*JJJ\\b\\s*(final\\s*)?(:((\\s*\\w+\\s*::)*\\s*\\w*\\s*<?(\\s*\\w+\\s*::)*\\w+>?\\s*,*)+)?((\\{|$))|}\\s*JJJ\\b\\s*;")
+                                :regex "\\b(class|struct|enum|union)\\b\\s*JJJ\\b\\s*(final\\s*)?(:((\\s*\\w+\\s*::)*\\s*\\w*\\s*<?(\\s*\\w+\\s*::)*\\w+>?\\s*,*)+)?((\\{|$))|}\\s*JJJ\\b\\s*;"
+                                :tests '("typedef struct test {" "enum test {" "} test;" "union test {" "class test final: public Parent1, private Parent2{" "class test : public std::vector<int> {")
+                                :not '("union test var;" "struct test function() {"))
                           (list :type "variable"
                                 :supports '("ag" "rg")
                                 :language "c++"
-                                :regex "(^\\s*(static\\s+)?((struct|union)\\s+)?[_:0-9A-Za-z]+(\\s*\\*)?\\s+JJJ\\s*(;\\s*$|=))|#define\\s+JJJ\\b")))))
+                                :regex "\\b(?!(class\\b|struct\\b|return\\b|else\\b|delete\\b))(\\w+|[,>])([*&]|\\s)+JJJ\\s*(\\[(\\d|\\s)*\\])*\\s*([=,(){;]|:\\s*\\d)|#define\\s+JJJ\\b"
+                                :tests '("int test=2;" "char *test;" "int x = 1, test = 2" "int test[20];" "#define test" "typedef int test;" "unsigned int test:2")
+                                :not '("return test;" "#define NOT test" "else test=2;"))))))
   (with-eval-after-load "cperl-mode"
     (add-to-list 'dumb-jump-find-rules
                  (list :type "function"
@@ -121,5 +122,4 @@
                        :regex "sub\\s*JJJ\\j")))
 
   (advice-add #'dumb-jump-fetch-file-results :override #'dumb-jump--custom-fetch-file-results)
-  (advice-add #'dumb-jump-fetch-results :override #'dumb-jump--custom-fetch-results)
-  (advice-add #'dumb-jump-get-language :override #'dumb-jump--custom-get-language))
+  (advice-add #'dumb-jump-fetch-results :override #'dumb-jump--custom-fetch-results))

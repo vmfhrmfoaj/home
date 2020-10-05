@@ -128,17 +128,7 @@
    '(ivy-minibuffer-match-face-1 ((t :background "#d3d3d3" :foreground "#7e7e7e")))
    '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b" :weight bold)))
    '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :foreground "#707099" :weight bold)))
-   '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f" :weight bold)))
-   '(swiper-line-face ((t :background "#9fcdf2" :foreground "white" :weight bold)))
-   '(swiper-match-face-1 ((t :background "#d3d3d3")))
-   '(swiper-match-face-2 ((t :background "#f1c3f1" :weight bold)))
-   '(swiper-match-face-3 ((t :background "#d6d6ff" :weight bold)))
-   '(swiper-match-face-4 ((t :background "#ffd6ff" :weight bold)))
-   '(swiper-background-match-face-1 ((t :inherit swiper-match-face-1)))
-   '(swiper-background-match-face-2 ((t :inherit swiper-match-face-2)))
-   '(swiper-background-match-face-3 ((t :inherit swiper-match-face-3)))
-   '(swiper-background-match-face-4 ((t :inherit swiper-match-face-4)))
-   ))
+   '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f" :weight bold)))))
 
 (use-package php-mode
   :defer t
@@ -178,3 +168,17 @@
   (custom-set-faces
    `(sh-heredoc     ((t :background "#fcf7f2" :foreground "tan1")))
    `(sh-quoted-exec ((t :background "#faecfa" :foreground "magenta")))))
+
+(use-package swiper
+  :defer t
+  :config
+  (custom-set-faces
+   '(swiper-line-face ((t :background "#9fcdf2" :foreground "white" :weight bold)))
+   '(swiper-match-face-1 ((t :background "#d3d3d3")))
+   '(swiper-match-face-2 ((t :background "#f1c3f1" :weight bold)))
+   '(swiper-match-face-3 ((t :background "#d6d6ff" :weight bold)))
+   '(swiper-match-face-4 ((t :background "#ffd6ff" :weight bold)))
+   '(swiper-background-match-face-1 ((t :inherit swiper-match-face-1)))
+   '(swiper-background-match-face-2 ((t :inherit swiper-match-face-2)))
+   '(swiper-background-match-face-3 ((t :inherit swiper-match-face-3)))
+   '(swiper-background-match-face-4 ((t :inherit swiper-match-face-4)))))
