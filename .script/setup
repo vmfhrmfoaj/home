@@ -242,7 +242,15 @@ if [ -n "${CARGO_ROOT_TARGET_DIR}" ] && [ -z "${CARGO_TARGET_DIR}" ]; then
     fi
 fi
 
-exec cargo $@
+cargo $@
+ret=$?
+if [ "$1" = 'clippy' ]; then
+    # NOTE
+    #  Emacs `flycheck` print error messages to `minibuffer` if a program(checker) return error code.
+    #  `clippy` return error code(i.e. not zero number) when can't compile. It is very annoying.
+    exit 0
+fi
+exit $ret
 EOF
         chmod +x "${HOME}/.bin/cargo"
     fi
