@@ -4,4 +4,5 @@
         :middleware [dev-helper.plugin/middleware]
         :repl-options {:init (do
                                (set! *print-level* 8)
-                               (set! *print-length* 30))}}}
+                               (set! *print-length* 30))}}
+ :repl {:auto-refresh true}}
