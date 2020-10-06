@@ -10,7 +10,7 @@
   :ensure t
   :defer t
   :config
-  (defun cider-get-repl ()
+  (defun cider-get-repl-buf ()
     (when (cider-connected-p)
       (let* ((repl-type (cider-connection-type-for-buffer))
              (root (clojure-project-root-path))
@@ -18,16 +18,14 @@
              (prj-repl-bufs (--filter (with-current-buffer it
                                         (string-equal root (clojure-project-root-path)))
                                       all-repl-bufs))
-             (buffer (--first (with-current-buffer it
-                                (string-equal repl-type cider-repl-type))
-                              (or prj-repl-bufs all-repl-bufs)))
-             (repl (or buffer
-                       (-first-item prj-repl-bufs)
-                       (-first-item all-repl-bufs))))
-        repl)))
+             (repl-buf (or (--first (with-current-buffer it
+                                      (string-equal repl-type cider-repl-type))
+                                    prj-repl-bufs)
+                           (-first-item prj-repl-bufs))))
+        repl-buf)))
 
   (defun cider-set-repl-ns-to-current-ns (&optional repl)
-    (when-let ((repl (or repl (cider-get-repl))))
+    (when-let ((repl (or repl (cider-get-repl-buf))))
       (let ((cur-ns (clojure-find-ns))
             (repl-ns (buffer-local-value 'cider-buffer-ns repl)))
         (when (and (stringp cur-ns) (stringp repl-ns)
@@ -36,7 +34,7 @@
 
   (defun cider-switch-to-releated-repl-buffer ()
     (interactive)
-    (if-let ((repl (cider-get-repl)))
+    (if-let ((repl (cider-get-repl-buf)))
         (progn
           (cider-set-repl-ns-to-current-ns repl)
           (cider--switch-to-repl-buffer repl nil))
@@ -191,7 +189,8 @@ So, the middleware can't remove this file. I use this workaround until fixing th
   (add-hook 'cider-repl-mode-hook
             (lambda ()
               (setq-local evil-lookup-func #'cider-doc-at-point)
-              (eldoc-mode 1)))
+              (eldoc-mode 1)
+              (company-mode 1)))
 
   (advice-add #'cider-repl-emit-stderr :after #'cider-repl-catch-compilation-error))
 

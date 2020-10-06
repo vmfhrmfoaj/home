@@ -312,6 +312,7 @@
 (use-package cider-repl
   :defer t
   :config
+  (define-key cider-repl-mode-map (kbd "C-l") #'cider-repl-clear-buffer)
   (evil-leader/set-key-for-mode 'cider-repl-mode
     "mee" #'cider-eval-last-sexp
     "mef" #'cider-eval-defun-at-point
