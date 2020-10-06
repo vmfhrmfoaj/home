@@ -975,7 +975,7 @@
          (1 'font-lock-keyword-face))
 
         ;; punctuation
-        ("\\([#&_]\\)"
+        ("\\([#&_'`]\\)"
          (1 'shadow))))
     "Default expressions to highlight in Clojure mode."))
 
@@ -996,7 +996,7 @@
             (whitespace "[ \r\t\n]")
             (whitespace+ (concat whitespace "+"))
             (whitespace* (concat whitespace "*")))
-       `(("[#']"
+       `(("[#'`]"
           (0 'shadow))
          ("\\s(\\(\\(?:-as\\|-some\\)?->>?\\|and\\|or\\)\\_>"
           (1 'default nil))

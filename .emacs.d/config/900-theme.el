@@ -18,8 +18,8 @@
    '(diff-refine-added   ((t :background "#eeffee" :foreground "#008800" :weight bold)))
    '(diff-refine-changed ((t :background "#ffffee" :foreground "#888800" :weight bold)))
    '(diff-refine-removed ((t :background "#ffeeee" :foreground "#880000" :weight bold)))
-   '(line-number ((t :inherit (default) :background "grey99" :foreground "grey80")))
-   '(line-number-current-line ((t :inherit (hl-line line-number) :background "#f1f8fd" :foreground "grey75")))
+   '(line-number ((t :inherit (fringe default) :foreground "grey80")))
+   '(line-number-current-line ((t :inherit (hl-line line-number) :background "#f1f8fd" :foreground "grey75" :weight semi-bold)))
    '(fixed-pitch ((t :family "Dejavu Sans Mono")))
    '(link ((t :underline t)))
    '(shadow ((t :inherit default :foreground "grey55")))
@@ -46,7 +46,7 @@
    '(clojure-define-type-face ((t :inherit font-lock-type-face)))
    '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
    `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,(face-attribute 'default :weight))))
-   '(clojure-important-keywords-face ((t :inherit font-lock-keyword-face) :weight semi-bold))
+   `(clojure-important-keywords-face ((t :inherit font-lock-keyword-face :foreground ,(color-from font-lock-keyword-face :foreground 1.2))))
    '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
    '(clojure-variable-name-face ((t :inherit (bold font-lock-variable-name-face))))
    '(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
@@ -82,7 +82,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight light)))
+   '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight extra-light)))
    '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :weight extra-light)))
    '(font-lock-function-name-face ((t :weight bold)))
    '(font-lock-regexp-grouping-backslash
@@ -99,20 +99,20 @@
   :defer t
   :config
   (custom-set-faces
-   '(fringe ((((class color) (background light)) :background "grey98")
+   '(fringe ((((class color) (background light)) :background "grey99")
              (((class color) (background dark)) :background "#171c22")))))
 
 (use-package hl-line
   :defer t
   :init
   (defface hl-line-evil-insert
-    '((((class color) (background light)) :background "#e2f0fb")
-      (((class color) (background dark)) :weight bold))
+    '((t :extend t))
     "TODO")
 
   :config
   (custom-set-faces
-   '(hl-line ((((class color) (background light)) :background "#eef7fd")))))
+   '(hl-line ((t :background unspecified)))
+   '(hl-line-evil-insert ((t :weight normal)))))
 
 (use-package hl-todo
   :defer t
@@ -163,19 +163,20 @@
 (use-package magit
   :defer t
   :config
-  (custom-set-faces
-   '(magit-diff-context-highlight ((t :background "#fbfeee" :foreground "#a4c207")))
-   '(magit-diff-added   ((((class color) (background light)) :background "#ddffdd" :foreground "#22aa22")))
-   '(magit-diff-removed ((((class color) (background light)) :background "#ffdddd" :foreground "#aa2222")))
-   '(magit-diff-added-highlight   ((((class color) (background light)) :background "#ddffdd" :foreground "#22aa22" :weight semi-bold)))
-   '(magit-diff-removed-highlight ((((class color) (background light)) :background "#ffdddd" :foreground "#aa2222" :weight semi-bold)))
-   '(magit-diff-context ((t :foreground "grey50" :weight normal)))
-   '(magit-diff-context-highlight ((t :inherit hl-line :foreground "grey50")))
-   '(magit-diff-file-heading ((t :weight bold)))
-   '(magit-hash ((((class color) (background light)) :foreground "grey60" :weight normal)))
-   '(magit-log-author ((((class color) (background light)) :foreground "firebrick" :weight normal)))
-   '(magit-log-date ((((class color) (background light)) :foreground "grey30" :weight normal)))
-   '(magit-section-highlight ((((class color) (background light)) :inherit hl-line :distant-foreground "black")))))
+  (let ((default-weight (face-attribute 'default :weight)))
+    (custom-set-faces
+     '(magit-diff-context-highlight ((t :background "#fbfeee" :foreground "#a4c207")))
+     '(magit-diff-added   ((((class color) (background light)) :background "#ddffdd" :foreground "#22aa22")))
+     '(magit-diff-removed ((((class color) (background light)) :background "#ffdddd" :foreground "#aa2222")))
+     '(magit-diff-added-highlight   ((((class color) (background light)) :background "#ddffdd" :foreground "#22aa22" :weight semi-bold)))
+     '(magit-diff-removed-highlight ((((class color) (background light)) :background "#ffdddd" :foreground "#aa2222" :weight semi-bold)))
+     '(magit-diff-context ((t :foreground "grey50" :weight extra-light)))
+     '(magit-diff-context-highlight ((t :inherit hl-line :foreground "grey50")))
+     '(magit-diff-file-heading ((t :weight semi-bold)))
+     `(magit-hash ((((class color) (background light)) :foreground "grey60" :weight ,default-weight)))
+     `(magit-log-author ((((class color) (background light)) :foreground "firebrick" :weight ,default-weight)))
+     `(magit-log-date ((((class color) (background light)) :foreground "grey30" :weight ,default-weight)))
+     '(magit-section-highlight ((((class color) (background light)) :inherit hl-line :distant-foreground "black"))))))
 
 (use-package sh-script
   :defer t
@@ -202,8 +203,25 @@
    '(swiper-match-face-3 ((t :inherit swiper-line-face :background "#bbbbff" :weight bold)))
    '(swiper-match-face-4 ((t :inherit swiper-line-face :background "#ffbbff" :weight bold)))
    '(swiper-background-match-face-1
-     ((((class color) (background light)) :inherit swiper-match-face-1 :foreground "#8a8a8a")
-      (((class color) (background dark))  :inherit swiper-match-face-1 :foreground "#6c6c6c")))
-   '(swiper-background-match-face-2 ((t :inherit swiper-match-face-2 :foreground "#8b5d8b")))
-   '(swiper-background-match-face-3 ((t :inherit swiper-match-face-3 :foreground "#707099")))
-   '(swiper-background-match-face-4 ((t :inherit swiper-match-face-4 :foreground "#7f5d7f")))))
+     ((((class color) (background light)) :background "#d3d3d3" :foreground "#8a8a8a" :weight bold)
+      (((class color) (background dark))  :background "#9d9d9d" :foreground "#6c6c6c" :weight bold)))
+   '(swiper-background-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b" :weight bold)))
+   '(swiper-background-match-face-3 ((t :background "#bbbbff" :foreground "#707099" :weight bold)))
+   '(swiper-background-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f" :weight bold))))
+  ;; copy from `swiper--recompute-background-faces'
+  (let ((faces '(swiper-match-face-1
+                 swiper-match-face-2
+                 swiper-match-face-3
+                 swiper-match-face-4))
+        (colir-compose-method #'colir-compose-alpha)
+        (line-bg (face-background 'swiper-line-face)))
+    (cl-mapc (lambda (f1 f2)
+               (let ((bg (face-background f1)))
+                 (when bg
+                   (set-face-background
+                    f2
+                    (colir-blend
+                     (colir-color-parse bg)
+                     (colir-color-parse line-bg))))))
+             swiper-faces
+             faces)))

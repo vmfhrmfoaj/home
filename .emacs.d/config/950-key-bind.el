@@ -370,6 +370,8 @@
     (kbd "C-k") #'evil-scroll-page-up
     (kbd "C-j") #'evil-scroll-page-down)
   (evil-define-key 'insert 'global
+    (kbd "C-d") (lambda () (interactive) (up-list nil t))
+    (kbd "C-u") (lambda () (interactive) (backward-up-list nil t))
     (kbd "C-h") #'backward-delete-char
     (kbd "C-a") #'beginning-of-line-text
     (kbd "C-e") #'end-of-line
@@ -417,12 +419,30 @@
   :defer t
   :config
   (evil-define-key 'insert ivy-minibuffer-map
+    (kbd "<tab>") #'ivy-partial
+    (kbd "C-u") (lambda ()
+                  (interactive)
+                  (when ivy--directory
+                    (ivy--cd (ivy--parent-dir (expand-file-name ivy--directory)))
+                    (ivy--exhibit)))
     (kbd "C-j") #'ivy-next-line
     (kbd "C-k") #'ivy-previous-line)
   (evil-define-key 'normal ivy-minibuffer-map
     (kbd "RET") #'ivy-done
     "j" #'ivy-next-line
-    "k" #'ivy-previous-line))
+    "k" #'ivy-previous-line
+    (kbd "C-u") (lambda ()
+                  (interactive)
+                  (when ivy--directory
+                    (ivy--cd (ivy--parent-dir (expand-file-name ivy--directory)))
+                    (ivy--exhibit)
+                    (evil-insert-state)))
+    (kbd "<tab>") (lambda ()
+                    (interactive)
+                    (let ((input ivy-text))
+                      (ivy-partial)
+                      (unless (string= input ivy-text)
+                        (evil-insert-state))))))
 
 (use-package lsp-mode
   :defer t
