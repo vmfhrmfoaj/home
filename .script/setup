@@ -99,12 +99,10 @@ _setup_for_deno() {
 }
 
 _setup_for_java() {
-    _is_shim 'asdf'
-    if [ $? -ne 0 ]; then
-        local java_home=$(asdf where java 2>/dev/null)
-        if [ -d "${java_home}" ]; then
-            export JAVA_HOME=${java_home}
-        fi
+    local java_home="/usr/lib64/openjdk-11"
+    if [ -d "${java_home}" ]; then
+        export JAVA_HOME=${java_home}
+        _add_to_path "${java_home}/bin"
     fi
 }
 
@@ -363,6 +361,7 @@ _setup_for_android
 _setup_for_asdf
 _setup_for_clojure
 _setup_for_go
+_setup_for_java
 _setup_for_locale
 _setup_for_perlbrew
 _setup_for_rust
@@ -371,7 +370,6 @@ _setup_for_xorg
 
 # depend on `asdf`
 _setup_for_deno
-_setup_for_java
 _setup_for_kotlin
 _setup_for_lua
 
