@@ -50,12 +50,13 @@
      '(clojure-define-type-face ((t :inherit font-lock-type-face)))
      '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
-     `(clojure-important-keywords-face ((t :inherit font-lock-keyword-face :foreground ,(color-from font-lock-keyword-face :foreground 1.2))))
+     `(clojure-important-keywords-face ((t :inherit font-lock-keyword-face :foreground ,(color-from font-lock-keyword-face :foreground 1.5))))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
-     '(clojure-variable-name-face ((t :inherit font-lock-variable-name-face :weight semi-bold)))
      '(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
      '(clojure-side-effect-face ((t :weight semi-bold :underline t)))
-     '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face))))))
+     '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))
+     '(clojure-special-variable-definition-face ((t :inherit (font-lock-constant-face clojure-variable-definition-face))))
+     '(clojure-variable-definition-face ((t :inherit font-lock-variable-name-face :weight semi-bold))))))
 
 (use-package eldoc
   :defer t

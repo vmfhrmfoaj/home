@@ -149,6 +149,9 @@
   (defface clojure-special-variable-name-face
     `((t (:inherit font-lock-variable-name-face :weight ,(face-attribute 'default :weight))))
     "Face used to font-lock Clojure special variable name.")
+  (defface clojure-special-variable-definition-face
+    `((t (:inherit font-lock-variable-name-face)))
+    "Face used to font-lock Clojure special variable name.")
   (defface clojure-local-binding-variable-name-face
     `((t (:inherit font-lock-variable-name-face :weight ,(face-attribute 'default :weight))))
     "Face used to font-lock Clojure local binding variable name.")
@@ -179,8 +182,11 @@
   (defface clojure-interop-method-face
     '((t (:inherit font-lock-keyword-face)))
     "TODO")
-  (defface clojure-variable-name-face
+  (defface clojure-variable-definition-face
     '((t (:inherit font-lock-variable-name-face)))
+    "TODO")
+  (defface clojure-comment-sexp-face
+    '((t (:inherit shadow)))
     "TODO")
 
   (defcustom clojure--ignore-binding-highlight-regex
@@ -580,8 +586,11 @@
         ("\\<%[&1-9]?\\>"
          (0 'clojure-special-variable-name-face))
 
-        ;; Dynamic variables - *variable* or @*variable*
-        (,(concat "\\_<@?\\(\\*[^" clojure--sym-forbidden-rest-chars "*]*\\*\\)\\_>")
+        ;; definition dynamic variables
+        (,(concat "(" core-ns? "def[a-z]*\\s-+" meta? "\\(\\*" symbol "\\*\\)\\_>")
+         (1 'clojure-special-variable-definition-face))
+
+        (,(concat "\\_<@?" namespace? "\\(\\*" symbol "\\*\\)\\_>")
          (1 'clojure-special-variable-name-face))
 
         ;; #js{...}
@@ -606,7 +615,6 @@
         ;; Interop new - (symbol. ...)
         (,(concat "(" symbol "\\(\\.\\)" whitespace)
          (1 'clojure-interop-method-face))
-
         ;; Built-in binding and flow of control forms
         (,(concat "(" core-ns? important-kw "\\(?:)\\|" whitespace "\\)")
          (1 'clojure-important-keywords-face))
@@ -646,7 +654,7 @@
                   meta?
                   "\\(" symbol "\\)?")
          (1 'font-lock-keyword-face)
-         (2 'clojure-variable-name-face nil t))
+         (2 'clojure-variable-definition-face nil t))
 
         ;; (fn name? args ...)
         (,(concat "(" core-ns? "\\(fn\\)"
@@ -811,7 +819,27 @@
 
         ;; #_ and (comment ...) macros.
         (clojure--search-comment-macro
-         (1 font-lock-comment-face t))
+         (1 'clojure-comment-sexp-face t))
+        (,(concat "(" core-ns? "comment\\_>")
+         (,(lambda (limit)
+             (when (< (point) limit)
+               (let ((beg (point-marker))
+                     (end (point-marker)))
+                 (set-marker beg (point))
+                 (set-marker end (1- limit))
+                 (set-match-data (list beg end))
+                 (goto-char limit))
+               t))
+          (save-excursion
+            (if (in-comment?)
+                (setq font-lock--skip t)
+              (setq font-lock--skip nil)
+              (setq font-lock--anchor-beg-point (point))
+              (safe-up-list-1)
+              (point)))
+          (when font-lock--skip
+            (end-of-line))
+          (0 'clojure-comment-sexp-face t)))
 
         ;; Highlight `code` marks, just like `elisp'.
         (,(rx "`" (group-n 1 (optional "#'") (+ (or (syntax symbol) (syntax word)))) "`")
@@ -975,7 +1003,7 @@
          (1 'font-lock-keyword-face))
 
         ;; punctuation
-        ("\\([#&_'`^]\\)"
+        ("\\([~#&_'`^]\\)"
          (1 'shadow))))
     "Default expressions to highlight in Clojure mode."))
 

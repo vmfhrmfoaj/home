@@ -386,6 +386,8 @@
   :defer t
   :config
   (define-key evil-ex-completion-map [remap abort-recursive-edit] #'abort-recursive-edit-for-evil-ex)
+  (define-key evil-ex-completion-map (kbd "M-p") #'previous-history-element)
+  (define-key evil-ex-completion-map (kbd "M-n") #'next-history-element)
   (when evil-want-minibuffer
     (evil-define-key 'normal evil-ex-completion-map
       (kbd "<escape>") #'abort-recursive-edit-for-evil-ex)
@@ -749,7 +751,10 @@
               (evil-local-set-key 'normal (kbd "gg") #'vlf-custom-beginning-of-file)
               (evil-local-set-key 'normal (kbd "G")  #'vlf-custom-end-of-file))))
 
-(defun ztree-back-node (&optional node)
+(use-package ztree-view
+  :defer t
+  :config
+  (defun ztree-back-node (&optional node)
     (interactive)
     (let ((line (line-number-at-pos)))
       (-when-let (node (or node (ztree-find-node-in-line line)))
@@ -760,20 +765,17 @@
           (ztree-do-toggle-expand-state (ztree-find-node-in-line line) nil))
         (ztree-refresh-buffer line))))
 
-(defun ztree-enter-node (&optional node)
-  (interactive)
-  (let ((line (line-number-at-pos)))
-    (-when-let (node (or node (ztree-find-node-in-line line)))
-      (if (funcall ztree-node-is-expandable-fun node)
-          (progn
-            (ztree-do-toggle-expand-state node t)
-            (ztree-refresh-buffer line))
-        (when ztree-node-action-fun
-          (funcall ztree-node-action-fun node t))))))
+  (defun ztree-enter-node (&optional node)
+    (interactive)
+    (let ((line (line-number-at-pos)))
+      (-when-let (node (or node (ztree-find-node-in-line line)))
+        (if (funcall ztree-node-is-expandable-fun node)
+            (progn
+              (ztree-do-toggle-expand-state node t)
+              (ztree-refresh-buffer line))
+          (when ztree-node-action-fun
+            (funcall ztree-node-action-fun node t))))))
 
-(use-package ztree-view
-  :defer t
-  :config
   (add-hook 'ztreediff-mode-hook
             (lambda ()
               (evil-local-set-key 'normal (kbd "RET") #'ztree-perform-action)

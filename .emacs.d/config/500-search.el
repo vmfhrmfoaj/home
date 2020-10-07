@@ -63,3 +63,7 @@
 (use-package swiper
   :ensure t
   :defer t)
+
+(use-package wgrep
+  :ensure t
+  :defer t)

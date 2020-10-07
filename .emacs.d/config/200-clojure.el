@@ -79,7 +79,10 @@
         (-first-item)
         (funcall display-fn))))
 
-  (add-to-list 'cider-cljs-repl-types '(figwheel-custom "(do (require 'dev.repl) (dev.repl/start))" cider-check-figwheel-requirements))
+  (add-to-list 'cider-cljs-repl-types
+               (list 'figwheel-custom
+                     "(do (try (alter-var-root #'clojure.core/*auto-refresh* (constantly false)) (catch Exception _)) (require 'dev.repl) (dev.repl/start))"
+                     'cider-check-figwheel-requirements))
 
   (add-hook 'cider-mode-hook
             (lambda ()
@@ -106,15 +109,6 @@
                                         (lambda ()
                                           (with-current-buffer buf
                                             (cider-set-repl-ns-to-current-ns)))))))))
-
-  (advice-add #'cider--close-connection :before
-              (lambda (repl &rest _)
-                "I use my own Clojure REPL middleware, it create a temporary file.
-`cider--close-connection' send SIGKILL signal, JVM can't handle this signal.
-So, the middleware can't remove this file. I use this workaround until fixing the problem."
-                (let ((params (cider--gather-connect-params nil repl)))
-                  (when-let ((proj-dir (plist-get params :project-dir)))
-                    (delete-file (concat proj-dir "/.auto-refresh"))))))
 
   (advice-add #'cider-restart :around
               (lambda (fn &rest args)
