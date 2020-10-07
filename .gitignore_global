@@ -1,9 +1,4 @@
 # -*- mode: gitignore; -*-
-
-# Clojure
-.auto-refresh
-.nrepl-port
-
 # Eamcs
 *~
 \#*\#
