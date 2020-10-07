@@ -9,15 +9,16 @@
 (when window-system
   (prefer-coding-system 'utf-8)
   (setq-default line-spacing 1)
-  (let ((font (font-spec :family "Cascadia Code" :size 13 :weight 'light)))
+  (let* ((font-size 13)
+         (font (font-spec :family "Cascadia Code" :size font-size :weight 'light)))
     (set-face-font 'default font)
     (set-fontset-font nil '(#xE000 . #xF8FF) font)                ; for ligature
-    (set-fontset-font "fontset-default" '(#xE000 . #xF8FF) font)) ; for ligature
-  (set-fontset-font "fontset-default" 'unicode (font-spec :family "Noto Color Emoji" :size 11))
-  (set-fontset-font "fontset-default" 'unicode (font-spec :family "DejaVu Sans" :size 12) nil t)
-  (set-fontset-font "fontset-default" 'hangul  (font-spec :family "Noto Sans CJK KR" :size 12))
-  (set-fontset-font "fontset-default" 'kana    (font-spec :family "Noto Sans CJK JP" :size 12))
-  (let ((font (font-spec :family "Noto Sans CJK SC" :size 12)))
-    (set-fontset-font "fontset-default" 'bopomofo font)
-    (set-fontset-font "fontset-default" 'han      font))
+    (set-fontset-font "fontset-default" '(#xE000 . #xF8FF) font) ; for ligature
+    (set-fontset-font "fontset-default" 'unicode (font-spec :family "Noto Color Emoji" :size 11))
+    (set-fontset-font "fontset-default" 'unicode (font-spec :family "DejaVu Sans" :size font-size) nil t)
+    (set-fontset-font "fontset-default" 'hangul  (font-spec :family "Noto Sans CJK KR" :size font-size))
+    (set-fontset-font "fontset-default" 'kana    (font-spec :family "Noto Sans CJK JP" :size font-size))
+    (let ((font (font-spec :family "Noto Sans CJK SC" :size font-size)))
+      (set-fontset-font "fontset-default" 'bopomofo font)
+      (set-fontset-font "fontset-default" 'han      font)))
   (add-to-list 'face-font-rescale-alist '("Noto Sans Mono" . 0.9)))

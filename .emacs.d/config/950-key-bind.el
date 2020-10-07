@@ -205,7 +205,9 @@
 
     ;; register/rings/resume
     "rk" #'counsel-yank-pop
-    "rl" #'ivy-resume
+    "ri" #'ivy-resume
+    "rl" #'ivy-resume-non-search
+    "rs" #'ivy-resume-sarch
 
     ;; search/symbol
     "se" #'evil-multiedit-match-all
@@ -225,7 +227,6 @@
            (interactive)
            (let ((counsel-rg-base-command (counsel-rg-no-ignore-command)))
              (counsel-projectile-rg)))
-    "sr" #'ivy-resume-sarch
     "ss" #'swiper
 
     ;; toggle
@@ -555,7 +556,7 @@
       "men" #'cider-eval-ns-form
       "mer" #'cider-eval-last-sexp-and-replace
       "mgg" #'cider-find-var-at-point
-      "mrS" #'cider-jack-in
+      "mrS" #'cider-smart-jack-in
       "mrs" #'cider-switch-to-releated-repl-buffer
       "mrq" #'cider-quit)
     (which-key-declare-prefixes-for-mode mode

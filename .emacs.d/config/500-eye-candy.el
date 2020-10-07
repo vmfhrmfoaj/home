@@ -93,6 +93,15 @@
 
   (defvar-local focus-face-remap-cookie nil)
 
+  (defun focus--hl-line-highlight-face ()
+    (if (ignore-errors
+          (-some-> (bounds-of-thing-at-point 'symbol)
+            (car)
+            (get-text-property 'face)
+            (face-bold-p nil t)))
+        'hl-line-evil-insert-2
+      'hl-line-evil-insert))
+
   (defun focus--enable ()
     "TODO"
     (unless (or (apply #'derived-mode-p focus--exclude-modes)
@@ -101,7 +110,7 @@
       (remove-hook 'post-command-hook 'focus-move-focus t)
       (focus-move-focus)
       (setq focus-face-remap-cookie
-            (face-remap-add-relative 'hl-line 'hl-line-evil-insert))
+            (face-remap-add-relative 'hl-line (focus--hl-line-highlight-face)))
       (redisplay t)))
 
   (defun focus--disable ()
@@ -242,7 +251,19 @@
   (add-to-list 'focus-mode-to-thing '(text-mode . sentence+))
   (put 'tex-sentence 'bounds-of-thing-at-point #'focus--tex-thing)
   (put 'sentence+    'bounds-of-thing-at-point #'focus--text-thing)
-  (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing))
+  (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing)
+  (advice-add #'hl-line-move :after
+              (lambda (o)
+                "Highlight "
+                (when (and focus-face-remap-cookie
+                           global-hl-line-mode)
+                  (save-excursion
+                    (goto-char (overlay-start o))
+                    (let ((cur-face (cdr focus-face-remap-cookie))
+                          (new-face (focus--hl-line-highlight-face)))
+                      (unless (eq cur-face new-face)
+                        (face-remap-remove-relative focus-face-remap-cookie)
+                        (setq focus-face-remap-cookie (face-remap-add-relative 'hl-line new-face)))))))))
 
 (use-package highlight-parentheses
   :ensure t
@@ -256,7 +277,8 @@
 
 (use-package hl-line
   :config
-  (setq hl-line-sticky-flag nil)
+  (setq hl-line-range-function (-partial #'bounds-of-thing-at-point 'symbol)
+        hl-line-sticky-flag nil)
 
   (global-hl-line-mode))
 

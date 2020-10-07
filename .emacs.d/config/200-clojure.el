@@ -9,20 +9,29 @@
 (use-package cider
   :ensure t
   :defer t
+  :init
+  (defun cider-smart-jack-in ()
+    (interactive)
+    (cond
+     ((eq 'clojurescript-mode major-mode) (call-interactively #'cider-jack-in-cljs))
+     (t                                   (call-interactively #'cider-jack-in-clj))))
+
   :config
-  (defun cider-get-repl-buf ()
+  (defun cider-get-repl-buf (&optional ignore-repl-type)
     (when (cider-connected-p)
       (let* ((repl-type (cider-connection-type-for-buffer))
              (root (clojure-project-root-path))
-             (all-repl-bufs (cider-connections))
-             (prj-repl-bufs (--filter (with-current-buffer it
-                                        (string-equal root (clojure-project-root-path)))
-                                      all-repl-bufs))
-             (repl-buf (or (--first (with-current-buffer it
-                                      (string-equal repl-type cider-repl-type))
-                                    prj-repl-bufs)
-                           (-first-item prj-repl-bufs))))
-        repl-buf)))
+             (repl-bufs (--filter
+                         (with-current-buffer it
+                           (string-equal root (clojure-project-root-path)))
+                         (cider-connections)))
+             (repl-buf (--first
+                        (with-current-buffer it
+                          (string-equal repl-type cider-repl-type))
+                        repl-bufs)))
+        (or repl-buf
+            (and ignore-repl-type
+                 (-first-item repl-bufs))))))
 
   (defun cider-set-repl-ns-to-current-ns (&optional repl)
     (when-let ((repl (or repl (cider-get-repl-buf))))
@@ -69,6 +78,8 @@
                   (> itv otherv)))
         (-first-item)
         (funcall display-fn))))
+
+  (add-to-list 'cider-cljs-repl-types '(figwheel-custom "(do (require 'dev.repl) (dev.repl/start))" cider-check-figwheel-requirements))
 
   (add-hook 'cider-mode-hook
             (lambda ()

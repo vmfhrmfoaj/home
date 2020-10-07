@@ -20,7 +20,8 @@
    '(diff-refine-removed ((t :background "#ffeeee" :foreground "#880000" :weight bold)))
    '(line-number ((t :inherit (fringe default) :foreground "grey80")))
    '(line-number-current-line ((t :inherit (hl-line line-number) :background "#f1f8fd" :foreground "grey75" :weight semi-bold)))
-   '(fixed-pitch ((t :family "Dejavu Sans Mono")))
+   '(fixed-pitch       ((t :family "Fira Code")))
+   '(fixed-pitch-serif ((t :family "Fira Code")))
    '(link ((t :underline t)))
    '(shadow ((t :inherit default :foreground "grey55")))
    '(show-paren-match ((t :weight bold :underline t)))
@@ -31,7 +32,8 @@
   :config
   (load-theme 'twilight-anti-bright t)
   (custom-set-faces
-   '(fixed-pitch ((t :family "Dejavu Sans Mono")))
+   '(fixed-pitch       ((t :family "Fira Code")))
+   '(fixed-pitch-serif ((t :family "Fira Code")))
    '(link ((t :underline t)))
    '(shadow ((t :inherit default :foreground "grey55")))
    '(show-paren-match ((t :weight bold :underline t)))
@@ -41,17 +43,19 @@
 (use-package clojure-mode
   :defer t
   :config
-  (custom-set-faces
-   '(cider-fringe-good-face ((t :inherit success)))
-   '(clojure-define-type-face ((t :inherit font-lock-type-face)))
-   '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
-   `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,(face-attribute 'default :weight))))
-   `(clojure-important-keywords-face ((t :inherit font-lock-keyword-face :foreground ,(color-from font-lock-keyword-face :foreground 1.2))))
-   '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
-   '(clojure-variable-name-face ((t :inherit (bold font-lock-variable-name-face))))
-   '(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
-   '(clojure-side-effect-face ((t :weight semi-bold :underline t)))
-   '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))))
+  (let ((default-weight (face-attribute 'default :weight)))
+    (custom-set-faces
+     `(cider-deprecated-face ((t :inherit font-lock-warning-face :weight ,default-weight :underline (:color "darkorange"))))
+     '(cider-fringe-good-face ((t :inherit success)))
+     '(clojure-define-type-face ((t :inherit font-lock-type-face)))
+     '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
+     `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
+     `(clojure-important-keywords-face ((t :inherit font-lock-keyword-face :foreground ,(color-from font-lock-keyword-face :foreground 1.2))))
+     '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
+     '(clojure-variable-name-face ((t :inherit font-lock-variable-name-face :weight semi-bold)))
+     '(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
+     '(clojure-side-effect-face ((t :weight semi-bold :underline t)))
+     '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face))))))
 
 (use-package eldoc
   :defer t
@@ -64,10 +68,18 @@
   :config
   (let ((common-style '(:underline unspecified :slant unspecified :overline unspecified :box unspecified :inverse-video t)))
     (custom-set-faces
-     `(evil-goggles-delete-face ((t :inherit diff-refine-removed ,@common-style)))
-     `(evil-goggles-change-face ((t :inherit diff-refine-removed ,@common-style)))
-     `(evil-goggles-paste-face  ((t :inherit diff-refine-added   ,@common-style)))
-     `(evil-goggles-yank-face   ((t :inherit diff-refine-changed ,@common-style)))
+     `(evil-goggles-delete-face
+       ((((class color) (background light)) :background "#eecccc" ,@common-style)
+        (((class color) (background dark))  :inherit diff-removed ,@common-style)))
+     `(evil-goggles-change-face
+       ((((class color) (background light)) :background "#eecccc" ,@common-style)
+        (((class color) (background dark))  :inherit diff-removed ,@common-style)))
+     `(evil-goggles-paste-face
+       ((((class color) (background light)) :background "#cceecc"   ,@common-style)
+        (((class color) (background dark))  :inherit diff-added   ,@common-style)))
+     `(evil-goggles-yank-face
+       ((((class color) (background light)) :background "#eeeecc" ,@common-style)
+        (((class color) (background dark))  :inherit diff-changed ,@common-style)))
      '(evil-goggles-undo-redo-remove-face ((t :inherit evil-goggles-delete-face)))
      '(evil-goggles-undo-redo-add-face    ((t :inherit evil-goggles-paste-face)))
      '(evil-goggles-undo-redo-change-face ((t :inherit evil-goggles-change-face))))))
@@ -84,13 +96,13 @@
   (custom-set-faces
    '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight extra-light)))
    '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :weight extra-light)))
-   '(font-lock-function-name-face ((t :weight bold)))
+   '(font-lock-function-name-face ((t :weight semi-bold)))
    '(font-lock-regexp-grouping-backslash
      ((((class color) (background light)) :inherit font-lock-string-face :background "#e1f2d6")
-      (((class color) (background dark))  :inherit font-lock-string-face :weight semi-bold)))
+      (((class color) (background dark))  :inherit font-lock-string-face :weight normal)))
    '(font-lock-regexp-grouping-construct
      ((((class color) (background light)) :inherit font-lock-string-face :background "#e1f2d6")
-      (((class color) (background dark))  :inherit font-lock-string-face :weight semi-bold)))
+      (((class color) (background dark))  :inherit font-lock-string-face :weight normal)))
    '(font-lock-type-face ((t :weight unspecified)))
    '(font-lock-variable-name-face ((((class color) (background light)) :foreground "#607596")))
    '(font-lock-warning-face ((t :weight semi-bold :underline t)))))
@@ -99,7 +111,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(fringe ((((class color) (background light)) :background "grey99")
+   '(fringe ((((class color) (background light)) :background "grey99" :foreground "grey60")
              (((class color) (background dark)) :background "#171c22")))))
 
 (use-package hl-line
@@ -108,11 +120,15 @@
   (defface hl-line-evil-insert
     '((t :extend t))
     "TODO")
+  (defface hl-line-evil-insert-2
+    '((t :extend t))
+    "TODO")
 
   :config
   (custom-set-faces
    '(hl-line ((t :background unspecified)))
-   '(hl-line-evil-insert ((t :weight normal)))))
+   '(hl-line-evil-insert   ((t :weight normal)))
+   '(hl-line-evil-insert-2 ((t :weight bold)))))
 
 (use-package hl-todo
   :defer t
@@ -225,3 +241,12 @@
                      (colir-color-parse line-bg))))))
              swiper-faces
              faces)))
+
+(use-package treemacs
+  :defer t
+  :config
+  (custom-set-faces
+   `(treemacs-fringe-indicator-face ((t :foreground ,(face-background 'cursor))))
+   '(treemacs-selected-icon
+     ((((class color) (background light)) :background "#9fcdf2")
+      (((class color) (background dark))  :background "#d1d2d4")))))

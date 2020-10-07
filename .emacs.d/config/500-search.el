@@ -23,16 +23,22 @@
   :defer t
   :config
   (defvar ivy-search-callers '(swiper counsel-rg counsel-projectile-rg))
-
+  (defvar ivy-last-no-search-session nil)
   (defvar ivy-last-search-session nil)
-
   (defvar ivy-old-search-session nil)
 
-  (defun ivy--set-ivy-last-search-session (alist-sym key val)
-    (when (and (eq alist-sym 'ivy--sessions)
-               (member key ivy-search-callers))
-      (setq ivy-old-search-session ivy-last-search-session)
-      (setq ivy-last-search-session key)))
+  (defun ivy--set-ivy-session (alist-sym key val)
+    (if (and (eq alist-sym 'ivy--sessions)
+             (member key ivy-search-callers))
+        (progn
+          (setq ivy-old-search-session ivy-last-search-session)
+          (setq ivy-last-search-session key))
+      (setq ivy-last-no-search-session key)))
+
+  (defun ivy-resume-non-search ()
+    (interactive)
+    (when ivy-last-no-search-session
+      (ivy-resume ivy-last-no-search-session)))
 
   (defun ivy-resume-sarch ()
     (interactive)
@@ -52,7 +58,7 @@
           (ivy-resume ivy-last-search-session))
       (message "There is no search result that can be resume")))
 
-  (advice-add #'ivy--alist-set :after #'ivy--set-ivy-last-search-session))
+  (advice-add #'ivy--alist-set :after #'ivy--set-ivy-session))
 
 (use-package swiper
   :ensure t

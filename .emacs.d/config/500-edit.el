@@ -101,10 +101,7 @@ So, replaced `evil-jump-item' to this function."
         sp-highlight-wrap-tag-overlay nil)
 
   (smartparens-global-mode 1)
-  (show-smartparens-global-mode 1)
-
-  (ignore-errors
-    (ad-remove-advice #'company--insert-candidate 'after 'sp-company--insert-candidate)))
+  (show-smartparens-global-mode 1))
 
 (use-package undo-tree
   :ensure t

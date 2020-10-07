@@ -44,6 +44,7 @@
 
 (use-package ivy
   :ensure t
+  :defer t
   :config
   (setq enable-recursive-minibuffers t
         ivy-height 15)

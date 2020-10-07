@@ -975,7 +975,7 @@
          (1 'font-lock-keyword-face))
 
         ;; punctuation
-        ("\\([#&_'`]\\)"
+        ("\\([#&_'`^]\\)"
          (1 'shadow))))
     "Default expressions to highlight in Clojure mode."))
 

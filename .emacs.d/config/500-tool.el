@@ -31,7 +31,8 @@
   (atomic-chrome-start-server))
 
 (use-package display-line-numbers
-  :hook ((prog-mode . enable-display-line-numbers))
+  :hook ((prog-mode  . enable-display-line-numbers)
+         (latex-mode . enable-display-line-numbers))
   :init
   (defun enable-display-line-numbers ()
     "Turn on `display-line-numbers-mode'."
@@ -367,6 +368,10 @@
      :on-nil              (treemacs-pulse-on-failure "There is nothing to do here.")))
 
   :config
+  (defface treemacs-selected-icon
+    '((t :inherit hl-line))
+    "TODO")
+
   (setq treemacs-RET-actions-config
         (let ((visit-fn (lambda (&optional arg)
                           (treemacs-visit-node-default arg)
@@ -386,7 +391,21 @@
             (tag-node-closed  . ,visit-prefer-fn)
             (tag-node         . ,visit-fn))))
 
-  (treemacs-resize-icons 15))
+  (treemacs-resize-icons 15)
+
+  (advice-add #'treemacs--setup-icon-background-colors :after
+              (lambda (&rest _)
+                (when (memq treemacs--selected-icon-background '(unspecified-bg unspecified))
+                  (setf treemacs--selected-icon-background (or (face-background 'treemacs-selected-icon nil t)
+                                                               treemacs--not-selected-icon-background))
+                  (dolist (theme treemacs--themes)
+                    (treemacs--maphash (treemacs-theme->gui-icons theme) (_ icon)
+                      (treemacs--set-img-property
+                       (get-text-property 0 'img-selected icon)
+                       :background treemacs--selected-icon-background)
+                      (treemacs--set-img-property
+                       (get-text-property 0 'img-unselected icon)
+                       :background treemacs--not-selected-icon-background)))))))
 
 (use-package treemacs-compatibility
   :after winum

@@ -20,7 +20,8 @@
         blink-cursor-delay 0
         comment-fill-column 100
         create-lockfiles nil
-        exclude-prev-buf-regex "^\\(\\s-*\\*\\|\\s-*markdown-code-fontification:\\|\\s-*magit\\(?:-[a-z]+\\):\\)"
+        default-input-method "korean-hangul"
+        exclude-prev-buf-regex "^\\(\\s-*\\*\\|\\s-*markdown-code-fontification:\\|\\s-*magit\\(?:-[a-z]+\\)?:\\)"
         initial-major-mode 'text-mode
         initial-scratch-message ""
         read-process-output-max (* 1024 1024)
@@ -28,6 +29,9 @@
 
 (put 'dired-find-alternate-file 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
+
+(when-let ((input-method (--first (string= "korean-hangul" (car it)) input-method-alist)))
+  (setf (nth 3 input-method) "Korean"))
 
 (blink-cursor-mode 1)
 (global-auto-revert-mode 1)
