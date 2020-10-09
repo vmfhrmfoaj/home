@@ -105,9 +105,10 @@ So, replaced `evil-jump-item' to this function."
 
 (use-package undo-tree
   :ensure t
-  :defer t
   :config
-  (setq undo-tree-auto-save-history t
+  (setq evil-redo-function #'undo-tree-redo
+        evil-undo-function #'undo-tree-undo
+        undo-tree-auto-save-history t
         undo-tree-history-directory-alist backup-directory-alist
         undo-tree-limit        80000000
         undo-tree-strong-limit (/ 120000000 2)
@@ -116,7 +117,9 @@ So, replaced `evil-jump-item' to this function."
   (advice-add #'undo-tree-load-history-from-hook :around
               (lambda (fn)
                 "wrap with `ignore-errors'"
-                (ignore-errors (funcall fn)))))
+                (ignore-errors (funcall fn))))
+
+  (global-undo-tree-mode))
 
 (use-package whitespace
   :config

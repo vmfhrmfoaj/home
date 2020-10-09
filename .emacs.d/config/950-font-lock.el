@@ -582,6 +582,34 @@
             (goto-char font-lock--anchor-beg-point))
           (0 'font-lock-type-face)))
 
+        ;; Highlighting for (:require ...)
+        (,(concat "(:require" whitespace+)
+         (,(let ((req-block (concat "\\[\\(" symbol "\\)\\(?:" whitespace+ ":as" whitespace+ "\\(" symbol "\\)\\)?\\]")))
+             (lambda (limit)
+               (ignore-errors
+                 (when font-lock--skip
+                   (error ""))
+                 (when (re-search-forward req-block limit t)
+                   (let ((match-data (match-data)))
+                     (set-match-data (append match-data (fake-match-2))))
+                   (unless (match-data 2)
+                     (set-match-data (list (match-data 0)
+                                           (match-data 1)
+                                           (match-data 1))))
+                   t))))
+          (save-excursion
+            (if (in-comment?)
+                (setq font-lock--skip t)
+              (setq font-lock--skip nil)
+              (setq font-lock--anchor-beg-point (point))
+              (safe-up-list-1)
+              (point)))
+          (if font-lock--skip
+              (end-of-line)
+            (goto-char font-lock--anchor-beg-point))
+          (1 'font-lock-type-face)
+          (2 'font-lock-type-face)))
+
         ;; %
         ("\\<%[&1-9]?\\>"
          (0 'clojure-special-variable-name-face))

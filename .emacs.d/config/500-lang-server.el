@@ -348,9 +348,6 @@
                                    (setq flycheck--idle-trigger-timer nil))
                                  (eldoc-message msg)))
 
-  (add-to-list 'lsp-language-id-configuration '(cperl-mode . "perl"))
-  (add-to-list 'lsp-language-id-configuration '(".*\\.pl$" . "perl"))
-
   (lsp-register-custom-settings
    '(("gopls.completeUnimported" t t)
      ("gopls.staticcheck" t t)))
@@ -399,22 +396,6 @@
   (advice-add #'lsp-find-type-definition :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
   (advice-add #'lsp-signature-stop :after #'lsp-signature-restart))
-
-(use-package lsp-perl
-  :defer t
-  :config
-  (lsp-register-client
-   (make-lsp-client :new-connection (lsp-tcp-connection
-                                     (lambda (port)
-                                       (list lsp-perl-language-server-path
-                                             "-MPerl::LanguageServer"
-                                             "-ePerl::LanguageServer::run"
-                                             "--"
-                                             "--port"
-                                             (number-to-string port))))
-                    :major-modes '(perl-mode cperl-mode)
-                    :priority -1
-                    :server-id 'perl-language-server)))
 
 (use-package lsp-ui
   :ensure t

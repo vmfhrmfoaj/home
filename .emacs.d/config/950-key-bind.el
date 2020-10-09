@@ -137,12 +137,6 @@
     "be" #'eldoc-doc-buffer
     "bk" #'kill-buffer
     "bs" #'get-scratch-buffer-create
-    "bl" #'switch-to-previous-buffer
-
-    ;; display
-    "dj" #'evil-show-jumps
-    "dm" #'evil-show-marks
-    "dr" #'evil-show-registers
 
     ;; error
     "en" #'flycheck-next-error
@@ -150,15 +144,16 @@
     "el" #'flycheck-list-errors
 
     ;; file
-    "fR" #'rename-current-buffer-file
-    "fY" #'kill-new-buffer-file-name
+    "fb" #'counsel-bookmark
     "ff" #'counsel-find-file
+    "fR" #'rename-current-buffer-file
     "fr" #'counsel-recentf
     "ft" #'treemacs-current-directory
+    "fY" #'kill-new-buffer-file-name
     "fy" #'projectile-kill-new-buffer-file-name
 
     ;; git
-    "g+" #'git-gutter+-stage-hunks
+    "g=" #'git-gutter+-stage-hunks
     "gb" #'magit-blame-addition
     "gl" #'counsel-git-log
     "gs" #'magit-status
@@ -207,6 +202,7 @@
     "rk" #'counsel-yank-pop
     "ri" #'ivy-resume
     "rl" #'ivy-resume-non-search
+    "rm" #'evil-show-marks
     "rs" #'ivy-resume-sarch
 
     ;; search/symbol
@@ -248,8 +244,12 @@
     "wd" #'delete-window
     "wm" #'delete-other-windows
 
-    ;; text
-    "xr" #'align-regexp)
+    ;; text / xwidget
+    "x0" (lambda () (interactive) (text-scale-set 0))
+    "x=" #'text-scale-increase
+    "x-" #'text-scale-decrease
+    "xr" #'align-regexp
+    "xb" #'xwidget-webkit-browse-url)
   (when (eq 'darwin system-type)
     (evil-leader/set-key
       ;; apllication
@@ -269,7 +269,6 @@
   (which-key-declare-prefixes
     (concat evil-leader/leader "a") "applications"
     (concat evil-leader/leader "aoc") "capture/clock"
-    (concat evil-leader/leader "d") "display"
     (concat evil-leader/leader "e") "error"
     (concat evil-leader/leader "f") "file"
     (concat evil-leader/leader "b") "buffer"
@@ -284,7 +283,8 @@
     (concat evil-leader/leader "s") "search/symbol"
     (concat evil-leader/leader "t") "toggle"
     (concat evil-leader/leader "q") "quit"
-    (concat evil-leader/leader "w") "window"))
+    (concat evil-leader/leader "w") "window"
+    (concat evil-leader/leader "x") "text/xwidget"))
 
 
 ;; Key binding for the minor mode
@@ -486,6 +486,12 @@
                        (fboundp 'lsp-treemacs-call-hierarchy))
                   #'lsp-treemacs-call-hierarchy)
         "mga" (if (lsp-feature? "workspace/symbol") #'xref-find-apropos)
+        "mgs" (if (and (fboundp 'lsp-ivy-workspace-symbol)
+                       (lsp-feature? "workspace/symbol"))
+                  #'lsp-ivy-workspace-symbol)
+        "mgS" (if (and (fboundp 'lsp-ivy-global-workspace-symbol)
+                       (lsp-feature? "workspace/symbol"))
+                  #'lsp-ivy-global-workspace-symbol)
 
         ;; help
         "mhh" (if (lsp-feature? "textDocument/hover") #'lsp-describe-thing-at-point)
@@ -500,15 +506,7 @@
 
         ;; actions
         "maa" (if (lsp-feature? "textDocument/codeAction") #'lsp-execute-code-action)
-        "mah" (if (lsp-feature? "textDocument/documentHighlight") #'lsp-document-highlight)
-
-        ;; peeks
-        "mGs" (if (and (fboundp 'lsp-ivy-workspace-symbol)
-                       (lsp-feature? "workspace/symbol"))
-                  #'lsp-ivy-workspace-symbol)
-        "mGS" (if (and (fboundp 'lsp-ivy-global-workspace-symbol)
-                       (lsp-feature? "workspace/symbol"))
-                  #'lsp-ivy-global-workspace-symbol))
+        "mah" (if (lsp-feature? "textDocument/documentHighlight") #'lsp-document-highlight))
       (which-key-declare-prefixes-for-mode major-mode
         (concat evil-leader/leader "ms")  "sessions"
         (concat evil-leader/leader "mF")  "folders"
@@ -517,8 +515,7 @@
         (concat evil-leader/leader "mg")  "goto"
         (concat evil-leader/leader "mh")  "help"
         (concat evil-leader/leader "mr")  "refactor"
-        (concat evil-leader/leader "ma")  "code actions"
-        (concat evil-leader/leader "mG")  "peek")
+        (concat evil-leader/leader "ma")  "code actions")
       (evil-leader--set-major-leader-for-mode major-mode)
       (add-to-list 'lsp--custom-setup-key-status major-mode)))
 

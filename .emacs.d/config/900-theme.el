@@ -12,6 +12,7 @@
   (load-theme 'twilight-bright t)
   (custom-set-faces
    '(cursor ((t :background "sky blue")))
+   '(default ((t :background "#f8f7f6" :foreground "#3a3f42")))
    '(diff-added   ((t :background "#ddffdd" :foreground "#22aa22")))
    '(diff-changed ((t :background "#ffffdd" :foreground "#aaaa22")))
    '(diff-removed ((t :background "#ffdddd" :foreground "#aa2222")))
@@ -19,12 +20,9 @@
    '(diff-refine-changed ((t :background "#ffffee" :foreground "#888800" :weight bold)))
    '(diff-refine-removed ((t :background "#ffeeee" :foreground "#880000" :weight bold)))
    '(line-number ((t :inherit (fringe default) :foreground "grey80")))
-   '(line-number-current-line ((t :inherit (hl-line line-number) :background "#f1f8fd" :foreground "grey75" :weight semi-bold)))
-   '(fixed-pitch       ((t :family "Fira Code")))
-   '(fixed-pitch-serif ((t :family "Fira Code")))
-   '(link ((t :underline t)))
+   '(line-number-current-line
+     ((t :inherit (hl-line line-number) :background "#d9d8d5" :foreground "#91908e" :weight semi-bold)))
    '(shadow ((t :inherit default :foreground "grey55")))
-   '(show-paren-match ((t :weight bold :underline t)))
    '(trailing-whitespace ((t :background "grey65")))))
 (use-package twilight-anti-bright-theme
   :disabled t
@@ -36,9 +34,13 @@
    '(fixed-pitch-serif ((t :family "Fira Code")))
    '(link ((t :underline t)))
    '(shadow ((t :inherit default :foreground "grey55")))
-   '(show-paren-match ((t :weight bold :underline t)))
    '(trailing-whitespace ((t :background "grey35")))
    '(tooltip ((t :background "#173735" :foreground "#dcdddd")))))
+(custom-set-faces
+ '(fixed-pitch       ((t :family "Fira Code")))
+ '(fixed-pitch-serif ((t :family "Fira Code")))
+ '(link ((t :underline t)))
+ '(show-paren-match ((t :weight bold :underline t))))
 
 (use-package clojure-mode
   :defer t
@@ -112,7 +114,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(fringe ((((class color) (background light)) :background "grey99" :foreground "grey60")
+   '(fringe ((((class color) (background light)) :background "#f2f0ed" :foreground "#c1c0bd")
              (((class color) (background dark)) :background "#171c22")))))
 
 (use-package hl-line
@@ -200,8 +202,8 @@
   :config
   (custom-set-faces
    `(sh-heredoc
-     ((((class color) (background light)) :background "#fcf7f2" :foreground "tan1")
-      ((((class color) (background dark)) :background "#201818" :foreground "tan1"))))
+     ((((class color) (background light)) :background "#fff6e5" :foreground "orange2")
+      (((class color) (background dark))  :background "#201818" :foreground "tan1")))
    `(sh-quoted-exec
      ((((class color) (background light)) :background "#faecfa" :foreground "magenta")
       (((class color) (background light)) :background "#191719" :foreground "magenta")))))

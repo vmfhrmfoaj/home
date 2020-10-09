@@ -31,19 +31,16 @@
   (atomic-chrome-start-server))
 
 (use-package display-line-numbers
-  :hook ((prog-mode  . enable-display-line-numbers)
-         (latex-mode . enable-display-line-numbers))
+  :hook ((prog-mode . enable-display-line-numbers)
+         (text-mode . enable-display-line-numbers))
   :init
   (defun enable-display-line-numbers ()
     "Turn on `display-line-numbers-mode'."
-    (let ((buf-name (buffer-name)))
-      (when (and (stringp buf-name)
-                 (not (string-match-p "^\\s-*\\*" buf-name))
-                 (not (minibufferp)))
-        (setq display-line-numbers-width
-              (max 3 (length (number-to-string (count-lines (point-min) (point-max))))))
-        (display-line-numbers-mode)
-        (setq display-line-numbers 'visual))))
+    (when (not (minibufferp))
+      (setq display-line-numbers-width
+            (max 3 (length (number-to-string (count-lines (point-min) (point-max))))))
+      (display-line-numbers-mode)
+      (setq display-line-numbers 'visual)))
 
   (setq-default display-line-numbers-width-start nil))
 

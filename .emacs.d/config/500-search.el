@@ -22,7 +22,7 @@
   :ensure t
   :defer t
   :config
-  (defvar ivy-search-callers '(swiper counsel-rg counsel-projectile-rg))
+  (defvar ivy-search-callers '(swiper counsel-rg counsel-projectile-rg lsp-ivy-workspace-symbol))
   (defvar ivy-last-no-search-session nil)
   (defvar ivy-last-search-session nil)
   (defvar ivy-old-search-session nil)
@@ -44,17 +44,33 @@
     (interactive)
     (if-let ((state (alist-get ivy-last-search-session ivy--sessions)))
         (if (eq 'swiper ivy-last-search-session)
-            (if (and (stringp buffer-file-name)
-                     (string= (file-truename buffer-file-name)
-                              (or (-some-> state
-                                    (ivy-state-extra-props)
-                                    (plist-get :fname)
-                                    (file-truename))
-                                  "")))
-                (ivy-resume 'swiper)
-              (if (eq 'swiper ivy-old-search-session)
-                  (message "There is no search result that can be resume")
-                (ivy-resume ivy-old-search-session)))
+            (let ((extra-props (ivy-state-extra-props state)))
+              (if (and (stringp buffer-file-name)
+                       (string= (file-truename buffer-file-name)
+                                (or (-some-> extra-props
+                                      (plist-get :fname)
+                                      (file-truename))
+                                    "")))
+                  (let* ((data (plist-get extra-props :ivy-data))
+                         (text (plist-get data :text))
+                         (regex (ivy--regex text))
+                         (last-item-line (-some->> (plist-get data :all-candidates)
+                                           (--last (string-match-p regex it))
+                                           (swiper--line-number)))
+                         (need-to-update
+                          (and last-item-line
+                               (not (s-blank? text))
+                               (save-excursion
+                                 (goto-line last-item-line)
+                                 (beginning-of-line)
+                                 (print (list text last-item-line (buffer-substring-no-properties (point) (line-end-position))))
+                                 (unless (re-search-forward regex (line-end-position) t) t)))))
+                    (if need-to-update
+                        (swiper text)
+                      (ivy-resume 'swiper)))
+                (if (eq 'swiper ivy-old-search-session)
+                    (message "There is no search result that can be resume")
+                  (ivy-resume ivy-old-search-session))))
           (ivy-resume ivy-last-search-session))
       (message "There is no search result that can be resume")))
 

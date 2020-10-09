@@ -87,16 +87,16 @@
 
 (defun custom-face-attribute (face attr)
   "TODO"
-  (let ((val (face-attribute face attr)))
-    (if (not (eq val 'unspecified))
-        val
-      (let ((parents (face-attribute face :inherit)))
-        (unless (eq parents 'unspecified)
-          (catch 'break
-            (dolist (p (-list parents))
-              (-when-let (val (custom-face-attribute p attr))
-                (throw 'break val)))
-            (face-attribute 'default attr)))))))
+  (if (listp face)
+      (let ((val (plist-get face attr)))
+        (if (or (null val) (eq 'unspecified val))
+            (catch 'stop
+              (dolist (face (-list (plist-get face :inherit)))
+                (let ((val (custom-face-attribute face attr)))
+                  (when (and val (not (eq 'unspecified val)))
+                    (throw 'stop val)))))
+          val))
+    (face-attribute face attr nil t)))
 
 (defun color-from (face attr &optional p s)
   "TODO"

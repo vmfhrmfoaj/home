@@ -123,3 +123,11 @@
 
   (advice-add #'dumb-jump-fetch-file-results :override #'dumb-jump--custom-fetch-file-results)
   (advice-add #'dumb-jump-fetch-results :override #'dumb-jump--custom-fetch-results))
+
+(use-package ivy-xref
+  :ensure t
+  :defer t
+  :init
+  (when (>= emacs-major-version 27)
+    (setq xref-show-definitions-function #'ivy-xref-show-defs))
+  (setq xref-show-xrefs-function #'ivy-xref-show-xrefs))

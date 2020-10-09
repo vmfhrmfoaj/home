@@ -49,4 +49,26 @@
   (setq enable-recursive-minibuffers t
         ivy-height 15)
 
+  (defun colir--custom-blend-background (start next prevn face object)
+    (put-text-property
+     start next 'face
+     (if-let ((background-prev (when (s-starts-with? "ivy" (symbol-name prevn))
+                                 (face-background prevn))))
+         (cons `(background-color
+                 . ,(colir-blend
+                     (colir-color-parse background-prev)
+                     (colir-color-parse (face-background face nil t))))
+               prevn)
+       (list face prevn))
+     object))
+
+  (advice-add #'colir--blend-background :override #'colir--custom-blend-background)
+  (advice-add #'ivy--highlight-default :before
+              (lambda (_str)
+                "Update `ivy--old-re' for Ivy caller using :dynamic-collection.
+See `ivy--update-minibuffer', I think not updating `ivy--old-re' is intended.
+But, In my case, it is not harm."
+                (when (ivy-state-dynamic-collection ivy-last)
+                  (setq ivy--old-re ivy-regex))))
+
   (ivy-mode 1))

@@ -98,7 +98,9 @@
           (-some-> (bounds-of-thing-at-point 'symbol)
             (car)
             (get-text-property 'face)
-            (face-bold-p nil t)))
+            (-some->> (-list)
+              (--reduce-from (if (null acc) (custom-face-attribute it :weight) acc) nil))
+            (memq '(semi-bold bold extra-bold ultra-bold))))
         'hl-line-evil-insert-2
       'hl-line-evil-insert))
 
