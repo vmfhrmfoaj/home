@@ -154,7 +154,7 @@ _setup_for_locale() {
     export LC_ALL=en_US.UTF-8
 }
 
-_setup_for_perlbrew() {
+_setup_for_perl() {
     export PERLBREW_ROOT="${HOME}/.perlbrew"
     if [ ! -d ${PERLBREW_ROOT} ]; then
         echo -n "Do you want to install 'Perlbrew'? (Y or N): "
@@ -177,7 +177,9 @@ EOF
             chmod +x "${HOME}/.shim/perlbrew"
         fi
     fi
-    [ -r "${PERLBREW_ROOT}/etc/bashrc" ] && source "${PERLBREW_ROOT}/etc/bashrc"
+    if [ -r "${PERLBREW_ROOT}/etc/bashrc" ]; then
+        source "${PERLBREW_ROOT}/etc/bashrc"
+    fi
 }
 
 _setup_for_rust() {
@@ -363,7 +365,7 @@ _setup_for_clojure
 _setup_for_go
 _setup_for_java
 _setup_for_locale
-_setup_for_perlbrew
+_setup_for_perl
 _setup_for_rust
 _setup_for_nodejs
 _setup_for_xorg
