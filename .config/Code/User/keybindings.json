@@ -10,7 +10,6 @@
         "command": "deleteLeft",
         "when": "textInputFocus && !editorReadonly && !vim.active"
     },
-
     // Customized
     {
         "key": "enter",
@@ -27,7 +26,11 @@
         "command": "workbench.action.toggleMaximizedPanel",
         "when": "terminalFocus"
     },
-
+    {
+        "key": "ctrl+shift+space",
+        "command": "closeParameterHints",
+        "when": "editorTextFocus && parameterHintsVisible"
+    },
     // Tab and Shift + Tab
     {
         "key": "ctrl+tab",
@@ -49,7 +52,6 @@
         "command": "workbench.action.quickOpenSelectNext",
         "when": "inQuickOpen"
     },
-
     // Vim
     {
         "key": "escape",
@@ -57,8 +59,13 @@
         "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.active && vim.mode == 'Insert'"
     },
     {
-        "key": "enter",
+        "key": "ctrl+enter",
         "command": "multiCommand.vimSelectedSuggestionAndEscape",
+        "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.active && vim.mode == 'Insert'"
+    },
+    {
+        "key": "shift+enter",
+        "command": "multiCommand.cancelSuggestionAndInsertNewline",
         "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.active && vim.mode == 'Insert'"
     },
     {
@@ -91,7 +98,6 @@
         "command": "multiCommand.vimOpenPreviousRecentlyUsedEditorInGroup",
         "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
     },
-
     // H/J/K/L
     {
         "key": "ctrl+j",
@@ -124,14 +130,24 @@
         "when": "inputBoxFocus && searchViewletVisible"
     },
     {
+        "key": "ctrl+shift+j",
+        "command": "editor.action.marker.nextInFiles",
+        "when": "editorTextFocus && !findInputFocussed"
+    },
+    {
+        "key": "ctrl+shift+k",
+        "command": "editor.action.marker.prevInFiles",
+        "when": "editorTextFocus && !findInputFocussed"
+    },
+    {
         "key": "ctrl+j",
         "command": "multiCommand.goNextChangeAndShow",
-        "when": "editorTextFocus && !findInputFocussed && vim.active && vim.mode == 'Normal'"
+        "when": "editorTextFocus && !findInputFocussed && !suggestWidgetVisible"
     },
     {
         "key": "ctrl+k",
         "command": "multiCommand.goPreviousChangeAndShow",
-        "when": "editorTextFocus && !findInputFocussed && vim.active && vim.mode == 'Normal'"
+        "when": "editorTextFocus && !findInputFocussed && !suggestWidgetVisible"
     },
     {
         "key": "ctrl+j",
@@ -157,30 +173,37 @@
         "key": "ctrl+j",
         "command": "-workbench.action.togglePanel"
     },
-
     // HHKB Pro2
     {
         "key": "shift+NumPad_Add",
         "command": "type",
-        "args": { "text": "=" },
+        "args": {
+            "text": "="
+        },
         "when": "editorTextFocus"
     },
     {
         "key": "shift+NumPad_Subtract",
         "command": "type",
-        "args": { "text": "_" },
+        "args": {
+            "text": "_"
+        },
         "when": "editorTextFocus"
     },
     {
         "key": "shift+NumPad_Divide",
         "command": "type",
-        "args": { "text": "\\" },
+        "args": {
+            "text": "\\"
+        },
         "when": "editorTextFocus"
     },
     {
         "key": "shift+numpad_multiply",
         "command": "type",
-        "args": { "text": "#" },
+        "args": {
+            "text": "#"
+        },
         "when": "editorTextFocus"
     },
 ]
