@@ -38,7 +38,7 @@
     "Turn on `display-line-numbers-mode'."
     (when (not (minibufferp))
       (setq display-line-numbers-width
-            (max 3 (length (number-to-string (count-lines (point-min) (point-max))))))
+            (max 4 (length (number-to-string (count-lines (point-min) (point-max))))))
       (display-line-numbers-mode)
       (setq display-line-numbers 'visual)))
 

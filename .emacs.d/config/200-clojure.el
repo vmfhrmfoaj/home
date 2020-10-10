@@ -16,6 +16,10 @@
      ((eq 'clojurescript-mode major-mode) (call-interactively #'cider-jack-in-cljs))
      (t                                   (call-interactively #'cider-jack-in-clj))))
 
+  ;; NOTE
+  ;;  a below alias will be replaced to a function when `cider' package is loaded.
+  (defalias 'cider-switch-to-releated-repl-buffer #'cider-smart-jack-in)
+
   :config
   (defun cider-get-repl-buf (&optional ignore-repl-type)
     (when (cider-connected-p)
@@ -47,7 +51,7 @@
         (progn
           (cider-set-repl-ns-to-current-ns repl)
           (cider--switch-to-repl-buffer repl nil))
-      (message "Cider didn't start")))
+      (message "Cider didn't start yet, please check '*nrepl-server ...*' buffer")))
 
   (defun cider-hard-restart (&optional repl)
     (interactive)
@@ -63,7 +67,7 @@
         (cider-find-var nil (cider-symbol-at-point))
       (dumb-jump-go)))
 
-  (defun cider-switch-to-last-clj-buf ()
+  (defun cider-switch-to-clj-buf-latest-visited ()
     (interactive)
     (let ((display-fn (if cider-repl-display-in-current-window
                           #'pop-to-buffer-same-window

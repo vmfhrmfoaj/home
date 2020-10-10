@@ -17,7 +17,12 @@
          (lisp-interaction-mode . aggressive-indent-mode))
 
   :config
-  (setq aggressive-indent-region-function #'indent-region) ; fix with below advice func
+  (setq aggressive-indent-region-function #'indent-region ; fix with below advice func
+        aggressive-indent-protected-commands (append aggressive-indent-protected-commands
+                                                     '(evil-undo
+                                                       evil-redo
+                                                       undo-tree-visualize-undo
+                                                       undo-tree-visualize-redo)))
 
   (add-hook 'aggressive-indent-mode-hook
             (lambda ()

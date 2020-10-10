@@ -17,6 +17,7 @@
     (execute-kbd-macro (kbd "SPC")))
 
   (setq company-idle-delay 0.3
+        company-echo-delay 0.2
         company-minimum-prefix-length 1
         company-selection-wrap-around t
         company-dabbrev-downcase nil
@@ -24,7 +25,8 @@
         company-dabbrev-ignore-case t
         company-dabbrev-code-ignore-case t
         company-etags-ignore-case t
-        company-echo-delay 0.2)
+        ;; company-tooltip-width-grow-only t
+        )
 
   (add-hook 'company-after-completion-hook
             (lambda (_ignored)

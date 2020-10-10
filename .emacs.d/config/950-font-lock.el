@@ -319,7 +319,7 @@
       `(;; Binding forms
         (,(concat "(" namespace? (regexp-opt clojure--binding-kw) "[ \r\t\n]+\\[")
          ;; Normal bindings
-         (,(let ((meta?+ns?+symbol (concat meta? "\\_<" namespace? "\\(" symbol "\\)")))
+         (,(let ((meta?+ns?+symbol (concat meta? "\\_<" namespace? "\\(" symbol "\\)#?\\>")))
              (lambda (limit)
                (ignore-errors
                  (when font-lock--skip
@@ -346,7 +346,7 @@
           (1 'clojure-local-binding-variable-name-face))
 
          ;; Destructuring bindings
-         (,(let ((meta?+ns?+symbol (concat meta? "\\_<" namespace? "\\(" symbol "\\)\\>")))
+         (,(let ((meta?+ns?+symbol (concat meta? "\\_<" namespace? "\\(" symbol "\\)#?\\>")))
              (lambda (limit)
                ;; NOTE
                ;; We need to iterate to search symbols in the destructuring form,
@@ -450,7 +450,7 @@
           (0 'clojure-semi-function-name-face))
 
          ;; Highlighting OOP fn parameters
-         (,(let ((meta?+ns?+symbol (concat meta? "\\_<" namespace? "\\(" symbol "\\)\\>")))
+         (,(let ((meta?+ns?+symbol (concat meta? "\\_<" namespace? "\\(" symbol "\\)#?\\>")))
              (lambda (limit)
                (ignore-errors
                  (when font-lock--skip
@@ -499,7 +499,7 @@
          (2 'font-lock-function-name-face)
 
          ;; fn parameters highlight
-         (,(let ((meta?+ns?+symbol (concat meta? "\\_<" namespace? "\\(" symbol "\\)\\>")))
+         (,(let ((meta?+ns?+symbol (concat meta? "\\_<" namespace? "\\(" symbol "\\)#?\\>")))
              (lambda (limit)
                (ignore-errors
                  (when font-lock--skip
@@ -584,7 +584,9 @@
 
         ;; Highlighting for (:require ...)
         (,(concat "(:require" whitespace+)
-         (,(let ((req-block (concat "\\[\\(" symbol "\\)\\(?:" whitespace+ ":as" whitespace+ "\\(" symbol "\\)\\)?\\]")))
+         (,(let ((req-block (concat "\\[\\(" symbol "\\)\\(?:" whitespace+
+                                    ":as" whitespace+ "\\(" symbol "\\)\\)?\\(?:" whitespace+
+                                    ":refer" whitespace+ "\\[.+?\\]" whitespace* "\\)?\\]")))
              (lambda (limit)
                (ignore-errors
                  (when font-lock--skip
@@ -653,7 +655,7 @@
          (2 'shadow))
 
         ;; Auto-gensym variable - variable#
-        (,(concat "[0-9A-Za-z?]\\(#\\)")
+        (,(concat symbol "\\(#\\)\\_>")
          (1 'shadow))
 
         ;; Dereference, Unquote - @symbol or ~symbol
@@ -693,7 +695,7 @@
          (2 'font-lock-function-name-face nil t)
 
          ;; fn parameters highlight
-         (,(let ((meta?+ns?+symbol (concat meta? "\\_<" namespace? "\\(" symbol "\\)\\>")))
+         (,(let ((meta?+ns?+symbol (concat meta? "\\_<" namespace? "\\(" symbol "\\)#?\\>")))
              (lambda (limit)
                (ignore-errors
                  (when font-lock--skip

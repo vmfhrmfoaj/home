@@ -27,15 +27,12 @@
               (-drop 1))
     "See `display-monitor-attributes-list'"))
 
-(defvar null-fn (-const nil)
-  "TODO")
+(defvar null-fn (-const nil))
 
 (defmacro -update-> (&rest thread)
-  "TODO"
   `(setq ,(-first-item thread) (->  ,@thread)))
 
 (defmacro -update->> (&rest thread)
-  "TODO"
   `(setq ,(-first-item thread) (->> ,@thread)))
 
 
@@ -45,7 +42,6 @@
   (color-rgb-to-hex R G B 2))
 
 (defun dim-color (color p)
-  "TODO"
   (->> color
        (color-name-to-rgb)
        (apply #'color-rgb-to-hsl)
@@ -54,7 +50,6 @@
        (apply #'color-rgb-to-hex-2-dig)))
 
 (defun light-color (color p)
-  "TODO"
   (->> color
        (color-name-to-rgb)
        (apply #'color-rgb-to-hsl)
@@ -63,7 +58,6 @@
        (apply #'color-rgb-to-hex-2-dig)))
 
 (defun saturate-color (color p)
-  "TODO"
   (->> color
        (color-name-to-rgb)
        (apply #'color-rgb-to-hsl)
@@ -72,7 +66,6 @@
        (apply #'color-rgb-to-hex-2-dig)))
 
 (defun mix-color (color-a color-b)
-  "TODO"
   (let ((rgb-a (color-name-to-rgb color-a))
         (rgb-b (color-name-to-rgb color-b)))
     (->> (-zip-with #'+ rgb-a rgb-b)
@@ -80,13 +73,11 @@
          (apply #'color-rgb-to-hex-2-dig))))
 
 (defun mix-colors (color &rest colors)
-  "TODO"
   (if (not colors)
       color
     (-reduce-from #'mix-color color colors)))
 
 (defun custom-face-attribute (face attr)
-  "TODO"
   (if (listp face)
       (let ((val (plist-get face attr)))
         (if (or (null val) (eq 'unspecified val))
@@ -99,7 +90,6 @@
     (face-attribute face attr nil t)))
 
 (defun color-from (face attr &optional p s)
-  "TODO"
   (let ((color (custom-face-attribute face attr)))
     (when (listp color)
       (setq color (plist-get color :color)))
@@ -114,9 +104,14 @@
       (setq color (saturate-color color s)))
     color))
 
+(defun fg-color-from (face &optional p s)
+  (color-from face :foreground p s))
+
+(defun bg-color-from (face &optional p s)
+  (color-from face :background p s))
+
 
 (defun in-comment? ()
-  "TODO"
   (comment-only-p (save-excursion
                     (goto-char (match-beginning 0))
                     (point-at-bol))
@@ -126,48 +121,39 @@
 (make-local-variable 'font-lock--skip)
 
 (defun safe-up-list-1 ()
-  "TODO"
   (condition-case nil
       (up-list)
     (error (setq font-lock--skip t))))
 
 (defun safe-down-list-1 ()
-  "TODO"
   (condition-case nil
       (down-list)
     (error (setq font-lock--skip t))))
 
 (defun safe-regexp? (regex)
-  "TODO"
   (condition-case nil
       (progn (string-match-p regex "") t)
     (error nil)))
 
 
-(defvar rsync-retry-coutner 3
-  "TODO")
+(defvar rsync-retry-coutner 3)
 
 (defvar rsync-remote-dir nil
   "e.g, user@192.168.0.1:~/")
 
-(defvar rsync-remote-opts "-z"
-  "TODO")
+(defvar rsync-remote-opts "-z")
 
-(defvar rsync-remote-ssh-opts "-T -o Compression=no -x"
-  "TODO")
+(defvar rsync-remote-ssh-opts "-T -o Compression=no -x")
 
 (defvar rsync-remote-notify-cmd
   (cond ((eq system-type 'gnu/linux)
          "notify-send Emacs ")
         ((eq system-type 'darwin)
-         "terminal-notifier -title Emacs -message "))
-  "TODO")
+         "terminal-notifier -title Emacs -message ")))
 
-(defvar rsync-ignore-patterns '(".git" ".svn")
-  "TODO")
+(defvar rsync-ignore-patterns '(".git" ".svn"))
 
 (defun rsync-remote-dir (&optional buf)
-  "TODO"
   (let* ((buf (or (and buf (get-buffer buf))
                   (current-buffer)))
          (buf-name (buffer-name buf))
@@ -209,15 +195,12 @@
                   (shell-command-to-string
                    (concat rsync-remote-notify-cmd "'" res "'")))))))))))
 
-(defvar-local buf-visit-time nil
-  "TODO")
+(defvar-local buf-visit-time nil)
 
 (defun update-buf-visit-time (&rest _)
-  "TODO"
   (setq buf-visit-time (current-time)))
 
 (defun buf-visit-time (buf)
-  "TODO"
   (condition-case err
       (let ((buf (if (stringp buf)
                      (get-buffer buf)
@@ -227,18 +210,15 @@
     (error (error err))))
 
 
-(defvar exclude-prev-buf-regex "^$"
-  "TODO")
+(defvar exclude-prev-buf-regex "^$")
 
 (defun sort-buffer-by-visit-time (bufs)
-  "TODO"
   (-some->> bufs
     (--sort (let ((it    (or (buf-visit-time it)    0))
                   (other (or (buf-visit-time other) 0)))
               (time-less-p other it)))))
 
 (defun switch-to-previous-buffer-in (bufs)
-  "TODO"
   (unless (window-dedicated-p)
     (let ((visible-bufs (-map #'window-buffer (window-list))))
       (-when-let (bufs (->> bufs
@@ -247,8 +227,8 @@
                                           (string-match-p exclude-prev-buf-regex (buffer-name it))))
                             (sort-buffer-by-visit-time)))
         (if-let ((prev-buf (->> bufs
-                             (--remove (-contains? visible-bufs it))
-                             (-first-item))))
+                                (--remove (-contains? visible-bufs it))
+                                (-first-item))))
             (progn
               (switch-to-buffer prev-buf nil t)
               prev-buf)
@@ -257,20 +237,17 @@
             visible-prev-buf))))))
 
 (defun switch-to-previous-buffer ()
-  "TODO"
   (interactive)
   (switch-to-previous-buffer-in (buffer-list)))
 
 
 (defun get-scratch-buffer-create ()
-  "TODO"
   (interactive)
   (pop-to-buffer (get-buffer-create "*scratch*"))
   (unless (eq 'markdown-mode major-mode)
     (markdown-mode)))
 
 (defun kill-new-buffer-file-name ()
-  "TODO"
   (interactive)
   (-when-let (file-name (buffer-file-name))
     (message (kill-new file-name))))
@@ -293,36 +270,6 @@
           (set-buffer-modified-p nil)
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
-
-
-(defun enabled? (mode-status)
-  "TODO"
-  (cond ((symbolp mode-status) mode-status)
-        ((numberp mode-status) (not (zerop mode-status)))
-        (t nil)))
-
-(defun disable-modes (modes)
-  "TODO"
-  (--map (and (symbol-value it)
-              (funcall it 0))
-         modes))
-
-(defun restore-modes (modes status)
-  "TODO"
-  (--map (and (cdr it)
-              (funcall (car it) (cdr it)))
-         (-zip-pair modes status)))
-
-(defmacro with-disable-modes (modes &rest body)
-  "TODO"
-  `(let ((mode-status (-map #'symbol-value ,modes)))
-     (disable-modes ,modes)
-     (unwind-protect
-         (prog1 (progn ,@body)
-           (restore-modes ,modes mode-status))
-       (restore-modes ,modes mode-status))))
-
-(put 'with-disable-modes 'lisp-indent-function 'defun)
 
 (defun comment-it ()
   "TODO"

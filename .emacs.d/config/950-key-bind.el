@@ -323,7 +323,7 @@
     "mrq" #'cider-quit
     "mrR" #'cider-hard-restart
     "mrr" #'cider-restart
-    "mrs" #'cider-switch-to-last-clj-buf
+    "mrs" #'cider-switch-to-clj-buf-latest-visited
     "msn" #'cider-repl-set-ns)
   (which-key-declare-prefixes-for-mode 'cider-repl-mode
     (concat evil-leader/leader "me") "evaluation"

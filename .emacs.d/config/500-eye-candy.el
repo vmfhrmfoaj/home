@@ -104,8 +104,7 @@
         'hl-line-evil-insert-2
       'hl-line-evil-insert))
 
-  (defun focus--enable ()
-    "TODO"
+  (defun focus--enable (&rest _)
     (unless (or (apply #'derived-mode-p focus--exclude-modes)
                 (minibufferp))
       (focus-init)
@@ -115,13 +114,30 @@
             (face-remap-add-relative 'hl-line (focus--hl-line-highlight-face)))
       (redisplay t)))
 
-  (defun focus--disable ()
-    "TODO"
+  (defun focus--disable (&rest _)
     (when focus-face-remap-cookie
       (face-remap-remove-relative focus-face-remap-cookie)
       (setq focus-face-remap-cookie nil))
     (focus-terminate)
     (redisplay t))
+
+  (defun focus--tooltip-on (&rest _)
+    (when focus-mid-overlay
+      (focus-move-overlays (line-beginning-position) (line-end-position))))
+
+  (defun focus--tooltip-off (&rest _)
+    (when focus-mid-overlay
+      (focus-move-focus)))
+
+  (defun company--custom-modify-line (old new offset)
+    (concat (propertize (company-safe-substring old 0 offset)                'face 'focus-unfocused)
+            new
+            (propertize (company-safe-substring old (+ offset (length new))) 'face 'focus-unfocused)))
+
+  (with-eval-after-load "company"
+    (add-hook 'company-completion-started-hook #'focus--tooltip-on)
+    (add-hook 'company-after-completion-hook #'focus--tooltip-off)
+    (advice-add #'company-modify-line :override #'company--custom-modify-line))
 
   (add-hook 'evil-insert-state-entry-hook #'focus--enable)
   (add-hook 'evil-insert-state-exit-hook  #'focus--disable)
@@ -270,7 +286,17 @@
 (use-package highlight-parentheses
   :ensure t
   :defer t
-  :hook (prog-mode . highlight-parentheses-mode))
+  :hook (prog-mode . highlight-parentheses-mode)
+  :config
+  (with-eval-after-load "company"
+    (add-hook 'company-completion-started-hook
+              (lambda (&rest _)
+                (when (derived-mode-p 'prog-mode)
+                  (highlight-parentheses-mode -1))))
+    (add-hook 'company-after-completion-hook
+              (lambda (&rest _)
+                (when (derived-mode-p 'prog-mode)
+                  (highlight-parentheses-mode))))))
 
 (use-package highlight-numbers
   :ensure t

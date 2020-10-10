@@ -16,7 +16,7 @@
          (y main-monitor-y)
          (h main-monitor-h)
          (w (+ (* 130 (frame-char-width))
-               (*   5 (frame-char-width)))))
+               (*   6 (frame-char-width))))) ; fringe + line-number
     (if (<= main-monitor-w w)
         (setq w main-monitor-w)
       (setq x (- (+ main-monitor-x

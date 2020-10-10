@@ -7,6 +7,7 @@
   (load-file "~/.emacs.d/config/func.elc"))
 
 (use-package twilight-bright-theme
+  :disabled t
   :ensure t
   :config
   (load-theme 'twilight-bright t)
@@ -20,20 +21,18 @@
    '(diff-refine-changed ((t :background "#ffffee" :foreground "#888800" :weight bold)))
    '(diff-refine-removed ((t :background "#ffeeee" :foreground "#880000" :weight bold)))
    '(line-number ((t :inherit (fringe default) :foreground "grey80")))
-   '(line-number-current-line
-     ((t :inherit (hl-line line-number) :background "#d9d8d5" :foreground "#91908e" :weight semi-bold)))
+   '(line-number-current-line ((t :inherit line-number :background "#d9d8d5" :foreground "#91908e" :weight semi-bold)))
    '(minibuffer-prompt ((t :inherit font-lock-preprocessor-face :background unspecified :foreground unspecified)))
    '(shadow ((t :inherit default :foreground "grey60")))
    '(trailing-whitespace ((t :background "grey65")))))
 (use-package twilight-anti-bright-theme
-  :disabled t
   :ensure t
   :config
   (load-theme 'twilight-anti-bright t)
   (custom-set-faces
-   '(fixed-pitch       ((t :family "Fira Code")))
-   '(fixed-pitch-serif ((t :family "Fira Code")))
-   '(link ((t :underline t)))
+   '(default ((t :background "#1a1d1f" :foreground "#c8ccc4")))
+   '(line-number ((t :inherit (fringe default) :foreground "grey40")))
+   '(line-number-current-line ((t :inherit line-number :background "#2b2f35" :foreground "grey50" :weight semi-bold)))
    '(shadow ((t :inherit default :foreground "grey55")))
    '(trailing-whitespace ((t :background "grey35")))
    '(tooltip ((t :background "#173735" :foreground "#dcdddd")))))
@@ -42,6 +41,23 @@
  '(fixed-pitch-serif ((t :family "Fira Code")))
  '(link ((t :underline t)))
  '(show-paren-match ((t :weight bold :underline t))))
+
+(use-package company
+  :defer t
+  :config
+  (custom-set-faces
+   '(company-scrollbar-bg ((((class color) (background dark)) :inherit company-tooltip)))
+   `(company-scrollbar-fg ((((class color) (background dark)) :background ,(fg-color-from 'font-lock-keyword-face -15))))
+   `(company-tooltip
+     ((((class color) (background dark))
+       :background ,(fg-color-from 'font-lock-builtin-face)
+       :foreground ,(bg-color-from 'font-lock-builtin-face))))
+   `(company-tooltip-selection ((((class color) (background dark)) :background ,(fg-color-from 'font-lock-keyword-face))))
+   `(company-tooltip-common ((((class color) (background dark)) :foreground ,(fg-color-from 'font-lock-keyword-face -15))))
+   `(company-tooltip-annotation ((((class color) (background dark)) :foreground ,(fg-color-from 'font-lock-type-face))))
+   '(company-preview ((((class color) (background dark)) :inherit shadow :underline t)))
+   '(company-preview-common ((((class color) (background dark)) :inherit company-preview)))
+   ))
 
 (use-package clojure-mode
   :defer t
@@ -53,7 +69,8 @@
      '(clojure-define-type-face ((t :inherit font-lock-type-face)))
      '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
-     `(clojure-important-keywords-face ((t :inherit font-lock-keyword-face :foreground ,(color-from font-lock-keyword-face :foreground 1.5))))
+     `(clojure-important-keywords-face
+       ((t :inherit font-lock-keyword-face :foreground ,(fg-color-from 'font-lock-keyword-face 1.5))))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
      '(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
      '(clojure-side-effect-face ((t :weight semi-bold :underline t)))
@@ -79,7 +96,7 @@
        ((((class color) (background light)) :background "#eecccc" ,@common-style)
         (((class color) (background dark))  :inherit diff-removed ,@common-style)))
      `(evil-goggles-paste-face
-       ((((class color) (background light)) :background "#cceecc"   ,@common-style)
+       ((((class color) (background light)) :background "#cceecc" ,@common-style)
         (((class color) (background dark))  :inherit diff-added   ,@common-style)))
      `(evil-goggles-yank-face
        ((((class color) (background light)) :background "#eeeecc" ,@common-style)
@@ -92,7 +109,7 @@
   :defer t
   :config
   (custom-set-faces
-   `(focus-unfocused ((t :foreground "#a49da5")))))
+   `(focus-unfocused ((t :inherit font-lock-comment-face :background ,(bg-color-from 'default))))))
 
 (use-package font-lock
   :defer t
@@ -101,8 +118,8 @@
    '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight extra-light)))
    '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :weight extra-light)))
    '(font-lock-function-name-face ((t :weight semi-bold)))
-   '(font-lock-keyword-face ((t :background "#fbf5ec")))
-   '(font-lock-preprocessor-face ((t :background "#fbf6ed")))
+   '(font-lock-keyword-face ((((class color) (background light)) :background "#fbf5ec")))
+   '(font-lock-preprocessor-face ((((class color) (background light)) :background "#fbf6ed")))
    '(font-lock-regexp-grouping-backslash
      ((((class color) (background light)) :inherit font-lock-string-face :background "#e1f2d6")
       (((class color) (background dark))  :inherit font-lock-string-face :weight normal)))
@@ -118,7 +135,7 @@
   :config
   (custom-set-faces
    '(fringe ((((class color) (background light)) :background "#f7f5f0" :foreground "#c1c0bd")
-             (((class color) (background dark)) :background "#171c22")))))
+             (((class color) (background dark))  :background "#212325" :foreground "#50514e")))))
 
 (use-package hl-line
   :defer t
