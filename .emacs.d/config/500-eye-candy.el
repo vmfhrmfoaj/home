@@ -56,7 +56,7 @@
   (with-eval-after-load "elisp-slime-nav"         (diminish 'elisp-slime-nav-mode        ""))
   (with-eval-after-load "evil-goggles"            (diminish 'evil-goggles-mode           ""))
   (with-eval-after-load "flycheck"                (diminish 'flycheck-mode               ""))
-  (with-eval-after-load "git-gutter+"             (diminish 'git-gutter+-mode            ""))
+  (with-eval-after-load "git-gutter"              (diminish 'git-gutter-mode             ""))
   (with-eval-after-load "highlight-parentheses"   (diminish 'highlight-parentheses-mode  ""))
   (with-eval-after-load "linum-relative"          (diminish 'linum-relative-mode         ""))
   (with-eval-after-load "ivy"                     (diminish 'ivy-mode                    ""))

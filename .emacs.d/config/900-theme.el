@@ -12,7 +12,7 @@
   (load-theme 'twilight-bright t)
   (custom-set-faces
    '(cursor ((t :background "sky blue")))
-   '(default ((t :background "#f8f7f6" :foreground "#3a3f42")))
+   '(default ((t :background "#fdfbf7" :foreground "#54595a")))
    '(diff-added   ((t :background "#ddffdd" :foreground "#22aa22")))
    '(diff-changed ((t :background "#ffffdd" :foreground "#aaaa22")))
    '(diff-removed ((t :background "#ffdddd" :foreground "#aa2222")))
@@ -22,7 +22,8 @@
    '(line-number ((t :inherit (fringe default) :foreground "grey80")))
    '(line-number-current-line
      ((t :inherit (hl-line line-number) :background "#d9d8d5" :foreground "#91908e" :weight semi-bold)))
-   '(shadow ((t :inherit default :foreground "grey55")))
+   '(minibuffer-prompt ((t :inherit font-lock-preprocessor-face :background unspecified :foreground unspecified)))
+   '(shadow ((t :inherit default :foreground "grey60")))
    '(trailing-whitespace ((t :background "grey65")))))
 (use-package twilight-anti-bright-theme
   :disabled t
@@ -100,6 +101,8 @@
    '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight extra-light)))
    '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :weight extra-light)))
    '(font-lock-function-name-face ((t :weight semi-bold)))
+   '(font-lock-keyword-face ((t :background "#fbf5ec")))
+   '(font-lock-preprocessor-face ((t :background "#fbf6ed")))
    '(font-lock-regexp-grouping-backslash
      ((((class color) (background light)) :inherit font-lock-string-face :background "#e1f2d6")
       (((class color) (background dark))  :inherit font-lock-string-face :weight normal)))
@@ -114,7 +117,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(fringe ((((class color) (background light)) :background "#f2f0ed" :foreground "#c1c0bd")
+   '(fringe ((((class color) (background light)) :background "#f7f5f0" :foreground "#c1c0bd")
              (((class color) (background dark)) :background "#171c22")))))
 
 (use-package hl-line
