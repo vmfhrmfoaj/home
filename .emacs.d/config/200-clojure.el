@@ -10,35 +10,37 @@
   :ensure t
   :defer t
   :init
-  (defun cider-smart-jack-in ()
-    (interactive)
-    (cond
-     ((eq 'clojurescript-mode major-mode) (call-interactively #'cider-jack-in-cljs))
-     (t                                   (call-interactively #'cider-jack-in-clj))))
+  (defvar cider--select-jack-in-history nil)
 
-  ;; NOTE
-  ;;  a below alias will be replaced to a function when `cider' package is loaded.
-  (defalias 'cider-switch-to-releated-repl-buffer #'cider-smart-jack-in)
+  (defun cider-custom-jack-in ()
+    (interactive)
+    (let ((type (completing-read "Select CIDER jack-in type: "
+                                 '(Clojure Both ClojureScript)
+                                 nil nil nil 'cider--select-jack-in-history
+                                 (car cider--select-jack-in-history))))
+      (cond
+       ((string= "Clojure" type)
+        (call-interactively #'cider-jack-in-clj))
+       ((string= "Both" type)
+        (call-interactively #'cider-jack-in-clj&cljs))
+       ((string= "ClojureScript" type)
+        (call-interactively #'cider-jack-in-cljs)))))
+
+  (defalias 'cider-switch-to-releated-repl-buffer 'cider-custom-jack-in)
 
   :config
-  (defun cider-get-repl-buf (&optional ignore-repl-type)
+  (defun cider--repl-buf (&optional ignore-repl-type)
     (when (cider-connected-p)
       (let* ((repl-type (cider-connection-type-for-buffer))
              (root (clojure-project-root-path))
-             (repl-bufs (--filter
-                         (with-current-buffer it
-                           (string-equal root (clojure-project-root-path)))
-                         (cider-connections)))
              (repl-buf (--first
                         (with-current-buffer it
-                          (string-equal repl-type cider-repl-type))
-                        repl-bufs)))
-        (or repl-buf
-            (and ignore-repl-type
-                 (-first-item repl-bufs))))))
+                          (string-equal root (clojure-project-root-path)))
+                        (cider-repls (unless ignore-repl-type repl-type)))))
+        repl-buf)))
 
-  (defun cider-set-repl-ns-to-current-ns (&optional repl)
-    (when-let ((repl (or repl (cider-get-repl-buf))))
+  (defun cider--set-repl-ns-to-current-ns (&optional repl)
+    (when-let ((repl (or repl (cider--repl-buf))))
       (let ((cur-ns (clojure-find-ns))
             (repl-ns (buffer-local-value 'cider-buffer-ns repl)))
         (when (and (stringp cur-ns) (stringp repl-ns)
@@ -47,11 +49,20 @@
 
   (defun cider-switch-to-releated-repl-buffer ()
     (interactive)
-    (if-let ((repl (cider-get-repl-buf)))
+    (if-let ((repl (cider--repl-buf)))
         (progn
-          (cider-set-repl-ns-to-current-ns repl)
+          (cider--set-repl-ns-to-current-ns repl)
           (cider--switch-to-repl-buffer repl nil))
-      (message "Cider didn't start yet, please check '*nrepl-server ...*' buffer")))
+      (let ((bufs (-some->> (projectile-project-buffers)
+                    (--filter (let ((buf-name (buffer-name it)))
+                                (or (s-starts-with? "*cider-repl" buf-name)
+                                    (s-starts-with? "*nrepl-server" buf-name)))))))
+        (cond
+         ((null bufs)
+          (cider-custom-jack-in))
+         (t (message
+             (concat "It seems that a REPL is in initialization phase, "
+                     "please check \"*nrepl-server ...*\" buffer.")))))))
 
   (defun cider-hard-restart (&optional repl)
     (interactive)
@@ -83,36 +94,15 @@
         (-first-item)
         (funcall display-fn))))
 
-  (add-to-list 'cider-cljs-repl-types
-               (list 'figwheel-custom
-                     "(do (try (alter-var-root #'clojure.core/*auto-refresh* (constantly false)) (catch Exception _)) (require 'dev.repl) (dev.repl/start))"
-                     'cider-check-figwheel-requirements))
+  (cider-register-cljs-repl-type
+   'figwheel-custom
+   "(do (Thread/sleep 3000) (require 'dev.repl) (dev.repl/start))")
 
   (add-hook 'cider-mode-hook
             (lambda ()
               (setq-local evil-lookup-func #'cider-doc-at-point)
               (setq-local font-lock-fontify-region-function #'font-lock-default-fontify-region)
               (eldoc-mode 1)))
-
-  (defvar cider-buffer-list-update-timer nil)
-
-  (add-hook 'buffer-list-update-hook
-            (lambda ()
-              (when (and cider-mode
-                         (or (eq major-mode 'clojure-mode)
-                             (eq major-mode 'clojurescript-mode)
-                             (eq major-mode 'clojurec-mode)))
-                (let ((buf (current-buffer)))
-                  (when (timerp cider-buffer-list-update-timer)
-                    (cancel-timer cider-buffer-list-update-timer))
-                  ;; NOTE
-                  ;;  after executing `projectile-find-file', i don't know why `buffer-list-update-hook' was called multiple times in short period of a time.
-                  ;;  below timer is workaround to avoid to call `cider-set-repl-ns-to-current-ns' multiple times.
-                  (setq cider-buffer-list-update-timer
-                        (run-with-timer 0.1 nil
-                                        (lambda ()
-                                          (with-current-buffer buf
-                                            (cider-set-repl-ns-to-current-ns)))))))))
 
   (advice-add #'cider-restart :around
               (lambda (fn &rest args)

@@ -8,7 +8,10 @@
 
 (use-package counsel
   :ensure t
-  :defer t)
+  :defer t
+  :config
+  (setf (alist-get 'counsel-yank-pop       ivy-height-alist) 15)
+  (setf (alist-get 'counsel-evil-registers ivy-height-alist) 15))
 
 (use-package evil
   :ensure t
@@ -50,6 +53,7 @@
         ivy-height 15)
 
   (defun colir--custom-blend-background (start next prevn face object)
+    "Mix color only for `ivy-mode' faces."
     (put-text-property
      start next 'face
      (if-let ((background-prev (when (s-starts-with? "ivy" (symbol-name prevn))

@@ -31,7 +31,10 @@
     (if (and (eq alist-sym 'ivy--sessions)
              (member key ivy-search-callers))
         (progn
-          (setq ivy-old-search-session ivy-last-search-session)
+          ;; NOTE
+          ;;  to prevent `ivy-old-search-session' from being equal to `ivy-last-search-session'.
+          (unless (eq key ivy-last-search-session)
+            (setq ivy-old-search-session ivy-last-search-session))
           (setq ivy-last-search-session key))
       (setq ivy-last-no-search-session key)))
 
@@ -68,7 +71,8 @@
                     (if need-to-update
                         (swiper text)
                       (ivy-resume 'swiper)))
-                (if (eq 'swiper ivy-old-search-session)
+                (if (or (eq 'swiper ivy-old-search-session)
+                        (null ivy-old-search-session))
                     (message "There is no search result that can be resume")
                   (ivy-resume ivy-old-search-session))))
           (ivy-resume ivy-last-search-session))

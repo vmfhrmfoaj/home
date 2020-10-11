@@ -1054,7 +1054,7 @@
             (whitespace "[ \r\t\n]")
             (whitespace+ (concat whitespace "+"))
             (whitespace* (concat whitespace "*")))
-       `(("[#'`]"
+       `(("[#'`]\\|\\_<_\\_>"
           (0 'shadow))
          ("\\s(\\(\\(?:-as\\|-some\\)?->>?\\|and\\|or\\)\\_>"
           (1 'default nil))

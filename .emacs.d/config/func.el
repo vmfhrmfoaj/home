@@ -91,18 +91,21 @@
 
 (defun color-from (face attr &optional p s)
   (let ((color (custom-face-attribute face attr)))
-    (when (listp color)
-      (setq color (plist-get color :color)))
-    (when p
-      (let ((fn (cond
-                 ((< 0 p) #'light-color)
-                 ((< p 0) #'dim-color)
-                 ((= p 0) (lambda (color _) color))))
-            (p (abs p)))
-        (setq color (funcall fn color p))))
-    (when s
-      (setq color (saturate-color color s)))
-    color))
+    (if (or (not (memq attr '(:foreground :background)))
+            (eq 'unspecified color))
+        'unspecified
+      (when (listp color)
+        (setq color (plist-get color :color)))
+      (when p
+        (let ((fn (cond
+                   ((< 0 p) #'light-color)
+                   ((< p 0) #'dim-color)
+                   ((= p 0) (lambda (color _) color))))
+              (p (abs p)))
+          (setq color (funcall fn color p))))
+      (when s
+        (setq color (saturate-color color s)))
+      color)))
 
 (defun fg-color-from (face &optional p s)
   (color-from face :foreground p s))

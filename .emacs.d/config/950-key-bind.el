@@ -199,10 +199,11 @@
     "pt" #'treemacs-projectile-current
 
     ;; register/rings/resume
-    "rk" #'counsel-yank-pop
     "ri" #'ivy-resume
+    "rk" #'counsel-yank-pop
     "rl" #'ivy-resume-non-search
-    "rm" #'evil-show-marks
+    "rm" #'counsel-evil-marks
+    "rr" #'counsel-evil-registers
     "rs" #'ivy-resume-sarch
 
     ;; search/symbol
@@ -555,7 +556,7 @@
       "men" #'cider-eval-ns-form
       "mer" #'cider-eval-last-sexp-and-replace
       "mgg" #'cider-find-var-at-point
-      "mrS" #'cider-smart-jack-in
+      "mrS" #'cider-custom-jack-in
       "mrs" #'cider-switch-to-releated-repl-buffer
       "mrq" #'cider-quit)
     (which-key-declare-prefixes-for-mode mode
