@@ -22,8 +22,6 @@
 
   (add-hook 'rust-mode-hook
             (lambda ()
-              (setq-local font-lock-multiline t)
-              (with-eval-after-load "lsp-mode"
-                (setq-local evil-lookup-func #'lsp-describe-thing-at-point))))
+              (setq-local font-lock-multiline t)))
 
   (sp-local-pair '(rust-mode) "'" "'" :actions nil))

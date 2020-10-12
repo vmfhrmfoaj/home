@@ -114,9 +114,9 @@ So, replaced `evil-jump-item' to this function."
   (setq evil-undo-system 'undo-tree
         undo-tree-auto-save-history t
         undo-tree-history-directory-alist backup-directory-alist
-        undo-tree-limit        80000000
-        undo-tree-strong-limit (/ 120000000 2)
-        undo-tree-outer-limit  (/ 360000000 2))
+        undo-tree-limit        (/  80000000 10)
+        undo-tree-strong-limit (/ 120000000 10)
+        undo-tree-outer-limit  (/ 360000000 10))
 
   ;; NOTE
   ;;  `goto-chr' require `undo-tree-node-p' function, but it is macro in `undo-tree'.

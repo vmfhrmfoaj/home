@@ -51,20 +51,11 @@
 (use-package js
   :defer t
   :config
-  (setq-default js-indent-level 4)
-  (add-hook 'js-mode-hook
-            (lambda ()
-              (when (bound-and-true-p lsp-mode)
-                (setq-local evil-lookup-func #'lsp-describe-thing-at-point)))))
+  (setq-default js-indent-level 4))
 
 (use-package typescript-mode
   :ensure t
-  :defer t
-  :config
-  (add-hook 'typescript-mode-hook
-            (lambda ()
-              (with-eval-after-load "lsp-mode"
-                (setq-local evil-lookup-func #'lsp-describe-thing-at-point)))))
+  :defer t)
 
 (use-package vue-mode
   :disabled t

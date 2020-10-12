@@ -33,10 +33,15 @@
     (when (cider-connected-p)
       (let* ((repl-type (cider-connection-type-for-buffer))
              (root (clojure-project-root-path))
-             (repl-buf (--first
-                        (with-current-buffer it
-                          (string-equal root (clojure-project-root-path)))
-                        (cider-repls (unless ignore-repl-type repl-type)))))
+             (repl-buf (->> (cider-repls (unless ignore-repl-type repl-type))
+                            ;; NOTE
+                            ;;  `cider-jack-in-clj&cljs' create two buffer and one of them will be changed CLJS REPL.
+                            ;;  but until browser connecte to REPL, it is CLJ REPL.  so, I recognize CLJS REPL heuristically,
+                            ;;  a length of a buffer name of CLJS REPL is always longer than a buffer name of CLJ REPL.
+                            (--sort (string-lessp (buffer-name it) (buffer-name other)))
+                            (--first
+                             (with-current-buffer it
+                               (string-equal root (clojure-project-root-path)))))))
         repl-buf)))
 
   (defun cider--set-repl-ns-to-current-ns (&optional repl)
@@ -96,7 +101,12 @@
 
   (cider-register-cljs-repl-type
    'figwheel-custom
-   "(do (Thread/sleep 3000) (require 'dev.repl) (dev.repl/start))")
+   (concat "(do "
+           "" "(while (:auto-refresh-lock (ns-interns 'clojure.core))"
+           ""   "(Thread/sleep 500)) "
+           "" "(locking clojure.core/auto-refresh-lock "
+           ""   "(require 'dev.repl) "
+           ""   "(dev.repl/start)))"))
 
   (add-hook 'cider-mode-hook
             (lambda ()
@@ -191,7 +201,11 @@
               (eldoc-mode 1)
               (company-mode 1)))
 
-  (advice-add #'cider-repl-emit-stderr :after #'cider-repl-catch-compilation-error))
+  (advice-add #'cider-repl-emit-stderr :after #'cider-repl-catch-compilation-error)
+  (advice-add #'cider-repl-return :after
+              (lambda (&optional _end-of-input)
+                "Change evil state to normal."
+                (evil-normal-state))))
 
 (use-package clojure-mode
   :ensure t

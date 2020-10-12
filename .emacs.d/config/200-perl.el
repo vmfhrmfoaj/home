@@ -54,11 +54,6 @@
     (setq-local beginning-of-defun-function #'cperl-beginning-of-defun)
     (setq-local end-of-defun-function       #'cperl-end-of-defun))
 
-  (add-hook 'cperl-mode-hook
-            (lambda ()
-              (with-eval-after-load "lsp-mode"
-                (setq-local evil-lookup-func #'lsp-describe-thing-at-point))))
-
   (modify-syntax-entry ?: "." cperl-mode-syntax-table)
   (setq cperl-break-one-line-blocks-when-indent nil
         cperl-fix-hanging-brace-when-indent nil

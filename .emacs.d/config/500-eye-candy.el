@@ -17,9 +17,8 @@
     ;; 2. https://github.com/belluzj/fantasque-sans/issues/64
     ;; 3. https://github.com/belluzj/fantasque-sans/pull/114
     '(( 33 . ".\\(?:\\(?:==\\)\\|[!=]\\)")               ; !=, !==
-      ( 42 . ".\\(?:[*/]\\)")                            ; */
       ( 45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>-]\\)") ; -<, -<<, ->, ->>, -->
-      ( 47 . ".\\(?:\\(?:\\*\\*/\\)\\|\\*\\|//?\\)")     ; /**/, /*, //, ///
+      ( 47 . ".\\(?://?\\)")                               ; //, ///
       ( 58 . ".\\(?:\\(::\\|[:=]\\)\\)")                 ; ::, :::, :=
       ( 60 . ".\\(?:\\(?:|\\{2,3\\}\\|!--\\|~[~>]\\|-[<->]\\|<[<=-]\\|=[<=>]\\||>\\)\\|[~<=>|-]\\)") ; <<<, <<, <=, <|>, <>, <|||, <||, <|, <!--, <--, <<-, <-, <~~, <~, <<=, <==, <=<, <=>, <->, <~>
       ( 61 . ".\\(?:\\(?:<<\\|=[=>]\\|>>\\)\\|[<=>]\\)") ; ==, ===, =>, =>>, ==>, =<<
@@ -305,8 +304,13 @@
 
 (use-package hl-line
   :config
-  (setq hl-line-range-function (-partial #'bounds-of-thing-at-point 'symbol)
-        hl-line-sticky-flag nil)
+  (setq hl-line-sticky-flag nil
+        hl-line-range-function (lambda ()
+                                 (when-let ((region (bounds-of-thing-at-point 'symbol)))
+                                   (if (< (cdr region) (point-max))
+                                       region
+                                     (let ((point (point)))
+                                       `(,point . ,point))))))
 
   (global-hl-line-mode))
 

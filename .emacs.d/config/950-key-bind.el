@@ -153,13 +153,13 @@
     "fy" #'projectile-kill-new-buffer-file-name
 
     ;; git
-    "g=" #'git-gutter+-stage-hunks
+    "g=" #'git-gutter:stage-hunk
     "gb" #'magit-blame-addition
     "gl" #'counsel-git-log
     "gs" #'magit-status
     "gt" #'git-timemachine
-    "gp" #'git-gutter+-previous-hunk
-    "gn" #'git-gutter+-next-hunk
+    "gp" #'git-gutter:previous-hunk
+    "gn" #'git-gutter:next-hunk
 
     ;; jump/join/split
     "jn" #'newline-and-indent
@@ -208,22 +208,25 @@
 
     ;; search/symbol
     "se" #'evil-multiedit-match-all
-    "sf" (lambda (&optional dir)
-           (interactive)
-           (when (<= 4 (prefix-numeric-value current-prefix-arg))
-             (counsel-read-directory-name "rg in directory: "))
-           (counsel-rg nil (or dir default-directory)))
-    "sF" (lambda (&optional dir)
-           (interactive)
-           (when (<= 4 (prefix-numeric-value current-prefix-arg))
-             (counsel-read-directory-name "rg in directory: "))
-           (let ((counsel-rg-base-command (counsel-rg-no-ignore-command)))
+    "sf" (defalias 'counsel-rg-on-cur-dir
+           (lambda (&optional dir)
+             (interactive)
+             (when (<= 4 (prefix-numeric-value current-prefix-arg))
+               (counsel-read-directory-name "rg in directory: "))
              (counsel-rg nil (or dir default-directory))))
+    "sF" (defalias 'counsel-rg-on-cur-dir-wo-ignore
+           (lambda (&optional dir)
+             (interactive)
+             (when (<= 4 (prefix-numeric-value current-prefix-arg))
+               (counsel-read-directory-name "rg in directory: "))
+             (let ((counsel-rg-base-command (counsel-rg-no-ignore-command)))
+               (counsel-rg nil (or dir default-directory)))))
     "sp" #'counsel-projectile-rg
-    "sP" (lambda ()
-           (interactive)
-           (let ((counsel-rg-base-command (counsel-rg-no-ignore-command)))
-             (counsel-projectile-rg)))
+    "sP" (defalias 'counsel-projectile-rg-wo-ignore
+           (lambda ()
+             (interactive)
+             (let ((counsel-rg-base-command (counsel-rg-no-ignore-command)))
+               (counsel-projectile-rg))))
     "ss" #'swiper
 
     ;; toggle
@@ -246,7 +249,7 @@
     "wm" #'delete-other-windows
 
     ;; text / xwidget
-    "x0" (lambda () (interactive) (text-scale-set 0))
+    "x0" (defalias 'text-scale-reset (lambda () (interactive) (text-scale-set 0)))
     "x=" #'text-scale-increase
     "x-" #'text-scale-decrease
     "xr" #'align-regexp

@@ -6,13 +6,17 @@
       (byte-compile-file "~/.emacs.d/config/func.el")))
   (load-file "~/.emacs.d/config/func.elc"))
 
+(use-package twilight-bright-theme
+  :ensure t
+  :defer t)
+
+(use-package twilight-anti-bright-theme
+  :ensure t
+  :defer t)
+
 (use-package theme-changer
   :ensure t
   :config
-  (setq calendar-location-name "South Korea"
-        calendar-latitude   35.9078
-        calendar-longitude 127.7669)
-
   (defun theme-changer--custom-switch-theme (old new)
     "Fix for an error"
     (let ((new (if (listp new)
@@ -27,19 +31,21 @@
       (run-hook-with-args 'theme-changer-post-change-functions new)
       new))
 
-  (add-hook 'theme-changer-post-change-functions
-            (lambda (&rest _)
-              (force-mode-line-update t)))
+  (setq calendar-location-name "South Korea"
+        calendar-latitude   35.9078
+        calendar-longitude 127.7669)
+
+  (add-hook 'theme-changer-pre-change-functions
+            (lambda (old-theme)
+              (cond
+               ((memq old-theme '(default twilight-bright))
+                (setq frame-background-mode 'dark))
+               ((memq old-theme '(twilight-anti-bright))
+                (setq frame-background-mode 'light)))))
 
   (advice-add #'theme-changer-switch-theme :override #'theme-changer--custom-switch-theme)
 
   (change-theme 'twilight-bright 'twilight-anti-bright))
-
-(use-package twilight-bright-theme
-  :ensure t)
-
-(use-package twilight-anti-bright-theme
-  :ensure t)
 
 (custom-set-faces
  '(cursor ((((class color) (background light)) :background "sky blue")))
@@ -74,10 +80,10 @@
    `(company-scrollbar-fg ((((class color) (background dark)) :background "#a2561e")))
    `(company-tooltip ((((class color) (background dark)) :background "#deae3e" :foreground "#2a2921")))
    `(company-tooltip-selection ((((class color) (background dark)) :background "#d97a35")))
-   `(company-tooltip-common ((((class color) (background dark)) :foreground "#a2561e")))
+   `(company-tooltip-common ((((class color) (background dark)) :foreground "#b23f1e")))
    `(company-tooltip-annotation ((((class color) (background dark)) :foreground "#b23f1e")))
-   '(company-preview ((((class color) (background dark)) :inherit shadow :underline t)))
-   '(company-preview-common ((((class color) (background dark)) :inherit company-preview)))))
+   '(company-preview ((t :inherit shadow :underline t)))
+   '(company-preview-common ((t :inherit company-preview)))))
 
 (use-package clojure-mode
   :defer t
@@ -200,10 +206,10 @@
   :config
   (custom-set-faces
    '(ivy-current-match ((((class color) (background light)) :background "#9fcdf2" :foreground "white" :weight bold)
-                        (((class color) (background dark))  :background "#d1d2d4" :foreground "black" :weight bold)))
+                        (((class color) (background dark))  :background "#5f6369" :foreground "white" :weight bold)))
    '(ivy-grep-info ((((class color) (background dark)) :inherit font-lock-string-face)))
    '(ivy-minibuffer-match-face-1 ((((class color) (background light)) :background "#d3d3d3" :foreground "#8a8a8a" :weight bold)
-                                  (((class color) (background dark))  :background "#9d9d9d" :foreground "#6c6c6c" :weight bold)))
+                                  (((class color) (background dark))  :background "#7d7e7f" :foreground "#535454" :weight bold)))
    '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b" :weight bold)))
    '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :foreground "#707099" :weight bold)))
    '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f" :weight bold)))))
@@ -231,8 +237,10 @@
      '(magit-diff-context-highlight ((t :background "#fbfeee" :foreground "#a4c207")))
      '(magit-diff-added   ((((class color) (background light)) :background "#ddffdd" :foreground "#22aa22")))
      '(magit-diff-removed ((((class color) (background light)) :background "#ffdddd" :foreground "#aa2222")))
-     '(magit-diff-added-highlight   ((((class color) (background light)) :background "#ddffdd" :foreground "#22aa22" :weight semi-bold)))
-     '(magit-diff-removed-highlight ((((class color) (background light)) :background "#ffdddd" :foreground "#aa2222" :weight semi-bold)))
+     '(magit-diff-added-highlight
+       ((((class color) (background light)) :background "#ddffdd" :foreground "#22aa22" :weight semi-bold)))
+     '(magit-diff-removed-highlight
+       ((((class color) (background light)) :background "#ffdddd" :foreground "#aa2222" :weight semi-bold)))
      '(magit-diff-context ((t :foreground "grey50" :weight extra-light)))
      '(magit-diff-context-highlight ((t :inherit hl-line :foreground "grey50")))
      '(magit-diff-file-heading ((t :weight semi-bold)))
@@ -258,16 +266,16 @@
   (custom-set-faces
    '(swiper-line-face
      ((((class color) (background light)) :background "#9fcdf2" :foreground "white" :weight bold)
-      (((class color) (background dark))  :background "#d1d2d4" :foreground "black" :weight bold)))
+      (((class color) (background dark))  :background "#5f6369" :foreground "white" :weight bold)))
    '(swiper-match-face-1
      ((((class color) (background light)) :inherit swiper-line-face :background "#d3d3d3" :weight bold)
-      (((class color) (background dark))  :inherit swiper-line-face :background "#9d9d9d" :weight bold)))
+      (((class color) (background dark))  :inherit swiper-line-face :background "#7d7e7f" :weight bold)))
    '(swiper-match-face-2 ((t :inherit swiper-line-face :background "#e99ce8" :weight bold)))
    '(swiper-match-face-3 ((t :inherit swiper-line-face :background "#bbbbff" :weight bold)))
    '(swiper-match-face-4 ((t :inherit swiper-line-face :background "#ffbbff" :weight bold)))
    '(swiper-background-match-face-1
      ((((class color) (background light)) :background "#d3d3d3" :foreground "#8a8a8a" :weight bold)
-      (((class color) (background dark))  :background "#9d9d9d" :foreground "#6c6c6c" :weight bold)))
+      (((class color) (background dark))  :background "#7d7e7f" :foreground "#535454" :weight bold)))
    '(swiper-background-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b" :weight bold)))
    '(swiper-background-match-face-3 ((t :background "#bbbbff" :foreground "#707099" :weight bold)))
    '(swiper-background-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f" :weight bold))))
@@ -296,4 +304,4 @@
    `(treemacs-fringe-indicator-face ((t :foreground ,(face-background 'cursor))))
    '(treemacs-selected-icon
      ((((class color) (background light)) :background "#9fcdf2")
-      (((class color) (background dark))  :background "#d1d2d4")))))
+      (((class color) (background dark))  :background "#5f6369")))))

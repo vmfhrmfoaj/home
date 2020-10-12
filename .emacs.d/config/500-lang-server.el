@@ -354,6 +354,7 @@
 
   (add-hook 'lsp-mode-hook
             (lambda ()
+              (setq-local evil-lookup-func #'lsp-describe-thing-at-point)
               (cond
                ((derived-mode-p 'go-mode)
                 (setq-local lsp-eldoc-render-all t)

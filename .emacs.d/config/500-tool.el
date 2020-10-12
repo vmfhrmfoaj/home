@@ -255,7 +255,14 @@
   :ensure t
   :hook (flycheck-mode . flycheck-pos-tip-mode)
   :config
-  (setq flycheck-pos-tip-timeout 0))
+  (setq flycheck-pos-tip-timeout 0)
+
+  (add-hook 'evil-normal-state-exit-hook
+            (lambda ()
+              (setq flycheck-display-errors-function (-const t))))
+  (add-hook 'evil-normal-state-entry-hook
+            (lambda ()
+              (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))))
 
 (use-package gnuplot
   :disabled t

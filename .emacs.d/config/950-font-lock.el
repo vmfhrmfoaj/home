@@ -19,6 +19,19 @@
   "TODO"
   (-repeat 4 (point-min-marker)))
 
+(use-package cc-mode
+  :defer t
+  :config
+  (add-hook
+   'c-mode-common-hook
+   (lambda ()
+     (when (member major-mode '(c-mode c++-mode))
+       (font-lock-add-keywords
+        nil
+        `(("\\([-=]>\\)"
+           (1 'shadow)))
+        :append)))))
+
 (use-package elixir-mode
   :disabled t
   :defer t
@@ -1230,7 +1243,7 @@
               "TODO"
               (font-lock-add-keywords
                nil
-               '(("\\([.,;]\\|[-=]>\\|[|&:]\\{2,2\\}\\|\\s(\\|\\s)\\)"
+               '(("\\([.,;]\\|[|&:]\\{2,2\\}\\|\\s(\\|\\s)\\)"
                   (1 'shadow append)))
                :append))
             :append))
@@ -1263,7 +1276,9 @@
       (1 'font-lock-keyword-face)
       (2 'font-lock-constant-face))
      ("&?'[_a-z]+"
-      (0 'shadow))))
+      (0 'shadow))
+     ("\\([-=]>\\)"
+      (1 'shadow))))
   (font-lock-add-keywords
    'rust-mode
    `(("macro_rules!\\s-+\\([_0-9A-Za-z]+!?\\)"

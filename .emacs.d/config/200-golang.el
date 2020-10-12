@@ -10,9 +10,4 @@
   :ensure t
   :defer t
   :config
-  (setq go-fontify-function-calls nil)
-
-  (add-hook 'go-mode-hook
-            (lambda ()
-              (with-eval-after-load "lsp-mode"
-                (setq-local evil-lookup-func #'lsp-describe-thing-at-point)))))
+  (setq go-fontify-function-calls nil))

@@ -9,7 +9,7 @@
 (use-package counsel
   :ensure t
   :defer t
-  :config
+  :init
   (defun counsel-rg-no-ignore-command ()
     (cond
      ((listp counsel-rg-base-command)
