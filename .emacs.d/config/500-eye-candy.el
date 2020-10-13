@@ -90,18 +90,31 @@
   :init
   (defvar focus--exclude-modes '(term-mode))
 
+  (defvar focus--weight-values
+    (--map-indexed (cons it it-index) '(ultra-light extra-light light semi-light normal semi-bold bold extra-bold ultra-bold)))
+
   (defvar-local focus-face-remap-cookie nil)
 
   (defun focus--hl-line-highlight-face ()
-    (if (ignore-errors
-          (-some-> (bounds-of-thing-at-point 'symbol)
-            (car)
-            (get-text-property 'face)
-            (-some->> (-list)
-              (--reduce-from (if (null acc) (custom-face-attribute it :weight) acc) nil))
-            (memq '(semi-bold bold extra-bold ultra-bold))))
-        'hl-line-evil-insert-2
-      'hl-line-evil-insert))
+    (let* ((default-weight (-> 'default
+                               (face-attribute :weight nil t)
+                               (or 'normal)
+                               (alist-get focus--weight-values)))
+           (weight (or (ignore-errors
+                         (-some-> (bounds-of-thing-at-point 'symbol)
+                           (car)
+                           (get-text-property 'face)
+                           (-some->> (-list)
+                             (--reduce-from (if (null acc) (custom-face-attribute it :weight) acc) nil))
+                           (alist-get focus--weight-values)))
+                       default-weight)))
+      (cond
+       ((<= weight (alist-get 'extra-light focus--weight-values))
+        'hl-line-evil-insert-light)
+       ((<= weight (alist-get 'light focus--weight-values))
+        'hl-line-evil-insert-normal)
+       ((<= weight (alist-get 'normal focus--weight-values))
+        'hl-line-evil-insert-bold))))
 
   (defun focus--enable (&rest _)
     (unless (or (apply #'derived-mode-p focus--exclude-modes)
@@ -335,19 +348,22 @@
 (use-package spaceline
   :ensure t
   :config
+  (defun spaceline-my-theme ()
+    (spaceline--theme
+     '((((window-number
+          projectile-root) :separator "|")
+        buffer-modified)
+       :face highlight-face
+       :priority 100)
+     '((buffer-id remote-host)
+       :priority 98)))
+
   (require 'spaceline-config)
   (setq spaceline-window-numbers-unicode t)
 
   (make-thread
    (lambda ()
-     (let ((fmt (spaceline--theme
-                 '((((window-number
-                      projectile-root) :separator "|")
-                    buffer-modified)
-                   :face highlight-face
-                   :priority 100)
-                 '((buffer-id remote-host)
-                   :priority 98))))
+     (let ((fmt (spaceline-my-theme)))
        (dolist (buf (buffer-list))
          (with-current-buffer buf
            (setq mode-line-format fmt)))

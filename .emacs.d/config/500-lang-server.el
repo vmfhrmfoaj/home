@@ -303,6 +303,15 @@
 
   (defun lsp--custom-eldoc-message-emacs-28 (&optional msg)
     "Show MSG in eldoc."
+    (when-let ((max-chars (-> (cond
+                               ((floatp max-mini-window-height)
+                                (floor (* (frame-height) max-mini-window-height)))
+                               ((numberp max-mini-window-height)
+                                max-mini-window-height))
+                              (1-)
+                              (* (- (frame-width) 2)))))
+      (when (< max-chars (length msg))
+        (setq msg (concat (substring msg 0 max-chars) "\n" (propertize "(...)" 'face 'shadow)))))
     (setq lsp--eldoc-saved-message msg)
     (eldoc-message msg))
 

@@ -43,6 +43,11 @@
                ((memq old-theme '(twilight-anti-bright))
                 (setq frame-background-mode 'light)))))
 
+  (add-hook 'theme-changer-post-change-functions
+            (lambda (_new-theme)
+              (when (fboundp 'spaceline-my-theme)
+                (spaceline-my-theme))))
+
   (advice-add #'theme-changer-switch-theme :override #'theme-changer--custom-switch-theme)
 
   (change-theme 'twilight-bright 'twilight-anti-bright))
@@ -169,18 +174,20 @@
 (use-package hl-line
   :defer t
   :init
-  (defface hl-line-evil-insert
-    '((t :extend t))
+  (defface hl-line-evil-insert-light
+    '((t :weight light))
     "TODO")
-  (defface hl-line-evil-insert-2
-    '((t :extend t))
+  (defface hl-line-evil-insert-normal
+    '((t :weight normal))
+    "TODO")
+  (defface hl-line-evil-insert-bold
+    '((t :weight bold))
     "TODO")
 
   :config
   (custom-set-faces
    '(hl-line ((t :background unspecified)))
-   '(hl-line-evil-insert   ((t :weight normal)))
-   '(hl-line-evil-insert-2 ((t :weight bold)))))
+   '(hl-line-evil-insert ((t :weight normal)))))
 
 (use-package hl-todo
   :defer t
@@ -220,6 +227,12 @@
   (custom-set-faces
    '(php-passive-assign-variable-face ((t :inherit font-lock-variable-name-face)))
    `(php-variable-name ((t :inherit font-lock-variable-name-face)))))
+
+(use-package powerline
+  :defer t
+  :config
+  
+  )
 
 (use-package lsp-mode
   :defer t
