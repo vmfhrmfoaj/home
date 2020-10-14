@@ -24,9 +24,7 @@
         company-dabbrev-minimum-length 1
         company-dabbrev-ignore-case t
         company-dabbrev-code-ignore-case t
-        company-etags-ignore-case t
-        ;; company-tooltip-width-grow-only t
-        )
+        company-etags-ignore-case t)
 
   (add-hook 'company-after-completion-hook
             (lambda (_ignored)
@@ -38,7 +36,11 @@
   (add-hook 'evil-normal-state-entry-hook
             (lambda ()
               (when (company--active-p)
-                (company-cancel)))))
+                (company-cancel))))
+
+  ;; NOTE
+  ;;  sometimes all candidates can be prefixed with spaces.
+  (advice-add #'company--insert-candidate :before-until #'s-blank-str?))
 
 (use-package yasnippet
   :ensure t

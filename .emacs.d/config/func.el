@@ -244,11 +244,17 @@
   (switch-to-previous-buffer-in (buffer-list)))
 
 
+(defvar scratch-buffer-name "*scratch*")
+(defvar scratch-buffer-temp-file "~/.emacs.d/scratch")
+
 (defun get-scratch-buffer-create ()
   (interactive)
-  (pop-to-buffer (get-buffer-create "*scratch*"))
+  (pop-to-buffer (get-buffer-create scratch-buffer-name))
   (unless (eq 'markdown-mode major-mode)
-    (markdown-mode)))
+    (markdown-mode)
+    (evil-local-set-key 'normal (kbd "C-l") (lambda () (interactive) (kill-region (point-min) (point-max))))
+    (when (file-exists-p scratch-buffer-temp-file)
+      (insert-file-contents scratch-buffer-temp-file))))
 
 (defun kill-new-buffer-file-name ()
   (interactive)
@@ -273,6 +279,35 @@
           (set-buffer-modified-p nil)
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
+
+(defun enabled? (mode-status)
+  "TODO"
+  (cond ((symbolp mode-status) mode-status)
+        ((numberp mode-status) (not (zerop mode-status)))
+        (t nil)))
+
+(defun disable-modes (modes)
+  "TODO"
+  (--map (and (symbol-value it)
+              (funcall it 0))
+         modes))
+
+(defun restore-modes (modes status)
+  "TODO"
+  (--map (and (cdr it)
+              (funcall (car it) (cdr it)))
+         (-zip-pair modes status)))
+
+(defmacro with-disable-modes (modes &rest body)
+  "TODO"
+  `(let ((mode-status (-map #'symbol-value ,modes)))
+     (disable-modes ,modes)
+     (unwind-protect
+         (prog1 (progn ,@body)
+           (restore-modes ,modes mode-status))
+       (restore-modes ,modes mode-status))))
+
+(put 'with-disable-modes 'lisp-indent-function 'defun)
 
 (defun comment-it ()
   "TODO"

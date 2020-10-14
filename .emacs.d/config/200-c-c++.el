@@ -12,9 +12,8 @@
   (setq c-default-style '((java-mode . "java")
                           (awk-mode . "awk")
                           (other . "linux")))
-
-  (setq-default c-backslash-column 80)
-  (setq-default c-backslash-max-column 120)
+  (setq-default c-backslash-column 80
+                c-backslash-max-column 120)
 
   (add-hook 'c-mode-common-hook
             (lambda ()

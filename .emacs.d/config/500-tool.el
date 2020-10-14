@@ -47,17 +47,14 @@
 (use-package ediff
   :defer t
   :config
-  (defvar ediff--exclude-mode-status nil
-    "TODO")
+  (defvar ediff-exclude-modes nil)
+  (defvar ediff--exclude-mode-status nil)
 
-  (defvar ediff--win-conf nil
-    "TODO")
+  (defvar ediff--win-conf nil)
 
-  (defvar ediff--frame-status nil
-    "TODO")
+  (defvar ediff--frame-status nil)
 
   (defun ediff-addtional-setup (&rest _)
-    "TODO"
     (setq ediff--exclude-mode-status (-map #'symbol-value ediff-exclude-modes)
           ediff--win-conf (current-window-configuration))
     (disable-modes ediff-exclude-modes)
@@ -71,7 +68,6 @@
        (t nil))))
 
   (defun ediff-addtional-cleanup (&rest _)
-    "TODO"
     (restore-modes ediff-exclude-modes ediff--exclude-mode-status)
     (-when-let (conf ediff--win-conf)
       (setq ediff--win-conf nil)
@@ -85,7 +81,6 @@
     (setq ediff--frame-status nil))
 
   (defun ediff-reset-text-size ()
-    "TODO"
     (interactive)
     (ediff-barf-if-not-control-buffer)
     (dolist (buf (-filter #'identity (list ediff-buffer-A ediff-buffer-B ediff-buffer-C)))
@@ -93,7 +88,6 @@
         (text-scale-increase 0))))
 
   (defun ediff-increase-text-size ()
-    "TODO"
     (interactive)
     (ediff-barf-if-not-control-buffer)
     (dolist (buf (-filter #'identity (list ediff-buffer-A ediff-buffer-B ediff-buffer-C)))
@@ -101,7 +95,6 @@
         (text-scale-increase 0.5))))
 
   (defun ediff-decrease-text-size ()
-    "TODO"
     (interactive)
     (ediff-barf-if-not-control-buffer)
     (dolist (buf (-filter #'identity (list ediff-buffer-A ediff-buffer-B ediff-buffer-C)))
@@ -110,7 +103,9 @@
 
   ;; NOTE
   ;;  prevent to calculate the width of the window in `ediff-setup-windows-plain-compare' function.
-  (setq ediff-exclude-modes '(zoom-mode)
+  (when (featurep 'zoom-mode)
+    (setq ediff-exclude-modes '(zoom-mode)))
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain ; for 'Window blur effects' Gnome extension
         ediff-split-window-function #'split-window-right)
 
   (advice-add #'ediff-setup :before #'ediff-addtional-setup)

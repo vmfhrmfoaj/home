@@ -74,3 +74,10 @@
                             (apply fn buf args))))
             (setq gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect)))
           :append)
+
+(add-hook 'kill-emacs-hook
+          (lambda ()
+            (when-let ((buf (and (stringp scratch-buffer-temp-file)
+                                 (get-buffer scratch-buffer-name))))
+              (with-current-buffer buf
+                (write-region (point-min) (point-max) scratch-buffer-temp-file)))))

@@ -45,8 +45,8 @@
 
   (add-hook 'theme-changer-post-change-functions
             (lambda (_new-theme)
-              (when (fboundp 'spaceline-my-theme)
-                (spaceline-my-theme))))
+              (when (featurep 'powerline)
+                (powerline-reset))))
 
   (advice-add #'theme-changer-switch-theme :override #'theme-changer--custom-switch-theme)
 

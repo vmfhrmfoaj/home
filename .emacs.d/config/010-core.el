@@ -49,8 +49,12 @@
   :ensure t
   :defer t
   :config
-  (setq enable-recursive-minibuffers t
-        ivy-height 15)
+  (defun ivy-parent-dir ()
+    (interactive)
+    (when ivy--directory
+      (ivy--cd (ivy--parent-dir (expand-file-name ivy--directory)))
+      (ivy--exhibit)
+      t))
 
   (defun colir--custom-blend-background (start next prevn face object)
     "Mix color only for `ivy-mode' faces."
@@ -65,6 +69,9 @@
                prevn)
        (list face prevn))
      object))
+
+  (setq enable-recursive-minibuffers t
+        ivy-height 15)
 
   (advice-add #'colir--blend-background :override #'colir--custom-blend-background)
   (advice-add #'ivy--highlight-default :before

@@ -345,8 +345,8 @@
 (use-package powerline
   :ensure t)
 
-(use-package spaceline
-  :ensure t
+(use-package spaceline-config
+  :ensure spaceline
   :config
   (defun spaceline-my-theme ()
     (spaceline--theme
@@ -358,7 +358,6 @@
      '((buffer-id remote-host)
        :priority 98)))
 
-  (require 'spaceline-config)
   (setq spaceline-window-numbers-unicode t)
 
   (make-thread

@@ -168,6 +168,13 @@
                                 'follow-link t))
             (setq beg (next-single-property-change (1+ end) 'help-echo)))))))
 
+  (defun lsp--custom-workspace-print (workspace)
+    "Visual representation WORKSPACE."
+    (let* ((status (lsp--workspace-status workspace)))
+      (if (eq 'initialized status)
+          "😃"
+        (format "status: %s" status))))
+
   (defvar lsp--custom-render--regex-1-for-php
     (concat "\\(?:^\\|\n\\)````php\n"              ; ```php
             "\\(?:[ \t\r\n]*<\\?php[ \t\r\n]*\\)?" ; <?php
@@ -405,7 +412,8 @@
   (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-type-definition :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
-  (advice-add #'lsp-signature-stop :after #'lsp-signature-restart))
+  (advice-add #'lsp-signature-stop :after #'lsp-signature-restart)
+  (advice-add #'lsp--workspace-print :override #'lsp--custom-workspace-print))
 
 (use-package lsp-ui
   :ensure t

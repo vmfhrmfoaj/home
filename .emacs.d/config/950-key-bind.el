@@ -425,31 +425,44 @@
 (use-package ivy
   :defer t
   :config
-  (evil-define-key 'insert ivy-minibuffer-map
-    (kbd "<tab>") #'ivy-partial
-    (kbd "C-u") (lambda ()
-                  (interactive)
-                  (when ivy--directory
-                    (ivy--cd (ivy--parent-dir (expand-file-name ivy--directory)))
-                    (ivy--exhibit)))
-    (kbd "C-j") #'ivy-next-line
-    (kbd "C-k") #'ivy-previous-line)
-  (evil-define-key 'normal ivy-minibuffer-map
-    (kbd "RET") #'ivy-done
-    "j" #'ivy-next-line
-    "k" #'ivy-previous-line
-    (kbd "C-u") (lambda ()
-                  (interactive)
-                  (when ivy--directory
-                    (ivy--cd (ivy--parent-dir (expand-file-name ivy--directory)))
-                    (ivy--exhibit)
-                    (evil-insert-state)))
-    (kbd "<tab>") (lambda ()
+  (if (not evil-want-minibuffer)
+      (progn
+        (define-key ivy-minibuffer-map (kbd "<tab>") #'ivy-partial)
+        (define-key ivy-minibuffer-map (kbd "C-j") #'ivy-next-line)
+        (define-key ivy-minibuffer-map (kbd "C-k") #'ivy-previous-line)
+        (define-key ivy-minibuffer-map (kbd "C-u") #'ivy-parent-dir))
+    (evil-define-key 'insert ivy-minibuffer-map
+      (kbd "<tab>") #'ivy-partial
+      (kbd "C-f") (lambda ()
                     (interactive)
-                    (let ((input ivy-text))
-                      (ivy-partial)
-                      (unless (string= input ivy-text)
-                        (evil-insert-state))))))
+                    (evil-normal-state)
+                    (ivy-toggle-calling))
+      (kbd "C-j") #'ivy-next-line
+      (kbd "C-k") #'ivy-previous-line
+      (kbd "C-o") #'hydra-ivy/body
+      (kbd "C-u") #'ivy-parent-dir)
+    (evil-define-key 'normal ivy-minibuffer-map
+      (kbd "RET") #'ivy-done
+      "j" #'ivy-next-line
+      "k" #'ivy-previous-line
+      (kbd "C-o") #'hydra-ivy/body
+      (kbd "C-f") #'ivy-toggle-calling
+      (kbd "C-j") #'ivy-next-line
+      (kbd "C-k") #'ivy-previous-line
+      (kbd "C-u") (lambda ()
+                    (interactive)
+                    (when (ivy-parent-dir)
+                      (evil-insert-state)))
+      (kbd "<tab>") (lambda ()
+                      (interactive)
+                      (let ((input ivy-text))
+                        (ivy-partial)
+                        (unless (string= input ivy-text)
+                          (evil-insert-state)))))))
+
+(use-package ivy-hydra
+  :ensure t
+  :defer t)
 
 (use-package lsp-mode
   :defer t
