@@ -156,10 +156,10 @@
    '(font-lock-preprocessor-face ((((class color) (background light)) :background "#fbf6ed")))
    '(font-lock-regexp-grouping-backslash
      ((((class color) (background light)) :inherit font-lock-string-face :background "#e1f2d6")
-      (((class color) (background dark))  :inherit font-lock-string-face :weight normal)))
+      (((class color) (background dark))  :inherit font-lock-string-face :background "#1e2826" :weight normal)))
    '(font-lock-regexp-grouping-construct
      ((((class color) (background light)) :inherit font-lock-string-face :background "#e1f2d6")
-      (((class color) (background dark))  :inherit font-lock-string-face :weight normal)))
+      (((class color) (background dark))  :inherit font-lock-string-face :background "#1e2826" :weight normal)))
    '(font-lock-type-face ((t :weight unspecified)))
    '(font-lock-variable-name-face ((((class color) (background light)) :foreground "#607596")))
    '(font-lock-warning-face ((t :weight semi-bold :underline t)))))
@@ -228,19 +228,14 @@
    '(php-passive-assign-variable-face ((t :inherit font-lock-variable-name-face)))
    `(php-variable-name ((t :inherit font-lock-variable-name-face)))))
 
-(use-package powerline
-  :defer t
-  :config
-  
-  )
-
 (use-package lsp-mode
   :defer t
   :config
   (custom-set-faces
    '(lsp-face-highlight-read    ((t :inherit highlight :underline t )))
    '(lsp-face-highlight-textual ((t :inherit highlight :underline t )))
-   '(lsp-face-highlight-write   ((t :inherit highlight :underline t :weight semi-bold)))))
+   '(lsp-face-highlight-write   ((t :inherit highlight :underline t :weight semi-bold)))
+   '(lsp-face-workspace-modeline ((t :weight extra-light)))))
 
 (use-package magit
   :defer t

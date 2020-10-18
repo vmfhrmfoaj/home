@@ -141,7 +141,16 @@
     ;; error
     "en" #'flycheck-next-error
     "ep" #'flycheck-previous-error
-    "el" #'flycheck-list-errors
+    "el" (defalias 'counsel-flycheck-with-calling
+           (lambda ()
+             (interactive)
+             (let ((val (default-value 'ivy-calling)))
+               (unwind-protect
+                   (progn
+                     (setq-default ivy-calling t)
+                     (counsel-flycheck))
+                 (setq-default ivy-calling val)))))
+    "es" #'show-error-list
 
     ;; file
     "fb" #'counsel-bookmark
@@ -406,8 +415,17 @@
   :defer t
   :config
   (evil-define-key 'visual evil-surround-mode-map
-    "S" 'evil-substitute
-    "s" 'evil-surround-region))
+    "S" #'evil-substitute
+    "s" #'evil-surround-region))
+
+(use-package flycheck
+  :defer t
+  :config
+  (evil-define-key 'normal flycheck-error-list-mode-map
+    (kbd "RET") #'flycheck-error-list-goto-error
+    "n" #'flycheck-error-list-next-error
+    "p" #'flycheck-error-list-previous-error
+    "q" #'quit-window))
 
 (use-package git-timemachine
   :defer t

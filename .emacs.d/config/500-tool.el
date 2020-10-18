@@ -31,7 +31,8 @@
   (atomic-chrome-start-server))
 
 (use-package display-line-numbers
-  :hook ((prog-mode . enable-display-line-numbers)
+  :hook ((conf-mode . enable-display-line-numbers)
+         (prog-mode . enable-display-line-numbers)
          (text-mode . enable-display-line-numbers))
   :init
   (defun enable-display-line-numbers ()
@@ -237,6 +238,18 @@
   :ensure t
   :defer t
   :config
+  (defun counsel-flycheck--custom-errors-cands ()
+    (mapcar
+     (lambda (err)
+       (propertize
+        (format "%s:%s:%s: %s"
+                (propertize (file-name-base (flycheck-error-filename err)) 'face 'ivy-grep-info)
+                (propertize (int-to-string (flycheck-error-line err)) 'face 'ivy-grep-line-number)
+                (let ((level (flycheck-error-level err)))
+                  (propertize (symbol-name level) 'face (flycheck-error-level-error-list-face level)))
+                (flycheck-error-message err)) 'error err))
+     flycheck-current-errors))
+
   (setq flycheck-display-errors-delay 0.2)
 
   (add-hook 'flycheck-mode
@@ -244,7 +257,10 @@
               (add-hook 'company-completion-started-hook
                         (lambda ()
                           (flycheck-stop))
-                        nil t))))
+                        nil t)))
+
+  (with-eval-after-load "counsel"
+    (advice-add #'counsel-flycheck-errors-cands :override #'counsel-flycheck--custom-errors-cands)))
 
 (use-package flycheck-pos-tip
   :ensure t
@@ -343,28 +359,29 @@
 
   (defun treemacs-close-node (&optional arg)
     (interactive "P")
-    (treemacs-do-for-button-state
-     :on-root-node-open   (treemacs--collapse-root-node btn arg)
-     :on-dir-node-open    (treemacs--collapse-dir-node btn arg)
-     :on-dir-node-closed  (treemacs-collapse-parent-node arg)
-     :on-file-node-open   (treemacs--collapse-file-node btn arg)
-     :on-file-node-closed (treemacs-collapse-parent-node arg)
-     :on-tag-node-open    (treemacs--collapse-tag-node btn arg)
-     :on-tag-node-closed  (treemacs-collapse-parent-node arg)
-     :on-tag-node-leaf    (treemacs-collapse-parent-node arg)
-     :on-nil              (treemacs-pulse-on-failure "There is nothing to do here.")))
+    (-if-let (btn (treemacs-current-button))
+        (let ((state (treemacs-button-get btn :state)))
+          (cond
+           ((string-match-p "open\\(?:-state\\)?$" (symbol-name state))
+            (treemacs-TAB-action arg))
+           ((string-match-p "\\(node\\|leaf\\|closed\\)\\(?:-state\\)?$" (symbol-name state))
+            (treemacs-collapse-parent-node arg))))
+      (treemacs-pulse-on-failure "There is nothing to do here.")))
 
   (defun treemacs-open-node (&optional arg)
     (interactive "P")
-    (treemacs-do-for-button-state
-     :on-root-node-closed (treemacs--expand-root-node btn)
-     :on-dir-node-closed  (treemacs--expand-dir-node btn)
-     :on-file-node-closed (treemacs--expand-file-node btn arg)
-     :on-tag-node-closed  (treemacs--expand-tag-node btn arg)
-     :on-tag-node-leaf    (progn
-                            (other-window 1)
-                            (treemacs--goto-tag btn))
-     :on-nil              (treemacs-pulse-on-failure "There is nothing to do here.")))
+    (-if-let (btn (treemacs-current-button))
+        (let ((state (treemacs-button-get btn :state)))
+          (cond
+           ((eq state 'file-node-closed)
+            (let ((treemacs-pulse-on-failure nil))
+              (unless (treemacs--expand-file-node btn arg)
+                (treemacs-RET-action arg))))
+           ((string-match-p "closed\\(?:-state\\)?$" (symbol-name state))
+            (treemacs-TAB-action arg))
+           ((memq state '(tag-node tag-node-leaf))
+            (treemacs-RET-action arg))))
+      (treemacs-pulse-on-failure "There is nothing to do here.")))
 
   :config
   (defface treemacs-selected-icon
@@ -428,9 +445,9 @@
         (treemacs-mode)
         (treemacs-with-writable-buffer
          (let ((treemacs-proj (treemacs-project->create!
-                                      :name (projectile-project-name)
-                                      :path proj-root
-                                      :path-status (treemacs--get-path-status proj-root))))
+                               :name (projectile-project-name)
+                               :path proj-root
+                               :path-status (treemacs--get-path-status proj-root))))
            (treemacs--add-project-to-current-workspace treemacs-proj)
            (treemacs--add-root-element treemacs-proj))
          (when-let ((pos (next-single-property-change (point-min) :project)))
@@ -440,6 +457,7 @@
                (treemacs-next-line 1)
              (catch 'stop
                (goto-char (point-min))
+               (end-of-line) ; if the project name equal to first directory name
                (dolist (part (->> proj-root
                                   (file-relative-name file)
                                   (s-split "/")

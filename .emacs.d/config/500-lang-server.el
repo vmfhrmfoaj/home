@@ -168,12 +168,24 @@
                                 'follow-link t))
             (setq beg (next-single-property-change (1+ end) 'help-echo)))))))
 
+  (defface lsp-face-workspace-modeline
+    '((t (:extend t)))
+    "TODO")
+
   (defun lsp--custom-workspace-print (workspace)
     "Visual representation WORKSPACE."
-    (let* ((status (lsp--workspace-status workspace)))
-      (if (eq 'initialized status)
-          "😃"
-        (format "status: %s" status))))
+    (let* ((proc (lsp--workspace-cmd-proc workspace))
+           (status (lsp--workspace-status workspace))
+           (server-id (-> workspace
+                          (lsp--workspace-client)
+                          (lsp--client-server-id)
+                          (symbol-name)))
+           (pid (format "%s" (process-id proc))))
+      (propertize
+       (if (eq 'initialized status)
+           (format "%s:%s" server-id pid)
+         (format "%s:%s status:%s" server-id pid status))
+       'face 'lsp-face-workspace-modeline)))
 
   (defvar lsp--custom-render--regex-1-for-php
     (concat "\\(?:^\\|\n\\)````php\n"              ; ```php
@@ -370,6 +382,7 @@
 
   (add-hook 'lsp-mode-hook
             (lambda ()
+              (setq-local show-error-list-fn #'lsp-treemacs-errors-list)
               (setq-local evil-lookup-func #'lsp-describe-thing-at-point)
               (cond
                ((derived-mode-p 'go-mode)
