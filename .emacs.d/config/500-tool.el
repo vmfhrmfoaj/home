@@ -31,9 +31,10 @@
   (atomic-chrome-start-server))
 
 (use-package display-line-numbers
-  :hook ((conf-mode . enable-display-line-numbers)
-         (prog-mode . enable-display-line-numbers)
-         (text-mode . enable-display-line-numbers))
+  :hook ((conf-mode            . enable-display-line-numbers)
+         (git-timemachine-mode . enable-display-line-numbers)
+         (prog-mode            . enable-display-line-numbers)
+         (text-mode            . enable-display-line-numbers))
   :init
   (defun enable-display-line-numbers ()
     "Turn on `display-line-numbers-mode'."

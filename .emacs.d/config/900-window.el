@@ -12,6 +12,7 @@
          (main-monitor-y (nth 1 workarea))
          (main-monitor-w (nth 2 workarea))
          (main-monitor-h (nth 3 workarea))
+         (x-offset 70)
          (x main-monitor-x)
          (y main-monitor-y)
          (h main-monitor-h)
@@ -19,9 +20,10 @@
                (*   6 (frame-char-width))))) ; fringe + line-number
     (if (<= main-monitor-w w)
         (setq w main-monitor-w)
-      (setq x (- (+ main-monitor-x
-                    (floor (/ main-monitor-w 2)) )
-                 (floor (/ w 2)))))
+      (setq x (+ (- (+ main-monitor-x
+                       (floor (/ main-monitor-w 2)) )
+                    (floor (/ w 2)))
+                 x-offset)))
     (add-to-list 'default-frame-alist `(width  . (text-pixels . ,w)))
     (add-to-list 'default-frame-alist `(height . (text-pixels . ,h)))
     (setq frame-resize-pixelwise t

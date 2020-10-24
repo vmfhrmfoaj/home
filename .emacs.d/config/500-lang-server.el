@@ -416,6 +416,7 @@
                             (setq lsp-ui-sideline--tag nil)))
                         nil t)))
 
+  (advice-add #'lsp :before-until (lambda () "Turn `lsp-mode' off" (bound-and-true-p git-timemachine-mode)))
   (advice-add #'lsp--eldoc-message :override 'lsp--custom-eldoc-message)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
   (advice-add #'lsp--signature->message :filter-return #'lsp--signature->message-filter)

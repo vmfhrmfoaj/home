@@ -40,7 +40,8 @@
 
   ;; NOTE
   ;;  sometimes all candidates can be prefixed with spaces.
-  (advice-add #'company--insert-candidate :before-until #'s-blank-str?))
+  (advice-add #'company--insert-candidate :filter-args
+              (-compose #'-list (-partial #'s-chop-prefix " ") #'car)))
 
 (use-package yasnippet
   :ensure t
