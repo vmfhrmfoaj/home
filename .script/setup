@@ -106,6 +106,14 @@ _setup_for_java() {
     fi
 }
 
+_setup_for_graalvm() {
+    local graalvm_home="${HOME}/.graalvm"
+    if [ -d "${graalvm_home}" ]; then
+        export GRAALVM_HOME=${graalvm_home}
+        _add_to_path "${graalvm_home}/bin" 'yes'
+    fi
+}
+
 _setup_for_kotlin() {
     _is_shim 'asdf'
     if [ $? -ne 0 ]; then
@@ -364,6 +372,7 @@ _setup_for_asdf
 _setup_for_clojure
 _setup_for_go
 _setup_for_java
+_setup_for_graalvm
 _setup_for_locale
 _setup_for_perl
 _setup_for_rust
