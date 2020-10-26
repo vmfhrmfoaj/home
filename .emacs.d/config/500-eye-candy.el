@@ -148,8 +148,16 @@
 
   (with-eval-after-load "company"
     (add-hook 'company-completion-started-hook #'focus--tooltip-on)
-    (add-hook 'company-after-completion-hook #'focus--tooltip-off)
-    (advice-add #'company-modify-line :override #'company--custom-modify-line))
+    (add-hook 'company-after-completion-hook   #'focus--tooltip-off)
+    (advice-add #'company-modify-line :override #'company--custom-modify-line)
+    (advice-add #'company--replacement-string :filter-args
+                (lambda (args)
+                  (-let (((lines old column nl align-top) args))
+                    (if (null align-top)
+                        args
+                      (dotimes (i (- (length old) (length lines)))
+                        (setf (nth i old) (propertize (nth i old) 'face 'focus-unfocused)))
+                      (list lines old column nl align-top))))))
 
   (add-hook 'evil-insert-state-entry-hook #'focus--enable)
   (add-hook 'evil-insert-state-exit-hook  #'focus--disable)

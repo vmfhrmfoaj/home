@@ -97,9 +97,11 @@
     (custom-set-faces
      `(cider-deprecated-face ((t :inherit font-lock-warning-face :weight ,default-weight :underline (:color "darkorange"))))
      '(cider-fringe-good-face ((t :inherit success)))
+     '(clojure-cond-condtion-face ((t :weight extra-light)))
      '(clojure-define-type-face ((t :inherit font-lock-type-face)))
      '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
+     '(clojure-meta-face ((t :inherit shadow :weight extra-light)))
      `(clojure-important-keywords-face
        ((((class color) (background light)) :inherit font-lock-keyword-face :foreground "#d67d00")
         (((class color) (background dark))  :inherit font-lock-keyword-face :foreground "#da7e3b")))

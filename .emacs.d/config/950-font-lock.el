@@ -189,9 +189,6 @@
   (defface clojure-cond-condtion-face
     '((t (:inherit italic)))
     "Face used to font-lock Clojure conditions in `cond' form.")
-  (defface clojure-if-true-face
-    '((t (:inherit italic)))
-    "Face used to font-lock Clojure `if' true form.")
   (defface clojure-define-type-face
     '((t (:inherit (font-lock-type-face))))
     "TODO")
@@ -929,30 +926,6 @@
             (goto-char font-lock--anchor-beg-point))
           (0 'clojure-cond-condtion-face prepend)))
 
-        ;; Highlight 'true' clause in `if' form.
-        (,(concat "(" core-ns? if-kw whitespace+)
-         (,(lambda (limit)
-             (ignore-errors
-               (when font-lock--skip
-                 (error ""))
-               (when (> limit (point))
-                 (clojure-forward-sexp)
-                 (set-match-data (list (progn (clojure-skip :comment :ignored-form) (point-marker))
-                                       (progn (clojure-forward-sexp) (point-marker))))
-                 (clojure-forward-sexp)
-                 t)))
-          (save-excursion
-            (if (in-comment?)
-                (setq font-lock--skip t)
-              (setq font-lock--skip nil)
-              (setq font-lock--anchor-beg-point (point))
-              (safe-up-list-1)
-              (point)))
-          (if font-lock--skip
-              (end-of-line)
-            (goto-char font-lock--anchor-beg-point))
-          (0 'clojure-if-true-face append)))
-
         ;; CSS
         (,(concat "(" namespace? "css" whitespace)
          ("\\(#[0-9A-Fa-f]\\{3,6\\}\\)"
@@ -1048,7 +1021,7 @@
          (1 'font-lock-type-face nil))
 
         ;; Custom keywords
-        (,(concat "(" namespace? highlight-kw)
+        (,(concat "(" namespace? highlight-kw "\\_>")
          (1 'font-lock-keyword-face))
 
         ;; punctuation

@@ -24,7 +24,8 @@
         company-dabbrev-minimum-length 1
         company-dabbrev-ignore-case t
         company-dabbrev-code-ignore-case t
-        company-etags-ignore-case t)
+        company-etags-ignore-case t
+        company-tooltip-flip-when-above t)
 
   (add-hook 'company-after-completion-hook
             (lambda (_ignored)

@@ -121,6 +121,22 @@
                   (apply fn args)
                   (cider-repl-set-ns cur-ns)))))
 
+(use-package cider-client
+  :defer t
+  :config
+  (advice-add #'cider-fallback-eval:classpath :override
+              (lambda ()
+                "fix a bug that occur when `*print-length*' is not `nil'."
+                (let ((classpath (thread-first
+                                     (concat
+                                      "(binding [*print-level* nil, *print-length* nil]"
+                                      "  (print (seq (.split (System/getProperty \"java.class.path\") \":\"))))")
+                                   (cider-sync-tooling-eval)
+                                   (nrepl-dict-get "value")
+                                   (read)))
+                      (project (clojure-project-dir)))
+                  (mapcar (lambda (path) (cider--get-abs-path path project)) classpath)))))
+
 (use-package cider-eval
   :defer t
   :config
@@ -175,9 +191,20 @@
 (use-package cider-repl
   :defer t
   :config
+  (defvar clojure--compilation-error-ns nil)
+
+  (defun cider-repl-catch-compilation-error-ns (_buf msg)
+    (when (string-match "^:error-while-loading \\([-_.0-9A-Za-z]+\\)" msg)
+      (setq clojure--compilation-error-ns (match-string-no-properties 1 msg))))
+
   (defun cider-repl-catch-compilation-error (_buf msg)
     (when-let ((info (cider-extract-error-info cider-compilation-regexp msg)))
-      (let* ((file (nth 0 info))
+      (let* ((file (if (null clojure--compilation-error-ns)
+                       (nth 0 info)
+                     (concat (->> clojure--compilation-error-ns
+                                  (string-replace "-" "_")
+                                  (string-replace "." "/"))
+                             "." (file-name-extension (nth 0 info)))))
              (root (->> (or nrepl-project-dir
                             (clojure-project-root-path))
                         (file-truename)
@@ -185,15 +212,16 @@
              (buf (or (get-file-buffer (concat root "/src/"  file))
                       (get-file-buffer (concat root "/test/" file))
                       (-some->> (cider-sync-request:classpath)
-                        (--filter (s-starts-with? nrepl-project-dir it))
+                        (--filter (s-starts-with? (file-truename nrepl-project-dir) it))
                         (--map (get-file-buffer (concat it "/" file)))
                         (-non-nil)
                         (-first-item)))))
-        (add-to-list 'clojure--compilation-errors (cons buf info))
         (when buf
+          (add-to-list 'clojure--compilation-errors (cons buf info))
           (with-current-buffer buf
             (when (bound-and-true-p flycheck-mode)
-              (flycheck-buffer)))))))
+              (flycheck-buffer))))))
+    (setq clojure--compilation-error-ns nil))
 
   (add-hook 'cider-repl-mode-hook
             (lambda ()
@@ -201,6 +229,7 @@
               (eldoc-mode 1)
               (company-mode 1)))
 
+  (advice-add #'cider-repl-emit-stdout :after #'cider-repl-catch-compilation-error-ns)
   (advice-add #'cider-repl-emit-stderr :after #'cider-repl-catch-compilation-error)
   (advice-add #'cider-repl-return :after
               (lambda (&optional _end-of-input)

@@ -486,6 +486,10 @@
 
   (add-hook 'vlf-mode-hook (-partial #'auto-revert-mode -1)))
 
+(use-package xwidgete
+  :ensure t
+  :after xwidget)
+
 (use-package ztree
   :ensure t
   :defer t)

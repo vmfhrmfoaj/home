@@ -37,7 +37,6 @@
 (global-auto-revert-mode 1)
 (prefer-coding-system 'utf-8)
 (recentf-mode 1)
-(mouse-avoidance-mode 'banish)
 
 (global-subword-mode 1)
 
