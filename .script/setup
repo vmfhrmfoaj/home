@@ -111,6 +111,8 @@ _setup_for_graalvm() {
     if [ -d "${graalvm_home}" ]; then
         export GRAALVM_HOME=${graalvm_home}
         _add_to_path "${graalvm_home}/bin" 'yes'
+        # See how to install `musl`: https://www.graalvm.org/reference-manual/native-image/StaticImages
+        _add_to_path "${HOME}/Desktop/Build/musl/bin" 'yes'
     fi
 }
 
