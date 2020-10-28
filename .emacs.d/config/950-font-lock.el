@@ -28,7 +28,7 @@
      (when (member major-mode '(c-mode c++-mode))
        (font-lock-add-keywords
         nil
-        `(("\\([-=]>\\)"
+        `(("\\([-=]>\\|::\\)"
            (1 'shadow))
           ("\\(\\\\\\)$"
            (1 'shadow))
@@ -180,8 +180,8 @@
   (defface clojure-fn-parameter-face
     '((t (:inherit font-lock-variable-name-face)))
     "Face used to font-lock Clojure parameter.")
-  (defface clojure-fn-parameter-warning-face
-    '((t (:inherit (italic clojure-fn-parameter-face))))
+  (defface clojure-fn-parameter-unused-face
+    '((t (:inherit shadow)))
     "TODO")
   (defface clojure-semi-function-name-face
     `((t (:inherit font-lock-function-name-face :weight ,(face-attribute 'default :weight))))
@@ -189,6 +189,9 @@
   (defface clojure-cond-condtion-face
     '((t (:inherit italic)))
     "Face used to font-lock Clojure conditions in `cond' form.")
+  (defface clojure-if-true-face
+    '((t (:inherit italic)))
+    "Face used to font-lock Clojure `if' true form.")
   (defface clojure-define-type-face
     '((t (:inherit (font-lock-type-face))))
     "TODO")
@@ -204,11 +207,12 @@
   (defface clojure-comment-sexp-face
     '((t (:inherit shadow)))
     "TODO")
+  (defface clojure-punctuation-face
+    '((t (:inherit shadow)))
+    "TODO")
 
   (defcustom clojure--ignore-binding-highlight-regex
-    (concat "^\\("
-            "_\\|"
-            "&\\)$")
+    "^\\([&_]\\)$"
     "TODO"
     :type '(repeat string)
     :safe (lambda (value)
@@ -289,27 +293,16 @@
       (if (< n 0) (clojure-skip -1 :comment :ignored-form :tagged-literal))
       (setq n (funcall (if (< 0 n) '1- '1+) n))))
 
-  (setq clojure-binding-form--recursive-point nil)
-  (setq clojure-binding-form--recursive-limit nil)
-  (setq clojure-oop-kw--str nil)
-  (setq clojure-oop-fn-form--points nil)
-  (setq clojure-oop-fn-recursive--point nil)
-  (setq clojure-oop-fn-recursive--limit nil)
-  (setq clojure-fn-form--method? nil)
-  (setq clojure-fn-form--multi-arity? nil)
-  (setq clojure-fn-recursive--point nil)
-  (setq clojure-fn-recursive--limit nil)
-
-  (make-local-variable 'clojure-binding-form--recursive-point)
-  (make-local-variable 'clojure-binding-form--recursive-limit)
-  (make-local-variable 'clojure-oop-kw--str)
-  (make-local-variable 'clojure-oop-fn-form--points)
-  (make-local-variable 'clojure-oop-fn-recursive--point)
-  (make-local-variable 'clojure-oop-fn-recursive--limit)
-  (make-local-variable 'clojure-fn-form--method?)
-  (make-local-variable 'clojure-fn-form--multi-arity?)
-  (make-local-variable 'clojure-fn-recursive--point)
-  (make-local-variable 'clojure-fn-recursive--limit)
+  (setq-local clojure-binding-form--recursive-point nil)
+  (setq-local clojure-binding-form--recursive-limit nil)
+  (setq-local clojure-oop-kw--str nil)
+  (setq-local clojure-oop-fn-form--points nil)
+  (setq-local clojure-oop-fn-recursive--point nil)
+  (setq-local clojure-oop-fn-recursive--limit nil)
+  (setq-local clojure-fn-form--method? nil)
+  (setq-local clojure-fn-form--multi-arity? nil)
+  (setq-local clojure-fn-recursive--point nil)
+  (setq-local clojure-fn-recursive--limit nil)
 
   (defconst clojure-font-lock-keywords
     (let* ((whitespace "[ \r\t\n]")
@@ -507,7 +500,9 @@
           (if font-lock--skip
               (end-of-line)
             (goto-char font-lock--anchor-beg-point))
-          (1 'clojure-fn-parameter-face)))
+          (1 (if (s-starts-with? "_" (match-string-no-properties 1))
+                 'clojure-fn-parameter-unused-face
+               'clojure-fn-parameter-face))))
 
         ;; Clojure definition keywords - (DEFINITION-KEYWORD symbol ...)
         (,(concat "(" core-ns? def-kw "\\>" whitespace+ meta? "\\(" symbol "*?!*\\)\\>")
@@ -572,7 +567,9 @@
           (if font-lock--skip
               (end-of-line)
             (goto-char font-lock--anchor-beg-point))
-          (1 'clojure-fn-parameter-face)))
+          (1 (if (s-starts-with? "_" (match-string-no-properties 1))
+                 'clojure-fn-parameter-unused-face
+               'clojure-fn-parameter-face))))
 
         ;; Clojure type/protocol extention keyword
         (,(concat "(" core-ns? "\\(" (regexp-opt '("extend" "extend-type" "extend-protocol")) "\\)\\>"
@@ -672,7 +669,7 @@
 
         ;; Auto-gensym variable - variable#
         (,(concat symbol "\\(#\\)\\_>")
-         (1 'shadow))
+         (1 'clojure-punctuation-face))
 
         ;; Dereference, Unquote - @symbol or ~symbol
         (,(concat "\\(~\\|@\\)[*0-9A-Za-z]")
@@ -767,19 +764,30 @@
           (if font-lock--skip
               (end-of-line)
             (goto-char font-lock--anchor-beg-point))
-          (1 'clojure-fn-parameter-face)))
+          (1 (if (s-starts-with? "_" (match-string-no-properties 1))
+                 'clojure-fn-parameter-unused-face
+               'clojure-fn-parameter-face))))
 
         ;; (default ....) or (namespace/default ...)
         (,(concat "(" namespace? "\\(default\\)\\>")
          (1 nil))
 
-        ;; Spec definition - (def ::keyword ...) or (def :namespace/keyword ...)
+        ;; definition with keyword - (def :keyword ...) (def ::keyword ...) or (def :namespace/keyword ...)
         (,(concat "(" namespace? "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
                   whitespace+
                   meta?
-                  "\\(?::" namespace? "\\|::\\)\\(" symbol "\\)\\>")
+                  "\\(:\\)\\(" symbol "\\)/\\(" symbol "\\)\\>")
          (1 'font-lock-keyword-face)
-         (2 'clojure-defining-spec-face))
+         (2 'clojure-defining-spec-face)
+         (3 'font-lock-type-face)
+         (4 'clojure-defining-spec-face))
+        (,(concat "(" namespace? "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
+                  whitespace+
+                  meta?
+                  "\\(::?\\)\\(" symbol "\\)\\>")
+         (1 'font-lock-keyword-face)
+         (2 'clojure-defining-spec-face)
+         (3 'clojure-defining-spec-face))
 
         ;; Special forms
         (,(concat
@@ -924,34 +932,31 @@
           (if font-lock--skip
               (end-of-line)
             (goto-char font-lock--anchor-beg-point))
-          (0 'clojure-cond-condtion-face prepend)))
+          (0 'clojure-cond-condtion-face append)))
 
-        ;; CSS
-        (,(concat "(" namespace? "css" whitespace)
-         ("\\(#[0-9A-Fa-f]\\{3,6\\}\\)"
+        ;; Highlight 'true' clause in `if' form.
+        (,(concat "(" core-ns? if-kw whitespace+)
+         (,(lambda (limit)
+             (ignore-errors
+               (when font-lock--skip
+                 (error ""))
+               (when (> limit (point))
+                 (clojure-forward-sexp)
+                 (set-match-data (list (progn (clojure-skip :comment :ignored-form) (point-marker))
+                                       (progn (clojure-forward-sexp) (point-marker))))
+                 (clojure-forward-sexp)
+                 t)))
           (save-excursion
-            (up-list)
-            (point))
-          nil
-          (0 (let* ((max 255.0)
-                    (str (string-to-list (match-string 0)))
-                    (bg_ (face-attribute 'default :background))
-                    (bg  (if (= 7 (length str))
-                             (apply #'string str)
-                           (->> str
-                                (--remove-first (char-equal ?# it))
-                                (-take 3)
-                                (--map (make-string 2 it))
-                                (apply #'concat "#"))))
-                    (di (if (> 294784 (color-distance "black" bg_)) (+ 1) (- 1)))
-                    (fg (dim-color bg (* di 40))))
-               (if (or (> 2500 (color-distance bg bg_))
-                       (> 5000 (color-distance bg fg)))
-                   (list :underline (> 2500 (color-distance bg bg_))
-                         :foreground bg
-                         :distant-foreground (light-color bg (* di 30)))
-                 `(:inverse-video t :foreground ,bg :background ,fg)))
-             t)))
+            (if (in-comment?)
+                (setq font-lock--skip t)
+              (setq font-lock--skip nil)
+              (setq font-lock--anchor-beg-point (point))
+              (safe-up-list-1)
+              (point)))
+          (if font-lock--skip
+              (end-of-line)
+            (goto-char font-lock--anchor-beg-point))
+          (0 'clojure-if-true-face append)))
 
         ;; Improve docstring
         (,(concat "(defprotocol" whitespace+ symbol "\\>")
@@ -1012,7 +1017,7 @@
                                      font-lock-string-face)
                                    (-list (get-text-property (match-beginning 1) 'face)))
               'clojure-side-effect-face)
-            prepend))
+            append))
 
         ;; Interop type name
         (,(concat "\\(" symbol "\\(\\." symbol "\\)+\\)")
@@ -1025,8 +1030,8 @@
          (1 'font-lock-keyword-face))
 
         ;; punctuation
-        ("\\([~#&_'`^]\\)"
-         (1 'shadow))))
+        ("\\([~#@&_`'^]\\)"
+         (1 'clojure-punctuation-face))))
     "Default expressions to highlight in Clojure mode."))
 
 (use-package elisp-mode
@@ -1222,7 +1227,7 @@
               "TODO"
               (font-lock-add-keywords
                nil
-               '(("\\([.,;]\\|[|&:]\\{2,2\\}\\|\\s(\\|\\s)\\)"
+               '(("\\([.,;]\\|[|&]\\{2,2\\}\\|\\s(\\|\\s)\\)"
                   (1 'shadow append)))
                :append))
             :append))

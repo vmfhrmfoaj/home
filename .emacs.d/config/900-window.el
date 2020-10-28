@@ -12,7 +12,7 @@
          (main-monitor-y (nth 1 workarea))
          (main-monitor-w (nth 2 workarea))
          (main-monitor-h (nth 3 workarea))
-         (x-offset 70)
+         (x-offset 80)
          (x main-monitor-x)
          (y main-monitor-y)
          (h main-monitor-h)

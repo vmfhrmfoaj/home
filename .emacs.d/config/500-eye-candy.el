@@ -114,7 +114,11 @@
        ((<= weight (alist-get 'light focus--weight-values))
         'hl-line-evil-insert-normal)
        ((<= weight (alist-get 'normal focus--weight-values))
-        'hl-line-evil-insert-bold))))
+        'hl-line-evil-insert-semi-bold)
+       ((<= weight (alist-get 'semi-bold focus--weight-values))
+        'hl-line-evil-insert-bold)
+       ((<= weight (alist-get 'bold focus--weight-values))
+        'hl-line-evil-insert-extra-bold))))
 
   (defun focus--enable (&rest _)
     (unless (or (apply #'derived-mode-p focus--exclude-modes)

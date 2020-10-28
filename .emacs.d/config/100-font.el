@@ -22,4 +22,4 @@
       (set-fontset-font "fontset-default" 'bopomofo font)
       (set-fontset-font "fontset-default" 'han      font)))
   (add-to-list 'face-font-rescale-alist '("Fira Code" . 0.95))
-  (add-to-list 'face-font-rescale-alist '("Noto Sans Mono" . 0.9)))
+  (add-to-list 'face-font-rescale-alist '("Noto Sans" . 0.9)))

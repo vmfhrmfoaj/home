@@ -458,18 +458,20 @@
                (treemacs-next-line 1)
              (catch 'stop
                (goto-char (point-min))
-               (end-of-line) ; if the project name equal to first directory name
+               (end-of-line) ; for a case that the project name equal to first directory name
                (dolist (part (->> proj-root
                                   (file-relative-name file)
                                   (s-split "/")
                                   (-non-nil)
-                                  (-map #'regexp-quote)))
+                                  (--map (concat "\\(?:\\s-\\|/\\)" (regexp-quote it)))))
                  (unless (re-search-forward part (point-max) nil)
                    (throw 'stop))
-                 (beginning-of-line-text)
-                 (let ((btn (point)))
-                   (when (eq (treemacs-button-get btn :state) 'dir-node-closed)
-                     (treemacs--expand-dir-node btn :recursive nil))))))))))))
+                 (let ((last (match-end 0)))
+                   (beginning-of-line-text)
+                   (let ((btn (point)))
+                     (when (eq (treemacs-button-get btn :state) 'dir-node-closed)
+                       (treemacs--expand-dir-node btn :recursive nil)))
+                   (goto-char last)))))))))))
 
 (use-package vlf-setup
   :ensure vlf

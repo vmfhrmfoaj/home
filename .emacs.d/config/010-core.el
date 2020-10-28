@@ -43,6 +43,11 @@
                 evil-symbol-word-search t
                 evil-want-minibuffer t)
 
+  (advice-add #'isearch-highlight :around
+              (lambda (fn &rest args)
+                "wrap with `ignore-errors'."
+                (ignore-errors (apply fn args))))
+
   (evil-mode))
 
 (use-package ivy

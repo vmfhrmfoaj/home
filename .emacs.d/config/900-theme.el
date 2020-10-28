@@ -61,8 +61,8 @@
  '(diff-refine-added   ((((class color) (background light)) :background "#eeffee" :foreground "#008800" :weight bold)))
  '(diff-refine-changed ((((class color) (background light)) :background "#ffffee" :foreground "#888800" :weight bold)))
  '(diff-refine-removed ((((class color) (background light)) :background "#ffeeee" :foreground "#880000" :weight bold)))
- '(fixed-pitch       ((t :family "Fira Code")))
- '(fixed-pitch-serif ((t :family "Fira Code")))
+ '(fixed-pitch       ((t :family "DejaVu Sans Mono")))
+ '(fixed-pitch-serif ((t :family "DejaVu Serif")))
  '(line-number
    ((((class color) (background light)) :inherit (fringe default) :foreground "grey80")
     (((class color) (background dark))  :inherit (fringe default) :foreground "grey40")))
@@ -71,8 +71,8 @@
     (((class color) (background dark))  :inherit line-number :background "#2b2f35" :foreground "grey50" :weight semi-bold)))
  '(link ((t :underline t)))
  '(shadow ((((class color) (background light)) :inherit default :foreground "grey60")
-           (((class color) (background dark))  :inherit default :foreground "grey55")))
- '(show-paren-match ((t :weight bold :underline t)))
+           (((class color) (background dark))  :inherit default :foreground "grey50")))
+ '(show-paren-match ((t :weight bold)))
  '(trailing-whitespace ((((class color) (background light)) :background "grey65")
                         (((class color) (background dark))  :background "grey35")))
  '(tooltip ((((class color) (background dark)) :background "#173735" :foreground "#dcdddd"))))
@@ -97,10 +97,12 @@
     (custom-set-faces
      `(cider-deprecated-face ((t :inherit font-lock-warning-face :weight ,default-weight :underline (:color "darkorange"))))
      '(cider-fringe-good-face ((t :inherit success)))
-     '(clojure-cond-condtion-face ((t :weight extra-light)))
+     '(clojure-cond-condtion-face ((t :family "Fantasque Sans Mono" :height 110 :slant italic)))
+     '(clojure-if-true-face ((t :inherit clojure-cond-condtion-face)))
      '(clojure-define-type-face ((t :inherit font-lock-type-face)))
      '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
+     '(clojure-fn-parameter-unused-face ((t :inherit shadow)))
      '(clojure-meta-face ((t :inherit shadow :weight extra-light)))
      `(clojure-important-keywords-face
        ((((class color) (background light)) :inherit font-lock-keyword-face :foreground "#d67d00")
@@ -182,14 +184,19 @@
   (defface hl-line-evil-insert-normal
     '((t :weight normal))
     "TODO")
+  (defface hl-line-evil-insert-semi-bold
+    '((t :weight semi-bold))
+    "TODO")
   (defface hl-line-evil-insert-bold
     '((t :weight bold))
+    "TODO")
+  (defface hl-line-evil-insert-extra-bold
+    '((t :weight extra-bold))
     "TODO")
 
   :config
   (custom-set-faces
-   '(hl-line ((t :background unspecified)))
-   '(hl-line-evil-insert ((t :weight normal)))))
+   '(hl-line ((t :background unspecified)))))
 
 (use-package hl-todo
   :defer t

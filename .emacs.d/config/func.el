@@ -254,7 +254,14 @@
     (markdown-mode)
     (evil-local-set-key 'normal (kbd "C-l") (lambda () (interactive) (kill-region (point-min) (point-max))))
     (when (file-exists-p scratch-buffer-temp-file)
-      (insert-file-contents scratch-buffer-temp-file))))
+      (insert-file-contents scratch-buffer-temp-file))
+    (add-hook 'kill-buffer-hook
+              (lambda ()
+                (when-let ((buf (and (stringp scratch-buffer-temp-file)
+                                     (get-buffer scratch-buffer-name))))
+                  (with-current-buffer buf
+                    (write-region (point-min) (point-max) scratch-buffer-temp-file))))
+              'local)))
 
 (defun kill-new-buffer-file-name ()
   (interactive)
