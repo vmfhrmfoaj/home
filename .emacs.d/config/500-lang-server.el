@@ -132,6 +132,7 @@
          (js-mode         . lsp)
          (latex-mode      . lsp)
          (php-mode        . lsp)
+         (python-mode     . lsp)
          (rust-mode       . lsp)
          (sh-mode         . lsp)
          (typescript-mode . lsp))

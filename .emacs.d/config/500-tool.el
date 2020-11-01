@@ -139,27 +139,13 @@
               (setq eldoc-refresh-last-pos pos)
               (eldoc-message msg)))))))
 
-  (defun eldoc-refresh-for-emacs-28 (&optional interactive)
-    (interactive '(t))
+  (defun eldoc-refresh-for-emacs-28 ()
+    (interactive)
     (when (timerp eldoc-timer)
       (cancel-timer eldoc-timer)
       (setq eldoc-timer nil))
-    (let ((token (eldoc--request-state)))
-      (cond (interactive
-             (setq eldoc--last-request-state token)
-             (eldoc--invoke-strategy))
-            ((not (eldoc--request-docs-p token))
-             ;; Erase the last message if we won't display a new one.
-             (when eldoc-last-message
-               (eldoc--message nil)))
-            (t
-             (let ((non-essential t))
-               (setq eldoc--last-request-state token)
-               ;; Only keep looking for the info as long as the user hasn't
-               ;; requested our attention.  This also locally disables
-               ;; inhibit-quit.
-               (while-no-input
-                 (eldoc--invoke-strategy)))))))
+    (setq eldoc--last-request-state nil)
+    (eldoc--invoke-strategy nil))
 
   (defalias 'eldoc-refresh
     (if (version<= "28.0.50" emacs-version)

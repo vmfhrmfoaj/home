@@ -15,6 +15,7 @@
   :defer t)
 
 (use-package theme-changer
+  :disabled t
   :ensure t
   :config
   (defun theme-changer--custom-switch-theme (old new)
@@ -48,13 +49,17 @@
               (when (featurep 'powerline)
                 (powerline-reset))))
 
-  (advice-add #'theme-changer-switch-theme :override #'theme-changer--custom-switch-theme)
+  (change-theme 'twilight-bright 'twilight-anti-bright)
 
-  (change-theme 'twilight-bright 'twilight-anti-bright))
+  (advice-add #'theme-changer-switch-theme :override #'theme-changer--custom-switch-theme))
+
+(unless (featurep 'theme-changer)
+  (load-theme 'twilight-anti-bright t))
 
 (custom-set-faces
  '(cursor ((((class color) (background light)) :background "sky blue")))
- '(default ((((class color) (background dark)) :background "#1a1d1f" :foreground "#c8ccc4")))
+ '(default ((((class color) (background light)) :foreground "#494949")
+            (((class color) (background dark)) :background "#1a1d1f" :foreground "#c8ccc4")))
  '(diff-added   ((((class color) (background light)) :background "#ddffdd" :foreground "#22aa22")))
  '(diff-changed ((((class color) (background light)) :background "#ffffdd" :foreground "#aaaa22")))
  '(diff-removed ((((class color) (background light)) :background "#ffdddd" :foreground "#aa2222")))
@@ -63,6 +68,7 @@
  '(diff-refine-removed ((((class color) (background light)) :background "#ffeeee" :foreground "#880000" :weight bold)))
  '(fixed-pitch       ((t :family "DejaVu Sans Mono")))
  '(fixed-pitch-serif ((t :family "DejaVu Serif")))
+ '(italic ((t :family "Fantasque Sans Mono" :height 120 :slant italic)))
  '(line-number
    ((((class color) (background light)) :inherit (fringe default) :foreground "grey80")
     (((class color) (background dark))  :inherit (fringe default) :foreground "grey40")))
@@ -97,8 +103,8 @@
     (custom-set-faces
      `(cider-deprecated-face ((t :inherit font-lock-warning-face :weight ,default-weight :underline (:color "darkorange"))))
      '(cider-fringe-good-face ((t :inherit success)))
-     '(clojure-cond-condtion-face ((t :family "Fantasque Sans Mono" :height 110 :slant italic)))
-     '(clojure-if-true-face ((t :inherit clojure-cond-condtion-face)))
+     '(clojure-cond-condtion-face ((t :inherit italic)))
+     '(clojure-if-true-face ((t :inherit italic)))
      '(clojure-define-type-face ((t :inherit font-lock-type-face)))
      '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))

@@ -1,6 +1,7 @@
 ;;; Copyright (c) 2014-2017, Jinseop Kim
 
 (setq comp-deferred-compilation t
+      comp-async-report-warnings-errors nil
       custom-file "~/.emacs.d/.custom.el"
       gc-cons-threshold (* 1024 1024 1024 2)
       inhibit-startup-screen t)
