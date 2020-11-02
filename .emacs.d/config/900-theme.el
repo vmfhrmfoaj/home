@@ -49,9 +49,9 @@
               (when (featurep 'powerline)
                 (powerline-reset))))
 
-  (change-theme 'twilight-bright 'twilight-anti-bright)
+  (advice-add #'theme-changer-switch-theme :override #'theme-changer--custom-switch-theme)
 
-  (advice-add #'theme-changer-switch-theme :override #'theme-changer--custom-switch-theme))
+  (change-theme 'twilight-bright 'twilight-anti-bright))
 
 (unless (featurep 'theme-changer)
   (load-theme 'twilight-anti-bright t))
@@ -166,10 +166,10 @@
    '(font-lock-preprocessor-face ((((class color) (background light)) :background "#fbf6ed")))
    '(font-lock-regexp-grouping-backslash
      ((((class color) (background light)) :inherit font-lock-string-face :background "#e1f2d6")
-      (((class color) (background dark))  :inherit font-lock-string-face :background "#1e2826" :weight normal)))
+      (((class color) (background dark))  :inherit font-lock-string-face :background "#1e2826" :weight extra-light)))
    '(font-lock-regexp-grouping-construct
      ((((class color) (background light)) :inherit font-lock-string-face :background "#e1f2d6")
-      (((class color) (background dark))  :inherit font-lock-string-face :background "#1e2826" :weight normal)))
+      (((class color) (background dark))  :inherit font-lock-string-face :background "#1e2826" :weight extra-light)))
    '(font-lock-type-face ((t :weight unspecified)))
    '(font-lock-variable-name-face ((((class color) (background light)) :foreground "#607596")))
    '(font-lock-warning-face ((t :weight semi-bold :underline t)))))

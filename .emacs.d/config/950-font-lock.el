@@ -1210,14 +1210,22 @@
          (1 'font-lock-type-face))
         (")\\s-*:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*\\(?:\{\\|;\\)"
          (1 'font-lock-type-face))
-       ("\\(?:^\\|\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\)"
-        (1 'shadow)))))
+        ("\\(?:^\\|\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\)"
+         (1 'shadow)))))
   (setq php-font-lock-keywords php-font-lock-keywords-3)
   (font-lock-add-keywords
    'php-mode
    '(("\\([$]\\)"
       (1 'shadow append)))
    :append))
+
+(use-package python
+  :defer t
+  :config
+  (font-lock-add-keywords
+   'python-mode
+   '((":$"
+      (0 'shadow)))))
 
 (use-package prog-mode
   :defer t
