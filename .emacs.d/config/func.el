@@ -261,6 +261,7 @@
                                      (get-buffer scratch-buffer-name))))
                   (with-current-buffer buf
                     (write-region (point-min) (point-max) scratch-buffer-temp-file))))
+              nil
               'local)))
 
 (defun kill-new-buffer-file-name ()

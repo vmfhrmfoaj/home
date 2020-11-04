@@ -7,24 +7,23 @@
   (load-file "~/.emacs.d/config/func.elc"))
 
 (when window-system
-  (let* ((min-w (* 140 (frame-char-width)))
-         (ratio 0.27)
-         (workarea (-some->> main-monitor (assoc 'workarea) (-drop 1)))
+  (let* ((workarea (-some->> main-monitor (assoc 'workarea) (-drop 1)))
          (main-monitor-x (nth 0 workarea))
          (main-monitor-y (nth 1 workarea))
          (main-monitor-w (nth 2 workarea))
          (main-monitor-h (nth 3 workarea))
+         (x-offset 140)
          (x main-monitor-x)
          (y main-monitor-y)
-         (w main-monitor-w)
-         (h main-monitor-h))
-    (setq x (+ main-monitor-x (floor (* main-monitor-w ratio)))
-          w (- main-monitor-w x))
-    (when (or (<= main-monitor-w min-w)
-              (< w min-w))
-      (set-frame-parameter nil 'fullscreen 'maximized)
-      (setq w main-monitor-w
-            x main-monitor-x))
+         (h main-monitor-h)
+         (w (+ (* 130 (frame-char-width))
+               (*   6 (frame-char-width))))) ; fringe + line-number
+    (if (<= main-monitor-w w)
+        (setq w main-monitor-w)
+      (setq x (+ (- (+ main-monitor-x
+                       (floor (/ main-monitor-w 2)) )
+                    (floor (/ w 2)))
+                 x-offset)))
     (add-to-list 'default-frame-alist `(width  . (text-pixels . ,w)))
     (add-to-list 'default-frame-alist `(height . (text-pixels . ,h)))
     (setq frame-resize-pixelwise t

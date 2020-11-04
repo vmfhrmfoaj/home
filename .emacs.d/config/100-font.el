@@ -10,7 +10,7 @@
   (prefer-coding-system 'utf-8)
   (setq-default line-spacing 1)
   (let* ((font-size 14)
-         (font (font-spec :family "Fira Code" :size font-size)))
+         (font (font-spec :family "Cascadia Code" :size font-size)))
     (set-face-font 'default font)
     (set-fontset-font nil '(#xE000 . #xF8FF) font)               ; for ligature
     (set-fontset-font "fontset-default" '(#xE000 . #xF8FF) font) ; for ligature
@@ -21,4 +21,5 @@
     (let ((font (font-spec :family "Noto Sans CJK SC" :size font-size)))
       (set-fontset-font "fontset-default" 'bopomofo font)
       (set-fontset-font "fontset-default" 'han      font)))
+  (add-to-list 'face-font-rescale-alist '("Fira Code" . 0.95))
   (add-to-list 'face-font-rescale-alist '("Noto Sans" . 0.9)))

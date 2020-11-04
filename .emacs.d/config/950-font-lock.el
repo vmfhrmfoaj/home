@@ -108,15 +108,11 @@
 (use-package cperl-mode
   :defer t
   :config
-  (defface cperl-less-important-keyword-face
-    `((t (:inherit font-lock-keyword-face :weight ,(face-attribute 'default :weight))))
-    "TODO")
-
-  (let ((unimportant-kws '("bless" "defined" "delete" "exists" "grep" "join" "lc" "map" "push" "ref" "splice")))
-   (font-lock-add-keywords
-    'cperl-mode
-    `((,(regexp-opt unimportant-kws 'symbols)
-       1 'cperl-less-important-keyword-face))))
+  (let ((kws '("and" "bless" "defined" "delete" "exists" "grep" "keys" "join" "lc" "map" "not" "or" "push" "ref" "splice" "xor")))
+    (font-lock-add-keywords
+     'cperl-mode
+     `((,(regexp-opt kws 'symbols)
+        1 'font-lock-keyword-face))))
   (font-lock-add-keywords
    'cperl-mode
    (let* ((symbol "[@$%]+[:_0-9a-zA-Z]+")
@@ -147,7 +143,7 @@
         (1 'font-lock-type-face))
        ("\\(?:\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\|\\$\\|\\\\\\)"
         (1 'shadow))
-       ("\\([\\&|*]\\|::\\|[-=]>\\)"
+       ("\\([\\&|*]\\|::\\|[-=]>\\|[$@]_\\>\\)"
         (1 'shadow))
        ("\\([*@$%]+\\)\\(?:[:_0-9a-zA-Z]\\|\\s(\\)"
         (1 'shadow))))
@@ -1030,7 +1026,7 @@
          (1 'font-lock-keyword-face))
 
         ;; punctuation
-        ("\\([~#@&_`'^]\\)"
+        ("\\([~#@&_,`'^]\\)"
          (1 'clojure-punctuation-face))))
     "Default expressions to highlight in Clojure mode."))
 

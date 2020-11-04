@@ -59,7 +59,7 @@
 (custom-set-faces
  '(cursor ((((class color) (background light)) :background "sky blue")))
  '(default ((((class color) (background light)) :foreground "#494949")
-            (((class color) (background dark)) :background "#1a1d1f" :foreground "#c8ccc4")))
+            (((class color) (background dark)) :background "#1a1d1f" :foreground "#c1c4bd")))
  '(diff-added   ((((class color) (background light)) :background "#ddffdd" :foreground "#22aa22")))
  '(diff-changed ((((class color) (background light)) :background "#ffffdd" :foreground "#aaaa22")))
  '(diff-removed ((((class color) (background light)) :background "#ffdddd" :foreground "#aa2222")))
@@ -77,7 +77,7 @@
     (((class color) (background dark))  :inherit line-number :background "#2b2f35" :foreground "grey50" :weight semi-bold)))
  '(link ((t :underline t)))
  '(shadow ((((class color) (background light)) :inherit default :foreground "grey60")
-           (((class color) (background dark))  :inherit default :foreground "grey50")))
+           (((class color) (background dark))  :inherit default :foreground "#969993" :weight light)))
  '(show-paren-match ((t :weight bold)))
  '(trailing-whitespace ((((class color) (background light)) :background "grey65")
                         (((class color) (background dark))  :background "grey35")))
@@ -120,6 +120,12 @@
      '(clojure-special-variable-definition-face ((t :inherit (font-lock-constant-face clojure-variable-definition-face))))
      '(clojure-variable-definition-face ((t :inherit font-lock-variable-name-face :weight semi-bold))))))
 
+(use-package cperl-mode
+  :defer t
+  :config
+  (custom-set-faces
+   '(cperl-nonoverridable-face ((t :inherit font-lock-constant-face)))))
+
 (use-package eldoc
   :defer t
   :config
@@ -161,6 +167,8 @@
   (custom-set-faces
    '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight extra-light)))
    '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :weight extra-light)))
+   '(font-lock-doc-face ((t :weight light)))
+   '(font-lock-doc-string-face ((t :weight light)))
    '(font-lock-function-name-face ((t :weight semi-bold)))
    '(font-lock-keyword-face ((((class color) (background light)) :background "#fbf5ec")))
    '(font-lock-preprocessor-face ((((class color) (background light)) :background "#fbf6ed")))
