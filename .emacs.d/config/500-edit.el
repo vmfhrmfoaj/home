@@ -112,9 +112,28 @@ So, replaced `evil-jump-item' to this function."
        (t
         (sp-backward-up-sexp)))))
 
+  (defun sp--org-checkbox-p (_id _action _context)
+    "TODO"
+    (save-match-data
+      (save-excursion
+        (beginning-of-line)
+        (and (re-search-forward "^\\s-*\\(?:-\\|[0-9]+\\.\\) \\[\\(?:\\]\\|$\\)" (line-end-position) t) t))))
+
+  (defun sp--org-checkbox-handler (id action context)
+    "TODO"
+    (when (and (string-equal id "[")
+               (eq action 'insert)
+               (sp--org-checkbox-p id action context))
+      (insert " ")
+      (skip-chars-forward "[^[]")
+      (insert " ")))
+
   (setq sp-highlight-pair-overlay nil
         sp-highlight-wrap-overlay nil
         sp-highlight-wrap-tag-overlay nil)
+
+  (with-eval-after-load "org"
+    (sp-local-pair 'org-mode "[" "]" :post-handlers '(:add sp--org-checkbox-handler)))
 
   (smartparens-global-mode 1)
   (show-smartparens-global-mode 1))

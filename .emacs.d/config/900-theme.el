@@ -306,6 +306,19 @@
        ((((class color) (background light)) :distant-foreground "black")
         (((class color) (background dark))  :background "#212933"))))))
 
+(use-package org
+  :defer t
+  :config
+  (custom-set-faces
+   '(org-agenda-date-weekend ((t :inherit org-agenda-date)))
+   '(org-date ((t :inherit italic :underline unspecified)))
+   `(org-hide ((t :inherit default :background unspecified :foreground ,(bg-color-from 'default))))
+   '(org-level-1 ((t :inherit outline-1 :height 1.1)))
+   '(org-link ((t :inherit link :underline unspecified))))
+  (dolist (i (number-sequence 1 8))
+    (let ((face (intern (concat "org-level-" (number-to-string i)))))
+      (set-face-attribute face nil :weight 'semi-bold))))
+
 (use-package sh-script
   :defer t
   :config

@@ -21,7 +21,7 @@
         comment-fill-column 100
         create-lockfiles nil
         default-input-method "korean-hangul"
-        exclude-prev-buf-regex (let ((lst '("Async" "Backtrace" "Compile" "Message" "Shell Command"
+        exclude-prev-buf-regex (let ((lst '("Async" "Backtrace" "Compile" "Message" "Org" "Shell Command"
                                             "eldoc" "help" "lsp" "server")))
                                  (concat "^\\s-*\\(?:"
                                          "\\*" (regexp-opt lst) "\\|"

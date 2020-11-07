@@ -1133,6 +1133,49 @@
    '(("\\(?:async\\|export\\)\\s-+function\\s-+\\([_0-9A-Za-z]+\\)\\>"
       (1 'font-lock-function-name-face)))))
 
+(use-package org
+  :defer t
+  :init
+  (defface org-list-face
+    '((t (:inherit shadow :weight semi-bold)))
+    "Org listing face")
+
+  :config
+  (font-lock-add-keywords
+   'org-mode
+   ;; NOTE
+   ;;  - Install 'FontAwesome' font
+   ;;  - Find a character at https://github.com/domtronn/all-the-icons.el/blob/master/data/data-faicons.el
+   (let* ((square       (string-to-char "\xf0c8"))
+          (minus-square (string-to-char "\xf146"))
+          (check-square (string-to-char "\xf14a"))
+          (org-done-face (color-from 'org-done :foreground))
+          (org-todo-face (color-from 'org-todo :foreground)))
+     `(("^\\s-*\\(?:-\\|[0-9]+\\.\\) \\(\\[\\( \\|-\\|X\\)\\]\\)\\( \\|$\\)"
+        1 (progn
+            (let ((x (match-string 2))
+                  (s (match-beginning 1))
+                  (e (match-end 1)))
+              (compose-region
+               s e
+               (cond
+                ((string-equal x " ") ,square)
+                ((string-equal x "-") ,minus-square)
+                ((string-equal x "X") ,check-square)))
+              (put-text-property s e 'display '(raise  0.05))
+              (list :family "Font Awesome 5 Free"
+                    :foreground (if (string-equal x "X")
+                                    ,org-done-face
+                                  ,org-todo-face))))
+        t)
+       ("^\\s-*\\(-\\) "
+        1 'org-list-face)
+       ("^\\s-*\\(\\([0-9]\\.\\)\\) "
+        1 'org-list-face)
+       ("\\(\\\\\\\\\\)\\s-*$"
+        1 'shadow nil)))
+   :append))
+
 (use-package php-mode
   :defer t
   :config

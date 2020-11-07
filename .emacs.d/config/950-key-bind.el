@@ -122,7 +122,22 @@
     "u" #'universal-argument
 
     ;; applications
-
+    ;; - org
+    "aoa" #'org-agenda-show-list
+    "aocj" #'org-clock-goto
+    "aocn" #'org-capture-note
+    "aoct" #'org-capture-todo
+    "aom" #'org-tags-view
+    "aoM" (defalias 'org-tags-view-todo-only
+            (lambda ()
+              (interactive)
+              (org-tags-view t)))
+    "aos" #'org-search-view
+    "aoS" (defalias 'org-search-view-todo-only
+            (lambda ()
+              (interactive)
+              (org-search-view t)))
+    "aot" #'org-todo-list
     ;; - calculator
     "ac" #'calc
 
@@ -743,6 +758,31 @@
   (evil-define-key 'insert term-raw-map
     (kbd "C-h") #'term-send-backspace
     (kbd "M-DEL") #'term-send-backward-kill-word))
+
+(use-package org
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'org-mode
+    "m:" #'org-set-tags-command
+    "mTT" #'org-todo
+    "mci" #'org-clock-in
+    "mco" #'org-clock-out
+    "mcj" #'org-clock-goto
+    "mih" #'org-insert-heading
+    "miH" #'org-insert-subheading
+    "mtI" #'org-time-stamp-inactive
+    "mtd" #'org-deadline
+    "mti" #'org-time-stamp
+    "mts" #'org-schedule)
+  (which-key-declare-prefixes-for-mode 'org-mode
+    (concat evil-leader/leader "mT") "todo"
+    (concat evil-leader/leader "mc") "clock"
+    (concat evil-leader/leader "mi") "insert"
+    (concat evil-leader/leader "mt") "time")
+  (evil-leader--set-major-leader-for-mode 'org-mode)
+  (evil-define-key 'normal evil-org-mode-map
+    (kbd "RET") #'org-open-at-point
+    (kbd "M-,") #'org-mark-ring-goto))
 
 (use-package package
   :defer t
