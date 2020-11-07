@@ -13,3 +13,11 @@
   (setq sh-basic-offset 4
         sh-indentation 4
         smie-indent-basic 4))
+
+(use-package eshell
+  :defer t
+  :config
+  (add-hook 'eshell-post-command-hook
+            (lambda ()
+              (let ((evil-move-cursor-back nil))
+                (evil-normal-state)))))

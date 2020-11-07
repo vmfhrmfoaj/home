@@ -12,11 +12,11 @@
          (main-monitor-y (nth 1 workarea))
          (main-monitor-w (nth 2 workarea))
          (main-monitor-h (nth 3 workarea))
-         (x-offset 140)
+         (x-offset 110)
          (x main-monitor-x)
          (y main-monitor-y)
          (h main-monitor-h)
-         (w (+ (* 130 (frame-char-width))
+         (w (+ (* 120 (frame-char-width))
                (*   6 (frame-char-width))))) ; fringe + line-number
     (if (<= main-monitor-w w)
         (setq w main-monitor-w)

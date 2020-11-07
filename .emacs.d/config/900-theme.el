@@ -59,7 +59,7 @@
 (custom-set-faces
  '(cursor ((((class color) (background light)) :background "sky blue")))
  '(default ((((class color) (background light)) :foreground "#494949")
-            (((class color) (background dark)) :background "#1a1d1f" :foreground "#c1c4bd")))
+            (((class color) (background dark)) :foreground "#b8b8c1")))
  '(diff-added   ((((class color) (background light)) :background "#ddffdd" :foreground "#22aa22")))
  '(diff-changed ((((class color) (background light)) :background "#ffffdd" :foreground "#aaaa22")))
  '(diff-removed ((((class color) (background light)) :background "#ffdddd" :foreground "#aa2222")))
@@ -68,16 +68,17 @@
  '(diff-refine-removed ((((class color) (background light)) :background "#ffeeee" :foreground "#880000" :weight bold)))
  '(fixed-pitch       ((t :family "DejaVu Sans Mono")))
  '(fixed-pitch-serif ((t :family "DejaVu Serif")))
- '(italic ((t :family "Fantasque Sans Mono" :height 120 :slant italic)))
+ '(italic ((t :family "Fantasque Sans Mono" :height 110 :slant italic)))
  '(line-number
    ((((class color) (background light)) :inherit (fringe default) :foreground "grey80")
     (((class color) (background dark))  :inherit (fringe default) :foreground "grey40")))
- '(line-number-current-line
-   ((((class color) (background light)) :inherit line-number :background "grey93"  :foreground "grey70" :weight semi-bold)
-    (((class color) (background dark))  :inherit line-number :background "#2b2f35" :foreground "grey50" :weight semi-bold)))
+ '(line-number-current-line ((((class color) (background light))
+                              :inherit line-number :background "grey93"  :foreground "grey70" :weight semi-bold)
+                             (((class color) (background dark))
+                              :inherit line-number :background "#2b2f35" :foreground "grey50" :weight semi-bold)))
  '(link ((t :underline t)))
  '(shadow ((((class color) (background light)) :inherit default :foreground "grey60")
-           (((class color) (background dark))  :inherit default :foreground "#969993" :weight light)))
+           (((class color) (background dark))  :inherit default :foreground "#606b78")))
  '(show-paren-match ((t :weight bold)))
  '(trailing-whitespace ((((class color) (background light)) :background "grey65")
                         (((class color) (background dark))  :background "grey35")))
@@ -101,7 +102,8 @@
   :config
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
-     `(cider-deprecated-face ((t :inherit font-lock-warning-face :weight ,default-weight :underline (:color "darkorange"))))
+     `(cider-deprecated-face
+       ((t :inherit font-lock-warning-face :weight ,default-weight :underline (:color "darkorange"))))
      '(cider-fringe-good-face ((t :inherit success)))
      '(clojure-cond-condtion-face ((t :inherit italic)))
      '(clojure-if-true-face ((t :inherit italic)))
@@ -117,7 +119,8 @@
      '(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
      '(clojure-side-effect-face ((t :weight semi-bold :underline t)))
      '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))
-     '(clojure-special-variable-definition-face ((t :inherit (font-lock-constant-face clojure-variable-definition-face))))
+     '(clojure-special-variable-definition-face
+       ((t :inherit (font-lock-constant-face clojure-variable-definition-face))))
      '(clojure-variable-definition-face ((t :inherit font-lock-variable-name-face :weight semi-bold))))))
 
 (use-package cperl-mode
@@ -135,7 +138,8 @@
 (use-package evil-goggles
   :defer t
   :config
-  (let ((common-style '(:underline unspecified :slant unspecified :overline unspecified :box unspecified :inverse-video t)))
+  (let ((common-style
+         '(:underline unspecified :slant unspecified :overline unspecified :box unspecified :inverse-video t)))
     (custom-set-faces
      `(evil-goggles-delete-face
        ((((class color) (background light)) :background "#eecccc" ,@common-style)
@@ -165,10 +169,9 @@
   :defer t
   :config
   (custom-set-faces
-   '(font-lock-comment-face ((t :background unspecified :slant unspecified :weight extra-light)))
+   '(font-lock-comment-face ((t :foreground "#7f7b81" :slant unspecified :weight extra-light)))
    '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :weight extra-light)))
-   '(font-lock-doc-face ((t :weight light)))
-   '(font-lock-doc-string-face ((t :weight light)))
+   '(font-lock-doc-face ((t :weight extra-light)))
    '(font-lock-function-name-face ((t :weight semi-bold)))
    '(font-lock-keyword-face ((((class color) (background light)) :background "#fbf5ec")))
    '(font-lock-preprocessor-face ((((class color) (background light)) :background "#fbf6ed")))
@@ -187,7 +190,7 @@
   :config
   (custom-set-faces
    '(fringe ((((class color) (background light)) :background "grey99" :foreground "grey60")
-             (((class color) (background dark))  :background "#212325" :foreground "#50514e")))))
+             (((class color) (background dark))  :background "#161c22" :foreground "#7393b3")))))
 
 (use-package hl-line
   :defer t
@@ -229,7 +232,8 @@
   :config
   (custom-set-faces
    '(isearch ((t :background "magenta3" :foreground "white" :weight bold)))
-   '(lazy-highlight ((((class color) (background dark)) :background "paleturquoise4" :foreground "white" :weight bold)))))
+   '(lazy-highlight
+     ((((class color) (background dark)) :background "paleturquoise4" :foreground "white" :weight bold)))))
 
 (use-package ivy
   :defer t
@@ -238,8 +242,9 @@
    '(ivy-current-match ((((class color) (background light)) :background "#9fcdf2" :foreground "white" :weight bold)
                         (((class color) (background dark))  :background "#5f6369" :foreground "white" :weight bold)))
    '(ivy-grep-info ((((class color) (background dark)) :inherit font-lock-string-face)))
-   '(ivy-minibuffer-match-face-1 ((((class color) (background light)) :background "#d3d3d3" :foreground "#8a8a8a" :weight bold)
-                                  (((class color) (background dark))  :background "#7d7e7f" :foreground "#535454" :weight bold)))
+   '(ivy-minibuffer-match-face-1
+     ((((class color) (background light)) :background "#d3d3d3" :foreground "#8a8a8a" :weight bold)
+      (((class color) (background dark))  :background "#7d7e7f" :foreground "#535454" :weight bold)))
    '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b" :weight bold)))
    '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :foreground "#707099" :weight bold)))
    '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f" :weight bold)))))
@@ -250,6 +255,17 @@
   (custom-set-faces
    '(php-passive-assign-variable-face ((t :inherit font-lock-variable-name-face)))
    `(php-variable-name ((t :inherit font-lock-variable-name-face)))))
+
+(use-package rpm-spec-mode
+  :defer t
+  :config
+  (custom-set-faces
+   '(rpm-spec-ghost-face ((t :inherit shadow)))
+   '(rpm-spec-macro-face ((t :inherit font-lock-keyword-face)))
+   '(rpm-spec-package-face ((t :inherit font-lock-constant-face)))
+   '(rpm-spec-section-face ((t :inherit font-lock-function-name-face)))
+   '(rpm-spec-tag-face ((t :inherit font-lock-builtin-face)))
+   '(rpm-spec-var-face ((t :inherit font-lock-variable-name-face)))))
 
 (use-package lsp-mode
   :defer t

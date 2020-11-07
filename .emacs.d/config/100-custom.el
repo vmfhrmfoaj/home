@@ -21,7 +21,13 @@
         comment-fill-column 100
         create-lockfiles nil
         default-input-method "korean-hangul"
-        exclude-prev-buf-regex "^\\(\\s-*\\*\\|\\s-*markdown-code-fontification:\\|\\s-*magit\\(?:-[a-z]+\\)?:\\)"
+        exclude-prev-buf-regex (let ((lst '("Async" "Backtrace" "Compile" "Message" "Shell Command"
+                                            "eldoc" "help" "lsp" "server")))
+                                 (concat "^\\s-*\\(?:"
+                                         "\\*" (regexp-opt lst) "\\|"
+                                         "markdown-code-fontification:\\|"
+                                         "magit\\(?:-[a-z]+\\)?:"
+                                         "\\)"))
         initial-major-mode 'text-mode
         initial-scratch-message ""
         read-process-output-max (* 1024 1024)

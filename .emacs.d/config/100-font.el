@@ -8,9 +8,9 @@
 
 (when window-system
   (prefer-coding-system 'utf-8)
-  (setq-default line-spacing 1)
-  (let* ((font-size 14)
-         (font (font-spec :family "Cascadia Code" :size font-size)))
+  (setq-default line-spacing 0)
+  (let* ((font-size 10.5)
+         (font (font-spec :family "Cascadia Code" :size font-size :weight 'light)))
     (set-face-font 'default font)
     (set-fontset-font nil '(#xE000 . #xF8FF) font)               ; for ligature
     (set-fontset-font "fontset-default" '(#xE000 . #xF8FF) font) ; for ligature

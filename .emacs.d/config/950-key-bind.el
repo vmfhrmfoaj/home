@@ -201,6 +201,16 @@
     "pD" #'projectile-remove-known-project
     "pI" #'projectile-invalidate-cache
     "pS" #'projectile-switch-project
+    "pa" (lambda ()
+           (interactive)
+           (when-let ((buf (->> (buffer-list)
+                                (-map #'buffer-name)
+                                (completing-read "Add a buffer to the current project:")
+                                (get-buffer))))
+             (let ((proj-root (projectile-project-root)))
+               (with-current-buffer buf
+                 (setq projectile-project-root proj-root)))))
+    "pe" #'projectile-run-eshell
     "pd" #'projectile-find-dir
     "pf" #'counsel-projectile-find-file
     "pk" #'projectile-kill-buffers
@@ -677,6 +687,11 @@
   (which-key-declare-prefixes-for-mode 'elm-mode
     (concat evil-leader/leader "mg") "goto")
   (evil-leader--set-major-leader-for-mode 'elm-mode))
+
+(use-package eshell
+  :defer t
+  :config
+  (evil-define-key 'insert eshell-mode-map (kbd "C-l") #'eshell/clear))
 
 (use-package help-mode
   :defer t

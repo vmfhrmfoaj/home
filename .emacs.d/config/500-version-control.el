@@ -8,7 +8,12 @@
 
 (use-package evil-magit
   :ensure t
-  :after magit)
+  :after magit
+  :init
+  ;; TODO
+  ;;  remove workaround if upstream fix it
+  ;;  - https://github.com/magit/magit/commit/5a38e1bb0fffa0326a1b5073c0ce9b05386e5109
+  (setq magit-file-mode-map (make-keymap)))
 
 (use-package git-timemachine
   :ensure t
