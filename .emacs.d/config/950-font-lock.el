@@ -41,11 +41,12 @@
 (use-package elixir-mode
   :disabled t
   :defer t
-  :config
+  :init
   (defface elixir-argument-name-face
     '((t (:inherit font-lock-variable-name-face)))
     "TODO")
 
+  :config
   (let* ((symbol "[_0-9a-zA-Z?!]+")
          (symbol-fn (lambda (limit)
                       (let ((found-p nil))
@@ -151,7 +152,7 @@
 
 (use-package clojure-mode
   :defer t
-  :config
+  :init
   (defface clojure-defining-spec-face
     `((t (:inherit (clojure-keyword-face))))
     "Face used to font-lock Clojure defining Spec")
@@ -220,6 +221,7 @@
     :type 'integer
     :safe 'integerp)
 
+  :config
   (defun clojure-skip (direction-or-item &rest items)
     "TODO"
     (let* ((direction (if (and (numberp direction-or-item) (> 0 direction-or-item)) (- 1) (+ 1)))

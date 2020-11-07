@@ -318,6 +318,10 @@
 (use-package treemacs
   :ensure t
   :init
+  (defface treemacs-selected-icon
+    '((t :inherit hl-line))
+    "TODO")
+
   (defun treemacs-reset-workspace-and-create-fake ()
     (setq treemacs--workspaces nil
           treemacs-override-workspace (treemacs-workspace->create! :name "Fake"))
@@ -371,10 +375,6 @@
       (treemacs-pulse-on-failure "There is nothing to do here.")))
 
   :config
-  (defface treemacs-selected-icon
-    '((t :inherit hl-line))
-    "TODO")
-
   (setq treemacs-RET-actions-config
         (let ((visit-fn (lambda (&optional arg)
                           (treemacs-visit-node-default arg)

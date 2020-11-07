@@ -64,7 +64,7 @@
 (use-package magit
   :ensure t
   :defer t
-  :config
+  :init
   (defface magit-commit-log-type-face
     `((t (:inherit font-lock-function-name-face :weight ,(face-attribute 'default :weight))))
     "TODO")
@@ -73,6 +73,7 @@
     `((t (:inherit font-lock-variable-name-face :weight ,(face-attribute 'default :weight))))
     "TODO")
 
+  :config
   (defun magit-log-propertize-keywords-for-conventional-commits (msg)
     "TODO"
     (ignore-errors

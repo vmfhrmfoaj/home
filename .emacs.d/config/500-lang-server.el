@@ -137,6 +137,10 @@
          (sh-mode         . lsp)
          (typescript-mode . lsp))
   :init
+  (defface lsp-face-workspace-modeline
+    '((t (:extend t)))
+    "TODO")
+
   (setq lsp-keymap-prefix nil)
 
   :config
@@ -168,10 +172,6 @@
                                 'help-echo url
                                 'follow-link t))
             (setq beg (next-single-property-change (1+ end) 'help-echo)))))))
-
-  (defface lsp-face-workspace-modeline
-    '((t (:extend t)))
-    "TODO")
 
   (defun lsp--custom-workspace-print (workspace)
     "Visual representation WORKSPACE."

@@ -54,6 +54,7 @@
   (change-theme 'twilight-bright 'twilight-anti-bright))
 
 (unless (featurep 'theme-changer)
+  (setq frame-background-mode 'dark)
   (load-theme 'twilight-anti-bright t))
 
 (custom-set-faces
@@ -281,20 +282,29 @@
   :config
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
-     '(magit-diff-context-highlight ((t :background "#fbfeee" :foreground "#a4c207")))
      '(magit-diff-added   ((((class color) (background light)) :background "#ddffdd" :foreground "#22aa22")))
      '(magit-diff-removed ((((class color) (background light)) :background "#ffdddd" :foreground "#aa2222")))
      '(magit-diff-added-highlight
        ((((class color) (background light)) :background "#ddffdd" :foreground "#22aa22" :weight semi-bold)))
      '(magit-diff-removed-highlight
        ((((class color) (background light)) :background "#ffdddd" :foreground "#aa2222" :weight semi-bold)))
-     '(magit-diff-context ((t :foreground "grey50" :weight extra-light)))
-     '(magit-diff-context-highlight ((t :inherit hl-line :foreground "grey50")))
+     '(magit-diff-context-highlight
+       ((((class color) (background light)) :background "#fbfeee" :foreground "#a4c207")
+        (((class color) (background dark))  :foreground "#707d8c")))
+     '(magit-diff-context
+       ((((class color) (background light)) :foreground "grey50" :weight extra-light)
+        (((class color) (background dark))  :inherit magit-diff-context-highlight :weight extra-light)))
      '(magit-diff-file-heading ((t :weight semi-bold)))
+     '(magit-diff-hunk-heading-highlight
+       ((((class color) (background dark)) :background "#3a4859" :foreground "#7c90a6")))
+     '(magit-diff-hunk-heading
+       ((((class color) (background dark)) :background "#313e4d" :foreground "#707d8c")))
      `(magit-hash ((((class color) (background light)) :foreground "grey60" :weight ,default-weight)))
      `(magit-log-author ((((class color) (background light)) :foreground "firebrick" :weight ,default-weight)))
      `(magit-log-date ((((class color) (background light)) :foreground "grey30" :weight ,default-weight)))
-     '(magit-section-highlight ((((class color) (background light)) :inherit hl-line :distant-foreground "black"))))))
+     '(magit-section-highlight
+       ((((class color) (background light)) :distant-foreground "black")
+        (((class color) (background dark))  :background "#212933"))))))
 
 (use-package sh-script
   :defer t
