@@ -153,25 +153,11 @@
             new
             (propertize (company-safe-substring old (+ offset (length new))) 'face 'focus-unfocused)))
 
-  (with-eval-after-load "company"
-    (add-hook 'company-completion-started-hook #'focus--tooltip-on)
-    (add-hook 'company-after-completion-hook   #'focus--tooltip-off)
-    (advice-add #'company-modify-line :override #'company--custom-modify-line)
-    (advice-add #'company--replacement-string :filter-args
-                (lambda (args)
-                  (-let (((lines old column nl align-top) args))
-                    (if (null align-top)
-                        args
-                      (dotimes (i (- (length old) (length lines)))
-                        (setf (nth i old) (propertize (nth i old) 'face 'focus-unfocused)))
-                      (list lines old column nl align-top))))))
-
   (add-hook 'evil-insert-state-entry-hook #'focus--enable)
   (add-hook 'evil-insert-state-exit-hook  #'focus--disable)
 
   :config
   (defun focus--tex-thing ()
-    "TODO"
     (ignore-errors
       (let* ((regx  (concat "^\\(?:[[:cntrl:]]\\)*$"))
              (beg (save-excursion
@@ -185,7 +171,6 @@
         (cons beg end))))
 
   (defun focus--text-thing ()
-    "TODO"
     (ignore-errors
       (save-excursion
         (let ((beg (progn
@@ -197,7 +182,6 @@
           (cons beg end)))))
 
   (defun focus--list+-thing ()
-    "TODO"
     (ignore-errors
       (save-excursion
         (let ((beg (progn
@@ -216,7 +200,6 @@
           (cons beg end)))))
 
   (defun focus--lisp-thing ()
-    "TODO"
     (ignore-errors
       (save-excursion
         (let ((beg (progn
@@ -231,7 +214,6 @@
           (cons beg end)))))
 
   (defun focus--clojure-thing ()
-    "TODO"
     (ignore-errors
       (save-excursion
         (let ((beg (progn
@@ -312,6 +294,22 @@
   (put 'tex-sentence 'bounds-of-thing-at-point #'focus--tex-thing)
   (put 'sentence+    'bounds-of-thing-at-point #'focus--text-thing)
   (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing)
+  (put 'org          'bounds-of-thing-at-point #'focus--org-thing)
+
+  (with-eval-after-load "company"
+    (add-hook 'company-completion-started-hook #'focus--tooltip-on)
+    (add-hook 'company-after-completion-hook   #'focus--tooltip-off)
+
+    (advice-add #'company-modify-line :override #'company--custom-modify-line)
+    (advice-add #'company--replacement-string :filter-args
+                (lambda (args)
+                  (-let (((lines old column nl align-top) args))
+                    (if (null align-top)
+                        args
+                      (dotimes (i (- (length old) (length lines)))
+                        (setf (nth i old) (propertize (nth i old) 'face 'focus-unfocused)))
+                      (list lines old column nl align-top))))))
+
   (advice-add #'hl-line-move :after
               (lambda (o)
                 "Highlight "

@@ -51,45 +51,45 @@
   :ensure t
   :after evil-leader)
 
-(defvar evil-leader--major-leader ","
-  "TODO")
-
 (use-package evil-leader
   :ensure t
+  :init
+  (defvar evil-leader--major-leader ","
+    "TODO")
+
   :config
   (defun evil-leader--set-major-leader (key)
-    "TODO"
     (let ((old-m-leader evil-leader--major-leader))
       (setq evil-leader--major-leader key)
       (dolist (mode (-map #'car evil-leader--mode-maps))
         (evil-leader--set-major-leader-for-mode mode))))
 
   (defun evil-leader--set-major-leader-for-mode (mode)
-    "TODO"
-    (let ((map-name (intern (format "evil-leader-for-%s-map" mode))))
-      (-when-let (map (-some->> evil-leader--mode-maps
-                        (assoc mode)
-                        (-drop 1)
-                        (assoc 109) ; 109 = "m"
-                        (-drop 1)))
-        ;; for evil-leader
+    ;; for `evil-leader'
+    (-when-let (map (-some->> evil-leader--mode-maps
+                      (assoc mode)
+                      (-drop 1)
+                      (assoc 109) ; 109 = "m"
+                      (-drop 1)))
+      (let ((map-name (intern (format "evil-leader-for-%s-map" mode))))
         (eval
          `(progn
             (defvar ,map-name ',map)
             (bind-map ,map-name
               :evil-keys (,evil-leader--major-leader)
               :evil-states (normal)
-              :major-modes (,mode)))))
-      ;; for which-key
-      (-when-let (it (assoc mode which-key-replacement-alist))
-        (let* ((evil-leader (s-chop-prefix "<" (s-chop-suffix ">" evil-leader/leader)))
-               (its-vals (cdr it))
-               (its-new-vals
-                (--map (let ((prefix (caar it))
-                             (more (cdr it)))
-                         (cons (list (s-replace (concat evil-leader " m") evil-leader--major-leader prefix)) more))
-                       its-vals)))
-          (setcdr it (append its-vals its-new-vals))))))
+              :major-modes (,mode))))))
+
+    ;; for `which-key'
+    (-when-let (it (assoc mode which-key-replacement-alist))
+      (let* ((evil-leader (s-chop-prefix "<" (s-chop-suffix ">" evil-leader/leader)))
+             (its-vals (cdr it))
+             (its-new-vals
+              (--map (let ((prefix (caar it))
+                           (more (cdr it)))
+                       (cons (list (s-replace (concat evil-leader " m") evil-leader--major-leader prefix)) more))
+                     its-vals)))
+        (setcdr it (append its-vals its-new-vals)))))
 
   (defun evil-leader--set-local-key (&rest bindings)
     (let* ((prefix (concat evil-leader/leader "m"))
@@ -303,9 +303,71 @@
 (use-package which-key
   :ensure t
   :config
+  (when (version<= "28.0.50" emacs-version)
+    (defun which-key--custom-get-current-bindings (&optional prefix)
+      "Generate a list of current active bindings."
+      (let ((key-str-qt (regexp-quote (key-description prefix)))
+            (buffer (current-buffer))
+            (ignore-bindings '("self-insert-command" "ignore"
+                               "ignore-event" "company-ignore")))
+        (with-temp-buffer
+          (setq-local indent-tabs-mode t)
+          (setq-local tab-width 8)
+          (describe-buffer-bindings buffer prefix)
+          (goto-char (point-min))
+          (let (bindings header)
+            (while (not (eobp))
+              (cond
+               ((looking-at "^[ \t]*$"))
+               (prefix
+                (let ((binding-start (save-excursion
+                                       (and (re-search-forward "\t+" nil t)
+                                            (match-end 0))))
+                      key binding)
+                  (when binding-start
+                    (setq key (buffer-substring-no-properties
+                               (point) binding-start))
+                    (setq binding (buffer-substring-no-properties
+                                   binding-start
+                                   (line-end-position)))
+                    (save-match-data
+                      (cond
+                       ((member binding ignore-bindings))
+                       ((string-match-p which-key--ignore-keys-regexp key))
+                       ((and prefix
+                             (string-match (format "^%s[ \t]\\([^ \t]+\\)[ \t]+$"
+                                                   key-str-qt) key))
+                        (unless (assoc-string (match-string 1 key) bindings)
+                          (push (cons (match-string 1 key)
+                                      (which-key--compute-binding binding))
+                                bindings)))
+                       ((and prefix
+                             (string-match
+                              (format
+                               "^%s[ \t]\\([^ \t]+\\) \\.\\. %s[ \t]\\([^ \t]+\\)[ \t]+$"
+                               key-str-qt key-str-qt) key))
+                        (let ((stripped-key (concat (match-string 1 key)
+                                                    " \.\. "
+                                                    (match-string 2 key))))
+                          (unless (assoc-string stripped-key bindings)
+                            (push (cons stripped-key
+                                        (which-key--compute-binding binding))
+                                  bindings))))
+                       ((string-match
+                         "^\\([^ \t]+\\|[^ \t]+ \\.\\. [^ \t]+\\)[ \t]+$" key)
+                        (unless (assoc-string (match-string 1 key) bindings)
+                          (push (cons (match-string 1 key)
+                                      (which-key--compute-binding binding))
+                                bindings)))))))))
+              (forward-line))
+            (nreverse bindings)))))
+
+    (advice-add #'which-key--get-current-bindings :override #'which-key--custom-get-current-bindings))
+
   (which-key-mode)
   (which-key-declare-prefixes
     (concat evil-leader/leader "a") "applications"
+    (concat evil-leader/leader "ao") "org"
     (concat evil-leader/leader "aoc") "capture/clock"
     (concat evil-leader/leader "e") "error"
     (concat evil-leader/leader "f") "file"

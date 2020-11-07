@@ -86,3 +86,23 @@
                                  (get-buffer scratch-buffer-name))))
               (with-current-buffer buf
                 (write-region (point-min) (point-max) scratch-buffer-temp-file)))))
+
+(when (eq system-type 'gnu/linux)
+  (defun custom-x-dnd-get-drop-x-y (frame w)
+    "if top bar is hide, `(frame-parameter frame 'top)' will return a list."
+    (let* ((frame-left (frame-parameter frame 'left))
+           (frame-left (if (listp frame-left)
+                           (eval frame-left)
+                         frame-left))
+	       (frame-top (frame-parameter frame 'top))
+           (frame-top (if (listp frame-top)
+                          (eval frame-top)
+                        frame-top)))
+      (if (windowp w)
+	      (let ((edges (window-inside-pixel-edges w)))
+	        (cons
+	         (+ frame-left (nth 0 edges))
+	         (+ frame-top (nth 1 edges))))
+        (cons frame-left frame-top))))
+
+  (advice-add #'x-dnd-get-drop-x-y :override #'custom-x-dnd-get-drop-x-y))

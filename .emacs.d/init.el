@@ -10,6 +10,9 @@
 (when (file-exists-p custom-file)
   (add-hook 'emacs-startup-hook (lambda () (load custom-file))))
 
+(when window-system
+  (set-face-attribute 'default nil :background "#000000" :foreground "#CCCCCC"))
+
 (require 'package)
 (setq package-archives
       '(("melpa"        . "https://melpa.org/packages/")

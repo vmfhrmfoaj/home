@@ -51,10 +51,12 @@
 
   (advice-add #'theme-changer-switch-theme :override #'theme-changer--custom-switch-theme)
 
+  (set-face-attribute 'default nil :background 'unspecified :foreground 'unspecified)
   (change-theme 'twilight-bright 'twilight-anti-bright))
 
 (unless (featurep 'theme-changer)
   (setq frame-background-mode 'dark)
+  (set-face-attribute 'default nil :background 'unspecified :foreground 'unspecified)
   (load-theme 'twilight-anti-bright t))
 
 (custom-set-faces
@@ -72,11 +74,11 @@
  '(italic ((t :family "Fantasque Sans Mono" :height 110 :slant italic)))
  '(line-number
    ((((class color) (background light)) :inherit (fringe default) :foreground "grey80")
-    (((class color) (background dark))  :inherit (fringe default) :foreground "grey40")))
+    (((class color) (background dark))  :inherit (fringe default) :foreground "#364554")))
  '(line-number-current-line ((((class color) (background light))
                               :inherit line-number :background "grey93"  :foreground "grey70" :weight semi-bold)
                              (((class color) (background dark))
-                              :inherit line-number :background "#2b2f35" :foreground "grey50" :weight semi-bold)))
+                              :inherit line-number :background "#212a33" :foreground "#526980" :weight semi-bold)))
  '(link ((t :underline t)))
  '(shadow ((((class color) (background light)) :inherit default :foreground "grey60")
            (((class color) (background dark))  :inherit default :foreground "#606b78")))
@@ -184,14 +186,14 @@
       (((class color) (background dark))  :inherit font-lock-string-face :background "#1e2826" :weight extra-light)))
    '(font-lock-type-face ((t :weight unspecified)))
    '(font-lock-variable-name-face ((((class color) (background light)) :foreground "#607596")))
-   '(font-lock-warning-face ((t :weight semi-bold :underline t)))))
+   '(font-lock-warning-face ((t :weight semi-bold :underline (:color foreground-color :style wave))))))
 
 (use-package fringe
   :defer t
   :config
   (custom-set-faces
    '(fringe ((((class color) (background light)) :background "grey99" :foreground "grey60")
-             (((class color) (background dark))  :background "#161c22" :foreground "#7393b3")))))
+             (((class color) (background dark))  :background "#171d24" :foreground "#425466")))))
 
 (use-package hl-line
   :defer t
@@ -250,24 +252,6 @@
    '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :foreground "#707099" :weight bold)))
    '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f" :weight bold)))))
 
-(use-package php-mode
-  :defer t
-  :config
-  (custom-set-faces
-   '(php-passive-assign-variable-face ((t :inherit font-lock-variable-name-face)))
-   `(php-variable-name ((t :inherit font-lock-variable-name-face)))))
-
-(use-package rpm-spec-mode
-  :defer t
-  :config
-  (custom-set-faces
-   '(rpm-spec-ghost-face ((t :inherit shadow)))
-   '(rpm-spec-macro-face ((t :inherit font-lock-keyword-face)))
-   '(rpm-spec-package-face ((t :inherit font-lock-constant-face)))
-   '(rpm-spec-section-face ((t :inherit font-lock-function-name-face)))
-   '(rpm-spec-tag-face ((t :inherit font-lock-builtin-face)))
-   '(rpm-spec-var-face ((t :inherit font-lock-variable-name-face)))))
-
 (use-package lsp-mode
   :defer t
   :config
@@ -318,6 +302,24 @@
   (dolist (i (number-sequence 1 8))
     (let ((face (intern (concat "org-level-" (number-to-string i)))))
       (set-face-attribute face nil :weight 'semi-bold))))
+
+(use-package php-mode
+  :defer t
+  :config
+  (custom-set-faces
+   '(php-passive-assign-variable-face ((t :inherit font-lock-variable-name-face)))
+   `(php-variable-name ((t :inherit font-lock-variable-name-face)))))
+
+(use-package rpm-spec-mode
+  :defer t
+  :config
+  (custom-set-faces
+   '(rpm-spec-ghost-face ((t :inherit shadow)))
+   '(rpm-spec-macro-face ((t :inherit font-lock-keyword-face)))
+   '(rpm-spec-package-face ((t :inherit font-lock-constant-face)))
+   '(rpm-spec-section-face ((t :inherit font-lock-function-name-face)))
+   '(rpm-spec-tag-face ((t :inherit font-lock-builtin-face)))
+   '(rpm-spec-var-face ((t :inherit font-lock-variable-name-face)))))
 
 (use-package sh-script
   :defer t
