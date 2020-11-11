@@ -97,11 +97,16 @@
 
   (advice-add #'lsp-diagnostics--flycheck-start :override #'lsp-diagnostics--custom-flycheck-start))
 
-(use-package lsp-intelephense
+(use-package lsp-php
   :defer t
   :config
   (lsp-register-client
-   (make-lsp-client :new-connection (lsp-stdio-connection (-const lsp-intelephense-server-command))
+   (make-lsp-client :new-connection (lsp-stdio-connection
+                                     (lambda ()
+                                       `(,(or (executable-find
+                                               (cl-first lsp-intelephense-server-command))
+                                              (lsp-package-path 'intelephense))
+                                         ,@(cl-rest lsp-intelephense-server-command))))
                     :major-modes '(php-mode)
                     :priority -1
                     :notification-handlers (ht ("indexingStarted" #'ignore)
@@ -113,7 +118,10 @@
                                                     :clearCache lsp-intelephense-clear-cache))
                     :multi-root lsp-intelephense-multi-root
                     :completion-in-comments? t
-                    :server-id 'iph)))
+                    :server-id 'iph
+                    :download-server-fn (lambda (_client callback error-callback _update?)
+                                          (lsp-package-ensure 'intelephense
+                                                              callback error-callback)))))
 
 (use-package lsp-ivy
   :ensure t
@@ -137,10 +145,6 @@
          (sh-mode         . lsp)
          (typescript-mode . lsp))
   :init
-  (defface lsp-face-workspace-modeline
-    '((t (:extend t)))
-    "TODO")
-
   (setq lsp-keymap-prefix nil)
 
   :config
@@ -172,21 +176,6 @@
                                 'help-echo url
                                 'follow-link t))
             (setq beg (next-single-property-change (1+ end) 'help-echo)))))))
-
-  (defun lsp--custom-workspace-print (workspace)
-    "Visual representation WORKSPACE."
-    (let* ((proc (lsp--workspace-cmd-proc workspace))
-           (status (lsp--workspace-status workspace))
-           (server-id (-> workspace
-                          (lsp--workspace-client)
-                          (lsp--client-server-id)
-                          (symbol-name)))
-           (pid (format "%s" (process-id proc))))
-      (propertize
-       (if (eq 'initialized status)
-           (format "%s:%s" server-id pid)
-         (format "%s:%s status:%s" server-id pid status))
-       'face 'lsp-face-workspace-modeline)))
 
   (defvar lsp--custom-render--regex-1-for-php
     (concat "\\(?:^\\|\n\\)````php\n"              ; ```php
@@ -427,8 +416,7 @@
   (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-type-definition :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
-  (advice-add #'lsp-signature-stop :after #'lsp-signature-restart)
-  (advice-add #'lsp--workspace-print :override #'lsp--custom-workspace-print))
+  (advice-add #'lsp-signature-stop :after #'lsp-signature-restart))
 
 (use-package lsp-ui
   :ensure t

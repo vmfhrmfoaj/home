@@ -22,7 +22,7 @@
         create-lockfiles nil
         default-input-method "korean-hangul"
         exclude-prev-buf-regex (let ((lst '("Async" "Backtrace" "Compile" "Message" "Org" "Shell Command"
-                                            "eldoc" "help" "lsp" "server")))
+                                            "eldoc" "help" "lsp" "iph" "server")))
                                  (concat "^\\s-*\\(?:"
                                          "\\*" (regexp-opt lst) "\\|"
                                          "markdown-code-fontification:\\|"

@@ -11,7 +11,7 @@
   (add-hook 'emacs-startup-hook (lambda () (load custom-file))))
 
 (when window-system
-  (set-face-attribute 'default nil :background "#000000" :foreground "#CCCCCC"))
+  (set-face-attribute 'default nil :background "#000000"))
 
 (require 'package)
 (setq package-archives

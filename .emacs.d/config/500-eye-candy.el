@@ -25,7 +25,8 @@
       ( 62 . ".\\(?:\\(?:>[=>-]\\)\\|[=>-]\\)")          ; >=, >>, >>>, >-, >>-, >>=
       (124 . ".\\(?:\\(?:|>\\|||>\\)\\|[>|]\\)")         ; |>, ||, ||>, |||>
       (126 . ".\\(?:\\(?:~>\\)\\|[>~]\\)")               ; ~>, ~~>
-      ) "TODO")
+      )
+    "TODO")
 
   :hook
   (((prog-mode conf-mode nxml-mode markdown-mode help-mode)
@@ -93,35 +94,6 @@
   :init
   (defvar focus--exclude-modes '(term-mode))
 
-  (defvar focus--weight-values
-    (--map-indexed (cons it it-index) '(ultra-light extra-light light semi-light normal semi-bold bold extra-bold ultra-bold)))
-
-  (defvar-local focus-face-remap-cookie nil)
-
-  (defun focus--hl-line-highlight-face ()
-    (let* ((default-weight (-> 'default
-                               (face-attribute :weight nil t)
-                               (or 'normal)
-                               (alist-get focus--weight-values)))
-           (weight (or (ignore-errors
-                         (-some-> (bounds-of-thing-at-point 'symbol)
-                           (car)
-                           (get-text-property 'face)
-                           (-some->> (-list)
-                             (--reduce-from (if (null acc) (custom-face-attribute it :weight) acc) nil))
-                           (alist-get focus--weight-values)))
-                       default-weight)))
-      (cond
-       ((<= weight (alist-get 'extra-light focus--weight-values))
-        'hl-line-evil-insert-light)
-       ((<= weight (alist-get 'light focus--weight-values))
-        'hl-line-evil-insert-normal)
-       ((<= weight (alist-get 'normal focus--weight-values))
-        'hl-line-evil-insert-semi-bold)
-       ((<= weight (alist-get 'semi-bold focus--weight-values))
-        'hl-line-evil-insert-bold)
-       ((<= weight (alist-get 'bold focus--weight-values))
-        'hl-line-evil-insert-extra-bold))))
 
   (defun focus--enable (&rest _)
     (unless (or (apply #'derived-mode-p focus--exclude-modes)
@@ -129,14 +101,9 @@
       (focus-init)
       (remove-hook 'post-command-hook 'focus-move-focus t)
       (focus-move-focus)
-      (setq focus-face-remap-cookie
-            (face-remap-add-relative 'hl-line (focus--hl-line-highlight-face)))
       (redisplay t)))
 
   (defun focus--disable (&rest _)
-    (when focus-face-remap-cookie
-      (face-remap-remove-relative focus-face-remap-cookie)
-      (setq focus-face-remap-cookie nil))
     (focus-terminate)
     (redisplay t))
 
@@ -308,20 +275,7 @@
                         args
                       (dotimes (i (- (length old) (length lines)))
                         (setf (nth i old) (propertize (nth i old) 'face 'focus-unfocused)))
-                      (list lines old column nl align-top))))))
-
-  (advice-add #'hl-line-move :after
-              (lambda (o)
-                "Highlight "
-                (when (and focus-face-remap-cookie
-                           global-hl-line-mode)
-                  (save-excursion
-                    (goto-char (overlay-start o))
-                    (let ((cur-face (cdr focus-face-remap-cookie))
-                          (new-face (focus--hl-line-highlight-face)))
-                      (unless (eq cur-face new-face)
-                        (face-remap-remove-relative focus-face-remap-cookie)
-                        (setq focus-face-remap-cookie (face-remap-add-relative 'hl-line new-face)))))))))
+                      (list lines old column nl align-top)))))))
 
 (use-package highlight-parentheses
   :ensure t
@@ -345,14 +299,6 @@
 
 (use-package hl-line
   :config
-  (setq hl-line-sticky-flag nil
-        hl-line-range-function (lambda ()
-                                 (when-let ((region (bounds-of-thing-at-point 'symbol)))
-                                   (if (< (cdr region) (point-max))
-                                       region
-                                     (let ((point (point)))
-                                       `(,point . ,point))))))
-
   (global-hl-line-mode))
 
 (use-package hl-todo

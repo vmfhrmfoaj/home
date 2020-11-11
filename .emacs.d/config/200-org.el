@@ -129,8 +129,8 @@ which see."
     (call-interactively #'org-agenda-redo))
 
   :config
-  (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0 :weight bold))
-                                    (0.5 . '(:inherit org-upcoming-deadline :height 1.0 :weight bold))
+  (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0))
+                                    (0.5 . '(:inherit org-upcoming-deadline :height 1.0))
                                     (0.0 . '(:height 1.0)))
         org-agenda-clockreport-parameter-plist '(:link t :fileskip0 t :stepskip0 t :maxlevel 5 :tcolumns 1 :narrow 70!)
         org-agenda-scheduled-leaders '("Scheduled: " "Sched.%03dx: ")

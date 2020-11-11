@@ -186,9 +186,6 @@
   (defface clojure-cond-condtion-face
     '((t (:inherit italic)))
     "Face used to font-lock Clojure conditions in `cond' form.")
-  (defface clojure-if-true-face
-    '((t (:inherit italic)))
-    "Face used to font-lock Clojure `if' true form.")
   (defface clojure-define-type-face
     '((t (:inherit (font-lock-type-face))))
     "TODO")
@@ -932,30 +929,6 @@
             (goto-char font-lock--anchor-beg-point))
           (0 'clojure-cond-condtion-face append)))
 
-        ;; Highlight 'true' clause in `if' form.
-        (,(concat "(" core-ns? if-kw whitespace+)
-         (,(lambda (limit)
-             (ignore-errors
-               (when font-lock--skip
-                 (error ""))
-               (when (> limit (point))
-                 (clojure-forward-sexp)
-                 (set-match-data (list (progn (clojure-skip :comment :ignored-form) (point-marker))
-                                       (progn (clojure-forward-sexp) (point-marker))))
-                 (clojure-forward-sexp)
-                 t)))
-          (save-excursion
-            (if (in-comment?)
-                (setq font-lock--skip t)
-              (setq font-lock--skip nil)
-              (setq font-lock--anchor-beg-point (point))
-              (safe-up-list-1)
-              (point)))
-          (if font-lock--skip
-              (end-of-line)
-            (goto-char font-lock--anchor-beg-point))
-          (0 'clojure-if-true-face append)))
-
         ;; Improve docstring
         (,(concat "(defprotocol" whitespace+ symbol "\\>")
          ,(let ((meta?+symbol (concat "(" meta? symbol "\\>")))
@@ -1263,6 +1236,44 @@
 (use-package python
   :defer t
   :config
+  (let ((regex `(,(rx (or line-start whitespace ",")
+                      (group
+                       (or
+                        "abs" "all" "any" "bin" "bool" "callable" "chr" "classmethod"
+                        "compile" "complex" "delattr" "dict" "dir" "divmod" "enumerate"
+                        "eval" "filter" "float" "format" "frozenset" "getattr" "globals"
+                        "hasattr" "hash" "help" "hex" "id" "input" "int" "isinstance"
+                        "issubclass" "iter" "len" "list" "locals" "map" "max" "memoryview"
+                        "min" "next" "object" "oct" "open" "ord" "pow" "print" "property"
+                        "range" "repr" "reversed" "round" "set" "setattr" "slice" "sorted"
+                        "staticmethod" "str" "sum" "super" "tuple" "type" "vars" "zip"
+                        ;; Python 2:
+                        "basestring" "cmp" "execfile" "file" "long" "raw_input" "reduce"
+                        "reload" "unichr" "unicode" "xrange" "apply" "buffer" "coerce"
+                        "intern"
+                        ;; Python 3:
+                        "ascii" "breakpoint" "bytearray" "bytes" "exec"))
+                      "(")
+                 . (1 font-lock-builtin-face)))
+        (regex-2 `(,(rx
+                     symbol-start
+                     (or
+                      "__import__"
+                      ;; Special attributes:
+                      ;; https://docs.python.org/3/reference/datamodel.html
+                      "__annotations__" "__closure__" "__code__"
+                      "__defaults__" "__dict__" "__doc__" "__globals__"
+                      "__kwdefaults__" "__name__" "__module__" "__package__"
+                      "__qualname__"
+                      ;; Extras:
+                      "__all__")
+                     symbol-end)
+                   . font-lock-builtin-face)))
+    (setf (cadddr python-font-lock-keywords-level-2) regex
+          (car (cddddr python-font-lock-keywords-maximum-decoration)) regex)
+    (add-to-list 'python-font-lock-keywords-level-2 regex-2 t)
+    (add-to-list 'python-font-lock-keywords-maximum-decoration regex-2 t))
+
   (font-lock-add-keywords
    'python-mode
    '((":$"
