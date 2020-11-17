@@ -81,7 +81,7 @@
  '(link ((t :underline t)))
  '(shadow ((((class color) (background light)) :inherit default :foreground "grey60")
            (((class color) (background dark))  :inherit default :foreground "#606b78")))
- '(show-paren-match ((t :underline t)))
+ '(show-paren-match ((t :foreground "red" :underline t)))
  '(trailing-whitespace ((((class color) (background light)) :background "grey65")
                         (((class color) (background dark))  :background "grey35")))
  '(tooltip ((((class color) (background dark)) :background "#173735" :foreground "#dcdddd"))))
@@ -112,7 +112,7 @@
      '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
      '(clojure-fn-parameter-unused-face ((t :inherit shadow)))
-     '(clojure-meta-face ((t :inherit shadow)))
+     '(clojure-meta-face ((t :inherit shadow :weight normal)))
      `(clojure-important-keywords-face
        ((((class color) (background light)) :inherit font-lock-keyword-face :foreground "#d67d00")
         (((class color) (background dark))  :inherit font-lock-keyword-face :foreground "#da7e3b")))
@@ -169,8 +169,9 @@
   :defer t
   :config
   (custom-set-faces
-   '(font-lock-comment-face ((t :foreground "#7f7b81" :slant unspecified)))
-   '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face)))
+   '(font-lock-comment-face ((t :foreground "#7f7b81" :slant unspecified :weight normal)))
+   '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :weight normal)))
+   '(font-lock-doc-face ((t :weight normal)))
    '(font-lock-keyword-face ((((class color) (background light)) :background "#fbf5ec")))
    '(font-lock-preprocessor-face ((((class color) (background light)) :background "#fbf6ed")))
    '(font-lock-regexp-grouping-backslash
@@ -250,7 +251,7 @@
         (((class color) (background dark))  :foreground "#707d8c")))
      '(magit-diff-context
        ((((class color) (background light)) :foreground "grey50")
-        (((class color) (background dark))  :inherit magit-diff-context-highlight)))
+        (((class color) (background dark))  :inherit magit-diff-context-highlight :weight normal)))
      '(magit-diff-file-heading ((t :weight bold)))
      '(magit-diff-hunk-heading-highlight
        ((((class color) (background dark)) :background "#3a4859" :foreground "#7c90a6")))
@@ -296,6 +297,12 @@
    '(rpm-spec-section-face ((t :inherit font-lock-function-name-face)))
    '(rpm-spec-tag-face ((t :inherit font-lock-builtin-face)))
    '(rpm-spec-var-face ((t :inherit font-lock-variable-name-face)))))
+
+(use-package rust-mode
+  :defer t
+  :config
+  (custom-set-faces
+   '(rust-attribute-face ((t :inherit font-lock-preprocessor-face :weight normal)))))
 
 (use-package sh-script
   :defer t

@@ -213,6 +213,7 @@
     (error (error err))))
 
 
+(defvar include-prev-buf-regex "^$")
 (defvar exclude-prev-buf-regex "^$")
 
 (defun sort-buffer-by-visit-time (bufs)
@@ -227,7 +228,9 @@
       (-when-let (bufs (->> bufs
                             (--filter (buffer-live-p it))
                             (--remove (or (minibufferp it)
-                                          (string-match-p exclude-prev-buf-regex (buffer-name it))))
+                                          (let ((buf-name (buffer-name it)))
+                                            (and (string-match-p exclude-prev-buf-regex buf-name)
+                                                 (not (string-match-p include-prev-buf-regex buf-name))))))
                             (sort-buffer-by-visit-time)))
         (if-let ((prev-buf (->> bufs
                                 (--remove (-contains? visible-bufs it))

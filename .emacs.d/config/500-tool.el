@@ -34,6 +34,7 @@
   :hook ((conf-mode            . enable-display-line-numbers)
          (git-timemachine-mode . enable-display-line-numbers)
          (prog-mode            . enable-display-line-numbers)
+         (rpm-spec-mode        . enable-display-line-numbers)
          (text-mode            . enable-display-line-numbers))
   :init
   (defun enable-display-line-numbers ()
@@ -116,11 +117,6 @@
 (use-package eldoc
   :defer t
   :config
-  (defvar eldoc-refresh-last-pos nil)
-
-  (defun eldoc-refresh-pos ()
-    (list (buffer-name) (point)))
-
   (defun eldoc-refresh-for-emacs-27 ()
     (interactive)
     (when (or eldoc-mode
@@ -133,11 +129,8 @@
                            (funcall eldoc-documentation-function))))
         (if (interactive-p)
             (eldoc-message msg)
-          (let ((pos (eldoc-refresh-pos)))
-            (when (and (not (s-blank-str? msg))
-                       (not (equal eldoc-refresh-last-pos pos)))
-              (setq eldoc-refresh-last-pos pos)
-              (eldoc-message msg)))))))
+          (when (not (s-blank-str? msg))
+            (eldoc-message msg))))))
 
   (defun eldoc-refresh-for-emacs-28 ()
     (interactive)

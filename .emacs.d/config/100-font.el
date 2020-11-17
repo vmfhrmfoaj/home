@@ -23,4 +23,5 @@
       (set-fontset-font "fontset-default" 'han      font)))
   (add-to-list 'face-font-rescale-alist '("DejaVu Sans" . 0.85))
   (add-to-list 'face-font-rescale-alist '("Font Awesome" . 0.9))
-  (add-to-list 'face-font-rescale-alist '("Noto Sans" . 0.85)))
+  (add-to-list 'face-font-rescale-alist '("Noto Sans" . 0.85))
+  (add-to-list 'face-font-rescale-alist '("Noto Color Emoji" . 0.9)))

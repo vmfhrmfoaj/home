@@ -1236,7 +1236,7 @@
 (use-package python
   :defer t
   :config
-  (let ((regex `(,(rx (or line-start whitespace ",")
+  (let ((regex `(,(rx (or line-start whitespace (syntax open-parenthesis) "," "=")
                       (group
                        (or
                         "abs" "all" "any" "bin" "bool" "callable" "chr" "classmethod"
@@ -1276,8 +1276,8 @@
 
   (font-lock-add-keywords
    'python-mode
-   '((":$"
-      (0 'shadow)))))
+   '(("\\(:\\)\\(?:$\\|\\s-\\)"
+      (1 'shadow)))))
 
 (use-package prog-mode
   :defer t
@@ -1307,11 +1307,16 @@
 
 (use-package rust-mode
   :defer t
-  :config
+  :init
   (defface rust-self-var-face
     `((t (:inherit font-lock-keyword-face :weight ,(face-attribute 'default :weight))))
     "TODO")
 
+  (defface rust-attribute-face
+    `((t (:inherit font-lock-preprocessor-face)))
+    "TODO")
+
+  :config
   (font-lock-add-keywords
    'rust-mode
    `(("\\_<\\(self\\)\\."
@@ -1321,12 +1326,14 @@
       (2 'font-lock-constant-face))
      ("&?'[_a-z]+"
       (0 'shadow))
-     ("\\([-=]>\\)"
+     ("\\([-=]>\\|::?\\)"
       (1 'shadow))))
   (font-lock-add-keywords
    'rust-mode
-   `(("macro_rules!\\s-+\\([_0-9A-Za-z]+!?\\)"
-      1 'font-lock-function-name-face)
+   `((,(rust-re-grab (concat "#\\!?\\[" rust-re-ident "[^]]*\\]"))
+      (1 'rust-attribute-face t))
+     ("macro_rules!\\s-+\\([_0-9A-Za-z]+!?\\)"
+      (1 'font-lock-function-name-face))
      ("\\_>:\\s-+\\(?:[*&]mut\\s-+\\)?\\([_0-9A-Za-z]+\\)\\_>"
       (1 'font-lock-type-face))
      (")\\s-+->\\s-+\\(?:[*&]mut\\s-+\\)?\\(?:[_0-9A-Za-z]::\\)*\\([_0-9A-Za-z]+\\)\\_>"

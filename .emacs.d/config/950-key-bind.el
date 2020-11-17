@@ -477,6 +477,8 @@
         (define-key ivy-minibuffer-map (kbd "C-u") #'ivy-parent-dir))
     (evil-define-key 'insert ivy-minibuffer-map
       (kbd "<tab>") #'ivy-partial
+      (kbd "C-,") #'ivy-minibuffer-shrink
+      (kbd "C-.") #'ivy-minibuffer-grow
       (kbd "C-f") (lambda ()
                     (interactive)
                     (evil-normal-state)
@@ -489,6 +491,8 @@
       (kbd "RET") #'ivy-done
       "j" #'ivy-next-line
       "k" #'ivy-previous-line
+      (kbd "C-,") #'ivy-minibuffer-shrink
+      (kbd "C-.") #'ivy-minibuffer-grow
       (kbd "C-o") #'hydra-ivy/body
       (kbd "C-f") #'ivy-toggle-calling
       (kbd "C-j") #'ivy-next-line

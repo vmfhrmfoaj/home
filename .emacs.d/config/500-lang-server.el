@@ -291,24 +291,20 @@
 
   (defun lsp--custom-eldoc-message-emacs-27 (&optional msg)
     "Show MSG in eldoc."
-    (let ((pos (eldoc-refresh-pos)))
-      (when (and eldoc-refresh-last-pos
-                 (not (equal eldoc-refresh-last-pos pos)))
-        (setq eldoc-refresh-last-pos pos
-              lsp--eldoc-saved-message msg)
-        (let ((lines (s-lines (or msg "")))
-              (max-line (cond
-                         ((floatp max-mini-window-height)
-                          (floor (* (frame-height) max-mini-window-height)))
-                         ((numberp max-mini-window-height)
-                          max-mini-window-height)
-                         (t 10))))
-          (eldoc-message (when lines
-                           (->> (if (<= (length lines) max-line)
-                                    lines
-                                  (-snoc (-take (max 1 (1- max-line)) lines) (propertize "(...)" 'face 'shadow)))
-                                (-interpose "\n")
-                                (apply #'concat))))))))
+    (setq lsp--eldoc-saved-message msg)
+    (let ((lines (s-lines (or msg "")))
+          (max-line (cond
+                     ((floatp max-mini-window-height)
+                      (floor (* (frame-height) max-mini-window-height)))
+                     ((numberp max-mini-window-height)
+                      max-mini-window-height)
+                     (t 10))))
+      (eldoc-message (when lines
+                       (->> (if (<= (length lines) max-line)
+                                lines
+                              (-snoc (-take (max 1 (1- max-line)) lines) (propertize "(...)" 'face 'shadow)))
+                            (-interpose "\n")
+                            (apply #'concat))))))
 
   (defun lsp--custom-eldoc-message-emacs-28 (&optional msg)
     "Show MSG in eldoc."

@@ -298,6 +298,7 @@
   :hook ((prog-mode rpm-spec-mode) . highlight-numbers-mode))
 
 (use-package hl-line
+  :disabled t
   :config
   (global-hl-line-mode))
 

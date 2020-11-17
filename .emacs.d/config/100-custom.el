@@ -21,13 +21,12 @@
         comment-fill-column 100
         create-lockfiles nil
         default-input-method "korean-hangul"
-        exclude-prev-buf-regex (let ((lst '("Async" "Backtrace" "Compile" "Message" "Org" "Shell Command"
-                                            "eldoc" "help" "lsp" "iph" "server")))
-                                 (concat "^\\s-*\\(?:"
-                                         "\\*" (regexp-opt lst) "\\|"
-                                         "markdown-code-fontification:\\|"
-                                         "magit\\(?:-[a-z]+\\)?:"
-                                         "\\)"))
+        include-prev-buf-regex (regexp-opt '("*scratch*" "*emacs-lisp REPL*"))
+        exclude-prev-buf-regex (concat "^\\s-*\\(?:"
+                                       "\\*\\|"
+                                       "markdown-code-fontification:\\|"
+                                       "magit\\(?:-[a-z]+\\)?:"
+                                       "\\)")
         initial-major-mode 'text-mode
         initial-scratch-message ""
         read-process-output-max (* 1024 1024)
