@@ -193,49 +193,6 @@ EOF
 }
 
 _setup_for_rust() {
-    if [ ! -d "${HOME}/.cargo" ] || [ ! -d "${HOME}/.rustup" ]; then
-        echo -n "Do you want to install 'rustup'? (Y or N): "
-        read yn
-        if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
-            # see, https://github.com/rust-lang/rustup.rs/issues/953#issuecomment-318650338
-            curl 'https://sh.rustup.rs' -sSf | RUSTUP_INIT_SKIP_PATH_CHECK=yes sh -s -- --no-modify-path --default-toolchain nightly
-            if [ -r "${HOME}/.cargo/env" ]; then
-                source "${HOME}/.cargo/env"
-                rustup toolchain add stable
-                rustup toolchain add nightly
-                rustup default nightly
-                rustup component add rls rust-analysis rust-src # for rls (Rust Language Server)
-            fi
-        else
-            mkdir -p "${HOME}/.rustup"
-            mkdir -p "${HOME}/.cargo"
-            mkdir -p "${HOME}/.shim"
-            cat > "${HOME}/.shim/rustup" <<\EOF
-#!/bin/bash
-echo -n "Do you want to install 'rustup'? (Y or N): "
-read yn
-if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
-    rm -rf ${HOME}/.cargo
-    rm -rf ${HOME}/.rustup
-    curl 'https://sh.rustup.rs' -sSf | RUSTUP_INIT_SKIP_PATH_CHECK=yes sh -s -- --no-modify-path --default-toolchain nightly
-    if [ -r "${HOME}/.cargo/env" ]; then
-        source "${HOME}/.cargo/env"
-        rustup toolchain add stable
-        rustup toolchain add nightly
-        rustup default nightly
-        rustup component add rls rust-analysis rust-src # for rls (Rust Language Server)
-    fi
-    rm -rf $0
-    rm -rf "$(dirname $0)/rustup"
-fi
-EOF
-            chmod +x "${HOME}/.shim/rustup"
-            which cargo >/dev/null 2>&1
-            if [ $? -ne 0 ] ; then
-                cp "${HOME}/.shim/rustup" "${HOME}/.shim/cargo"
-            fi
-        fi
-    fi
     which rustc >/dev/null 2>&1
     if [ $? -eq 0 ] && [ ! -x "${HOME}/.bin/cargo" ]; then
         mkdir -p "${HOME}/.bin"
@@ -272,11 +229,6 @@ EOF
             _add_to_path "${HOME}/.cargo/bin"
             export CARGO_ROOT_TARGET_DIR=/tmp/cargo
         fi
-    fi
-    if [ ! -r  "${HOME}/.oh-my-zsh/custom/plugins/rustup/_rustup" ]; then
-        mkdir -p "${HOME}/.oh-my-zsh/custom/plugins/rustup"
-        rustup completions zsh > "${HOME}/.oh-my-zsh/custom/plugins/rustup/_rustup"
-        rm -rf "${HOME}/.zcompdump*"
     fi
 }
 
