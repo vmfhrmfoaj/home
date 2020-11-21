@@ -466,6 +466,11 @@
     (kbd "M-W") #'git-timemachine-kill-revision
     (kbd "q")   #'git-timemachine-quit))
 
+(use-package ivy-hydra
+  :defer t
+  :commands (ivy-minibuffer-shrink
+             ivy-minibuffer-grow))
+
 (use-package ivy
   :defer t
   :config

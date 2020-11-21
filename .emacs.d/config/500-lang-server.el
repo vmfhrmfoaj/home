@@ -37,6 +37,11 @@
 
 (use-package lsp-diagnostics
   :defer t
+  :init
+  (defface lsp-punctuation-face
+    '((t (:inherit shadow)))
+    "TODO")
+
   :config
   (defun lsp-diagnostics--custom-flycheck-start (checker callback)
     "Customize `lsp-diagnostics--flycheck-start' to remove duplicated errors from `go-build' and `lsp'."
@@ -79,7 +84,9 @@
            (-non-nil)
            (funcall callback 'finished))))
 
-  (setq lsp-diagnostics-provider :flycheck)
+  (setq lsp-diagnostics-provider :flycheck
+        lsp-diagnostics-attributes '((unnecessary :inherit 'lsp-punctuation-face)
+                                     (deprecated  :strike-through t)))
 
   (add-hook 'lsp-diagnostics-mode-hook
             (lambda ()
@@ -90,10 +97,7 @@
                  ((derived-mode-p 'go-mode)
                   (flycheck-select-checker 'go-vet)
                   (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t)
-                  (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))
-                 ((derived-mode-p 'rust-mode)
-                  (flycheck-select-checker 'rust-clippy)
-                  (flycheck-add-next-checker 'rust-clippy 'lsp))))))
+                  (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))))))
 
   (advice-add #'lsp-diagnostics--flycheck-start :override #'lsp-diagnostics--custom-flycheck-start))
 
