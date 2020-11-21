@@ -201,11 +201,36 @@ _setup_for_rust() {
 
 export PATH=$(echo "${PATH}" | sed "s@$(dirname $0):@@g")
 
-if [ -n "${CARGO_ROOT_TARGET_DIR}" ] && [ -z "${CARGO_TARGET_DIR}" ]; then
+if [ -n "${CARGO_ROOT_TARGET_DIR}" ] && [ -n "${CARGO_ROOT_SAVED_DIR}" ] && [ -z "${CARGO_TARGET_DIR}" ]; then
     root=$(cargo locate-project 2>/dev/null | jq -r '.root' | xargs -r dirname)
     if [ -d "${root}" ]; then
         encoded_root=$(echo -n ${root} | sha1sum | cut -d' ' -f1)
-        export CARGO_TARGET_DIR="${CARGO_ROOT_TARGET_DIR}/$(basename ${root})-${encoded_root}"
+        name=$(basename ${root})-${encoded_root}
+        export CARGO_TARGET_DIR="${CARGO_ROOT_TARGET_DIR}/${name}"
+        case "${1}" in
+            clean)
+            rm -rf "${CARGO_ROOT_SAVED_DIR}/${name}/"
+            ;;
+
+            save)
+            mkdir -p "${CARGO_ROOT_SAVED_DIR}/${name}"
+            cp -apu "${CARGO_TARGET_DIR}/"* "${CARGO_ROOT_SAVED_DIR}/${name}/" || exit $?
+            rm -rf "${CARGO_TARGET_DIR}"
+            exit 0
+            ;;
+
+            *)
+            if [ ! -d "${CARGO_TARGET_DIR}" ]; then
+                if [ -d "${CARGO_ROOT_SAVED_DIR}/${name}" ]; then
+                    mkdir -p "${CARGO_TARGET_DIR}"
+                    cp -apu "${CARGO_ROOT_SAVED_DIR}/${name}/"* "${CARGO_TARGET_DIR}/"
+                fi
+            fi
+            if [ ! -L target ] && [ "${CARGO_TARGET_DIR}" != target ]; then
+                ln -s "${CARGO_TARGET_DIR}" target
+            fi
+            ;;
+        esac
     fi
 fi
 
@@ -221,15 +246,9 @@ exit $ret
 EOF
         chmod +x "${HOME}/.bin/cargo"
     fi
-    if [ -r "${HOME}/.cargo/env" ]; then
-        source "${HOME}/.cargo/env"
-        export CARGO_ROOT_TARGET_DIR=/tmp/cargo
-    else
-        if [ -d  "${HOME}/.cargo/bin" ]; then
-            _add_to_path "${HOME}/.cargo/bin"
-            export CARGO_ROOT_TARGET_DIR=/tmp/cargo
-        fi
-    fi
+    export CARGO_HOME="${HOME}/.cargo"
+    export CARGO_ROOT_TARGET_DIR=/tmp/cargo
+    export CARGO_ROOT_SAVED_DIR=/mnt/ext/.cache/cargo
 }
 
 _setup_for_go() {
