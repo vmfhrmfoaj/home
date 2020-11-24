@@ -6,96 +6,20 @@
       (byte-compile-file "~/.emacs.d/config/func.el")))
   (load-file "~/.emacs.d/config/func.elc"))
 
-(set-face-attribute 'default nil :background 'unspecified)
-
-(use-package twilight-bright-theme
-  :ensure t
-  :defer t)
-
-(use-package twilight-anti-bright-theme
-  :ensure t
-  :defer t)
-
-(use-package theme-changer
-  :disabled t
+(use-package base16-theme
   :ensure t
   :config
-  (defun theme-changer--custom-switch-theme (old new)
-    "Fix for an error"
-    (let ((new (if (listp new)
-                   (elt new (random (length new)))
-                 new))
-          (enable (if (not (string= theme-changer-mode "deftheme"))
-                      (lambda () (apply (symbol-function new) '()))
-                    (lambda () (load-theme new t)))))
-      (run-hook-with-args 'theme-changer-pre-change-functions old)
-      (disable-theme old)
-      (if new (funcall enable))
-      (run-hook-with-args 'theme-changer-post-change-functions new)
-      new))
-
-  (setq calendar-location-name "South Korea"
-        calendar-latitude   35.9078
-        calendar-longitude 127.7669)
-
-  (add-hook 'theme-changer-pre-change-functions
-            (lambda (old-theme)
-              (cond
-               ((memq old-theme '(default twilight-bright))
-                (setq frame-background-mode 'dark))
-               ((memq old-theme '(twilight-anti-bright))
-                (setq frame-background-mode 'light)))))
-
-  (add-hook 'theme-changer-post-change-functions
-            (lambda (_new-theme)
-              (when (featurep 'powerline)
-                (powerline-reset))))
-
-  (advice-add #'theme-changer-switch-theme :override #'theme-changer--custom-switch-theme)
-
-  (change-theme 'twilight-bright 'twilight-anti-bright))
-
-(unless (featurep 'theme-changer)
   (setq frame-background-mode 'dark)
-  (load-theme 'twilight-anti-bright t))
+  (load-theme 'base16-tomorrow-night t)
 
-(custom-set-faces
- '(cursor ((((class color) (background light)) :background "sky blue")))
- '(default ((((class color) (background light)) :foreground "#494949")
-            (((class color) (background dark)) :foreground "#b3b3ba")))
- '(diff-added   ((((class color) (background light)) :background "#ddffdd" :foreground "#22aa22")))
- '(diff-changed ((((class color) (background light)) :background "#ffffdd" :foreground "#aaaa22")))
- '(diff-removed ((((class color) (background light)) :background "#ffdddd" :foreground "#aa2222")))
- '(diff-refine-added   ((((class color) (background light)) :background "#eeffee" :foreground "#008800" :weight bold)))
- '(diff-refine-changed ((((class color) (background light)) :background "#ffffee" :foreground "#888800" :weight bold)))
- '(diff-refine-removed ((((class color) (background light)) :background "#ffeeee" :foreground "#880000" :weight bold)))
- '(fixed-pitch       ((t :family "DejaVu Sans Mono")))
- '(fixed-pitch-serif ((t :family "DejaVu Serif")))
- '(line-number
-   ((((class color) (background light)) :inherit (fringe default) :foreground "grey80")
-    (((class color) (background dark))  :inherit (fringe default) :foreground "#364554")))
- '(line-number-current-line ((((class color) (background light))
-                              :inherit line-number :background "grey93"  :foreground "grey70" :weight semi-bold)
-                             (((class color) (background dark))
-                              :inherit line-number :background "#212a33" :foreground "#526980" :weight semi-bold)))
- '(link ((t :underline t)))
- '(shadow ((((class color) (background light)) :inherit default :foreground "grey60")
-           (((class color) (background dark))  :inherit default :foreground "#969993" :weight extra-light)))
- '(show-paren-match ((t :foreground "red" :weight bold :underline t)))
- '(trailing-whitespace ((((class color) (background light)) :background "grey65")
-                        (((class color) (background dark))  :background "grey35")))
- '(tooltip ((((class color) (background dark)) :background "#173735" :foreground "#dcdddd"))))
+  (custom-set-faces
+   '(highlight ((t :background "#484a4e" :foreground "#d5d8d6")))
+   '(shadow ((t :weight normal)))))
 
 (use-package company
   :defer t
   :config
   (custom-set-faces
-   '(company-scrollbar-bg ((((class color) (background dark)) :inherit company-tooltip)))
-   `(company-scrollbar-fg ((((class color) (background dark)) :background "#a2561e")))
-   `(company-tooltip ((((class color) (background dark)) :background "#deae3e" :foreground "#2a2921")))
-   `(company-tooltip-selection ((((class color) (background dark)) :background "#d97a35")))
-   `(company-tooltip-common ((((class color) (background dark)) :foreground "#b23f1e")))
-   `(company-tooltip-annotation ((((class color) (background dark)) :foreground "#b23f1e")))
    '(company-preview ((t :inherit shadow :underline t)))
    '(company-preview-common ((t :inherit company-preview)))))
 
@@ -113,9 +37,6 @@
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
      '(clojure-fn-parameter-unused-face ((t :inherit shadow)))
      '(clojure-meta-face ((t :inherit shadow :weight extra-light)))
-     `(clojure-important-keywords-face
-       ((((class color) (background light)) :inherit font-lock-keyword-face :foreground "#d67d00")
-        (((class color) (background dark))  :inherit font-lock-keyword-face :foreground "#da7e3b")))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
      '(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
      '(clojure-side-effect-face ((t :weight normal :underline t)))
@@ -158,113 +79,33 @@
      '(evil-goggles-undo-redo-add-face    ((t :inherit evil-goggles-paste-face)))
      '(evil-goggles-undo-redo-change-face ((t :inherit evil-goggles-change-face))))))
 
-(use-package focus
-  :defer t
-  :config
-  (custom-set-faces
-   `(focus-unfocused
-     ((t :foreground "#475059" :background ,(bg-color-from 'default))))))
-
 (use-package font-lock
   :defer t
   :config
   (custom-set-faces
-   '(font-lock-comment-face ((t :foreground "#7f7b81" :slant unspecified :weight extra-light)))
-   '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :weight extra-light)))
-   '(font-lock-doc-face ((t :weight extra-light)))
-   '(font-lock-function-name-face ((t :weight normal)))
-   '(font-lock-keyword-face ((((class color) (background light)) :background "#fbf5ec")))
-   '(font-lock-preprocessor-face ((((class color) (background light)) :background "#fbf6ed")))
-   '(font-lock-regexp-grouping-backslash
-     ((((class color) (background light)) :inherit font-lock-string-face :background "#e1f2d6")
-      (((class color) (background dark))  :inherit font-lock-string-face :background "#1e2826" :weight extra-light)))
-   '(font-lock-regexp-grouping-construct
-     ((((class color) (background light)) :inherit font-lock-string-face :background "#e1f2d6")
-      (((class color) (background dark))  :inherit font-lock-string-face :background "#1e2826" :weight extra-light)))
-   '(font-lock-type-face
-     ((((class color) (background light)) :weight unspecified)
-      (((class color) (background dark)) :foreground "#cc4822" :weight unspecified)))
-   '(font-lock-variable-name-face ((((class color) (background light)) :foreground "#607596")))
-   '(font-lock-warning-face
-     ((t :foreground "#cc0000")))))
-
-(use-package fringe
-  :defer t
-  :config
-  (custom-set-faces
-   '(fringe ((((class color) (background light)) :background "grey99" :foreground "grey60")
-             (((class color) (background dark))  :background "#171d24" :foreground "#425466")))))
-
-(use-package hl-todo
-  :defer t
-  :config
-  (custom-set-faces
-   '(hl-todo ((t :foreground "#cc9393" :weight semi-bold)))))
-
-(use-package iedit
-  :defer t
-  :config
-  (custom-set-faces
-   '(iedit-occurrence ((t :inherit (highlight) :weight bold :underline t)))))
-
-(use-package isearch
-  :defer t
-  :config
-  (custom-set-faces
-   '(isearch ((t :background "magenta3" :foreground "white" :weight bold)))
-   '(lazy-highlight
-     ((((class color) (background dark)) :background "paleturquoise4" :foreground "white" :weight bold)))))
+   '(font-lock-comment-face ((t :weight normal)))
+   '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground "#787978" :weight normal)))
+   '(font-lock-doc-face ((t :weight normal)))))
 
 (use-package ivy
   :defer t
   :config
   (custom-set-faces
-   '(ivy-current-match ((((class color) (background light)) :background "#9fcdf2" :foreground "white" :weight bold)
-                        (((class color) (background dark))  :background "#5f6369" :foreground "white" :weight bold)))
+   '(ivy-current-match ((((class color) (background light)) :background "#9fcdf2" :foreground "white")
+                        (((class color) (background dark))  :background "#5f6369" :foreground "white")))
    '(ivy-grep-info ((((class color) (background dark)) :inherit font-lock-string-face)))
    '(ivy-minibuffer-match-face-1
-     ((((class color) (background light)) :background "#d3d3d3" :foreground "#8a8a8a" :weight bold)
-      (((class color) (background dark))  :background "#7d7e7f" :foreground "#535454" :weight bold)))
-   '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b" :weight bold)))
-   '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :foreground "#707099" :weight bold)))
-   '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f" :weight bold)))))
-
-(use-package lsp-mode
-  :defer t
-  :config
-  (custom-set-faces
-   '(lsp-face-highlight-read    ((t :inherit highlight :underline t )))
-   '(lsp-face-highlight-textual ((t :inherit highlight :underline t )))
-   '(lsp-face-highlight-write   ((t :inherit highlight :underline t :weight semi-bold)))))
+     ((((class color) (background light)) :background "#d3d3d3" :foreground "#8a8a8a")
+      (((class color) (background dark))  :background "#7d7e7f" :foreground "#535454")))
+   '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b")))
+   '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :foreground "#707099")))
+   '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f")))))
 
 (use-package magit
   :defer t
   :config
-  (let ((default-weight (face-attribute 'default :weight)))
-    (custom-set-faces
-     '(magit-diff-added   ((((class color) (background light)) :background "#ddffdd" :foreground "#22aa22")))
-     '(magit-diff-removed ((((class color) (background light)) :background "#ffdddd" :foreground "#aa2222")))
-     '(magit-diff-added-highlight
-       ((((class color) (background light)) :background "#ddffdd" :foreground "#22aa22" :weight semi-bold)))
-     '(magit-diff-removed-highlight
-       ((((class color) (background light)) :background "#ffdddd" :foreground "#aa2222" :weight semi-bold)))
-     '(magit-diff-context-highlight
-       ((((class color) (background light)) :background "#fbfeee" :foreground "#a4c207")
-        (((class color) (background dark))  :foreground "#707d8c")))
-     '(magit-diff-context
-       ((((class color) (background light)) :foreground "grey50")
-        (((class color) (background dark))  :inherit magit-diff-context-highlight :weight extra-light)))
-     '(magit-diff-file-heading ((t :weight semi-bold)))
-     '(magit-diff-hunk-heading-highlight
-       ((((class color) (background dark)) :background "#3a4859" :foreground "#7c90a6")))
-     '(magit-diff-hunk-heading
-       ((((class color) (background dark)) :background "#313e4d" :foreground "#707d8c")))
-     `(magit-hash ((((class color) (background light)) :foreground "grey60" :weight ,default-weight)))
-     `(magit-log-author ((((class color) (background light)) :foreground "firebrick" :weight ,default-weight)))
-     `(magit-log-date ((((class color) (background light)) :foreground "grey30" :weight ,default-weight)))
-     '(magit-section-highlight
-       ((((class color) (background light)) :distant-foreground "black")
-        (((class color) (background dark))  :background "#212933"))))))
+  (custom-set-faces
+   '(magit-diff-context ((t  :inherit magit-diff-context-highlight :weight normal)))))
 
 (use-package org
   :defer t
@@ -274,13 +115,18 @@
    '(org-agenda-date-weekend ((t :inherit org-agenda-date)))
    '(org-agenda-date-today ((t :inherit org-agenda-date :foreground "turquoise")))
    '(org-date ((t :slant italic :underline unspecified)))
+   '(org-done ((t :box t)))
+   '(org-drawer ((t :foreground "light sky blue" :weight normal)))
    `(org-hide ((t :inherit default :background unspecified :foreground ,(bg-color-from 'default))))
-   '(org-level-1 ((t :inherit outline-1 :height 1.1)))
    '(org-link ((t :inherit link :underline unspecified)))
+   '(org-property-value ((t :weight normal)))
+   '(org-special-keyword ((t :weight normal)))
+   '(org-tag ((t :weight normal)))
+   '(org-todo ((t :box t)))
    '(org-warning ((t :inherit font-lock-warning-face :underline nil))))
   (dolist (i (number-sequence 1 8))
     (let ((face (intern (concat "org-level-" (number-to-string i)))))
-      (set-face-attribute face nil :weight 'normal))))
+      (set-face-attribute face nil :height 1.1))))
 
 (use-package php-mode
   :defer t
@@ -304,7 +150,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(rust-attribute-face ((t :inherit font-lock-preprocessor-face :weight extra-light)))))
+   '(rust-attribute-face ((t :inherit font-lock-preprocessor-face :weight normal)))))
 
 (use-package sh-script
   :defer t
@@ -322,20 +168,20 @@
   :config
   (custom-set-faces
    '(swiper-line-face
-     ((((class color) (background light)) :background "#9fcdf2" :foreground "white" :weight bold)
-      (((class color) (background dark))  :background "#5f6369" :foreground "white" :weight bold)))
+     ((((class color) (background light)) :background "#9fcdf2" :foreground "white")
+      (((class color) (background dark))  :background "#5f6369" :foreground "white")))
    '(swiper-match-face-1
-     ((((class color) (background light)) :inherit swiper-line-face :background "#d3d3d3" :weight bold)
-      (((class color) (background dark))  :inherit swiper-line-face :background "#7d7e7f" :weight bold)))
-   '(swiper-match-face-2 ((t :inherit swiper-line-face :background "#e99ce8" :weight bold)))
-   '(swiper-match-face-3 ((t :inherit swiper-line-face :background "#bbbbff" :weight bold)))
-   '(swiper-match-face-4 ((t :inherit swiper-line-face :background "#ffbbff" :weight bold)))
+     ((((class color) (background light)) :inherit swiper-line-face :background "#d3d3d3")
+      (((class color) (background dark))  :inherit swiper-line-face :background "#7d7e7f")))
+   '(swiper-match-face-2 ((t :inherit swiper-line-face :background "#e99ce8")))
+   '(swiper-match-face-3 ((t :inherit swiper-line-face :background "#bbbbff")))
+   '(swiper-match-face-4 ((t :inherit swiper-line-face :background "#ffbbff")))
    '(swiper-background-match-face-1
-     ((((class color) (background light)) :background "#d3d3d3" :foreground "#8a8a8a" :weight bold)
-      (((class color) (background dark))  :background "#7d7e7f" :foreground "#535454" :weight bold)))
-   '(swiper-background-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b" :weight bold)))
-   '(swiper-background-match-face-3 ((t :background "#bbbbff" :foreground "#707099" :weight bold)))
-   '(swiper-background-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f" :weight bold))))
+     ((((class color) (background light)) :background "#d3d3d3" :foreground "#8a8a8a")
+      (((class color) (background dark))  :background "#7d7e7f" :foreground "#535454")))
+   '(swiper-background-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b")))
+   '(swiper-background-match-face-3 ((t :background "#bbbbff" :foreground "#707099")))
+   '(swiper-background-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f"))))
   ;; copy from `swiper--recompute-background-faces'
   (let ((faces '(swiper-match-face-1
                  swiper-match-face-2
@@ -358,7 +204,4 @@
   :defer t
   :config
   (custom-set-faces
-   `(treemacs-fringe-indicator-face ((t :foreground ,(face-background 'cursor))))
-   '(treemacs-selected-icon
-     ((((class color) (background light)) :background "#9fcdf2")
-      (((class color) (background dark))  :background "#5f6369")))))
+   `(treemacs-fringe-indicator-face ((t :foreground ,(face-background 'cursor))))))

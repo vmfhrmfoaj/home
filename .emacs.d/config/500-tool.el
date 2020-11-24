@@ -32,6 +32,7 @@
 
 (use-package display-line-numbers
   :hook ((conf-mode            . enable-display-line-numbers)
+         (diff-mode            . enable-display-line-numbers)
          (git-timemachine-mode . enable-display-line-numbers)
          (prog-mode            . enable-display-line-numbers)
          (rpm-spec-mode        . enable-display-line-numbers)

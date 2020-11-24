@@ -1,5 +1,3 @@
-;;; Copyright (c) 2014-2017, Jinseop Kim
-
 (setq comp-deferred-compilation t
       comp-async-report-warnings-errors nil
       custom-file "~/.emacs.d/.custom.el"
@@ -9,9 +7,6 @@
 (add-hook 'emacs-startup-hook (lambda () (setq-default gc-cons-threshold (get 'gc-cons-threshold 'default-value))))
 (when (file-exists-p custom-file)
   (add-hook 'emacs-startup-hook (lambda () (load custom-file))))
-
-(when window-system
-  (set-face-attribute 'default nil :background "#000000"))
 
 (require 'package)
 (setq package-archives

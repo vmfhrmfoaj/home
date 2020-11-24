@@ -126,7 +126,8 @@ which see."
   (defun org-agenda-show-list ()
     (interactive)
     (org-agenda-list)
-    (call-interactively #'org-agenda-redo))
+    (call-interactively #'org-agenda-redo)
+    (setq-local projectile-project-name "Org"))
 
   :config
   (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0))

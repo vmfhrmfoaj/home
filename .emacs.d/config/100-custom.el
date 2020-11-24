@@ -21,7 +21,10 @@
         comment-fill-column 100
         create-lockfiles nil
         default-input-method "korean-hangul"
-        include-prev-buf-regex (regexp-opt '("*scratch*" "*emacs-lisp REPL*"))
+        include-prev-buf-regex (concat "^\\s-*\\(?:"
+                                       (regexp-opt '("*scratch*" "*emacs-lisp REPL*")) "\\|"
+                                       "\\*eshell\\s-"
+                                       "\\)")
         exclude-prev-buf-regex (concat "^\\s-*\\(?:"
                                        "\\*\\|"
                                        "markdown-code-fontification:\\|"

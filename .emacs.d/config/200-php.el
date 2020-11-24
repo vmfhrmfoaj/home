@@ -17,6 +17,8 @@
 
   (add-hook 'php-mode-hook
             (lambda ()
+              (with-eval-after-load "lsp-mode"
+                (setq-local evil-lookup-func #'lsp-describe-thing-at-point))
               (make-local-variable 'font-lock-extend-region-functions)
               (add-to-list 'font-lock-extend-region-functions #'font-lock-extend-region-multiline)
               (add-to-list 'font-lock-extend-region-functions #'font-lock-extend-region-wholelines))))
