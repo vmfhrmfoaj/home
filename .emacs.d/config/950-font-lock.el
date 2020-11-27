@@ -28,7 +28,7 @@
      (when (member major-mode '(c-mode c++-mode))
        (font-lock-add-keywords
         nil
-        `(("\\([-=]>\\|::\\)"
+        `(("\\([-=]>\\|::\\|;\\)"
            (1 'shadow))
           ("\\(\\\\\\)$"
            (1 'shadow))
@@ -144,7 +144,7 @@
         (1 'font-lock-type-face))
        ("\\(?:\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\|\\$\\|\\\\\\)"
         (1 'shadow))
-       ("\\([\\&|*]\\|::\\|[-=]>\\|[$@]_\\>\\)"
+       ("\\([\\&|*]\\|::\\|;\\|[-=]>\\|[$@]_\\>\\)"
         (1 'shadow))
        ("\\([*@$%]+\\)\\(?:[:_0-9a-zA-Z]\\|\\s(\\)"
         (1 'shadow))))
@@ -1225,6 +1225,8 @@
         (")\\s-*:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*\\(?:\{\\|;\\)"
          (1 'font-lock-type-face))
         ("\\(?:^\\|\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\)"
+         (1 'shadow))
+        ("\\(;\\)"
          (1 'shadow)))))
   (setq php-font-lock-keywords php-font-lock-keywords-3)
   (font-lock-add-keywords
@@ -1269,14 +1271,19 @@
                       "__all__")
                      symbol-end)
                    . font-lock-builtin-face)))
-    (setf (cadddr python-font-lock-keywords-level-2) regex
-          (car (cddddr python-font-lock-keywords-maximum-decoration)) regex)
+    (if (version<= "28.0.50" emacs-version)
+        (setf (cadddr python-font-lock-keywords-level-2) regex
+              (car (cddddr python-font-lock-keywords-maximum-decoration)) regex)
+      (setf (cadddr python-font-lock-keywords-level-2) regex
+            (cadddr python-font-lock-keywords-maximum-decoration) regex))
     (add-to-list 'python-font-lock-keywords-level-2 regex-2 t)
     (add-to-list 'python-font-lock-keywords-maximum-decoration regex-2 t))
 
   (font-lock-add-keywords
    'python-mode
    '(("\\(:\\)\\(?:$\\|\\s-\\)"
+      (1 'shadow))
+     ("\\(\\*\\*?\\)[_A-Za-z]"
       (1 'shadow)))))
 
 (use-package prog-mode
@@ -1287,7 +1294,7 @@
               "TODO"
               (font-lock-add-keywords
                nil
-               '(("\\([.,;]\\|[|&]\\{2,2\\}\\|\\s(\\|\\s)\\)"
+               '(("\\([.,]\\|[|&]\\{2,2\\}\\|\\s(\\|\\s)\\)"
                   (1 'shadow append)))
                :append))
             :append))
@@ -1326,7 +1333,7 @@
       (2 'font-lock-constant-face))
      ("&?'[_a-z]+"
       (0 'shadow))
-     ("\\([-=]>\\|::?\\)"
+     ("\\([-=]>\\|::?\\|;\\)"
       (1 'shadow))))
   (font-lock-add-keywords
    'rust-mode

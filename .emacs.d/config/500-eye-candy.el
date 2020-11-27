@@ -94,7 +94,6 @@
   :init
   (defvar focus--exclude-modes '(term-mode))
 
-
   (defun focus--enable (&rest _)
     (unless (or (apply #'derived-mode-p focus--exclude-modes)
                 (minibufferp))

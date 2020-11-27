@@ -18,12 +18,13 @@
 
   (setq company-idle-delay 0.3
         company-echo-delay 0.2
-        company-minimum-prefix-length 1
+        company-minimum-prefix-length 3
         company-selection-wrap-around t
         company-dabbrev-downcase nil
-        company-dabbrev-minimum-length 1
+        company-dabbrev-minimum-length 3
         company-dabbrev-ignore-case t
         company-dabbrev-code-ignore-case t
+        company-dabbrev-code-other-buffers nil
         company-etags-ignore-case t
         company-tooltip-flip-when-above t)
 

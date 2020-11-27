@@ -87,51 +87,7 @@
 
 (use-package evil-multiedit
   :ensure t
-  :after evil
-  :config
-  ;; FIXME
-  ;;  https://github.com/victorhge/iedit/pull/119
-  (defun iedit-update-occurrences-3-fix (occurrence beg end &optional change)
-    "The third part of updating occurrences.
-Apply the change to all the other occurrences. "
-    (let ((iedit-updating t)
-          (offset (- beg (overlay-start occurrence)))
-          (value (buffer-substring-no-properties beg end))
-		  ;; c-before-change is really slow. It is safe to skip change functions
-		  ;; for all the other occurrences
-		  (inhibit-modification-hooks (memq #'c-before-change before-change-functions)))
-      (save-excursion
-	    (iedit-move-conjoined-overlays occurrence)
-	    (when (/= beg end)
-		  ;; apply the case pattern on the current occurrence
-		  (cl-case (overlay-get occurrence 'category)
-		    (all-caps
-		     (upcase-region beg end))
-		    (cap-initial
-		     (when (= 0 offset) (capitalize-region beg end )))))
-        (dolist (another-occurrence iedit-occurrences-overlays)
-          (when (not (eq another-occurrence occurrence))
-            (let* ((beginning (+ (overlay-start another-occurrence) offset))
-				   (ending (+ beginning (- end beg))))
-			  (when (/= 0 change) (delete-region beginning (+ beginning change))) ;; delete
-			  (when (/= beg end) ;; insert
-			    (goto-char beginning)
-			    (insert-and-inherit
-			     ;; preserve the case pattern of each occurrence
-			     (cl-case (overlay-get another-occurrence 'category)
-			       (no-change value)
-			       (all-caps
-			        (upcase value))
-			       (cap-initial
-			        (if (= 0 offset)
-                        (capitalize value)
-				      value))))))
-            (iedit-move-conjoined-overlays another-occurrence))))
-	  (when inhibit-modification-hooks
-	    ;; run the after change functions only once. It seems OK for c-mode
-	    (run-hook-with-args 'after-change-functions beg end change))))
-
-  (advice-add #'iedit-update-occurrences-3 :override #'iedit-update-occurrences-3-fix))
+  :after evil)
 
 (use-package smartparens
   :ensure t

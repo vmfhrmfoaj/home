@@ -43,7 +43,7 @@
                  (t 8)))
            (padding 2)
            (width (- max (* 2 padding)))
-           (bitmap (-repeat (+ (line-pixel-height) line-spacing)
+           (bitmap (-repeat (+ 2 (line-pixel-height) line-spacing)
                             (apply #'concat (append (-repeat padding ".")
                                                     (-repeat width   "X")
                                                     (-repeat padding ".")))))

@@ -344,6 +344,16 @@
       (ignore-errors
         (lsp-signature-activate))))
 
+  (defun lsp--workspace-print-without-style (workspace)
+    "Visual representation WORKSPACE."
+    (let* ((proc (lsp--workspace-cmd-proc workspace))
+           (status (lsp--workspace-status workspace))
+           (server-id (-> workspace lsp--workspace-client lsp--client-server-id symbol-name))
+           (pid (format "%s" (process-id proc))))
+      (if (eq 'initialized status)
+          (format "%s:%s" server-id pid)
+        (format "%s:%s status:%s" server-id pid status))))
+
   (setq lsp-enable-imenu nil
         lsp-enable-indentation nil
         lsp-enable-links nil
@@ -410,6 +420,7 @@
   (advice-add #'lsp--eldoc-message :override 'lsp--custom-eldoc-message)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
   (advice-add #'lsp--signature->message :filter-return #'lsp--signature->message-filter)
+  (advice-add #'lsp--workspace-print :override #'lsp--workspace-print-without-style)
   (advice-add #'lsp-describe-thing-at-point :after #'lps--focus-and-update-lsp-help-buffer)
   (advice-add #'lsp-find-definition      :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx)
