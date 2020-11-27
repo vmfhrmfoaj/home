@@ -1,0 +1,4 @@
+@import 'colors.css';
+
+#pulseaudio-button * { -gtk-icon-transform: scale(.9); }
+#clock-button { padding: 7px; }
