@@ -17,7 +17,7 @@
    '(line-number-current-line
      ((t :inherit line-number :background "#484a4e" :foreground "#d5d8d6" :weight bold :inverse-video nil)))
    '(mode-line ((t :weight normal)))
-   '(shadow ((t :weight normal)))))
+   '(shadow ((t :weight light)))))
 
 (use-package company
   :defer t
@@ -42,7 +42,7 @@
      '(clojure-meta-face ((t :inherit shadow :weight extra-light)))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
      '(clojure-local-binding-variable-name-face ((t :inherit clojure-fn-parameter-face)))
-     '(clojure-side-effect-face ((t :weight normal :underline t)))
+     '(clojure-side-effect-face ((t :underline t)))
      '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))
      '(clojure-special-variable-definition-face
        ((t :inherit (font-lock-constant-face clojure-variable-definition-face))))
@@ -94,7 +94,8 @@
    '(font-lock-comment-face ((t :weight extra-light)))
    '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground "#606060" unspecified)))
    '(font-lock-doc-face ((t :weight light)))
-   '(font-lock-function-name-face ((t :foreground "#85aacc" :weight bold)))))
+   '(font-lock-function-name-face ((t :foreground "#85aacc" :weight bold)))
+   '(font-lock-string-face ((t :weight normal)))))
 
 (use-package fringe
   :defer t
@@ -123,7 +124,9 @@
   :defer t
   :config
   (custom-set-faces
-   '(magit-diff-context ((t :inherit magit-diff-context-highlight :weight normal)))
+   `(magit-diff-context
+     ((t :inherit magit-diff-context-highlight :background ,(bg-color-from 'default) :weight light)))
+   `(magit-diff-context-highlight ((t :weight normal)))
    '(magit-diff-file-heading ((t :weight bold)))))
 
 (use-package org
@@ -171,7 +174,10 @@
   :defer t
   :config
   (custom-set-faces
-   '(rust-attribute-face ((t :inherit font-lock-preprocessor-face :weight normal)))))
+   '(rust-attribute-face ((t :inherit font-lock-preprocessor-face :weight normal)))
+   '(rust-lifetime-face ((t :inherit font-lock-variable-name-face :weight light)))
+   `(rust-string-interpolation-face
+     ((t :inherit (font-lock-regexp-grouping-construct font-lock-string-face) :slant unspecified)))))
 
 (use-package sh-script
   :defer t

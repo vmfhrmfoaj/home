@@ -13,10 +13,9 @@
          (main-monitor-w (nth 2 workarea))
          (main-monitor-h (nth 3 workarea))
          (x-offset 110)
-         (h-offset 28) ; FIXME: how to get height of the title bar
          (x main-monitor-x)
          (y main-monitor-y)
-         (h (- main-monitor-h h-offset))
+         (h main-monitor-h)
          (wc 120)
          (oc   6) ; fringe + line-number
          (w (+ (* wc (frame-char-width))
@@ -32,7 +31,8 @@
     (add-to-list 'default-frame-alist `(height . (text-pixels . ,h)))
     (setq frame-resize-pixelwise t
           initial-frame-alist (list `(top  . ,y)
-                                    `(left . ,x))
+                                    `(left . ,x)
+                                    '(undecorated . t))
           split-width-threshold main-monitor-w)))
 
 (use-package winum

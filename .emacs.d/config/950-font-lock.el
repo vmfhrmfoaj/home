@@ -1323,102 +1323,173 @@
     `((t (:inherit font-lock-preprocessor-face)))
     "TODO")
 
+  (defface rust-lifetimes-face
+    `((t (:inherit font-lock-variable-name-face)))
+    "TODO")
+
+  (defface rust-punctuation-face
+    '((t (:inherit shadow)))
+    "TODO")
+
   :config
-  (font-lock-add-keywords
-   'rust-mode
-   `(("\\_<\\(self\\)\\."
-      (1 'rust-self-var-face))
-     ("^\\s-*\\(use\\)\\s-+\\([_:0-9A-Za-z]+\\)"
-      (1 'font-lock-keyword-face)
-      (2 'font-lock-constant-face))
-     ("&?'[_a-z]+"
-      (0 'shadow))
-     ("\\([-=]>\\|::?\\|;\\)"
-      (1 'shadow))))
-  (font-lock-add-keywords
-   'rust-mode
-   `((,(rust-re-grab (concat "#\\!?\\[" rust-re-ident "[^]]*\\]"))
-      (1 'rust-attribute-face t))
-     ("macro_rules!\\s-+\\([_0-9A-Za-z]+!?\\)"
-      (1 'font-lock-function-name-face))
-     ("\\_>:\\s-+\\(?:[*&]mut\\s-+\\)?\\([_0-9A-Za-z]+\\)\\_>"
-      (1 'font-lock-type-face))
-     (")\\s-+->\\s-+\\(?:[*&]mut\\s-+\\)?\\(?:[_0-9A-Za-z]::\\)*\\([_0-9A-Za-z]+\\)\\_>"
-      (1 'font-lock-type-face))
-     ("\\s-+as\\s-+\\(?:[*&]mut\\s-+\\)?\\(?:[_0-9A-Za-z]::\\)*\\([_0-9A-Za-z]+\\)\\_>"
-      (1 'font-lock-type-face))
-     ("\\(|\\)\\([^\r\n|]+\\)\\(|\\)"
-      (1 'shadow)
-      (3 'shadow)
-      ("\\_<[_0-9A-Za-z]+\\_>"
-       (progn
-         (goto-char (setq font-lock--anchor-beg-point (match-beginning 2)))
-         (match-end 2))
-       (goto-char font-lock--anchor-beg-point)
-       (0 'font-lock-variable-name-face)))
-     ("\\(&\\|&?\\*+\\)[_0-9A-Za-z]"
-      (1 'shadow))
-     ("\\_<\\(_\\|\\.\\.=\\)\\_>"
-      (1 'shadow))
-     ("\\(?:\\s(\\|\\s-\\)\\(\\!\\)\\(?:\\s-\\|\\s(\\|[_0-9A-Za-z]\\)"
-      (1 'font-lock-negation-char-face))
-     ("^\\s-*use\\s-+\\(?:[_0-9A-Za-z]+::\\)+\\s-*{"
-      (,(lambda (limit)
-          (ignore-errors
-            (when font-lock--skip
-              (error ""))
-            (re-search-forward "\\_<[_0-9A-Za-z]+\\_>" limit t)))
-       (save-excursion
-         (setq font-lock--anchor-beg-point (point))
-         (safe-up-list-1)
-         (point))
-       (goto-char font-lock--anchor-beg-point)
-       (0 font-lock-constant-face t)))
-     ("\\(?:let\\|for\\)\\s-+[({]\\(.+?\\)[})]\\s-+\\(?:=\\|in\\)"
-      ("\\([_0-9A-Za-z]+\\)"
-       (progn
-         (goto-char (match-beginning 1))
-         (match-end 1))
-       nil
-       (1 'font-lock-variable-name-face)))
-     ("if let\\s-+[_:0-9A-Za-z]+\\s-*[({]\\(.+?\\)[})]\\s-*="
-      ("\\([_0-9A-Za-z]+\\)"
-       (progn
-         (goto-char (match-beginning 1))
-         (match-end 1))
-       nil
-       (1 'font-lock-variable-name-face)))
-     ("match\\s-+.+?{$"
-      (,(lambda (limit)
-          (ignore-errors
-            (when font-lock--skip
-              (error ""))
-            (if (null font-lock--local-limit)
-                (when (re-search-forward "^\\s-*\\(.+?\\)\\s-*\\(?:|\\|=>\\)" limit t)
-                  (goto-char (match-beginning 1))
-                  (if (re-search-forward "[_:0-9A-Za-z]+\\s-*[({]\\s-*\\([_0-9A-Za-z]+\\)" (match-end 1) t)
-                      (save-excursion
-                        (safe-up-list-1)
-                        (setq font-lock--local-limit (point)))
-                    (set-match-data (fake-match-4)))
-                  t)
-              (unless (re-search-forward "\\([_0-9A-Za-z]+\\)" font-lock--local-limit t)
-                (goto-char font-lock--local-limit)
-                (when (and (re-search-forward "\\s-*\\(?:|\\|=>\\)[ \t\r\n]*" limit t)
-                           (looking-at "\\s-*{"))
-                  (goto-char (match-end 0))
-                  (safe-up-list-1))
-                (setq font-lock--local-limit nil)
-                (set-match-data (fake-match-4)))
-              t)))
-       (save-excursion
-         (setq font-lock--anchor-beg-point (point)
-               font-lock--local-limit nil)
-         (safe-up-list-1)
-         (point))
-       (goto-char font-lock--anchor-beg-point)
-       (1 'font-lock-variable-name-face))))
-   :append))
+  (setq rust-font-lock-keywords
+        (append
+         `(
+           ;; punctuation
+           ("\\(\\_<_[0-9A-Za-z]*\\_>\\)" 1 'rust-punctuation-face)
+
+           ;; Keywords proper
+           (,(regexp-opt rust-keywords 'symbols) . font-lock-keyword-face)
+
+           ;; Contextual keywords
+           ("\\_<\\(default\\)[[:space:]]+fn\\_>" 1 font-lock-keyword-face)
+           (,rust-re-union 1 font-lock-keyword-face)
+
+           ;; Special types
+           (,(regexp-opt rust-special-types 'symbols) . font-lock-type-face)
+
+           ;; The unsafe keyword
+           ("\\_<unsafe\\_>" . 'rust-unsafe-face)
+
+           ;; Attributes like `#[bar(baz)]` or `#![bar(baz)]` or `#[bar = "baz"]`
+           (,(rust-re-grab (concat "#\\!?\\[" rust-re-ident "[^]]*\\]"))
+            1 'rust-attribute-face keep)
+
+           ;; Builtin formatting macros
+           (,(concat (rust-re-grab
+                      (concat (rust-re-word (regexp-opt rust-builtin-formatting-macros))
+                              "!"))
+                     rust-formatting-macro-opening-re
+                     "\\(?:" rust-start-of-string-re "\\)?")
+            (1 'rust-builtin-formatting-macro-face)
+            (rust-string-interpolation-matcher
+             (rust-end-of-string)
+             nil
+             (0 'rust-string-interpolation-face t nil)))
+
+           ;; write! macro
+           (,(concat (rust-re-grab (concat (rust-re-word "write\\(ln\\)?") "!"))
+                     rust-formatting-macro-opening-re
+                     "[[:space:]]*[^\"]+,[[:space:]]*"
+                     rust-start-of-string-re)
+            (1 'rust-builtin-formatting-macro-face)
+            (rust-string-interpolation-matcher
+             (rust-end-of-string)
+             nil
+             (0 'rust-string-interpolation-face t nil)))
+
+           ;; Syntax extension invocations like `foo!`, highlight including the !
+           (,(concat (rust-re-grab (concat rust-re-ident "!")) "[({[:space:][]")
+            1 font-lock-preprocessor-face)
+
+           ;; Field names like `foo:`, highlight excluding the :
+           (,(concat (rust-re-grab rust-re-ident) "[[:space:]]*:[^:]")
+            1 font-lock-variable-name-face)
+
+           ;; CamelCase Means Type Or Constructor
+           (,rust-re-type-or-constructor 1 font-lock-type-face)
+
+           ;; Type-inferred binding
+           (,(concat "\\_<\\(?:let\\s-+ref\\|let\\|ref\\|for\\)\\s-+\\(?:mut\\s-+\\)?"
+                     (rust-re-grab rust-re-ident)
+                     "\\_>")
+            1 font-lock-variable-name-face)
+
+           ;; Type names like `Foo::`, highlight excluding the ::
+           (,(rust-path-font-lock-matcher rust-re-uc-ident) 1 font-lock-type-face)
+
+           ;; Module names like `foo::`, highlight excluding the ::
+           (,(rust-path-font-lock-matcher rust-re-lc-ident) 1 font-lock-constant-face)
+
+           ;; Lifetimes like `'foo`
+           (,(concat "\\(&?'\\)" (rust-re-grab rust-re-ident) "[^']")
+            (1 'rust-punctuation-face)
+            (2 'rust-lifetimes-face))
+
+           ;; Question mark operator
+           ("\\?" . 'rust-question-mark-face)
+
+           ;; Module names like `module::{foo, bar}`, highlight excluding the ::
+           ("^\\s-*use\\s-+\\(?:[_0-9A-Za-z]+::\\)+\\s-*{"
+            (,(lambda (limit)
+                (ignore-errors
+                  (when font-lock--skip
+                    (error ""))
+                  (re-search-forward "\\_<[a-z][_0-9a-z]*\\_>" limit t)))
+             (save-excursion
+               (setq font-lock--anchor-beg-point (point))
+               (safe-up-list-1)
+               (point))
+             (goto-char font-lock--anchor-beg-point)
+             (0 font-lock-constant-face t)))
+
+           ;; Lambda binding
+           ("\\(|\\)\\([^\r\n|]+\\)\\(|\\)"
+            (1 'rust-punctuation-face)
+            (3 'rust-punctuation-face)
+            ("\\_<\\([a-z][_0-9a-z]*\\)\\_>\\(?:\\s-*:\\s-*\\(?:[&*]+\\s-*\\)?[_0-9A-Za-z]+\\)?\\(?:\\s-*,\\)?"
+             (progn
+               (goto-char (setq font-lock--anchor-beg-point (match-beginning 2)))
+               (match-end 2))
+             (goto-char font-lock--anchor-beg-point)
+             (1 'font-lock-variable-name-face)))
+
+           ;; Pattern matched binding
+           ("if let\\s-+[_:0-9A-Za-z]+\\s-*[({]\\(.+?\\)[})]\\s-*="
+            ("\\([_0-9A-Za-z]+\\)"
+             (progn
+               (goto-char (match-beginning 1))
+               (match-end 1))
+             nil
+             (1 'font-lock-variable-name-face)))
+           ("match\\s-+.+?{$"
+            (,(lambda (limit)
+                (ignore-errors
+                  (when font-lock--skip
+                    (error ""))
+                  (if (null font-lock--local-limit)
+                      (when (re-search-forward "^\\s-*\\(.+?\\)\\s-*\\(?:|\\|=>\\)" limit t)
+                        (goto-char (match-beginning 1))
+                        (if (re-search-forward "[_:0-9A-Za-z]+\\s-*[({]\\s-*\\([_0-9A-Za-z]+\\)" (match-end 1) t)
+                            (save-excursion
+                              (safe-up-list-1)
+                              (setq font-lock--local-limit (point)))
+                          (set-match-data (fake-match-4)))
+                        t)
+                    (unless (re-search-forward "\\([_0-9A-Za-z]+\\)" font-lock--local-limit t)
+                      (goto-char font-lock--local-limit)
+                      (when (and (re-search-forward "\\s-*\\(?:|\\|=>\\)[ \t\r\n]*" limit t)
+                                 (looking-at "\\s-*{"))
+                        (goto-char (match-end 0))
+                        (safe-up-list-1))
+                      (setq font-lock--local-limit nil)
+                      (set-match-data (fake-match-4)))
+                    t)))
+             (save-excursion
+               (setq font-lock--anchor-beg-point (point)
+                     font-lock--local-limit nil)
+               (safe-up-list-1)
+               (point))
+             (goto-char font-lock--anchor-beg-point)
+             (1 'font-lock-variable-name-face)))
+
+           ;; punctuation
+           ("\\([-=]>\\|::?\\|;\\)" 1 'rust-punctuation-face)
+           ("\\(&\\|&?\\*+\\)[_0-9A-Za-z]" 1 'rust-punctuation-face)
+
+           )
+
+         ;; Ensure we highlight `Foo` in `struct Foo` as a type.
+         (mapcar #'(lambda (x)
+                     (list (rust-re-item-def (car x))
+                           1 (cdr x)))
+                 '(("enum" . font-lock-type-face)
+                   ("struct" . font-lock-type-face)
+                   ("union" . font-lock-type-face)
+                   ("type" . font-lock-type-face)
+                   ("mod" . font-lock-constant-face)
+                   ("use" . font-lock-constant-face)
+                   ("fn" . font-lock-function-name-face))))))
 
 (use-package sh-script
   :defer t

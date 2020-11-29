@@ -429,6 +429,11 @@
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
   (advice-add #'lsp-signature-stop :after #'lsp-signature-restart))
 
+(use-package lsp-rust
+  :defer t
+  :config
+  (setq lsp-rust-clippy-preference "on"))
+
 (use-package lsp-ui
   :ensure t
   :defer t
