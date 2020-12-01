@@ -333,6 +333,13 @@ _setup_for_xorg() {
 }
 
 
+# alias
+which exa > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    alias ls=exa
+    alias ll='exa -l'
+fi
+
 # add dirs to PATH
 _add_to_path '/sbin'
 _add_to_path '/usr/sbin'
