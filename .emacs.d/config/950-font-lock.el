@@ -1113,6 +1113,10 @@
     '((t (:inherit shadow :weight semi-bold)))
     "Org listing face")
 
+  (defface org-parenthesis-context-face
+    '((t (:inherit default)))
+    "Org listing face")
+
   :config
   (font-lock-add-keywords
    'org-mode
@@ -1124,7 +1128,7 @@
           (check-square (string-to-char "\xf14a"))
           (org-done-face (color-from 'org-done :foreground))
           (org-todo-face (color-from 'org-todo :foreground)))
-     `(("^\\s-*\\(?:-\\|[0-9]+\\.\\) \\(\\[\\( \\|-\\|X\\)\\]\\)\\( \\|$\\)"
+     `(("^\\s-*\\(?:-\\|[0-9]+\\.\\)\\s-\\(\\[\\( \\|-\\|X\\)\\]\\)\\s-"
         1 (progn
             (let ((x (match-string 2))
                   (s (match-beginning 1))
@@ -1145,8 +1149,11 @@
         1 'org-list-face)
        ("^\\s-*\\(\\([0-9]\\.\\)\\) "
         1 'org-list-face)
+       ("\\((.+?)\\)"
+        1 'org-parenthesis-context-face)
        ("\\(\\\\\\\\\\)\\s-*$"
-        1 'shadow nil)))
+        1 'shadow nil)
+       ))
    :append))
 
 (use-package php-mode

@@ -95,6 +95,7 @@
    '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground "#606060" unspecified)))
    '(font-lock-doc-face ((t :weight light)))
    '(font-lock-function-name-face ((t :foreground "#85aacc" :weight bold)))
+   '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
    '(font-lock-string-face ((t :weight normal)))))
 
 (use-package fringe
@@ -143,6 +144,7 @@
    '(org-level-1 ((t :inherit outline-1 :height 1.1)))
    '(org-link ((t :inherit link :underline unspecified)))
    '(org-meta-line ((t :inherit font-lock-comment-face :weight light)))
+   '(org-parenthesis-context-face ((t :inherit default :weight normal)))
    '(org-property-value ((t :weight light)))
    '(org-special-keyword ((t :weight light)))
    '(org-tag ((t :weight light)))
