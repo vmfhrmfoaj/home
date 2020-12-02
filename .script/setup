@@ -334,10 +334,14 @@ _setup_for_xorg() {
 
 
 # alias
-which exa > /dev/null 2>&1
+which exa >/dev/null 2>&1
 if [ $? -eq 0 ]; then
     alias ls=exa
     alias ll='exa -l'
+fi
+which docker >/dev/null 2>&1
+if [ $? -eq 0 ]; then
+    alias on-rust-musl='docker run --rm -it -v "$(pwd)":/home/rust/src ekidd/rust-musl-builder:nightly-2020-11-19'
 fi
 
 # add dirs to PATH
