@@ -99,7 +99,7 @@ _setup_for_deno() {
 }
 
 _setup_for_java() {
-    local java_home="/usr/lib64/openjdk-11"
+    local java_home="/usr/lib64/openjdk-8"
     if [ -d "${java_home}" ]; then
         export JAVA_HOME=${java_home}
         _add_to_path "${java_home}/bin"
