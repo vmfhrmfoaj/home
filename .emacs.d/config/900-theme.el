@@ -228,3 +228,9 @@
   :config
   (custom-set-faces
    `(treemacs-fringe-indicator-face ((t :foreground ,(face-background 'cursor))))))
+
+(use-package web-mode
+  :defer t
+  :config
+  (custom-set-faces
+   '(web-mode-html-attr-equal-face ((t :inherit shadow)))))

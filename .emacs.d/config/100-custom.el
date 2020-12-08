@@ -16,8 +16,6 @@
   (setq auto-revert-interval 0.5
         auto-save-file-name-transforms `((".*" ,backup-dir t))
         backup-directory-alist `((".*" . ,backup-dir))
-        blink-cursor-blinks 0
-        blink-cursor-delay 0
         comment-fill-column 100
         create-lockfiles nil
         default-input-method "korean-hangul"
@@ -41,7 +39,7 @@
 (when-let ((input-method (--first (string= "korean-hangul" (car it)) input-method-alist)))
   (setf (nth 3 input-method) "Korean"))
 
-(blink-cursor-mode 1)
+(blink-cursor-mode 0)
 (global-auto-revert-mode 1)
 (prefer-coding-system 'utf-8)
 (recentf-mode 1)
@@ -58,7 +56,6 @@
 
 (setq resize-mini-windows t)
 
-(add-hook 'focus-in-hook #'blink-cursor-start)
 (add-hook 'help-mode-hook #'visual-line-mode)
 (add-hook 'after-init-hook
           (lambda ()

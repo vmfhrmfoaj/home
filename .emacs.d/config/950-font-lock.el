@@ -1104,7 +1104,12 @@
   (font-lock-add-keywords
    'js-mode
    '(("\\(?:async\\|export\\)\\s-+function\\s-+\\([_0-9A-Za-z]+\\)\\>"
-      (1 'font-lock-function-name-face)))))
+      (1 'font-lock-function-name-face))))
+  (font-lock-add-keywords
+   'js-mode
+   '(("\\(:\\|[-=]>\\|;\\)"
+      (1 'shadow)))
+   :append))
 
 (use-package org
   :defer t
@@ -1302,7 +1307,9 @@
               (font-lock-add-keywords
                nil
                '(("\\([.,]\\|[|&]\\{2,2\\}\\|\\s(\\|\\s)\\)"
-                  (1 'shadow append)))
+                  (1 'shadow))
+                 ("[^-+/*=<>]\\(=\\)[^=]"
+                  (1 'shadow)))
                :append))
             :append))
 
@@ -1540,23 +1547,18 @@
         ("\\<\\(case\\|cond\\)\\>"
          (save-match-data
            (save-excursion
-             (setq-local font-lock--web-mode-anchor-start-pos (point))
+             (setq-local font-lock--anchor-beg-point (point))
              (re-search-forward ,(regexp-quote " %>") (point-max))
              (match-string 0)))
-         (goto-char font-lock--web-mode-anchor-start-pos)
-         (1 'web-mode-keyword-face))))
-     :append)
-    (font-lock-add-keywords
-     'web-mode
-     `((,begin-re
+         (goto-char font-lock--anchor-beg-point)
+         (1 'web-mode-keyword-face)))
+       (,begin-re
         ("\\([-_0-9A-Za-z]+\\)"
          (save-match-data
            (save-excursion
-             (setq-local font-lock--web-mode-anchor-start-pos (point))
+             (setq-local font-lock--anchor-beg-point (point))
              (re-search-forward ,end-re (point-max))
              (match-string 0)))
-         (goto-char font-lock--web-mode-anchor-start-pos)
-         (1 'default)))
-       ("."
-        (0 'shadow)))
+         (goto-char font-lock--anchor-beg-point)
+         (1 'default))))
      :append)))

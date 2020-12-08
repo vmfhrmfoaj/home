@@ -101,7 +101,12 @@ which see."
   (add-hook 'org-todo-get-default-hook #'org-insert-schedule-&-deadline)
   (add-hook 'org-mode-hook
             (lambda ()
-              (setq-local evil-lookup-func #'org-dic-at-point)))
+              (setq-local evil-lookup-func #'org-dic-at-point)
+              ;; NOTE
+              ;;  disable `show-smartparens-mode' due to it is conflicted with `org-indent-mode'.
+              ;;  `show-paren-mode' is also conflicted with it.
+              (turn-off-show-smartparens-mode))
+            100)
 
   (advice-add #'org-tags-completion-function :override #'org-tags-completion-function-for-case-insensitive)
   (advice-add #'org-clock-goto :before (lambda (&optional select) (persp-switch-to-org)))

@@ -437,6 +437,14 @@
                              (evil-normal-state)
                            (abort-recursive-edit-for-evil-ex))))))
 
+(use-package evil-multiedit
+  :defer t
+  :config
+  (define-key evil-multiedit-state-map (kbd "p")
+    (lambda ()
+      (interactive)
+      (iedit-replace-occurrences (current-kill 0)))))
+
 (use-package evil-surround
   :defer t
   :config
