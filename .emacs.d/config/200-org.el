@@ -124,8 +124,6 @@ which see."
 (use-package org-agenda
   :defer t
   :init
-  (defvar org-tags-column-for-agenda )
-
   (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
 
   (defun org-agenda-show-list ()
@@ -232,15 +230,16 @@ which see."
   :commands (org-clock-jump-to-current-clock)
   :config
   (defun org-clock--resume ()
-    (remove-hook 'focus-in-hook 'org-clock--resume)
-    (org-clock-in-last))
+    (when (frame-focus-state)
+      (remove-function after-focus-change-function #'org-clock--resume)
+      (org-clock-in-last)))
 
   (defun org-clock--auto-stop-&-restart ()
     (when (org-clocking-p)
       (let* ((idle-time (seconds-to-time (* 60 org-clock-custom-idle-time)))
              (at-time (time-subtract (current-time) idle-time)))
         (org-clock-out nil t at-time)
-        (add-hook 'focus-in-hook #'org-clock--resume))))
+        (add-function :after after-focus-change-function #'org-clock--resume))))
 
   (defun org-clock--stop ()
     (when (org-clocking-p)
@@ -262,8 +261,20 @@ which see."
 (use-package org-protocol
   :defer t
   :init
-  (add-hook 'focus-out-hook
-            (lambda ()
-              (remove-hook 'focus-out-hook #'org-protocol-setup)
-              (require 'org-capture)
-              (require 'org-protocol))))
+  (defun org-protocol-setup ()
+    (unless (frame-focus-state)
+      (remove-function after-focus-change-function #'org-protocol-setup)
+      (require 'org-capture)
+      (require 'org-protocol)))
+
+  (if window-system
+      ;; NOTE
+      ;;  I don't know why `after-focus-change-function' was triggered when starting Emacs.
+      ;;  To workaround to adds the setup function to the focus event hook with 0.5 seconds after starting Emacs.
+      (add-hook 'after-init-hook
+                (lambda ()
+                  (run-at-time 0.5 nil
+                               (lambda ()
+                                 (add-function :after after-focus-change-function #'org-protocol-setup)))))
+    (require 'org-capture)
+    (require 'org-protocol)))

@@ -22,10 +22,20 @@
   :defer t
   :init
   (defun atomic-chrome-setup ()
-    (remove-hook 'focus-out-hook #'atomic-chrome-setup)
-    (require 'atomic-chrome))
+    (unless (frame-focus-state)
+      (remove-function after-focus-change-function #'atomic-chrome-setup)
+      (require 'atomic-chrome)))
 
-  (add-hook 'focus-out-hook #'atomic-chrome-setup)
+  (if window-system
+      ;; NOTE
+      ;;  I don't know why `after-focus-change-function' was triggered when starting Emacs.
+      ;;  To workaround to adds the setup function to the focus event hook with 0.5 seconds after starting Emacs.
+      (add-hook 'after-init-hook
+                (lambda ()
+                  (run-at-time 0.5 nil
+                               (lambda ()
+                                 (add-function :after after-focus-change-function #'atomic-chrome-setup)))))
+    (require 'atomic-chrome))
 
   :config
   (atomic-chrome-start-server))
@@ -277,7 +287,11 @@
   :config
   (advice-add #'pos-tip-show :override #'pos-tip-show-no-propertize)
 
-  (add-hook 'focus-out-hook #'pos-tip-hide))
+  (add-function :after after-focus-change-function
+                (lambda ()
+                  (unless (frame-focus-state)
+                    (ignore-errors
+                      (pos-tip-hide))))))
 
 (use-package saveplace
   :config
@@ -287,10 +301,19 @@
   :defer t
   :init
   (defun emacs-server-setup ()
-    (remove-hook 'focus-out-hook #'emacs-server-setup)
+    (remove-function after-focus-change-function #'emacs-server-setup)
     (require 'server))
 
-  (add-hook 'focus-out-hook #'emacs-server-setup)
+  (if window-system
+      ;; NOTE
+      ;;  I don't know why `after-focus-change-function' was triggered when starting Emacs.
+      ;;  To workaround to adds the setup function to the focus event hook with 0.5 seconds after starting Emacs.
+      (add-hook 'after-init-hook
+                (lambda ()
+                  (run-at-time 0.5 nil
+                               (lambda ()
+                                 (add-function :after after-focus-change-function #'emacs-server-setup)))))
+    (require 'server))
 
   :config
   (unless (server-running-p)
@@ -311,6 +334,7 @@
 
 (use-package treemacs
   :ensure t
+  :defer t
   :init
   (defface treemacs-selected-icon
     '((t :inherit hl-line))
@@ -415,10 +439,12 @@
 
 (use-package treemacs-projectile
   :ensure t
-  :after treemacs
+  :defer t
   :init
   (defun treemacs-projectile-current ()
     (interactive)
+    (unless (featurep 'treemacs-projectile)
+      (require 'treemacs-projectile))
     (when-let ((proj-root (s-chop-suffix "/" (projectile-project-root))))
       (let ((file (buffer-file-name)))
         (treemacs-reset-workspace-and-create-fake)
@@ -451,7 +477,12 @@
                    (let ((btn (point)))
                      (when (eq (treemacs-button-get btn :state) 'dir-node-closed)
                        (treemacs--expand-dir-node btn :recursive nil)))
-                   (goto-char last)))))))))))
+                   (goto-char last))))))))))
+
+  (with-eval-after-load "projectile"
+    (require 'treemacs-projectile))
+  (with-eval-after-load "treemacs"
+    (require 'treemacs-projectile)))
 
 (use-package vlf-setup
   :ensure vlf

@@ -19,18 +19,23 @@
         comment-fill-column 100
         create-lockfiles nil
         default-input-method "korean-hangul"
-        include-prev-buf-regex (concat "^\\s-*\\(?:"
-                                       (regexp-opt '("*scratch*" "*emacs-lisp REPL*")) "\\|"
-                                       "\\*eshell\\s-"
-                                       "\\)")
+        directory-abbrev-alist '(("/mnt/ext/Build/"        . "~/Desktop/Build/")
+                                 ("/mnt/ext/Open_Sources/" . "~/Desktop/Open_Sources/")
+                                 ("/mnt/ext/Libraries/"    . "~/Desktop/Libraries/")
+                                 ("/mnt/ext2/Downloads/"   . "~/Downloads/"))
         exclude-prev-buf-regex (concat "^\\s-*\\(?:"
                                        "\\*\\|"
                                        "markdown-code-fontification:\\|"
                                        "magit\\(?:-[a-z]+\\)?:"
                                        "\\)")
+        include-prev-buf-regex (concat "^\\s-*\\(?:"
+                                       (regexp-opt '("*scratch*" "*emacs-lisp REPL*")) "\\|"
+                                       "\\*eshell\\s-"
+                                       "\\)")
         initial-major-mode 'text-mode
         initial-scratch-message ""
         read-process-output-max (* 1024 1024)
+        resize-mini-windows t
         ring-bell-function 'ignore))
 
 (put 'dired-find-alternate-file 'disabled nil)
@@ -54,28 +59,31 @@
   (require 'ucs-normalize)
   (set-file-name-coding-system 'utf-8-hfs))
 
-(setq resize-mini-windows t)
-
 (add-hook 'help-mode-hook #'visual-line-mode)
 (add-hook 'after-init-hook
           (lambda ()
             (add-hook 'buffer-list-update-hook #'update-buf-visit-time)
             (advice-add #'switch-to-buffer :around
                         (lambda (fn buf &rest args)
-                          (if-let ((win (->> (window-list)
-                                             (--filter (-> it (window-buffer) (eq buf)))
-                                             (-first-item))))
-                              (let ((cur-buf (current-buffer)))
-                                (with-selected-window win
-                                  (apply fn cur-buf args)))
-                            (apply fn buf args))))
+                          "to prevent duplicated buffer."
+                          (let ((buf (get-buffer buf)))
+                            (if-let ((win (let ((wins (window-list)))
+                                            (when (<= 2 (length wins))
+                                              (-some->> wins
+                                                (--filter (-> it (window-buffer) (eq buf)))
+                                                (-first-item))))))
+                                (select-window win)
+                              (apply fn buf args)))))
             (advice-add #'pop-to-buffer :around
                         (lambda (fn buf &rest args)
-                          (if-let ((win (->> (window-list)
-                                             (--filter (-> it (window-buffer) (eq buf)))
-                                             (-first-item))))
-                              (select-window win)
-                            (apply fn buf args))))
+                          (let ((buf (get-buffer buf)))
+                            (if-let ((win (let ((wins (window-list)))
+                                            (when (<= 2 (length wins))
+                                              (-some->> wins
+                                                (--filter (-> it (window-buffer) (eq buf)))
+                                                (-first-item))))))
+                                (select-window win)
+                              (apply fn buf args)))))
             (setq gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect)))
           :append)
 

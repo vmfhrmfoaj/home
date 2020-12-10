@@ -8,7 +8,7 @@
 
 (use-package counsel-projectile
   :ensure t
-  :defer t
+  :after projectile
   :config
   (setq counsel-projectile-remove-current-buffer t))
 
@@ -20,7 +20,6 @@
              projectile-project-buffers)
   :init
   (defun projectile-switch-to-previous-buffer ()
-    "TODO"
     (interactive)
     (condition-case nil
         (let ((cur-proj-root (or (projectile-project-root)
@@ -34,14 +33,12 @@
       (error (switch-to-previous-buffer-in (buffer-list)))))
 
   (defun projectile-kill-buffer (&optional buf)
-    "TODO"
     (interactive)
     (let ((buf (or buf (current-buffer))))
       (projectile-switch-to-previous-buffer)
       (kill-buffer buf)))
 
   (defun projectile-switch-latest-open-project ()
-    "TODO"
     (interactive)
     (let ((cur-proj-root (or (projectile-project-root)
                              (concat (s-chop-suffix "/" home-dir) "/"))))
@@ -68,14 +65,12 @@
         (projectile-find-file))))
 
   (defun projectile-custom-switch-open-project (&optional arg)
-    "TODO"
     (interactive)
     (let ((projectile-switch-project-action #'projectile-action-for-custom-switch-open-project))
       (projectile-switch-open-project)))
 
   :config
   (defun projectile-project-files-custom-filter (files)
-    "TODO"
     (-if-let (regex (-some->> (projectile-paths-to-ignore)
                       (--map (->> it
                                   (s-chop-prefix (file-truename (projectile-project-root)))
@@ -87,13 +82,11 @@
       files))
 
   (defun projectile-custom-project-name (project-root)
-    "TODO"
     (if (string= home-dir (s-chop-suffix "/" project-root))
         "home"
       (file-name-nondirectory (directory-file-name project-root))))
 
   (defun projectile-kill-new-buffer-file-name ()
-    "TODO"
     (interactive)
     (-when-let (file-name (buffer-file-name))
       (message (kill-new (-if-let (root (projectile-project-root))
@@ -161,6 +154,25 @@ An open project is a project with any open buffers expect `mini-buffer'."
          (-distinct)
          (-non-nil)))
 
+  (defun projectile-custom-project-vcs (&optional project-root)
+    (or project-root (setq project-root (projectile-project-root)))
+    (cond
+     ((projectile-file-exists-p (expand-file-name ".git" project-root)) 'git)
+     ((projectile-file-exists-p (expand-file-name ".hg" project-root)) 'hg)
+     ((projectile-file-exists-p (expand-file-name ".fslckout" project-root)) 'fossil)
+     ((projectile-file-exists-p (expand-file-name "_FOSSIL_" project-root)) 'fossil)
+     ((projectile-file-exists-p (expand-file-name ".bzr" project-root)) 'bzr)
+     ((projectile-file-exists-p (expand-file-name "_darcs" project-root)) 'darcs)
+     ((projectile-file-exists-p (expand-file-name ".svn" project-root)) 'svn)
+     ((-some-> (projectile-locate-dominating-file project-root ".git")      (string= project-root)) 'git)
+     ((-some-> (projectile-locate-dominating-file project-root ".hg")       (string= project-root)) 'hg)
+     ((-some-> (projectile-locate-dominating-file project-root ".fslckout") (string= project-root)) 'fossil)
+     ((-some-> (projectile-locate-dominating-file project-root "_FOSSIL_")  (string= project-root)) 'fossil)
+     ((-some-> (projectile-locate-dominating-file project-root ".bzr")      (string= project-root)) 'bzr)
+     ((-some-> (projectile-locate-dominating-file project-root "_darcs")    (string= project-root)) 'darcs)
+     ((-some-> (projectile-locate-dominating-file project-root ".svn")      (string= project-root)) 'svn)
+     (t 'none)))
+
   (setq projectile-completion-system 'ivy
         projectile-enable-cachig t
         projectile-project-name-function #'projectile-custom-project-name)
@@ -185,6 +197,7 @@ An open project is a project with any open buffers expect `mini-buffer'."
 
   (advice-add #'projectile-kill-buffers :override #'projectile-custom-kill-buffers)
   (advice-add #'projectile-open-projects :override #'projectile-custom-open-projects)
+  (advice-add #'projectile-project-vcs :override #'projectile-custom-project-vcs)
 
   (projectile-mode 1)
 

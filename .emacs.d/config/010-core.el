@@ -11,7 +11,37 @@
   :defer t
   :config
   (setf (alist-get 'counsel-yank-pop       ivy-height-alist) 15)
-  (setf (alist-get 'counsel-evil-registers ivy-height-alist) 15))
+  (setf (alist-get 'counsel-evil-registers ivy-height-alist) 15)
+
+  (defun counsel--custom-switch-buffer-update-fn ()
+    (unless counsel--switch-buffer-previous-buffers
+      (setq counsel--switch-buffer-previous-buffers (buffer-list)))
+    (let* ((virtual (assoc (ivy-state-current ivy-last) ivy--virtual-buffers)))
+      (when (member (ivy-state-current ivy-last) ivy-marked-candidates)
+        (setf (ivy-state-current ivy-last)
+              (substring (ivy-state-current ivy-last) (length ivy-mark-prefix))))
+      (cond
+       ;; NOTE
+       ;;  `counsel-switch-buffer' do not honor `ivy-call'.
+       ((and ivy-calling (get-buffer (ivy-state-current ivy-last)))
+        (let ((ivy-marked-candidates nil))
+          (ivy-call)))
+       ((and counsel-switch-buffer-preview-virtual-buffers virtual (file-exists-p (cdr virtual)))
+        (let ((buf (ignore-errors
+                     ;; may not open due to `large-file-warning-threshold' etc.
+                     (find-file-noselect (cdr virtual)))))
+          (if buf
+              (progn
+                (push buf counsel--switch-buffer-temporary-buffers)
+                (ivy-call))
+            ;; clean up the minibuffer so that there's no delay before
+            ;; the Ivy candidates are displayed once again
+            (message ""))))
+       (t
+        (with-ivy-window
+          (switch-to-buffer (ivy-state-buffer ivy-last)))))))
+
+  (advice-add #'counsel--switch-buffer-update-fn :override #'counsel--custom-switch-buffer-update-fn))
 
 (use-package evil
   :ensure t

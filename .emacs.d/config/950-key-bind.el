@@ -287,7 +287,8 @@
     "x=" #'text-scale-increase
     "x-" #'text-scale-decrease
     "xr" #'align-regexp
-    "xb" #'xwidget-webkit-browse-url)
+    "xb" #'xwidget-webkit-browse-url
+    "xo" #'open-link-at-point)
   (when (eq 'darwin system-type)
     (evil-leader/set-key
       ;; apllication

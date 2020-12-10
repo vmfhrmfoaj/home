@@ -1157,8 +1157,7 @@
        ("\\((.+?)\\)"
         1 'org-parenthesis-context-face)
        ("\\(\\\\\\\\\\)\\s-*$"
-        1 'shadow nil)
-       ))
+        1 'shadow nil)))
    :append))
 
 (use-package php-mode
