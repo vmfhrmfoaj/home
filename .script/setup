@@ -341,15 +341,24 @@ _setup_for_xorg() {
 
 
 # alias
+which docker >/dev/null 2>&1
+if [ $? -eq 0 ]; then
+    alias on-rust-musl='docker run --rm -it -v "$(pwd)":/home/rust/src ekidd/rust-musl-builder:nightly-2020-11-19'
+fi
 which exa >/dev/null 2>&1
 if [ $? -eq 0 ]; then
     alias ls=exa
     alias ll='exa -l'
 fi
-which docker >/dev/null 2>&1
+which fd >/dev/null 2>&1
 if [ $? -eq 0 ]; then
-    alias on-rust-musl='docker run --rm -it -v "$(pwd)":/home/rust/src ekidd/rust-musl-builder:nightly-2020-11-19'
+    alias fd="$(which fd) --no-ignore"
 fi
+which rg >/dev/null 2>&1
+if [ $? -eq 0 ]; then
+    alias rg="$(which rg) --no-ignore"
+fi
+
 
 # add dirs to PATH
 _add_to_path '/sbin'
