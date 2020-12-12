@@ -144,8 +144,6 @@
             (kill-buffer it))))))
 
   (defun projectile-custom-open-projects ()
-    "Return a list of all open projects.
-An open project is a project with any open buffers expect `mini-buffer'."
     (->> (buffer-list)
          (-remove #'minibufferp)
          (--map (with-current-buffer it
@@ -173,6 +171,19 @@ An open project is a project with any open buffers expect `mini-buffer'."
      ((-some-> (projectile-locate-dominating-file project-root ".svn")      (string= project-root)) 'svn)
      (t 'none)))
 
+  (defun projectile-custom-project-buffer-p (buffer project-root)
+    "customize for `directory-abbrev-alist'"
+    (with-current-buffer buffer
+      (and (not (string-prefix-p " " (buffer-name buffer)))
+           (not (projectile-ignored-buffer-p buffer))
+           default-directory
+           (string-equal (file-remote-p default-directory)
+                         (file-remote-p project-root))
+           (not (string-match-p "^http\\(s\\)?://" default-directory))
+           (string-prefix-p (abbreviate-file-name project-root)
+                            (abbreviate-file-name (file-truename default-directory))
+                            (eq system-type 'windows-nt)))))
+
   (setq projectile-completion-system 'ivy
         projectile-enable-cachig t
         projectile-project-name-function #'projectile-custom-project-name)
@@ -184,20 +195,21 @@ An open project is a project with any open buffers expect `mini-buffer'."
                               (file-name-directory)
                               (projectile-project-root)))))
 
+
+  (advice-add #'projectile-kill-buffers  :override #'projectile-custom-kill-buffers)
+  (advice-add #'projectile-open-projects :override #'projectile-custom-open-projects)
+  (advice-add #'projectile-project-buffer-p :override #'projectile-custom-project-buffer-p)
   (advice-add #'projectile-project-files :filter-return #'projectile-project-files-custom-filter)
   (advice-add #'projectile-project-root :override #'projectile-custom-project-root)
-
+  (advice-add #'projectile-project-vcs  :override #'projectile-custom-project-vcs)
   (advice-add #'projectile-project-buffer-p :before-while
-              (lambda (buf root) "filter nil to avoid type error" root))
-
+              (lambda (buf root)
+                "filter nil to avoid type error"
+                root))
   (advice-add #'projectile-project-name :filter-return
               (lambda (proj-name)
                 "To cache project name."
                 (setq-local projectile-project-name proj-name)))
-
-  (advice-add #'projectile-kill-buffers :override #'projectile-custom-kill-buffers)
-  (advice-add #'projectile-open-projects :override #'projectile-custom-open-projects)
-  (advice-add #'projectile-project-vcs :override #'projectile-custom-project-vcs)
 
   (projectile-mode 1)
 

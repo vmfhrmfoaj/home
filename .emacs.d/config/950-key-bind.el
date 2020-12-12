@@ -342,13 +342,28 @@
   (evil-global-set-key 'insert (kbd "<tab>") #'company-indent-or-complete-common)
   (define-key company-active-map (kbd "<tab>")     #'company-complete-common-or-cycle)
   (define-key company-active-map (kbd "<backtab>") #'company-select-previous)
-  (define-key company-active-map (kbd "C-j") #'company-select-next)
-  (define-key company-active-map (kbd "C-k") #'company-select-previous)
+  (define-key company-active-map (kbd "C-j")
+    (lambda ()
+      (interactive)
+      (if (and company-tooltip-flip-when-above
+               (nth 3 (overlay-get company-pseudo-tooltip-overlay
+                                   'company-replacement-args)))
+          (company-select-previous)
+        (company-select-next))))
+  (define-key company-active-map (kbd "C-k")
+    (lambda ()
+      (interactive)
+      (if (and company-tooltip-flip-when-above
+               (nth 3 (overlay-get company-pseudo-tooltip-overlay
+                                   'company-replacement-args)))
+          (company-select-next)
+        (company-select-previous))))
   (define-key company-active-map (kbd "C-h") nil)
   (define-key company-active-map (kbd "C-s") #'counsel-company)
   (define-key company-active-map (kbd "SPC") #'company-abort-and-insert-space)
   (define-key company-active-map (kbd "<S-return>") (lambda () (interactive) (company-cancel) (newline-and-indent)))
-  (define-key company-active-map (kbd "<C-return>") (lambda () (interactive) (company-complete-selection) (evil-normal-state))))
+  (define-key company-active-map (kbd "<C-return>")
+    (lambda () (interactive) (company-complete-selection) (evil-normal-state))))
 
 (use-package cider-repl
   :defer t
