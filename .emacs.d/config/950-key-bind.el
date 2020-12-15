@@ -461,6 +461,17 @@
       (interactive)
       (iedit-replace-occurrences (current-kill 0)))))
 
+(use-package evil-org
+  :defer t
+  :config
+  (evil-org-set-key-theme))
+
+(use-package evil-org-agenda
+  :ensure evil-org
+  :after org-agenda
+  :config
+  (evil-org-agenda-set-keys))
+
 (use-package evil-surround
   :defer t
   :config

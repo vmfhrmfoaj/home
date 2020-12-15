@@ -46,10 +46,9 @@
 
 (blink-cursor-mode 0)
 (global-auto-revert-mode 1)
+(global-subword-mode 1)
 (prefer-coding-system 'utf-8)
 (recentf-mode 1)
-
-(global-subword-mode 1)
 
 (when (eq system-type 'darwin)
   (setq mac-command-modifier 'meta

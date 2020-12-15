@@ -8,14 +8,7 @@
   :ensure t
   :after org
   :config
-  (add-hook 'org-mode-hook #'evil-org-mode)
-  (evil-org-set-key-theme))
-
-(use-package evil-org-agenda
-  :ensure evil-org
-  :after org-agenda
-  :config
-  (evil-org-agenda-set-keys))
+  (add-hook 'org-mode-hook #'evil-org-mode))
 
 (use-package org
   :defer t

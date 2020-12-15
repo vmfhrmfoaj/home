@@ -285,7 +285,21 @@
 (use-package pos-tip
   :defer t
   :config
-  (advice-add #'pos-tip-show :override #'pos-tip-show-no-propertize)
+  (setq pos-tip-foreground-color (fg-color-from 'default))
+
+  (defun pos-tip-custom-show (string &optional tip-color pos window timeout width frame-coordinates dx dy)
+    (unless window
+      (setq window (selected-window)))
+    (let ((frame (window-frame window)))
+      (when (null (cadr (mouse-pixel-position)))
+        (set-mouse-pixel-position frame 0 0))
+      (run-with-timer
+       0 nil (lambda ()
+               (pos-tip-show-no-propertize
+                string tip-color pos window timeout
+                nil nil frame-coordinates dx dy)))))
+
+  (advice-add #'pos-tip-show :override #'pos-tip-custom-show)
 
   (add-function :after after-focus-change-function
                 (lambda ()
