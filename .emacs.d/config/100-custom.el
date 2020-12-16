@@ -34,6 +34,13 @@
                                        "\\)")
         initial-major-mode 'text-mode
         initial-scratch-message ""
+        mouse-avoidance-timer (run-with-idle-timer
+                               0.1 t
+                               (lambda ()
+                                 ;; NOTE
+                                 ;;  `frame_make_pointer_invisible' will be called -
+                                 ;;   only when calling `self-insert-command'.
+                                 (with-temp-buffer (self-insert-command 0))))
         read-process-output-max (* 1024 1024)
         resize-mini-windows t
         ring-bell-function 'ignore))

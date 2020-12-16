@@ -73,7 +73,7 @@ which see."
         org-fontify-whole-heading-line t
         org-fontify-quote-and-verse-blocks t
         org-hide-emphasis-markers t
-        org-image-actual-width nil
+        org-image-actual-width (* 100 (frame-char-width))
         org-insert-schedule-deadline t
         org-log-done 'time
         org-log-into-drawer t
@@ -89,6 +89,12 @@ which see."
                                  ("DONE"      . org-done)
                                  ("CANCELLED" . org-cancelled))
         org-use-sub-superscripts nil)
+
+  ;; NOTE
+  ;;  To prevnt multi-line `org-emphasis'.
+  (setf (nth 3 org-emphasis-regexp-components) ".*?")
+  (setf (nth 4 org-emphasis-regexp-components) 0)
+  (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
 
   (add-hook 'calendar-today-visible-hook #'calendar-mark-today)
   (add-hook 'org-todo-get-default-hook #'org-insert-schedule-&-deadline)
