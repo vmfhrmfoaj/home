@@ -116,3 +116,4 @@ source $ZSH/oh-my-zsh.sh
 [ -r "${HOME}"/.zsh_profile ] && source "${HOME}"/.zsh_profile
 [ -r "${HOME}"/.zsh_untracked_profile ] && source "${HOME}"/.zsh_untracked_profile
 
+true # exit 0
