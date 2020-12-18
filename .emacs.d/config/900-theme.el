@@ -14,9 +14,11 @@
 
   (custom-set-faces
    '(highlight ((t :background "#484a4e" :foreground "#d5d8d6" :weight bold)))
+   '(line-number ((t :background "#222326" :weight extra-light)))
    '(line-number-current-line
-     ((t :inherit line-number :background "#484a4e" :foreground "#d5d8d6" :weight bold :inverse-video nil)))
-   '(mode-line ((t :weight normal)))
+     ((t :inherit line-number :background "#484a4e" :foreground "#d5d8d6" :inverse-video nil)))
+   '(mode-line-inactive ((t :weight light)))
+   '(mode-line ((t :weight light)))
    '(shadow ((t :weight light)))))
 
 (use-package company
@@ -94,9 +96,9 @@
    '(font-lock-comment-face ((t :weight extra-light)))
    '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground "#606060" unspecified)))
    '(font-lock-doc-face ((t :weight light)))
-   '(font-lock-function-name-face ((t :foreground "#85aacc" :weight bold)))
+   '(font-lock-function-name-face ((t :foreground "#85aacc" :weight semi-bold)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
-   '(font-lock-string-face ((t :weight normal)))))
+   '(font-lock-string-face ((t :weight light)))))
 
 (use-package fringe
   :defer t
@@ -108,7 +110,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(hl-todo ((t :foreground "#cc9393" :weight normal)))))
+   '(hl-todo ((t :foreground "#cc9393" :weight semi-bold)))))
 
 (use-package ivy
   :defer t
@@ -126,8 +128,8 @@
   :config
   (custom-set-faces
    `(magit-diff-context
-     ((t :inherit magit-diff-context-highlight :background ,(bg-color-from 'default) :weight light)))
-   `(magit-diff-context-highlight ((t :weight normal)))
+     ((t :inherit magit-diff-context-highlight :background ,(bg-color-from 'default) :weight extra-light)))
+   `(magit-diff-context-highlight ((t :weight light)))
    '(magit-diff-file-heading ((t :weight bold)))))
 
 (use-package org
@@ -137,23 +139,23 @@
    '(org-agenda-date ((t :foreground "dark cyan" :height 1.1)))
    '(org-agenda-date-weekend ((t :inherit org-agenda-date)))
    '(org-agenda-date-today ((t :inherit org-agenda-date :foreground "turquoise")))
-   '(org-block ((t :weight normal)))
-   '(org-date ((t :underline unspecified :weight normal)))
-   '(org-done ((t  :weight normal :box t)))
-   '(org-drawer ((t :foreground "light sky blue" :weight light)))
+   '(org-block ((t :weight light)))
+   '(org-date ((t :underline unspecified :weight light)))
+   '(org-done ((t  :weight light :box t)))
+   '(org-drawer ((t :foreground "light sky blue" :weight extra-light)))
    `(org-hide ((t :inherit default :background unspecified :foreground ,(bg-color-from 'default))))
-   '(org-level-1 ((t :inherit outline-1 :height 1.1)))
+   '(org-level-1 ((t :inherit outline-1 :weight bold :height 1.1)))
    '(org-link ((t :inherit link :underline unspecified)))
-   '(org-meta-line ((t :inherit font-lock-comment-face :weight light)))
-   '(org-parenthesis-context-face ((t :inherit default :weight normal)))
-   '(org-property-value ((t :weight light)))
-   '(org-special-keyword ((t :weight light)))
+   '(org-meta-line ((t :inherit font-lock-comment-face :weight extra-light)))
+   '(org-parenthesis-context-face ((t :inherit default :weight light)))
+   '(org-property-value ((t :weight extra-light)))
+   '(org-special-keyword ((t :weight extra-light)))
    '(org-tag ((t :weight light)))
-   '(org-todo ((t :weight normal :box t)))
+   '(org-todo ((t :weight light :box t)))
    '(org-warning ((t :inherit font-lock-warning-face :underline nil))))
-  (dolist (i (number-sequence 1 8))
+  (dolist (i (number-sequence 2 8))
     (let ((face (intern (concat "org-level-" (number-to-string i)))))
-      (set-face-attribute face nil :weight 'bold))))
+      (set-face-attribute face nil :weight 'semi-bold))))
 
 (use-package php-mode
   :defer t
@@ -177,7 +179,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(rust-attribute-face ((t :inherit font-lock-preprocessor-face :weight normal)))
+   '(rust-attribute-face ((t :inherit font-lock-preprocessor-face :weight light)))
    '(rust-lifetime-face ((t :inherit font-lock-variable-name-face :weight light)))
    `(rust-string-interpolation-face
      ((t :inherit (font-lock-regexp-grouping-construct font-lock-string-face) :slant unspecified)))))

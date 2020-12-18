@@ -92,6 +92,17 @@
 (use-package smartparens
   :ensure t
   :defer t
+  :init
+  (defun setup-smartparens-once ()
+    (when (and (member this-command '(evil-insert self-insert-command))
+               (not (or buffer-read-only
+                        view-mode)))
+      (remove-hook 'pre-command-hook #'setup-smartparens-once)
+      (smartparens-global-mode 1)
+      (show-smartparens-global-mode 1)))
+
+  (add-hook 'pre-command-hook #'setup-smartparens-once)
+
   :config
   (defun sp-wrap-sexp (&optional arg)
     (interactive "P")
@@ -114,13 +125,11 @@ So, replaced `evil-jump-item' to this function."
 
   (setq sp-highlight-pair-overlay nil
         sp-highlight-wrap-overlay nil
-        sp-highlight-wrap-tag-overlay nil)
-
-  (smartparens-global-mode 1)
-  (show-smartparens-global-mode 1))
+        sp-highlight-wrap-tag-overlay nil))
 
 (use-package smartparens-config
   :ensure smartparens
+  :after smartparens
   :config
   (defun sp--org-checkbox-p (_id _action _context)
     (save-match-data

@@ -11,6 +11,7 @@
 (add-hook 'emacs-startup-hook
           (lambda ()
             "report the startup time."
+            ;; (print features) ; list packages loaded at start up
             (message "Emacs ready in %s(gc: %d times, gc-time: %.3f seconds)."
                      (emacs-init-time)
                      gcs-done
@@ -443,7 +444,7 @@
                        :background treemacs--not-selected-icon-background)))))))
 
 (use-package treemacs-compatibility
-  :after winum
+  :after (treemacs winum)
   :config
   (-update->> winum-ignored-buffers-regexp (--remove (string-equal " \\*Treemacs-Scoped-Buffer-" it))))
 

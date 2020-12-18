@@ -1115,7 +1115,7 @@
   :defer t
   :init
   (defface org-list-face
-    '((t (:inherit shadow :weight semi-bold)))
+    '((t (:inherit shadow)))
     "Org listing face")
 
   (defface org-parenthesis-context-face
@@ -1156,7 +1156,7 @@
         1 'org-list-face)
        ("\\((.+?)\\)"
         1 'org-parenthesis-context-face)
-       ("\\(\\\\\\\\\\)\\s-*$"
+       ("\\(\\\\\\\\\\|:\\)\\s-*$"
         1 'shadow nil)))
    :append))
 

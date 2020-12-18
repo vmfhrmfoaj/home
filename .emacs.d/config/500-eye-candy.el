@@ -29,7 +29,7 @@
     "TODO")
 
   :hook
-  (((prog-mode conf-mode nxml-mode markdown-mode help-mode)
+  (((text-mode prog-mode)
     . (lambda () (setq-local composition-function-table composition-ligature-table))))
 
   :config
