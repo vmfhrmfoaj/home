@@ -16,17 +16,19 @@
     (company-abort)
     (execute-kbd-macro (kbd "SPC")))
 
-  (setq company-idle-delay 0.3
-        company-echo-delay 0.2
-        company-minimum-prefix-length 3
-        company-selection-wrap-around t
-        company-dabbrev-downcase nil
-        company-dabbrev-minimum-length 3
-        company-dabbrev-ignore-case t
-        company-dabbrev-code-ignore-case t
-        company-dabbrev-code-other-buffers nil
-        company-etags-ignore-case t
-        company-tooltip-flip-when-above t)
+  (let ((len (if (fboundp #'native-compile) 1 3))
+        (lookup-other-buffer (fboundp #'native-compile)))
+    (setq company-idle-delay 0.3
+          company-echo-delay 0.2
+          company-minimum-prefix-length len
+          company-selection-wrap-around t
+          company-dabbrev-downcase nil
+          company-dabbrev-minimum-length len
+          company-dabbrev-ignore-case t
+          company-dabbrev-code-ignore-case t
+          company-dabbrev-code-other-buffers lookup-other-buffer
+          company-etags-ignore-case t
+          company-tooltip-flip-when-above t))
 
   (add-hook 'company-after-completion-hook
             (lambda (_ignored)

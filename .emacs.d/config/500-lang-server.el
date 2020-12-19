@@ -101,6 +101,45 @@
 
   (advice-add #'lsp-diagnostics--flycheck-start :override #'lsp-diagnostics--custom-flycheck-start))
 
+(use-package lsp-headerline
+  :defer t
+  :commands (lsp-headerline--arrow-icon
+             lsp-headerline--symbol-with-action)
+  :init
+  (defun lsp-headerline--custom-build-symbol-string ()
+    (if (lsp-feature? "textDocument/documentSymbol")
+        (-if-let* ((lsp--document-symbols-request-async t)
+                   (symbols (lsp--get-document-symbols))
+                   (symbols-hierarchy (lsp--symbols->document-symbols-hierarchy symbols))
+                   (enumerated-symbols-hierarchy
+                    (-map-indexed (lambda (index elt)
+                                    (cons elt (1+ index)))
+                                  symbols-hierarchy)))
+            (mapconcat (-lambda (((symbol-to-append &as &DocumentSymbol :deprecated? :name :kind)
+                                  . index))
+                         (let* ((name (propertize name 'font-lock-face
+                                                  (if deprecated?
+                                                      'lsp-headerline-breadcrumb-deprecated-face
+                                                    'lsp-headerline-breadcrumb-symbols-face)))
+                                (icon (when-let ((disp (-some->> kind
+                                                         (lsp-treemacs-symbol-icon)
+                                                         (get-text-property 0 'display))))
+                                        (if (listp disp)
+                                            (concat (propertize " " 'display
+                                                                (cl-list* 'image
+                                                                          (plist-put
+                                                                           (cl-copy-list
+                                                                            (cl-rest disp))
+                                                                           :background nil)))
+                                                    "​​​") ; zero width space * 3
+                                          (replace-regexp-in-string "\s\\|\t" "" disp))))
+                                (symbol-name (concat icon name)))
+                           (lsp-headerline--symbol-with-action symbol-to-append symbol-name)))
+                       enumerated-symbols-hierarchy
+                       (format " %s " (lsp-headerline--arrow-icon)))
+          "")
+      "")))
+
 (use-package lsp-php
   :defer t
   :config
@@ -360,6 +399,7 @@
         lsp-enable-symbol-highlighting nil
         lsp-enable-on-type-formatting nil
         lsp-file-watch-threshold nil
+        lsp-headerline-breadcrumb-enable nil
         lsp-idle-delay 0.2
         lsp-restart 'ignore
         lsp-rust-server 'rust-analyzer
@@ -414,7 +454,12 @@
                                      lsp-ui-sideline-mode)
                             (lsp-ui-sideline--delete-ov)
                             (setq lsp-ui-sideline--tag nil)))
-                        nil t)))
+                        nil t)
+              (let ((f (lambda ()
+                         (setq splaceline-symbol-segment--symbol
+                               (lsp-headerline--custom-build-symbol-string)))))
+                (add-hook 'lsp-on-idle-hook     f nil t)
+                (add-hook 'xref-after-jump-hook f nil t))))
 
   (advice-add #'lsp :before-until (lambda () "Turn `lsp-mode' off" (bound-and-true-p git-timemachine-mode)))
   (advice-add #'lsp--eldoc-message :override 'lsp--custom-eldoc-message)

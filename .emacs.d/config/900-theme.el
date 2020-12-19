@@ -16,7 +16,7 @@
    '(highlight ((t :background "#484a4e" :foreground "#d5d8d6" :weight bold)))
    '(line-number ((t :background "#222326" :weight extra-light)))
    '(line-number-current-line
-     ((t :inherit line-number :background "#484a4e" :foreground "#d5d8d6" :inverse-video nil)))
+     ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight light :inverse-video nil)))
    '(mode-line-inactive ((t :weight light)))
    '(mode-line ((t :weight light)))
    '(shadow ((t :weight light)))))
@@ -122,6 +122,12 @@
    '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b" :weight bold)))
    '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :foreground "#707099" :weight bold)))
    '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f" :weight bold)))))
+
+(use-package lsp-mode
+  :defer t
+  :config
+  (custom-set-faces
+   '(lsp-headerline-breadcrumb-symbols-face ((t :inherit font-lock-doc-face)))))
 
 (use-package magit
   :defer t

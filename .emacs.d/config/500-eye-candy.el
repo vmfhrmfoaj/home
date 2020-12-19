@@ -322,21 +322,57 @@
 (use-package spaceline-config
   :ensure spaceline
   :config
-  (defun spaceline-my-theme ()
-    (spaceline--theme
-     '((((window-number
-          projectile-root) :separator "|")
-        buffer-modified)
-       :face highlight-face
-       :priority 100)
-     '((buffer-id remote-host)
-       :priority 98)))
+  (defvar-local splaceline-symbol-segment--symbol nil)
+
+  (spaceline-define-segment symbol
+    "Display the symbol"
+    splaceline-symbol-segment--symbol)
+
+  (defun spaceline--my-theme ()
+    (spaceline-compile
+      '(((((window-number
+            projectile-root) :separator "|")
+          buffer-modified)
+         :face highlight-face
+         :priority 100)
+        (anzu :priority 95)
+        auto-compile
+        ((buffer-id
+          remote-host)
+         :priority 98)
+        symbol
+        (major-mode :priority 79)
+        (process :when active)
+        ((flycheck-error flycheck-warning flycheck-info)
+         :when active
+         :priority 89)
+        (minor-modes :when active
+                     :priority 9)
+        (erc-track :when active)
+        (version-control :when active
+                         :priority 78)
+        (org-pomodoro :when active)
+        (org-clock :when active))
+      '((purpose :priority 94)
+        (battery :when active)
+        (selection-info :priority 95)
+        input-method
+        ((buffer-encoding-abbrev
+          point-position
+          line-column)
+         :separator " | "
+         :priority 96)
+        (global :when active)
+        (buffer-position :priority 99)
+        (hud :priority 99)))
+
+    (setq-default mode-line-format '("%e" (:eval (spaceline-ml-main)))))
 
   (setq spaceline-window-numbers-unicode t)
 
   (make-thread
    (lambda ()
-     (let ((fmt (spaceline-my-theme)))
+     (let ((fmt (spaceline--my-theme)))
        (dolist (buf (buffer-list))
          (with-current-buffer buf
            (setq mode-line-format fmt)))
