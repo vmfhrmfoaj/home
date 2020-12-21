@@ -89,8 +89,7 @@
                                                 (--filter (-> it (window-buffer) (eq buf)))
                                                 (-first-item))))))
                                 (select-window win)
-                              (apply fn buf args)))))
-            (setq gc-idle-timer (run-with-idle-timer 120 t #'garbage-collect)))
+                              (apply fn buf args))))))
           :append)
 
 (add-hook 'kill-emacs-hook

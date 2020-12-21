@@ -99,7 +99,8 @@
                   (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t)
                   (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))))))
 
-  (advice-add #'lsp-diagnostics--flycheck-start :override #'lsp-diagnostics--custom-flycheck-start))
+  (advice-add #'lsp-diagnostics--flycheck-start :override #'lsp-diagnostics--custom-flycheck-start)
+  (advice-add #'lsp-modeline--diagnostics-update-modeline :override #'ignore))
 
 (use-package lsp-headerline
   :defer t
@@ -124,16 +125,15 @@
                                 (icon (when-let ((disp (-some->> kind
                                                          (lsp-treemacs-symbol-icon)
                                                          (get-text-property 0 'display))))
-                                        (if (listp disp)
-                                            (concat (propertize " " 'display
-                                                                (cl-list* 'image
-                                                                          (plist-put
-                                                                           (cl-copy-list
-                                                                            (cl-rest disp))
-                                                                           :background nil)))
-                                                    "​​​") ; zero width space * 3
-                                          (replace-regexp-in-string "\s\\|\t" "" disp))))
-                                (symbol-name (concat icon name)))
+                                        (if (stringp disp)
+                                            (replace-regexp-in-string "\s\\|\t" "" disp)
+                                          (propertize " " 'display
+                                                      (cl-list* 'image
+                                                                (plist-put
+                                                                 (cl-copy-list
+                                                                  (cl-rest disp))
+                                                                 :background (bg-color-from 'powerline-active1)))))))
+                                (symbol-name (concat icon "​​​" name))) ; zero width space * 3
                            (lsp-headerline--symbol-with-action symbol-to-append symbol-name)))
                        enumerated-symbols-hierarchy
                        (format " %s " (lsp-headerline--arrow-icon)))
@@ -416,6 +416,10 @@
                                    (setq flycheck--idle-trigger-timer nil))
                                  (eldoc-message msg)))
 
+  (when-let ((mode (--first (eq (car it) 'lsp-mode) minor-mode-alist)))
+    (setf (nth 1 mode) '(:eval (unless lsp--buffer-workspaces
+                                 (propertize " LSP[Disconnected]" 'face 'error)))))
+
   (lsp-register-custom-settings
    '(("gopls.completeUnimported" t t)
      ("gopls.staticcheck" t t)))
@@ -457,7 +461,8 @@
                         nil t)
               (let ((f (lambda ()
                          (setq splaceline-symbol-segment--symbol
-                               (lsp-headerline--custom-build-symbol-string)))))
+                               (lsp-headerline--custom-build-symbol-string))
+                         (force-mode-line-update))))
                 (add-hook 'lsp-on-idle-hook     f nil t)
                 (add-hook 'xref-after-jump-hook f nil t))))
 

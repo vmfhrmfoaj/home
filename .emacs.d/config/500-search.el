@@ -66,7 +66,6 @@
                                (save-excursion
                                  (goto-line last-item-line)
                                  (beginning-of-line)
-                                 (print (list text last-item-line (buffer-substring-no-properties (point) (line-end-position))))
                                  (unless (re-search-forward regex (line-end-position) t) t)))))
                     (if need-to-update
                         (swiper text)

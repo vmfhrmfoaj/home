@@ -17,7 +17,7 @@
    '(line-number ((t :background "#222326" :weight extra-light)))
    '(line-number-current-line
      ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight light :inverse-video nil)))
-   '(mode-line-inactive ((t :weight light)))
+   '(mode-line-inactive ((t :weight extra-light)))
    '(mode-line ((t :weight light)))
    '(shadow ((t :weight light)))))
 
@@ -118,7 +118,7 @@
   (custom-set-faces
    '(ivy-current-match ((t :background "#5f6369" :foreground "white" :weight bold)))
    '(ivy-grep-info ((t :inherit font-lock-string-face)))
-   '(ivy-minibuffer-match-face-1 ((t :background "#7d7e7f" :foreground "#535454")))
+   '(ivy-minibuffer-match-face-1 ((t :background "#7d7e7f" :foreground "#535454" :weight bold)))
    '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b" :weight bold)))
    '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :foreground "#707099" :weight bold)))
    '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f" :weight bold)))))
@@ -205,12 +205,12 @@
   :defer t
   :config
   (custom-set-faces
-   '(swiper-line-face ((t :background "#5f6369" :foreground "white" :weight bold)))
-   '(swiper-match-face-1 ((t :inherit swiper-line-face :background "#7d7e7f")))
-   '(swiper-match-face-2 ((t :inherit swiper-line-face :background "#e99ce8" :weight bold)))
-   '(swiper-match-face-3 ((t :inherit swiper-line-face :background "#bbbbff" :weight bold)))
-   '(swiper-match-face-4 ((t :inherit swiper-line-face :background "#ffbbff" :weight bold)))
-   '(swiper-background-match-face-1 ((t :background "#7d7e7f" :foreground "#535454")))
+   '(swiper-line-face ((t :background "#5f6369" :foreground "white" :weight bold :extend t)))
+   '(swiper-match-face-1 ((t :background "#7d7e7f" :weight bold)))
+   '(swiper-match-face-2 ((t :background "#e99ce8" :weight bold)))
+   '(swiper-match-face-3 ((t :background "#bbbbff" :weight bold)))
+   '(swiper-match-face-4 ((t :background "#ffbbff" :weight bold)))
+   '(swiper-background-match-face-1 ((t :background "#7d7e7f" :foreground "#535454" :weight bold)))
    '(swiper-background-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b" :weight bold)))
    '(swiper-background-match-face-3 ((t :background "#bbbbff" :foreground "#707099" :weight bold)))
    '(swiper-background-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f" :weight bold))))

@@ -326,7 +326,31 @@
 
   (spaceline-define-segment symbol
     "Display the symbol"
-    splaceline-symbol-segment--symbol)
+    (when (and (stringp splaceline-symbol-segment--symbol)
+               (< 0 (length splaceline-symbol-segment--symbol)))
+      (concat splaceline-symbol-segment--symbol)))
+
+  (require 'treemacs-icons)
+  (setq-default treemacs-icons
+                (if (treemacs--should-use-tui-icons?)
+                    (treemacs-theme->tui-icons treemacs--current-theme)
+                  (treemacs-theme->gui-icons treemacs--current-theme)))
+
+  (spaceline-define-segment major-icon
+    "Display a icon for `major-mode'"
+    (when-let ((disp (-some->> buffer-file-name
+                       (treemacs-icon-for-file)
+                       (get-text-property 0 'display))))
+      (when (listp disp)
+        (propertize "  " 'display
+                    (cl-list* 'image
+                              (let ((h (frame-char-height)))
+                                (-> disp
+                                    (cl-rest)
+                                    (cl-copy-list)
+                                    (plist-put :background (bg-color-from 'powerline-active1))
+                                    (plist-put :height h)
+                                    (plist-put :width h))))))))
 
   (defun spaceline--my-theme ()
     (spaceline-compile
@@ -340,31 +364,21 @@
         ((buffer-id
           remote-host)
          :priority 98)
-        symbol
-        (major-mode :priority 79)
+        (symbol :priority 105)
         (process :when active)
-        ((flycheck-error flycheck-warning flycheck-info)
-         :when active
-         :priority 89)
-        (minor-modes :when active
-                     :priority 9)
         (erc-track :when active)
-        (version-control :when active
-                         :priority 78)
         (org-pomodoro :when active)
         (org-clock :when active))
-      '((purpose :priority 94)
+      '(((flycheck-error flycheck-warning flycheck-info)
+         :when active
+         :priority 89)
+        (purpose :priority 94)
         (battery :when active)
         (selection-info :priority 95)
         input-method
-        ((buffer-encoding-abbrev
-          point-position
-          line-column)
-         :separator " | "
-         :priority 96)
         (global :when active)
-        (buffer-position :priority 99)
-        (hud :priority 99)))
+        (minor-modes :when active :priority 9)
+        (major-icon :fallback major-mode :priority 79)))
 
     (setq-default mode-line-format '("%e" (:eval (spaceline-ml-main)))))
 
@@ -376,8 +390,6 @@
        (dolist (buf (buffer-list))
          (with-current-buffer buf
            (setq mode-line-format fmt)))
-       (spaceline-toggle-hud-off)
-       (spaceline-toggle-version-control-off)
        (force-mode-line-update t)))))
 
 (use-package vi-tilde-fringe
