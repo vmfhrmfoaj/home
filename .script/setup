@@ -352,11 +352,11 @@ if [ $? -eq 0 ]; then
 fi
 which fd >/dev/null 2>&1
 if [ $? -eq 0 ]; then
-    alias fd="$(which fd) --hidden --no-ignore --no-ignore-vcs --glob"
+    alias fd="$(which fd) --hidden --no-ignore --no-ignore-vcs"
 fi
 which rg >/dev/null 2>&1
 if [ $? -eq 0 ]; then
-    alias rg="$(which rg) --no-ignore"
+    alias rg="$(which rg) --hidden --no-ignore --no-ignore-vcs"
 fi
 
 
