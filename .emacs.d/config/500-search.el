@@ -81,7 +81,53 @@
 
 (use-package swiper
   :ensure t
-  :defer t)
+  :defer t
+  :config
+  (defun swiper--custom-candidates (&optional numbers-width)
+    (let* ((inhibit-field-text-motion t)
+           (n-lines (count-lines (point-min) (point-max))))
+      (if (funcall swiper-use-visual-line-p n-lines)
+          (progn
+            (when (eq major-mode 'org-mode)
+              (require 'outline)
+              (if (fboundp 'outline-show-all)
+                  ;; Added in Emacs 25.1.
+                  (outline-show-all)
+                (with-no-warnings
+                  (show-all))))
+            (setq swiper-use-visual-line t))
+        (setq swiper-use-visual-line nil))
+      (unless (zerop n-lines)
+        (setq swiper--width (or numbers-width
+                                (1+ (floor (log n-lines 10)))))
+        (setq swiper--format-spec
+              (format "%%-%dd " swiper--width))
+        (let ((line-number 1)
+              (advancer (if swiper-use-visual-line
+                            (lambda (arg) (line-move arg t))
+                          #'forward-line))
+              candidates)
+          (save-excursion
+            (goto-char (point-min))
+            (swiper-font-lock-ensure)
+            (while (< (point) (point-max))
+              (when (swiper-match-usable-p)
+                (let ((str (swiper--line)))
+                  (setq str (ivy-cleanup-string str))
+                  (let ((line-number-str
+                         (propertize (format swiper--format-spec line-number) 'face 'line-number)))
+                    (if swiper-include-line-number-in-search
+                        (setq str (concat line-number-str str))
+                      (put-text-property
+                       0 1 'display line-number-str str))
+                    (put-text-property
+                     0 1 'swiper-line-number line-number str))
+                  (push str candidates)))
+              (funcall advancer 1)
+              (cl-incf line-number))
+            (nreverse candidates))))))
+
+  (advice-add #'swiper--candidates :override #'swiper--custom-candidates))
 
 (use-package wgrep
   :ensure t

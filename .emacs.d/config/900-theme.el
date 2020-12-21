@@ -19,7 +19,10 @@
      ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight light :inverse-video nil)))
    '(mode-line-inactive ((t :weight extra-light)))
    '(mode-line ((t :weight light)))
-   '(shadow ((t :weight light)))))
+   '(shadow ((t :weight light)))
+   '(whitespace-newline ((t :background "#282a2e" :weight extra-light)))
+   '(whitespace-space ((t :weight extra-light)))
+   '(whitespace-tab ((t :weight extra-light)))))
 
 (use-package company
   :defer t

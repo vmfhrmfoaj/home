@@ -369,14 +369,14 @@
         (erc-track :when active)
         (org-pomodoro :when active)
         (org-clock :when active))
-      '(((flycheck-error flycheck-warning flycheck-info)
-         :when active
-         :priority 89)
-        (purpose :priority 94)
+      '((purpose :priority 94)
         (battery :when active)
         (selection-info :priority 95)
         input-method
         (global :when active)
+        ((flycheck-error flycheck-warning flycheck-info)
+         :when active
+         :priority 89)
         (minor-modes :when active :priority 9)
         (major-icon :fallback major-mode :priority 79)))
 
