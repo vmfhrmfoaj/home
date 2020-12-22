@@ -2,8 +2,7 @@
       comp-async-report-warnings-errors nil
       custom-file "~/.emacs.d/.custom.el"
       gc-cons-threshold (* 1024 1024 1024 2)
-      inhibit-startup-screen t
-      package-native-compile t)
+      inhibit-startup-screen t)
 (put 'gc-cons-threshold 'default-value (* 1024 1024 512))
 (add-hook 'emacs-startup-hook (lambda () (setq-default gc-cons-threshold (get 'gc-cons-threshold 'default-value))))
 (when (file-exists-p custom-file)

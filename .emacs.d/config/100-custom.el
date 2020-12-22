@@ -118,3 +118,11 @@
         (cons frame-left frame-top))))
 
   (advice-add #'x-dnd-get-drop-x-y :override #'custom-x-dnd-get-drop-x-y))
+
+(add-hook 'after-save-hook #'garbage-collect 100)
+(add-function :after after-focus-change-function
+              (lambda ()
+                "Reclaim heap memory when fcousing out."
+                (unless (frame-focus-state)
+                  (garbage-collect)))
+              '((depth . 100)))
