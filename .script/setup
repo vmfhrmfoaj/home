@@ -207,7 +207,7 @@ if [ -n "${CARGO_ROOT_TARGET_DIR}" ] && [ -n "${CARGO_ROOT_SAVED_DIR}" ] && [ -z
         encoded_root=$(echo -n ${root} | sha1sum | cut -d' ' -f1)
         root_name=$(basename ${root})
         root_root=$(dirname "${root}")
-        if [ -f "${root_root}/Cargo.toml" ]; then
+        if [ -f "${root_root}/Cargo.toml" ] || [ -d "${root_root}/.{git,hg,svn,bzr}" ]; then
             name=$(basename "${root_root}")_${root_name}_${encoded_root}
         else
             name=${root_name}_${encoded_root}
