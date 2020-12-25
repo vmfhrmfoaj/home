@@ -192,6 +192,15 @@ EOF
     fi
 }
 
+_setup_for_python() {
+    if [ ! -f "${HOME}/.config/pycodestyle" ]; then
+        cat > "${HOME}/.config/pycodestyle" <<\EOF
+[pycodestyle]
+max-line-length = 120
+EOF
+    fi
+}
+
 _setup_for_rust() {
     which rustc >/dev/null 2>&1
     if [ $? -eq 0 ] && [ ! -x "${HOME}/.bin/cargo" ]; then
@@ -207,7 +216,7 @@ if [ -n "${CARGO_ROOT_TARGET_DIR}" ] && [ -n "${CARGO_ROOT_SAVED_DIR}" ] && [ -z
         encoded_root=$(echo -n ${root} | sha1sum | cut -d' ' -f1)
         root_name=$(basename ${root})
         root_root=$(dirname "${root}")
-        if [ -f "${root_root}/Cargo.toml" ] || [ -d "${root_root}/.{git,hg,svn,bzr}" ]; then
+        if [ -f "${root_root}/Cargo.toml" ] || [ -d "${root_root}/.git" ]; then
             name=$(basename "${root_root}")_${root_name}_${encoded_root}
         else
             name=${root_name}_${encoded_root}
@@ -376,6 +385,7 @@ _setup_for_java
 _setup_for_graalvm
 _setup_for_locale
 _setup_for_perl
+_setup_for_python
 _setup_for_rust
 _setup_for_nodejs
 _setup_for_xorg
