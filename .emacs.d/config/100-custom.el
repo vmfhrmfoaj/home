@@ -13,9 +13,11 @@
               truncate-lines t)
 
 (let ((backup-dir (concat home-dir "/.emacs.d/saves/")))
-  (setq auto-revert-interval 0.5
+  (setq auto-revert-interval 1
+        auto-save-default nil
         auto-save-file-name-transforms `((".*" ,backup-dir t))
         backup-directory-alist `((".*" . ,backup-dir))
+        backup-inhibited nil
         comment-fill-column 100
         create-lockfiles nil
         default-input-method "korean-hangul"
@@ -126,3 +128,10 @@
                 (unless (frame-focus-state)
                   (garbage-collect)))
               '((depth . 100)))
+
+(advice-add #'narrow-to-region :after
+            (lambda (&rest _)
+              "unselect the region"
+              (when (and (interactive-p)
+                         (eq this-command 'narrow-to-region))
+                (deactivate-mark))))

@@ -572,9 +572,7 @@
          (1 'font-lock-keyword-face)
          ;; Highlighting type or protocol
          (,(lambda (limit)
-             (ignore-errors
-               (when font-lock--skip
-                 (error ""))
+             (unless font-lock--skip
                (when (re-search-forward symbol limit t)
                  (forward-sexp 1)
                  t)))
@@ -596,9 +594,7 @@
                                     ":as" whitespace+ "\\(" symbol "\\)\\)?\\(?:" whitespace+
                                     ":refer" whitespace+ "\\[.+?\\]" whitespace* "\\)?\\]")))
              (lambda (limit)
-               (ignore-errors
-                 (when font-lock--skip
-                   (error ""))
+               (unless font-lock--skip
                  (when (re-search-forward req-block limit t)
                    (let ((match-data (match-data)))
                      (set-match-data (append match-data (fake-match-2))))
@@ -905,9 +901,7 @@
         ;; Highlight condtions in `cond' form.
         (,(concat "(" core-ns? "\\(cond\\(?:->>?\\)?\\)[ \r\t\n]+")
          (,(lambda (limit)
-             (ignore-errors
-               (when font-lock--skip
-                 (error ""))
+             (unless font-lock--skip
                (when (> limit (point))
                  (clojure-skip :comment :ignored-form)
                  (set-match-data (list (point-marker) (progn (forward-sexp) (point-marker))))
@@ -958,9 +952,7 @@
         ;; Metadata
         (,(concat "\\(?:" whitespace "\\|[([{]\\)\\^[:A-Za-z{]")
          (,(lambda (limit)
-             (ignore-errors
-               (when font-lock--skip
-                 (error ""))
+             (unless font-lock--skip
                (let ((start (progn
                               (backward-char 1)
                               (point-marker))))
@@ -1061,9 +1053,7 @@
          (,(concat "\\(defun\\|defun\\|lambda\\)" whitespace+ "\\(" symbol whitespace+ "\\)?(")
           (,(let ((symbol (concat "\\(" symbol "\\)\\>")))
               (lambda (limit)
-                (ignore-errors
-                  (when font-lock--skip
-                    (error ""))
+                (unless font-lock--skip
                   (when (re-search-forward symbol limit t)
                     (when (string-match-p "^&" (match-string 1))
                       (set-match-data (fake-match-4)))
@@ -1267,32 +1257,42 @@
                         ;; Python 3:
                         "ascii" "breakpoint" "bytearray" "bytes" "exec"))
                       "(")
-                 . (1 font-lock-builtin-face)))
-        (regex-2 `(,(rx
-                     symbol-start
-                     (or
-                      "__import__"
-                      ;; Special attributes:
-                      ;; https://docs.python.org/3/reference/datamodel.html
-                      "__annotations__" "__closure__" "__code__"
-                      "__defaults__" "__dict__" "__doc__" "__globals__"
-                      "__kwdefaults__" "__name__" "__module__" "__package__"
-                      "__qualname__"
-                      ;; Extras:
-                      "__all__")
-                     symbol-end)
-                   . font-lock-builtin-face)))
+                 . (1 font-lock-builtin-face))))
     (if (version<= "28.0.50" emacs-version)
-        (setf (cadddr python-font-lock-keywords-level-2) regex
-              (car (cddddr python-font-lock-keywords-maximum-decoration)) regex)
+        (progn
+          (setf (cadddr python-font-lock-keywords-level-2) regex
+                (car (cddddr python-font-lock-keywords-maximum-decoration)) regex)
+          (setq python-font-lock-keywords-maximum-decoration
+                (butlast python-font-lock-keywords-maximum-decoration 3))) ; remove assigment highlightings
       (setf (cadddr python-font-lock-keywords-level-2) regex
-            (cadddr python-font-lock-keywords-maximum-decoration) regex))
-    (add-to-list 'python-font-lock-keywords-level-2 regex-2 t)
-    (add-to-list 'python-font-lock-keywords-maximum-decoration regex-2 t))
+            (cadddr python-font-lock-keywords-maximum-decoration) regex)
+      (setq python-font-lock-keywords-maximum-decoration
+            (butlast python-font-lock-keywords-maximum-decoration 2))))
 
   (font-lock-add-keywords
    'python-mode
-   '(("\\(:\\)\\(?:$\\|\\s-\\)"
+   `((,(concat "\\(\\(?:\\(?:[_0-9A-Za-z]+\\.\\)?[_0-9A-Za-z]+\\)"
+               "\\(?:\\s-*,\\s-*\\(?:[_0-9A-Za-z]+\\.\\)?[_0-9A-Za-z]+\\)*\\)"
+               "\\(?:\\[.*?\\]\\)?\\s-*\\(?:=\\)[^=]")
+      (,(lambda (limit)
+          (unless font-lock--skip
+            (re-search-forward "\\(?:[_0-9A-Za-z]+\\.\\)?\\([_0-9A-Za-z]+\\)" limit t)))
+       (progn
+         (setq font-lock--skip nil)
+         (goto-char (setq font-lock--anchor-beg-point (match-beginning 1)))
+         (save-match-data
+           (save-excursion
+             (ignore-errors
+               (backward-up-list)
+               (when (looking-at "\\s(")
+                 (setq font-lock--skip t)))))
+         (match-end 1))
+       (goto-char font-lock--anchor-beg-point)
+       (1 'font-lock-variable-name-face))))
+   :append)
+  (font-lock-add-keywords
+   'python-mode
+   `(("\\(:\\)\\(?:$\\|\\s-\\)"
       (1 'shadow))
      ("\\(\\*\\*?\\)[_A-Za-z]"
       (1 'shadow)))))
@@ -1425,9 +1425,7 @@
            ;; Module names like `module::{foo, bar}`, highlight excluding the ::
            ("^\\s-*use\\s-+\\(?:[_0-9A-Za-z]+::\\)+\\s-*{"
             (,(lambda (limit)
-                (ignore-errors
-                  (when font-lock--skip
-                    (error ""))
+                (unless font-lock--skip
                   (re-search-forward "\\_<[a-z][_0-9a-z]*\\_>" limit t)))
              (save-excursion
                (setq font-lock--anchor-beg-point (point))

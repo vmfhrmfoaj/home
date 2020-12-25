@@ -242,6 +242,7 @@
 
     ;; search/symbol
     "se" #'evil-multiedit-match-all
+    "sE" #'evil-multiedit-match-and-next
     "sf" (defalias 'counsel-rg-on-cur-dir
            (lambda (&optional dir)
              (interactive)
@@ -456,10 +457,25 @@
 (use-package evil-multiedit
   :defer t
   :config
-  (define-key evil-multiedit-state-map (kbd "p")
-    (lambda ()
-      (interactive)
-      (iedit-replace-occurrences (current-kill 0)))))
+  (bind-keys
+   :map evil-multiedit-state-map
+   ("p" . (lambda ()
+            (interactive)
+            (when-let ((it (current-kill 0)))
+              (iedit-replace-occurrences it))))
+   ("n" . evil-multiedit-next)
+   ("N" . evil-multiedit-prev)
+   ([tab] . (lambda ()
+              (interactive)
+              (iedit-toggle-selection)
+              (evil-multiedit-next))))
+  (let ((fn (lambda ()
+              (interactive)
+              (iedit-toggle-selection)
+              (evil-multiedit-prev))))
+    (define-key evil-multiedit-state-map [backtab] fn)
+    (define-key evil-multiedit-state-map [S-tab] fn)
+    (define-key evil-multiedit-state-map [S-iso-lefttab] fn)))
 
 (use-package evil-org
   :defer t

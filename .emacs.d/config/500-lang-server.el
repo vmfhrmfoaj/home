@@ -479,6 +479,11 @@
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
   (advice-add #'lsp-signature-stop :after #'lsp-signature-restart))
 
+(use-package lsp-pyls
+  :defer t
+  :config
+  (add-to-list 'lsp-clients-python-library-directories "~/.local/lib"))
+
 (use-package lsp-rust
   :defer t
   :config

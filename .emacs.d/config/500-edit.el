@@ -87,7 +87,13 @@
 
 (use-package evil-multiedit
   :ensure t
-  :after evil)
+  :after evil
+  :config
+  (let ((fn (lambda ()
+              (iedit-update-index (point))
+              (force-mode-line-update))))
+    (advice-add #'evil-multiedit-next :after fn)
+    (advice-add #'evil-multiedit-prev :after fn)))
 
 (use-package smartparens
   :ensure t
@@ -160,7 +166,7 @@ So, replaced `evil-jump-item' to this function."
   (add-hook 'find-file-hook #'setup-undo-tree-once)
 
   :config
-  (let ((x (if (fboundp #'native-compile) 15 30)))
+  (let ((x (if (fboundp #'native-compile) 15 25)))
     (setq evil-undo-system 'undo-tree
           undo-tree-auto-save-history t
           undo-tree-history-directory-alist backup-directory-alist
