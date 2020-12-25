@@ -106,7 +106,8 @@ _install_vs_code_from_tar() {
 #!/bin/bash
 DIR=$(dirname $0)
 source ~/.script/setup
-exec "${DIR}/code" $@
+switches='--use-gl=desktop --ignore-gpu-blacklist --enable-gpu-rasterization --enable-zero-copy'
+exec "${DIR}/code" $@ ${switches}
 EOF
     chmod +x "${target_dir}/bin/code-wrapper"
     cat > "${HOME}/.local/share/applications/visual-studio-code.desktop" <<EOF
@@ -143,7 +144,7 @@ EOF
             'mads-hartmann.bash-ide-vscode'
             'maelvalais.autoconf'
             'matklad.rust-analyzer'
-            'ms-python.python'
+	    'ms-python.vscode-pylance'
             'ms-vscode-remote.remote-containers'
             'ms-vscode-remote.remote-ssh'
             'ms-vscode-remote.remote-ssh-edit'
@@ -185,7 +186,11 @@ EOF
         for file in "${files[@]}"; do
             rm -rf "${target_dir}/${file}"
         done
-        cp -r "${system_electron}/"* "${target_dir}/"
+        for file in "${system_electron}/"*; do
+            if [ ! -f "${target_dir}/$(basename ${file})" ]; then
+                    cp -r "${file}" "${target_dir}/"
+            fi
+        done
         # use system libraries
         rm -f "${target_dir}/libffmpeg.so"
         rm -f "${target_dir}/libEGL.so"
@@ -193,24 +198,28 @@ EOF
         sed -i -e 's@$VSCODE_PATH/code@$VSCODE_PATH/electron@g' "${target_dir}/bin/code"
     fi
 
-    local old='".mtku { text-decoration: underline; text-underline-position: under; }"'
-    local new='".mtku { text-decoration: underline; text-underline-position: initial; text-decoration-style: dotted; }"'
-    local file="${target_dir}/resources/app/out/vs/workbench/workbench.desktop.main.js"
-    grep -F "${old}" "${file}" >/dev/null
-    if [ $? -eq 0 ]; then
-        sed -i "s/${old}/${new}/g" "${file}"
-    else
-        echo "'.mtku' style was changed!"
-    fi
+    echo -n "Do you want to customize? (Y or N): "
+    read yn
+    if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
+        local old='".mtku { text-decoration: underline; text-underline-position: under; }"'
+        local new='".mtku { text-decoration: underline; text-underline-position: initial; text-decoration-style: dotted; }"'
+        local file="${target_dir}/resources/app/out/vs/workbench/workbench.desktop.main.js"
+        grep -F "${old}" "${file}" >/dev/null
+        if [ $? -eq 0 ]; then
+            sed -i "s/${old}/${new}/g" "${file}"
+        else
+            echo "'.mtku' style was changed!"
+        fi
 
-    local old='"\[Unsupported\]"'
-    local new='"\[Customized\]"'
-    local file="${target_dir}/resources/app/out/vs/workbench/workbench.desktop.main.nls.js"
-    grep -E "${old}" "${file}" >/dev/null
-    if [ $? -eq 0 ]; then
-        sed -i "s/${old}/${new}/g" "${file}"
-    else
-        echo "'titlebarPart' style was changed!"
+        local old='"\[Unsupported\]"'
+        local new='"\[Customized\]"'
+        local file="${target_dir}/resources/app/out/vs/workbench/workbench.desktop.main.nls.js"
+        grep -E "${old}" "${file}" >/dev/null
+        if [ $? -eq 0 ]; then
+            sed -i "s/${old}/${new}/g" "${file}"
+        else
+            echo "'titlebarPart' style was changed!"
+        fi
     fi
 
     return 0
@@ -248,7 +257,7 @@ _install_vs_code_insiders_from_tar() {
 #!/bin/bash
 DIR=$(dirname $0)
 source ~/.script/setup
-switches='--use-gl=desktop --ignore-gpu-blacklist --enable-gpu-rasterization --enable-zero-copy --enable-oop-rasterization'
+switches='--use-gl=desktop --ignore-gpu-blacklist --enable-zero-copy --enable-gpu-rasterization --enable-oop-rasterization'
 exec "${DIR}/code-insiders" $@ ${switches}
 EOF
     chmod +x "${target_dir}/bin/code-wrapper"
@@ -286,7 +295,7 @@ EOF
             'mads-hartmann.bash-ide-vscode'
             'maelvalais.autoconf'
             'matklad.rust-analyzer'
-            'ms-python.python'
+	    'ms-python.vscode-pylance'
             'ms-vscode-remote.remote-containers'
             'ms-vscode-remote.remote-ssh'
             'ms-vscode-remote.remote-ssh-edit'
@@ -328,7 +337,11 @@ EOF
         for file in "${files[@]}"; do
             rm -rf "${target_dir}/${file}"
         done
-        cp -r "${system_electron}/"* "${target_dir}/"
+        for file in "${system_electron}/"*; do
+            if [ ! -f "${target_dir}/$(basename ${file})" ]; then
+                    cp -r "${file}" "${target_dir}/"
+            fi
+        done
         # use system libraries
         rm -f "${target_dir}/libffmpeg.so"
         rm -f "${target_dir}/libEGL.so"
@@ -336,24 +349,205 @@ EOF
         sed -i -e 's@$VSCODE_PATH/code-insiders@$VSCODE_PATH/electron@g' "${target_dir}/bin/code-insiders"
     fi
 
-    local old='".mtku { text-decoration: underline; text-underline-position: under; }"'
-    local new='".mtku { text-decoration: underline; text-underline-position: initial; text-decoration-style: dotted; }"'
-    local file="${target_dir}/resources/app/out/vs/workbench/workbench.desktop.main.js"
-    grep -E "${old}" "${file}" >/dev/null
-    if [ $? -eq 0 ]; then
-        sed -i "s/${old}/${new}/g" "${file}"
-    else
-        echo "'.mtku' style was changed!"
+    echo -n "Do you want to customize? (Y or N): "
+    read yn
+    if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
+        local old='".mtku { text-decoration: underline; text-underline-position: under; }"'
+        local new='".mtku { text-decoration: underline; text-underline-position: initial; text-decoration-style: dotted; }"'
+        local file="${target_dir}/resources/app/out/vs/workbench/workbench.desktop.main.js"
+        grep -E "${old}" "${file}" >/dev/null
+        if [ $? -eq 0 ]; then
+            sed -i "s/${old}/${new}/g" "${file}"
+        else
+            echo "'.mtku' style was changed!"
+        fi
+
+        local old='"\[Unsupported\]"'
+        local new='"\[Customized\]"'
+        local file="${target_dir}/resources/app/out/vs/workbench/workbench.desktop.main.nls.js"
+        grep -E "${old}" "${file}" >/dev/null
+        if [ $? -eq 0 ]; then
+            sed -i "s/${old}/${new}/g" "${file}"
+        else
+            echo "'titlebarPart' style was changed!"
+        fi
     fi
 
-    local old='"\[Unsupported\]"'
-    local new='"\[Customized\]"'
-    local file="${target_dir}/resources/app/out/vs/workbench/workbench.desktop.main.nls.js"
-    grep -E "${old}" "${file}" >/dev/null
-    if [ $? -eq 0 ]; then
-        sed -i "s/${old}/${new}/g" "${file}"
-    else
-        echo "'titlebarPart' style was changed!"
+    return 0
+}
+
+_install_skype_from_rpm() {
+    local rpm_file=$1
+    local target_dir=${2:-"${HOME}/.skype"}
+    if [ -z "${rpm_file}" ]; then
+        echo "Usage: $0 [TAR_FILE] [TARGET_DIR]?"
+        return 255
+    fi
+    local system_electron=${3:-''}
+
+    if [ -d "${target_dir}" ]; then
+        rm -rf "${target_dir}".old
+        mv "${target_dir}" "${target_dir}".old
+    fi
+    mkdir -p "${target_dir}"
+
+    local tar_file="${rpm_file%.*}.tar"
+    rpm2tar -O "${rpm_file}" > "${tar_file}"
+    if [ $? -ne 0 ]; then
+        >&2 echo "Can't conver '${rpm_file}' to '${tar_file}', make sure 'app-arch/rpm2targz' is installed."
+        return 255;
+    fi
+    tar -C "${target_dir}" -xf "${tar_file}" --strip-components=4 './usr/share/skypeforlinux'
+    if [ $? -ne 0 ]; then
+        >&2 echo "Can't unpack '${tar_file}' to '${target_dir}'"
+        rm -rf "${tar_file}"
+        return 255;
+    fi
+    tar -C "${HOME}/.local/share/icons" -xf "${tar_file}" --strip-components=4 './usr/share/icons'
+    if [ $? -ne 0 ]; then
+        >&2 echo "Can't extract an application file form '${rpm_file}'"
+        rm -rf "${tar_file}"
+        return 255;
+    fi
+    tar -C "${HOME}/.local/share/applications" -xf "${tar_file}" --strip-components=4 './usr/share/applications'
+    if [ $? -ne 0 ]; then
+        >&2 echo "Can't extract an application file form '${rpm_file}'"
+        rm -rf "${tar_file}"
+        return 255;
+    fi
+    rm -rf "${tar_file}"
+
+    local skype_bin="${HOME}/.bin/skypeforlinux"
+    cat > "${skype_bin}" <<EOF
+#!/bin/sh
+SCRIPT=\$(readlink -f "\$0")
+USR_DIRECTORY=\$(readlink -f \$(dirname \$SCRIPT)/..)
+SKYPE_PATH="${target_dir}/skypeforlinux"
+SKYPE_LOGS="\$HOME/.config/skypeforlinux/logs"
+mkdir -p \$SKYPE_LOGS
+nohup "\$SKYPE_PATH" --executed-from="\$(pwd)" --pid=\$\$ "\$@" > "\$SKYPE_LOGS/skype-startup.log" 2>&1 &
+EOF
+    chmod +x "${skype_bin}"
+
+    sed -i -e "s@/usr/bin/skypeforlinux@${skype_bin}@g" "${HOME}/.local/share/applications/skypeforlinux.desktop"
+    sed -i -e "s@/usr/bin/skypeforlinux@${skype_bin}@g" "${HOME}/.local/share/applications/skypeforlinux-share.desktop"
+    update-desktop-database "${HOME}/.local/share/applications"
+
+    if [ -n "${system_electron}" ]; then
+        local files=(
+            'chrome_100_percent.pak'
+            'chrome_200_percent.pak'
+            'chrome-sandbox'
+            'skypeforlinux'
+            'icudtl.dat'
+            'libEGL.so'
+            'libffmpeg.so'
+            'libGLESv2.so'
+            'libvk_swiftshader.so'
+            'libvulkan.so'
+            'locales'
+            'snapshot_blob.bin'
+            'swiftshader'
+            'v8_context_snapshot.bin'
+            'vk_swiftshader_icd.json')
+        for file in "${files[@]}"; do
+            rm -rf "${target_dir}/${file}"
+        done
+        for file in "${system_electron}/"*; do
+            if [ ! -f "${target_dir}/$(basename ${file})" ]; then
+                    cp -r "${file}" "${target_dir}/"
+            fi
+        done
+        # use system libraries
+        rm -f "${target_dir}/libffmpeg.so"
+        rm -f "${target_dir}/libEGL.so"
+        rm -f "${target_dir}/libGLESv2.so"
+        sed -i -e "s@${target_dir}/skypeforlinux@${target_dir}/electron@g" "$skype_bin"
+    fi
+
+    return 0
+}
+
+_install_teams_from_rpm() {
+    local rpm_file=$1
+    local target_dir=${2:-"${HOME}/.teams"}
+    if [ -z "${rpm_file}" ]; then
+        echo "Usage: $0 [TAR_FILE] [TARGET_DIR]?"
+        return 255
+    fi
+    local system_electron=${3:-''}
+
+    if [ -d "${target_dir}" ]; then
+        rm -rf "${target_dir}".old
+        mv "${target_dir}" "${target_dir}".old
+    fi
+    mkdir -p "${target_dir}"
+
+    local tar_file="${rpm_file%.*}.tar"
+    rpm2tar -O "${rpm_file}" > "${tar_file}"
+    if [ $? -ne 0 ]; then
+        >&2 echo "Can't conver '${rpm_file}' to '${tar_file}', make sure 'app-arch/rpm2targz' is installed."
+        return 255;
+    fi
+    tar -C "${target_dir}" -xf "${tar_file}" --strip-components=4 './usr/share/teams'
+    if [ $? -ne 0 ]; then
+        >&2 echo "Can't unpack '${tar_file}' to '${target_dir}'"
+        rm -rf "${tar_file}"
+        return 255;
+    fi
+    tar -C "${HOME}/.local/share/applications" -xf "${tar_file}" --strip-components=4 './usr/share/applications'
+    if [ $? -ne 0 ]; then
+        >&2 echo "Can't extract an application file form '${rpm_file}'"
+        rm -rf "${tar_file}"
+        return 255;
+    fi
+    rm -rf "${tar_file}"
+
+    local teams_bin="${HOME}/.bin/teams"
+    cat > "${teams_bin}" <<EOF
+#!/bin/sh
+SCRIPT=\$(readlink -f "\$0")
+USR_DIRECTORY=\$(readlink -f \$(dirname \$SCRIPT)/..)
+TEAMS_PATH="${target_dir}/teams"
+TEAMS_LOGS="\$HOME/.config/Microsoft/Microsoft Teams/logs"
+mkdir -p "\$TEAMS_LOGS"
+nohup "\$TEAMS_PATH" "\$@" > "\$TEAMS_LOGS/teams-startup.log" 2>&1 &
+EOF
+    chmod +x "${teams_bin}"
+
+    sed -i -e "s@/usr/bin/teams@${teams_bin}@g" "${HOME}/.local/share/applications/teams.desktop"
+    update-desktop-database "${HOME}/.local/share/applications"
+
+    if [ -n "${system_electron}" ]; then
+        local files=(
+            'chrome_100_percent.pak'
+            'chrome_200_percent.pak'
+            'chrome-sandbox'
+            'teams'
+            'icudtl.dat'
+            'libEGL.so'
+            'libffmpeg.so'
+            'libGLESv2.so'
+            'libvk_swiftshader.so'
+            'libvulkan.so'
+            'locales'
+            'snapshot_blob.bin'
+            'swiftshader'
+            'v8_context_snapshot.bin'
+            'vk_swiftshader_icd.json')
+        for file in "${files[@]}"; do
+            rm -rf "${target_dir}/${file}"
+        done
+        for file in "${system_electron}/"*; do
+            if [ ! -f "${target_dir}/$(basename ${file})" ]; then
+                    cp -r "${file}" "${target_dir}/"
+            fi
+        done
+        # use system libraries
+        rm -f "${target_dir}/libffmpeg.so"
+        rm -f "${target_dir}/libEGL.so"
+        rm -f "${target_dir}/libGLESv2.so"
+        sed -i -e "s@${target_dir}/teams@${target_dir}/electron@g" "$teams_bin"
     fi
 
     return 0
