@@ -1,19 +1,19 @@
 {
     // Appearance
     "editor.fontFamily": "'Fira Code', monospace",
-    "editor.fontSize": 12,
+    "editor.fontSize": 14,
     "editor.fontLigatures": true,
-    "editor.fontWeight": "600",
+    "editor.fontWeight": "500",
     "editor.wordWrapColumn": 120,
     "editor.rulers": [
         120
     ],
-    "terminal.integrated.fontSize": 12,
+    "terminal.integrated.fontSize": 14,
     "window.titleBarStyle": "custom",
     "window.menuBarVisibility": "default",
     "window.zoomLevel": 0,
     "workbench.sideBar.location": "left",
-    "workbench.colorTheme": "Visual Studio Light",
+    "workbench.colorTheme": "Visual Studio Dark",
     "workbench.iconTheme": "material-icon-theme",
     "workbench.colorCustomizations": {
         "statusBarItem.remoteBackground": "#22a4f1",
@@ -26,21 +26,8 @@
             "editorRuler.foreground": "#5a5a5a20",
             "rust_analyzer.inlayHints.foreground": "#878787",
         },
-        "[Visual Studio Light]": {
-            "activityBar.activeBackground": "#f2f2f2",
-            "activityBar.background": "#dddddd",
-            "activityBar.foreground": "#333333",
-            "statusBar.noFolderBackground": "#dddddd",
-            "statusBar.background": "#dddddd",
-            "statusBar.foreground": "#333333",
-            "editorRuler.foreground": "#d3d3d330",
-            "editor.lineHighlightBackground": "#e4e6f1",
-            "scrollbar.shadow": "#ffffff00",
-            "editorCursor.background": "#ffffff",
-            "editorCursor.foreground": "#00000099",
-            "rust_analyzer.inlayHints.foreground": "#267F9999",
-        },
     },
+
     "editor.semanticTokenColorCustomizations": {
         "rules": {
             "*.mutable": {
@@ -50,36 +37,34 @@
                 "bold": true,
                 "italic": true,
             },
+            "class.declaration": {
+                "bold": true
+            },
+            "struct.declaration": {
+                "bold": true
+            },
+            "function.declaration": {
+                "bold": true
+            },
+            "method.declaration": {
+                "bold": true
+            },
         },
         "[Visual Studio Dark]": {
             "rules": {
                 "enum": "#4ec9b0",
+                "enumMember": "#d4d4d4",
                 "interface": "#4ec9b0",
                 "type": "#4ec9b0",
                 "typeAlias": "#4ec9b0",
                 "typeParameter": "#4ec9b0",
                 "punctuation": "#a9a9a9",
                 "macro": "#d4d4d4",
-                "enumMember": "#d4d4d4",
-            },
-        },
-        "[Visual Studio Light]": {
-            "rules": {
-                "enum": "#267F99",
-                "interface": "#267F99",
-                "type": "#267F99",
-                "struct": "#267F99",
-                "typeAlias": "#267F99",
-                "typeParameter": "#267F99",
-                "punctuation": "#747474",
-                "macro": "#000000",
-                "enumMember": "#000000",
-                "*.unsafe": {
-                    "foreground": "#ff0000"
-                },
+                "operator": "#b1b1b1",
             },
         },
     },
+
     "editor.tokenColorCustomizations": {
         "textMateRules": [
             {
@@ -106,93 +91,10 @@
                 },
                 {
                     "scope": [
-                        // C/C++
-                        "punctuation.terminator.statement.c",
-                        "punctuation.terminator.statement.cpp",
-                        "punctuation.separator.delimiter.c",
-                        "punctuation.separator.pointer-access.c",
-                        "punctuation.separator.pointer-access.cpp",
-                        "punctuation.section.block.begin.bracket.curly.c",
-                        "punctuation.section.block.end.bracket.curly.c",
-                        "punctuation.section.parameters.begin.bracket.round.c",
-                        "punctuation.section.parameters.end.bracket.round.c",
-                        "punctuation.section.arguments.begin.bracket.round.c",
-                        "punctuation.section.arguments.end.bracket.round.c",
-                        "punctuation.section.arguments.begin.bracket.round.initializer.cpp",
-                        "punctuation.section.arguments.end.bracket.round.initializer.cpp",
-                        "punctuation.section.parameters.begin.bracket.round.cpp",
-                        "punctuation.section.parameters.end.bracket.round.cpp",
-                        "punctuation.section.parameters.begin.bracket.round.function.pointer.cpp",
-                        "punctuation.section.parameters.end.bracket.round.function.pointer.cpp",
-                        "punctuation.section.parens.begin.bracket.round.c",
-                        "punctuation.section.parens.end.bracket.round.c",
-                        "punctuation.section.parens.begin.bracket.round.cpp",
-                        "punctuation.section.parens.end.bracket.round.cpp",
-                        "punctuation.section.parens.begin.bracket.round.function.pointer.cpp",
-                        "punctuation.section.parens.end.bracket.round.function.pointer.cpp",
-                        "punctuation.definition.begin.bracket.square.c",
-                        "punctuation.definition.end.bracket.square.c",
-                        "punctuation.definition.parameters.begin.preprocessor.cpp",
-                        "punctuation.definition.parameters.end.preprocessor.cpp",
-                        "meta.preprocessor.conditional.cpp",
-                        // Shell
-                        "punctuation.definition.variable.shell",
-                        "punctuation.definition.group.shell",
-                        "punctuation.definition.arguments.shell",
-                        "punctuation.definition.logical-expression.shell",
-                        "keyword.operator.list.shell",
-                        "keyword.operator.pipe.shell",
-                        "keyword.operator.redirect.shell",
-                        "keyword.operator.heredoc.shell",
-                        "punctuation.definition.subshell.shell",
+                        "keyword.operator"
                     ],
                     "settings": {
-                        "foreground": "#a9a9a9",
-                    }
-                },
-                {
-                    "scope": "storage.type.built-in.primitive.c",
-                    "settings": {
-                        "foreground": "#4ec9b0",
-                    }
-                },
-            ]
-        },
-        "[Visual Studio Light]": {
-            "keywords": "#af00db",
-            "comments": {
-                "foreground": "#747474",
-                "fontStyle": "italic"
-            },
-            "textMateRules": [
-                {
-                    "scope": [
-                        "entity.name.function.preprocessor",
-                        // C/C++
-                        "meta.preprocessor.macro.cpp",
-                        "storage.modifier.pointer.cpp",
-                        "variable.parameter.preprocessor.cpp",
-                        "variable.other.object.access.cpp",
-                        "variable.other.property.cpp",
-                    ],
-                    "settings": {
-                        "foreground": "#000000",
-                    }
-                },
-                {
-                    "scope": "meta.attribute.rust",
-                    "settings": {
-                        "foreground": "#222222",
-                    }
-                },
-                {
-                    "scope": [
-                        "punctuation.section.embedded",
-                        "constant.other.placeholder.go",
-                    ],
-                    "settings": {
-                        "foreground": "#a31515",
-                        "fontStyle": "italic",
+                        "foreground": "#b1b1b1"
                     },
                 },
                 {
@@ -226,7 +128,6 @@
                         "punctuation.definition.parameters.begin.preprocessor.cpp",
                         "punctuation.definition.parameters.end.preprocessor.cpp",
                         "meta.preprocessor.conditional.cpp",
-                        "storage.modifier.array.bracket.square.c",
                         // Shell
                         "punctuation.definition.variable.shell",
                         "punctuation.definition.group.shell",
@@ -248,27 +149,38 @@
                         "punctuation.other.period.go",
                         "punctuation.terminator.go",
                         "keyword.operator.logical.go",
+                        //Python
+                        "punctuation.definition.arguments.begin.python",
+                        "punctuation.definition.arguments.end.python",
+                        "punctuation.definition.list.begin.python",
+                        "punctuation.definition.list.end.python",
+                        "punctuation.definition.parameters.begin.python",
+                        "punctuation.definition.parameters.end.python",
+                        "punctuation.section.function.begin.python",
+                        "punctuation.separator.colon.python",
+                        "punctuation.separator.continuation.line.python",
+                        "punctuation.separator.element.python",
+                        "punctuation.separator.period.python",
+                        "meta.function.decorator.python",
                     ],
                     "settings": {
-                        "foreground": "#747474",
+                        "foreground": "#a9a9a9",
                     }
                 },
                 {
-                    "scope": [
-                        "storage.type.built-in.primitive.c",
-                        "storage.type.built-in.primitive.cpp",
-                    ],
+                    "scope": "storage.type.built-in.primitive.c",
                     "settings": {
-                        "foreground": "#267F99",
+                        "foreground": "#4ec9b0",
                     }
                 },
             ]
         },
     },
+
     // Edit
-    "breadcrumbs.enabled": false,
+    "breadcrumbs.enabled": true,
     "editor.detectIndentation": false,
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "editor.insertSpaces": true,
     "editor.lineNumbers": "relative",
     "editor.renderLineHighlight": "gutter",
@@ -278,23 +190,36 @@
     "editor.suggestSelection": "first",
     "editor.tabSize": 4,
     "workbench.editor.enablePreview": false,
+    "workbench.editorAssociations": [
+        {
+            "viewType": "jupyter.notebook.ipynb",
+            "filenamePattern": "*.ipynb"
+        }
+    ],
+
     // Misc.
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
+
     // C/C++
     "C_Cpp.updateChannel": "Default",
+
     // CMake
     "cmake.configureOnOpen": true,
+
     // Gitlens
     "gitlens.codeLens.enabled": false,
     "gitlens.currentLine.enabled": false,
     "gitlens.statusBar.format": "${author}(${agoOrDate}): \"${message}\"",
+
     // Go
     "go.formatTool": "goreturns",
+
     // Markdownlint
     "markdownlint.config": {
         "MD024": false,
     },
+
     // multi-command
     "multiCommand.commands": [
         {
@@ -409,14 +334,19 @@
             ]
         },
     ],
+
     // Python
-    "python.languageServer": "Microsoft",
+    "python.languageServer": "Pylance",
+
     // Remote Development
     "remote.SSH.showLoginTerminal": true,
+
     // Rust Analyzer
+    "rust-analyzer.serverPath": "~/.cargo/bin/rust-analyzer",
     "rust-analyzer.checkOnSave.command": "clippy",
     "rust-analyzer.inlayHints.chainingHints": false,
     "rust-analyzer.inlayHints.parameterHints": false,
+
     // Vim
     "workbench.list.keyboardNavigation": "simple", // see, https://github.com/Microsoft/vscode/issues/66995#issuecomment-457123611
     "vim.sneak": true,
@@ -578,6 +508,18 @@
             "commands": [
                 {
                     "command": "editor.action.rename",
+                }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "x",
+                "t"
+            ],
+            "commands": [
+                {
+                    "command": "workbench.action.terminal.toggleTerminal",
                 }
             ]
         },

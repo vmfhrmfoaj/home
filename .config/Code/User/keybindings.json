@@ -10,6 +10,7 @@
         "command": "deleteLeft",
         "when": "textInputFocus && !editorReadonly && !vim.active"
     },
+
     // Customized
     {
         "key": "enter",
@@ -31,6 +32,7 @@
         "command": "closeParameterHints",
         "when": "editorTextFocus && parameterHintsVisible"
     },
+
     // Tab and Shift + Tab
     {
         "key": "ctrl+tab",
@@ -52,6 +54,7 @@
         "command": "workbench.action.quickOpenSelectNext",
         "when": "inQuickOpen"
     },
+
     // Vim
     {
         "key": "escape",
@@ -98,6 +101,7 @@
         "command": "multiCommand.vimOpenPreviousRecentlyUsedEditorInGroup",
         "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
     },
+
     // H/J/K/L
     {
         "key": "ctrl+j",
@@ -173,6 +177,7 @@
         "key": "ctrl+j",
         "command": "-workbench.action.togglePanel"
     },
+
     // HHKB Pro2
     {
         "key": "shift+NumPad_Add",
