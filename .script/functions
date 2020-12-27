@@ -74,6 +74,39 @@ EOF
     return 0
 }
 
+vscode_extensions=(
+    'aaron-bond.better-comments'
+    'bmewburn.vscode-intelephense-client'
+    'bungcip.better-toml'
+    'coolbear.systemd-unit-file'
+    'DavidAnson.vscode-markdownlint'
+    'dbaeumer.vscode-eslint'
+    'DotJoshJohnson.xml'
+    'eamodio.gitlens'
+    'EditorConfig.EditorConfig'
+    'golang.go'
+    'HookyQR.beautify'
+    'LaurentTreguier.rpm-spec'
+    'mads-hartmann.bash-ide-vscode'
+    'maelvalais.autoconf'
+    'matklad.rust-analyzer'
+    'ms-python.vscode-pylance'
+    'ms-vscode-remote.remote-containers'
+    'ms-vscode-remote.remote-ssh'
+    'ms-vscode-remote.remote-ssh-edit'
+    'ms-vscode-remote.remote-wsl'
+    'ms-vscode-remote.vscode-remote-extensionpack'
+    'ms-vscode.cmake-tools'
+    'ms-vscode.cpptools'
+    'ms-vscode.vscode-typescript-tslint-plugin'
+    'msjsdiag.debugger-for-chrome'
+    'PKief.material-icon-theme'
+    'ryuta46.multi-command'
+    'shardulm94.trailing-spaces'
+    'slevesque.vscode-hexdump'
+    'vadimcn.vscode-lldb'
+    'vscodevim.vim')
+
 _install_vs_code_from_tar() {
     local tar_file=$1
     local target_dir=${2:-"${HOME}/.vscode"}
@@ -129,38 +162,7 @@ EOF
     echo -n "Do you want to install extensions? (Y or N): "
     read yn
     if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
-        local extensions=(
-            'bmewburn.vscode-intelephense-client'
-            'bungcip.better-toml'
-            'coolbear.systemd-unit-file'
-            'DavidAnson.vscode-markdownlint'
-            'dbaeumer.vscode-eslint'
-            'DotJoshJohnson.xml'
-            'eamodio.gitlens'
-            'EditorConfig.EditorConfig'
-            'golang.go'
-            'HookyQR.beautify'
-            'LaurentTreguier.rpm-spec'
-            'mads-hartmann.bash-ide-vscode'
-            'maelvalais.autoconf'
-            'matklad.rust-analyzer'
-	    'ms-python.vscode-pylance'
-            'ms-vscode-remote.remote-containers'
-            'ms-vscode-remote.remote-ssh'
-            'ms-vscode-remote.remote-ssh-edit'
-            'ms-vscode-remote.remote-wsl'
-            'ms-vscode-remote.vscode-remote-extensionpack'
-            'ms-vscode.cmake-tools'
-            'ms-vscode.cpptools'
-            'ms-vscode.vscode-typescript-tslint-plugin'
-            'msjsdiag.debugger-for-chrome'
-            'PKief.material-icon-theme'
-            'ryuta46.multi-command'
-            'shardulm94.trailing-spaces'
-            'slevesque.vscode-hexdump'
-            'vadimcn.vscode-lldb'
-            'vscodevim.vim')
-        for ext in "${extensions[@]}"; do
+        for ext in "${vscode_extensions[@]}"; do
             ${target_dir}/bin/code --install-extension ${ext}
         done
     fi
@@ -283,38 +285,7 @@ EOF
     echo -n "Do you want to install extensions? (Y or N): "
     read yn
     if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
-        local extensions=(
-            'bmewburn.vscode-intelephense-client'
-            'bungcip.better-toml'
-            'coolbear.systemd-unit-file'
-            'DavidAnson.vscode-markdownlint'
-            'dbaeumer.vscode-eslint'
-            'DotJoshJohnson.xml'
-            'eamodio.gitlens'
-            'EditorConfig.EditorConfig'
-            'golang.go'
-            'HookyQR.beautify'
-            'LaurentTreguier.rpm-spec'
-            'mads-hartmann.bash-ide-vscode'
-            'maelvalais.autoconf'
-            'matklad.rust-analyzer'
-	    'ms-python.vscode-pylance'
-            'ms-vscode-remote.remote-containers'
-            'ms-vscode-remote.remote-ssh'
-            'ms-vscode-remote.remote-ssh-edit'
-            'ms-vscode-remote.remote-wsl'
-            'ms-vscode-remote.vscode-remote-extensionpack'
-            'ms-vscode.cmake-tools'
-            'ms-vscode.cpptools'
-            'ms-vscode.vscode-typescript-tslint-plugin'
-            'msjsdiag.debugger-for-chrome'
-            'PKief.material-icon-theme'
-            'ryuta46.multi-command'
-            'shardulm94.trailing-spaces'
-            'slevesque.vscode-hexdump'
-            'vadimcn.vscode-lldb'
-            'vscodevim.vim')
-        for ext in "${extensions[@]}"; do
+        for ext in "${vscode_extensions[@]}"; do
             ${target_dir}/bin/code-insiders --install-extension ${ext}
         done
     fi
@@ -431,7 +402,8 @@ USR_DIRECTORY=\$(readlink -f \$(dirname \$SCRIPT)/..)
 SKYPE_PATH="${target_dir}/skypeforlinux"
 SKYPE_LOGS="\$HOME/.config/skypeforlinux/logs"
 mkdir -p \$SKYPE_LOGS
-nohup "\$SKYPE_PATH" --executed-from="\$(pwd)" --pid=\$\$ "\$@" > "\$SKYPE_LOGS/skype-startup.log" 2>&1 &
+switches='--use-gl=desktop --ignore-gpu-blacklist --enable-gpu-rasterization --enable-zero-copy'
+nohup "\$SKYPE_PATH" --executed-from="\$(pwd)" --pid=\$\$ "\$@" \${switches} > "\$SKYPE_LOGS/skype-startup.log" 2>&1 &
 EOF
     chmod +x "${skype_bin}"
 
@@ -612,7 +584,8 @@ _install_slack_from_rpm() {
     local slack_bin="${HOME}/.bin/slack"
     cat > "${slack_bin}" <<EOF
 #!/bin/sh
-exec ${target_dir}/slack \$@
+switches='--use-gl=desktop --ignore-gpu-blacklist --enable-gpu-rasterization --enable-zero-copy'
+exec ${target_dir}/slack \$@ \${switches}
 EOF
     chmod +x "${slack_bin}"
 
