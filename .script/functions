@@ -187,8 +187,11 @@ EOF
             rm -rf "${target_dir}/${file}"
         done
         for file in "${system_electron}/"*; do
-            if [ ! -f "${target_dir}/$(basename ${file})" ]; then
-                    cp -r "${file}" "${target_dir}/"
+            if [ -L "${file}" ]; then
+                continue
+            fi
+            if [ ! -e "${target_dir}/$(basename ${file})" ]; then
+                cp -r "${file}" "${target_dir}/"
             fi
         done
         # use system libraries
@@ -338,8 +341,11 @@ EOF
             rm -rf "${target_dir}/${file}"
         done
         for file in "${system_electron}/"*; do
-            if [ ! -f "${target_dir}/$(basename ${file})" ]; then
-                    cp -r "${file}" "${target_dir}/"
+            if [ -L "${file}" ]; then
+                continue
+            fi
+            if [ ! -e "${target_dir}/$(basename ${file})" ]; then
+                cp -r "${file}" "${target_dir}/"
             fi
         done
         # use system libraries
@@ -454,8 +460,11 @@ EOF
             rm -rf "${target_dir}/${file}"
         done
         for file in "${system_electron}/"*; do
-            if [ ! -f "${target_dir}/$(basename ${file})" ]; then
-                    cp -r "${file}" "${target_dir}/"
+            if [ -L "${file}" ]; then
+                continue
+            fi
+            if [ ! -e "${target_dir}/$(basename ${file})" ]; then
+                cp -r "${file}" "${target_dir}/"
             fi
         done
         # use system libraries
@@ -515,7 +524,8 @@ nohup "\$TEAMS_PATH" "\$@" > "\$TEAMS_LOGS/teams-startup.log" 2>&1 &
 EOF
     chmod +x "${teams_bin}"
 
-    sed -i -e "s@/usr/bin/teams@${teams_bin}@g" "${HOME}/.local/share/applications/teams.desktop"
+    sed -i -e "s@Exec=teams@Exec=${teams_bin}@g" "${HOME}/.local/share/applications/teams.desktop"
+    sed -i -e "s@/usr/bin/teams@${teams_bin}@g"  "${HOME}/.local/share/applications/teams.desktop"
     update-desktop-database "${HOME}/.local/share/applications"
 
     if [ -n "${system_electron}" ]; then
@@ -539,8 +549,11 @@ EOF
             rm -rf "${target_dir}/${file}"
         done
         for file in "${system_electron}/"*; do
-            if [ ! -f "${target_dir}/$(basename ${file})" ]; then
-                    cp -r "${file}" "${target_dir}/"
+            if [ -L "${file}" ]; then
+                continue
+            fi
+            if [ ! -e "${target_dir}/$(basename ${file})" ]; then
+                cp -r "${file}" "${target_dir}/"
             fi
         done
         # use system libraries
