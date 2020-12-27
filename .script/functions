@@ -565,3 +565,95 @@ EOF
 
     return 0
 }
+
+_install_slack_from_rpm() {
+    local rpm_file=$1
+    local target_dir=${2:-"${HOME}/.slack"}
+    if [ -z "${rpm_file}" ]; then
+        echo "Usage: $0 [TAR_FILE] [TARGET_DIR]?"
+        return 255
+    fi
+    local system_electron=${3:-''}
+
+    if [ -d "${target_dir}" ]; then
+        rm -rf "${target_dir}".old
+        mv "${target_dir}" "${target_dir}".old
+    fi
+    mkdir -p "${target_dir}"
+    mkdir -p "${HOME}/.local/share/applications"
+    mkdir -p "${HOME}/.local/share/pixmaps"
+
+    local tar_file="${rpm_file%.*}.tar"
+    rpm2tar -O "${rpm_file}" > "${tar_file}"
+    if [ $? -ne 0 ]; then
+        >&2 echo "Can't conver '${rpm_file}' to '${tar_file}', make sure 'app-arch/rpm2targz' is installed."
+        return 255;
+    fi
+    tar -C "${target_dir}" -xf "${tar_file}" --strip-components=4 './usr/lib/slack'
+    if [ $? -ne 0 ]; then
+        >&2 echo "Can't unpack '${tar_file}' to '${target_dir}'"
+        rm -rf "${tar_file}"
+        return 255;
+    fi
+    tar -C "${HOME}/.local/share/applications" -xf "${tar_file}" --strip-components=4 './usr/share/applications'
+    if [ $? -ne 0 ]; then
+        >&2 echo "Can't extract an application file form '${rpm_file}'"
+        rm -rf "${tar_file}"
+        return 255;
+    fi
+    tar -C "${HOME}/.local/share/pixmaps" -xf "${tar_file}" --strip-components=4 './usr/share/pixmaps'
+    if [ $? -ne 0 ]; then
+        >&2 echo "Can't extract an application file form '${rpm_file}'"
+        rm -rf "${tar_file}"
+        return 255;
+    fi
+    rm -rf "${tar_file}"
+
+    local slack_bin="${HOME}/.bin/slack"
+    cat > "${slack_bin}" <<EOF
+#!/bin/sh
+exec ${target_dir}/slack \$@
+EOF
+    chmod +x "${slack_bin}"
+
+    sed -i -e "s@/usr/bin/slack@${slack_bin}@g"                      "${HOME}/.local/share/applications/slack.desktop"
+    sed -i -e "s@/usr/share/pixmaps@${HOME}/.local/share/pixmaps@g"  "${HOME}/.local/share/applications/slack.desktop"
+    update-desktop-database "${HOME}/.local/share/applications"
+
+    if [ -n "${system_electron}" ]; then
+        local files=(
+            'chrome_100_percent.pak'
+            'chrome_200_percent.pak'
+            'chrome-sandbox'
+            'slack'
+            'icudtl.dat'
+            'libEGL.so'
+            'libffmpeg.so'
+            'libGLESv2.so'
+            'libvk_swiftshader.so'
+            'libvulkan.so'
+            'locales'
+            'snapshot_blob.bin'
+            'swiftshader'
+            'v8_context_snapshot.bin'
+            'vk_swiftshader_icd.json')
+        for file in "${files[@]}"; do
+            rm -rf "${target_dir}/${file}"
+        done
+        for file in "${system_electron}/"*; do
+            if [ -L "${file}" ]; then
+                continue
+            fi
+            if [ ! -e "${target_dir}/$(basename ${file})" ]; then
+                cp -r "${file}" "${target_dir}/"
+            fi
+        done
+        # use system libraries
+        rm -f "${target_dir}/libffmpeg.so"
+        rm -f "${target_dir}/libEGL.so"
+        rm -f "${target_dir}/libGLESv2.so"
+        sed -i -e "s@${target_dir}/slack@${target_dir}/electron@g" "$slack_bin"
+    fi
+
+    return 0
+}
