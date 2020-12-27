@@ -116,27 +116,25 @@
                     (-map-indexed (lambda (index elt)
                                     (cons elt (1+ index)))
                                   symbols-hierarchy)))
-            (mapconcat (-lambda (((symbol-to-append &as &DocumentSymbol :deprecated? :name :kind)
-                                  . index))
-                         (let* ((name (propertize name 'font-lock-face
-                                                  (if deprecated?
-                                                      'lsp-headerline-breadcrumb-deprecated-face
-                                                    'lsp-headerline-breadcrumb-symbols-face)))
-                                (icon (when-let ((disp (-some->> kind
-                                                         (lsp-treemacs-symbol-icon)
-                                                         (get-text-property 0 'display))))
-                                        (if (stringp disp)
-                                            (replace-regexp-in-string "\s\\|\t" "" disp)
-                                          (propertize " " 'display
-                                                      (cl-list* 'image
-                                                                (plist-put
-                                                                 (cl-copy-list
-                                                                  (cl-rest disp))
-                                                                 :background (bg-color-from 'powerline-active1)))))))
-                                (symbol-name (concat icon "​​​" name))) ; zero width space * 3
-                           (lsp-headerline--symbol-with-action symbol-to-append symbol-name)))
-                       enumerated-symbols-hierarchy
-                       (format " %s " (lsp-headerline--arrow-icon)))
+            (mapconcat
+             (-lambda (((symbol &as &DocumentSymbol :name :kind)
+                        . index))
+               (let* ((name (propertize name 'font-lock-face 'font-lock-doc-face))
+                      (icon (when-let ((disp (-some->> kind
+                                               (lsp-treemacs-symbol-icon)
+                                               (get-text-property 0 'display))))
+                              (if (stringp disp)
+                                  (replace-regexp-in-string "\s\\|\t" "" disp)
+                                (propertize " " 'display
+                                            (cl-list* 'image
+                                                      (plist-put
+                                                       (cl-copy-list
+                                                        (cl-rest disp))
+                                                       :background (bg-color-from 'powerline-active1)))))))
+                      (symbol-name (concat icon "​​​" name))) ; zero width space * 3
+                 (lsp-headerline--symbol-with-action symbol symbol-name)))
+             enumerated-symbols-hierarchy
+             (concat " " (lsp-headerline--arrow-icon) " "))
           "")
       "")))
 
@@ -466,7 +464,7 @@
                 (add-hook 'lsp-on-idle-hook     f nil t)
                 (add-hook 'xref-after-jump-hook f nil t))))
 
-  (advice-add #'lsp :before-until (lambda () "Turn `lsp-mode' off" (bound-and-true-p git-timemachine-mode)))
+  (advice-add #'lsp :before-until (lambda (&rest _) "Turn `lsp-mode' off" (bound-and-true-p git-timemachine-mode)))
   (advice-add #'lsp--eldoc-message :override 'lsp--custom-eldoc-message)
   (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
   (advice-add #'lsp--signature->message :filter-return #'lsp--signature->message-filter)

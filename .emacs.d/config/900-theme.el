@@ -17,9 +17,9 @@
    '(line-number ((t :background "#222326" :weight extra-light)))
    '(line-number-current-line
      ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight light :inverse-video nil)))
-   '(mode-line-inactive ((t :weight extra-light)))
-   '(mode-line ((t :weight light)))
-   '(shadow ((t :weight light)))
+   '(mode-line-inactive ((t :weight light)))
+   '(mode-line ((t :weight normal)))
+   '(shadow ((t :weight normal)))
    '(whitespace-newline ((t :background "#282a2e" :weight extra-light)))
    '(whitespace-space ((t :weight extra-light)))
    '(whitespace-tab ((t :weight extra-light)))))
@@ -63,7 +63,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(eldoc-highlight-function-argument ((t :weight semi-bold :underline t)))))
+   '(eldoc-highlight-function-argument ((t :weight bold :underline t)))))
 
 (use-package evil-goggles
   :defer t
@@ -96,12 +96,14 @@
   :defer t
   :config
   (custom-set-faces
-   '(font-lock-comment-face ((t :weight extra-light)))
-   '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground "#606060" unspecified)))
-   '(font-lock-doc-face ((t :weight light)))
-   '(font-lock-function-name-face ((t :foreground "#85aacc" :weight semi-bold)))
+   '(font-lock-comment-face ((t :weight light)))
+   '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground unspecified :weight extra-light)))
+   '(font-lock-doc-face ((t :weight normal)))
+   '(font-lock-function-name-face ((t :foreground "#85aacc" :weight bold)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
-   '(font-lock-string-face ((t :weight light)))))
+   '(font-lock-regexp-grouping-backslash ((t :weight semi-bold)))
+   '(font-lock-regexp-grouping-construct ((t :weight semi-bold)))
+   '(font-lock-string-face ((t :weight medium)))))
 
 (use-package fringe
   :defer t
@@ -113,7 +115,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(hl-todo ((t :foreground "#cc9393" :weight semi-bold)))))
+   '(hl-todo ((t :foreground "#cc9393" :weight bold)))))
 
 (use-package ivy
   :defer t
@@ -148,7 +150,7 @@
    '(org-agenda-date ((t :foreground "dark cyan" :height 1.1)))
    '(org-agenda-date-weekend ((t :inherit org-agenda-date)))
    '(org-agenda-date-today ((t :inherit org-agenda-date :foreground "turquoise")))
-   '(org-block ((t :weight light)))
+   '(org-block ((t :weight normal)))
    '(org-date ((t :underline unspecified :weight light)))
    '(org-done ((t  :weight light :box t)))
    '(org-drawer ((t :foreground "light sky blue" :weight extra-light)))
@@ -164,7 +166,7 @@
    '(org-warning ((t :inherit font-lock-warning-face :underline nil))))
   (dolist (i (number-sequence 2 8))
     (let ((face (intern (concat "org-level-" (number-to-string i)))))
-      (set-face-attribute face nil :weight 'semi-bold))))
+      (set-face-attribute face nil :weight 'bold))))
 
 (use-package php-mode
   :defer t

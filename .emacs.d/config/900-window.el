@@ -12,7 +12,7 @@
          (main-monitor-y (nth 1 workarea))
          (main-monitor-w (nth 2 workarea))
          (main-monitor-h (nth 3 workarea))
-         (x-offset 110)
+         (x-offset 0)
          (x main-monitor-x)
          (y main-monitor-y)
          (h main-monitor-h)
@@ -32,7 +32,7 @@
     (setq frame-resize-pixelwise t
           initial-frame-alist (list `(top  . ,y)
                                     `(left . ,x)
-                                    '(undecorated . t))
+                                    '(undecorated . nil))
           split-width-threshold main-monitor-w)))
 
 (use-package winum
