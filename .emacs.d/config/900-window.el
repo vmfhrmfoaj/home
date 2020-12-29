@@ -12,7 +12,7 @@
          (main-monitor-y (nth 1 workarea))
          (main-monitor-w (nth 2 workarea))
          (main-monitor-h (nth 3 workarea))
-         (x-offset 0)
+         (x-offset (- (frame-char-width)))
          (x main-monitor-x)
          (y main-monitor-y)
          (h main-monitor-h)

@@ -155,16 +155,6 @@ So, replaced `evil-jump-item' to this function."
 
 (use-package undo-tree
   :ensure t
-  :defer t
-  :init
-  (defun setup-undo-tree-once ()
-    (remove-hook 'find-file-hook #'setup-undo-tree-once)
-    (with-eval-after-load "evil"
-      (evil-set-undo-system 'undo-tree))
-    (global-undo-tree-mode))
-
-  (add-hook 'find-file-hook #'setup-undo-tree-once)
-
   :config
   (let ((x (if (fboundp #'native-compile) 15 25)))
     (setq evil-undo-system 'undo-tree
@@ -178,7 +168,11 @@ So, replaced `evil-jump-item' to this function."
   ;;  `goto-chr' require `undo-tree-node-p' function, but it is macro in `undo-tree'.
   (defun undo-tree-node-p (n)
     (let ((len (length (undo-tree-make-node nil nil))))
-      (and (vectorp n) (= (length n) len)))))
+      (and (vectorp n) (= (length n) len))))
+
+  (with-eval-after-load "evil"
+    (evil-set-undo-system 'undo-tree))
+  (global-undo-tree-mode))
 
 (use-package whitespace
   :config

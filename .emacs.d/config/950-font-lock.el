@@ -1008,12 +1008,12 @@
   (make-local-variable 'elisp--binding-form-point)
 
   (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
-    (font-lock-add-keywords
-     mode
-     (let* ((symbol "[-+*/=>$&?:_0-9a-zA-Z]+")
-            (whitespace "[ \r\t\n]")
-            (whitespace+ (concat whitespace "+"))
-            (whitespace* (concat whitespace "*")))
+    (let* ((symbol "[-+*/=>$&?:_0-9a-zA-Z]+")
+           (whitespace "[ \r\t\n]")
+           (whitespace+ (concat whitespace "+"))
+           (whitespace* (concat whitespace "*")))
+      (font-lock-add-keywords
+       mode
        `(("[#'`]\\|\\_<_\\_>"
           (0 'shadow))
          ("\\s(\\(\\(?:-as\\|-some\\)?->>?\\|and\\|or\\)\\_>"
@@ -1023,9 +1023,13 @@
          ("(\\(assert\\)"
           (1 'font-lock-variable-name-face))
          (,(concat "(defun" whitespace+ "\\(" symbol "\\)")
-          (1 'font-lock-function-name-face))
+          (1 'font-lock-function-name-face))))
+      (font-lock-add-keywords
+       mode
+       `(("\\_<\\(\\?.\\)"
+          (1 'font-lock-string-face))
          ;; local variables
-         (,(concat "(\\(lexical-\\|when-\\|if-\\)?let\\*?" whitespace+ "(")
+         (,(concat "(\\(lexical-\\|-?when-\\|-?if-\\)?let\\*?" whitespace+ "(")
           (,(let ((symbol+whitespace (concat "(\\(" symbol "\\)" whitespace+)))
               (lambda (limit)
                 (ignore-errors
@@ -1068,14 +1072,8 @@
            (if font-lock--skip
                (end-of-line)
              (goto-char elisp--binding-form-point))
-           (1 'lisp-local-binding-variable-name-face)))
-         (,(concat "(-\\(?:when\\|if\\)-let\\*?" whitespace+ "(\\(" symbol "\\)" whitespace)
-          (1 'lisp-local-binding-variable-name-face)))))
-    (font-lock-add-keywords
-     mode
-     `(("\\_<\\(\\?.\\)"
-        (1 'font-lock-string-face)))
-     :append)))
+           (1 'lisp-local-binding-variable-name-face))))
+       :append))))
 
 (use-package go-mode
   :defer t
@@ -1280,12 +1278,10 @@
        (progn
          (setq font-lock--skip nil)
          (goto-char (setq font-lock--anchor-beg-point (match-beginning 1)))
-         (save-match-data
-           (save-excursion
-             (ignore-errors
-               (backward-up-list)
-               (when (looking-at "\\s(")
-                 (setq font-lock--skip t)))))
+         (when (-some->> (syntax-ppss)
+                 (-first-item)
+                 (< 0))
+           (setq font-lock--skip t))
          (match-end 1))
        (goto-char font-lock--anchor-beg-point)
        (1 'font-lock-variable-name-face))))
@@ -1428,7 +1424,8 @@
                 (unless font-lock--skip
                   (re-search-forward "\\_<[a-z][_0-9a-z]*\\_>" limit t)))
              (save-excursion
-               (setq font-lock--anchor-beg-point (point))
+               (setq font-lock--skip nil
+                     font-lock--anchor-beg-point (point))
                (safe-up-list-1)
                (point))
              (goto-char font-lock--anchor-beg-point)
@@ -1477,7 +1474,8 @@
                       (set-match-data (fake-match-4)))
                     t)))
              (save-excursion
-               (setq font-lock--anchor-beg-point (point)
+               (setq font-lock--skip nil
+                     font-lock--anchor-beg-point (point)
                      font-lock--local-limit nil)
                (safe-up-list-1)
                (point))

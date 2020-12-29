@@ -425,7 +425,8 @@
             (file-node-closed . ,visit-fn)
             (tag-node-open    . ,visit-prefer-fn)
             (tag-node-closed  . ,visit-prefer-fn)
-            (tag-node         . ,visit-fn))))
+            (tag-node         . ,visit-fn)))
+        treemacs-width 40)
 
   (treemacs-resize-icons 15)
 

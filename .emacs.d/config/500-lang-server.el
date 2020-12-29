@@ -111,30 +111,48 @@
     (if (lsp-feature? "textDocument/documentSymbol")
         (-if-let* ((lsp--document-symbols-request-async t)
                    (symbols (lsp--get-document-symbols))
-                   (symbols-hierarchy (lsp--symbols->document-symbols-hierarchy symbols))
-                   (enumerated-symbols-hierarchy
-                    (-map-indexed (lambda (index elt)
-                                    (cons elt (1+ index)))
-                                  symbols-hierarchy)))
-            (mapconcat
-             (-lambda (((symbol &as &DocumentSymbol :name :kind)
-                        . index))
-               (let* ((name (propertize name 'font-lock-face 'font-lock-doc-face))
-                      (icon (when-let ((disp (-some->> kind
-                                               (lsp-treemacs-symbol-icon)
-                                               (get-text-property 0 'display))))
-                              (if (stringp disp)
-                                  (replace-regexp-in-string "\s\\|\t" "" disp)
-                                (propertize " " 'display
-                                            (cl-list* 'image
-                                                      (plist-put
-                                                       (cl-copy-list
-                                                        (cl-rest disp))
-                                                       :background (bg-color-from 'powerline-active1)))))))
-                      (symbol-name (concat icon "​​​" name))) ; zero width space * 3
-                 (lsp-headerline--symbol-with-action symbol symbol-name)))
-             enumerated-symbols-hierarchy
-             (concat " " (lsp-headerline--arrow-icon) " "))
+                   (symbols-hierarchy (lsp--symbols->document-symbols-hierarchy symbols)))
+            (let* ((separator (concat " " (lsp-headerline--arrow-icon) " "))
+                   (max-len (- spaceline-symbol-segment--max-symbol-length (length (concat "..." separator)))))
+              (->> symbols-hierarchy
+                   (reverse)
+                   (-reduce-from
+                    (-lambda ((&alist 'count count 'len len 'output output)
+                              (symbol &as &DocumentSymbol :name :kind))
+                      (if (<= max-len len)
+                          `((count  . ,(1+ count))
+                            (len    . ,len)
+                            (output . ,output))
+                        (let* ((icon (when-let ((disp (-some->> kind
+                                                        (lsp-treemacs-symbol-icon)
+                                                        (get-text-property 0 'display))))
+                                       (if (stringp disp)
+                                           (replace-regexp-in-string "\s\\|\t" "" disp)
+                                         (propertize " " 'display
+                                                     (cl-list* 'image
+                                                               (plist-put
+                                                                (cl-copy-list
+                                                                 (cl-rest disp))
+                                                                :background (bg-color-from 'powerline-active1)))))))
+                               (symbol-name (concat icon "​​​" name)) ; zero width space * 3
+                               (symbol-name (lsp-headerline--symbol-with-action symbol symbol-name))
+                               (new-output (concat symbol-name (when output separator) output))
+                               (new-len (length new-output)))
+                          (if (<= max-len new-len)
+                              `((count  . ,(1+ count))
+                                (len    . ,(if (< 0 count)
+                                               max-len
+                                             new-len))
+                                (output . ,(if (< 0 count)
+                                               (concat "..." separator output)
+                                             new-output)))
+                            `((count  . ,(1+ count))
+                              (len    . ,new-len)
+                              (output . ,new-output))))))
+                    '((count  . 0)
+                      (len    . 0)
+                      (output . nil)))
+                   (alist-get 'output)))
           "")
       "")))
 
@@ -458,9 +476,11 @@
                             (setq lsp-ui-sideline--tag nil)))
                         nil t)
               (let ((f (lambda ()
-                         (setq splaceline-symbol-segment--symbol
-                               (lsp-headerline--custom-build-symbol-string))
-                         (force-mode-line-update))))
+                         (let ((old spaceline-symbol-segment--symbol))
+                           (setq spaceline-symbol-segment--symbol
+                                 (lsp-headerline--custom-build-symbol-string))
+                           (unless (string-equal old spaceline-symbol-segment--symbol)
+                             (force-mode-line-update))))))
                 (add-hook 'lsp-on-idle-hook     f nil t)
                 (add-hook 'xref-after-jump-hook f nil t))))
 

@@ -321,14 +321,29 @@
 
 (use-package spaceline-config
   :ensure spaceline
-  :config
-  (defvar-local splaceline-symbol-segment--symbol nil)
+  :init
+  (defface spaceline-symbol-segment-face
+    '((t (:inherit shadow)))
+    "TODO")
 
+  (defcustom spaceline-symbol-segment--max-symbol-length 75
+    "Max length of `spaceline-symbol-segment--symbol'.")
+
+  (defvar-local spaceline-symbol-segment--symbol nil)
+
+  :config
   (spaceline-define-segment symbol
     "Display the symbol"
-    (when (and (stringp splaceline-symbol-segment--symbol)
-               (< 0 (length splaceline-symbol-segment--symbol)))
-      (concat splaceline-symbol-segment--symbol)))
+    (when (and (stringp spaceline-symbol-segment--symbol)
+               (< 0 (length spaceline-symbol-segment--symbol)))
+      (let ((max-len spaceline-symbol-segment--max-symbol-length)
+            (len (length spaceline-symbol-segment--symbol)))
+        (propertize
+         (if (<= len max-len)
+             spaceline-symbol-segment--symbol
+           (concat (propertize "..." 'face 'shadow)
+                   (substring spaceline-symbol-segment--symbol (- len max-len) len)))
+         'face 'spaceline-symbol-segment-face))))
 
   (require 'treemacs-icons)
   (setq-default treemacs-icons
@@ -336,50 +351,52 @@
                     (treemacs-theme->tui-icons treemacs--current-theme)
                   (treemacs-theme->gui-icons treemacs--current-theme)))
 
+  (defvar spaceline-symbol-segment--major-icon-cache (make-hash-table))
+
   (spaceline-define-segment major-icon
     "Display a icon for `major-mode'"
-    (when-let ((disp (-some->> buffer-file-name
-                       (treemacs-icon-for-file)
-                       (get-text-property 0 'display))))
-      (when (listp disp)
-        (propertize "  " 'display
-                    (cl-list* 'image
-                              (let ((h (frame-char-height)))
-                                (-> disp
-                                    (cl-rest)
-                                    (cl-copy-list)
-                                    (plist-put :background (bg-color-from 'powerline-active1))
-                                    (plist-put :height h)
-                                    (plist-put :width h))))))))
+    (if-let ((icon (gethash major-mode spaceline-symbol-segment--major-icon-cache)))
+        icon
+      (when-let ((disp (-some->> buffer-file-name
+                         (treemacs-icon-for-file)
+                         (get-text-property 0 'display))))
+        (when (listp disp)
+          (let ((icon (propertize "  " 'display
+                                  (cl-list* 'image
+                                            (let ((h (frame-char-height)))
+                                              (-> disp
+                                                  (cl-rest)
+                                                  (cl-copy-list)
+                                                  (plist-put :background (bg-color-from 'powerline-active1))
+                                                  (plist-put :height h)
+                                                  (plist-put :width h)))))))
+            (puthash major-mode icon spaceline-symbol-segment--major-icon-cache)
+            icon)))))
 
   (defun spaceline--my-theme ()
     (spaceline-compile
-      '(((((window-number
-            projectile-root) :separator "|")
-          buffer-modified)
+      '((window-number
          :face highlight-face
          :priority 100)
         (anzu :priority 95)
         auto-compile
         ((buffer-id
-          remote-host)
+          remote-host
+          buffer-modified)
          :priority 98)
-        (symbol :priority 105)
-        (process :when active)
-        (erc-track :when active)
-        (org-pomodoro :when active)
-        (org-clock :when active))
+        (symbol :priority 105))
       '((purpose :priority 94)
-        (battery :when active)
         (selection-info :priority 95)
         input-method
         (global :when active)
         ((flycheck-error flycheck-warning flycheck-info)
          :when active
          :priority 89)
+        (erc-track :when active)
+        (org-clock :when active)
+        (process :when active)
         (minor-modes :when active :priority 9)
         (major-icon :fallback major-mode :priority 79)))
-
     (setq-default mode-line-format '("%e" (:eval (spaceline-ml-main)))))
 
   (setq spaceline-window-numbers-unicode t)

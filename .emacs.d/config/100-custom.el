@@ -30,6 +30,11 @@
                                        "markdown-code-fontification:\\|"
                                        "magit\\(?:-[a-z]+\\)?:"
                                        "\\)")
+        frame-title-format (let ((tail system-name))
+                             `("%e" (:eval (concat (when-let ((proj-name (and (fboundp 'projectile-project-name)
+                                                                              (projectile-project-name))))
+                                                     (concat "｢" proj-name "｣ - "))
+                                                   ,tail))))
         include-prev-buf-regex (concat "^\\s-*\\(?:"
                                        (regexp-opt '("*scratch*" "*emacs-lisp REPL*")) "\\|"
                                        "\\*eshell\\s-"

@@ -194,30 +194,28 @@ which see."
                     "\n"
                     "%?")
            :prepend t)
-          ("n" "Note" entry
-           (file+headline ,(concat org-directory "/notes/" (format-time-string "%Y") ".org")
-                          ,(format-time-string "%b"))
-           ,(concat "* %^{Note}" "\n"
-                    "\n"
-                    "%t" "\n"
-                    "- %?")
-           :prepend t)
           ("p" "Protocol" entry
-           (file+headline ,(concat org-directory "/notes/" (format-time-string "%Y") ".org")
+           (file+headline ,(concat org-directory "/todos/" (format-time-string "%Y") ".org")
                           ,(format-time-string "%b"))
-           ,(concat "* %^{Note}"      "\n"
+           ,(concat "* TODO %^{Task}"                                                    "\n"
+                    ":PROPERTIES:"                                                       "\n"
+                    ":Effort:   %^{Effort|1:00|3:00|6:00|1d|3d|1w|2w|3w|1m|3m|6m|9m|1y}" "\n"
+                    ":END:"                                                              "\n"
                     "\n"
                     "%t"              "\n"
                     "- %a"            "\n"
-                    "  #+BEGIN_QUOTE" "\n"
+                    "  #+begin_quote" "\n"
                     "  %i"            "\n"
-                    "  #+END_QUOTE"   "\n"
+                    "  #+end_quote"   "\n"
                     "%?")
            :prepend t)
           ("L" "Protocol Link" entry
-           (file+headline ,(concat org-directory "/notes/" (format-time-string "%Y") ".org")
+           (file+headline ,(concat org-directory "/todos/" (format-time-string "%Y") ".org")
                           ,(format-time-string "%b"))
-           ,(concat "* %^{Note}" "\n"
+           ,(concat "* TODO %^{Task}"                                                    "\n"
+                    ":PROPERTIES:"                                                       "\n"
+                    ":Effort:   %^{Effort|1:00|3:00|6:00|1d|3d|1w|2w|3w|1m|3m|6m|9m|1y}" "\n"
+                    ":END:"                                                              "\n"
                     "\n"
                     "%t"   "\n"
                     "- %a" "\n"
