@@ -2,6 +2,8 @@
 !.atom/
 !.config/Code/User/keybindings.json
 !.config/Code/User/settings.json
+!.config/Code\ -\ Insider/User/keybindings.json
+!.config/Code\ -\ Insider/User/settings.json
 !.config/gromit-mpx.cfg
 !.config/gromit-mpx.ini
 !.emacs.d/
