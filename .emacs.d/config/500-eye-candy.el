@@ -357,21 +357,23 @@
     "Display a icon for `major-mode'"
     (if-let ((icon (gethash major-mode spaceline-symbol-segment--major-icon-cache)))
         icon
-      (when-let ((disp (-some->> buffer-file-name
-                         (treemacs-icon-for-file)
-                         (get-text-property 0 'display))))
-        (when (listp disp)
-          (let ((icon (propertize "  " 'display
-                                  (cl-list* 'image
-                                            (let ((h (frame-char-height)))
-                                              (-> disp
-                                                  (cl-rest)
-                                                  (cl-copy-list)
-                                                  (plist-put :background (bg-color-from 'powerline-active1))
-                                                  (plist-put :height h)
-                                                  (plist-put :width h)))))))
-            (puthash major-mode icon spaceline-symbol-segment--major-icon-cache)
-            icon)))))
+      (puthash major-mode
+               (when-let ((disp (-some->> buffer-file-name
+                                  (treemacs-icon-for-file)
+                                  (get-text-property 0 'display))))
+                 (when (listp disp)
+                   (let ((icon (propertize "  " 'display
+                                           (cl-list* 'image
+                                                     (let ((h (frame-char-height)))
+                                                       (-> disp
+                                                           (cl-rest)
+                                                           (cl-copy-list)
+                                                           (plist-put :background (bg-color-from 'powerline-active1))
+                                                           (plist-put :height h)
+                                                           (plist-put :width h)))))))
+                     (puthash major-mode icon spaceline-symbol-segment--major-icon-cache)
+                     icon)))
+               spaceline-symbol-segment--major-icon-cache)))
 
   (defun spaceline--my-theme ()
     (spaceline-compile

@@ -430,6 +430,7 @@
 
   (treemacs-resize-icons 15)
 
+  (advice-add #'treemacs--read-string :override #'read-string)
   (advice-add #'treemacs--setup-icon-background-colors :after
               (lambda (&rest _)
                 (when (memq treemacs--selected-icon-background '(unspecified-bg unspecified))
