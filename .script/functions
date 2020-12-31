@@ -78,6 +78,7 @@ vscode_extensions=(
     'aaron-bond.better-comments'
     'bmewburn.vscode-intelephense-client'
     'bungcip.better-toml'
+    'CoenraadS.bracket-pair-colorizer-2'
     'coolbear.systemd-unit-file'
     'DavidAnson.vscode-markdownlint'
     'dbaeumer.vscode-eslint'
@@ -114,7 +115,6 @@ _install_vs_code_from_tar() {
         echo "Usage: $0 [TAR_FILE] [TARGET_DIR]?"
         return 255
     fi
-    local system_electron=${3:-''}
 
     if [ -d "${target_dir}" ]; then
         rm -rf "${target_dir}".old
@@ -168,41 +168,6 @@ EOF
     fi
     update-desktop-database "${HOME}/.local/share/applications"
 
-    if [ -n "${system_electron}" ]; then
-        local files=(
-            'chrome_100_percent.pak'
-            'chrome_200_percent.pak'
-            'chrome-sandbox'
-            'code-insiders'
-            'icudtl.dat'
-            'libEGL.so'
-            'libffmpeg.so'
-            'libGLESv2.so'
-            'libvk_swiftshader.so'
-            'libvulkan.so'
-            'locales'
-            'snapshot_blob.bin'
-            'swiftshader'
-            'v8_context_snapshot.bin'
-            'vk_swiftshader_icd.json')
-        for file in "${files[@]}"; do
-            rm -rf "${target_dir}/${file}"
-        done
-        for file in "${system_electron}/"*; do
-            if [ -L "${file}" ]; then
-                continue
-            fi
-            if [ ! -e "${target_dir}/$(basename ${file})" ]; then
-                cp -r "${file}" "${target_dir}/"
-            fi
-        done
-        # use system libraries
-        rm -f "${target_dir}/libffmpeg.so"
-        rm -f "${target_dir}/libEGL.so"
-        rm -f "${target_dir}/libGLESv2.so"
-        sed -i -e 's@$VSCODE_PATH/code@$VSCODE_PATH/electron@g' "${target_dir}/bin/code"
-    fi
-
     echo -n "Do you want to customize? (Y or N): "
     read yn
     if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
@@ -237,7 +202,6 @@ _install_vs_code_insiders_from_tar() {
         echo "Usage: $0 [TAR_FILE] [TARGET_DIR]?"
         return 255
     fi
-    local system_electron=${3:-''}
 
     if [ -d "${target_dir}" ]; then
         rm -rf "${target_dir}".old
@@ -291,41 +255,6 @@ EOF
     fi
     update-desktop-database "${HOME}/.local/share/applications"
 
-    if [ -n "${system_electron}" ]; then
-        local files=(
-            'chrome_100_percent.pak'
-            'chrome_200_percent.pak'
-            'chrome-sandbox'
-            'code-insiders'
-            'icudtl.dat'
-            'libEGL.so'
-            'libffmpeg.so'
-            'libGLESv2.so'
-            'libvk_swiftshader.so'
-            'libvulkan.so'
-            'locales'
-            'snapshot_blob.bin'
-            'swiftshader'
-            'v8_context_snapshot.bin'
-            'vk_swiftshader_icd.json')
-        for file in "${files[@]}"; do
-            rm -rf "${target_dir}/${file}"
-        done
-        for file in "${system_electron}/"*; do
-            if [ -L "${file}" ]; then
-                continue
-            fi
-            if [ ! -e "${target_dir}/$(basename ${file})" ]; then
-                cp -r "${file}" "${target_dir}/"
-            fi
-        done
-        # use system libraries
-        rm -f "${target_dir}/libffmpeg.so"
-        rm -f "${target_dir}/libEGL.so"
-        rm -f "${target_dir}/libGLESv2.so"
-        sed -i -e 's@$VSCODE_PATH/code-insiders@$VSCODE_PATH/electron@g' "${target_dir}/bin/code-insiders"
-    fi
-
     echo -n "Do you want to customize? (Y or N): "
     read yn
     if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
@@ -360,7 +289,6 @@ _install_skype_from_rpm() {
         echo "Usage: $0 [TAR_FILE] [TARGET_DIR]?"
         return 255
     fi
-    local system_electron=${3:-''}
 
     if [ -d "${target_dir}" ]; then
         rm -rf "${target_dir}".old
@@ -411,41 +339,6 @@ EOF
     sed -i -e "s@/usr/bin/skypeforlinux@${skype_bin}@g" "${HOME}/.local/share/applications/skypeforlinux-share.desktop"
     update-desktop-database "${HOME}/.local/share/applications"
 
-    if [ -n "${system_electron}" ]; then
-        local files=(
-            'chrome_100_percent.pak'
-            'chrome_200_percent.pak'
-            'chrome-sandbox'
-            'skypeforlinux'
-            'icudtl.dat'
-            'libEGL.so'
-            'libffmpeg.so'
-            'libGLESv2.so'
-            'libvk_swiftshader.so'
-            'libvulkan.so'
-            'locales'
-            'snapshot_blob.bin'
-            'swiftshader'
-            'v8_context_snapshot.bin'
-            'vk_swiftshader_icd.json')
-        for file in "${files[@]}"; do
-            rm -rf "${target_dir}/${file}"
-        done
-        for file in "${system_electron}/"*; do
-            if [ -L "${file}" ]; then
-                continue
-            fi
-            if [ ! -e "${target_dir}/$(basename ${file})" ]; then
-                cp -r "${file}" "${target_dir}/"
-            fi
-        done
-        # use system libraries
-        rm -f "${target_dir}/libffmpeg.so"
-        rm -f "${target_dir}/libEGL.so"
-        rm -f "${target_dir}/libGLESv2.so"
-        sed -i -e "s@${target_dir}/skypeforlinux@${target_dir}/electron@g" "$skype_bin"
-    fi
-
     return 0
 }
 
@@ -456,7 +349,6 @@ _install_teams_from_rpm() {
         echo "Usage: $0 [TAR_FILE] [TARGET_DIR]?"
         return 255
     fi
-    local system_electron=${3:-''}
 
     if [ -d "${target_dir}" ]; then
         rm -rf "${target_dir}".old
@@ -500,41 +392,6 @@ EOF
     sed -i -e "s@/usr/bin/teams@${teams_bin}@g"  "${HOME}/.local/share/applications/teams.desktop"
     update-desktop-database "${HOME}/.local/share/applications"
 
-    if [ -n "${system_electron}" ]; then
-        local files=(
-            'chrome_100_percent.pak'
-            'chrome_200_percent.pak'
-            'chrome-sandbox'
-            'teams'
-            'icudtl.dat'
-            'libEGL.so'
-            'libffmpeg.so'
-            'libGLESv2.so'
-            'libvk_swiftshader.so'
-            'libvulkan.so'
-            'locales'
-            'snapshot_blob.bin'
-            'swiftshader'
-            'v8_context_snapshot.bin'
-            'vk_swiftshader_icd.json')
-        for file in "${files[@]}"; do
-            rm -rf "${target_dir}/${file}"
-        done
-        for file in "${system_electron}/"*; do
-            if [ -L "${file}" ]; then
-                continue
-            fi
-            if [ ! -e "${target_dir}/$(basename ${file})" ]; then
-                cp -r "${file}" "${target_dir}/"
-            fi
-        done
-        # use system libraries
-        rm -f "${target_dir}/libffmpeg.so"
-        rm -f "${target_dir}/libEGL.so"
-        rm -f "${target_dir}/libGLESv2.so"
-        sed -i -e "s@${target_dir}/teams@${target_dir}/electron@g" "$teams_bin"
-    fi
-
     return 0
 }
 
@@ -545,7 +402,6 @@ _install_slack_from_rpm() {
         echo "Usage: $0 [TAR_FILE] [TARGET_DIR]?"
         return 255
     fi
-    local system_electron=${3:-''}
 
     if [ -d "${target_dir}" ]; then
         rm -rf "${target_dir}".old
@@ -592,41 +448,6 @@ EOF
     sed -i -e "s@/usr/bin/slack@${slack_bin}@g"                      "${HOME}/.local/share/applications/slack.desktop"
     sed -i -e "s@/usr/share/pixmaps@${HOME}/.local/share/pixmaps@g"  "${HOME}/.local/share/applications/slack.desktop"
     update-desktop-database "${HOME}/.local/share/applications"
-
-    if [ -n "${system_electron}" ]; then
-        local files=(
-            'chrome_100_percent.pak'
-            'chrome_200_percent.pak'
-            'chrome-sandbox'
-            'slack'
-            'icudtl.dat'
-            'libEGL.so'
-            'libffmpeg.so'
-            'libGLESv2.so'
-            'libvk_swiftshader.so'
-            'libvulkan.so'
-            'locales'
-            'snapshot_blob.bin'
-            'swiftshader'
-            'v8_context_snapshot.bin'
-            'vk_swiftshader_icd.json')
-        for file in "${files[@]}"; do
-            rm -rf "${target_dir}/${file}"
-        done
-        for file in "${system_electron}/"*; do
-            if [ -L "${file}" ]; then
-                continue
-            fi
-            if [ ! -e "${target_dir}/$(basename ${file})" ]; then
-                cp -r "${file}" "${target_dir}/"
-            fi
-        done
-        # use system libraries
-        rm -f "${target_dir}/libffmpeg.so"
-        rm -f "${target_dir}/libEGL.so"
-        rm -f "${target_dir}/libGLESv2.so"
-        sed -i -e "s@${target_dir}/slack@${target_dir}/electron@g" "$slack_bin"
-    fi
 
     return 0
 }
