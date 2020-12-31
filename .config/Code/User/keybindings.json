@@ -82,11 +82,6 @@
         "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
     },
     {
-        "key": "ctrl+shift+p",
-        "command": "multiComamnd.vimEscapeAndShowCommands",
-        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
-    },
-    {
         "key": "ctrl+tab",
         "command": "multiCommand.vimFocusFirstEditorGroupAndEscape",
         "when": "sideBarFocus && vim.active"
@@ -100,6 +95,21 @@
         "key": "ctrl+shift+tab",
         "command": "multiCommand.vimOpenPreviousRecentlyUsedEditorInGroup",
         "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+    },
+    {
+        "key": "enter",
+        "command": "multiCommand.vimCloseFindWidget",
+        "when": "vim.active && findInputFocussed"
+    },
+    {
+        "key": "escape",
+        "command": "multiCommand.vimCloseFindWidgetAndGoBack",
+        "when": "vim.active && findInputFocussed"
+    },
+    {
+        "key": "escape",
+        "command": "multiCommand.vimCloseFindWidget",
+        "when": "vim.active && !findInputFocussed && findWidgetVisible"
     },
 
     // H/J/K/L
@@ -176,6 +186,16 @@
     {
         "key": "ctrl+j",
         "command": "-workbench.action.togglePanel"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "editor.action.nextMatchFindAction",
+        "when": "findInputFocussed && !searchViewletVisible && !suggestWidgetVisible"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "editor.action.previousMatchFindAction",
+        "when": "findInputFocussed && !searchViewletVisible && !suggestWidgetVisible"
     },
 
     // HHKB Pro2

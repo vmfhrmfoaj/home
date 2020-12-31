@@ -177,6 +177,10 @@
         },
     },
 
+    "bracket-pair-colorizer-2.colors": [
+        "#a0a0a0",
+    ],
+
     // Edit
     "breadcrumbs.enabled": true,
     "editor.detectIndentation": false,
@@ -185,8 +189,12 @@
     "editor.lineNumbers": "relative",
     "editor.renderLineHighlight": "gutter",
     "editor.renderWhitespace": "selection",
-    "editor.minimap.enabled": false,
-    "editor.quickSuggestionsDelay": 10,
+    "editor.minimap.enabled": true,
+    "editor.minimap.renderCharacters": false,
+    "editor.minimap.showSlider": "always",
+    "editor.scrollbar.verticalScrollbarSize": 0, // use the minimap as the scrollbar
+    "editor.quickSuggestions": true,
+    "editor.suggestOnTriggerCharacters": true,
     "editor.suggestSelection": "first",
     "editor.tabSize": 4,
     "workbench.editor.enablePreview": false,
@@ -244,13 +252,6 @@
             ]
         },
         {
-            "command": "multiComamnd.vimEscapeAndShowCommands",
-            "sequence": [
-                "extension.vim_escape",
-                "workbench.action.showCommands",
-            ]
-        },
-        {
             "command": "multiCommand.vimPreviousEditor",
             "sequence": [
                 "extension.vim_escape",
@@ -297,6 +298,45 @@
             "sequence": [
                 "extension.vim_escape",
                 "workbench.action.previousEditor",
+            ]
+        },
+        {
+            "command": "multiCommand.vimMarkAndFind",
+            "sequence": [
+                {"command": "type", "args": {"text": "m"}},
+                {"command": "type", "args": {"text": "z"}},
+                "actions.find",
+            ]
+        },
+        {
+            "command": "multiCommand.vimFindAndFocusEditor",
+            "sequence": [
+                "actions.find",
+                "workbench.action.focusLastEditorGroup",
+            ]
+        },
+        {
+            "command": "multiCommand.vimCloseFindWidget",
+            "sequence": [
+                "closeFindWidget",
+                "cancelSelection",
+                "extension.vim_escape",
+                {"command": "type", "args": {"text": "q"}},
+                {"command": "type", "args": {"text": "z"}},
+                {"command": "type", "args": {"text": "q"}},
+            ]
+        },
+        {
+            "command": "multiCommand.vimCloseFindWidgetAndGoBack",
+            "sequence": [
+                "closeFindWidget",
+                "cancelSelection",
+                "extension.vim_escape",
+                {"command": "type", "args": {"text": "`"}},
+                {"command": "type", "args": {"text": "z"}},
+                {"command": "type", "args": {"text": "q"}},
+                {"command": "type", "args": {"text": "z"}},
+                {"command": "type", "args": {"text": "q"}},
             ]
         },
         {
@@ -359,121 +399,122 @@
     "vim.highlightedyank.enable": true,
     "vim.surround": true,
     "vim.visualstar": true,
+    "vim.leader": "<space>",
     "vim.handleKeys": {
-        "<C-d>": false,
-        "<C-j>": false,
-        "<C-k>": false,
-        "<C-t>": false,
         "<C-w>": false,
         "<C-z>": false,
     },
-    "vim.leader": "<space>",
+    "vim.insertModeKeyBindingsNonRecursive": [
+        {
+            "before": [ "<C-h>" ],
+            "commands": [ { "command": "deleteLeft" } ]
+        },
+    ],
     "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "before": [ "N" ],
+            "commands": [ { "command": "editor.action.previousMatchFindAction" }, ]
+        },
+        {
+            "before": [ "n" ],
+            "commands": [ { "command": "editor.action.nextMatchFindAction" }, ]
+        },
+        {
+            "before": [
+                "g",
+                "J",
+            ],
+            "commands": [ { "command": "editor.action.moveLinesDownAction" }, ]
+        },
+        {
+            "before": [
+                "g",
+                "K",
+            ],
+            "commands": [ { "command": "editor.action.moveLinesUpAction" }, ]
+        },
         {
             "before": [
                 "<leader>",
                 ";"
             ],
             "commands": [
-                {
-                    "command": "editor.action.commentLine",
-                },
-                {
-                    "command": "extension.vim_escape",
-                },
+                { "command": "editor.action.commentLine", },
+                { "command": "extension.vim_escape", },
             ]
         },
     ],
     "vim.normalModeKeyBindingsNonRecursive": [
         {
-            "before": [
-                "<C-h>"
-            ],
-            "commands": [
-                ":nohl"
-            ]
+            "before": [ "<M-n>" ],
+            "commands": [ { "command": "editor.action.marker.next", } ]
+        },
+        {
+            "before": [ "<M-p>" ],
+            "commands": [ { "command": "editor.action.marker.prev", } ]
+        },
+        {
+            "before": [ "<C-h>" ],
+            "commands": [ ":nohl" ]
+        },
+        {
+            "before": [ "<C-p>" ],
+            "commands": [ { "command": "workbench.action.quickOpen" }, ]
+        },
+        {
+            "before": [ "/" ],
+            "commands": [ { "command": "multiCommand.vimMarkAndFind" }, ]
         },
         {
             "before": [
-                "<M-n>"
-            ],
-            "commands": [
-                {
-                    "command": "editor.action.marker.next",
-                }
-            ]
-        },
-        {
-            "before": [
-                "<M-p>"
-            ],
-            "commands": [
-                {
-                    "command": "editor.action.marker.prev",
-                }
-            ]
-        },
-        {
-            "before": [
-                "ctrl+f"
-            ],
-            "commands": [
-                {
-                    "command": "actions.find"
-                },
-            ]
-        },
-        {
-            "before": [
-                "<C-p>"
-            ],
-            "commands": [
-                {
-                    "command": "workbench.action.quickOpen"
-                },
-            ]
-        },
-        {
-            "before": [
-                "K"
-            ],
-            "after": [
                 "g",
-                "h"
-            ]
+                "J",
+            ],
+            "commands": [ { "command": "editor.action.moveLinesDownAction" }, ]
+        },
+        {
+            "before": [
+                "g",
+                "K",
+            ],
+            "commands": [ { "command": "editor.action.moveLinesUpAction" }, ]
+        },
+        {
+            "before": [ "N" ],
+            "commands": [ { "command": "editor.action.previousMatchFindAction" }, ]
+        },
+        {
+            "before": [ "n" ],
+            "commands": [ { "command": "editor.action.nextMatchFindAction" }, ]
         },
         {
             "before": [
                 "g",
                 "D"
             ],
-            "commands": [
-                {
-                    "command": "editor.action.referenceSearch.trigger",
-                },
-            ]
+            "commands": [ { "command": "editor.action.referenceSearch.trigger", }, ]
         },
         {
             "before": [
                 "g",
                 "x"
             ],
-            "commands": [
-                {
-                    "command": "editor.action.openLink",
-                }
-            ]
+            "commands": [ { "command": "editor.action.openLink", } ]
         },
         {
             "before": [
                 "<leader>",
                 ";",
             ],
-            "commands": [
-                {
-                    "command": "editor.action.commentLine",
-                }
-            ]
+            "commands": [ { "command": "editor.action.commentLine", } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "f",
+                "f"
+            ],
+            "commands": [ { "command": "workbench.action.files.openFile", } ]
         },
         {
             "before": [
@@ -481,23 +522,22 @@
                 "f",
                 "y"
             ],
-            "commands": [
-                {
-                    "command": "workbench.action.files.copyPathOfActiveFile",
-                }
-            ]
+            "commands": [ { "command": "workbench.action.files.copyPathOfActiveFile", } ]
         },
+        // NOTE: has been occupied by Vim extension
+        // {
+        //     "before": [
+        //         "<leader>",
+        //         "b",
+        //     ],
+        // },
         {
             "before": [
                 "<leader>",
                 "i",
                 "s"
             ],
-            "commands": [
-                {
-                    "command": "editor.action.insertSnippet",
-                }
-            ]
+            "commands": [ { "command": "editor.action.insertSnippet", } ]
         },
         {
             "before": [
@@ -505,61 +545,22 @@
                 "r",
                 "r"
             ],
-            "commands": [
-                {
-                    "command": "editor.action.rename",
-                }
-            ]
+            "commands": [ { "command": "editor.action.rename", } ]
         },
+        // NOTE: has been occupied by Vim extension
+        // {
+        //     "before": [
+        //         "<leader>",
+        //         "w",
+        //     ],
+        // },
         {
             "before": [
                 "<leader>",
                 "x",
                 "t"
             ],
-            "commands": [
-                {
-                    "command": "workbench.action.terminal.toggleTerminal",
-                }
-            ]
-        },
-    ],
-    "vim.insertModeKeyBindingsNonRecursive": [
-        {
-            "before": [
-                "ctrl+f"
-            ],
-            "commands": [
-                {
-                    "command": "extension.vim_escape"
-                },
-                {
-                    "command": "multiCommand.vimCancelFindWidget"
-                },
-            ]
-        },
-        {
-            "before": [
-                "<C-h>"
-            ],
-            "commands": [
-                {
-                    "command": "deleteLeft"
-                }
-            ]
-        },
-        {
-            "before": [
-                "<C-p>"
-            ],
-            "commands": [
-                {
-                    "command": "workbench.action.quickOpen"
-                },
-                {
-                    "command": "extension.vim_escape"
-                },
-            ],
+            "commands": [ { "command": "workbench.action.terminal.toggleTerminal", } ]
         },
     ],
 }
