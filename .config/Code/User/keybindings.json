@@ -32,6 +32,16 @@
         "command": "closeParameterHints",
         "when": "editorTextFocus && parameterHintsVisible"
     },
+    {
+        "key": "=",
+        "command": "explorer.newFile",
+        "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceIsRoot && !inputFocus"
+    },
+    {
+        "key": "shift-=",
+        "command": "explorer.newFolder",
+        "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceIsRoot && !inputFocus"
+    },
 
     // Tab and Shift + Tab
     {
@@ -56,6 +66,11 @@
     },
 
     // Vim
+    {
+        "key": "ctrl+p",
+        "command": "multiCommand.vimQuickOpen",
+        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+    },
     {
         "key": "escape",
         "command": "multiCommand.vimCancelSuggestionAndEscape",
@@ -82,18 +97,23 @@
         "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
     },
     {
+        "key": "ctrl+1",
+        "command": "multiCommand.vimFocusFirstEditorGroupAndEscape",
+        "when": "sideBarFocus && vim.active"
+    },
+    {
         "key": "ctrl+tab",
         "command": "multiCommand.vimFocusFirstEditorGroupAndEscape",
         "when": "sideBarFocus && vim.active"
     },
     {
         "key": "ctrl+tab",
-        "command": "multiCommand.vimOpenNextRecentlyUsedEditorInGroup",
+        "command": "multiCommand.vimNextEditor",
         "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
     },
     {
         "key": "ctrl+shift+tab",
-        "command": "multiCommand.vimOpenPreviousRecentlyUsedEditorInGroup",
+        "command": "multiCommand.vimPreviousEditor",
         "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
     },
     {
@@ -144,16 +164,6 @@
         "when": "inputBoxFocus && searchViewletVisible"
     },
     {
-        "key": "ctrl+shift+j",
-        "command": "editor.action.marker.nextInFiles",
-        "when": "editorTextFocus && !findInputFocussed"
-    },
-    {
-        "key": "ctrl+shift+k",
-        "command": "editor.action.marker.prevInFiles",
-        "when": "editorTextFocus && !findInputFocussed"
-    },
-    {
         "key": "ctrl+j",
         "command": "multiCommand.goNextChangeAndShow",
         "when": "editorTextFocus && !findInputFocussed && !suggestWidgetVisible"
@@ -196,6 +206,18 @@
         "key": "ctrl+k",
         "command": "editor.action.previousMatchFindAction",
         "when": "findInputFocussed && !searchViewletVisible && !suggestWidgetVisible"
+    },
+
+    // N/P
+    {
+        "key": "alt+n",
+        "command": "editor.action.marker.next",
+        "when": "editorTextFocus && !findInputFocussed"
+    },
+    {
+        "key": "alt+p",
+        "command": "editor.action.marker.prev",
+        "when": "editorTextFocus && !findInputFocussed"
     },
 
     // HHKB Pro2

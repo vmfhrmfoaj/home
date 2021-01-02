@@ -3,14 +3,11 @@
     "editor.fontFamily": "'Fira Code', monospace",
     "editor.fontSize": 14,
     "editor.fontLigatures": true,
-    "editor.fontWeight": "500",
     "editor.wordWrapColumn": 120,
-    "editor.rulers": [
-        120
-    ],
+    "editor.rulers": [ 120 ],
     "terminal.integrated.fontSize": 14,
-    "window.titleBarStyle": "custom",
-    "window.menuBarVisibility": "default",
+    "window.titleBarStyle": "native",
+    "window.menuBarVisibility": "toggle",
     "window.zoomLevel": 0,
     "workbench.sideBar.location": "left",
     "workbench.colorTheme": "Visual Studio Dark",
@@ -22,6 +19,8 @@
             "statusBar.background": "#333",
             "statusBar.noFolderBackground": "#333",
             "statusBar.noFolderBorder": "#333",
+            "editorCursor.foreground": "#ffffff85",
+            "editorCursor.background": "#333",
             "editor.lineHighlightBorder": "#1e1e1e",
             "editorRuler.foreground": "#5a5a5a20",
             "rust_analyzer.inlayHints.foreground": "#878787",
@@ -30,25 +29,8 @@
 
     "editor.semanticTokenColorCustomizations": {
         "rules": {
-            "*.mutable": {
-                "underline": true,
-            },
-            "*.unsafe": {
-                "bold": true,
-                "italic": true,
-            },
-            "class.declaration": {
-                "bold": true
-            },
-            "struct.declaration": {
-                "bold": true
-            },
-            "function.declaration": {
-                "bold": true
-            },
-            "method.declaration": {
-                "bold": true
-            },
+            "*.mutable": { "underline": true, },
+            "*.unsafe": { "italic": true, },
         },
         "[Visual Studio Dark]": {
             "rules": {
@@ -69,9 +51,7 @@
         "textMateRules": [
             {
                 "scope": "constant.other.placeholder.c",
-                "settings": {
-                    "fontStyle": "italic"
-                }
+                "settings": { "fontStyle": "italic" }
             },
         ],
         "[Visual Studio Dark]": {
@@ -82,20 +62,12 @@
             },
             "textMateRules": [
                 {
-                    "scope": [
-                        "entity.name.function.preprocessor"
-                    ],
-                    "settings": {
-                        "foreground": "#d4d4d4",
-                    }
+                    "scope": "entity.name.function.preprocessor",
+                    "settings": { "foreground": "#d4d4d4", }
                 },
                 {
-                    "scope": [
-                        "keyword.operator"
-                    ],
-                    "settings": {
-                        "foreground": "#b1b1b1"
-                    },
+                    "scope": "keyword.operator",
+                    "settings": { "foreground": "#b1b1b1" },
                 },
                 {
                     "scope": [
@@ -163,15 +135,11 @@
                         "punctuation.separator.period.python",
                         "meta.function.decorator.python",
                     ],
-                    "settings": {
-                        "foreground": "#a9a9a9",
-                    }
+                    "settings": { "foreground": "#a9a9a9", }
                 },
                 {
                     "scope": "storage.type.built-in.primitive.c",
-                    "settings": {
-                        "foreground": "#4ec9b0",
-                    }
+                    "settings": { "foreground": "#4ec9b0", }
                 },
             ]
         },
@@ -180,6 +148,12 @@
     "bracket-pair-colorizer-2.colors": [
         "#a0a0a0",
     ],
+    "bracket-pair-colorizer-2.scopeLineCSS": [
+        "borderStyle : solid",
+        "borderWidth : 1px",
+        "borderColor : #707070",
+        "opacity: 1"
+    ],
 
     // Edit
     "breadcrumbs.enabled": true,
@@ -187,7 +161,7 @@
     "editor.formatOnSave": false,
     "editor.insertSpaces": true,
     "editor.lineNumbers": "relative",
-    "editor.renderLineHighlight": "gutter",
+    "editor.renderLineHighlight": "none",
     "editor.renderWhitespace": "selection",
     "editor.minimap.enabled": true,
     "editor.minimap.renderCharacters": false,
@@ -208,9 +182,14 @@
     // Misc.
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
 
     // C/C++
     "C_Cpp.updateChannel": "Default",
+    "C_Cpp.enhancedColorization": "Enabled",
+    "C_Cpp.intelliSenseEngine": "Default",
 
     // CMake
     "cmake.configureOnOpen": true,
@@ -266,6 +245,13 @@
             ]
         },
         {
+            "command": "multiCommand.openLatestUsedEditor",
+            "sequence": [
+                "workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup",
+                "workbench.action.acceptSelectedQuickOpenItem",
+            ]
+        },
+        {
             "command": "multiCommand.vimQuickOpen",
             "sequence": [
                 "extension.vim_escape",
@@ -287,32 +273,11 @@
             ]
         },
         {
-            "command": "multiCommand.vimOpenNextRecentlyUsedEditorInGroup",
-            "sequence": [
-                "extension.vim_escape",
-                "workbench.action.nextEditor",
-            ]
-        },
-        {
-            "command": "multiCommand.vimOpenPreviousRecentlyUsedEditorInGroup",
-            "sequence": [
-                "extension.vim_escape",
-                "workbench.action.previousEditor",
-            ]
-        },
-        {
             "command": "multiCommand.vimMarkAndFind",
             "sequence": [
                 {"command": "type", "args": {"text": "m"}},
                 {"command": "type", "args": {"text": "z"}},
                 "actions.find",
-            ]
-        },
-        {
-            "command": "multiCommand.vimFindAndFocusEditor",
-            "sequence": [
-                "actions.find",
-                "workbench.action.focusLastEditorGroup",
             ]
         },
         {
@@ -377,6 +342,7 @@
 
     // Python
     "python.languageServer": "Pylance",
+    "python.showStartPage": false,
 
     // Remote Development
     "remote.SSH.showLoginTerminal": true,
@@ -413,25 +379,25 @@
     "vim.visualModeKeyBindingsNonRecursive": [
         {
             "before": [ "N" ],
-            "commands": [ { "command": "editor.action.previousMatchFindAction" }, ]
+            "commands": [ { "command": "editor.action.previousMatchFindAction" } ]
         },
         {
             "before": [ "n" ],
-            "commands": [ { "command": "editor.action.nextMatchFindAction" }, ]
+            "commands": [ { "command": "editor.action.nextMatchFindAction" } ]
         },
         {
             "before": [
                 "g",
                 "J",
             ],
-            "commands": [ { "command": "editor.action.moveLinesDownAction" }, ]
+            "commands": [ { "command": "editor.action.moveLinesDownAction" } ]
         },
         {
             "before": [
                 "g",
                 "K",
             ],
-            "commands": [ { "command": "editor.action.moveLinesUpAction" }, ]
+            "commands": [ { "command": "editor.action.moveLinesUpAction" } ]
         },
         {
             "before": [
@@ -439,74 +405,80 @@
                 ";"
             ],
             "commands": [
-                { "command": "editor.action.commentLine", },
-                { "command": "extension.vim_escape", },
+                { "command": "editor.action.commentLine" },
+                { "command": "extension.vim_escape" }
             ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "x",
+                "f"
+            ],
+            "commands": [ { "command": "editor.action.formatSelection" } ]
         },
     ],
     "vim.normalModeKeyBindingsNonRecursive": [
         {
-            "before": [ "<M-n>" ],
-            "commands": [ { "command": "editor.action.marker.next", } ]
-        },
-        {
-            "before": [ "<M-p>" ],
-            "commands": [ { "command": "editor.action.marker.prev", } ]
-        },
-        {
-            "before": [ "<C-h>" ],
-            "commands": [ ":nohl" ]
-        },
-        {
-            "before": [ "<C-p>" ],
-            "commands": [ { "command": "workbench.action.quickOpen" }, ]
-        },
-        {
             "before": [ "/" ],
-            "commands": [ { "command": "multiCommand.vimMarkAndFind" }, ]
-        },
-        {
-            "before": [
-                "g",
-                "J",
-            ],
-            "commands": [ { "command": "editor.action.moveLinesDownAction" }, ]
-        },
-        {
-            "before": [
-                "g",
-                "K",
-            ],
-            "commands": [ { "command": "editor.action.moveLinesUpAction" }, ]
+            "commands": [ { "command": "multiCommand.vimMarkAndFind" } ]
         },
         {
             "before": [ "N" ],
-            "commands": [ { "command": "editor.action.previousMatchFindAction" }, ]
+            "commands": [ { "command": "editor.action.previousMatchFindAction" } ]
         },
         {
             "before": [ "n" ],
-            "commands": [ { "command": "editor.action.nextMatchFindAction" }, ]
+            "commands": [ { "command": "editor.action.nextMatchFindAction" } ]
+        },
+        {
+            "before": [
+                "g",
+                "B"
+            ],
+            "commands": [ { "command": "editor.action.selectHighlights" } ]
         },
         {
             "before": [
                 "g",
                 "D"
             ],
-            "commands": [ { "command": "editor.action.referenceSearch.trigger", }, ]
+            "commands": [ { "command": "editor.action.referenceSearch.trigger" } ]
+        },
+        {
+            "before": [
+                "g",
+                "J",
+            ],
+            "commands": [ { "command": "editor.action.moveLinesDownAction" } ]
+        },
+        {
+            "before": [
+                "g",
+                "K",
+            ],
+            "commands": [ { "command": "editor.action.moveLinesUpAction" } ]
         },
         {
             "before": [
                 "g",
                 "x"
             ],
-            "commands": [ { "command": "editor.action.openLink", } ]
+            "commands": [ { "command": "editor.action.openLink" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "<tab>",
+            ],
+            "commands": [ { "command": "multiCommand.openLatestUsedEditor" } ]
         },
         {
             "before": [
                 "<leader>",
                 ";",
             ],
-            "commands": [ { "command": "editor.action.commentLine", } ]
+            "commands": [ { "command": "editor.action.commentLine" } ]
         },
         {
             "before": [
@@ -514,7 +486,15 @@
                 "f",
                 "f"
             ],
-            "commands": [ { "command": "workbench.action.files.openFile", } ]
+            "commands": [ { "command": "workbench.action.files.openFile" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "f",
+                "n"
+            ],
+            "commands": [ { "command": "workbench.action.files.newUntitledFile" } ]
         },
         {
             "before": [
@@ -522,7 +502,7 @@
                 "f",
                 "y"
             ],
-            "commands": [ { "command": "workbench.action.files.copyPathOfActiveFile", } ]
+            "commands": [ { "command": "workbench.action.files.copyPathOfActiveFile" } ]
         },
         // NOTE: has been occupied by Vim extension
         // {
@@ -537,15 +517,7 @@
                 "i",
                 "s"
             ],
-            "commands": [ { "command": "editor.action.insertSnippet", } ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "r",
-                "r"
-            ],
-            "commands": [ { "command": "editor.action.rename", } ]
+            "commands": [ { "command": "editor.action.insertSnippet" } ]
         },
         // NOTE: has been occupied by Vim extension
         // {
@@ -558,9 +530,9 @@
             "before": [
                 "<leader>",
                 "x",
-                "t"
+                "f"
             ],
-            "commands": [ { "command": "workbench.action.terminal.toggleTerminal", } ]
+            "commands": [ { "command": "editor.action.formatDocument" } ]
         },
     ],
 }
