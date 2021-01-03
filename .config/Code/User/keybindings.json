@@ -35,12 +35,12 @@
     {
         "key": "=",
         "command": "explorer.newFile",
-        "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceIsRoot && !inputFocus"
+        "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
     },
     {
         "key": "shift-=",
         "command": "explorer.newFolder",
-        "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceIsRoot && !inputFocus"
+        "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
     },
 
     // Tab and Shift + Tab

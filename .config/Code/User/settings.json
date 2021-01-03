@@ -186,6 +186,46 @@
         "editor.defaultFormatter": "vscode.json-language-features"
     },
 
+    // Better Comment
+    "better-comments.tags": [
+        {
+            "tag": "fixme",
+            "color": "#FF2D00",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "xxx",
+            "color": "#FF2D00",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "note",
+            "color": "#3498DB",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "todo",
+            "color": "#FF8C00",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+    ],
+
     // C/C++
     "C_Cpp.updateChannel": "Default",
     "C_Cpp.enhancedColorization": "Enabled",
@@ -378,12 +418,23 @@
     ],
     "vim.visualModeKeyBindingsNonRecursive": [
         {
+            "before": [ "<C-r>" ],
+            "commands": [ { "command": "redo" } ]
+        },
+        {
             "before": [ "N" ],
             "commands": [ { "command": "editor.action.previousMatchFindAction" } ]
         },
         {
             "before": [ "n" ],
             "commands": [ { "command": "editor.action.nextMatchFindAction" } ]
+        },
+        {
+            "before": [ "u" ],
+            "commands": [
+                { "command": "undo" },
+                { "command": "extension.vim_escape" }
+            ]
         },
         {
             "before": [
@@ -415,10 +466,18 @@
                 "x",
                 "f"
             ],
-            "commands": [ { "command": "editor.action.formatSelection" } ]
+            "commands": [
+                { "command": "editor.action.formatSelection" },
+                { "command": "cancelSelection" },
+                { "command": "extension.vim_escape" }
+            ]
         },
     ],
     "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": [ "<C-r>" ],
+            "commands": [ { "command": "redo" } ]
+        },
         {
             "before": [ "/" ],
             "commands": [ { "command": "multiCommand.vimMarkAndFind" } ]
@@ -430,6 +489,13 @@
         {
             "before": [ "n" ],
             "commands": [ { "command": "editor.action.nextMatchFindAction" } ]
+        },
+        {
+            "before": [ "u" ],
+            "commands": [
+                { "command": "undo" },
+                { "command": "extension.vim_escape" }
+            ]
         },
         {
             "before": [
