@@ -61,8 +61,7 @@ EOF
 }
 
 _setup_for_clojure() {
-    which lein > /dev/null 2>&1
-    if [ $? -ne 0 ]; then
+    if [ ! -d "${HOME}/.lein" ]; then
         local lein_path="${HOME}/.bin/lein"
         echo -n "Do you want to install 'Lein(Clojure project manager)'? (Y or N): "
         read yn
@@ -79,6 +78,7 @@ read yn
 if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
     wget -O ${lein_path} 'https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein'
     chmod +x ${lein_path}
+    rm -rf \$0
 fi
 EOF
             chmod +x "${HOME}/.shim/lein"
@@ -202,8 +202,45 @@ EOF
 }
 
 _setup_for_rust() {
-    which rustc >/dev/null 2>&1
-    if [ $? -eq 0 ] && [ ! -x "${HOME}/.bin/cargo" ]; then
+    if [ ! -d "${HOME}/.rustup" ]; then
+        echo -n "Do you want to install 'rustup'? (Y or N): "
+        read yn
+        if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
+            # see, https://github.com/rust-lang/rustup.rs/issues/953#issuecomment-318650338
+            curl 'https://sh.rustup.rs' -sSf | RUSTUP_INIT_SKIP_PATH_CHECK=yes sh -s -- --no-modify-path --default-toolchain stable
+            "${HOME}/.cargo/bin/rustup" component add clippy rustfmt rust-src
+        else
+            mkdir -p "${HOME}/.rustup"
+            mkdir -p "${HOME}/.shim"
+            cat > "${HOME}/.shim/rustup" <<EOF
+#!/bin/bash
+echo -n "Do you want to install 'rustup'? (Y or N): "
+read yn
+if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
+    rm -rf \${HOME}/.cargo
+    rm -rf \${HOME}/.rustup
+    curl 'https://sh.rustup.rs' -sSf | RUSTUP_INIT_SKIP_PATH_CHECK=yes sh -s -- --no-modify-path --default-toolchain nightly
+    "\${HOME}/.cargo/bin/rustup" component add clippy rustfmt rust-src
+    rm -rf \$0
+    rm -rf "\$(dirname \$0)/cargo"
+    rm -rf "\$(dirname \$0)/rustup"
+fi
+EOF
+            chmod +x "${HOME}/.shim/rustup"
+            which cargo >/dev/null 2>&1
+            if [ $? -ne 0 ] ; then
+                cp "${HOME}/.shim/rustup" "${HOME}/.shim/cargo"
+            fi
+        fi
+    fi
+    if [ ! -r  "${HOME}/.oh-my-zsh/custom/plugins/rustup/_rustup" ]; then
+        mkdir -p "${HOME}/.oh-my-zsh/custom/plugins/rustup"
+        rustup completions zsh > "${HOME}/.oh-my-zsh/custom/plugins/rustup/_rustup"
+        rm -rf "${HOME}/.zcompdump*"
+    fi
+
+    # create cargo wrapper
+    if [ ! -x "${HOME}/.bin/cargo" ]; then
         mkdir -p "${HOME}/.bin"
         cat > "${HOME}/.bin/cargo" <<\EOF
 #!/bin/bash
@@ -373,9 +410,6 @@ fi
 _add_to_path '/sbin'
 _add_to_path '/usr/sbin'
 
-# add shim dir to PATH
-_add_to_path "${HOME}/.shim"
-
 # basic setup
 _setup_for_android
 _setup_for_asdf
@@ -398,6 +432,9 @@ _setup_for_lua
 # add user binary dirs to PATH
 _add_to_path "${HOME}/.local/bin"
 _add_to_path "${HOME}/.bin"
+
+# add shim dir to PATH
+_add_to_path "${HOME}/.shim"
 
 # for only terminal environment
 if [ -t 1 ] && [ -n "${SHELL}" ]; then
