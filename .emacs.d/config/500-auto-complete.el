@@ -17,8 +17,9 @@
     (execute-kbd-macro (kbd "SPC")))
 
   (let ((len (if (fboundp #'native-compile) 1 3))
-        (lookup-other-buffer (fboundp #'native-compile)))
-    (setq company-idle-delay 0.3
+        (lookup-other-buffer (fboundp #'native-compile))
+        (idle-delay (if (fboundp #'native-compile) 0.2 0.3)))
+    (setq company-idle-delay idle-delay
           company-echo-delay 0.2
           company-minimum-prefix-length len
           company-selection-wrap-around t
