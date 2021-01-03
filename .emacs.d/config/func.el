@@ -253,8 +253,8 @@
 (defun get-scratch-buffer-create ()
   (interactive)
   (pop-to-buffer (get-buffer-create scratch-buffer-name))
-  (unless (eq 'org-mode major-mode)
-    (org-mode)
+  (unless (eq 'markdown-mode major-mode)
+    (markdown-mode)
     (evil-local-set-key 'normal (kbd "C-l") (lambda () (interactive) (kill-region (point-min) (point-max))))
     (when (file-exists-p scratch-buffer-temp-file)
       (insert-file-contents scratch-buffer-temp-file))
@@ -334,6 +334,4 @@
 (defun open-link-at-point ()
   (interactive)
   (cond
-   ((derived-mode-p 'org-mode)
-    (call-interactively #'org-open-at-point))
    (t (message (concat "Don't know how to open a link in '" (symbol-name major-mode) "'")))))

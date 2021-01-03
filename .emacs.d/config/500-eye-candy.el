@@ -55,7 +55,6 @@
   (with-eval-after-load "eldoc"                   (diminish 'eldoc-mode                  ""))
   (with-eval-after-load "elisp-slime-nav"         (diminish 'elisp-slime-nav-mode        ""))
   (with-eval-after-load "evil-goggles"            (diminish 'evil-goggles-mode           ""))
-  (with-eval-after-load "evil-org"                (diminish 'evil-org-mode               ""))
   (with-eval-after-load "flycheck"                (diminish 'flycheck-mode               ""))
   (with-eval-after-load "git-gutter"              (diminish 'git-gutter-mode             ""))
   (with-eval-after-load "highlight-parentheses"   (diminish 'highlight-parentheses-mode  ""))
@@ -63,8 +62,6 @@
   (with-eval-after-load "ivy"                     (diminish 'ivy-mode                    ""))
   (with-eval-after-load "magit-blame"             (diminish 'magit-blame-mode            ""))
   (with-eval-after-load "magit-svn"               (diminish 'magit-svn-mode              ""))
-  (with-eval-after-load "org-indent"              (diminish 'org-indent-mode             ""))
-  (with-eval-after-load "org-table"               (diminish 'orgtbl-mode                 ""))
   (with-eval-after-load "simple"                  (diminish 'auto-fill-function          ""))
   (with-eval-after-load "smartparens"             (diminish 'smartparens-mode            ""))
   (with-eval-after-load "subword"                 (diminish 'subword-mode                ""))
@@ -193,20 +190,6 @@
                      (point))))
           (cons beg end)))))
 
-  (defun focus--org-thing ()
-    (ignore-errors
-      (if focus-mode-org-thing-lock
-          (cons 0 0)
-        (save-excursion
-          (let ((beg (progn
-                       (outline-previous-heading)
-                       (point)))
-                (end   (progn
-                         (outline-next-visible-heading 1)
-                         (beginning-of-line)
-                         (point))))
-            (cons beg end))))))
-
   (with-eval-after-load "clojure-mode"
     (put 'clojure 'bounds-of-thing-at-point #'focus--clojure-thing)
     (put 'list+   'bounds-of-thing-at-point #'focus--list+-thing)
@@ -256,11 +239,9 @@
   (add-to-list 'focus-mode-to-thing '(emacs-lisp-mode . lisp))
   (add-to-list 'focus-mode-to-thing '(tex-mode . tex-sentence))
   (add-to-list 'focus-mode-to-thing '(text-mode . sentence+))
-  (add-to-list 'focus-mode-to-thing '(org-mode . org))
   (put 'tex-sentence 'bounds-of-thing-at-point #'focus--tex-thing)
   (put 'sentence+    'bounds-of-thing-at-point #'focus--text-thing)
   (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing)
-  (put 'org          'bounds-of-thing-at-point #'focus--org-thing)
 
   (with-eval-after-load "company"
     (add-hook 'company-completion-started-hook #'focus--tooltip-on)
@@ -395,7 +376,6 @@
          :when active
          :priority 89)
         (erc-track :when active)
-        (org-clock :when active)
         (process :when active)
         (minor-modes :when active :priority 9)
         (major-icon :fallback major-mode :priority 79)))

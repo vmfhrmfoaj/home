@@ -20,7 +20,6 @@
          (oc   6) ; fringe + line-number
          (w (+ (* wc (frame-char-width))
                (* oc (frame-char-width)))))
-    (setq org-tags-column (- wc))
     (if (<= main-monitor-w w)
         (setq w main-monitor-w)
       (setq x (+ (- (+ main-monitor-x

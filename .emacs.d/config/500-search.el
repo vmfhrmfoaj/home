@@ -87,15 +87,7 @@
     (let* ((inhibit-field-text-motion t)
            (n-lines (count-lines (point-min) (point-max))))
       (if (funcall swiper-use-visual-line-p n-lines)
-          (progn
-            (when (eq major-mode 'org-mode)
-              (require 'outline)
-              (if (fboundp 'outline-show-all)
-                  ;; Added in Emacs 25.1.
-                  (outline-show-all)
-                (with-no-warnings
-                  (show-all))))
-            (setq swiper-use-visual-line t))
+          (setq swiper-use-visual-line t)
         (setq swiper-use-visual-line nil))
       (unless (zerop n-lines)
         (setq swiper--width (or numbers-width

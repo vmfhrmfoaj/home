@@ -18,7 +18,7 @@
 
   (let ((len (if (fboundp #'native-compile) 1 3))
         (lookup-other-buffer (fboundp #'native-compile))
-        (idle-delay (if (fboundp #'native-compile) 0.2 0.3)))
+        (idle-delay (if (fboundp #'native-compile) 0 0.3)))
     (setq company-idle-delay idle-delay
           company-echo-delay 0.2
           company-minimum-prefix-length len
