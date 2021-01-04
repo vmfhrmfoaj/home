@@ -11,7 +11,7 @@
 (add-hook 'emacs-startup-hook
           (lambda ()
             "report the startup time."
-            ;; (print features) ; list packages loaded at start up
+            (print features) ; list packages loaded at start up
             (message "Emacs ready in %s(gc: %d times, gc-time: %.3f seconds)."
                      (emacs-init-time)
                      gcs-done
@@ -515,6 +515,43 @@
     (end-of-buffer))
 
   (add-hook 'vlf-mode-hook (-partial #'auto-revert-mode -1)))
+
+(use-package which-func
+  :config
+  (setq which-func-modes '(clojure-mode clojurec-mode clojurescript-mode emacs-lisp-mode lisp-interaction-mode))
+
+  (defvar which-func-icon (when (require 'lsp-treemacs-themes nil t)
+                            (when-let ((disp (-some->> (treemacs-get-icon-value 'misc nil lsp-treemacs-theme)
+                                               (get-text-property 0 'display))))
+                              (if (stringp disp)
+                                  (replace-regexp-in-string "\s\\|\t" "" disp)
+                                (concat
+                                 (propertize " " 'display
+                                             (cl-list* 'image
+                                                       (plist-put
+                                                        (cl-copy-list
+                                                         (cl-rest disp))
+                                                        :background (bg-color-from 'powerline-active1))))
+                                 "​​​" ; zero width space * 3
+                                 )))))
+
+  (defun which-func-custom-update-1 (window)
+    (with-selected-window window
+      (when which-func-mode
+        (condition-case info
+	        (let ((current (which-function)))
+	          (unless (equal current (gethash window which-func-table))
+                (setq spaceline-symbol-segment--symbol
+                      (when current (concat which-func-icon current)))
+                (puthash window current which-func-table)
+                (force-mode-line-update)))
+	      (error
+	       (setq which-func-mode nil)
+	       (error "Error in which-func-update: %S" info))))))
+
+  (advice-add #'which-func-update-1 :override #'which-func-custom-update-1)
+
+  (which-function-mode 1))
 
 (use-package xwidgete
   :ensure t

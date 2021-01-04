@@ -39,7 +39,7 @@
                                        (regexp-opt '("*scratch*" "*emacs-lisp REPL*")) "\\|"
                                        "\\*eshell\\s-"
                                        "\\)")
-        initial-major-mode 'text-mode
+        initial-major-mode 'lisp-interaction-mode
         initial-scratch-message ""
         mouse-avoidance-timer (run-with-idle-timer
                                0.1 t

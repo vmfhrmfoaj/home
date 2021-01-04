@@ -367,7 +367,7 @@
           remote-host
           buffer-modified)
          :priority 98)
-        (symbol :priority 105))
+        (symbol :priority 105 :when active))
       '((purpose :priority 94)
         (selection-info :priority 95)
         input-method

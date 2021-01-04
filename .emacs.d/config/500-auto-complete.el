@@ -17,17 +17,13 @@
     (execute-kbd-macro (kbd "SPC")))
 
   (let ((len (if (fboundp #'native-compile) 1 3))
-        (lookup-other-buffer (fboundp #'native-compile))
-        (idle-delay (if (fboundp #'native-compile) 0 0.3)))
-    (setq company-idle-delay idle-delay
+        (idle-delay (if (fboundp #'native-compile) 0.1 0.3)))
+    (setq company-backends (--remove (eq 'company-dabbrev it) company-backends)
+          company-idle-delay idle-delay
           company-echo-delay 0.2
           company-minimum-prefix-length len
           company-selection-wrap-around t
-          company-dabbrev-downcase nil
-          company-dabbrev-minimum-length len
-          company-dabbrev-ignore-case t
           company-dabbrev-code-ignore-case t
-          company-dabbrev-code-other-buffers lookup-other-buffer
           company-etags-ignore-case t
           company-tooltip-flip-when-above t))
 

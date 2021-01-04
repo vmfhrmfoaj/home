@@ -288,6 +288,7 @@
       (if (< n 0) (clojure-skip -1 :comment :ignored-form :tagged-literal))
       (setq n (funcall (if (< 0 n) '1- '1+) n))))
 
+  (setq-local clojure-cond-newline--limit nil)
   (setq-local clojure-binding-form--recursive-point nil)
   (setq-local clojure-binding-form--recursive-limit nil)
   (setq-local clojure-oop-kw--str nil)
@@ -313,7 +314,7 @@
            (if-kw   (regexp-opt '("if" "if-some" "if-let" "if-not")))
            (oop-kw  (regexp-opt '("definterface" "defprotocol" "defrecord" "deftype" "extend-protocol" "extend-type" "proxy" "reify")))
            (def-kw  (regexp-opt '("defmacro" "defn" "defn-" "defmethod" "defrecord" "deftype") t))
-           (important-kw (regexp-opt '("case" "cond" "condp" "cond->" "cond->>"
+           (important-kw (regexp-opt '("case" "cond" "condp" ; "cond->" and "cond->>" are highlighted specially
                                        "for" "if" "if-let" "if-not" "recur" "throw" "when"
                                        "when-let" "when-not" "while") t))
            (highlight-kw (regexp-opt '("go-loop" "with-hard-redefs" "proxy" "reify") t))
@@ -340,8 +341,8 @@
           (save-excursion
             (if (in-comment?)
                 (setq font-lock--skip t)
-              (setq font-lock--skip nil)
-              (setq font-lock--anchor-beg-point (point))
+              (setq font-lock--anchor-beg-point (point)
+                    font-lock--skip nil)
               (safe-up-list-1)
               (point)))
           (if font-lock--skip
@@ -393,10 +394,10 @@
           (save-excursion
             (if (in-comment?)
                 (setq font-lock--skip t)
-              (setq font-lock--skip nil)
-              (setq font-lock--anchor-beg-point (point))
-              (setq clojure-binding-form--recursive-point nil)
-              (setq clojure-binding-form--recursive-limit nil)
+              (setq font-lock--anchor-beg-point (point)
+                    font-lock--skip nil
+                    clojure-binding-form--recursive-point nil
+                    clojure-binding-form--recursive-limit nil)
               (safe-up-list-1)
               (point)))
           (if font-lock--skip
@@ -413,8 +414,9 @@
                  (and (string-match-p "^def" clojure-oop-kw--str)
                       (re-search-forward symbol limit t)))))
           (save-excursion
-            (setq clojure-oop-kw--str (match-string-no-properties 1))
-            (setq font-lock--anchor-beg-point (point))
+            (setq clojure-oop-kw--str (match-string-no-properties 1)
+                  font-lock--anchor-beg-point (point)
+                  font-lock--skip nil)
             (condition-case nil
                 (clojure-forward-sexp)
               (error (setq font-lock--skip t)))
@@ -579,8 +581,8 @@
           (save-excursion
             (if (in-comment?)
                 (setq font-lock--skip t)
-              (setq font-lock--skip nil)
-              (setq font-lock--anchor-beg-point (point))
+              (setq font-lock--anchor-beg-point (point)
+                    font-lock--skip nil)
               (safe-up-list-1)
               (point)))
           (if font-lock--skip
@@ -606,8 +608,8 @@
           (save-excursion
             (if (in-comment?)
                 (setq font-lock--skip t)
-              (setq font-lock--skip nil)
-              (setq font-lock--anchor-beg-point (point))
+              (setq font-lock--anchor-beg-point (point)
+                    font-lock--skip nil)
               (safe-up-list-1)
               (point)))
           (if font-lock--skip
@@ -660,6 +662,10 @@
 
         ;; Auto-gensym variable - variable#
         (,(concat symbol "\\(#\\)\\_>")
+         (1 'clojure-punctuation-face))
+
+        ;; Punctuation
+        ("\\([~#@&_,`'^]\\|\\s(\\|\\s)\\)"
          (1 'clojure-punctuation-face))
 
         ;; Dereference, Unquote - @symbol or ~symbol
@@ -901,17 +907,35 @@
         ;; Highlight condtions in `cond' form.
         (,(concat "(" core-ns? "\\(cond\\(?:->>?\\)?\\)[ \r\t\n]+")
          (,(lambda (limit)
-             (unless font-lock--skip
-               (when (> limit (point))
-                 (clojure-skip :comment :ignored-form)
-                 (set-match-data (list (point-marker) (progn (forward-sexp) (point-marker))))
-                 (clojure-forward-sexp)
+             (when (and (not font-lock--skip)
+                        (< (point) limit))
+               (ignore-errors
+                 (let ((beg (progn
+                              (if (null clojure-cond-newline--limit)
+                                  (clojure-skip :comment :ignored-form)
+                                (forward-line)
+                                (beginning-of-line-text))
+                              (point-marker)))
+                       (end (let ((line-end (line-end-position))
+                                  (sexp-end (or clojure-cond-newline--limit
+                                                (progn (forward-sexp) (point))))
+                                  (m (make-marker)))
+                              (if (<= sexp-end line-end)
+                                  (progn
+                                    (set-marker m (goto-char sexp-end))
+                                    (setq clojure-cond-newline--limit nil)
+                                    (clojure-forward-sexp))
+                                (set-marker m (goto-char line-end))
+                                (setq clojure-cond-newline--limit sexp-end))
+                              m)))
+                   (set-match-data (list beg end)))
                  t)))
           (prog1 (save-excursion
                    (if (in-comment?)
                        (setq font-lock--skip t)
-                     (setq font-lock--skip nil)
-                     (setq font-lock--anchor-beg-point (point))
+                     (setq font-lock--anchor-beg-point (point)
+                           font-lock--skip nil
+                           clojure-cond-newline--limit nil)
                      (safe-up-list-1)
                      (point)))
             (when (string-match-p "->>?" (match-string 1))
@@ -962,8 +986,8 @@
           (save-excursion
             (if (in-comment?)
                 (setq font-lock--skip t)
-              (setq font-lock--skip nil)
-              (setq font-lock--anchor-beg-point (point))
+              (setq font-lock--anchor-beg-point (point)
+                    font-lock--skip nil)
               (backward-char 1)
               (clojure-forward-sexp)
               (point)))
@@ -990,11 +1014,7 @@
 
         ;; Custom keywords
         (,(concat "(" namespace? highlight-kw "\\_>")
-         (1 'font-lock-keyword-face))
-
-        ;; punctuation
-        ("\\([~#@&_,`'^]\\)"
-         (1 'clojure-punctuation-face))))
+         (1 'font-lock-keyword-face))))
     "Default expressions to highlight in Clojure mode."))
 
 (use-package elisp-mode
@@ -1435,7 +1455,7 @@
 
            ;; punctuation
            ("\\([-=]>\\|::?\\|;\\)" 1 'rust-punctuation-face)
-           ("\\(&\\|&?\\*+\\)[_0-9A-Za-z]" 1 'rust-punctuation-face)
+           ("\\(&\\|&?\\*+\\)\\(?:\\s(\\|[_0-9A-Za-z]\\)" 1 'rust-punctuation-face)
 
            )
 

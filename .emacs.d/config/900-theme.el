@@ -19,7 +19,7 @@
      ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight light :inverse-video nil)))
    '(mode-line-inactive ((t :weight light)))
    '(mode-line ((t :weight normal)))
-   '(shadow ((t :weight normal)))
+   '(shadow ((t :weight light)))
    '(whitespace-newline ((t :background "#282a2e" :weight extra-light)))
    '(whitespace-space ((t :weight extra-light)))
    '(whitespace-tab ((t :weight extra-light)))))
@@ -29,7 +29,9 @@
   :config
   (custom-set-faces
    '(company-preview ((t :inherit shadow :underline t)))
-   '(company-preview-common ((t :inherit company-preview)))))
+   '(company-preview-common ((t :inherit company-preview)))
+   '(company-scrollbar-bg ((t :background "#242529")))
+   '(company-scrollbar-fg ((t :background "#5a5b5a")))))
 
 (use-package clojure-mode
   :defer t
@@ -39,7 +41,7 @@
      `(cider-deprecated-face
        ((t :inherit font-lock-warning-face :weight ,default-weight :underline (:color "darkorange"))))
      '(cider-fringe-good-face ((t :inherit success)))
-     '(clojure-cond-condtion-face ((t :slant italic)))
+     '(clojure-cond-condtion-face ((t :underline (:color "#696a69" :style line))))
      '(clojure-define-type-face ((t :inherit font-lock-type-face)))
      '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
