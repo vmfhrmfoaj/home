@@ -99,10 +99,16 @@ _setup_for_deno() {
 }
 
 _setup_for_java() {
-    local java_home="/usr/lib64/openjdk-8"
-    if [ -d "${java_home}" ]; then
-        export JAVA_HOME=${java_home}
-        _add_to_path "${java_home}/bin"
+    local java_11_home="/usr/lib64/openjdk-11"
+    if [ -d "${java_11_home}" ]; then
+        export JAVA_HOME=${java_11_home}
+        _add_to_path "${java_11_home}/bin"
+    else
+        local java_8_home="/usr/lib64/openjdk-8"
+        if [ -d "${java_8_home}" ]; then
+            export JAVA_HOME=${java_8_home}
+            _add_to_path "${java_8_home}/bin"
+        fi
     fi
 }
 
