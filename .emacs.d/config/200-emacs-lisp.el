@@ -10,7 +10,9 @@
   :config
   (defun emacs-lisp-REPL-buffer ()
     (interactive)
-    (get-scratch-buffer-create))
+    (pop-to-buffer (get-buffer-create "*emacs-lisp REPL*"))
+    (unless (eq 'lisp-interaction-mode major-mode)
+      (lisp-interaction-mode)))
 
   (defun emacs-lisp-REPL-switch-back ()
     (interactive)

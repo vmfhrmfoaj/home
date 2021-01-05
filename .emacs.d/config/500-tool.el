@@ -517,23 +517,23 @@
   (add-hook 'vlf-mode-hook (-partial #'auto-revert-mode -1)))
 
 (use-package which-func
-  :config
+  :defer t
+  :init
   (setq which-func-modes '(clojure-mode clojurec-mode clojurescript-mode emacs-lisp-mode lisp-interaction-mode))
 
-  (defvar which-func-icon (when (require 'lsp-treemacs-themes nil t)
-                            (when-let ((disp (-some->> (treemacs-get-icon-value 'misc nil lsp-treemacs-theme)
-                                               (get-text-property 0 'display))))
-                              (if (stringp disp)
-                                  (replace-regexp-in-string "\s\\|\t" "" disp)
-                                (concat
-                                 (propertize " " 'display
-                                             (cl-list* 'image
-                                                       (plist-put
-                                                        (cl-copy-list
-                                                         (cl-rest disp))
-                                                        :background (bg-color-from 'powerline-active1))))
-                                 "​​​" ; zero width space * 3
-                                 )))))
+  (defun which-func-setup-once ()
+    (remove-hook 'clojure-mode-hook          #'which-func-setup-once)
+    (remove-hook 'emacs-lisp-mode-hook       #'which-func-setup-once)
+    (remove-hook 'lisp-interaction-mode-hook #'which-func-setup-once)
+    (let ((idle-update-delay 0.2))
+      (which-function-mode 1)))
+
+  (add-hook 'clojure-mode-hook          #'which-func-setup-once)
+  (add-hook 'emacs-lisp-mode-hook       #'which-func-setup-once)
+  (add-hook 'lisp-interaction-mode-hook #'which-func-setup-once)
+
+  :config
+  (defvar which-func-icon "⊡​​​") ; zero width space * 3
 
   (defun which-func-custom-update-1 (window)
     (with-selected-window window
@@ -549,9 +549,7 @@
 	       (setq which-func-mode nil)
 	       (error "Error in which-func-update: %S" info))))))
 
-  (advice-add #'which-func-update-1 :override #'which-func-custom-update-1)
-
-  (which-function-mode 1))
+  (advice-add #'which-func-update-1 :override #'which-func-custom-update-1))
 
 (use-package xwidgete
   :ensure t

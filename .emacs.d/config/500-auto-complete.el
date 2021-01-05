@@ -17,7 +17,7 @@
     (execute-kbd-macro (kbd "SPC")))
 
   (let ((len (if (fboundp #'native-compile) 1 3))
-        (idle-delay (if (fboundp #'native-compile) 0.1 0.3)))
+        (idle-delay (if (fboundp #'native-compile) 0.15 0.3)))
     (setq company-backends (--remove (eq 'company-dabbrev it) company-backends)
           company-idle-delay idle-delay
           company-echo-delay 0.2

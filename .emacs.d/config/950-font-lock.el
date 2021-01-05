@@ -314,7 +314,7 @@
            (if-kw   (regexp-opt '("if" "if-some" "if-let" "if-not")))
            (oop-kw  (regexp-opt '("definterface" "defprotocol" "defrecord" "deftype" "extend-protocol" "extend-type" "proxy" "reify")))
            (def-kw  (regexp-opt '("defmacro" "defn" "defn-" "defmethod" "defrecord" "deftype") t))
-           (important-kw (regexp-opt '("case" "cond" "condp" ; "cond->" and "cond->>" are highlighted specially
+           (important-kw (regexp-opt '("case" "condp" ; "cond" and "cond->", "cond->>" are highlighted specially
                                        "for" "if" "if-let" "if-not" "recur" "throw" "when"
                                        "when-let" "when-not" "while") t))
            (highlight-kw (regexp-opt '("go-loop" "with-hard-redefs" "proxy" "reify") t))
@@ -1262,6 +1262,8 @@
    `(("\\(:\\)\\(?:$\\|\\s-\\)"
       (1 'shadow))
      ("\\(\\*\\*?\\)[_A-Za-z]"
+      (1 'shadow))
+     ("[A-Za-z]\\(=\\)[^=~! ]"
       (1 'shadow)))))
 
 (use-package prog-mode
@@ -1273,8 +1275,6 @@
               (font-lock-add-keywords
                nil
                '(("\\([.,]\\|[|&]\\{2,2\\}\\|\\s(\\|\\s)\\)"
-                  (1 'shadow))
-                 ("[^!-+/*=<>]\\(=\\)[^=~!]"
                   (1 'shadow)))
                :append))
             :append))
