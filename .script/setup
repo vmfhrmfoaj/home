@@ -60,6 +60,13 @@ EOF
     [ -r "${asdf_home}/completions/asdf.bash" ] && source "${asdf_home}/completions/asdf.bash"
 }
 
+_setup_for_exercism() {
+    if [ ! -f "${ZSH}/custom/plugins/exercism/_exercism" ]; then
+        mkdir -p "${ZSH}/custom/plugins/exercism"
+        wget -O "${ZSH}/custom/plugins/exercism/_exercism" "https://raw.githubusercontent.com/exercism/cli/master/shell/exercism_completion.zsh"
+    fi
+}
+
 _setup_for_clojure() {
     if [ ! -d "${HOME}/.lein" ]; then
         local lein_path="${HOME}/.bin/lein"
@@ -84,6 +91,16 @@ EOF
             chmod +x "${HOME}/.shim/lein"
         fi
     fi
+
+    if [ ! -x "${HOME}/.bin/clojure-lsp" ]; then
+        mkdir -p "${HOME}/.bin"
+        cat > "${HOME}/.bin/clojure-lsp" <<\EOF
+#!/bin/bash
+exec java ${CLOJURE_LSP_JVM_OPTS} -server -jar "$(dirname $0)/.clojure-lsp.jar" $@
+EOF
+        chmod +x "${HOME}/.bin/clojure-lsp"
+    fi
+    export CLOJURE_LSP_JVM_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xmx8g"
 }
 
 _setup_for_deno() {
@@ -195,6 +212,10 @@ EOF
     fi
     if [ -r "${PERLBREW_ROOT}/etc/bashrc" ]; then
         source "${PERLBREW_ROOT}/etc/bashrc"
+    fi
+    if [ ! -f "${ZSH}/custom/plugins/perlbrew/_perlbrew" ]; then
+        mkdir -p "${ZSH}/custom/plugins/perlbrew"
+        wget -O "${ZSH}/custom/plugins/perlbrew/_perlbrew" "https://gist.githubusercontent.com/vmfhrmfoaj/5d638cca74fa0c4ea0420457cae831b2/raw/3eb92bee4b2efa4508cbaea91b80bafd6d6c5f0c/_perlbrew"
     fi
 }
 
@@ -417,23 +438,26 @@ _add_to_path '/sbin'
 _add_to_path '/usr/sbin'
 
 # basic setup
-_setup_for_android
+#_setup_for_android
 _setup_for_asdf
-_setup_for_clojure
-_setup_for_go
+#_setup_for_exercism
+# _setup_for_go
 _setup_for_java
 _setup_for_graalvm
 _setup_for_locale
-_setup_for_perl
+# _setup_for_perl
 _setup_for_python
 _setup_for_rust
 _setup_for_nodejs
 _setup_for_xorg
 
+# depend on `java`
+_setup_for_clojure
+
 # depend on `asdf`
-_setup_for_deno
-_setup_for_kotlin
-_setup_for_lua
+#_setup_for_deno
+#_setup_for_kotlin
+#_setup_for_lua
 
 # add user binary dirs to PATH
 _add_to_path "${HOME}/.local/bin"
