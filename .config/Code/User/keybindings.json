@@ -18,7 +18,7 @@
         "when": "listFocus && referenceSearchVisible && !inputFocus"
     },
     {
-        "key": "shift-=",
+        "key": "=",
         "command": "git.stageChange",
         "when": "dirtyDiffVisible"
     },
@@ -77,7 +77,7 @@
         "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.active && vim.mode == 'Insert'"
     },
     {
-        "key": "ctrl+enter",
+        "key": "enter",
         "command": "multiCommand.vimSelectedSuggestionAndEscape",
         "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.active && vim.mode == 'Insert'"
     },

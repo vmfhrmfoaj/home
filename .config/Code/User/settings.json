@@ -1,11 +1,12 @@
 {
     // Appearance
     "editor.fontFamily": "'Fira Code', monospace",
-    "editor.fontSize": 14,
+    "editor.fontSize": 13,
     "editor.fontLigatures": true,
-    "editor.wordWrapColumn": 120,
+    "editor.wordWrapColumn": 160,
+    "editor.fontWeight": "bold",
     "editor.rulers": [ 120 ],
-    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.fontSize": 13,
     "window.titleBarStyle": "native",
     "window.menuBarVisibility": "toggle",
     "window.zoomLevel": 0,
@@ -70,6 +71,10 @@
                     "settings": { "foreground": "#b1b1b1" },
                 },
                 {
+                    "scope": "entity.name.section.spec",
+                    "settings": { "foreground": "#C586C0" },
+                },
+                {
                     "scope": [
                         // C/C++
                         "punctuation.terminator.statement.c",
@@ -131,6 +136,7 @@
                         "punctuation.section.function.begin.python",
                         "punctuation.separator.colon.python",
                         "punctuation.separator.continuation.line.python",
+                        "punctuation.separator.dict.python",
                         "punctuation.separator.element.python",
                         "punctuation.separator.period.python",
                         "meta.function.decorator.python",
@@ -601,4 +607,5 @@
             "commands": [ { "command": "editor.action.formatDocument" } ]
         },
     ],
+    "gitlens.views.lineHistory.enabled": true,
 }
