@@ -35,6 +35,11 @@
                                         env))
                     :server-id 'bash-ls)))
 
+(use-package lsp-clojure
+  :defer t
+  :init
+  (setq lsp-clojure-custom-server-command '("bash" "-c" "clojure-lsp")))
+
 (use-package lsp-diagnostics
   :defer t
   :init
@@ -192,17 +197,20 @@
 
 (use-package lsp-mode
   :ensure t
-  :hook ((c-mode          . lsp)
-         (c++-mode        . lsp)
-         (cperl-mode      . lsp)
-         (go-mode         . lsp)
-         (js-mode         . lsp)
-         (latex-mode      . lsp)
-         (php-mode        . lsp)
-         (python-mode     . lsp)
-         (rust-mode       . lsp)
-         (sh-mode         . lsp)
-         (typescript-mode . lsp))
+  :hook ((c-mode             . lsp)
+         (c++-mode           . lsp)
+         ;; (clojure-mode       . lsp)
+         ;; (clojurec-mode      . lsp)
+         ;; (clojurescript-mode . lsp)
+         (cperl-mode         . lsp)
+         (go-mode            . lsp)
+         (js-mode            . lsp)
+         (latex-mode         . lsp)
+         (php-mode           . lsp)
+         (python-mode        . lsp)
+         (rust-mode          . lsp)
+         (sh-mode            . lsp)
+         (typescript-mode    . lsp))
   :init
   (setq lsp-keymap-prefix nil)
 
@@ -348,7 +356,7 @@
              :mode 'tick
              :cancel-token :eldoc-hover))))))
 
-  (defun lsp--custom-eldoc-message-emacs-27 (&optional msg)
+  (defun lsp--custom-eldoc-message (&optional msg)
     "Show MSG in eldoc."
     (setq lsp--eldoc-saved-message msg)
     (let ((lines (s-lines (or msg "")))
@@ -364,25 +372,6 @@
                               (-snoc (-take (max 1 (1- max-line)) lines) (propertize "(...)" 'face 'shadow)))
                             (-interpose "\n")
                             (apply #'concat))))))
-
-  (defun lsp--custom-eldoc-message-emacs-28 (&optional msg)
-    "Show MSG in eldoc."
-    (when-let ((max-chars (-> (cond
-                               ((floatp max-mini-window-height)
-                                (floor (* (frame-height) max-mini-window-height)))
-                               ((numberp max-mini-window-height)
-                                max-mini-window-height))
-                              (1-)
-                              (* (- (frame-width) 2)))))
-      (when (< max-chars (length msg))
-        (setq msg (concat (substring msg 0 max-chars) "\n" (propertize "(...)" 'face 'shadow)))))
-    (setq lsp--eldoc-saved-message msg)
-    (eldoc-message msg))
-
-  (defalias 'lsp--custom-eldoc-message
-    (if (version<= "28.0.50" emacs-version)
-        #'lsp--custom-eldoc-message-emacs-28
-      #'lsp--custom-eldoc-message-emacs-27))
 
   (defun lsp--signature->message-filter (msg)
     (if (stringp msg)
@@ -462,11 +451,11 @@
                         nil t)
               (add-hook 'evil-insert-state-exit-hook
                         (lambda ()
-                          (setq lsp-eldoc-enable-hover t)
                           (when (and lsp-mode lsp-signature-mode)
                             (ignore-errors
                               (setq lsp-signature-restart-enable nil)
-                              (lsp-signature-stop))))
+                              (lsp-signature-stop)))
+                          (setq lsp-eldoc-enable-hover t))
                         nil t)
               (add-hook 'evil-operator-state-entry-hook
                         (lambda ()

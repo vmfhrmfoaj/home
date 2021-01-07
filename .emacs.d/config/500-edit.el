@@ -140,7 +140,7 @@ So, replaced `evil-jump-item' to this function."
 (use-package undo-tree
   :ensure t
   :config
-  (let ((x (if (fboundp #'native-compile) 15 25)))
+  (let ((x 15))
     (setq evil-undo-system 'undo-tree
           undo-tree-auto-save-history t
           undo-tree-history-directory-alist backup-directory-alist

@@ -48,7 +48,12 @@
             (lambda ()
               (setq-local evil-lookup-func #'emacs-lisp-evil-lookup-func)
               (setq-local font-lock-multiline t)
-              (eldoc-mode 1))))
+              (eldoc-mode 1)
+              (let ((f (lambda ()
+                         (when eldoc-mode
+                           (run-at-time 0.01 nil #'eldoc-refresh)))))
+                (add-hook 'evil-insert-state-entry-hook f nil t)
+                (add-hook 'evil-insert-state-exit-hook  f nil t)))))
 
 (use-package elisp-slime-nav
   :ensure t

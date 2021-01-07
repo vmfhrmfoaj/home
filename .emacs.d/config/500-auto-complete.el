@@ -16,16 +16,14 @@
     (company-abort)
     (execute-kbd-macro (kbd "SPC")))
 
-  (let ((len (if (fboundp #'native-compile) 1 3))
-        (idle-delay (if (fboundp #'native-compile) 0.15 0.3)))
-    (setq company-backends (--remove (eq 'company-dabbrev it) company-backends)
-          company-idle-delay idle-delay
-          company-echo-delay 0.2
-          company-minimum-prefix-length len
-          company-selection-wrap-around t
-          company-dabbrev-code-ignore-case t
-          company-etags-ignore-case t
-          company-tooltip-flip-when-above t))
+  (setq company-backends (--remove (eq 'company-dabbrev it) company-backends)
+        company-idle-delay 0.2
+        company-echo-delay 0.2
+        company-minimum-prefix-length 1
+        company-selection-wrap-around t
+        company-dabbrev-code-ignore-case t
+        company-etags-ignore-case t
+        company-tooltip-flip-when-above t)
 
   (add-hook 'company-after-completion-hook
             (lambda (_ignored)

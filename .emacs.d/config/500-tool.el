@@ -129,7 +129,7 @@
 (use-package eldoc
   :defer t
   :config
-  (defun eldoc-refresh-for-emacs-27 ()
+  (defun eldoc-refresh ()
     (interactive)
     (when (or eldoc-mode
               (and global-eldoc-mode
@@ -143,19 +143,6 @@
             (eldoc-message msg)
           (when (not (s-blank-str? msg))
             (eldoc-message msg))))))
-
-  (defun eldoc-refresh-for-emacs-28 ()
-    (interactive)
-    (when (timerp eldoc-timer)
-      (cancel-timer eldoc-timer)
-      (setq eldoc-timer nil))
-    (setq eldoc--last-request-state nil)
-    (eldoc--invoke-strategy nil))
-
-  (defalias 'eldoc-refresh
-    (if (version<= "28.0.50" emacs-version)
-        #'eldoc-refresh-for-emacs-28
-      #'eldoc-refresh-for-emacs-27))
 
   (setq eldoc-idle-delay 0.2
         eldoc-echo-area-use-multiline-p max-mini-window-height)
@@ -536,8 +523,9 @@
   (defvar which-func-icon "⊡​​​") ; zero width space * 3
 
   (defun which-func-custom-update-1 (window)
-    (with-selected-window window
-      (when which-func-mode
+    (when (and which-func-mode
+               (member major-mode which-func-modes))
+      (with-selected-window window
         (condition-case info
 	        (let ((current (which-function)))
 	          (unless (equal current (gethash window which-func-table))

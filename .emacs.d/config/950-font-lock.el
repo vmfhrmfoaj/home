@@ -1227,32 +1227,17 @@
                         "ascii" "breakpoint" "bytearray" "bytes" "exec"))
                       "(")
                  . (1 font-lock-builtin-face))))
-    (if (version<= "28.0.50" emacs-version)
-        (progn
-          (setf (cadddr python-font-lock-keywords-level-2) regex
-                (car (cddddr python-font-lock-keywords-maximum-decoration)) regex)
-          (setq python-font-lock-keywords-maximum-decoration
-                (butlast python-font-lock-keywords-maximum-decoration 3))) ; remove assigment highlightings
-      (setf (cadddr python-font-lock-keywords-level-2) regex
-            (cadddr python-font-lock-keywords-maximum-decoration) regex)
-      (setq python-font-lock-keywords-maximum-decoration
-            (butlast python-font-lock-keywords-maximum-decoration 2))))
+    (setf (cadddr python-font-lock-keywords-level-2) regex
+          (cadddr python-font-lock-keywords-maximum-decoration) regex))
+  (setq python-font-lock-keywords-maximum-decoration
+        (butlast python-font-lock-keywords-maximum-decoration 2))
 
   (font-lock-add-keywords
    'python-mode
-   `((,(concat "\\(\\(?:\\(?:[_0-9A-Za-z]+\\.\\)?[_0-9A-Za-z]+\\)"
-               "\\(?:\\s-*,\\s-*\\(?:[_0-9A-Za-z]+\\.\\)?[_0-9A-Za-z]+\\)*\\)"
-               "\\(?:\\[.*?\\]\\)?\\s-*\\(?:=\\)[^=]")
-      (,(lambda (limit)
-          (unless font-lock--skip
-            (re-search-forward "\\(?:[_0-9A-Za-z]+\\.\\)?\\([_0-9A-Za-z]+\\)" limit t)))
+   `((,(concat "\\([._0-9A-Za-z]+\\(\\[['\"_0-9A-Za-z]+\\]\\)?\\|([ ,._0-9A-Za-z]+)\\)\\s-+\\(?:=\\)\\s-+")
+      ("\\(?:[_0-9A-Za-z]+\\.\\)?\\([_0-9A-Za-z]+\\)"
        (progn
-         (setq font-lock--skip nil)
-         (goto-char (setq font-lock--anchor-beg-point (match-beginning 1)))
-         (when (-some->> (syntax-ppss)
-                 (-first-item)
-                 (< 0))
-           (setq font-lock--skip t))
+         (setq font-lock--anchor-beg-point (goto-char (match-beginning 0)))
          (match-end 1))
        (goto-char font-lock--anchor-beg-point)
        (1 'font-lock-variable-name-face))))
@@ -1263,7 +1248,7 @@
       (1 'shadow))
      ("\\(\\*\\*?\\)[_A-Za-z]"
       (1 'shadow))
-     ("[A-Za-z]\\(=\\)[^=~! ]"
+     ("[A-Za-z]\\(=\\)\\(?:[\"'A-Za-z]\\|\\s(\\)"
       (1 'shadow)))))
 
 (use-package prog-mode
@@ -1396,7 +1381,7 @@
                   (re-search-forward "\\_<[a-z][_0-9a-z]*\\_>" limit t)))
              (save-excursion
                (setq font-lock--skip nil
-                     font-lock--anchor-beg-point (point))
+                     font-lock--anchor-beg-point (match-beginning 0))
                (safe-up-list-1)
                (point))
              (goto-char font-lock--anchor-beg-point)
@@ -1446,7 +1431,7 @@
                     t)))
              (save-excursion
                (setq font-lock--skip nil
-                     font-lock--anchor-beg-point (point)
+                     font-lock--anchor-beg-point (match-beginning 0)
                      font-lock--local-limit nil)
                (safe-up-list-1)
                (point))
@@ -1456,7 +1441,6 @@
            ;; punctuation
            ("\\([-=]>\\|::?\\|;\\)" 1 'rust-punctuation-face)
            ("\\(&\\|&?\\*+\\)\\(?:\\s(\\|[_0-9A-Za-z]\\)" 1 'rust-punctuation-face)
-
            )
 
          ;; Ensure we highlight `Foo` in `struct Foo` as a type.
@@ -1513,7 +1497,7 @@
         ("\\<\\(case\\|cond\\)\\>"
          (save-match-data
            (save-excursion
-             (setq-local font-lock--anchor-beg-point (point))
+             (setq-local font-lock--anchor-beg-point (match-beginning 0))
              (re-search-forward ,(regexp-quote " %>") (point-max))
              (match-string 0)))
          (goto-char font-lock--anchor-beg-point)
@@ -1522,7 +1506,7 @@
         ("\\([-_0-9A-Za-z]+\\)"
          (save-match-data
            (save-excursion
-             (setq-local font-lock--anchor-beg-point (point))
+             (setq-local font-lock--anchor-beg-point (match-beginning 0))
              (re-search-forward ,end-re (point-max))
              (match-string 0)))
          (goto-char font-lock--anchor-beg-point)

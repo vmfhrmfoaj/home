@@ -47,7 +47,8 @@
                                  ;; NOTE
                                  ;;  `frame_make_pointer_invisible' will be called -
                                  ;;   only when calling `self-insert-command'.
-                                 (with-temp-buffer (self-insert-command 0))))
+                                 (when (frame-pointer-visible-p)
+                                   (with-temp-buffer (self-insert-command 0)))))
         read-process-output-max (* 1024 1024)
         resize-mini-windows t
         ring-bell-function 'ignore))
