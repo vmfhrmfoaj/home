@@ -327,18 +327,20 @@
     (lambda ()
       (interactive)
       (if (and company-tooltip-flip-when-above
-               (nth 3 (overlay-get company-pseudo-tooltip-overlay
-                                   'company-replacement-args)))
-          (company-select-previous)
-        (company-select-next))))
+               (-some->> 'company-replacement-args
+                 (overlay-get company-pseudo-tooltip-overlay)
+                 (nth 3)))
+          (call-interactively #'company-select-previous)
+        (call-interactively #'company-select-next))))
   (define-key company-active-map (kbd "C-k")
     (lambda ()
       (interactive)
       (if (and company-tooltip-flip-when-above
-               (nth 3 (overlay-get company-pseudo-tooltip-overlay
-                                   'company-replacement-args)))
-          (company-select-next)
-        (company-select-previous))))
+               (-some->> 'company-replacement-args
+                 (overlay-get company-pseudo-tooltip-overlay)
+                 (nth 3)))
+          (call-interactively #'company-select-next)
+        (call-interactively #'company-select-previous))))
   (define-key company-active-map (kbd "C-h") nil)
   (define-key company-active-map (kbd "C-s") #'counsel-company)
   (define-key company-active-map (kbd "SPC") #'company-abort-and-insert-space)

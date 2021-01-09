@@ -99,6 +99,8 @@
         (-first-item)
         (funcall display-fn))))
 
+  (setq cider-mode-line-show-connection nil)
+
   (cider-register-cljs-repl-type
    'figwheel-custom
    (concat "(do "
@@ -227,7 +229,8 @@
             (lambda ()
               (setq-local evil-lookup-func #'cider-doc-at-point)
               (eldoc-mode 1)
-              (company-mode 1)))
+              (company-mode 1)
+              (cider-company-enable-fuzzy-completion)))
 
   (advice-add #'cider-repl-emit-stdout :after #'cider-repl-catch-compilation-error-ns)
   (advice-add #'cider-repl-emit-stderr :after #'cider-repl-catch-compilation-error)
@@ -380,6 +383,7 @@
 
   (add-hook 'clojure-mode-hook
             (lambda ()
+              (cider-company-enable-fuzzy-completion)
               (when (and buffer-file-name (= (point-min) (point-max)))
                 (clojure-insert-namespace))
               (when (require 'flycheck nil t)
