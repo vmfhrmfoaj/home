@@ -441,11 +441,11 @@ _add_to_path '/usr/sbin'
 #_setup_for_android
 _setup_for_asdf
 #_setup_for_exercism
-# _setup_for_go
+#_setup_for_go
 _setup_for_java
 _setup_for_graalvm
 _setup_for_locale
-# _setup_for_perl
+#_setup_for_perl
 _setup_for_python
 _setup_for_rust
 _setup_for_nodejs
