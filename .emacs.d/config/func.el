@@ -334,4 +334,13 @@
 (defun open-link-at-point ()
   (interactive)
   (cond
-   (t (message (concat "Don't know how to open a link in '" (symbol-name major-mode) "'")))))
+   (t (message (concat "Don't know how to open a link on '" (symbol-name major-mode) "'")))))
+
+(defun format-buffer-or-region ()
+  (interactive)
+  (cond
+   (lsp-mode
+    (if (use-region-p)
+        (call-interactively #'lsp-format-region)
+      (call-interactively #'lsp-format-buffer)))
+   (t (message (concat "Don't know how to format a file on '" (symbol-name major-mode) "'")))))

@@ -10,7 +10,7 @@
   (prefer-coding-system 'utf-8)
   (setq-default line-spacing 1)
   (let* ((font-size 10.5)
-         (font (font-spec :family "Cascadia Code" :size font-size :weight 'semi-bold)))
+         (font (font-spec :family "Cascadia Code" :size font-size)))
     (set-face-font 'default font)
     (set-fontset-font nil '(#xE000 . #xF8FF) font)               ; for ligature
     (set-fontset-font "fontset-default" '(#xE000 . #xF8FF) font) ; for ligature

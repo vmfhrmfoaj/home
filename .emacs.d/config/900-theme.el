@@ -17,9 +17,9 @@
    '(line-number ((t :background "#222326" :weight extra-light)))
    '(line-number-current-line
      ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight light :inverse-video nil)))
-   '(mode-line-inactive ((t :weight light)))
-   '(mode-line ((t :weight normal)))
-   '(shadow ((t :weight light)))
+   '(mode-line-inactive ((t :weight extra-light)))
+   '(mode-line ((t :weight light)))
+   '(shadow ((t :weight extra-light)))
    '(whitespace-newline ((t :background "#282a2e" :weight extra-light)))
    '(whitespace-space ((t :weight extra-light)))
    '(whitespace-tab ((t :weight extra-light)))))
@@ -98,14 +98,14 @@
   :defer t
   :config
   (custom-set-faces
-   '(font-lock-comment-face ((t :weight light)))
-   '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground unspecified :weight extra-light)))
-   '(font-lock-doc-face ((t :weight normal)))
-   '(font-lock-function-name-face ((t :foreground "#85aacc" :weight bold)))
+   '(font-lock-comment-face ((t :weight extra-light)))
+   '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground "#787978")))
+   '(font-lock-doc-face ((t :weight light)))
+   '(font-lock-function-name-face ((t :foreground "#85aacc" :weight semi-bold)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
-   '(font-lock-regexp-grouping-backslash ((t :weight semi-bold)))
-   '(font-lock-regexp-grouping-construct ((t :weight semi-bold)))
-   '(font-lock-string-face ((t :weight medium)))))
+   '(font-lock-regexp-grouping-backslash ((t :weight normal)))
+   '(font-lock-regexp-grouping-construct ((t :weight normal)))
+   '(font-lock-string-face ((t :weight light)))))
 
 (use-package fringe
   :defer t

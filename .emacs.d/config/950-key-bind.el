@@ -270,7 +270,8 @@
     "x-" #'text-scale-decrease
     "xr" #'align-regexp
     "xb" #'xwidget-webkit-browse-url
-    "xo" #'open-link-at-point)
+    "xo" #'open-link-at-point
+    "xf" #'format-buffer-or-region)
   (when (eq 'darwin system-type)
     (evil-leader/set-key
       ;; apllication
@@ -554,10 +555,6 @@
         "msq" #'lsp-workspace-shutdown
         "msd" #'lsp-describe-session
         "msD" #'lsp-disconnect
-
-        ;; formatting
-        "m==" #'lsp-format-buffer
-        "m=r" #'lsp-format-region
 
         ;; folders
         "mFa" #'lsp-workspace-folders-add
