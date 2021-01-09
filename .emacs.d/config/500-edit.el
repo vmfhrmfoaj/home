@@ -140,6 +140,12 @@ So, replaced `evil-jump-item' to this function."
 (use-package undo-tree
   :ensure t
   :config
+  ;; NOTE
+  ;;  `goto-chr' require `undo-tree-node-p' function, but it is macro in `undo-tree'.
+  (defun undo-tree-node-p (n)
+    (let ((len (length (undo-tree-make-node nil nil))))
+      (and (vectorp n) (= (length n) len))))
+
   (let ((x 15))
     (setq evil-undo-system 'undo-tree
           undo-tree-auto-save-history t
@@ -148,14 +154,9 @@ So, replaced `evil-jump-item' to this function."
           undo-tree-strong-limit (/ 120000000 x)
           undo-tree-outer-limit  (/ 360000000 x)))
 
-  ;; NOTE
-  ;;  `goto-chr' require `undo-tree-node-p' function, but it is macro in `undo-tree'.
-  (defun undo-tree-node-p (n)
-    (let ((len (length (undo-tree-make-node nil nil))))
-      (and (vectorp n) (= (length n) len))))
-
   (with-eval-after-load "evil"
     (evil-set-undo-system 'undo-tree))
+
   (global-undo-tree-mode))
 
 (use-package whitespace

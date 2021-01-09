@@ -19,7 +19,9 @@
                                "GOPATH"
                                "JAVA_HOME"
                                "PATH"))
-                   (cmd (concat (apply #'concat "bash -c 'source " setup-file " >/dev/null 2>&1; printenv " (-interpose " " env-vars)) "'")))
+                   (cmd (concat (apply #'concat "bash -c 'source " setup-file " >/dev/null 2>&1; "
+                                       "for var in " (-interpose " " env-vars))
+                                "; do printenv ${var} || echo; done'")))
               (--each
                   (->> cmd
                        (shell-command-to-string)
