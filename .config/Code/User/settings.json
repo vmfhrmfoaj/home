@@ -3,7 +3,7 @@
     "editor.fontFamily": "'Fira Code', monospace",
     "editor.fontSize": 13,
     "editor.fontLigatures": true,
-    "editor.wordWrapColumn": 160,
+    "editor.wordWrapColumn": 165,
     "editor.fontWeight": "bold",
     "editor.rulers": [ 120 ],
     "terminal.integrated.fontSize": 13,
@@ -63,8 +63,14 @@
             },
             "textMateRules": [
                 {
-                    "scope": "entity.name.function.preprocessor",
-                    "settings": { "foreground": "#d4d4d4", }
+                    "scope": [
+                        "keyword.other.sql",
+                        "keyword.other.DML.sql",
+                     ],
+                    "settings": {
+                        "foreground": "#ce9178",
+                        "fontStyle": "italic"
+                    }
                 },
                 {
                     "scope": "keyword.operator",
@@ -72,39 +78,55 @@
                 },
                 {
                     "scope": "entity.name.section.spec",
-                    "settings": { "foreground": "#C586C0" },
+                    "settings": { "foreground": "#c586c0" },
+                },
+                {
+                    "scope": [
+                        "storage.type.php",
+                        "storage.type.function.php",
+                    ],
+                    "settings": { "foreground": "#569cd6" },
+                },
+                {
+                    "scope": [
+                        "entity.name.function.preprocessor",
+                        // PHP
+                        "constant.language.php",
+                    ],
+                    "settings": { "foreground": "#d4d4d4", }
                 },
                 {
                     "scope": [
                         // C/C++
-                        "punctuation.terminator.statement.c",
-                        "punctuation.terminator.statement.cpp",
-                        "punctuation.separator.delimiter.c",
-                        "punctuation.separator.pointer-access.c",
-                        "punctuation.separator.pointer-access.cpp",
-                        "punctuation.section.block.begin.bracket.curly.c",
-                        "punctuation.section.block.end.bracket.curly.c",
-                        "punctuation.section.parameters.begin.bracket.round.c",
-                        "punctuation.section.parameters.end.bracket.round.c",
+                        "meta.preprocessor.conditional.cpp",
+                        "punctuation.definition.begin.bracket.square.c",
+                        "punctuation.definition.end.bracket.square.c",
+                        "punctuation.definition.parameters.begin.preprocessor.cpp",
+                        "punctuation.definition.parameters.end.preprocessor.cpp",
                         "punctuation.section.arguments.begin.bracket.round.c",
                         "punctuation.section.arguments.end.bracket.round.c",
                         "punctuation.section.arguments.begin.bracket.round.initializer.cpp",
                         "punctuation.section.arguments.end.bracket.round.initializer.cpp",
-                        "punctuation.section.parameters.begin.bracket.round.cpp",
-                        "punctuation.section.parameters.end.bracket.round.cpp",
-                        "punctuation.section.parameters.begin.bracket.round.function.pointer.cpp",
-                        "punctuation.section.parameters.end.bracket.round.function.pointer.cpp",
+                        "punctuation.section.block.begin.bracket.curly.c",
+                        "punctuation.section.block.end.bracket.curly.c",
                         "punctuation.section.parens.begin.bracket.round.c",
                         "punctuation.section.parens.end.bracket.round.c",
                         "punctuation.section.parens.begin.bracket.round.cpp",
                         "punctuation.section.parens.end.bracket.round.cpp",
                         "punctuation.section.parens.begin.bracket.round.function.pointer.cpp",
                         "punctuation.section.parens.end.bracket.round.function.pointer.cpp",
-                        "punctuation.definition.begin.bracket.square.c",
-                        "punctuation.definition.end.bracket.square.c",
-                        "punctuation.definition.parameters.begin.preprocessor.cpp",
-                        "punctuation.definition.parameters.end.preprocessor.cpp",
-                        "meta.preprocessor.conditional.cpp",
+                        "punctuation.section.parameters.begin.bracket.round.c",
+                        "punctuation.section.parameters.end.bracket.round.c",
+                        "punctuation.section.parameters.begin.bracket.round.cpp",
+                        "punctuation.section.parameters.end.bracket.round.cpp",
+                        "punctuation.section.parameters.begin.bracket.round.function.pointer.cpp",
+                        "punctuation.section.parameters.end.bracket.round.function.pointer.cpp",
+                        "punctuation.separator.dot-access.c",
+                        "punctuation.separator.delimiter.c",
+                        "punctuation.separator.pointer-access.c",
+                        "punctuation.separator.pointer-access.cpp",
+                        "punctuation.terminator.statement.c",
+                        "punctuation.terminator.statement.cpp",
                         // Shell
                         "punctuation.definition.variable.shell",
                         "punctuation.definition.group.shell",
@@ -126,7 +148,7 @@
                         "punctuation.other.period.go",
                         "punctuation.terminator.go",
                         "keyword.operator.logical.go",
-                        //Python
+                        // Python
                         "punctuation.definition.arguments.begin.python",
                         "punctuation.definition.arguments.end.python",
                         "punctuation.definition.list.begin.python",
@@ -140,6 +162,22 @@
                         "punctuation.separator.element.python",
                         "punctuation.separator.period.python",
                         "meta.function.decorator.python",
+                        // PHP
+                        "punctuation.definition.begin.bracket.round.php",
+                        "punctuation.definition.end.bracket.round.php",
+                        "punctuation.definition.arguments.begin.bracket.round.php",
+                        "punctuation.definition.arguments.end.bracket.round.php",
+                        "punctuation.definition.array.begin.bracket.round.php",
+                        "punctuation.definition.array.end.bracket.round.php",
+                        "punctuation.definition.variable.php",
+                        "punctuation.separator.delimiter.php",
+                        "punctuation.terminator.expression.php",
+                        "punctuation.terminator.statement.php",
+                        "storage.modifier.reference.php",
+                        // JSON
+                        "punctuation.separator.array.json.comments",
+                        "punctuation.separator.dictionary.pair.json.comments",
+                        "punctuation.separator.dictionary.key-value.json.comments",
                     ],
                     "settings": { "foreground": "#a9a9a9", }
                 },
@@ -152,7 +190,7 @@
     },
 
     "bracket-pair-colorizer-2.colors": [
-        "#a0a0a0",
+        "#909090",
     ],
     "bracket-pair-colorizer-2.scopeLineCSS": [
         "borderStyle : solid",
@@ -327,6 +365,30 @@
             ]
         },
         {
+            "command": "multiCommand.vimMarkAndFindAndJumpNextMatch",
+            "sequence": [
+                "cursorLeft",
+                "cursorWordRight",
+                "actions.find",
+                "closeFindWidget",
+                "cancelSelection",
+                "extension.vim_escape",
+                "editor.action.nextMatchFindAction",
+            ]
+        },
+        {
+            "command": "multiCommand.vimMarkAndFindAndJumpPrevMatch",
+            "sequence": [
+                "cursorRight",
+                "cursorWordLeft",
+                "actions.find",
+                "closeFindWidget",
+                "cancelSelection",
+                "extension.vim_escape",
+                "editor.action.previousMatchFindAction",
+            ]
+        },
+        {
             "command": "multiCommand.vimCloseFindWidget",
             "sequence": [
                 "closeFindWidget",
@@ -384,6 +446,14 @@
                 },
             ]
         },
+        {
+            "command": "multiCommand.vimCursorUndo",
+            "sequence": [
+                "cursorUndo",
+                "cancelSelection",
+                "extension.vim_escape",
+            ]
+        }
     ],
 
     // Python
@@ -424,6 +494,10 @@
     ],
     "vim.visualModeKeyBindingsNonRecursive": [
         {
+            "before": [ "<C-o>" ],
+            "commands": [ { "command": "multiCommand.vimCursorUndo" } ]
+        },
+        {
             "before": [ "<C-r>" ],
             "commands": [ { "command": "redo" } ]
         },
@@ -434,13 +508,6 @@
         {
             "before": [ "n" ],
             "commands": [ { "command": "editor.action.nextMatchFindAction" } ]
-        },
-        {
-            "before": [ "u" ],
-            "commands": [
-                { "command": "undo" },
-                { "command": "extension.vim_escape" }
-            ]
         },
         {
             "before": [
@@ -481,8 +548,20 @@
     ],
     "vim.normalModeKeyBindingsNonRecursive": [
         {
+            "before": [ "<C-o>" ],
+            "commands": [ { "command": "multiCommand.vimCursorUndo" } ]
+        },
+        {
             "before": [ "<C-r>" ],
             "commands": [ { "command": "redo" } ]
+        },
+        {
+            "before": [ "#" ],
+            "commands": [ { "command": "multiCommand.vimMarkAndFindAndJumpPrevMatch" } ]
+        },
+        {
+            "before": [ "*" ],
+            "commands": [ { "command": "multiCommand.vimMarkAndFindAndJumpNextMatch" } ]
         },
         {
             "before": [ "/" ],

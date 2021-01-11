@@ -2,6 +2,48 @@
 [
     // Emacs keybinding
     {
+        "key": "ctrl+a",
+        "command": "-editor.action.selectAll"
+    },
+    {
+        "key": "ctrl+a",
+        "command": "cursorHome",
+        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+    },
+    {
+        "key": "ctrl+b",
+        "command": "-workbench.action.toggleSidebarVisibility",
+    },
+    {
+        "key": "ctrl+b",
+        "command": "cursorLeft",
+        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+    },
+    {
+        "key": "ctrl+e",
+        "command": "-workbench.action.quickOpen"
+    },
+    {
+        "key": "ctrl+e",
+        "command": "-workbench.action.quickOpenNavigateNextInFilePicker",
+        "when": "inFilesPicker && inQuickOpen"
+    },
+    {
+        "key": "ctrl+e",
+        "command": "cursorEnd",
+        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+    },
+    {
+        "key": "ctrl+f",
+        "command": "-actions.find",
+        "when": "editorFocus || editorIsOpen"
+    },
+    {
+        "key": "ctrl+f",
+        "command": "cursorRight",
+        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+    },
+    {
         "key": "ctrl+h",
         "command": "-editor.action.startFindReplaceAction"
     },
@@ -200,12 +242,32 @@
     {
         "key": "ctrl+j",
         "command": "editor.action.nextMatchFindAction",
-        "when": "findInputFocussed && !searchViewletVisible && !suggestWidgetVisible"
+        "when": "findInputFocussed && !searchViewletFocus && !suggestWidgetVisible"
     },
     {
         "key": "ctrl+k",
         "command": "editor.action.previousMatchFindAction",
-        "when": "findInputFocussed && !searchViewletVisible && !suggestWidgetVisible"
+        "when": "findInputFocussed && !searchViewletFocus && !suggestWidgetVisible"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "search.action.focusNextSearchResult",
+        "when": "editorTextFocus && searchViewletVisible && !searchViewletFocus && !suggestWidgetVisible"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "search.action.focusPreviousSearchResult",
+        "when": "editorTextFocus && searchViewletVisible && !searchViewletFocus && !suggestWidgetVisible"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "search.action.focusNextSearchResult",
+        "when": "inSearchEditor && !findInputFocussed"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "search.action.focusPreviousSearchResult",
+        "when": "inSearchEditor && !findInputFocussed"
     },
 
     // N/P
