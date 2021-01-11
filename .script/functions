@@ -86,7 +86,6 @@ vscode_extensions=(
     'eamodio.gitlens'
     'EditorConfig.EditorConfig'
     'golang.go'
-    'HookyQR.beautify'
     'LaurentTreguier.rpm-spec'
     'mads-hartmann.bash-ide-vscode'
     'maelvalais.autoconf'

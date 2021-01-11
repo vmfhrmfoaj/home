@@ -330,6 +330,11 @@ EOF
     export CARGO_ROOT_TARGET_DIR=/tmp/cargo
     export CARGO_ROOT_SAVED_DIR="${HOME}/.cargo/build"
     _add_to_path "${HOME}/.cargo/bin"
+
+    which docker >/dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        alias on-rust-musl='docker run --rm -it -v "$(pwd)":/home/rust/src ekidd/rust-musl-builder:nightly-2020-11-19'
+    fi
 }
 
 _setup_for_go() {
@@ -414,10 +419,6 @@ _setup_for_xorg() {
 
 
 # alias
-which docker >/dev/null 2>&1
-if [ $? -eq 0 ]; then
-    alias on-rust-musl='docker run --rm -it -v "$(pwd)":/home/rust/src ekidd/rust-musl-builder:nightly-2020-11-19'
-fi
 which exa >/dev/null 2>&1
 if [ $? -eq 0 ]; then
     alias ls=exa
@@ -442,7 +443,7 @@ _add_to_path '/usr/sbin'
 _setup_for_asdf
 #_setup_for_exercism
 #_setup_for_go
-_setup_for_java
+#_setup_for_java
 #_setup_for_graalvm
 _setup_for_locale
 #_setup_for_perl
@@ -452,7 +453,7 @@ _setup_for_nodejs
 _setup_for_xorg
 
 # depend on `java`
-_setup_for_clojure
+#_setup_for_clojure
 
 # depend on `asdf`
 #_setup_for_deno
