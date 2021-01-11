@@ -27,7 +27,7 @@
     "TODO")
 
   :hook
-  (((text-mode prog-mode)
+  (((text-mode prog-mode cider-repl-mode)
     . (lambda () (setq-local composition-function-table composition-ligature-table))))
 
   :config

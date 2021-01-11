@@ -327,19 +327,21 @@
   (define-key company-active-map (kbd "C-j")
     (lambda ()
       (interactive)
-      (if (and company-tooltip-flip-when-above
-               (-some->> 'company-replacement-args
-                 (overlay-get company-pseudo-tooltip-overlay)
-                 (nth 3)))
+      (if (ignore-errors
+            (and company-tooltip-flip-when-above
+                 (-some->> 'company-replacement-args
+                   (overlay-get company-pseudo-tooltip-overlay)
+                   (nth 3))))
           (call-interactively #'company-select-previous)
         (call-interactively #'company-select-next))))
   (define-key company-active-map (kbd "C-k")
     (lambda ()
       (interactive)
-      (if (and company-tooltip-flip-when-above
-               (-some->> 'company-replacement-args
-                 (overlay-get company-pseudo-tooltip-overlay)
-                 (nth 3)))
+      (if (ignore-errors
+            (and company-tooltip-flip-when-above
+                 (-some->> 'company-replacement-args
+                   (overlay-get company-pseudo-tooltip-overlay)
+                   (nth 3))))
           (call-interactively #'company-select-next)
         (call-interactively #'company-select-previous))))
   (define-key company-active-map (kbd "C-h") nil)
@@ -416,7 +418,9 @@
     (kbd "C-a") #'beginning-of-line-text
     (kbd "C-e") #'end-of-line
     (kbd "C-r") #'eldoc-refresh
-    (kbd "C-v") #'yank)
+    (kbd "C-v") #'yank
+    (kbd "C-j") nil
+    (kbd "C-k") nil)
   (evil-define-key 'visual 'global
     (kbd "<tab>") #'indent-region
     (kbd "v") #'er/expand-region))

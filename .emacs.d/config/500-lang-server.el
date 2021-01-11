@@ -204,6 +204,7 @@
          ;; (clojurescript-mode . lsp)
          (cperl-mode         . lsp)
          (go-mode            . lsp)
+         (java-mode          . lsp)
          (js-mode            . lsp)
          (latex-mode         . lsp)
          (php-mode           . lsp)

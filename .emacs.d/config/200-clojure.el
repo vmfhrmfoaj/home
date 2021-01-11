@@ -99,7 +99,9 @@
         (-first-item)
         (funcall display-fn))))
 
-  (setq cider-mode-line-show-connection nil)
+  (setq cider-mode-line-show-connection nil
+        cider-mode-line '(:eval (unless (ignore-errors (cider-current-repl))
+                                  (propertize " CIDER[not connected]" 'face 'error))))
 
   (cider-register-cljs-repl-type
    'figwheel-custom
@@ -114,6 +116,7 @@
             (lambda ()
               (setq-local evil-lookup-func #'cider-doc-at-point)
               (setq-local font-lock-fontify-region-function #'font-lock-default-fontify-region)
+              (cider-company-enable-fuzzy-completion)
               (eldoc-mode 1)))
 
   (advice-add #'cider-restart :around
@@ -228,9 +231,14 @@
   (add-hook 'cider-repl-mode-hook
             (lambda ()
               (setq-local evil-lookup-func #'cider-doc-at-point)
+              (cider-company-enable-fuzzy-completion)
               (eldoc-mode 1)
               (company-mode 1)
-              (cider-company-enable-fuzzy-completion)))
+              (let ((f (lambda ()
+                         (when eldoc-mode
+                           (run-at-time 0.01 nil #'eldoc-refresh)))))
+                (add-hook 'evil-insert-state-entry-hook f nil t)
+                (add-hook 'evil-insert-state-exit-hook  f nil t))))
 
   (advice-add #'cider-repl-emit-stdout :after #'cider-repl-catch-compilation-error-ns)
   (advice-add #'cider-repl-emit-stderr :after #'cider-repl-catch-compilation-error)
@@ -383,9 +391,13 @@
 
   (add-hook 'clojure-mode-hook
             (lambda ()
-              (cider-company-enable-fuzzy-completion)
               (when (and buffer-file-name (= (point-min) (point-max)))
                 (clojure-insert-namespace))
+              (let ((f (lambda ()
+                         (when eldoc-mode
+                           (run-at-time 0.01 nil #'eldoc-refresh)))))
+                (add-hook 'evil-insert-state-entry-hook f nil t)
+                (add-hook 'evil-insert-state-exit-hook  f nil t))
               (when (require 'flycheck nil t)
                 (add-hook 'after-save-hook
                           (lambda ()
