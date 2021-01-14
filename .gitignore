@@ -1,21 +1,16 @@
 /*
-!.atom/
-!.config/Code/User/keybindings.json
-!.config/Code/User/settings.json
-!.config/Code\ -\ Insider/User/keybindings.json
-!.config/Code\ -\ Insider/User/settings.json
-!.config/gromit-mpx.cfg
-!.config/gromit-mpx.ini
-!.emacs.d/
-!.lein/profiles.clj
-!.script
-!.Xresources
-!.bashrc
-!.gitignore
-!.gitignore_global
-!.less
-!.lesskey
-!.screenrc
-!.vimrc
-!.zsh_profile
-!.zshrc
+!/.atom/
+!/.config
+!/.emacs.d/
+!/.lein/profiles.clj
+!/.script
+!/.Xresources
+!/.bashrc
+!/.gitignore
+!/.gitignore_global
+!/.less
+!/.lesskey
+!/.screenrc
+!/.vimrc
+!/.zsh_profile
+!/.zshrc
