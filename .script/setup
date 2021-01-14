@@ -187,38 +187,6 @@ _setup_for_locale() {
     export LC_ALL=en_US.UTF-8
 }
 
-_setup_for_perl() {
-    export PERLBREW_ROOT="${HOME}/.perlbrew"
-    if [ ! -d ${PERLBREW_ROOT} ]; then
-        echo -n "Do you want to install 'Perlbrew'? (Y or N): "
-        read yn
-        if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
-            curl -fsSL 'https://install.perlbrew.pl' | bash
-        else
-            mkdir -p ${PERLBREW_ROOT}
-            mkdir -p "${HOME}/.shim"
-            cat > "${HOME}/.shim/perlbrew" <<EOF
-#!/bin/bash
-echo -n "Do you want to install 'Perlbrew'? (Y or N): "
-read yn
-if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
-    rm -rf ${PERLBREW_ROOT}
-    curl -fsSL 'https://install.perlbrew.pl' | bash
-    rm -rf \$0
-fi
-EOF
-            chmod +x "${HOME}/.shim/perlbrew"
-        fi
-    fi
-    if [ -r "${PERLBREW_ROOT}/etc/bashrc" ]; then
-        source "${PERLBREW_ROOT}/etc/bashrc"
-    fi
-    if [ ! -f "${ZSH}/custom/plugins/perlbrew/_perlbrew" ]; then
-        mkdir -p "${ZSH}/custom/plugins/perlbrew"
-        wget -O "${ZSH}/custom/plugins/perlbrew/_perlbrew" "https://gist.githubusercontent.com/vmfhrmfoaj/5d638cca74fa0c4ea0420457cae831b2/raw/3eb92bee4b2efa4508cbaea91b80bafd6d6c5f0c/_perlbrew"
-    fi
-}
-
 _setup_for_python() {
     if [ ! -f "${HOME}/.config/pycodestyle" ]; then
         cat > "${HOME}/.config/pycodestyle" <<\EOF
@@ -446,7 +414,6 @@ _setup_for_asdf
 #_setup_for_java
 #_setup_for_graalvm
 _setup_for_locale
-#_setup_for_perl
 _setup_for_python
 _setup_for_rust
 _setup_for_nodejs
