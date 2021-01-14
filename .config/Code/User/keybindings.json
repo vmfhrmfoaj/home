@@ -84,6 +84,40 @@
         "command": "explorer.newFolder",
         "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
     },
+    {
+        "key": "ctrl+i",
+        "command": "search.action.focusQueryEditorWidget",
+        "when": "inSearchEditor && !searchInputBoxFocus"
+    },
+    {
+        "key": "enter",
+        "command": "search.focus.nextInputBox",
+        "when": "inSearchEditor && searchInputBoxFocus"
+    },
+    {
+        "key": "enter",
+        "command": "editor.action.revealDefinition",
+        "when": "inSearchEditor && !searchInputBoxFocus"
+    },
+    {
+        "key": "ctrl+\\",
+        "command": "-workbench.action.splitEditor"
+    },
+    {
+        "key": "ctrl+\\",
+        "command": "workbench.action.terminal.toggleTerminal"
+    },
+    {
+        "key": "escape",
+        "command": "-gitlens.key.escape",
+        "when": "editorTextFocus && gitlens:key:escape && !findWidgetVisible && !isInEmbeddedEditor && !renameInputVisible && !suggestWidgetVisible"
+    },
+    {
+        "key": "escape",
+        "command": "multiCommand.closeGitBlameAndShowSidebar",
+        "when": "editorTextFocus && gitlens:key:escape && !findWidgetVisible && !isInEmbeddedEditor && !renameInputVisible && !suggestWidgetVisible"
+
+    },
 
     // Tab and Shift + Tab
     {
@@ -261,25 +295,65 @@
     },
     {
         "key": "ctrl+j",
-        "command": "search.action.focusNextSearchResult",
+        "command": "multiCommand.vimFocusNextAndEscape",
         "when": "inSearchEditor && !findInputFocussed"
     },
     {
         "key": "ctrl+k",
-        "command": "search.action.focusPreviousSearchResult",
+        "command": "multiCommand.vimFocusPrevAndEscape",
         "when": "inSearchEditor && !findInputFocussed"
     },
 
     // N/P
     {
         "key": "alt+n",
+        "command": "editor.action.moveLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly && vim.mode == 'Insert'"
+    },
+    {
+        "key": "alt+p",
+        "command": "editor.action.moveLinesUpAction",
+        "when": "editorTextFocus && !editorReadonly && vim.mode == 'Insert'"
+    },
+    {
+        "key": "alt+shift+n",
+        "command": "editor.action.copyLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly && vim.mode == 'Insert'"
+    },
+    {
+        "key": "alt+shift+p",
+        "command": "editor.action.copyLinesUpAction",
+        "when": "editorTextFocus && !editorReadonly && vim.mode == 'Insert'"
+    },
+    {
+        "key": "alt+n",
         "command": "editor.action.marker.next",
-        "when": "editorTextFocus && !findInputFocussed"
+        "when": "editorTextFocus && vim.mode != 'Insert' && !findInputFocussed && !isInDiffEditor"
     },
     {
         "key": "alt+p",
         "command": "editor.action.marker.prev",
-        "when": "editorTextFocus && !findInputFocussed"
+        "when": "editorTextFocus && vim.mode != 'Insert' && !findInputFocussed && !isInDiffEditor"
+    },
+    {
+        "key": "alt+n",
+        "command": "gitlens.diffWithNextInDiffLeft",
+        "when": "editorTextFocus && isInDiffEditor && !isInDiffRightEditor && gitlens:activeFileStatus =~ /revision/"
+    },
+    {
+        "key": "alt+n",
+        "command": "gitlens.diffWithNextInDiffRight",
+        "when": "editorTextFocus && isInDiffEditor &&  isInDiffRightEditor && gitlens:activeFileStatus =~ /revision/"
+    },
+    {
+        "key": "alt+p",
+        "command": "gitlens.diffWithPreviousInDiffLeft",
+        "when": "editorTextFocus && isInDiffEditor && !isInDiffRightEditor && gitlens:activeFileStatus =~ /tracked/"
+    },
+    {
+        "key": "alt+p",
+        "command": "gitlens.diffWithPreviousInDiffRight",
+        "when": "editorTextFocus && isInDiffEditor &&  isInDiffRightEditor && gitlens:activeFileStatus =~ /tracked/"
     },
 
     // HHKB Pro2

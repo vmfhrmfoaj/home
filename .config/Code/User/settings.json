@@ -1,12 +1,12 @@
 {
     // Appearance
-    "editor.fontFamily": "'Fira Code', monospace",
-    "editor.fontSize": 13,
+    "editor.fontFamily": "'Cascadia Code', monospace",
+    "editor.fontSize": 14,
+    "editor.fontWeight": "bold",
     "editor.fontLigatures": true,
     "editor.wordWrapColumn": 165,
-    "editor.fontWeight": "bold",
     "editor.rulers": [ 120 ],
-    "terminal.integrated.fontSize": 13,
+    "terminal.integrated.fontSize": 14,
     "window.titleBarStyle": "native",
     "window.menuBarVisibility": "toggle",
     "window.zoomLevel": 0,
@@ -17,14 +17,15 @@
         "statusBarItem.remoteBackground": "#22a4f1",
         "rust_analyzer.inlayHints.foreground": "#d4d4d4",
         "[Visual Studio Dark]": {
+            "editor.findMatchBackground": "#ea5c0090",
+            "editorCursor.foreground": "#ffffff85",
+            "editorCursor.background": "#333",
+            "editorRuler.foreground": "#5a5a5a20",
+            "rust_analyzer.inlayHints.foreground": "#878787",
+            "statusBar.foreground": "#ccc",
             "statusBar.background": "#333",
             "statusBar.noFolderBackground": "#333",
             "statusBar.noFolderBorder": "#333",
-            "editorCursor.foreground": "#ffffff85",
-            "editorCursor.background": "#333",
-            "editor.lineHighlightBorder": "#1e1e1e",
-            "editorRuler.foreground": "#5a5a5a20",
-            "rust_analyzer.inlayHints.foreground": "#878787",
         },
     },
 
@@ -63,16 +64,6 @@
             },
             "textMateRules": [
                 {
-                    "scope": [
-                        "keyword.other.sql",
-                        "keyword.other.DML.sql",
-                     ],
-                    "settings": {
-                        "foreground": "#ce9178",
-                        "fontStyle": "italic"
-                    }
-                },
-                {
                     "scope": "keyword.operator",
                     "settings": { "foreground": "#b1b1b1" },
                 },
@@ -82,8 +73,20 @@
                 },
                 {
                     "scope": [
-                        "storage.type.php",
-                        "storage.type.function.php",
+                        "storage.type.number.python",
+                    ],
+                    "settings": {
+                        "foreground": "#b5cea8",
+                    }
+                },
+                {
+                    "scope": [
+                        "storage.type",
+                        // C/C++
+                        "keyword.control.directive.define.c",
+                        "keyword.control.directive.include.c",
+                        // Python
+                        "keyword.control.import.python",
                     ],
                     "settings": { "foreground": "#569cd6" },
                 },
@@ -92,6 +95,8 @@
                         "entity.name.function.preprocessor",
                         // PHP
                         "constant.language.php",
+                        // Ptyhon
+                        "constant.language.python",
                     ],
                     "settings": { "foreground": "#d4d4d4", }
                 },
@@ -163,16 +168,22 @@
                         "punctuation.separator.period.python",
                         "meta.function.decorator.python",
                         // PHP
+                        "punctuation.definition.begin.bracket.curly.php",
+                        "punctuation.definition.end.bracket.curly.php",
                         "punctuation.definition.begin.bracket.round.php",
                         "punctuation.definition.end.bracket.round.php",
                         "punctuation.definition.arguments.begin.bracket.round.php",
                         "punctuation.definition.arguments.end.bracket.round.php",
                         "punctuation.definition.array.begin.bracket.round.php",
                         "punctuation.definition.array.end.bracket.round.php",
+                        "punctuation.definition.parameters.begin.bracket.round.php",
+                        "punctuation.definition.parameters.end.bracket.round.php",
                         "punctuation.definition.variable.php",
                         "punctuation.separator.delimiter.php",
                         "punctuation.terminator.expression.php",
                         "punctuation.terminator.statement.php",
+                        "punctuation.section.array.begin.php",
+                        "punctuation.section.array.end.php",
                         "storage.modifier.reference.php",
                         // JSON
                         "punctuation.separator.array.json.comments",
@@ -216,25 +227,16 @@
     "editor.suggestSelection": "first",
     "editor.tabSize": 4,
     "workbench.editor.enablePreview": false,
-    "workbench.editorAssociations": [
-        {
-            "viewType": "jupyter.notebook.ipynb",
-            "filenamePattern": "*.ipynb"
-        }
-    ],
 
     // Misc.
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
-    "[jsonc]": {
-        "editor.defaultFormatter": "vscode.json-language-features"
-    },
 
     // Better Comment
     "better-comments.tags": [
         {
             "tag": "fixme",
-            "color": "#FF2D00",
+            "color": "#cc2400",
             "strikethrough": false,
             "underline": false,
             "backgroundColor": "transparent",
@@ -243,7 +245,7 @@
         },
         {
             "tag": "xxx",
-            "color": "#FF2D00",
+            "color": "#cc2400",
             "strikethrough": false,
             "underline": false,
             "backgroundColor": "transparent",
@@ -252,7 +254,7 @@
         },
         {
             "tag": "note",
-            "color": "#3498DB",
+            "color": "#8cc6e4",
             "strikethrough": false,
             "underline": false,
             "backgroundColor": "transparent",
@@ -261,7 +263,7 @@
         },
         {
             "tag": "todo",
-            "color": "#FF8C00",
+            "color": "#cc7000",
             "strikethrough": false,
             "underline": false,
             "backgroundColor": "transparent",
@@ -271,16 +273,23 @@
     ],
 
     // C/C++
-    "C_Cpp.updateChannel": "Default",
     "C_Cpp.enhancedColorization": "Enabled",
     "C_Cpp.intelliSenseEngine": "Default",
+    "C_Cpp.updateChannel": "Default",
 
     // CMake
     "cmake.configureOnOpen": true,
 
+    // Git
+    "git.allowForcePush": true,
+
+    // Git History
+    "gitHistory.showFileHistorySplit": false,
+
     // Gitlens
     "gitlens.codeLens.enabled": false,
     "gitlens.currentLine.enabled": false,
+    "gitlens.keymap": "none",
     "gitlens.statusBar.format": "${author}(${agoOrDate}): \"${message}\"",
 
     // Go
@@ -329,13 +338,6 @@
             ]
         },
         {
-            "command": "multiCommand.openLatestUsedEditor",
-            "sequence": [
-                "workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup",
-                "workbench.action.acceptSelectedQuickOpenItem",
-            ]
-        },
-        {
             "command": "multiCommand.vimQuickOpen",
             "sequence": [
                 "extension.vim_escape",
@@ -362,30 +364,6 @@
                 {"command": "type", "args": {"text": "m"}},
                 {"command": "type", "args": {"text": "z"}},
                 "actions.find",
-            ]
-        },
-        {
-            "command": "multiCommand.vimMarkAndFindAndJumpNextMatch",
-            "sequence": [
-                "cursorLeft",
-                "cursorWordRight",
-                "actions.find",
-                "closeFindWidget",
-                "cancelSelection",
-                "extension.vim_escape",
-                "editor.action.nextMatchFindAction",
-            ]
-        },
-        {
-            "command": "multiCommand.vimMarkAndFindAndJumpPrevMatch",
-            "sequence": [
-                "cursorRight",
-                "cursorWordLeft",
-                "actions.find",
-                "closeFindWidget",
-                "cancelSelection",
-                "extension.vim_escape",
-                "editor.action.previousMatchFindAction",
             ]
         },
         {
@@ -447,13 +425,29 @@
             ]
         },
         {
-            "command": "multiCommand.vimCursorUndo",
+            "command": "multiCommand.vimFocusNextAndEscape",
             "sequence": [
-                "cursorUndo",
+                "search.action.focusNextSearchResult",
                 "cancelSelection",
                 "extension.vim_escape",
             ]
-        }
+        },
+        {
+            "command": "multiCommand.vimFocusPrevAndEscape",
+            "sequence": [
+                "search.action.focusPreviousSearchResult",
+                "cancelSelection",
+                "extension.vim_escape",
+            ]
+        },
+        {
+            "command": "multiCommand.closeGitBlameAndShowSidebar",
+            "sequence": [
+                "gitlens.key.escape",
+                "workbench.action.focusSideBar",
+                "workbench.action.focusActiveEditorGroup",
+            ]
+        },
     ],
 
     // Python
@@ -464,10 +458,10 @@
     "remote.SSH.showLoginTerminal": true,
 
     // Rust Analyzer
-    "rust-analyzer.serverPath": "~/.cargo/bin/rust-analyzer",
     "rust-analyzer.checkOnSave.command": "clippy",
     "rust-analyzer.inlayHints.chainingHints": false,
     "rust-analyzer.inlayHints.parameterHints": false,
+    "rust-analyzer.serverPath": "~/.cargo/bin/rust-analyzer",
 
     // Vim
     "workbench.list.keyboardNavigation": "simple", // see, https://github.com/Microsoft/vscode/issues/66995#issuecomment-457123611
@@ -494,12 +488,20 @@
     ],
     "vim.visualModeKeyBindingsNonRecursive": [
         {
+            "before": [ "<C-i>" ],
+            "commands": [ { "command": "workbench.action.navigateForward" } ]
+        },
+        {
             "before": [ "<C-o>" ],
-            "commands": [ { "command": "multiCommand.vimCursorUndo" } ]
+            "commands": [ { "command": "workbench.action.navigateBack" } ]
         },
         {
             "before": [ "<C-r>" ],
             "commands": [ { "command": "redo" } ]
+        },
+        {
+            "before": [ "/" ],
+            "commands": [ { "command": "multiCommand.vimMarkAndFind" } ]
         },
         {
             "before": [ "N" ],
@@ -508,6 +510,27 @@
         {
             "before": [ "n" ],
             "commands": [ { "command": "editor.action.nextMatchFindAction" } ]
+        },
+        {
+            "before": [
+                "g",
+                ";"
+            ],
+            "commands": [ { "command": "workbench.action.navigateToLastEditLocation" } ]
+        },
+        {
+            "before": [
+                "g",
+                "D"
+            ],
+            "commands": [ { "command": "editor.action.referenceSearch.trigger" } ]
+        },
+        {
+            "before": [
+                "g",
+                "d",
+            ],
+            "commands": [ { "command": "editor.action.revealDefinition" } ]
         },
         {
             "before": [
@@ -533,6 +556,36 @@
                 { "command": "extension.vim_escape" }
             ]
         },
+        // NOTE: has been occupied by Vim extension
+        // {
+        //     "before": [
+        //         "<leader>",
+        //         "b",
+        //     ],
+        // },
+        {
+            "before": [
+                "<leader>",
+                "s",
+                "n"
+            ],
+            "commands": [ { "command": "search.action.openNewEditor" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "s",
+                "N"
+            ],
+            "commands": [ { "command": "search.action.openNewEditorToSide" } ]
+        },
+        // NOTE: has been occupied by Vim extension
+        // {
+        //     "before": [
+        //         "<leader>",
+        //         "w",
+        //     ],
+        // },
         {
             "before": [
                 "<leader>",
@@ -548,8 +601,12 @@
     ],
     "vim.normalModeKeyBindingsNonRecursive": [
         {
+            "before": [ "<C-i>" ],
+            "commands": [ { "command": "workbench.action.navigateForward" } ]
+        },
+        {
             "before": [ "<C-o>" ],
-            "commands": [ { "command": "multiCommand.vimCursorUndo" } ]
+            "commands": [ { "command": "workbench.action.navigateBack" } ]
         },
         {
             "before": [ "<C-r>" ],
@@ -557,11 +614,27 @@
         },
         {
             "before": [ "#" ],
-            "commands": [ { "command": "multiCommand.vimMarkAndFindAndJumpPrevMatch" } ]
+            "commands": [
+                { "command": "cursorRight" },
+                { "command": "cursorWordLeft" },
+                { "command": "actions.find" },
+                { "command": "closeFindWidget" },
+                { "command": "cancelSelection" },
+                { "command": "extension.vim_escape" },
+                { "command": "editor.action.previousMatchFindAction" },
+            ]
         },
         {
             "before": [ "*" ],
-            "commands": [ { "command": "multiCommand.vimMarkAndFindAndJumpNextMatch" } ]
+            "commands": [
+                { "command": "cursorLeft" },
+                { "command": "cursorWordRight" },
+                { "command": "actions.find" },
+                { "command": "closeFindWidget" },
+                { "command": "cancelSelection" },
+                { "command": "extension.vim_escape" },
+                { "command": "editor.action.nextMatchFindAction" },
+            ]
         },
         {
             "before": [ "/" ],
@@ -579,6 +652,16 @@
             "before": [ "u" ],
             "commands": [
                 { "command": "undo" },
+                { "command": "extension.vim_escape" }
+            ]
+        },
+        {
+            "before": [
+                "g",
+                ";"
+            ],
+            "commands": [
+                { "command": "workbench.action.navigateToLastEditLocation" },
                 { "command": "extension.vim_escape" }
             ]
         },
@@ -622,7 +705,10 @@
                 "<leader>",
                 "<tab>",
             ],
-            "commands": [ { "command": "multiCommand.openLatestUsedEditor" } ]
+            "commands": [
+                { "command": "workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup" },
+                { "command": "workbench.action.acceptSelectedQuickOpenItem" },
+            ]
         },
         {
             "before": [
@@ -631,6 +717,13 @@
             ],
             "commands": [ { "command": "editor.action.commentLine" } ]
         },
+        // NOTE: has been occupied by Vim extension
+        // {
+        //     "before": [
+        //         "<leader>",
+        //         "b",
+        //     ],
+        // },
         {
             "before": [
                 "<leader>",
@@ -655,13 +748,57 @@
             ],
             "commands": [ { "command": "workbench.action.files.copyPathOfActiveFile" } ]
         },
-        // NOTE: has been occupied by Vim extension
-        // {
-        //     "before": [
-        //         "<leader>",
-        //         "b",
-        //     ],
-        // },
+        {
+            "before": [
+                "<leader>",
+                "g",
+                "a"
+            ],
+            "commands": [ { "command": "git.viewHistory" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "g",
+                "b"
+            ],
+            "commands": [
+                { "command": "workbench.action.closeSidebar" },
+                { "command": "gitlens.toggleFileBlame" }
+            ],
+        },
+        {
+            "before": [
+                "<leader>",
+                "g",
+                "f"
+            ],
+            "commands": [ { "command": "git.viewFileHistory" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "g",
+                "l"
+            ],
+            "commands": [ { "command": "git.viewLineHistory" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "g",
+                "p"
+            ],
+            "commands": [ { "command": "gitlens.pushRepositories" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "g",
+                "t"
+            ],
+            "commands": [ { "command": "gitlens.diffWithPrevious" } ]
+        },
         {
             "before": [
                 "<leader>",
@@ -669,6 +806,22 @@
                 "s"
             ],
             "commands": [ { "command": "editor.action.insertSnippet" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "s",
+                "n"
+            ],
+            "commands": [ { "command": "search.action.openNewEditor" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "s",
+                "N"
+            ],
+            "commands": [ { "command": "search.action.openNewEditorToSide" } ]
         },
         // NOTE: has been occupied by Vim extension
         // {
@@ -686,5 +839,4 @@
             "commands": [ { "command": "editor.action.formatDocument" } ]
         },
     ],
-    "gitlens.views.lineHistory.enabled": true,
 }
