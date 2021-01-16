@@ -4,8 +4,20 @@
     "editor.fontSize": 14,
     "editor.fontWeight": "bold",
     "editor.fontLigatures": true,
-    "editor.wordWrapColumn": 165,
+    "editor.matchBrackets": "never", // use Bracket Pair Colorizer
+    "editor.minimap.enabled": false,
+    "editor.minimap.renderCharacters": false,
+    "editor.minimap.showSlider": "always",
+    "editor.overviewRulerBorder": false, // true, if minimap is enabled
+    "editor.quickSuggestions": true,
+    // NOTE:
+    //  The minimap can't not cover whole page if file is longer than 200 line on my screen.
+    //  So, the minimap is not perfect alternative for the scrollbar.
+    // "editor.scrollbar.verticalScrollbarSize": 0,
     "editor.rulers": [ 120 ],
+    "editor.renderLineHighlight": "none",
+    "editor.renderWhitespace": "selection",
+    "editor.wordWrapColumn": 165,
     "terminal.integrated.fontSize": 14,
     "window.titleBarStyle": "native",
     "window.menuBarVisibility": "toggle",
@@ -200,29 +212,12 @@
         },
     },
 
-    "bracket-pair-colorizer-2.colors": [
-        "#909090",
-    ],
-    "bracket-pair-colorizer-2.scopeLineCSS": [
-        "borderStyle : solid",
-        "borderWidth : 1px",
-        "borderColor : #707070",
-        "opacity: 1"
-    ],
-
     // Edit
     "breadcrumbs.enabled": true,
     "editor.detectIndentation": false,
     "editor.formatOnSave": false,
     "editor.insertSpaces": true,
     "editor.lineNumbers": "relative",
-    "editor.renderLineHighlight": "none",
-    "editor.renderWhitespace": "selection",
-    "editor.minimap.enabled": true,
-    "editor.minimap.renderCharacters": false,
-    "editor.minimap.showSlider": "always",
-    "editor.scrollbar.verticalScrollbarSize": 0, // use the minimap as the scrollbar
-    "editor.quickSuggestions": true,
     "editor.suggestOnTriggerCharacters": true,
     "editor.suggestSelection": "first",
     "editor.tabSize": 4,
@@ -270,6 +265,17 @@
             "bold": false,
             "italic": false
         },
+    ],
+
+    // Bracket Pair Colorizer
+    "bracket-pair-colorizer-2.colors": [
+        "#909090",
+    ],
+    "bracket-pair-colorizer-2.scopeLineCSS": [
+        "borderStyle : solid",
+        "borderWidth : 1px",
+        "borderColor : #707070",
+        "opacity: 1"
     ],
 
     // C/C++
@@ -345,6 +351,13 @@
             ]
         },
         {
+            "command": "multiCommand.vimShowCommand",
+            "sequence": [
+                "extension.vim_escape",
+                "workbench.action.showCommands",
+            ]
+        },
+        {
             "command": "multiCommand.vimFocusFirstEditorGroupAndEscape",
             "sequence": [
                 "workbench.action.focusFirstEditorGroup",
@@ -416,12 +429,7 @@
             "command": "multiCommand.cancelSuggestionAndInsertNewline",
             "sequence": [
                 "hideSuggestWidget",
-                {
-                    "command": "type",
-                    "args": {
-                        "text": "\n"
-                    },
-                },
+                {"command": "type", "args": {"text": "\n" }},
             ]
         },
         {
@@ -435,6 +443,7 @@
         {
             "command": "multiCommand.vimFocusPrevAndEscape",
             "sequence": [
+                "cursorWordLeft",
                 "search.action.focusPreviousSearchResult",
                 "cancelSelection",
                 "extension.vim_escape",
@@ -448,6 +457,41 @@
                 "workbench.action.focusActiveEditorGroup",
             ]
         },
+        {
+            "command": "multiCommand.goParentSymbol",
+            "sequence": [
+                "breadcrumbs.focusAndSelect",
+                "list.collapse",
+            ]
+        },
+        {
+            "command": "multiCommand.goNextSymbol",
+            "sequence": [
+                "breadcrumbs.focusAndSelect",
+                "list.focusDown",
+            ]
+        },
+        {
+            "command": "multiCommand.goPrevSymbol",
+            "sequence": [
+                "breadcrumbs.focusAndSelect",
+                "list.focusUp",
+            ]
+        },
+        {
+            "command": "multiCommand.vimAkeyAndShowParameterHint",
+            "sequence": [
+                {"command": "type", "args": {"text": "a"}},
+                "editor.action.triggerParameterHints"
+            ]
+        },
+        {
+            "command": "multiCommand.vimIkeyAndShowParameterHint",
+            "sequence": [
+                {"command": "type", "args": {"text": "i"}},
+                "editor.action.triggerParameterHints"
+            ]
+        },
     ],
 
     // Python
@@ -459,8 +503,6 @@
 
     // Rust Analyzer
     "rust-analyzer.checkOnSave.command": "clippy",
-    "rust-analyzer.inlayHints.chainingHints": false,
-    "rust-analyzer.inlayHints.parameterHints": false,
     "rust-analyzer.serverPath": "~/.cargo/bin/rust-analyzer",
 
     // Vim
@@ -477,6 +519,7 @@
     "vim.visualstar": true,
     "vim.leader": "<space>",
     "vim.handleKeys": {
+        "<C-p>": false,
         "<C-w>": false,
         "<C-z>": false,
     },
@@ -787,9 +830,17 @@
             "before": [
                 "<leader>",
                 "g",
+                "n"
+            ],
+            "commands": [ { "command": "multiCommand.goNextChangeAndShow" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "g",
                 "p"
             ],
-            "commands": [ { "command": "gitlens.pushRepositories" } ]
+            "commands": [ { "command": "multiCommand.goPreviousChangeAndShow" } ]
         },
         {
             "before": [
