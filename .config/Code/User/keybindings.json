@@ -294,6 +294,26 @@
         "command": "search.focus.previousInputBox",
         "when": "inputBoxFocus && searchViewletVisible"
     },
+    {
+        "key": "h",
+        "command": "previousCompressedFolder",
+        "when": "explorerViewletCompressedFocus && explorerViewletVisible && filesExplorerFocus && !explorerViewletCompressedFirstFocus && !inputFocus"
+    },
+    {
+        "key": "ctrl+h",
+        "command": "previousCompressedFolder",
+        "when": "explorerViewletCompressedFocus && explorerViewletVisible && filesExplorerFocus && !explorerViewletCompressedFirstFocus && !inputFocus"
+    },
+    {
+        "key": "l",
+        "command": "nextCompressedFolder",
+        "when": "explorerViewletCompressedFocus && explorerViewletVisible && filesExplorerFocus && !explorerViewletCompressedLastFocus && !inputFocus"
+    },
+    {
+        "key": "ctrl+l",
+        "command": "nextCompressedFolder",
+        "when": "explorerViewletCompressedFocus && explorerViewletVisible && filesExplorerFocus && !explorerViewletCompressedLastFocus && !inputFocus"
+    },
     // - for git
     {
         "key": "ctrl+j",
@@ -304,6 +324,17 @@
         "key": "ctrl+k",
         "command": "multiCommand.goPreviousChangeAndShow",
         "when": "editorTextFocus && dirtyDiffVisible"
+    },
+    // - for marker(i.e. error)
+    {
+        "key": "ctrl+j",
+        "command": "editor.action.marker.next",
+        "when": "editorTextFocus && markersNavigationVisible"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "editor.action.marker.prev",
+        "when": "editorTextFocus && markersNavigationVisible"
     },
     // - for diff
     {
@@ -352,7 +383,7 @@
     {
         "key": "ctrl+h",
         "command": "multiCommand.goParentSymbol",
-        "when": "editorTextFocus && vim.mode != 'Insert' && !findInputFocussed && !suggestWidgetVisible && !dirtyDiffVisible && !isInDiffEditor && !inSearchEditor"
+        "when": "editorTextFocus && vim.mode != 'Insert'"
     },
     {
         "key": "ctrl+h",
@@ -362,17 +393,17 @@
     {
         "key": "ctrl+j",
         "command": "multiCommand.goNextSymbol",
-        "when": "editorTextFocus && vim.mode != 'Insert' && !findInputFocussed && !suggestWidgetVisible && !dirtyDiffVisible && !isInDiffEditor && !inSearchEditor"
+        "when": "editorTextFocus && vim.mode != 'Insert' && !findInputFocussed && !suggestWidgetVisible && !dirtyDiffVisible && !isInDiffEditor && !inSearchEditor && !markersNavigationVisible"
     },
     {
         "key": "ctrl+k",
         "command": "multiCommand.goPrevSymbol",
-        "when": "editorTextFocus && vim.mode != 'Insert' && !findInputFocussed && !suggestWidgetVisible && !dirtyDiffVisible && !isInDiffEditor && !inSearchEditor"
+        "when": "editorTextFocus && vim.mode != 'Insert' && !findInputFocussed && !suggestWidgetVisible && !dirtyDiffVisible && !isInDiffEditor && !inSearchEditor && !markersNavigationVisible"
     },
     {
         "key": "ctrl+l",
         "command": "breadcrumbs.focusAndSelect",
-        "when": "editorTextFocus && vim.mode != 'Insert' && !findInputFocussed && !suggestWidgetVisible && !dirtyDiffVisible && !isInDiffEditor && !inSearchEditor"
+        "when": "editorTextFocus && vim.mode != 'Insert'"
     },
     {
         "key": "ctrl+l",
@@ -383,7 +414,7 @@
     {
         "key": "ctrl+h",
         "command": "list.collapse",
-        "when": "listFocus && !inputFocus && !breadcrumbsActive"
+        "when": "listFocus && !inputFocus && !breadcrumbsActive && !explorerViewletCompressedFocus"
     },
     {
         "key": "ctrl+j",
@@ -398,7 +429,7 @@
     {
         "key": "ctrl+l",
         "command": "list.expand",
-        "when": "listFocus && !inputFocus && !breadcrumbsActive"
+        "when": "listFocus && !inputFocus && !breadcrumbsActive && !explorerViewletCompressedFocus"
     },
     {
         "key": "l",
@@ -408,7 +439,7 @@
     {
         "key": "l",
         "command": "list.expand",
-        "when": "listFocus && !inputFocus"
+        "when": "listFocus && !inputFocus && !explorerViewletCompressedFocus"
     },
 
     // N/P
@@ -416,17 +447,6 @@
         "key": "alt+p",
         "command": "-togglePreserveCase",
         "when": "editorFocus"
-    },
-    // - for error
-    {
-        "key": "alt+n",
-        "command": "editor.action.marker.next",
-        "when": "editorTextFocus && vim.mode != 'Insert' && !findInputFocussed && !isInDiffEditor && !inSearchEditor"
-    },
-    {
-        "key": "alt+p",
-        "command": "editor.action.marker.prev",
-        "when": "editorTextFocus && vim.mode != 'Insert' && !findInputFocussed && !isInDiffEditor && !inSearchEditor"
     },
     // - for git timemachine
     {

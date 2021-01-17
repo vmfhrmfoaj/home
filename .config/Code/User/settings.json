@@ -48,12 +48,12 @@
         },
         "[Visual Studio Dark]": {
             "rules": {
-                "enum": "#4ec9b0",
+                "enum": "#d4d4d4",
                 "enumMember": "#d4d4d4",
-                "interface": "#4ec9b0",
-                "type": "#4ec9b0",
-                "typeAlias": "#4ec9b0",
-                "typeParameter": "#4ec9b0",
+                "interface": "#d4d4d4",
+                "type": "#d4d4d4",
+                "typeAlias": "#d4d4d4",
+                "typeParameter": "#d4d4d4",
                 "punctuation": "#a9a9a9",
                 "macro": "#d4d4d4",
                 "operator": "#b1b1b1",
@@ -109,6 +109,12 @@
                         "constant.language.php",
                         // Ptyhon
                         "constant.language.python",
+                        // Go
+                        "constant.language.go",
+                        "storage.type.boolean.go",
+                        "storage.type.error.go",
+                        "storage.type.numeric.go",
+                        "storage.type.string.go",
                     ],
                     "settings": { "foreground": "#d4d4d4", }
                 },
@@ -201,6 +207,8 @@
                         "punctuation.separator.array.json.comments",
                         "punctuation.separator.dictionary.pair.json.comments",
                         "punctuation.separator.dictionary.key-value.json.comments",
+                        // Rust
+                        "punctuation.semi.rust",
                     ],
                     "settings": { "foreground": "#a9a9a9", }
                 },
@@ -222,6 +230,13 @@
     "editor.suggestSelection": "first",
     "editor.tabSize": 4,
     "workbench.editor.enablePreview": false,
+
+    "[go]": {
+        "editor.formatOnSave": true,
+    },
+    "[rust]": {
+        "editor.formatOnSave": true,
+    },
 
     // Misc.
     "explorer.confirmDelete": false,
@@ -770,6 +785,22 @@
         {
             "before": [
                 "<leader>",
+                "e",
+                "l"
+            ],
+            "commands": [ { "command": "workbench.action.problems.focus" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "e",
+                "s"
+            ],
+            "commands": [ { "command": "editor.action.marker.next" } ]
+        },
+        {
+            "before": [
+                "<leader>",
                 "f",
                 "f"
             ],
@@ -890,4 +921,5 @@
             "commands": [ { "command": "editor.action.formatDocument" } ]
         },
     ],
+    "go.useLanguageServer": true,
 }
