@@ -127,6 +127,16 @@
         "key": "ctrl+alt+p",
         "command": "workbench.action.showCommands"
     },
+    {
+        "key": "ctrl+f",
+        "command": "-workbench.action.terminal.focusFind",
+        "when": "terminalFindFocused && terminalProcessSupported || terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+shift+f",
+        "command": "workbench.action.terminal.focusFind",
+        "when": "terminalFindFocused && terminalProcessSupported || terminalFocus && terminalProcessSupported"
+    },
 
     // Tab and Shift + Tab
     {
@@ -223,17 +233,6 @@
         "key": "escape",
         "command": "multiCommand.vimCloseFindWidget",
         "when": "vim.active && !findInputFocussed && findWidgetVisible"
-    },
-    // - for parameter hint
-    {
-        "key": "a",
-        "command": "multiCommand.vimAkeyAndShowParameterHint",
-        "when": "editorTextFocus && editorHasSignatureHelpProvider && !parameterHintsVisible && vim.mode == 'Normal'"
-    },
-    {
-        "key": "i",
-        "command": "multiCommand.vimIkeyAndShowParameterHint",
-        "when": "editorTextFocus && editorHasSignatureHelpProvider && !parameterHintsVisible && vim.mode == 'Normal'"
     },
 
     // H/J/K/L

@@ -1,8 +1,8 @@
 {
     // Appearance
-    "editor.fontFamily": "'Cascadia Code', monospace",
-    "editor.fontSize": 14,
-    "editor.fontWeight": "bold",
+    "editor.fontFamily": "'Fira Code', monospace",
+    "editor.fontSize": 13.5,
+    "editor.fontWeight": "500",
     "editor.fontLigatures": true,
     "editor.matchBrackets": "never", // use Bracket Pair Colorizer
     "editor.minimap.enabled": false,
@@ -18,7 +18,7 @@
     "editor.renderLineHighlight": "none",
     "editor.renderWhitespace": "selection",
     "editor.wordWrapColumn": 165,
-    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.fontSize": 13,
     "window.titleBarStyle": "native",
     "window.menuBarVisibility": "toggle",
     "window.zoomLevel": 0,
@@ -116,6 +116,11 @@
                         "storage.type.error.go",
                         "storage.type.numeric.go",
                         "storage.type.string.go",
+                        // Json
+                        "constant.language.json.comments",
+                        "support.type.property-name.json.comments",
+                        // Toml
+                        "keyword.key.toml",
                     ],
                     "settings": { "foreground": "#d4d4d4", }
                 },
@@ -161,7 +166,7 @@
                         "keyword.operator.redirect.shell",
                         "keyword.operator.heredoc.shell",
                         "punctuation.definition.subshell.shell",
-                        // GO
+                        // Go
                         "punctuation.definition.begin.bracket.curly.go",
                         "punctuation.definition.end.bracket.curly.go",
                         "punctuation.definition.begin.bracket.round.go",
@@ -175,10 +180,14 @@
                         // Python
                         "punctuation.definition.arguments.begin.python",
                         "punctuation.definition.arguments.end.python",
+                        "punctuation.definition.dict.begin.python",
+                        "punctuation.definition.dict.end.python",
                         "punctuation.definition.list.begin.python",
                         "punctuation.definition.list.end.python",
                         "punctuation.definition.parameters.begin.python",
                         "punctuation.definition.parameters.end.python",
+                        "punctuation.parenthesis.begin.python",
+                        "punctuation.parenthesis.end.python",
                         "punctuation.section.function.begin.python",
                         "punctuation.separator.arguments.python",
                         "punctuation.separator.colon.python",
@@ -210,8 +219,12 @@
                         "punctuation.separator.array.json.comments",
                         "punctuation.separator.dictionary.pair.json.comments",
                         "punctuation.separator.dictionary.key-value.json.comments",
+                        "punctuation.support.type.property-name.begin.json.comments",
+                        "punctuation.support.type.property-name.end.json.comments",
                         // Rust
                         "punctuation.semi.rust",
+                        // Toml
+                        "punctuation.definition.keyValuePair.toml",
                     ],
                     "settings": { "foreground": "#a9a9a9", }
                 },
@@ -225,6 +238,7 @@
 
     // Edit
     "breadcrumbs.enabled": true,
+    "editor.accessibilitySupport": "off",
     "editor.detectIndentation": false,
     "editor.formatOnSave": false,
     "editor.insertSpaces": true,
@@ -314,10 +328,12 @@
     "gitlens.codeLens.enabled": false,
     "gitlens.currentLine.enabled": false,
     "gitlens.keymap": "none",
+    "gitlens.statusBar.enabled": false,
     "gitlens.statusBar.format": "${author}(${agoOrDate}): \"${message}\"",
 
     // Go
     "go.formatTool": "goreturns",
+    "go.useLanguageServer": true,
 
     // Markdownlint
     "markdownlint.config": {
@@ -494,20 +510,6 @@
             "sequence": [
                 "breadcrumbs.focusAndSelect",
                 "list.focusUp",
-            ]
-        },
-        {
-            "command": "multiCommand.vimAkeyAndShowParameterHint",
-            "sequence": [
-                {"command": "type", "args": {"text": "a"}},
-                "editor.action.triggerParameterHints"
-            ]
-        },
-        {
-            "command": "multiCommand.vimIkeyAndShowParameterHint",
-            "sequence": [
-                {"command": "type", "args": {"text": "i"}},
-                "editor.action.triggerParameterHints"
             ]
         },
     ],
@@ -702,6 +704,21 @@
             "commands": [ { "command": "multiCommand.vimMarkAndFind" } ]
         },
         {
+            "before": [ "a" ],
+            "commands": [
+                { "command": "extension.vim_insert" },
+                { "command": "extension.vim_right" },
+                { "command": "editor.action.triggerParameterHints" },
+            ]
+        },
+        {
+            "before": [ "i" ],
+            "commands": [
+                { "command": "extension.vim_insert" },
+                { "command": "editor.action.triggerParameterHints" },
+            ]
+        },
+        {
             "before": [ "N" ],
             "commands": [ { "command": "editor.action.previousMatchFindAction" } ]
         },
@@ -823,6 +840,14 @@
                 "f",
                 "y"
             ],
+            "commands": [ { "command": "copyRelativeFilePath" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "f",
+                "Y"
+            ],
             "commands": [ { "command": "workbench.action.files.copyPathOfActiveFile" } ]
         },
         {
@@ -924,5 +949,4 @@
             "commands": [ { "command": "editor.action.formatDocument" } ]
         },
     ],
-    "go.useLanguageServer": true,
 }
