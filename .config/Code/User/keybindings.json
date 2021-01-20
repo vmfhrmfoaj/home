@@ -383,7 +383,7 @@
     {
         "key": "ctrl+h",
         "command": "multiCommand.goParentSymbol",
-        "when": "editorTextFocus && vim.mode != 'Insert'"
+        "when": "editorTextFocus && vim.mode == 'Normal'"
     },
     {
         "key": "ctrl+h",
@@ -393,17 +393,17 @@
     {
         "key": "ctrl+j",
         "command": "multiCommand.goNextSymbol",
-        "when": "editorTextFocus && vim.mode != 'Insert' && !findInputFocussed && !suggestWidgetVisible && !dirtyDiffVisible && !isInDiffEditor && !inSearchEditor && !markersNavigationVisible"
+        "when": "editorTextFocus && vim.mode == 'Normal' && !findInputFocussed && !suggestWidgetVisible && !dirtyDiffVisible && !isInDiffEditor && !inSearchEditor && !markersNavigationVisible"
     },
     {
         "key": "ctrl+k",
         "command": "multiCommand.goPrevSymbol",
-        "when": "editorTextFocus && vim.mode != 'Insert' && !findInputFocussed && !suggestWidgetVisible && !dirtyDiffVisible && !isInDiffEditor && !inSearchEditor && !markersNavigationVisible"
+        "when": "editorTextFocus && vim.mode == 'Normal' && !findInputFocussed && !suggestWidgetVisible && !dirtyDiffVisible && !isInDiffEditor && !inSearchEditor && !markersNavigationVisible"
     },
     {
         "key": "ctrl+l",
         "command": "breadcrumbs.focusAndSelect",
-        "when": "editorTextFocus && vim.mode != 'Insert'"
+        "when": "editorTextFocus && vim.mode == 'Normal'"
     },
     {
         "key": "ctrl+l",

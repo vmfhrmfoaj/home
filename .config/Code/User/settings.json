@@ -107,6 +107,7 @@
                         "entity.name.function.preprocessor",
                         // PHP
                         "constant.language.php",
+                        "variable.language.special.self.python",
                         // Ptyhon
                         "constant.language.python",
                         // Go
@@ -179,11 +180,13 @@
                         "punctuation.definition.parameters.begin.python",
                         "punctuation.definition.parameters.end.python",
                         "punctuation.section.function.begin.python",
+                        "punctuation.separator.arguments.python",
                         "punctuation.separator.colon.python",
                         "punctuation.separator.continuation.line.python",
                         "punctuation.separator.dict.python",
                         "punctuation.separator.element.python",
                         "punctuation.separator.period.python",
+                        "punctuation.separator.parameters.python",
                         "meta.function.decorator.python",
                         // PHP
                         "punctuation.definition.begin.bracket.curly.php",
