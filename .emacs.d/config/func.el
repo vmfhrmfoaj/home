@@ -334,6 +334,10 @@
 (defun open-link-at-point ()
   (interactive)
   (cond
+   ((string= "*lsp-help*" (buffer-name))
+    (-some--> (get-text-property (point) 'help-echo)
+      (and (string-match-p goto-address-url-regexp it)
+           (browse-url it))))
    (t (message (concat "Don't know how to open a link on '" (symbol-name major-mode) "'")))))
 
 (defun format-buffer-or-region ()

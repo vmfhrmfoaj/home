@@ -105,7 +105,7 @@
                   (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))
                  ((derived-mode-p 'python-mode)
                   (flycheck-select-checker 'python-flake8)
-                  (flycheck-add-next-checker 'python-pylint 'lsp))))))
+                  (flycheck-add-next-checker 'python-flake8 'lsp :append))))))
 
   (advice-add #'lsp-diagnostics--flycheck-start :override #'lsp-diagnostics--custom-flycheck-start)
   (advice-add #'lsp-modeline--diagnostics-update-modeline :override #'ignore))

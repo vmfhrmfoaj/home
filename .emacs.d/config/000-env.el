@@ -18,7 +18,7 @@
                                "GO111MODULE"
                                "GOPATH"
                                "JAVA_HOME"
-                               "PYTHONPATH"
+                               "EPYTHON"
                                "PATH"))
                    (cmd (concat (apply #'concat "bash -c 'source " setup-file " >/dev/null 2>&1; "
                                        "for var in " (-interpose " " env-vars))

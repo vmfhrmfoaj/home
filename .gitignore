@@ -10,6 +10,7 @@
 !/.gitignore_global
 !/.less
 !/.lesskey
+!/.pylintrc
 !/.screenrc
 !/.vimrc
 !/.zsh_profile

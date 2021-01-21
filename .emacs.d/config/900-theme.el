@@ -127,7 +127,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(hl-todo ((t :foreground "#cc9393" :weight bold)))))
+   '(hl-todo ((t :foreground "#cc9393" :weight normal)))))
 
 (use-package ivy
   :defer t

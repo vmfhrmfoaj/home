@@ -194,9 +194,7 @@ _setup_for_python() {
 max-line-length = 120
 EOF
     fi
-    if [ -d "${HOME}/.local/lib/python3.8/site-packages" ]; then
-        export PYTHONPATH="${HOME}/.local/lib/python3.8/site-packages:${PYTHONPATH}"
-    fi
+    export EPYTHON=python3.8
 }
 
 _setup_for_rust() {
