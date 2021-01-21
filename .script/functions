@@ -107,7 +107,6 @@ vscode_extensions=(
     'ryuta46.multi-command'
     'shardulm94.trailing-spaces'
     'slevesque.vscode-hexdump'
-    'vadimcn.vscode-lldb'
     'vscodevim.vim')
 
 _install_vs_code_from_tar() {
