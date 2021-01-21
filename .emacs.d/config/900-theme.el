@@ -19,7 +19,7 @@
      ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight light :inverse-video nil)))
    '(mode-line-inactive ((t :weight extra-light)))
    '(mode-line ((t :weight light)))
-   '(shadow ((t :weight extra-light)))
+   '(shadow ((t :weight light)))
    '(whitespace-newline ((t :background "#282a2e" :weight extra-light)))
    '(whitespace-space ((t :weight extra-light)))
    '(whitespace-tab ((t :weight extra-light)))))
@@ -63,6 +63,14 @@
   (custom-set-faces
    '(cperl-nonoverridable-face ((t :inherit font-lock-constant-face)))))
 
+(use-package diff-mode
+  :defer t
+  :config
+  (custom-set-faces
+   '(diff-refine-added   ((t :background "#22aa22" :weight bold)))
+   '(diff-refine-changed ((t :background "#aaaa22" :weight bold)))
+   '(diff-refine-removed ((t :background "#aa2222" :weight bold)))))
+
 (use-package eldoc
   :defer t
   :config
@@ -105,9 +113,9 @@
    '(font-lock-doc-face ((t :weight light)))
    '(font-lock-function-name-face ((t :foreground "#85aacc" :weight semi-bold)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
-   '(font-lock-regexp-grouping-backslash ((t :weight normal)))
-   '(font-lock-regexp-grouping-construct ((t :weight normal)))
-   '(font-lock-string-face ((t :weight light)))))
+   '(font-lock-regexp-grouping-backslash ((t :weight semi-bold)))
+   '(font-lock-regexp-grouping-construct ((t :weight semi-bold)))
+   '(font-lock-string-face ((t :weight normal)))))
 
 (use-package fringe
   :defer t
@@ -142,6 +150,8 @@
   :defer t
   :config
   (custom-set-faces
+   '(magit-diff-added-highlight   ((t :background "#336633" :foreground "#cceecc" :weight semi-bold)))
+   '(magit-diff-removed-highlight ((t :background "#663333" :foreground "#eecccc" :weight semi-bold)))
    `(magit-diff-context
      ((t :inherit magit-diff-context-highlight :background ,(bg-color-from 'default) :weight extra-light)))
    `(magit-diff-context-highlight ((t :weight light)))

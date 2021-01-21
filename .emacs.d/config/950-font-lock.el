@@ -1100,7 +1100,11 @@
   :config
   (font-lock-add-keywords
    'go-mode
-   '(("\\<\\(_\\)\\>\\s-*\\(?:,\\|:?=\\)"
+   '(;; unsed variable
+     ("\\<\\(_\\(?:[0-9A-Za-z]+\\)?\\)\\>\\s-*\\(?:,\\|:?=\\)"
+      (1 'shadow t))
+     ;; pointer
+     ("\\(?:^\\|[ \t]\\)\\([*&]\\)[0-9A-Za-z]"
       (1 'shadow t))
      ;; slice
      ("\\[.*?\\(:\\).*?\\]"
@@ -1234,13 +1238,24 @@
 
   (font-lock-add-keywords
    'python-mode
-   `((,(concat "\\([._0-9A-Za-z]+\\(\\[['\"_0-9A-Za-z]+\\]\\)?\\|([ ,._0-9A-Za-z]+)\\)\\s-+\\(?:=\\)\\s-+")
-      ("\\(?:[_0-9A-Za-z]+\\.\\)?\\([_0-9A-Za-z]+\\)"
+   `((,(concat "\\(\\(?:\\(?:[_0-9A-Za-z]+\\.\\)?[_0-9A-Za-z]+\\)"
+               "\\(?:\\s-*,\\s-*\\(?:[_0-9A-Za-z]+\\.\\)?[_0-9A-Za-z]+\\)*\\)"
+               "\\(?:\\[.*?\\]\\)?\\s-+\\(?:=\\)\\s-+")
+      (,(lambda (limit)
+          (unless font-lock--skip
+            (re-search-forward "\\(?:[_0-9A-Za-z]+\\.\\)?\\([_0-9A-Za-z]+\\)" limit t)))
        (progn
-         (setq font-lock--anchor-beg-point (goto-char (match-beginning 0)))
+         (setq font-lock--skip nil)
+         (goto-char (setq font-lock--anchor-beg-point (match-beginning 1)))
+         (when (-some->> (syntax-ppss)
+                 (-first-item)
+                 (< 0))
+           (setq font-lock--skip t))
          (match-end 1))
        (goto-char font-lock--anchor-beg-point)
-       (1 'font-lock-variable-name-face))))
+       (1 (if (string= "_" (match-string-no-properties 1))
+              'shadow
+            'font-lock-variable-name-face)))))
    :append)
   (font-lock-add-keywords
    'python-mode
@@ -1254,15 +1269,15 @@
 (use-package prog-mode
   :defer t
   :config
-  (add-hook 'prog-mode-hook
-            (lambda ()
-              "TODO"
-              (font-lock-add-keywords
-               nil
-               '(("\\([.,]\\|[|&]\\{2,2\\}\\|\\s(\\|\\s)\\)"
-                  (1 'shadow)))
-               :append))
-            :append))
+  (let ((f (lambda ()
+             "TODO"
+             (font-lock-add-keywords
+              nil
+              '(("\\([.,]\\|[|&]\\{2,2\\}\\|\\s(\\|\\s)\\)"
+                 (1 'shadow)))
+              :append))))
+    (add-hook 'git-timemachine-mode-hook f :append)
+    (add-hook 'prog-mode-hook f :append)))
 
 (use-package rpm-spec-mode
   :defer t
@@ -1479,6 +1494,8 @@
                        (memq 'font-lock-string-face  face-lst))
                face))
            t))
+       ("\\(\\$\\)[({]"
+        (1 'shadow))
        ("\\([&|<>]\\)"
         (1 'shadow)))
      :append)))

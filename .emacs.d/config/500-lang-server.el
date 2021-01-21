@@ -100,9 +100,12 @@
                              (featurep 'flycheck)))
                 (cond
                  ((derived-mode-p 'go-mode)
-                  (flycheck-select-checker 'go-vet)
+                  (flycheck-select-checker 'go-golint)
                   (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t)
-                  (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))))))
+                  (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))
+                 ((derived-mode-p 'python-mode)
+                  (flycheck-select-checker 'python-flake8)
+                  (flycheck-add-next-checker 'python-pylint 'lsp))))))
 
   (advice-add #'lsp-diagnostics--flycheck-start :override #'lsp-diagnostics--custom-flycheck-start)
   (advice-add #'lsp-modeline--diagnostics-update-modeline :override #'ignore))
@@ -357,16 +360,19 @@
              :mode 'tick
              :cancel-token :eldoc-hover))))))
 
+  (defvar lsp--max-line-eldoc-msg
+    (1- (cond
+         ((floatp max-mini-window-height)
+          (floor (* (frame-height) max-mini-window-height)))
+         ((numberp max-mini-window-height)
+          max-mini-window-height)
+         (t 10))))
+
   (defun lsp--custom-eldoc-message (&optional msg)
     "Show MSG in eldoc."
     (setq lsp--eldoc-saved-message msg)
     (let ((lines (s-lines (or msg "")))
-          (max-line (cond
-                     ((floatp max-mini-window-height)
-                      (floor (* (frame-height) max-mini-window-height)))
-                     ((numberp max-mini-window-height)
-                      max-mini-window-height)
-                     (t 10))))
+          (max-line lsp--max-line-eldoc-msg))
       (eldoc-message (when lines
                        (->> (if (<= (length lines) max-line)
                                 lines

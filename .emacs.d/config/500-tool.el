@@ -229,7 +229,8 @@
                 (flycheck-error-message err)) 'error err))
      flycheck-current-errors))
 
-  (setq flycheck-display-errors-delay 0.2)
+  (setq flycheck-display-errors-delay 0.2
+        flycheck-flake8-maximum-line-length 120)
 
   (add-hook 'flycheck-mode
             (lambda ()
