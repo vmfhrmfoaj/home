@@ -21,6 +21,7 @@
   (define-key input-decode-map (kbd "<S-kp-add>") "="))
 
 ;; minibuffer
+(define-key isearch-mode-map (kbd "<escape>") #'isearch-cancel)
 (define-key isearch-mode-map (kbd "C-g") #'isearch-cancel)
 (define-key isearch-mode-map (kbd "C-h")
   (lambda ()
@@ -396,6 +397,22 @@
     "G" #'doc-view-last-page
     "q" #'evil-delete-buffer))
 
+(use-package evil-collection-magit
+  :ensure evil-collection
+  :defer t
+  :config
+  (evil-collection-magit-setup)
+  (evil-collection-define-key 'normal 'magit-mode-map "M-p" #'magit-section-backward)
+  (evil-collection-define-key 'normal 'magit-mode-map "M-n" #'magit-section-forward)
+  (evil-collection-define-key 'normal 'magit-mode-map "M-P" #'magit-section-backward-sibling)
+  (evil-collection-define-key 'normal 'magit-mode-map "M-N" #'magit-section-forward-sibling))
+
+(use-package evil-collection-eshell
+  :ensure evil-collection
+  :defer t
+  :config
+  (evil-collection-eshell-setup))
+
 (use-package evil
   :defer t
   :config
@@ -614,11 +631,6 @@
 
   (add-hook 'lsp-after-open-hook #'lsp--custom-setup-key))
 
-(use-package magit-svn
-  :after evil-magit
-  :config
-  (evil-magit-define-key 'normal 'magit-mode-map (kbd "~") #'magit-svn))
-
 (use-package magit-blame
   :defer t
   :config
@@ -738,6 +750,16 @@
 
 (use-package eshell
   :defer t
+  :init
+  (evil-set-initial-state 'eshell-mode 'normal)
+
+  (defun eshell-setup-once-for-evil-keybinding ()
+    (remove-hook 'eshell-mode-hook #'eshell-setup-once-for-evil-keybinding)
+    (cl-letf (((symbol-function 'display-warning) #'ignore))
+      (evil-collection-require 'eshell)))
+
+  (add-hook 'eshell-mode-hook #'eshell-setup-once-for-evil-keybinding)
+
   :config
   (evil-define-key 'insert eshell-mode-map (kbd "C-l") #'eshell/clear))
 
@@ -769,15 +791,26 @@
 
 (use-package magit
   :defer t
+  :init
+  (evil-set-initial-state 'magit-status-mode 'normal)
+
+  (defun magit-setup-once-for-evil-keybinding ()
+    (remove-hook 'magit-mode-hook #'magit-setup-once-for-evil-keybinding)
+    (cl-letf (((symbol-function 'display-warning) #'ignore))
+      (evil-collection-require 'magit)))
+
+  (add-hook 'magit-mode-hook #'magit-setup-once-for-evil-keybinding)
+
   :config
-  (evil-magit-define-key 'normal 'magit-mode-map "M-p" #'magit-section-backward)
-  (evil-magit-define-key 'normal 'magit-mode-map "M-n" #'magit-section-forward)
-  (evil-magit-define-key 'normal 'magit-mode-map "M-P" #'magit-section-backward-sibling)
-  (evil-magit-define-key 'normal 'magit-mode-map "M-N" #'magit-section-forward-sibling)
   (define-key transient-base-map (kbd "C-g")      #'transient-quit-all)
   (define-key transient-base-map (kbd "<escape>") #'transient-quit-one)
   (define-key transient-map (kbd "C-g")      #'transient-quit-all)
   (define-key transient-map (kbd "<escape>") #'transient-quit-one))
+
+(use-package magit-svn
+  :after (magit evil-collection-magit)
+  :config
+  (evil-collection-define-key 'normal 'magit-mode-map (kbd "~") #'magit-svn))
 
 (use-package multi-term
   :defer t

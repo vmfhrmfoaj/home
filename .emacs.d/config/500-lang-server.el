@@ -56,7 +56,7 @@
                        (--filter (and      (eq (flycheck-error-buffer  it) (current-buffer))
                                            (not (eq (flycheck-error-checker it) checker))))
                        (-map (-juxt #'flycheck-error-line
-                                    #'flycheck-error-column)))))
+                                      #'flycheck-error-column)))))
       (->> (lsp--get-buffer-diagnostics)
            (-map (-lambda ((&Diagnostic
                             :message
@@ -94,18 +94,21 @@
                                      (deprecated  :strike-through t)))
 
   (add-hook 'lsp-diagnostics-mode-hook
-            (lambda ()
-              (when (or (eq lsp-diagnostics-provider :flycheck)
-                        (and (eq lsp-diagnostics-provider :auto)
-                             (featurep 'flycheck)))
-                (cond
-                 ((derived-mode-p 'go-mode)
-                  (flycheck-select-checker 'go-golint)
-                  (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t)
-                  (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))
-                 ((derived-mode-p 'python-mode)
-                  (flycheck-select-checker 'python-flake8)
-                  (flycheck-add-next-checker 'python-flake8 'lsp :append))))))
+             (lambda ()
+               (when (or (eq lsp-diagnostics-provider :flycheck)
+                         (and (eq lsp-diagnostics-provider :auto)
+                              (featurep 'flycheck)))
+                 (cond
+                  ((derived-mode-p 'go-mode)
+                   (flycheck-select-checker 'go-golint)
+                   (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t)
+                   (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))
+                  ((derived-mode-p 'rust-mode)
+                   (flycheck-select-checker 'rust-clippy)
+                   (flycheck-add-next-checker 'rust-clippy 'lsp :append))
+                  ((derived-mode-p 'python-mode)
+                   (flycheck-select-checker 'python-flake8)
+                   (flycheck-add-next-checker 'python-flake8 'lsp :append))))))
 
   (advice-add #'lsp-diagnostics--flycheck-start :override #'lsp-diagnostics--custom-flycheck-start)
   (advice-add #'lsp-modeline--diagnostics-update-modeline :override #'ignore))

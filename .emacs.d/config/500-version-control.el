@@ -6,10 +6,6 @@
       (byte-compile-file "~/.emacs.d/config/func.el")))
   (load-file "~/.emacs.d/config/func.elc"))
 
-(use-package evil-magit
-  :ensure t
-  :after magit)
-
 (use-package git-timemachine
   :ensure t
   :defer t

@@ -87,7 +87,7 @@
   :defer t
   :commands (focus-init focus-terminate)
   :init
-  (defvar focus--exclude-modes '(term-mode))
+  (defvar focus--exclude-modes '(term-mode eshell-mode))
 
   (defun focus--enable (&rest _)
     (unless (or (apply #'derived-mode-p focus--exclude-modes)
@@ -98,8 +98,10 @@
       (redisplay t)))
 
   (defun focus--disable (&rest _)
-    (focus-terminate)
-    (redisplay t))
+    (unless (or (apply #'derived-mode-p focus--exclude-modes)
+                (minibufferp))
+      (focus-terminate)
+      (redisplay t)))
 
   (defun focus--tooltip-on (&rest _)
     (when focus-mid-overlay

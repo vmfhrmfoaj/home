@@ -17,8 +17,7 @@
   (defvar cargo-home (or (getenv "CARGO_HOME")
                          (concat home-dir "/.cargo")))
 
-  (setq rust-format-on-save nil
-        rust-format-show-buffer nil)
+  (setq rust-format-on-save t)
 
   (add-hook 'rust-mode-hook
             (lambda ()

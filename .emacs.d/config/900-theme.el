@@ -14,6 +14,7 @@
 
   (custom-set-faces
    '(highlight ((t :background "#484a4e" :foreground "#d5d8d6" :weight bold)))
+   '(italic ((t :family "Fantasque Sans Mono" :height 120 :slant italic)))
    '(line-number ((t :background "#222326" :weight extra-light)))
    '(line-number-current-line
      ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight light :inverse-video nil)))
