@@ -48,15 +48,23 @@
         },
         "[Visual Studio Dark]": {
             "rules": {
+                "angle": "#a9a9a9",
+                "attribute": "#b1b1b1",
+                "brace": "#a9a9a9",
+                "colon": "#a9a9a9",
+                "comma": "#a9a9a9",
                 "enum": "#d4d4d4",
                 "enumMember": "#d4d4d4",
                 "interface": "#d4d4d4",
+                "lifetime": "#b1b1b1",
+                "macro": "#d4d4d4",
+                "operator": "#b1b1b1",
+                "parenthesis": "#a9a9a9",
+                "punctuation": "#a9a9a9",
+                "semicolon": "#a9a9a9",
                 "type": "#d4d4d4",
                 "typeAlias": "#d4d4d4",
                 "typeParameter": "#d4d4d4",
-                "punctuation": "#a9a9a9",
-                "macro": "#d4d4d4",
-                "operator": "#b1b1b1",
             },
         },
     },
@@ -75,10 +83,6 @@
                 "fontStyle": "italic"
             },
             "textMateRules": [
-                {
-                    "scope": "keyword.operator",
-                    "settings": { "foreground": "#b1b1b1" },
-                },
                 {
                     "scope": "entity.name.section.spec",
                     "settings": { "foreground": "#c586c0" },
@@ -126,6 +130,30 @@
                 },
                 {
                     "scope": [
+                        "keyword.operator",
+                        // C/C++
+                        "punctuation.separator.dot-access.c",
+                        "punctuation.separator.delimiter.c",
+                        "punctuation.separator.pointer-access.c",
+                        "punctuation.separator.pointer-access.cpp",
+                        // Shell
+                        "keyword.operator.list.shell",
+                        "keyword.operator.pipe.shell",
+                        "keyword.operator.redirect.shell",
+                        "keyword.operator.heredoc.shell",
+                        // Go
+                        "punctuation.other.comma.go",
+                        "punctuation.other.colon.go",
+                        "punctuation.other.period.go",
+                        "punctuation.terminator.go",
+                        "keyword.operator.logical.go",
+                        // Ptyhon
+                        "punctuation.separator.period.python",
+                    ],
+                    "settings": { "foreground": "#b1b1b1" },
+                },
+                {
+                    "scope": [
                         // C/C++
                         "meta.preprocessor.conditional.cpp",
                         "punctuation.definition.begin.bracket.square.c",
@@ -150,10 +178,6 @@
                         "punctuation.section.parameters.end.bracket.round.cpp",
                         "punctuation.section.parameters.begin.bracket.round.function.pointer.cpp",
                         "punctuation.section.parameters.end.bracket.round.function.pointer.cpp",
-                        "punctuation.separator.dot-access.c",
-                        "punctuation.separator.delimiter.c",
-                        "punctuation.separator.pointer-access.c",
-                        "punctuation.separator.pointer-access.cpp",
                         "punctuation.terminator.statement.c",
                         "punctuation.terminator.statement.cpp",
                         // Shell
@@ -161,10 +185,6 @@
                         "punctuation.definition.group.shell",
                         "punctuation.definition.arguments.shell",
                         "punctuation.definition.logical-expression.shell",
-                        "keyword.operator.list.shell",
-                        "keyword.operator.pipe.shell",
-                        "keyword.operator.redirect.shell",
-                        "keyword.operator.heredoc.shell",
                         "punctuation.definition.subshell.shell",
                         // Go
                         "punctuation.definition.begin.bracket.curly.go",
@@ -173,10 +193,7 @@
                         "punctuation.definition.end.bracket.round.go",
                         "punctuation.definition.bracket.square.go",
                         "punctuation.other.comma.go",
-                        "punctuation.other.colon.go",
-                        "punctuation.other.period.go",
                         "punctuation.terminator.go",
-                        "keyword.operator.logical.go",
                         // Python
                         "punctuation.definition.arguments.begin.python",
                         "punctuation.definition.arguments.end.python",
@@ -188,14 +205,15 @@
                         "punctuation.definition.parameters.end.python",
                         "punctuation.parenthesis.begin.python",
                         "punctuation.parenthesis.end.python",
+                        "punctuation.section.class.begin.python",
                         "punctuation.section.function.begin.python",
                         "punctuation.separator.arguments.python",
                         "punctuation.separator.colon.python",
                         "punctuation.separator.continuation.line.python",
                         "punctuation.separator.dict.python",
                         "punctuation.separator.element.python",
-                        "punctuation.separator.period.python",
                         "punctuation.separator.parameters.python",
+                        "punctuation.separator.slice.python",
                         "meta.function.decorator.python",
                         // PHP
                         "punctuation.definition.begin.bracket.curly.php",
@@ -517,6 +535,8 @@
     // Python
     "python.languageServer": "Pylance",
     "python.showStartPage": false,
+    "python.linting.pycodestyleEnabled": true,
+    "python.linting.pylintEnabled": true,
 
     // Remote Development
     "remote.SSH.showLoginTerminal": true,
@@ -717,6 +737,12 @@
                 { "command": "extension.vim_insert" },
                 { "command": "editor.action.triggerParameterHints" },
             ]
+        },
+        {
+            "before": [
+                "K",
+            ],
+            "commands": [ { "command": "editor.action.showDefinitionPreviewHover" } ]
         },
         {
             "before": [ "N" ],

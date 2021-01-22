@@ -387,7 +387,7 @@
     {
         "key": "ctrl+h",
         "command": "breadcrumbs.focusPrevious",
-        "when": "editorTextFocus && breadcrumbsActive && breadcrumbsVisible"
+        "when": "breadcrumbsActive && breadcrumbsVisible"
     },
     {
         "key": "ctrl+j",
@@ -407,7 +407,7 @@
     {
         "key": "ctrl+l",
         "command": "breadcrumbs.focusNext",
-        "when": "editorTextFocus && breadcrumbsActive && breadcrumbsVisible"
+        "when": "breadcrumbsActive && breadcrumbsVisible"
     },
     // - for list
     {
