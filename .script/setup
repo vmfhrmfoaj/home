@@ -263,7 +263,7 @@ if [ -n "${CARGO_ROOT_TARGET_DIR}" ] && [ -n "${CARGO_ROOT_SAVED_DIR}" ] && [ -z
 
             save)
             mkdir -p "${CARGO_ROOT_SAVED_DIR}/${name}"
-            cp -apu "${CARGO_TARGET_DIR}/"* "${CARGO_ROOT_SAVED_DIR}/${name}/" || exit $?
+            rsync -a --delete "${CARGO_TARGET_DIR}/" "${CARGO_ROOT_SAVED_DIR}/${name}/" || exit $?
             rm -rf "${CARGO_TARGET_DIR}"
             exit 0
             ;;
@@ -272,7 +272,7 @@ if [ -n "${CARGO_ROOT_TARGET_DIR}" ] && [ -n "${CARGO_ROOT_SAVED_DIR}" ] && [ -z
             if [ ! -d "${CARGO_TARGET_DIR}" ]; then
                 if [ -d "${CARGO_ROOT_SAVED_DIR}/${name}" ]; then
                     mkdir -p "${CARGO_TARGET_DIR}"
-                    cp -apu "${CARGO_ROOT_SAVED_DIR}/${name}/"* "${CARGO_TARGET_DIR}/"
+                    rsync -a --delete "${CARGO_ROOT_SAVED_DIR}/${name}/" "${CARGO_TARGET_DIR}/"
                 fi
             fi
             if [ ! -L target ] && [ "${CARGO_TARGET_DIR}" != target ]; then
