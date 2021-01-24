@@ -17,10 +17,12 @@
   (defvar cargo-home (or (getenv "CARGO_HOME")
                          (concat home-dir "/.cargo")))
 
-  (setq rust-format-on-save t)
+  (setq rust-format-on-save t
+        rust-format-show-buffer nil)
 
   (add-hook 'rust-mode-hook
             (lambda ()
               (setq-local font-lock-multiline t)))
 
-  (sp-local-pair '(rust-mode) "'" "'" :actions nil))
+  (with-eval-after-load "smartparens"
+    (sp-local-pair '(rust-mode) "'" "'" :actions nil)))

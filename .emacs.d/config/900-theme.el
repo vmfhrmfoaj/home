@@ -19,8 +19,8 @@
    '(line-number-current-line
      ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight light :inverse-video nil)))
    '(mode-line-inactive ((t :weight extra-light)))
-   '(mode-line ((t :weight light)))
-   '(shadow ((t :weight light)))
+   '(mode-line ((t :weight normal)))
+   '(shadow ((t :weight normal)))
    '(whitespace-newline ((t :background "#282a2e" :weight extra-light)))
    '(whitespace-space ((t :weight extra-light)))
    '(whitespace-tab ((t :weight extra-light)))))
@@ -47,7 +47,7 @@
      '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
      '(clojure-fn-parameter-unused-face ((t :inherit shadow)))
-     '(clojure-meta-face ((t :inherit shadow :weight extra-light)))
+     '(clojure-meta-face ((t :inherit shadow :weight normal)))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
      `(clojure-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face
                                                     :foreground "#a35151"
@@ -109,20 +109,26 @@
   :defer t
   :config
   (custom-set-faces
-   '(font-lock-comment-face ((t :weight extra-light)))
+   '(font-lock-comment-face ((t :weight light)))
    '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground "#787978")))
-   '(font-lock-doc-face ((t :weight light)))
-   '(font-lock-function-name-face ((t :foreground "#85aacc" :weight semi-bold)))
+   '(font-lock-doc-face ((t :weight normal)))
+   '(font-lock-function-name-face ((t :foreground "#85aacc" :weight bold)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
-   '(font-lock-regexp-grouping-backslash ((t :weight semi-bold)))
-   '(font-lock-regexp-grouping-construct ((t :weight semi-bold)))
-   '(font-lock-string-face ((t :weight normal)))))
+   '(font-lock-regexp-grouping-backslash ((t :weight normal)))
+   '(font-lock-regexp-grouping-construct ((t :weight normal)))))
 
 (use-package fringe
   :defer t
   :config
   (custom-set-faces
    '(fringe ((t :foreground "#969896")))))
+
+(use-package go-mode
+  :defer t
+  :config
+  (custom-set-faces
+   '(golang-type-definition-face ((t :inherit font-lock-type-face :weight bold)))
+   '(golang-interface-method-face ((t :inherit font-lock-function-name-face :weight semi-bold)))))
 
 (use-package hl-todo
   :defer t
@@ -151,11 +157,9 @@
   :defer t
   :config
   (custom-set-faces
-   '(magit-diff-added-highlight   ((t :background "#336633" :foreground "#cceecc" :weight semi-bold)))
-   '(magit-diff-removed-highlight ((t :background "#663333" :foreground "#eecccc" :weight semi-bold)))
    `(magit-diff-context
-     ((t :inherit magit-diff-context-highlight :background ,(bg-color-from 'default) :weight extra-light)))
-   `(magit-diff-context-highlight ((t :weight light)))
+     ((t :inherit magit-diff-context-highlight :background ,(bg-color-from 'default) :weight light)))
+   `(magit-diff-context-highlight ((t :weight normal)))
    '(magit-diff-file-heading ((t :weight bold)))))
 
 (use-package php-mode
@@ -180,8 +184,8 @@
   :defer t
   :config
   (custom-set-faces
-   '(rust-attribute-face ((t :inherit font-lock-preprocessor-face :weight light)))
-   '(rust-lifetime-face ((t :inherit font-lock-variable-name-face :weight light)))
+   '(rust-attribute-face ((t :inherit font-lock-preprocessor-face :weight normal)))
+   '(rust-lifetime-face ((t :inherit font-lock-variable-name-face :weight normal)))
    `(rust-string-interpolation-face
      ((t :inherit (font-lock-regexp-grouping-construct font-lock-string-face) :slant unspecified)))))
 

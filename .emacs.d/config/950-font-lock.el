@@ -1097,18 +1097,60 @@
 
 (use-package go-mode
   :defer t
+  :init
+  (defface golang-type-definition-face
+    '((t (:inherit font-lock-type-face)))
+    "TODO")
+  (defface golang-interface-method-face
+    '((t (:inherit font-lock-function-name-face)))
+    "TODO")
+
   :config
   (font-lock-add-keywords
    'go-mode
-   '(;; unsed variable
+   `(;; unsed variable
      ("\\<\\(_\\(?:[0-9A-Za-z]+\\)?\\)\\>\\s-*\\(?:,\\|:?=\\)"
       (1 'shadow t))
      ;; pointer
-     ("\\(?:^\\|[ \t]\\)\\([*&]\\)[0-9A-Za-z]"
+     ("\\(?:^\\|[! \t]\\|\\s(\\)\\([*&]\\)[0-9A-Za-z]"
       (1 'shadow t))
      ;; slice
      ("\\[.*?\\(:\\).*?\\]"
-      (1 'shadow t)))))
+      (1 'shadow t))
+     ;; punctuation
+     ("\\(:\\)\\s-*$"
+      (1 'shadow t))
+     ("\\([;]\\)"
+      (1 'shadow t))))
+  (font-lock-add-keywords
+   'go-mode
+   `(;; interface
+     ("^\\s-*type\\s-+\\([_0-9A-Za-z]+\\)\\s-+interface\\s-*{\\s-*$"
+      (1 'golang-type-definition-face t)
+      (,(lambda (limit)
+          (unless font-lock--skip
+            (re-search-forward "\\([_0-9A-Za-z]+\\)" limit t)))
+       (save-excursion
+         (setq font-lock--skip nil
+               font-lock--anchor-beg-point (match-beginning 0))
+         (safe-up-list-1)
+         (point))
+       (goto-char font-lock--anchor-beg-point)
+       (1 'golang-interface-method-face)))
+     ;; struct
+     ("^\\s-*type\\s-+\\([_0-9A-Za-z]+\\)\\s-+struct\\s-*{\\s-*$"
+      (1 'golang-type-definition-face t)
+      (,(lambda (limit)
+          (unless font-lock--skip
+            (re-search-forward "\\([_0-9A-Za-z]+\\)" limit t)))
+       (save-excursion
+         (setq font-lock--skip nil
+               font-lock--anchor-beg-point (match-beginning 0))
+         (safe-up-list-1)
+         (point))
+       (goto-char font-lock--anchor-beg-point)
+       (1 'font-lock-variable-name-face))))
+   :append))
 
 (use-package js
   :defer t
