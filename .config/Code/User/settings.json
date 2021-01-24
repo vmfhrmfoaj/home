@@ -1,8 +1,8 @@
 {
     // Appearance
-    "editor.fontFamily": "'Fira Code', monospace",
-    "editor.fontSize": 13.5,
-    "editor.fontWeight": "500",
+    "editor.fontFamily": "'Cascadia Code', monospace",
+    "editor.fontSize": 14,
+    "editor.fontWeight": "bold",
     "editor.fontLigatures": true,
     "editor.matchBrackets": "never", // use Bracket Pair Colorizer
     "editor.minimap.enabled": false,
@@ -722,21 +722,6 @@
         {
             "before": [ "/" ],
             "commands": [ { "command": "multiCommand.vimMarkAndFind" } ]
-        },
-        {
-            "before": [ "a" ],
-            "commands": [
-                { "command": "extension.vim_insert" },
-                { "command": "extension.vim_right" },
-                { "command": "editor.action.triggerParameterHints" },
-            ]
-        },
-        {
-            "before": [ "i" ],
-            "commands": [
-                { "command": "extension.vim_insert" },
-                { "command": "editor.action.triggerParameterHints" },
-            ]
         },
         {
             "before": [

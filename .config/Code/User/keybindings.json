@@ -62,7 +62,7 @@
     {
         "key": "escape",
         "command": "multiCommand.closeGitBlameAndShowSidebar",
-        "when": "editorTextFocus && gitlens:key:escape && !findWidgetVisible && !isInEmbeddedEditor && !renameInputVisible && !suggestWidgetVisible"
+        "when": "editorTextFocus && gitlens:key:escape && !findWidgetVisible && !isInEmbeddedEditor && !renameInputVisible && !suggestWidgetVisible && !parameterHintsVisible"
     },
     {
         "key": "enter",
@@ -227,12 +227,12 @@
     {
         "key": "escape",
         "command": "multiCommand.vimCloseFindWidgetAndGoBack",
-        "when": "vim.active && findInputFocussed"
+        "when": "vim.active && findInputFocussed && !parameterHintsVisible"
     },
     {
         "key": "escape",
         "command": "multiCommand.vimCloseFindWidget",
-        "when": "vim.active && !findInputFocussed && findWidgetVisible"
+        "when": "vim.active && !findInputFocussed && findWidgetVisible && !parameterHintsVisible"
     },
 
     // H/J/K/L
