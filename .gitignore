@@ -6,6 +6,7 @@
 !/.script
 !/.Xresources
 !/.bashrc
+!/.flake8
 !/.gitignore
 !/.gitignore_global
 !/.less
