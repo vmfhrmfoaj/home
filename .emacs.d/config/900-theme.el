@@ -133,8 +133,9 @@
 (use-package hl-todo
   :defer t
   :config
-  (custom-set-faces
-   '(hl-todo ((t :foreground "#cc9393" :weight normal)))))
+  (let ((default-weight (face-attribute 'default :weight)))
+    (custom-set-faces
+     `(hl-todo ((t :foreground "#cc9393" :weight ,default-weight))))))
 
 (use-package ivy
   :defer t
@@ -173,6 +174,7 @@
   :defer t
   :config
   (custom-set-faces
+   '(rpm-spec-changelog-item-face ((t :weight normal)))
    '(rpm-spec-ghost-face ((t :inherit shadow)))
    '(rpm-spec-macro-face ((t :inherit font-lock-keyword-face)))
    '(rpm-spec-package-face ((t :inherit font-lock-constant-face)))

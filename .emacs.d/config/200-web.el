@@ -53,6 +53,10 @@
   :config
   (setq-default js-indent-level 4))
 
+(use-package json-mode
+  :ensure t
+  :defer t)
+
 (use-package typescript-mode
   :ensure t
   :defer t)

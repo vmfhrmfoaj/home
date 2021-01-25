@@ -12,7 +12,11 @@
   :mode "\\.rpm\\'"
   :config
   (when (require 'highlight-numbers nil t)
-    (puthash 'rpm-spec-mode "\\<[0-9]+\\>" highlight-numbers-modelist)))
+    (puthash 'rpm-spec-mode "\\<[0-9]+\\>" highlight-numbers-modelist))
+
+  (add-hook 'rpm-spec-mode-hook
+            (lambda ()
+              (setq-local font-lock-multiline t))))
 
 (use-package toml-mode
   :ensure t

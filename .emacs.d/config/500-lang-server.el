@@ -103,6 +103,8 @@
                   (flycheck-select-checker 'go-golint)
                   (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t)
                   (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))
+                 ;; FIXME:
+                 ;;  Error messages of `lsp' were not displayed.
                  ;; ((derived-mode-p 'rust-mode)
                  ;;  (flycheck-select-checker 'rust-clippy)
                  ;;  (flycheck-add-next-checker 'rust-clippy 'lsp :append))

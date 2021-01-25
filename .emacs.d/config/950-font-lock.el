@@ -19,6 +19,17 @@
   "TODO"
   (-repeat 4 (point-min-marker)))
 
+(let ((f (lambda ()
+           "TODO"
+           (font-lock-add-keywords
+            nil
+            '(("\\([.,]\\|[|&]\\{2,2\\}\\|\\s(\\|\\s)\\)"
+               (1 'shadow)))
+            :append))))
+  (add-hook 'git-timemachine-mode-hook f :append)
+  (add-hook 'prog-mode-hook f :append))
+
+
 (use-package cc-mode
   :defer t
   :config
@@ -1161,7 +1172,21 @@
       (1 'font-lock-function-name-face))))
   (font-lock-add-keywords
    'js-mode
-   '(("\\(:\\|[-=]>\\|;\\)"
+   '(;; punctuation
+     ("\\(:\\|[-=]>\\|;\\)"
+      (1 'shadow)))
+   :append))
+
+(use-package json-mode
+  :defer t
+  :config
+  (font-lock-add-keywords
+   'json-mode
+   '(;; punctuation
+     ("\\(\"\\)[0-9]+\\(\"\\)"
+      (1 'shadow)
+      (2 'shadow))
+     ("\\(:\\)"
       (1 'shadow)))
    :append))
 
@@ -1308,29 +1333,31 @@
      ("[A-Za-z]\\(=\\)\\(?:[\"'A-Za-z]\\|\\s(\\)"
       (1 'shadow)))))
 
-(use-package prog-mode
-  :defer t
-  :config
-  (let ((f (lambda ()
-             "TODO"
-             (font-lock-add-keywords
-              nil
-              '(("\\([.,]\\|[|&]\\{2,2\\}\\|\\s(\\|\\s)\\)"
-                 (1 'shadow)))
-              :append))))
-    (add-hook 'git-timemachine-mode-hook f :append)
-    (add-hook 'prog-mode-hook f :append)))
-
 (use-package rpm-spec-mode
   :defer t
+  :init
+  (defface rpm-spec-changelog-item-face
+    '((t (:inherit default)))
+    "TODO")
+
   :config
   (font-lock-add-keywords
    'rpm-spec-mode
    '(("^%prein"
-      (0 'rpm-spec-section-face))))
+      (0 'rpm-spec-section-face))
+     ("^%changelog$"
+      ("^-.*$"
+       (save-excursion
+         (setq font-lock--anchor-beg-point (match-beginning 0))
+         (if (re-search-forward "^%[-a-z]+$" nil t)
+             (line-beginning-position)
+           (point-max)))
+       (goto-char font-lock--anchor-beg-point)
+       (0 'rpm-spec-changelog-item-face t)))))
   (font-lock-add-keywords
    'rpm-spec-mode
-   '(("\\(#?'\\|[.,/<>]\\|\\s(\\|\\s)\\)"
+   '(;; punctuation
+     ("\\(#?'\\|[.,/<>]\\|\\s(\\|\\s)\\)"
       (1 'shadow append)))
    :append))
 
