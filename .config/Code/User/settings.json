@@ -2,9 +2,9 @@
     // Appearance
     "editor.fontFamily": "'Cascadia Code', monospace",
     "editor.fontSize": 14,
-    "editor.fontWeight": "bold",
+    "editor.fontWeight": "600",
     "editor.fontLigatures": true,
-    "editor.matchBrackets": "never", // use Bracket Pair Colorizer
+    "editor.matchBrackets": "near", // use Bracket Pair Colorizer
     "editor.minimap.enabled": false,
     "editor.minimap.renderCharacters": false,
     "editor.minimap.showSlider": "always",
@@ -48,20 +48,20 @@
         },
         "[Visual Studio Dark]": {
             "rules": {
-                "angle": "#a9a9a9",
-                "attribute": "#b1b1b1",
-                "brace": "#a9a9a9",
-                "colon": "#a9a9a9",
-                "comma": "#a9a9a9",
+                "angle": "#909090",
+                "attribute": "#a9a9a9",
+                "brace": "#909090",
+                "colon": "#909090",
+                "comma": "#909090",
                 "enum": "#d4d4d4",
                 "enumMember": "#d4d4d4",
                 "interface": "#d4d4d4",
-                "lifetime": "#b1b1b1",
+                "lifetime": "#a9a9a9",
                 "macro": "#d4d4d4",
-                "operator": "#b1b1b1",
-                "parenthesis": "#a9a9a9",
-                "punctuation": "#a9a9a9",
-                "semicolon": "#a9a9a9",
+                "operator": "#a9a9a9",
+                "parenthesis": "#909090",
+                "punctuation": "#909090",
+                "semicolon": "#909090",
                 "type": "#d4d4d4",
                 "typeAlias": "#d4d4d4",
                 "typeParameter": "#d4d4d4",
@@ -79,7 +79,7 @@
         "[Visual Studio Dark]": {
             "keywords": "#c586c0",
             "comments": {
-                "foreground": "#a9a9a9",
+                "foreground": "#909090",
                 "fontStyle": "italic"
             },
             "textMateRules": [
@@ -89,7 +89,16 @@
                 },
                 {
                     "scope": [
+                        "constant.language",
+                        // Python
                         "storage.type.number.python",
+                        "constant.language.python",
+                        // Go
+                        "constant.language.go",
+                        // Json
+                        "constant.language.json.comments",
+                        // PHP
+                        "constant.language.php",
                     ],
                     "settings": {
                         "foreground": "#b5cea8",
@@ -110,18 +119,11 @@
                     "scope": [
                         "entity.name.function.preprocessor",
                         // PHP
-                        "constant.language.php",
                         "variable.language.special.self.python",
-                        // Ptyhon
-                        "constant.language.python",
-                        // Go
-                        "constant.language.go",
                         "storage.type.boolean.go",
                         "storage.type.error.go",
                         "storage.type.numeric.go",
                         "storage.type.string.go",
-                        // Json
-                        "constant.language.json.comments",
                         "support.type.property-name.json.comments",
                         // Toml
                         "keyword.key.toml",
@@ -150,7 +152,7 @@
                         // Ptyhon
                         "punctuation.separator.period.python",
                     ],
-                    "settings": { "foreground": "#b1b1b1" },
+                    "settings": { "foreground": "#a9a9a9" },
                 },
                 {
                     "scope": [
@@ -234,6 +236,10 @@
                         "punctuation.section.array.end.php",
                         "storage.modifier.reference.php",
                         // JSON
+                        "punctuation.definition.array.begin.json.comments",
+                        "punctuation.definition.array.end.json.comments",
+                        "punctuation.definition.dictionary.begin.json.comments",
+                        "punctuation.definition.dictionary.end.json.comments",
                         "punctuation.separator.array.json.comments",
                         "punctuation.separator.dictionary.pair.json.comments",
                         "punctuation.separator.dictionary.key-value.json.comments",
@@ -243,8 +249,10 @@
                         "punctuation.semi.rust",
                         // Toml
                         "punctuation.definition.keyValuePair.toml",
+                        // Shellscript
+                        "punctuation.terminator.case-clause.shell",
                     ],
-                    "settings": { "foreground": "#a9a9a9", }
+                    "settings": { "foreground": "#909090", }
                 },
                 {
                     "scope": "storage.type.built-in.primitive.c",
@@ -276,6 +284,11 @@
     // Misc.
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
+    "terminal.integrated.commandsToSkipShell": [
+        "multiCommand.switchFirstTermianl",
+        "multiCommand.switchSecondTermianl",
+        "multiCommand.switchThirdTermianl",
+    ],
 
     // Better Comment
     "better-comments.tags": [
@@ -487,6 +500,7 @@
         {
             "command": "multiCommand.vimFocusNextAndEscape",
             "sequence": [
+                "cursorEnd",
                 "search.action.focusNextSearchResult",
                 "cancelSelection",
                 "extension.vim_escape",
@@ -495,7 +509,7 @@
         {
             "command": "multiCommand.vimFocusPrevAndEscape",
             "sequence": [
-                "cursorWordLeft",
+                "cursorHome",
                 "search.action.focusPreviousSearchResult",
                 "cancelSelection",
                 "extension.vim_escape",
@@ -528,6 +542,27 @@
             "sequence": [
                 "breadcrumbs.focusAndSelect",
                 "list.focusUp",
+            ]
+        },
+        {
+            "command": "multiCommand.switchFirstTermianl",
+            "sequence": [
+                { "command": "workbench.action.quickOpen", "args": "term 1.:" },
+                "workbench.action.acceptSelectedQuickOpenItem",
+            ]
+        },
+        {
+            "command": "multiCommand.switchSecondTermianl",
+            "sequence": [
+                { "command": "workbench.action.quickOpen", "args": "term 2.:" },
+                "workbench.action.acceptSelectedQuickOpenItem",
+            ]
+        },
+        {
+            "command": "multiCommand.switchThirdTermianl",
+            "sequence": [
+                { "command": "workbench.action.quickOpen", "args": "term 3.:" },
+                "workbench.action.acceptSelectedQuickOpenItem",
             ]
         },
     ],
@@ -600,6 +635,13 @@
                 ";"
             ],
             "commands": [ { "command": "workbench.action.navigateToLastEditLocation" } ]
+        },
+        {
+            "before": [
+                "g",
+                "B"
+            ],
+            "commands": [ { "command": "editor.action.selectHighlights" } ]
         },
         {
             "before": [

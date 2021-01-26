@@ -116,6 +116,21 @@
         "when": "terminalFocus"
     },
     {
+        "key": "alt+1",
+        "command": "multiCommand.switchFirstTermianl",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "alt+2",
+        "command": "multiCommand.switchSecondTermianl",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "alt+3",
+        "command": "multiCommand.switchThirdTermianl",
+        "when": "terminalFocus"
+    },
+    {
         "key": "ctrl+9",
         "command": "-workbench.action.lastEditorInGroup"
     },
