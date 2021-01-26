@@ -157,7 +157,17 @@ So, replaced `evil-jump-item' to this function."
   (with-eval-after-load "evil"
     (evil-set-undo-system 'undo-tree))
 
-  (global-undo-tree-mode))
+  (global-undo-tree-mode)
+
+  ;; NOTE
+  ;;  `undo-tree-save-history-from-hook' takes more than 1 second.
+  ;;  It annoy me very much.
+  (remove-hook 'write-file-functions #'undo-tree-save-history-from-hook)
+  (add-hook 'kill-emacs-hook
+            (lambda ()
+              (->> (buffer-list)
+                   (--filter buffer-file-name)
+                   (--map (kill-buffer it))))))
 
 (use-package whitespace
   :config

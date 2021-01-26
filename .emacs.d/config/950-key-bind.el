@@ -172,19 +172,6 @@
     "jo" #'split-line
     "js" #'sp-split-sexp
 
-    ;; S-expression
-    ;; - https://github.com/Fuco1/smartparens/wiki/Working-with-expressions
-    "kB" #'sp-backward-barf-sexp
-    "kE" #'sp-splice-sexp-killing-forward
-    "kR" #'sp-splice-sexp
-    "kS" #'sp-backward-slurp-sexp
-    "kb" #'sp-forward-barf-sexp
-    "kc" #'sp-convolute-sexp
-    "ke" #'sp-splice-sexp-killing-backward
-    "kr" #'sp-splice-sexp-killing-around
-    "ks" #'sp-forward-slurp-sexp
-    "kw" #'sp-wrap-sexp
-
     ;; narrow
     "nf" #'narrow-to-defun
     "np" #'narrow-to-page
@@ -419,7 +406,6 @@
   (define-key evil-outer-text-objects-map "U" 'evil-a-sexp)
   (define-key evil-inner-text-objects-map "U" 'evil-inner-sexp)
   (evil-define-key 'normal 'global
-    "%" #'sp--simulate-evil-jump-item
     "gr" #'eldoc-refresh
     (kbd "<tab>") #'indent-for-tab-command
     (kbd "C-d") (lambda () (interactive) (call-interactively #'up-list))
@@ -489,6 +475,7 @@
     "s" #'evil-surround-region))
 
 (use-package flycheck
+  :ensure t
   :defer t
   :config
   (evil-define-key 'normal flycheck-error-list-mode-map
@@ -638,6 +625,26 @@
     (when-let ((f (lookup-key magit-blame-read-only-mode-map (kbd it))))
       (evil-define-key* 'normal magit-blame-mode-map (kbd (concat "M-" it)) f))
     (define-key magit-blame-read-only-mode-map (kbd it) nil)))
+
+(use-package smartparens
+  :defer t
+  :config
+  (evil-define-key 'normal 'global
+    "%" #'sp--simulate-evil-jump-item)
+
+  (evil-leader/set-key
+    ;; S-expression
+    ;; - https://github.com/Fuco1/smartparens/wiki/Working-with-expressions
+    "kB" #'sp-backward-barf-sexp
+    "kE" #'sp-splice-sexp-killing-forward
+    "kR" #'sp-splice-sexp
+    "kS" #'sp-backward-slurp-sexp
+    "kb" #'sp-forward-barf-sexp
+    "kc" #'sp-convolute-sexp
+    "ke" #'sp-splice-sexp-killing-backward
+    "kr" #'sp-splice-sexp-killing-around
+    "ks" #'sp-forward-slurp-sexp
+    "kw" #'sp-wrap-sexp))
 
 (use-package treemacs-evil
   :defer t

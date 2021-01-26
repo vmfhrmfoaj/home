@@ -1330,7 +1330,7 @@
       (1 'shadow))
      ("\\(\\*\\*?\\)[_A-Za-z]"
       (1 'shadow))
-     ("[A-Za-z]\\(=\\)\\(?:[\"'A-Za-z]\\|\\s(\\)"
+     ("[A-Za-z]\\(=\\)\\(?:[\"'0-9A-Za-z]\\|\\s(\\)"
       (1 'shadow)))))
 
 (use-package rpm-spec-mode
