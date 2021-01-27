@@ -288,6 +288,7 @@
         "multiCommand.switchFirstTermianl",
         "multiCommand.switchSecondTermianl",
         "multiCommand.switchThirdTermianl",
+        "-workbench.action.quickOpen",
     ],
 
     // Better Comment
@@ -570,7 +571,6 @@
     // Python
     "python.languageServer": "Pylance",
     "python.showStartPage": false,
-    "python.linting.pycodestyleEnabled": true,
     "python.linting.pylintEnabled": true,
 
     // Remote Development
