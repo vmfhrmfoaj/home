@@ -114,8 +114,9 @@
    '(font-lock-doc-face ((t :weight normal)))
    '(font-lock-function-name-face ((t :foreground "#85aacc" :weight bold)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
-   '(font-lock-regexp-grouping-backslash ((t :weight normal)))
-   '(font-lock-regexp-grouping-construct ((t :weight normal)))))
+   '(font-lock-regexp-grouping-backslash ((t :weight semi-bold)))
+   '(font-lock-regexp-grouping-construct ((t :weight semi-bold)))
+   '(font-lock-string-face ((t :weight normal)))))
 
 (use-package fringe
   :defer t
@@ -142,7 +143,7 @@
   :config
   (custom-set-faces
    '(ivy-current-match ((t :background "#5f6369" :foreground "white" :weight bold)))
-   '(ivy-grep-info ((t :inherit font-lock-string-face)))
+   '(ivy-grep-info ((t :inherit font-lock-string-face :weight unspecified)))
    '(ivy-minibuffer-match-face-1 ((t :background "#7d7e7f" :foreground "#535454" :weight bold)))
    '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b" :weight bold)))
    '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :foreground "#707099" :weight bold)))

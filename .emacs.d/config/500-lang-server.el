@@ -15,26 +15,6 @@
   :config
   (add-to-list 'lsp-clients-clangd-args "--header-insertion=never"))
 
-(use-package lsp-clients
-  :defer t
-  :config
-  (add-to-list 'lsp-clients-clangd-args "--header-insertion=never")
-
-  (lsp-register-client
-   (make-lsp-client :new-connection (lsp-stdio-connection '("bash-language-server" "start"))
-                    :major-modes '(sh-mode)
-                    :priority -1
-                    :environment-fn (lambda ()
-                                      (let ((env nil))
-                                        (when lsp-bash-explainshell-endpoint
-                                          (-update-> env (append '(("EXPLAINSHELL_ENDPOINT" .
-                                                                    lsp-bash-explainshell-endpoint)))))
-                                        (when lsp-bash-highlight-parsing-errors
-                                          (-update-> env (append '(("HIGHLIGHT_PARSING_ERRORS" .
-                                                                    lsp-bash-highlight-parsing-errors)))))
-                                        env))
-                    :server-id 'bash-ls)))
-
 (use-package lsp-clojure
   :defer t
   :init
@@ -203,6 +183,10 @@
   :ensure t
   :defer t)
 
+(use-package lsp-python-ms
+  :ensure t
+  :defer t)
+
 (use-package lsp-mode
   :ensure t
   :hook ((c-mode             . lsp)
@@ -212,11 +196,15 @@
          ;; (clojurescript-mode . lsp)
          (cperl-mode         . lsp)
          (go-mode            . lsp)
-         (java-mode          . lsp)
+         (java-mode          . (lambda ()
+                                 (when (require 'lsp-java nil t)
+                                   (lsp))))
          (js-mode            . lsp)
          (latex-mode         . lsp)
          (php-mode           . lsp)
-         (python-mode        . lsp)
+         (python-mode        . (lambda ()
+                                 (when (require 'lsp-python-ms nil t)
+                                   (lsp))))
          (rust-mode          . lsp)
          (sh-mode            . lsp)
          (typescript-mode    . lsp))
@@ -450,21 +438,26 @@
                 (setq-local lsp-eldoc-render-all t)
                 (add-hook 'before-save-hook #'lsp-format-buffer t t)
                 (add-hook 'before-save-hook #'lsp-organize-imports t t)))
+
               (add-hook 'evil-insert-state-entry-hook
-                        (lambda ()
-                          (when lsp-mode
-                            (setq lsp-eldoc-enable-hover nil)
-                            (when (and lsp-mode
-                                       (lsp-feature? "textDocument/signatureHelp")
-                                       (null lsp-signature-mode)
-                                       (-some->> (syntax-ppss)
-                                         (nth 1)
-                                         (char-after)
-                                         (char-equal ?()))
-                              (ignore-errors
-                                (setq lsp-signature-restart-enable t)
-                                (lsp-signature-activate)))))
+                        ;; NOTE
+                        ;;  ?( cause a problem on default select the region function
+                        (let ((begin-parent (string-to-char "(")))
+                          (lambda ()
+                            (when lsp-mode
+                              (setq lsp-eldoc-enable-hover nil)
+                              (when (and lsp-mode
+                                         (lsp-feature? "textDocument/signatureHelp")
+                                         (null lsp-signature-mode)
+                                         (-some->> (syntax-ppss)
+                                           (nth 1)
+                                           (char-after)
+                                           (char-equal begin-parent)))
+                                (ignore-errors
+                                  (setq lsp-signature-restart-enable t)
+                                  (lsp-signature-activate))))))
                         nil t)
+
               (add-hook 'evil-insert-state-exit-hook
                         (lambda ()
                           (when (and lsp-mode lsp-signature-mode)
@@ -473,6 +466,7 @@
                               (lsp-signature-stop)))
                           (setq lsp-eldoc-enable-hover t))
                         nil t)
+
               (add-hook 'evil-operator-state-entry-hook
                         (lambda ()
                           (when (and lsp-mode
@@ -480,6 +474,7 @@
                             (lsp-ui-sideline--delete-ov)
                             (setq lsp-ui-sideline--tag nil)))
                         nil t)
+
               (let ((f (lambda ()
                          (let ((old spaceline-symbol-segment--symbol))
                            (setq spaceline-symbol-segment--symbol
@@ -500,7 +495,16 @@
   (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-type-definition :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
-  (advice-add #'lsp-signature-stop :after #'lsp-signature-restart))
+  (advice-add #'lsp-signature-stop :after #'lsp-signature-restart)
+  (advice-add #'lsp--info :override #'ignore)
+  (advice-add #'lsp--handle-signature-update :around
+              (lambda (f &rest args)
+                "Turn `lsp-signature' off when rasing an erorr"
+                (condition-case nil
+                    (apply f args)
+                  (error
+                   (setq lsp-signature-restart-enable nil)
+                   (lsp-signature-stop))))))
 
 (use-package lsp-pyls
   :defer t
