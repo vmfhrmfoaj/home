@@ -8,7 +8,7 @@
     {
         "key": "ctrl+a",
         "command": "cursorHome",
-        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+        "when": "editorTextFocus && vim.mode == 'Insert'"
     },
     {
         "key": "ctrl+b",
@@ -17,7 +17,7 @@
     {
         "key": "ctrl+b",
         "command": "cursorLeft",
-        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+        "when": "editorTextFocus && vim.mode == 'Insert'"
     },
     {
         "key": "ctrl+e",
@@ -31,7 +31,7 @@
     {
         "key": "ctrl+e",
         "command": "cursorEnd",
-        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+        "when": "editorTextFocus && vim.mode == 'Insert'"
     },
     {
         "key": "ctrl+f",
@@ -41,7 +41,7 @@
     {
         "key": "ctrl+f",
         "command": "cursorRight",
-        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+        "when": "editorTextFocus && vim.mode == 'Insert'"
     },
     {
         "key": "ctrl+h",
@@ -89,12 +89,12 @@
     {
         "key": "enter",
         "command": "search.focus.nextInputBox",
-        "when": "inSearchEditor && searchInputBoxFocus"
+        "when": "inSearchEditor && searchInputBoxFocus && !findInputFocussed"
     },
     {
         "key": "enter",
         "command": "editor.action.revealDefinition",
-        "when": "inSearchEditor && !searchInputBoxFocus"
+        "when": "inSearchEditor && !searchInputBoxFocus && !findInputFocussed"
     },
     {
         "key": "ctrl+i",
@@ -179,75 +179,91 @@
     {
         "key": "enter",
         "command": "multiCommand.vimOpenResultAndEscape",
-        "when": "fileMatchOrMatchFocus && searchViewletVisible && vim.active"
+        "when": "fileMatchOrMatchFocus && searchViewletVisible"
     },
     {
         "key": "ctrl+shift+f",
         "command": "multiCommand.vimFindInFiles",
-        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+        "when": "editorTextFocus && vim.mode == 'Insert'"
     },
     {
         "key": "ctrl+1",
         "command": "multiCommand.vimFocusFirstEditorGroupAndEscape",
-        "when": "sideBarFocus && vim.active"
+        "when": "sideBarFocus"
     },
     {
         "key": "ctrl+tab",
         "command": "multiCommand.vimFocusFirstEditorGroupAndEscape",
-        "when": "sideBarFocus && vim.active"
+        "when": "sideBarFocus"
     },
     {
         "key": "ctrl+tab",
         "command": "multiCommand.vimNextEditor",
-        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+        "when": "editorTextFocus && vim.mode == 'Insert'"
     },
     {
         "key": "ctrl+shift+tab",
         "command": "multiCommand.vimPreviousEditor",
-        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+        "when": "editorTextFocus && vim.mode == 'Insert'"
     },
     // - for quick open
     {
         "key": "ctrl+p",
         "command": "multiCommand.vimQuickOpen",
-        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+        "when": "editorTextFocus && vim.mode == 'Insert'"
     },
     {
         "key": "ctrl+alt+p",
         "command": "multiCommand.vimShowCommand",
-        "when": "editorTextFocus && vim.active && vim.mode == 'Insert'"
+        "when": "editorTextFocus && vim.mode == 'Insert'"
     },
     // - for intellisense
     {
         "key": "enter",
         "command": "multiCommand.vimSelectedSuggestionAndEscape",
-        "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.active && vim.mode == 'Insert'"
+        "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.mode == 'Insert'"
     },
     {
         "key": "shift+enter",
         "command": "multiCommand.cancelSuggestionAndInsertNewline",
-        "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.active && vim.mode == 'Insert'"
+        "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.mode == 'Insert'"
     },
     {
         "key": "escape",
         "command": "multiCommand.vimCancelSuggestionAndEscape",
-        "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.active && vim.mode == 'Insert'"
+        "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.mode == 'Insert'"
     },
     // - for find
     {
         "key": "enter",
+        "command": "-editor.action.nextMatchFindAction",
+        "when": "editorFocus && findInputFocussed"
+    },
+    {
+        "key": "enter",
         "command": "multiCommand.vimCloseFindWidget",
-        "when": "vim.active && findInputFocussed"
+        "when": "editorFocus && findInputFocussed"
     },
     {
         "key": "escape",
         "command": "multiCommand.vimCloseFindWidgetAndGoBack",
-        "when": "vim.active && findInputFocussed && !parameterHintsVisible"
+        "when": "editorFocus && findInputFocussed && !parameterHintsVisible"
     },
     {
         "key": "escape",
         "command": "multiCommand.vimCloseFindWidget",
-        "when": "vim.active && !findInputFocussed && findWidgetVisible && !parameterHintsVisible"
+        "when": "editorTextFocus && !findInputFocussed && findWidgetVisible && !parameterHintsVisible"
+    },
+    // - for symbol highlight
+    {
+        "key": "shift+8", // *
+        "command": "editor.action.wordHighlight.next",
+        "when": "editorTextFocus && hasWordHighlights && vim.mode == 'Normal'"
+    },
+    {
+        "key": "shift+3", // #
+        "command": "editor.action.wordHighlight.prev",
+        "when": "editorTextFocus && hasWordHighlights && vim.mode == 'Normal'"
     },
 
     // H/J/K/L
@@ -258,22 +274,22 @@
     {
         "key": "ctrl+j",
         "command": "editor.action.moveLinesDownAction",
-        "when": "editorTextFocus && !editorReadonly && vim.mode != 'Normal' && !findInputFocused && !suggestWidgetVisible"
+        "when": "editorTextFocus && !editorReadonly && vim.mode != 'Normal' && !findInputFocussed && !suggestWidgetVisible"
     },
     {
         "key": "ctrl+k",
         "command": "editor.action.moveLinesUpAction",
-        "when": "editorTextFocus && !editorReadonly && vim.mode != 'Normal' && !findInputFocused && !suggestWidgetVisible"
+        "when": "editorTextFocus && !editorReadonly && vim.mode != 'Normal' && !findInputFocussed && !suggestWidgetVisible"
     },
     {
         "key": "ctrl+shift+j",
         "command": "editor.action.copyLinesDownAction",
-        "when": "editorTextFocus && !editorReadonly && vim.mode != 'Normal' && !findInputFocused && !suggestWidgetVisible"
+        "when": "editorTextFocus && !editorReadonly && vim.mode != 'Normal' && !findInputFocussed && !suggestWidgetVisible"
     },
     {
         "key": "ctrl+shift+k",
         "command": "editor.action.copyLinesUpAction",
-        "when": "editorTextFocus && !editorReadonly && vim.mode != 'Normal' && !findInputFocused && !suggestWidgetVisible"
+        "when": "editorTextFocus && !editorReadonly && vim.mode != 'Normal' && !findInputFocussed && !suggestWidgetVisible"
     },
     // - for quick open
     {
@@ -431,12 +447,37 @@
         "when": "listFocus && !inputFocus && !breadcrumbsActive && !explorerViewletCompressedFocus"
     },
     {
+        "key": "h",
+        "command": "-list.collapse",
+        "when": "listFocus && !inputFocus"
+    },
+    {
+        "key": "h",
+        "command": "list.collapse",
+        "when": "listFocus && !inputFocus && !explorerViewletCompressedFocus"
+    },
+    {
+        "key": "h",
+        "command": "list.collapse",
+        "when": "listFocus && !inputFocus && explorerViewletCompressedFocus && explorerViewletCompressedFirstFocus"
+    },
+    {
         "key": "ctrl+j",
         "command": "list.focusDown",
         "when": "listFocus && !inputFocus"
     },
     {
+        "key": "j",
+        "command": "list.focusDown",
+        "when": "listFocus && !inputFocus"
+    },
+    {
         "key": "ctrl+k",
+        "command": "list.focusUp",
+        "when": "listFocus && !inputFocus"
+    },
+    {
+        "key": "k",
         "command": "list.focusUp",
         "when": "listFocus && !inputFocus"
     },
@@ -454,6 +495,11 @@
         "key": "l",
         "command": "list.expand",
         "when": "listFocus && !inputFocus && !explorerViewletCompressedFocus"
+    },
+    {
+        "key": "h",
+        "command": "list.collapse",
+        "when": "listFocus && !inputFocus && explorerViewletCompressedFocus && explorerViewletCompressedFirstFocus"
     },
 
     // N/P

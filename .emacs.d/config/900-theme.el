@@ -78,6 +78,15 @@
   (custom-set-faces
    '(eldoc-highlight-function-argument ((t :weight bold :underline t)))))
 
+(use-package elisp-mode
+  :defer t
+  :config
+  (let ((default-weight (face-attribute 'default :weight)))
+    (custom-set-faces
+     `(lisp-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face
+                                                 :foreground "#a35151"
+                                                 :weight ,default-weight))))))
+
 (use-package evil-goggles
   :defer t
   :config
@@ -114,9 +123,8 @@
    '(font-lock-doc-face ((t :weight normal)))
    '(font-lock-function-name-face ((t :foreground "#85aacc" :weight bold)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
-   '(font-lock-regexp-grouping-backslash ((t :weight semi-bold)))
-   '(font-lock-regexp-grouping-construct ((t :weight semi-bold)))
-   '(font-lock-string-face ((t :weight normal)))))
+   '(font-lock-regexp-grouping-backslash ((t :weight light)))
+   '(font-lock-regexp-grouping-construct ((t :weight light)))))
 
 (use-package fringe
   :defer t

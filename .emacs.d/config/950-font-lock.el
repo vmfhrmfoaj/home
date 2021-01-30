@@ -1030,11 +1030,12 @@
 
 (use-package elisp-mode
   :defer t
-  :config
+  :init
   (defface lisp-local-binding-variable-name-face
     '((t (:inherit font-lock-variable-name-face)))
     "Face used to font-lock Lisp local binding variable name.")
 
+  :config
   (setq-default elisp--binding-form-point nil)
   (make-local-variable 'elisp--binding-form-point)
 
@@ -1267,7 +1268,9 @@
          (1 'font-lock-type-face))
         ("\\(?:^\\|\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\)"
          (1 'shadow))
-        ("\\(;\\)"
+        ("\\(;\\|:$\\)"
+         (1 'shadow))
+        ("\\(&\\)\\$"
          (1 'shadow)))))
   (setq php-font-lock-keywords php-font-lock-keywords-3)
   (font-lock-add-keywords

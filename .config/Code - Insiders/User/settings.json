@@ -1,267 +1,387 @@
 {
     // Appearance
     "editor.fontFamily": "'Cascadia Code', monospace",
-    "editor.fontSize": 13,
-    "editor.fontLigatures": true,
+    "editor.fontSize": 14,
     "editor.fontWeight": "600",
-    "editor.wordWrapColumn": 120,
-    "editor.rulers": [120],
+    "editor.fontLigatures": true,
+    "editor.matchBrackets": "near", // use Bracket Pair Colorizer
+    "editor.minimap.enabled": false,
+    "editor.minimap.renderCharacters": false,
+    "editor.minimap.showSlider": "always",
+    "editor.overviewRulerBorder": false, // true, if minimap is enabled
+    "editor.quickSuggestions": true,
+    // NOTE:
+    //  The minimap can't not cover whole page if file is longer than 200 line on my screen.
+    //  So, the minimap is not perfect alternative for the scrollbar.
+    // "editor.scrollbar.verticalScrollbarSize": 0,
+    "editor.rulers": [ 120 ],
+    "editor.renderLineHighlight": "none",
+    "editor.renderWhitespace": "selection",
+    "editor.wordWrapColumn": 165,
     "terminal.integrated.fontSize": 13,
-    "terminal.integrated.fontWeight": "600",
-    "window.titleBarStyle": "custom",
-    "window.menuBarVisibility": "default",
-    "window.zoomLevel": 0,
+    "window.titleBarStyle": "native",
+    "window.menuBarVisibility": "toggle",
     "workbench.sideBar.location": "left",
-    "workbench.colorTheme": "Visual Studio Light",
+    "workbench.colorTheme": "Visual Studio Dark",
     "workbench.iconTheme": "material-icon-theme",
-
     "workbench.colorCustomizations": {
-        "activityBar.activeBorder": "#24bfa5",
-        "activityBarBadge.background": "#24bfa5",
-        "statusBarItem.remoteBackground": "#24bfa5",
+        "statusBarItem.remoteBackground": "#4ec9b0",
+        "rust_analyzer.inlayHints.foreground": "#d4d4d4",
         "[Visual Studio Dark]": {
+            "editor.findMatchBackground": "#ea5c0090",
+            "editorCursor.foreground": "#ffffff85",
+            "editorCursor.background": "#333",
+            "editorRuler.foreground": "#5a5a5a20",
+            "rust_analyzer.inlayHints.foreground": "#878787",
+            "statusBar.foreground": "#ccc",
             "statusBar.background": "#333",
             "statusBar.noFolderBackground": "#333",
             "statusBar.noFolderBorder": "#333",
-            "editor.lineHighlightBorder": "#1e1e1e",
-            "editorRuler.foreground": "#5a5a5a20",
-            "rust_analyzer.inlayHints.foreground": "#878787",
-        },
-        "[Visual Studio Light]": {
-            "activityBar.activeBackground": "#f2f2f2",
-            "activityBar.background": "#dddddd",
-            "activityBar.foreground": "#333333",
-            "statusBar.noFolderBackground": "#dddddd",
-            "statusBar.background": "#dddddd",
-            "statusBar.foreground": "#333333",
-            "editorRuler.foreground": "#d3d3d330",
-            "editor.lineHighlightBackground": "#e4e6f1",
-            "scrollbar.shadow": "#ffffff00",
-            "rust_analyzer.inlayHints.foreground": "#267F9999",
         },
     },
+
     "editor.semanticTokenColorCustomizations": {
         "rules": {
-            "*.mutable": {
-                "underline": true,
-            },
-            "*.unsafe": {
-                "bold": true,
-                "italic": true,
-            },
+            "*.mutable": { "underline": true, },
+            "*.unsafe": { "italic": true, },
         },
         "[Visual Studio Dark]": {
             "rules": {
-                "enum": "#4ec9b0",
-                "interface": "#4ec9b0",
-                "type": "#4ec9b0",
-                "typeAlias": "#4ec9b0",
-                "typeParameter": "#4ec9b0",
-                "punctuation": "#a9a9a9",
-                "macro": "#d4d4d4",
+                "angle": "#909090",
+                "attribute": "#a9a9a9",
+                "brace": "#909090",
+                "colon": "#909090",
+                "comma": "#909090",
+                "enum": "#d4d4d4",
                 "enumMember": "#d4d4d4",
-            },
-        },
-        "[Visual Studio Light]": {
-            "rules": {
-                "enum": "#267F99",
-                "interface": "#267F99",
-                "type": "#267F99",
-                "struct": "#267F99",
-                "typeAlias": "#267F99",
-                "typeParameter": "#267F99",
-                "punctuation": "#747474",
-                "macro": "#000000",
-                "enumMember": "#000000",
-                "*.unsafe": {
-                    "foreground": "#ff0000"
-                },
+                "interface": "#d4d4d4",
+                "lifetime": "#a9a9a9",
+                "macro": "#d4d4d4",
+                "operator": "#a9a9a9",
+                "parenthesis": "#909090",
+                "punctuation": "#909090",
+                "semicolon": "#909090",
+                "type": "#d4d4d4",
+                "typeAlias": "#d4d4d4",
+                "typeParameter": "#d4d4d4", 
             },
         },
     },
+
     "editor.tokenColorCustomizations": {
         "textMateRules": [
             {
                 "scope": "constant.other.placeholder.c",
-                "settings": {
-                    "fontStyle": "italic"
-                }
+                "settings": { "fontStyle": "italic" }
             },
         ],
         "[Visual Studio Dark]": {
             "keywords": "#c586c0",
             "comments": {
-                "foreground": "#a9a9a9",
+                "foreground": "#909090",
                 "fontStyle": "italic"
             },
             "textMateRules": [
                 {
-                    "scope": ["entity.name.function.preprocessor"],
+                    "scope": "entity.name.section.spec",
+                    "settings": { "foreground": "#c586c0" },
+                },
+                {
+                    "scope": [
+                        "constant.language",
+                        // Python
+                        "storage.type.number.python",
+                        "constant.language.python",
+                        // Go
+                        "constant.language.go",
+                        // Json
+                        "constant.language.json.comments",
+                        // PHP
+                        "constant.language.php",
+                    ],
                     "settings": {
-                        "foreground": "#d4d4d4",
+                        "foreground": "#b5cea8",
                     }
                 },
                 {
                     "scope": [
+                        "storage.type",
                         // C/C++
-                        "punctuation.terminator.statement.c",
+                        "keyword.control.directive.define.c",
+                        "keyword.control.directive.include.c",
+                        // Python
+                        "keyword.control.import.python",
+                    ],
+                    "settings": { "foreground": "#569cd6" },
+                },
+                {
+                    "scope": [
+                        "entity.name.function.preprocessor",
+                        // PHP
+                        "variable.language.special.self.python",
+                        "storage.type.boolean.go",
+                        "storage.type.error.go",
+                        "storage.type.numeric.go",
+                        "storage.type.string.go",
+                        "support.type.property-name.json.comments",
+                        // Toml
+                        "keyword.key.toml",
+                    ],
+                    "settings": { "foreground": "#d4d4d4", }
+                },
+                {
+                    "scope": [
+                        "keyword.operator",
+                        // C/C++
+                        "punctuation.separator.dot-access.c",
                         "punctuation.separator.delimiter.c",
                         "punctuation.separator.pointer-access.c",
-                        "punctuation.section.block.begin.bracket.curly.c",
-                        "punctuation.section.block.end.bracket.curly.c",
-                        "punctuation.section.parameters.begin.bracket.round.c",
-                        "punctuation.section.parameters.end.bracket.round.c",
-                        "punctuation.section.arguments.begin.bracket.round.c",
-                        "punctuation.section.arguments.end.bracket.round.c",
-                        "punctuation.section.parens.begin.bracket.round.c",
-                        "punctuation.section.parens.end.bracket.round.c",
-                        "punctuation.definition.begin.bracket.square.c",
-                        "punctuation.definition.end.bracket.square.c",
+                        "punctuation.separator.pointer-access.cpp",
                         // Shell
-                        "punctuation.definition.variable.shell",
-                        "punctuation.definition.group.shell",
-                        "punctuation.definition.arguments.shell",
-                        "punctuation.definition.logical-expression.shell",
                         "keyword.operator.list.shell",
                         "keyword.operator.pipe.shell",
                         "keyword.operator.redirect.shell",
                         "keyword.operator.heredoc.shell",
-                        "punctuation.definition.subshell.shell",
+                        // Go
+                        "punctuation.other.comma.go",
+                        "punctuation.other.colon.go",
+                        "punctuation.other.period.go",
+                        "punctuation.terminator.go",
+                        "keyword.operator.logical.go",
+                        // Ptyhon
+                        "punctuation.separator.period.python",
+                        // Toml
+                        "punctuation.eq.toml",
                     ],
-                    "settings": {
-                        "foreground": "#a9a9a9",
-                    }
-                },
-                {
-                    "scope": "storage.type.built-in.primitive.c",
-                    "settings": {
-                        "foreground": "#4ec9b0",
-                    }
-                },
-            ]
-        },
-        "[Visual Studio Light]": {
-            "keywords": "#af00db",
-            "comments": {
-                "foreground": "#747474",
-                "fontStyle": "italic"
-            },
-            "textMateRules": [
-                {
-                    "scope": [
-                        "entity.name.function.preprocessor",
-                        // C/C++
-                        "meta.preprocessor.macro.cpp",
-                        "storage.modifier.pointer.cpp",
-                        "variable.parameter.preprocessor.cpp",
-                        "variable.other.object.access.cpp",
-                        "variable.other.property.cpp",
-                    ],
-                    "settings": {
-                        "foreground": "#000000",
-                    }
-                },
-                {
-                    "scope": "meta.attribute.rust",
-                    "settings": {
-                        "foreground": "#222222",
-                    }
-                },
-                {
-                    "scope": "punctuation.section.embedded",
-                    "settings":{
-                        "foreground": "#a31515",
-                        "fontStyle": "italic",
-                    },
+                    "settings": { "foreground": "#a9a9a9" },
                 },
                 {
                     "scope": [
                         // C/C++
-                        "punctuation.terminator.statement.c",
-                        "punctuation.terminator.statement.cpp",
-                        "punctuation.separator.delimiter.c",
-                        "punctuation.separator.pointer-access.c",
-                        "punctuation.separator.pointer-access.cpp",
-                        "punctuation.section.block.begin.bracket.curly.c",
-                        "punctuation.section.block.end.bracket.curly.c",
-                        "punctuation.section.parameters.begin.bracket.round.c",
-                        "punctuation.section.parameters.end.bracket.round.c",
+                        "meta.preprocessor.conditional.cpp",
+                        "punctuation.definition.begin.bracket.square.c",
+                        "punctuation.definition.end.bracket.square.c",
+                        "punctuation.definition.parameters.begin.preprocessor.cpp",
+                        "punctuation.definition.parameters.end.preprocessor.cpp",
                         "punctuation.section.arguments.begin.bracket.round.c",
                         "punctuation.section.arguments.end.bracket.round.c",
                         "punctuation.section.arguments.begin.bracket.round.initializer.cpp",
                         "punctuation.section.arguments.end.bracket.round.initializer.cpp",
-                        "punctuation.section.parameters.begin.bracket.round.cpp",
-                        "punctuation.section.parameters.end.bracket.round.cpp",
-                        "punctuation.section.parameters.begin.bracket.round.function.pointer.cpp",
-                        "punctuation.section.parameters.end.bracket.round.function.pointer.cpp",
+                        "punctuation.section.block.begin.bracket.curly.c",
+                        "punctuation.section.block.end.bracket.curly.c",
                         "punctuation.section.parens.begin.bracket.round.c",
                         "punctuation.section.parens.end.bracket.round.c",
                         "punctuation.section.parens.begin.bracket.round.cpp",
                         "punctuation.section.parens.end.bracket.round.cpp",
                         "punctuation.section.parens.begin.bracket.round.function.pointer.cpp",
                         "punctuation.section.parens.end.bracket.round.function.pointer.cpp",
-                        "punctuation.definition.begin.bracket.square.c",
-                        "punctuation.definition.end.bracket.square.c",
-                        "punctuation.definition.parameters.begin.preprocessor.cpp",
-                        "punctuation.definition.parameters.end.preprocessor.cpp",
+                        "punctuation.section.parameters.begin.bracket.round.c",
+                        "punctuation.section.parameters.end.bracket.round.c",
+                        "punctuation.section.parameters.begin.bracket.round.cpp",
+                        "punctuation.section.parameters.end.bracket.round.cpp",
+                        "punctuation.section.parameters.begin.bracket.round.function.pointer.cpp",
+                        "punctuation.section.parameters.end.bracket.round.function.pointer.cpp",
+                        "punctuation.terminator.statement.c",
+                        "punctuation.terminator.statement.cpp",
                         // Shell
                         "punctuation.definition.variable.shell",
                         "punctuation.definition.group.shell",
                         "punctuation.definition.arguments.shell",
                         "punctuation.definition.logical-expression.shell",
-                        "keyword.operator.list.shell",
-                        "keyword.operator.pipe.shell",
-                        "keyword.operator.redirect.shell",
-                        "keyword.operator.heredoc.shell",
                         "punctuation.definition.subshell.shell",
+                        // Go
+                        "punctuation.definition.begin.bracket.curly.go",
+                        "punctuation.definition.end.bracket.curly.go",
+                        "punctuation.definition.begin.bracket.round.go",
+                        "punctuation.definition.end.bracket.round.go",
+                        "punctuation.definition.bracket.square.go",
+                        "punctuation.other.comma.go",
+                        "punctuation.terminator.go",
+                        // Python
+                        "punctuation.definition.arguments.begin.python",
+                        "punctuation.definition.arguments.end.python",
+                        "punctuation.definition.dict.begin.python",
+                        "punctuation.definition.dict.end.python",
+                        "punctuation.definition.list.begin.python",
+                        "punctuation.definition.list.end.python",
+                        "punctuation.definition.parameters.begin.python",
+                        "punctuation.definition.parameters.end.python",
+                        "punctuation.parenthesis.begin.python",
+                        "punctuation.parenthesis.end.python",
+                        "punctuation.section.class.begin.python",
+                        "punctuation.section.function.begin.python",
+                        "punctuation.separator.arguments.python",
+                        "punctuation.separator.colon.python",
+                        "punctuation.separator.continuation.line.python",
+                        "punctuation.separator.dict.python",
+                        "punctuation.separator.element.python",
+                        "punctuation.separator.parameters.python",
+                        "punctuation.separator.slice.python",
+                        "meta.function.decorator.python",
+                        // PHP
+                        "punctuation.definition.begin.bracket.curly.php",
+                        "punctuation.definition.end.bracket.curly.php",
+                        "punctuation.definition.begin.bracket.round.php",
+                        "punctuation.definition.end.bracket.round.php",
+                        "punctuation.definition.arguments.begin.bracket.round.php",
+                        "punctuation.definition.arguments.end.bracket.round.php",
+                        "punctuation.definition.array.begin.bracket.round.php",
+                        "punctuation.definition.array.end.bracket.round.php",
+                        "punctuation.definition.parameters.begin.bracket.round.php",
+                        "punctuation.definition.parameters.end.bracket.round.php",
+                        "punctuation.definition.variable.php",
+                        "punctuation.separator.delimiter.php",
+                        "punctuation.terminator.expression.php",
+                        "punctuation.terminator.statement.php",
+                        "punctuation.section.array.begin.php",
+                        "punctuation.section.array.end.php",
+                        "storage.modifier.reference.php",
+                        // JSON
+                        "punctuation.definition.array.begin.json.comments",
+                        "punctuation.definition.array.end.json.comments",
+                        "punctuation.definition.dictionary.begin.json.comments",
+                        "punctuation.definition.dictionary.end.json.comments",
+                        "punctuation.separator.array.json.comments",
+                        "punctuation.separator.dictionary.pair.json.comments",
+                        "punctuation.separator.dictionary.key-value.json.comments",
+                        "punctuation.support.type.property-name.begin.json.comments",
+                        "punctuation.support.type.property-name.end.json.comments",
+                        // Rust
+                        "punctuation.semi.rust",
+                        // Toml
+                        "punctuation.separator.array.toml",
+                        "punctuation.separator.dot",
+                        // Shellscript
+                        "punctuation.terminator.case-clause.shell",
+                        "punctuation.definition.case-pattern.shell",
                     ],
-                    "settings": {
-                        "foreground": "#747474",
-                    }
+                    "settings": { "foreground": "#909090", }
                 },
                 {
                     "scope": "storage.type.built-in.primitive.c",
-                    "settings": {
-                        "foreground": "#267F99",
-                    }
+                    "settings": { "foreground": "#4ec9b0", }
                 },
             ]
         },
     },
 
     // Edit
-    "breadcrumbs.enabled": false,
+    "breadcrumbs.enabled": true,
+    "editor.accessibilitySupport": "off",
     "editor.detectIndentation": false,
+    "editor.formatOnSave": false,
     "editor.insertSpaces": true,
     "editor.lineNumbers": "relative",
-    "editor.renderLineHighlight": "gutter",
-    "editor.renderWhitespace": "selection",
-    "editor.minimap.enabled": false,
-    "editor.quickSuggestionsDelay": 10,
+    "editor.suggestOnTriggerCharacters": true,
     "editor.suggestSelection": "first",
     "editor.tabSize": 4,
     "workbench.editor.enablePreview": false,
 
+    "[go]": {
+        "editor.formatOnSave": true,
+    },
+    "[rust]": {
+        "editor.formatOnSave": true,
+    },
+
     // Misc.
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
+    "telemetry.enableTelemetry": false,
+    "terminal.integrated.commandsToSkipShell": [
+        "multiCommand.switchFirstTermianl",
+        "multiCommand.switchSecondTermianl",
+        "multiCommand.switchThirdTermianl",
+        "-workbench.action.quickOpen",
+    ],
+    "workbench.editorAssociations": [
+        {
+            "viewType": "jupyter-notebook",
+            "filenamePattern": "*.ipynb"
+        }
+    ],
 
-    ///
-    /// Extentions
-    ///
+    // Bash IDE
+    "bashIde.highlightParsingErrors": false,
+
+    // Better Comment
+    "better-comments.tags": [
+        {
+            "tag": "fixme",
+            "color": "#cc2400",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "xxx",
+            "color": "#cc2400",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "note",
+            "color": "#8cc6e4",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "todo",
+            "color": "#cc7000",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+    ],
+
+    // Bracket Pair Colorizer
+    "bracket-pair-colorizer-2.colors": [
+        "#909090",
+    ],
+    "bracket-pair-colorizer-2.scopeLineCSS": [
+        "borderStyle : solid",
+        "borderWidth : 1px",
+        "borderColor : #707070",
+        "opacity: 1"
+    ],
+    // "bracket-pair-colorizer-2.excludedLanguages": [
+    //     "shellscript",
+    // ],
 
     // C/C++
+    "C_Cpp.enhancedColorization": "Enabled",
+    "C_Cpp.intelliSenseEngine": "Default",
     "C_Cpp.updateChannel": "Insiders",
+
     // CMake
     "cmake.configureOnOpen": true,
+
+    // Git
+    "git.allowForcePush": true,
+
+    // Git History
+    "gitHistory.showFileHistorySplit": false,
 
     // Gitlens
     "gitlens.codeLens.enabled": false,
     "gitlens.currentLine.enabled": false,
+    "gitlens.keymap": "none",
+    "gitlens.statusBar.enabled": false,
     "gitlens.statusBar.format": "${author}(${agoOrDate}): \"${message}\"",
 
     // Go
-    "go.formatTool": "goimports",
+    "go.formatTool": "goreturns",
+    "go.useLanguageServer": true,
 
     // Markdownlint
     "markdownlint.config": {
@@ -292,20 +412,6 @@
             ]
         },
         {
-            "command": "multiCommand.gitStageSelectedRanges",
-            "sequence": [
-                "git.stageSelectedRanges",
-                "extension.vim_escape",
-            ]
-        },
-        {
-            "command": "multiCommand.gitUnstageSelectedRanges",
-            "sequence": [
-                "git.unstageSelectedRanges",
-                "extension.vim_escape",
-            ]
-        },
-        {
             "command": "multiCommand.vimPreviousEditor",
             "sequence": [
                 "extension.vim_escape",
@@ -327,17 +433,58 @@
             ]
         },
         {
-            "command": "multiCommand.vimOpenNextRecentlyUsedEditorInGroup",
+            "command": "multiCommand.vimShowCommand",
             "sequence": [
                 "extension.vim_escape",
-                "workbench.action.nextEditor",
+                "workbench.action.showCommands",
             ]
         },
         {
-            "command": "multiCommand.vimOpenPreviousRecentlyUsedEditorInGroup",
+            "command": "multiCommand.vimFocusFirstEditorGroupAndEscape",
             "sequence": [
+                "workbench.action.focusFirstEditorGroup",
+                "extension.vim_escape"
+            ]
+        },
+        {
+            "command": "multiCommand.vimOpenResultAndEscape",
+            "sequence": [
+                "search.action.openResult",
+                "extension.vim_escape"
+            ]
+        },
+        {
+            "command": "multiCommand.vimMarkAndFind",
+            "sequence": [
+                {"command": "type", "args": {"text": "m"}},
+                {"command": "type", "args": {"text": "z"}},
+                "actions.find",
+            ]
+        },
+        {
+            "command": "multiCommand.vimCloseFindWidget",
+            "interval": 0.01,
+            "sequence": [
+                "closeFindWidget",
+                "cancelSelection",
                 "extension.vim_escape",
-                "workbench.action.previousEditor",
+                {"command": "type", "args": {"text": "q"}},
+                {"command": "type", "args": {"text": "z"}},
+                {"command": "type", "args": {"text": "q"}},
+            ]
+        },
+        {
+            "command": "multiCommand.vimCloseFindWidgetAndGoBack",
+            "interval": 0.01,
+            "sequence": [
+                "closeFindWidget",
+                "cancelSelection",
+                "extension.vim_escape",
+                {"command": "type", "args": {"text": "`"}},
+                {"command": "type", "args": {"text": "z"}},
+                {"command": "type", "args": {"text": "q"}},
+                {"command": "type", "args": {"text": "z"}},
+                {"command": "type", "args": {"text": "q"}},
             ]
         },
         {
@@ -345,6 +492,7 @@
             "sequence": [
                 "revealReference",
                 "closeReferenceSearch",
+                "extension.vim_escape",
             ]
         },
         {
@@ -362,71 +510,94 @@
             ]
         },
         {
-            "command": "multiCommand.vimEscapeAndFind",
+            "command": "multiCommand.cancelSuggestionAndInsertNewline",
             "sequence": [
-                "extension.vim_escape",
-                "actions.find",
+                "hideSuggestWidget",
+                {"command": "type", "args": {"text": "\n" }},
             ]
         },
         {
-            "command": "multiCommand.vimFindAndNextMatchFindAction",
+            "command": "multiCommand.vimFocusNextAndEscape",
             "sequence": [
-				"actions.find",
-                "editor.action.nextMatchFindAction",
+                "cursorEnd",
+                "search.action.focusNextSearchResult",
+                "cancelSelection",
+                "extension.vim_escape",
+            ]
+        },
+        {
+            "command": "multiCommand.vimFocusPrevAndEscape",
+            "sequence": [
+                "cursorHome",
+                "search.action.focusPreviousSearchResult",
+                "cancelSelection",
+                "extension.vim_escape",
+            ]
+        },
+        {
+            "command": "multiCommand.closeGitBlameAndShowSidebar",
+            "sequence": [
+                "gitlens.key.escape",
+                "workbench.action.focusSideBar",
                 "workbench.action.focusActiveEditorGroup",
             ]
         },
         {
-            "command": "multiCommand.vimFindAndPreviousMatchFindAction",
+            "command": "multiCommand.goParentSymbol",
             "sequence": [
-                "actions.find",
-                "editor.action.previousMatchFindAction",
-                "workbench.action.focusActiveEditorGroup",
+                "breadcrumbs.focusAndSelect",
+                "list.collapse",
             ]
         },
         {
-            "command": "multiCommand.vimCancelFindWidget",
+            "command": "multiCommand.goNextSymbol",
             "sequence": [
-                "closeFindWidget",
-                "cancelSelection",
-                "extension.vim_escape",
-                {"command": "type", "args": {"text": "q"}},
-                {"command": "type", "args": {"text": "z"}},
-                {"command": "type", "args": {"text": "q"}},
+                "breadcrumbs.focusAndSelect",
+                "list.focusDown",
             ]
         },
         {
-            "command": "multiCommand.vimMarkAndFind",
+            "command": "multiCommand.goPrevSymbol",
             "sequence": [
-                {"command": "type", "args": {"text": "m"}},
-                {"command": "type", "args": {"text": "z"}},
-                "actions.find"
+                "breadcrumbs.focusAndSelect",
+                "list.focusUp",
             ]
         },
         {
-            "command": "multiCommand.vimCancelFindWidgetAndGoBack",
+            "command": "multiCommand.switchFirstTermianl",
             "sequence": [
-                "closeFindWidget",
-                "cancelSelection",
-                "extension.vim_escape",
-                {"command": "type", "args": {"text": "`"}},
-                {"command": "type", "args": {"text": "z"}},
-                {"command": "type", "args": {"text": "q"}},
-                {"command": "type", "args": {"text": "z"}},
-                {"command": "type", "args": {"text": "q"}},
+                { "command": "workbench.action.quickOpen", "args": "term 1.:" },
+                "workbench.action.acceptSelectedQuickOpenItem",
+            ]
+        },
+        {
+            "command": "multiCommand.switchSecondTermianl",
+            "sequence": [
+                { "command": "workbench.action.quickOpen", "args": "term 2.:" },
+                "workbench.action.acceptSelectedQuickOpenItem",
+            ]
+        },
+        {
+            "command": "multiCommand.switchThirdTermianl",
+            "sequence": [
+                { "command": "workbench.action.quickOpen", "args": "term 3.:" },
+                "workbench.action.acceptSelectedQuickOpenItem",
             ]
         },
     ],
 
     // Python
-    "python.languageServer": "Microsoft",
+    "python.insidersChannel": "daily",
+    "python.languageServer": "Pylance",
+    "python.linting.pylintEnabled": true,
+    "python.showStartPage": false,
 
     // Remote Development
     "remote.SSH.showLoginTerminal": true,
 
     // Rust Analyzer
-    "rust-analyzer.inlayHints.chainingHints": false,
-    "rust-analyzer.inlayHints.parameterHints": false,
+    "rust-analyzer.checkOnSave.command": "clippy",
+    "rust-analyzer.serverPath": "~/.cargo/bin/rust-analyzer",
 
     // Vim
     "workbench.list.keyboardNavigation": "simple", // see, https://github.com/Microsoft/vscode/issues/66995#issuecomment-457123611
@@ -440,186 +611,239 @@
     "vim.highlightedyank.enable": true,
     "vim.surround": true,
     "vim.visualstar": true,
+    "vim.leader": "<space>",
     "vim.handleKeys": {
-        "<C-d>": false,
-        "<C-f>": false,
-        "<C-t>": false,
+        "<C-p>": false,
         "<C-w>": false,
         "<C-z>": false,
     },
-
-    "vim.leader": "<space>",
-    "vim.visualModeKeyBindings": [
+    "vim.insertModeKeyBindingsNonRecursive": [
         {
-            "before": [
-                "<leader>",
-                ";"
-            ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "editor.action.commentLine",
-                    "args": []
-                },
-                {
-                    "command": "extension.vim_escape",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": ["*"],
-            "commands": [
-                {
-                    "command": "multiCommand.vimFindAndNextMatchFindAction",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": ["#"],
-            "commands": [
-                {
-                    "command": "multiCommand.vimFindAndPreviousMatchFindAction",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": ["N"],
-            "commands": [
-                {
-                    "command": "editor.action.previousMatchFindAction",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": ["n"],
-            "commands": [
-                {
-                    "command": "editor.action.nextMatchFindAction",
-                    "args": []
-                }
-            ]
+            "before": [ "<C-h>" ],
+            "commands": [ { "command": "deleteLeft" } ]
         },
     ],
-    "vim.normalModeKeyBindingsNonRecursive": [
+    "vim.visualModeKeyBindingsNonRecursive": [
         {
-            "before": ["<C-h>"],
-            "commands": [
-                {
-                    "command": "closeFindWidget",
-                    "args": []
-                }
-            ]
+            "before": [ "<C-i>" ],
+            "commands": [ { "command": "workbench.action.navigateForward" } ]
         },
         {
-            "before": ["<C-r>"],
-            "commands": [
-                {
-                    "command": "redo",
-                    "args": []
-                }
-            ]
+            "before": [ "<C-o>" ],
+            "commands": [ { "command": "workbench.action.navigateBack" } ]
         },
         {
-            "before": ["#"],
-            "commands": [
-                {
-                    "command": "multiCommand.vimFindAndPreviousMatchFindAction",
-                    "args": []
-                }
-            ]
+            "before": [ "<C-r>" ],
+            "commands": [ { "command": "redo" } ]
         },
         {
-            "before": ["*"],
-            "commands": [
-                {
-                    "command": "multiCommand.vimFindAndNextMatchFindAction",
-                    "args": []
-                }
-            ]
+            "before": [ "/" ],
+            "commands": [ { "command": "multiCommand.vimMarkAndFind" } ]
         },
         {
-            "before": ["/"],
-            "commands": [
-                {
-                    "command": "multiCommand.vimMarkAndFind",
-                    "args": []
-                }
-            ]
+            "before": [ "N" ],
+            "commands": [ { "command": "editor.action.previousMatchFindAction" } ]
         },
         {
-            "before": ["K"],
-            "after": ["g", "h"]
+            "before": [ "n" ],
+            "commands": [ { "command": "editor.action.nextMatchFindAction" } ]
         },
-        {
-            "before": ["N"],
-            "commands": [
-                {
-                    "command": "editor.action.previousMatchFindAction",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": ["n"],
-            "commands": [
-                {
-                    "command": "editor.action.nextMatchFindAction",
-                    "args": []
-                }
-            ]
-        },
-        {
-            "before": ["u"],
-            "commands": [
-                {
-                    "command": "undo",
-                    "args": []
-                }
-            ]
-        },
-    ],
-    "vim.normalModeKeyBindings": [
         {
             "before": [
                 "g",
                 ";"
             ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "workbench.action.navigateToLastEditLocation",
-                    "args": []
-                },
-            ]
+            "commands": [ { "command": "workbench.action.navigateToLastEditLocation" } ]
+        },
+        {
+            "before": [
+                "g",
+                "B"
+            ],
+            "commands": [ { "command": "editor.action.selectHighlights" } ]
         },
         {
             "before": [
                 "g",
                 "D"
             ],
-            "after": [],
+            "commands": [ { "command": "editor.action.referenceSearch.trigger" } ]
+        },
+        {
+            "before": [
+                "g",
+                "d",
+            ],
+            "commands": [ { "command": "editor.action.revealDefinition" } ]
+        },
+        {
+            "before": [
+                "g",
+                "J",
+            ],
+            "commands": [ { "command": "editor.action.moveLinesDownAction" } ]
+        },
+        {
+            "before": [
+                "g",
+                "K",
+            ],
+            "commands": [ { "command": "editor.action.moveLinesUpAction" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                ";"
+            ],
             "commands": [
-                {
-                    "command": "editor.action.referenceSearch.trigger",
-                    "args": []
-                },
+                { "command": "editor.action.commentLine" },
+                { "command": "extension.vim_escape" }
             ]
+        },
+        // NOTE: has been occupied by Vim extension
+        // {
+        //     "before": [
+        //         "<leader>",
+        //         "b",
+        //     ],
+        // },
+        {
+            "before": [
+                "<leader>",
+                "s",
+                "n"
+            ],
+            "commands": [ { "command": "search.action.openNewEditor" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "s",
+                "N"
+            ],
+            "commands": [ { "command": "search.action.openNewEditorToSide" } ]
+        },
+        // NOTE: has been occupied by Vim extension
+        // {
+        //     "before": [
+        //         "<leader>",
+        //         "w",
+        //     ],
+        // },
+        {
+            "before": [
+                "<leader>",
+                "x",
+                "f"
+            ],
+            "commands": [
+                { "command": "editor.action.formatSelection" },
+                { "command": "cancelSelection" },
+                { "command": "extension.vim_escape" }
+            ]
+        },
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": [ "<C-i>" ],
+            "commands": [ { "command": "workbench.action.navigateForward" } ]
+        },
+        {
+            "before": [ "<C-o>" ],
+            "commands": [ { "command": "workbench.action.navigateBack" } ]
+        },
+        {
+            "before": [ "<C-r>" ],
+            "commands": [ { "command": "redo" } ]
+        },
+        {
+            // NOTE: placehold for keybindings
+            "before": [ "#" ],
+            "commands": []
+        },
+        {
+            // NOTE: placehold for keybindings
+            "before": [ "*" ],
+            "commands": []
+        },
+        {
+            "before": [ "/" ],
+            "commands": [ { "command": "multiCommand.vimMarkAndFind" } ]
+        },
+        {
+            "before": [
+                "K",
+            ],
+            "commands": [ { "command": "editor.action.showDefinitionPreviewHover" } ]
+        },
+        {
+            "before": [ "N" ],
+            "commands": [ { "command": "editor.action.previousMatchFindAction" } ]
+        },
+        {
+            "before": [ "n" ],
+            "commands": [ { "command": "editor.action.nextMatchFindAction" } ]
+        },
+        {
+            "before": [ "u" ],
+            "commands": [
+                { "command": "undo" },
+                { "command": "extension.vim_escape" }
+            ]
+        },
+        {
+            "before": [
+                "g",
+                ";"
+            ],
+            "commands": [
+                { "command": "workbench.action.navigateToLastEditLocation" },
+                { "command": "extension.vim_escape" }
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "B"
+            ],
+            "commands": [ { "command": "editor.action.selectHighlights" } ]
+        },
+        {
+            "before": [
+                "g",
+                "D"
+            ],
+            "commands": [ { "command": "editor.action.referenceSearch.trigger" } ]
+        },
+        {
+            "before": [
+                "g",
+                "J",
+            ],
+            "commands": [ { "command": "editor.action.moveLinesDownAction" } ]
+        },
+        {
+            "before": [
+                "g",
+                "K",
+            ],
+            "commands": [ { "command": "editor.action.moveLinesUpAction" } ]
         },
         {
             "before": [
                 "g",
                 "x"
             ],
-            "after": [],
+            "commands": [ { "command": "editor.action.openLink" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "<tab>",
+            ],
             "commands": [
-                {
-                    "command": "editor.action.openLink",
-                    "args": []
-                }
+                { "command": "workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup" },
+                { "command": "workbench.action.acceptSelectedQuickOpenItem" },
             ]
         },
         {
@@ -627,13 +851,46 @@
                 "<leader>",
                 ";",
             ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "editor.action.commentLine",
-                    "args": []
-                }
-            ]
+            "commands": [ { "command": "editor.action.commentLine" } ]
+        },
+        // NOTE: has been occupied by Vim extension
+        // {
+        //     "before": [
+        //         "<leader>",
+        //         "b",
+        //     ],
+        // },
+        {
+            "before": [
+                "<leader>",
+                "e",
+                "l"
+            ],
+            "commands": [ { "command": "workbench.action.problems.focus" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "e",
+                "s"
+            ],
+            "commands": [ { "command": "editor.action.marker.next" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "f",
+                "f"
+            ],
+            "commands": [ { "command": "workbench.action.files.openFile" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "f",
+                "n"
+            ],
+            "commands": [ { "command": "workbench.action.files.newUntitledFile" } ]
         },
         {
             "before": [
@@ -641,13 +898,74 @@
                 "f",
                 "y"
             ],
-            "after": [],
+            "commands": [ { "command": "copyRelativeFilePath" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "f",
+                "Y"
+            ],
+            "commands": [ { "command": "workbench.action.files.copyPathOfActiveFile" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "g",
+                "a"
+            ],
+            "commands": [ { "command": "git.viewHistory" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "g",
+                "b"
+            ],
             "commands": [
-                {
-                    "command": "workbench.action.files.copyPathOfActiveFile",
-                    "args": []
-                }
-            ]
+                { "command": "workbench.action.closeSidebar" },
+                { "command": "gitlens.toggleFileBlame" }
+            ],
+        },
+        {
+            "before": [
+                "<leader>",
+                "g",
+                "f"
+            ],
+            "commands": [ { "command": "git.viewFileHistory" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "g",
+                "l"
+            ],
+            "commands": [ { "command": "git.viewLineHistory" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "g",
+                "n"
+            ],
+            "commands": [ { "command": "multiCommand.goNextChangeAndShow" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "g",
+                "p"
+            ],
+            "commands": [ { "command": "multiCommand.goPreviousChangeAndShow" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "g",
+                "t"
+            ],
+            "commands": [ { "command": "gitlens.diffWithPrevious" } ]
         },
         {
             "before": [
@@ -655,27 +973,39 @@
                 "i",
                 "s"
             ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "editor.action.insertSnippet",
-                    "args": []
-                }
-            ]
+            "commands": [ { "command": "editor.action.insertSnippet" } ]
         },
         {
             "before": [
                 "<leader>",
-                "r",
-                "r"
+                "s",
+                "n"
             ],
-            "after": [],
-            "commands": [
-                {
-                    "command": "editor.action.rename",
-                    "args": []
-                }
-            ]
+            "commands": [ { "command": "search.action.openNewEditor" } ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "s",
+                "N"
+            ],
+            "commands": [ { "command": "search.action.openNewEditorToSide" } ]
+        },
+        // NOTE: has been occupied by Vim extension
+        // {
+        //     "before": [
+        //         "<leader>",
+        //         "w",
+        //     ],
+        // },
+        {
+            "before": [
+                "<leader>",
+                "x",
+                "f"
+            ],
+            "commands": [ { "command": "editor.action.formatDocument" } ]
         },
     ],
+    "gitlens.views.lineHistory.enabled": true,
 }

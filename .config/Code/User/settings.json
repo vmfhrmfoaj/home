@@ -447,6 +447,7 @@
         },
         {
             "command": "multiCommand.vimCloseFindWidget",
+            "interval": 0.01,
             "sequence": [
                 "closeFindWidget",
                 "cancelSelection",
@@ -458,6 +459,7 @@
         },
         {
             "command": "multiCommand.vimCloseFindWidgetAndGoBack",
+            "interval": 0.01,
             "sequence": [
                 "closeFindWidget",
                 "cancelSelection",
@@ -570,8 +572,8 @@
 
     // Python
     "python.languageServer": "Pylance",
-    "python.showStartPage": false,
     "python.linting.pylintEnabled": true,
+    "python.showStartPage": false,
 
     // Remote Development
     "remote.SSH.showLoginTerminal": true,
@@ -738,28 +740,14 @@
             "commands": [ { "command": "redo" } ]
         },
         {
+            // NOTE: placehold for keybindings
             "before": [ "#" ],
-            "commands": [
-                { "command": "cursorRight" },
-                { "command": "cursorWordLeft" },
-                { "command": "actions.find" },
-                { "command": "closeFindWidget" },
-                { "command": "cancelSelection" },
-                { "command": "extension.vim_escape" },
-                { "command": "editor.action.previousMatchFindAction" },
-            ]
+            "commands": []
         },
         {
+            // NOTE: placehold for keybindings
             "before": [ "*" ],
-            "commands": [
-                { "command": "cursorLeft" },
-                { "command": "cursorWordRight" },
-                { "command": "actions.find" },
-                { "command": "closeFindWidget" },
-                { "command": "cancelSelection" },
-                { "command": "extension.vim_escape" },
-                { "command": "editor.action.nextMatchFindAction" },
-            ]
+            "commands": []
         },
         {
             "before": [ "/" ],

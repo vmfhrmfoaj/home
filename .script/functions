@@ -77,7 +77,6 @@ EOF
 vscode_extensions=(
     'aaron-bond.better-comments'
     'bmewburn.vscode-intelephense-client'
-    'bungcip.better-toml'
     'CoenraadS.bracket-pair-colorizer-2'
     'coolbear.systemd-unit-file'
     'DavidAnson.vscode-markdownlint'
@@ -107,6 +106,7 @@ vscode_extensions=(
     'ryuta46.multi-command'
     'shardulm94.trailing-spaces'
     'slevesque.vscode-hexdump'
+    'tamasfe.even-better-toml'
     'vscodevim.vim')
 
 _install_vs_code_from_tar() {
@@ -172,25 +172,10 @@ EOF
     echo -n "Do you want to customize? (Y or N): "
     read yn
     if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
-        local old='".mtku { text-decoration: underline; text-underline-position: under; }"'
-        local new='".mtku { text-decoration: underline; text-underline-position: initial; text-decoration-style: dotted; }"'
-        local file="${target_dir}/resources/app/out/vs/workbench/workbench.desktop.main.js"
-        grep -F "${old}" "${file}" >/dev/null
-        if [ $? -eq 0 ]; then
-            sed -i "s/${old}/${new}/g" "${file}"
-        else
-            echo "'.mtku' style was changed!"
-        fi
-
-        local old='"\[Unsupported\]"'
-        local new='"\[Customized\]"'
-        local file="${target_dir}/resources/app/out/vs/workbench/workbench.desktop.main.nls.js"
-        grep -E "${old}" "${file}" >/dev/null
-        if [ $? -eq 0 ]; then
-            sed -i "s/${old}/${new}/g" "${file}"
-        else
-            echo "'titlebarPart' style was changed!"
-        fi
+        for lib in "${target_dir}/"*.so; do
+            mv "${lib}" "${lib}.disabled"
+        done
+        sed -i -e '0,/^$/s@^$@export LD_LIBRARY_PATH=/usr/lib64/chromium\n@' "${target_dir}/bin/code"
     fi
 
     return 0
@@ -227,7 +212,7 @@ _install_vs_code_insiders_from_tar() {
 #!/bin/bash
 DIR=$(dirname $0)
 source ~/.script/setup
-switches='--use-gl=desktop --ignore-gpu-blacklist --enable-zero-copy --enable-gpu-rasterization --enable-oop-rasterization'
+switches='--use-gl=desktop --ignore-gpu-blacklist --enable-zero-copy --enable-gpu-rasterization'
 exec "${DIR}/code-insiders" $@ ${switches}
 EOF
     chmod +x "${target_dir}/bin/code-wrapper"
@@ -259,25 +244,10 @@ EOF
     echo -n "Do you want to customize? (Y or N): "
     read yn
     if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
-        local old='".mtku { text-decoration: underline; text-underline-position: under; }"'
-        local new='".mtku { text-decoration: underline; text-underline-position: initial; text-decoration-style: dotted; }"'
-        local file="${target_dir}/resources/app/out/vs/workbench/workbench.desktop.main.js"
-        grep -E "${old}" "${file}" >/dev/null
-        if [ $? -eq 0 ]; then
-            sed -i "s/${old}/${new}/g" "${file}"
-        else
-            echo "'.mtku' style was changed!"
-        fi
-
-        local old='"\[Unsupported\]"'
-        local new='"\[Customized\]"'
-        local file="${target_dir}/resources/app/out/vs/workbench/workbench.desktop.main.nls.js"
-        grep -E "${old}" "${file}" >/dev/null
-        if [ $? -eq 0 ]; then
-            sed -i "s/${old}/${new}/g" "${file}"
-        else
-            echo "'titlebarPart' style was changed!"
-        fi
+        for lib in "${target_dir}/"*.so; do
+            mv "${lib}" "${lib}.disabled"
+        done
+        sed -i -e '0,/^$/s@^$@export LD_LIBRARY_PATH=/usr/lib64/chromium\n@' "${target_dir}/bin/code-insiders"
     fi
 
     return 0
