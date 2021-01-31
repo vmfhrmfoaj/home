@@ -21,11 +21,12 @@
          (w (+ (* wc (frame-char-width))
                (* oc (frame-char-width)))))
     (if (<= main-monitor-w w)
-        (setq w main-monitor-w)
+        (setq x main-monitor-x)
       (setq x (+ (- (+ main-monitor-x
                        (floor (/ main-monitor-w 2)) )
                     (floor (/ w 2)))
                  x-offset)))
+    (setq w (- main-monitor-w (- x main-monitor-x)))
     (add-to-list 'default-frame-alist `(width  . (text-pixels . ,w)))
     (add-to-list 'default-frame-alist `(height . (text-pixels . ,h)))
     (setq frame-resize-pixelwise t

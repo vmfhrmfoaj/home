@@ -27,6 +27,7 @@
                (1 'shadow)))
             :append))))
   (add-hook 'git-timemachine-mode-hook f :append)
+  (add-hook 'toml-mode-hook f :append)
   (add-hook 'prog-mode-hook f :append))
 
 

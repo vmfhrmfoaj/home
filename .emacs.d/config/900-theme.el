@@ -123,8 +123,9 @@
    '(font-lock-doc-face ((t :weight normal)))
    '(font-lock-function-name-face ((t :foreground "#85aacc" :weight bold)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
-   '(font-lock-regexp-grouping-backslash ((t :weight light)))
-   '(font-lock-regexp-grouping-construct ((t :weight light)))))
+   '(font-lock-regexp-grouping-backslash ((t :weight semi-bold)))
+   '(font-lock-regexp-grouping-construct ((t :weight semi-bold)))
+   '(font-lock-string-face ((t :weight normal)))))
 
 (use-package fringe
   :defer t
@@ -161,7 +162,9 @@
   :defer t
   :config
   (custom-set-faces
-   '(lsp-headerline-breadcrumb-symbols-face ((t :inherit font-lock-doc-face)))))
+   '(lsp-face-highlight-textual ((t :background "#393b3e")))
+   '(lsp-face-highlight-read    ((t :background "#393b3e")))
+   '(lsp-face-highlight-write   ((t :background "#3c5163" :underline t)))))
 
 (use-package magit
   :defer t
@@ -253,3 +256,9 @@
   :config
   (custom-set-faces
    '(web-mode-html-attr-equal-face ((t :inherit shadow)))))
+
+(use-package yascroll
+  :defer t
+  :config
+  (custom-set-faces
+   '(yascroll:thumb-fringe ((t :background "#969896")))))

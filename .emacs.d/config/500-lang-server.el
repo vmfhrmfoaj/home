@@ -29,7 +29,7 @@
 
   :config
   (defun lsp-diagnostics--custom-flycheck-start (checker callback)
-    "Customize `lsp-diagnostics--flycheck-start' to remove duplicated errors from `go-build' and `lsp'."
+    "Customize `lsp-diagnostics--flycheck-start' to remove duplicated errors from lint tools and `lsp'."
     (remove-hook 'lsp-on-idle-hook #'lsp-diagnostics--flycheck-buffer t)
 
     (let ((errors (->> flycheck-current-errors
@@ -81,13 +81,10 @@
                 (cond
                  ((derived-mode-p 'go-mode)
                   (flycheck-select-checker 'go-golint)
-                  (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t)
-                  (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))
-                 ;; FIXME:
-                 ;;  Error messages of `lsp' were not displayed.
-                 ;; ((derived-mode-p 'rust-mode)
-                 ;;  (flycheck-select-checker 'rust-clippy)
-                 ;;  (flycheck-add-next-checker 'rust-clippy 'lsp :append))
+                  (flycheck-add-next-checker 'rust-clippy 'lsp :append))
+                 ((derived-mode-p 'rust-mode)
+                  (flycheck-select-checker 'rust-clippy)
+                  (flycheck-add-next-checker 'rust-clippy 'lsp :append))
                  ((derived-mode-p 'python-mode)
                   (flycheck-select-checker 'python-flake8)
                   (flycheck-add-next-checker 'python-flake8 'lsp :append))))))
@@ -401,7 +398,7 @@
   (setq lsp-enable-imenu nil
         lsp-enable-indentation nil
         lsp-enable-links nil
-        lsp-enable-symbol-highlighting nil
+        lsp-enable-symbol-highlighting t
         lsp-enable-on-type-formatting nil
         lsp-file-watch-threshold nil
         lsp-headerline-breadcrumb-enable nil

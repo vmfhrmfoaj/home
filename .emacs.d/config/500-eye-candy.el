@@ -275,7 +275,7 @@
 (use-package highlight-numbers
   :ensure t
   :defer t
-  :hook ((prog-mode rpm-spec-mode) . highlight-numbers-mode))
+  :hook ((prog-mode rpm-spec-mode toml-mode) . highlight-numbers-mode))
 
 (use-package hl-line
   :disabled t
@@ -307,7 +307,7 @@
     '((t (:inherit shadow)))
     "TODO")
 
-  (defcustom spaceline-symbol-segment--max-symbol-length 75
+  (defcustom spaceline-symbol-segment--max-symbol-length 100
     "Max length of `spaceline-symbol-segment--symbol'.")
 
   (defvar-local spaceline-symbol-segment--symbol nil)
@@ -396,3 +396,8 @@
   :ensure t
   :config
   (global-vi-tilde-fringe-mode))
+
+(use-package yascroll
+  :ensure t
+  :config
+  (global-yascroll-bar-mode 1))

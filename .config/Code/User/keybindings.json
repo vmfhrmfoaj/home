@@ -254,17 +254,6 @@
         "command": "multiCommand.vimCloseFindWidget",
         "when": "editorTextFocus && !findInputFocussed && findWidgetVisible && !parameterHintsVisible"
     },
-    // - for symbol highlight
-    {
-        "key": "shift+8", // *
-        "command": "editor.action.wordHighlight.next",
-        "when": "editorTextFocus && hasWordHighlights && vim.mode == 'Normal'"
-    },
-    {
-        "key": "shift+3", // #
-        "command": "editor.action.wordHighlight.prev",
-        "when": "editorTextFocus && hasWordHighlights && vim.mode == 'Normal'"
-    },
 
     // H/J/K/L
     {
@@ -529,6 +518,18 @@
         "command": "gitlens.diffWithPreviousInDiffRight",
         "when": "editorTextFocus && isInDiffEditor &&  isInDiffRightEditor && gitlens:activeFileStatus =~ /tracked/"
     },
+    // - for symbol highlight
+    {
+        "key": "alt+n",
+        "command": "editor.action.wordHighlight.next",
+        "when": "editorTextFocus && hasWordHighlights && !isInDiffEditor"
+    },
+    {
+        "key": "alt+p",
+        "command": "editor.action.wordHighlight.prev",
+        "when": "editorTextFocus && hasWordHighlights && !isInDiffEditor"
+    },
+
 
     // HHKB Pro2
     {
