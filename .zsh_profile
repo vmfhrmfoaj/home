@@ -12,14 +12,6 @@ _setup_for_zsh() {
         bindkey -M viins '^f' forward-char
     fi
 
-    # custom autocomplete, please install `zsh-completions` package
-    local plugin_dir="${HOME}/.oh-my-zsh/custom/plugins"
-    if [ ! -f "${plugin_dir}/perlbrew/_perlbrew" ]; then
-        mkdir -p "${plugin_dir}/perlbrew/"
-        curl -fsSL -o "${plugin_dir}/perlbrew/_perlbrew" \
-            'https://gist.githubusercontent.com/vmfhrmfoaj/5d638cca74fa0c4ea0420457cae831b2/raw/3eb92bee4b2efa4508cbaea91b80bafd6d6c5f0c/_perlbrew'
-    fi
-
     local NEWLINE=$'\n'
     local PS1_PREFIX='%{$fg[magenta]%}(%n@%M)%{$reset_color%}'
     export PS1="${PS1_PREFIX}${NEWLINE}${PS1}"
