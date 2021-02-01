@@ -20,7 +20,7 @@
       (45 . ".\\(?:-?>>?\\)")                  ; ->, ->>, -->
       (46 . ".\\(?:\\.\\.?\\|-\\)")            ; .., ..., .-
       (58 . ".\\(?:=\\|::?\\)")                ; ::, :::, :=
-      (60 . ".\\(?:=\\|!--\\)")                ; <=, <!--
+      (60 . ".\\(?:=\\|\\(?:!-\\)?-\\)")       ; <=, <!--, <-
       (61 . ".\\(?:==?\\|>\\)")                ; ==, ===, =>
       (62 . ".\\(?:=\\)")                      ; >=
       )
@@ -270,7 +270,7 @@
     (add-hook 'company-after-completion-hook
               (lambda (&rest _)
                 (when (derived-mode-p 'prog-mode)
-                  (highlight-parentheses-mode))))))
+                  (highlight-parentheses-mode  1))))))
 
 (use-package highlight-numbers
   :ensure t

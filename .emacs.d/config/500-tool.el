@@ -232,11 +232,27 @@
   (setq flycheck-display-errors-delay 0.2
         flycheck-flake8-maximum-line-length 120)
 
-  (add-hook 'flycheck-mode
+  (add-hook 'flycheck-mode-hook
             (lambda ()
-              (add-hook 'company-completion-started-hook
+              (add-hook 'evil-insert-state-entry-hook
                         (lambda ()
-                          (flycheck-stop))
+                          (flycheck-stop)
+                          (remove-hook 'after-change-functions #'flycheck-handle-change t)
+                          (remove-hook 'post-command-hook #'flycheck-perform-deferred-syntax-check t)
+                          (remove-hook 'post-command-hook #'flycheck-error-list-update-source t)
+                          (remove-hook 'post-command-hook #'flycheck-error-list-highlight-errors t)
+                          (remove-hook 'post-command-hook #'flycheck-maybe-display-error-at-point-soon t)
+                          (remove-hook 'post-command-hook #'flycheck-hide-error-buffer t))
+                        nil t)
+              (add-hook 'evil-insert-state-exit-hook
+                        (lambda ()
+                          (add-hook 'post-command-hook #'flycheck-hide-error-buffer nil t)
+                          (add-hook 'post-command-hook #'flycheck-maybe-display-error-at-point-soon nil t)
+                          (add-hook 'post-command-hook #'flycheck-error-list-highlight-errors nil t)
+                          (add-hook 'post-command-hook #'flycheck-error-list-update-source nil t)
+                          (add-hook 'post-command-hook #'flycheck-perform-deferred-syntax-check nil t)
+                          (add-hook 'after-change-functions #'flycheck-handle-change nil t)
+                          (flycheck-buffer))
                         nil t)))
 
   (with-eval-after-load "counsel"

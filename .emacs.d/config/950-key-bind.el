@@ -611,7 +611,7 @@
         (concat evil-leader/leader "mT")  "toggle"
         (concat evil-leader/leader "mg")  "goto"
         (concat evil-leader/leader "mh")  "help"
-        (concat evil-leader/leader "mr")  "refactor"
+        (concat evil-leader/leader "mr")  "refactor / repl"
         (concat evil-leader/leader "ma")  "code actions")
       (evil-leader--set-major-leader-for-mode major-mode)
       (add-to-list 'lsp--custom-setup-key-status major-mode)))
@@ -847,11 +847,12 @@
   :defer t
   :config
   (evil-leader/set-key-for-mode 'php-mode
-    "mRr" #'psysh
-    "mRR" #'psysh-restart
-    "mRs" #'psysh-show)
-  (which-key-declare-prefixes-for-mode 'php-mode
-    (concat evil-leader/leader "mR") "REPL")
+    "mrS" #'psysh-restart
+    "mrs" #'psysh-show)
+  ;; NOTE:
+  ;;  already defined at `lsp-mode'
+  ;; (which-key-declare-prefixes-for-mode 'python-mode
+  ;;   (concat evil-leader/leader "mr") "REPL")
   (define-key php-mode-map [tab] nil))
 
 (use-package profiler
@@ -866,6 +867,17 @@
   (evil-define-key 'normal 'psysh-mode-map
     (kbd "M-p") #'comint-previous-input
     (kbd "M-n") #'comint-next-input))
+
+(use-package python
+  :defer t
+  :config
+  (evil-leader/set-key-for-mode 'python-mode
+    "mrs" #'run-python)
+  ;; NOTE:
+  ;;  already defined at `lsp-mode'
+  ;; (which-key-declare-prefixes-for-mode 'python-mode
+  ;;   (concat evil-leader/leader "mr") "REPL")
+  )
 
 (use-package view
   :defer t

@@ -140,7 +140,7 @@ _install_vs_code_from_tar() {
 #!/bin/bash
 DIR=$(dirname $0)
 [ -r "${HOME}/.script/setup" ] && source "${HOME}/.script/setup"
-switches='--use-gl=desktop --ignore-gpu-blacklist --enable-gpu-rasterization --enable-zero-copy'
+switches='--use-gl=desktop --ignore-gpu-blacklist --enable-zero-copy'
 exec "${DIR}/code" $@ ${switches}
 EOF
     chmod +x "${target_dir}/bin/code-wrapper"
@@ -208,11 +208,11 @@ _install_vs_code_insiders_from_tar() {
         >&2 echo "Can't create a symbolic link at '${sym_file}'"
         return 255;
     fi
-    cat > ${target_dir}/bin/code-wrapper <<\EOF
+    cat > ${target_dir}/bin/code-insiders-wrapper <<\EOF
 #!/bin/bash
 DIR=$(dirname $0)
 source ~/.script/setup
-switches='--use-gl=desktop --ignore-gpu-blacklist --enable-zero-copy --enable-gpu-rasterization'
+switches='--use-gl=desktop --ignore-gpu-blacklist --enable-zero-copy'
 exec "${DIR}/code-insiders" $@ ${switches}
 EOF
     chmod +x "${target_dir}/bin/code-wrapper"
@@ -225,7 +225,7 @@ GenericName=VS Code Insiders
 Comment=Multiplatform Visual Studio Code Insiders from Microsoft
 Icon=${target_dir}/resources/app/resources/linux/code.png
 TryExec=${target_dir}/bin/code-insiders
-Exec=${target_dir}/bin/code-wrapper %F
+Exec=${target_dir}/bin/code-insiders-wrapper %F
 Terminal=true
 MimeType=text/css;text/english;text/html;text/plain;text/x-c;text/x-chdr;text/x-csrc;text/x-c++;text/x-c++hdr;text/x-c++src;text/x-java;text/x-makefile;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;
 Categories=Development;IDE;TextEditor;

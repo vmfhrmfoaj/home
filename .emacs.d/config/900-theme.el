@@ -18,12 +18,15 @@
    '(line-number ((t :background "#222326" :weight extra-light)))
    '(line-number-current-line
      ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight light :inverse-video nil)))
-   '(mode-line-inactive ((t :weight extra-light)))
+   '(mode-line-inactive ((t :weight light)))
    '(mode-line ((t :weight normal)))
+   '(region ((t :background "#760e17")))
    '(shadow ((t :weight normal)))
-   '(whitespace-newline ((t :background "#282a2e" :weight extra-light)))
-   '(whitespace-space ((t :weight extra-light)))
-   '(whitespace-tab ((t :weight extra-light)))))
+   '(show-paren-match ((t :background unspecified :foreground "firebrick1" :weight bold)))
+   '(show-paren-mismatch ((t :background "red3" :foreground "#f0d2cd" :weight bold :underline t)))
+   '(whitespace-newline ((t :background unspecified :weight extra-light)))
+   '(whitespace-space   ((t :background unspecified :weight extra-light)))
+   '(whitespace-tab     ((t :background unspecified :weight extra-light)))))
 
 (use-package company
   :defer t
@@ -162,9 +165,9 @@
   :defer t
   :config
   (custom-set-faces
-   '(lsp-face-highlight-textual ((t :background "#393b3e")))
-   '(lsp-face-highlight-read    ((t :background "#393b3e")))
-   '(lsp-face-highlight-write   ((t :background "#3c5163" :underline t)))))
+   '(lsp-face-highlight-textual ((t :background "#3f5b73" :foreground "#c5c8c6" :wegith bold)))
+   '(lsp-face-highlight-read    ((t :background "#3f5b73" :foreground "#c5c8c6" :wegith bold)))
+   '(lsp-face-highlight-write   ((t :background "#266499" :foreground "#c9ccca" :wegith bold)))))
 
 (use-package magit
   :defer t

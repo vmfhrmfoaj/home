@@ -443,24 +443,28 @@
                           (lambda ()
                             (when lsp-mode
                               (setq lsp-eldoc-enable-hover nil)
-                              (when (and lsp-mode
-                                         (lsp-feature? "textDocument/signatureHelp")
+                              (when (and (lsp-feature? "textDocument/signatureHelp")
                                          (null lsp-signature-mode)
                                          (-some->> (syntax-ppss)
                                            (nth 1)
                                            (char-after)
                                            (char-equal begin-parent)))
-                                (ignore-errors
-                                  (setq lsp-signature-restart-enable t)
-                                  (lsp-signature-activate))))))
+                                (setq lsp-signature-restart-enable t)
+                                (ignore-errors (lsp-signature-activate)))
+                              (when lsp-diagnostics-mode
+                                (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t)
+                                (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t)))))
                         nil t)
 
               (add-hook 'evil-insert-state-exit-hook
                         (lambda ()
-                          (when (and lsp-mode lsp-signature-mode)
-                            (ignore-errors
+                          (when lsp-mode
+                            (when lsp-diagnostics-mode
+                              (add-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report nil t)
+                              (add-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report nil t))
+                            (when lsp-signature-mode
                               (setq lsp-signature-restart-enable nil)
-                              (lsp-signature-stop)))
+                              (ignore-errors (lsp-signature-stop))))
                           (setq lsp-eldoc-enable-hover t))
                         nil t)
 

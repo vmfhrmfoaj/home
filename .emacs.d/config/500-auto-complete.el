@@ -17,7 +17,7 @@
     (execute-kbd-macro (kbd "SPC")))
 
   (setq company-backends (--remove (eq 'company-dabbrev it) company-backends)
-        company-idle-delay 0
+        company-idle-delay 0.1
         company-echo-delay 0.2
         company-minimum-prefix-length 1
         company-selection-wrap-around t
