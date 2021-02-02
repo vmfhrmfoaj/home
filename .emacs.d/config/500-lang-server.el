@@ -398,7 +398,7 @@
   (setq lsp-enable-imenu nil
         lsp-enable-indentation nil
         lsp-enable-links nil
-        lsp-enable-symbol-highlighting t
+        lsp-enable-symbol-highlighting nil
         lsp-enable-on-type-formatting nil
         lsp-file-watch-threshold nil
         lsp-headerline-breadcrumb-enable nil

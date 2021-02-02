@@ -244,18 +244,26 @@
   (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing)
 
   (with-eval-after-load "company"
-    (add-hook 'company-completion-started-hook #'focus--tooltip-on)
-    (add-hook 'company-after-completion-hook   #'focus--tooltip-off)
-
-    (advice-add #'company-modify-line :override #'company--custom-modify-line)
+    ;; NOTE:
+    ;;  Too blink screen
+    ;;   (add-hook 'company-completion-started-hook #'focus--tooltip-on)
+    ;;   (add-hook 'company-after-completion-hook   #'focus--tooltip-off)
+    ;;   (advice-add #'company-modify-line :override #'company--custom-modify-line)
     (advice-add #'company--replacement-string :filter-args
                 (lambda (args)
                   (-let (((lines old column nl align-top) args))
-                    (if (null align-top)
-                        args
-                      (dotimes (i (- (length old) (length lines)))
-                        (setf (nth i old) (propertize (nth i old) 'face 'focus-unfocused)))
-                      (list lines old column nl align-top)))))))
+                    (let ((tooltip-beg-line (-some-> company-pseudo-tooltip-overlay (overlay-start) (line-number-at-pos))))
+                      (if (null align-top)
+                          (let ((focus-end-line (-some-> focus-post-overlay (overlay-start) (line-number-at-pos)))
+                                (tooltip-height (length lines))
+                                (old-len (length old)))
+                            (dotimes (i (min old-len (- (+ tooltip-beg-line tooltip-height -1) focus-end-line)))
+                              (let ((idx (- old-len i 1)))
+                                (setf (nth idx old) (propertize (nth idx old) 'face 'focus-unfocused)))))
+                        (let ((focus-beg-line (-some-> focus-pre-overlay (overlay-end) (line-number-at-pos))))
+                          (dotimes (i (min (length old) (- focus-beg-line tooltip-beg-line)))
+                            (setf (nth i old) (propertize (nth i old) 'face 'focus-unfocused))))))
+                    (list lines old column nl align-top))))))
 
 (use-package highlight-parentheses
   :ensure t

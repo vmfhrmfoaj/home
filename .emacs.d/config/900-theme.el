@@ -22,7 +22,7 @@
    '(mode-line ((t :weight normal)))
    '(region ((t :background "#760e17")))
    '(shadow ((t :weight normal)))
-   '(show-paren-match ((t :background unspecified :foreground "firebrick1" :weight bold)))
+   '(show-paren-match ((t :background unspecified :foreground "firebrick1" :underline t)))
    '(show-paren-mismatch ((t :background "red3" :foreground "#f0d2cd" :weight bold :underline t)))
    '(whitespace-newline ((t :background unspecified :weight extra-light)))
    '(whitespace-space   ((t :background unspecified :weight extra-light)))

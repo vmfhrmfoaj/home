@@ -215,7 +215,7 @@ source ~/.script/setup
 switches='--use-gl=desktop --ignore-gpu-blacklist --enable-zero-copy'
 exec "${DIR}/code-insiders" $@ ${switches}
 EOF
-    chmod +x "${target_dir}/bin/code-wrapper"
+    chmod +x "${target_dir}/bin/code-insiders-wrapper"
     cat > "${HOME}/.local/share/applications/visual-studio-code-insiders.desktop" <<EOF
 [Desktop Entry]
 Version=1.0
