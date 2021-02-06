@@ -1326,13 +1326,13 @@
        (goto-char font-lock--anchor-beg-point)
        (1 (if (string= "_" (match-string-no-properties 1))
               'shadow
-            'font-lock-variable-name-face)))))
+            'font-lock-variable-name-face))))
+     ("\\([:\\]\\)"
+      (1 'shadow)))
    :append)
   (font-lock-add-keywords
    'python-mode
-   `(("\\(:\\)\\(?:$\\|\\s-\\)"
-      (1 'shadow))
-     ("\\(\\*\\*?\\)[_A-Za-z]"
+   `(("\\(\\*\\*?\\)[_A-Za-z]"
       (1 'shadow))
      ("[A-Za-z]\\(=\\)\\(?:[\"'0-9A-Za-z]\\|\\s(\\)"
       (1 'shadow)))))

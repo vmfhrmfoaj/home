@@ -236,13 +236,15 @@
             (lambda ()
               (add-hook 'evil-insert-state-entry-hook
                         (lambda ()
-                          (flycheck-stop)
                           (remove-hook 'after-change-functions #'flycheck-handle-change t)
                           (remove-hook 'post-command-hook #'flycheck-perform-deferred-syntax-check t)
                           (remove-hook 'post-command-hook #'flycheck-error-list-update-source t)
                           (remove-hook 'post-command-hook #'flycheck-error-list-highlight-errors t)
                           (remove-hook 'post-command-hook #'flycheck-maybe-display-error-at-point-soon t)
-                          (remove-hook 'post-command-hook #'flycheck-hide-error-buffer t))
+                          (remove-hook 'post-command-hook #'flycheck-hide-error-buffer t)
+                          (flycheck-stop)
+                          (flycheck-cancel-error-display-error-at-point-timer)
+                          (flycheck--clear-idle-trigger-timer))
                         nil t)
               (add-hook 'evil-insert-state-exit-hook
                         (lambda ()

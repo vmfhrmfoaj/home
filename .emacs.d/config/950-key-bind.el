@@ -588,7 +588,7 @@
                   #'lsp-ivy-workspace-symbol)
         "mgS" (if (and (fboundp 'lsp-ivy-global-workspace-symbol)
                        (lsp-feature? "workspace/symbol"))
-                  #'lsp-ivy-global-workspace-symbol)
+                  #'lsp-ivy-workspace-symbol)
 
         ;; help
         "mhh" (if (lsp-feature? "textDocument/hover") #'lsp-describe-thing-at-point)

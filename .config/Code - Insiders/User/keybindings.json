@@ -517,18 +517,6 @@
         "command": "gitlens.diffWithPreviousInDiffRight",
         "when": "editorTextFocus && isInDiffEditor &&  isInDiffRightEditor && gitlens:activeFileStatus =~ /tracked/"
     },
-    // - for symbol highlight
-    {
-        "key": "alt+n",
-        "command": "editor.action.wordHighlight.next",
-        "when": "editorTextFocus && hasWordHighlights && !isInDiffEditor"
-    },
-    {
-        "key": "alt+p",
-        "command": "editor.action.wordHighlight.prev",
-        "when": "editorTextFocus && hasWordHighlights && !isInDiffEditor"
-    },
-
 
     // HHKB Pro2
     {

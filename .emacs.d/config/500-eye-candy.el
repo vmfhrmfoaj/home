@@ -103,18 +103,20 @@
       (focus-terminate)
       (redisplay t)))
 
-  (defun focus--tooltip-on (&rest _)
-    (when focus-mid-overlay
-      (focus-move-overlays (line-beginning-position) (line-end-position))))
-
-  (defun focus--tooltip-off (&rest _)
-    (when focus-mid-overlay
-      (focus-move-focus)))
-
-  (defun company--custom-modify-line (old new offset)
-    (concat (propertize (company-safe-substring old 0 offset)                'face 'focus-unfocused)
-            new
-            (propertize (company-safe-substring old (+ offset (length new))) 'face 'focus-unfocused)))
+  (defun company--decorate-background-string (args)
+    (-let (((lines old column nl align-top) args))
+      (let ((tooltip-beg-line (-some-> company-pseudo-tooltip-overlay (overlay-start) (line-number-at-pos)))
+            (old-len (length old)))
+        (if (null align-top)
+            (let ((focus-end-line (-some-> focus-post-overlay (overlay-start) (line-number-at-pos)))
+                  (tooltip-height (length lines)))
+              (dotimes (i (- (+ tooltip-beg-line old-len) 1 focus-end-line))
+                (let ((idx (- old-len i 1)))
+                  (setf (nth idx old) (propertize (nth idx old) 'face 'focus-unfocused)))))
+          (let ((focus-beg-line (-some-> focus-pre-overlay (overlay-end) (line-number-at-pos))))
+            (dotimes (i (min old-len (- focus-beg-line tooltip-beg-line)))
+              (setf (nth i old) (propertize (nth i old) 'face 'focus-unfocused))))))
+      (list lines old column nl align-top)))
 
   (add-hook 'evil-insert-state-entry-hook #'focus--enable)
   (add-hook 'evil-insert-state-exit-hook  #'focus--disable)
@@ -244,26 +246,7 @@
   (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing)
 
   (with-eval-after-load "company"
-    ;; NOTE:
-    ;;  Too blink screen
-    ;;   (add-hook 'company-completion-started-hook #'focus--tooltip-on)
-    ;;   (add-hook 'company-after-completion-hook   #'focus--tooltip-off)
-    ;;   (advice-add #'company-modify-line :override #'company--custom-modify-line)
-    (advice-add #'company--replacement-string :filter-args
-                (lambda (args)
-                  (-let (((lines old column nl align-top) args))
-                    (let ((tooltip-beg-line (-some-> company-pseudo-tooltip-overlay (overlay-start) (line-number-at-pos))))
-                      (if (null align-top)
-                          (let ((focus-end-line (-some-> focus-post-overlay (overlay-start) (line-number-at-pos)))
-                                (tooltip-height (length lines))
-                                (old-len (length old)))
-                            (dotimes (i (min old-len (- (+ tooltip-beg-line tooltip-height -1) focus-end-line)))
-                              (let ((idx (- old-len i 1)))
-                                (setf (nth idx old) (propertize (nth idx old) 'face 'focus-unfocused)))))
-                        (let ((focus-beg-line (-some-> focus-pre-overlay (overlay-end) (line-number-at-pos))))
-                          (dotimes (i (min (length old) (- focus-beg-line tooltip-beg-line)))
-                            (setf (nth i old) (propertize (nth i old) 'face 'focus-unfocused))))))
-                    (list lines old column nl align-top))))))
+    (advice-add #'company--replacement-string :filter-args #'company--decorate-background-string)))
 
 (use-package highlight-parentheses
   :ensure t
@@ -407,5 +390,14 @@
 
 (use-package yascroll
   :ensure t
-  :config
-  (global-yascroll-bar-mode 1))
+  :defer t
+  :init
+  ;; NOTE
+  ;;  `yascroll:show-scroll-bar' is very slow.
+  ;;  I will manually trigger this function.
+  (let ((fn (lambda (&rest _)
+              "Display the scroll bar"
+              (yascroll:show-scroll-bar))))
+    (advice-add #'evil-scroll-line-to-top    :after fn)
+    (advice-add #'evil-scroll-line-to-center :after fn)
+    (advice-add #'evil-scroll-line-to-bottom :after fn)))

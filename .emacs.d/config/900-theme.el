@@ -178,6 +178,13 @@
    `(magit-diff-context-highlight ((t :weight normal)))
    '(magit-diff-file-heading ((t :weight bold)))))
 
+(use-package markdown-mode
+  :defer t
+  :config
+  (custom-set-faces
+   '(markdown-markup-face ((t :inherit shadow :slant normal :weight light)))
+   '(markdown-header-delimiter-face ((t :inherit markdown-markup-face :weight extra-light)))))
+
 (use-package php-mode
   :defer t
   :config

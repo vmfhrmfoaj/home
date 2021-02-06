@@ -637,6 +637,14 @@
             "commands": [ { "command": "redo" } ]
         },
         {
+            "before": [ "#" ],
+            "commands": []
+        },
+        {
+            "before": [ "*" ],
+            "commands": []
+        },
+        {
             "before": [ "/" ],
             "commands": [ { "command": "multiCommand.vimMarkAndFind" } ]
         },
@@ -757,14 +765,12 @@
             "commands": [ { "command": "redo" } ]
         },
         {
-            // NOTE: placehold for keybindings
             "before": [ "#" ],
-            "commands": []
+            "commands": [ { "command": "editor.action.wordHighlight.prev" } ]
         },
         {
-            // NOTE: placehold for keybindings
             "before": [ "*" ],
-            "commands": []
+            "commands": [ { "command": "editor.action.wordHighlight.next" } ]
         },
         {
             "before": [ "/" ],
