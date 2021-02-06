@@ -114,11 +114,11 @@
   (color-from face :background p s))
 
 
-(defun in-comment? ()
-  (comment-only-p (save-excursion
-                    (goto-char (match-beginning 0))
-                    (point-at-bol))
-                  (point)))
+(defun in-comment-or-string? (&optional pos)
+  (let ((pos (or pos (point)))
+        (ppss (save-excursion (syntax-ppss pos))))
+    (or (not (not (nth 3 ppss)))
+        (not (not (nth 4 ppss))))))
 
 (setq-default font-lock--skip nil)
 (make-local-variable 'font-lock--skip)

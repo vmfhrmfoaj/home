@@ -309,7 +309,6 @@
 (use-package company
   :defer t
   :config
-  (evil-global-set-key 'insert (kbd "<tab>") #'company-indent-or-complete-common)
   (define-key company-active-map (kbd "<tab>")     #'company-complete-common-or-cycle)
   (define-key company-active-map (kbd "<backtab>") #'company-select-previous)
   (define-key company-active-map (kbd "C-j")
@@ -337,7 +336,11 @@
   (define-key company-active-map (kbd "SPC") #'company-abort-and-insert-space)
   (define-key company-active-map (kbd "<S-return>") (lambda () (interactive) (company-cancel) (newline-and-indent)))
   (define-key company-active-map (kbd "<C-return>")
-    (lambda () (interactive) (company-complete-selection) (evil-normal-state))))
+    (lambda () (interactive) (company-complete-selection) (evil-normal-state)))
+
+  (add-hook 'company-mode-hook
+            (lambda ()
+              (evil-local-set-key 'insert (kbd "<tab>") #'company-indent-or-complete-common))))
 
 (use-package cider-repl
   :defer t
@@ -585,7 +588,7 @@
         "mga" (if (lsp-feature? "workspace/symbol") #'xref-find-apropos)
         "mgs" (if (and (fboundp 'lsp-ivy-workspace-symbol)
                        (lsp-feature? "workspace/symbol"))
-                  #'lsp-ivy-workspace-symbol)
+                  #'lsp-ivy-file-symbol)
         "mgS" (if (and (fboundp 'lsp-ivy-global-workspace-symbol)
                        (lsp-feature? "workspace/symbol"))
                   #'lsp-ivy-workspace-symbol)
@@ -629,9 +632,6 @@
 (use-package smartparens
   :defer t
   :config
-  (evil-define-key 'normal 'global
-    "%" #'sp--simulate-evil-jump-item)
-
   (evil-leader/set-key
     ;; S-expression
     ;; - https://github.com/Fuco1/smartparens/wiki/Working-with-expressions
@@ -644,7 +644,10 @@
     "ke" #'sp-splice-sexp-killing-backward
     "kr" #'sp-splice-sexp-killing-around
     "ks" #'sp-forward-slurp-sexp
-    "kw" #'sp-wrap-sexp))
+    "kw" #'sp-wrap-sexp)
+
+  (evil-define-key 'normal smartparens-mode-map
+    "%" #'sp--simulate-evil-jump-item))
 
 (use-package treemacs-evil
   :defer t

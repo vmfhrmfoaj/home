@@ -122,128 +122,74 @@
   (add-hook 'evil-insert-state-exit-hook  #'focus--disable)
 
   :config
-  (defun focus--tex-thing ()
-    (ignore-errors
-      (let* ((regx  (concat "^\\(?:[[:cntrl:]]\\)*$"))
-             (beg (save-excursion
-                    (backward-char)
-                    (re-search-backward regx nil t)
-                    (point)))
-             (end   (save-excursion
-                      (forward-char)
-                      (re-search-forward regx nil t)
-                      (point))))
-        (cons beg end))))
-
-  (defun focus--text-thing ()
-    (ignore-errors
-      (save-excursion
-        (let ((beg (progn
-                     (backward-paragraph)
-                     (point)))
-              (end (progn
-                     (forward-paragraph)
-                     (point))))
-          (cons beg end)))))
-
-  (defun focus--list+-thing ()
-    (ignore-errors
-      (save-excursion
-        (let ((beg (progn
-                     (ignore-errors
-                       (cond ((sp-point-in-string)
-                              (save-match-data
-                                (re-search-backward "[^\\]\""))
-                              (forward-char))
-                             ((sp-point-in-comment)
-                              (beginning-of-line)))
-                       (backward-up-list 2))
-                     (point)))
-              (end (progn
-                     (forward-list)
-                     (point))))
-          (cons beg end)))))
-
   (defun focus--lisp-thing ()
-    (ignore-errors
-      (save-excursion
-        (let ((beg (progn
-                     (ignore-errors
-                       (while (progn
-                                (backward-up-list 1 t t)
-                                (not (looking-at-p "(\\(\\(lexical-\\)?let\\*?\\|lambda\\|defun\\|defmacro\\)\\_>")))))
-                     (point)))
-              (end (progn
-                     (forward-list)
-                     (point))))
-          (cons beg end)))))
+    (or (save-excursion
+          (ignore-errors
+            (while (progn
+                     (backward-up-list 1 t t)
+                     (not (looking-at-p "(\\(lambda\\|defun\\|defmacro\\)\\_>"))))
+            (let* ((end (save-excursion
+                          (forward-list)
+                          (point))))
+              (cons (point) end))))
+        (bounds-of-thing-at-point 'defun)))
 
   (defun focus--clojure-thing ()
-    (ignore-errors
+    (or (save-excursion
+          (ignore-errors
+            (while (progn
+                     (backward-up-list 1 t t)
+                     (not (looking-at-p "(\\([-0-9A-Za-z]+/\\)?\\(fn\\|def[a-z]*\\)\\_>"))))
+            (let* ((end (save-excursion
+                          (forward-list)
+                          (point))))
+              (cons (point) end))))
+        (bounds-of-thing-at-point 'defun)))
+
+  (defun focus--go-thing ()
+    (or (save-excursion                   ; lambda
+          (ignore-errors
+            (while (progn
+                     (backward-up-list 1 t t)
+                     (backward-list 1)
+                     (not (looking-back "func\\s-*"))))
+            (skip-chars-forward "^{")
+            (let* ((end (save-excursion
+                          (forward-list)
+                          (point))))
+              (beginning-of-line-text)
+              (cons (point) end))))
+        (bounds-of-thing-at-point 'defun) ; func
+        (save-excursion                   ; const, struct, interface
+          (ignore-errors
+            (while (progn
+                     (backward-up-list 1 t t)
+                     (not (looking-back "\\(const\\s-*(\\|\\(struct\\|interface\\)\\s-*{\\)"))))
+            (let* ((end (save-excursion
+                          (forward-list)
+                          (point))))
+              (beginning-of-line-text)
+              (cons (point) end))))))
+
+  (defun focus--python-thing ()
+    (when-let ((bound (bounds-of-thing-at-point 'defun)))
       (save-excursion
-        (let ((beg (progn
-                     (ignore-errors
-                       (while (progn
-                                (backward-up-list 1 t t)
-                                (not (looking-at-p "(\\([-0-9A-Za-z]+/\\)?\\(let\\|loop\\|doseq\\|fn\\|def[a-z]*\\)\\_>")))))
-                     (point)))
-              (end (progn
-                     (forward-list)
-                     (point))))
-          (cons beg end)))))
+        (goto-char (cdr bound))
+        (skip-chars-forward " \t\r\n")
+        (cons (car bound) (point)))))
 
   (with-eval-after-load "clojure-mode"
     (put 'clojure 'bounds-of-thing-at-point #'focus--clojure-thing)
-    (put 'list+   'bounds-of-thing-at-point #'focus--list+-thing)
-    (add-to-list 'focus-mode-to-thing '(clojure-mode    . clojure))
-    (add-to-list 'focus-mode-to-thing '(cider-repl-mode . list+)))
-
-  (let ((form
-         '(progn
-            (unless (fboundp 'focus--c-style-thing)
-              (defun focus--c-style-thing ()
-                "TODO"
-                (ignore-errors
-                  (save-excursion
-                    (let (end)
-                      (while (progn
-                               (backward-up-list 1 t t)
-                               (not (char-equal ?{ (char-after)))))
-                      (save-excursion
-                        (forward-list)
-                        (setq end (point)))
-                      (beginning-of-line)
-                      (unless (looking-at-p "\\s-*}")
-                        (let ((keep-going t)
-                              (need-forward-line t))
-                          (while (and (not (bobp)) keep-going)
-                            (forward-line -1)
-                            (beginning-of-line)
-                            (when (or (looking-at-p "[[:space:]]*$")
-                                      (looking-at-p "\\s-*/[*/]")
-                                      (looking-at-p ".*,\\s-*\\(/[*/].*\\)?$")
-                                      (looking-at-p ".*;\\s-*\\(/[*/].*\\)?$")
-                                      (looking-at-p ".*{\\s-*\\(/[*/].*\\)?$"))
-                              (when need-forward-line
-                                (forward-line 1)
-                                (beginning-of-line))
-                              (setq keep-going nil)))))
-                      (skip-chars-forward " \t}" )
-                      (cons (point) end)))))
-              (put 'c-style 'bounds-of-thing-at-point #'focus--c-style-thing)))))
-    (eval-after-load "cc-mode"
-      (append form '((add-to-list 'focus-mode-to-thing '(c-mode    . c-style))
-                     (add-to-list 'focus-mode-to-thing '(c++-mode  . c-style))
-                     (add-to-list 'focus-mode-to-thing '(java-mode . c-style)))))
-    (eval-after-load "rust-mode"
-      (append form '((add-to-list 'focus-mode-to-thing '(rust-mode . c-style))))))
-
-  (add-to-list 'focus-mode-to-thing '(emacs-lisp-mode . lisp))
-  (add-to-list 'focus-mode-to-thing '(tex-mode . tex-sentence))
-  (add-to-list 'focus-mode-to-thing '(text-mode . sentence+))
-  (put 'tex-sentence 'bounds-of-thing-at-point #'focus--tex-thing)
-  (put 'sentence+    'bounds-of-thing-at-point #'focus--text-thing)
-  (put 'lisp         'bounds-of-thing-at-point #'focus--lisp-thing)
+    (add-to-list 'focus-mode-to-thing '(clojure-mode . clojure)))
+  (with-eval-after-load "elisp-mode"
+    (put 'lisp 'bounds-of-thing-at-point #'focus--lisp-thing)
+    (add-to-list 'focus-mode-to-thing '(emacs-lisp-mode . lisp)))
+  (with-eval-after-load "go-mode"
+    (put 'go 'bounds-of-thing-at-point #'focus--go-thing)
+    (add-to-list 'focus-mode-to-thing '(go-mode . go)))
+  (with-eval-after-load "python-mode"
+    (put 'py 'bounds-of-thing-at-point #'focus--python-thing)
+    (add-to-list 'focus-mode-to-thing '(go-mode . py)))
 
   (with-eval-after-load "company"
     (advice-add #'company--replacement-string :filter-args #'company--decorate-background-string)))

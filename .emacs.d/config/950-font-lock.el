@@ -350,13 +350,15 @@
                    (goto-char local-limit))
                  (clojure-forward-sexp)
                  t)))
-          (save-excursion
-            (if (in-comment?)
-                (setq font-lock--skip t)
+          (let ((beg (match-beginning 0)))
+            (if (in-comment-or-string? beg)
+                (prog1 beg
+                  (setq font-lock--skip t))
               (setq font-lock--anchor-beg-point (point)
                     font-lock--skip nil)
-              (safe-up-list-1)
-              (point)))
+              (save-excursion
+                (safe-up-list-1)
+                (point))))
           (if font-lock--skip
               (end-of-line)
             (goto-char font-lock--anchor-beg-point))
@@ -403,15 +405,17 @@
                            clojure-binding-form--recursive-limit nil)
                      (set-match-data (fake-match-4)))
                    t))))
-          (save-excursion
-            (if (in-comment?)
-                (setq font-lock--skip t)
+          (let ((beg (match-beginning 0)))
+            (if (in-comment-or-string? beg)
+                (prog1 beg
+                  (setq font-lock--skip t))
               (setq font-lock--anchor-beg-point (point)
                     font-lock--skip nil
                     clojure-binding-form--recursive-point nil
                     clojure-binding-form--recursive-limit nil)
-              (safe-up-list-1)
-              (point)))
+              (save-excursion
+                (safe-up-list-1)
+                (point))))
           (if font-lock--skip
               (end-of-line)
             (goto-char font-lock--anchor-beg-point))
@@ -454,14 +458,16 @@
                        (set-match-data (fake-match-2))))
                    (up-list)
                    t))))
-          (save-excursion
+          (let ((beg (match-beginning 0)))
             (setq clojure-oop-fn-form--points nil)
-            (if (in-comment?)
-                (setq font-lock--skip t)
+            (if (in-comment-or-string? beg)
+                (prog1 beg
+                  (setq font-lock--skip t))
               (setq font-lock--skip nil)
               (setq font-lock--anchor-beg-point (point))
-              (safe-up-list-1)
-              (point)))
+              (save-excursion
+                (safe-up-list-1)
+                (point))))
           (if font-lock--skip
               (end-of-line)
             (goto-char font-lock--anchor-beg-point))
@@ -497,15 +503,17 @@
                      (setq clojure-oop-fn-recursive--point nil
                            clojure-oop-fn-recursive--limit nil))
                    t))))
-          (save-excursion
-            (if (in-comment?)
-                (setq font-lock--skip t)
+          (let ((beg (match-beginning 0)))
+            (if (in-comment-or-string? beg)
+                (prog1 beg
+                  (setq font-lock--skip t))
               (setq font-lock--skip nil)
               (setq font-lock--anchor-beg-point (point))
               (setq clojure-oop-fn-recursive--point nil)
               (setq clojure-oop-fn-recursive--limit nil)
-              (safe-up-list-1)
-              (point)))
+              (save-excursion
+                (safe-up-list-1)
+                (point))))
           (if font-lock--skip
               (end-of-line)
             (goto-char font-lock--anchor-beg-point))
@@ -562,17 +570,19 @@
                      (setq clojure-fn-recursive--point nil
                            clojure-fn-recursive--limit nil))
                    t))))
-          (if (in-comment?)
-              (setq font-lock--skip t)
-            (setq font-lock--skip nil)
-            (setq font-lock--anchor-beg-point (point))
-            (setq clojure-fn-form--method? (string-match-p "defmethod" (match-string 1)))
-            (setq clojure-fn-form--multi-arity? nil)
-            (setq clojure-fn-recursive--point nil)
-            (setq clojure-fn-recursive--limit nil)
-            (save-excursion
-              (safe-up-list-1)
-              (point)))
+          (let ((beg (match-beginning 0)))
+            (if (in-comment-or-string? beg)
+                (prog1 beg
+                  (setq font-lock--skip t))
+              (setq font-lock--skip nil)
+              (setq font-lock--anchor-beg-point (point))
+              (setq clojure-fn-form--method? (string-match-p "defmethod" (match-string 1)))
+              (setq clojure-fn-form--multi-arity? nil)
+              (setq clojure-fn-recursive--point nil)
+              (setq clojure-fn-recursive--limit nil)
+              (save-excursion
+                (safe-up-list-1)
+                (point))))
           (if font-lock--skip
               (end-of-line)
             (goto-char font-lock--anchor-beg-point))
@@ -590,13 +600,15 @@
                (when (re-search-forward symbol limit t)
                  (forward-sexp 1)
                  t)))
-          (save-excursion
-            (if (in-comment?)
-                (setq font-lock--skip t)
+          (let ((beg (match-beginning 0)))
+            (if (in-comment-or-string? beg)
+                (prog1 beg
+                  (setq font-lock--skip t))
               (setq font-lock--anchor-beg-point (point)
                     font-lock--skip nil)
-              (safe-up-list-1)
-              (point)))
+              (save-excursion
+                (safe-up-list-1)
+                (point))))
           (if font-lock--skip
               (end-of-line)
             (goto-char font-lock--anchor-beg-point))
@@ -617,13 +629,15 @@
                                            (match-data 1)
                                            (match-data 1))))
                    t))))
-          (save-excursion
-            (if (in-comment?)
-                (setq font-lock--skip t)
+          (let ((beg (match-beginning 0)))
+            (if (in-comment-or-string? beg)
+                (prog1 beg
+                  (setq font-lock--skip t))
               (setq font-lock--anchor-beg-point (point)
                     font-lock--skip nil)
-              (safe-up-list-1)
-              (point)))
+              (save-excursion
+                (safe-up-list-1)
+                (point))))
           (if font-lock--skip
               (end-of-line)
             (goto-char font-lock--anchor-beg-point))
@@ -760,16 +774,18 @@
                      (setq clojure-fn-recursive--point nil
                            clojure-fn-recursive--limit nil))
                    t))))
-          (if (in-comment?)
-              (setq font-lock--skip t)
-            (setq font-lock--skip nil)
-            (setq font-lock--anchor-beg-point (point))
-            (setq clojure-fn-form--multi-arity? nil)
-            (setq clojure-fn-recursive--point nil)
-            (setq clojure-fn-recursive--limit nil)
-            (save-excursion
-              (safe-up-list-1)
-              (point)))
+          (let ((beg (match-beginning 0)))
+            (if (in-comment-or-string? beg)
+                (prog1 beg
+                  (setq font-lock--skip t))
+              (setq font-lock--skip nil)
+              (setq font-lock--anchor-beg-point (point))
+              (setq clojure-fn-form--multi-arity? nil)
+              (setq clojure-fn-recursive--point nil)
+              (setq clojure-fn-recursive--limit nil)
+              (save-excursion
+                (safe-up-list-1)
+                (point))))
           (if font-lock--skip
               (end-of-line)
             (goto-char font-lock--anchor-beg-point))
@@ -893,13 +909,15 @@
                  (set-match-data (list beg end))
                  (goto-char limit))
                t))
-          (save-excursion
-            (if (in-comment?)
-                (setq font-lock--skip t)
+          (let ((beg (match-beginning 0)))
+            (if (in-comment-or-string? beg)
+                (prog1 beg
+                  (setq font-lock--skip t))
               (setq font-lock--skip nil)
               (setq font-lock--anchor-beg-point (point))
-              (safe-up-list-1)
-              (point)))
+              (save-excursion
+                (safe-up-list-1)
+                (point))))
           (when font-lock--skip
             (end-of-line))
           (0 'clojure-comment-sexp-face t)))
@@ -942,14 +960,16 @@
                               m)))
                    (set-match-data (list beg end)))
                  t)))
-          (prog1 (save-excursion
-                   (if (in-comment?)
-                       (setq font-lock--skip t)
+          (prog1 (let ((beg (match-beginning 0)))
+                   (if (in-comment-or-string? beg)
+                       (prog1 beg
+                         (setq font-lock--skip t))
                      (setq font-lock--anchor-beg-point (point)
                            font-lock--skip nil
                            clojure-cond-newline--limit nil)
-                     (safe-up-list-1)
-                     (point)))
+                     (save-excursion
+                       (safe-up-list-1)
+                       (point))))
             (when (string-match-p "->>?" (match-string 1))
               (condition-case nil
                   (clojure-forward-sexp)
@@ -973,13 +993,15 @@
                      (list (point-marker) (progn (forward-sexp) (point-marker)))
                    (fake-match-2)))
                 t)))
-         (save-excursion
-           (if (in-comment?)
-               (setq font-lock--skip t)
+         (let ((beg (match-beginning 0)))
+           (if (in-comment-or-string? beg)
+               (prog1 beg
+                 (setq font-lock--skip t))
              (setq font-lock--skip nil)
              (setq font-lock--anchor-beg-point (point))
-             (safe-up-list-1)
-             (point)))
+             (save-excursion
+               (safe-up-list-1)
+               (point))))
          (if font-lock--skip
              (end-of-line)
            (goto-char font-lock--anchor-beg-point))
@@ -995,14 +1017,16 @@
                  (goto-char limit)
                  (set-match-data (list start (point-marker)))
                  t)))
-          (save-excursion
-            (if (in-comment?)
-                (setq font-lock--skip t)
+          (let ((beg (match-beginning 0)))
+            (if (in-comment-or-string? beg)
+                (prog1 beg
+                  (setq font-lock--skip t))
               (setq font-lock--anchor-beg-point (point)
                     font-lock--skip nil)
               (backward-char 1)
-              (clojure-forward-sexp)
-              (point)))
+              (save-excursion
+                (clojure-forward-sexp)
+                (point))))
           (if font-lock--skip
               (end-of-line)
             (goto-char font-lock--anchor-beg-point))
@@ -1037,9 +1061,6 @@
     "Face used to font-lock Lisp local binding variable name.")
 
   :config
-  (setq-default elisp--binding-form-point nil)
-  (make-local-variable 'elisp--binding-form-point)
-
   (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
     (let* ((symbol "[-+*/=>$&?:_0-9a-zA-Z]+")
            (whitespace "[ \r\t\n]")
@@ -1075,19 +1096,21 @@
                       (set-match-data (fake-match-4)))
                     (goto-char local-limit))
                   t)))
-           (save-excursion
-             (if (in-comment?)
-                 (setq font-lock--skip t)
-               (setq font-lock--skip nil)
-               (setq elisp--binding-form-point (point))
-               (safe-up-list-1)
-               (point)))
+           (let ((beg (match-beginning 0)))
+             (if (in-comment-or-string? beg)
+                 (prog1 beg
+                   (setq font-lock--skip t))
+               (setq font-lock--skip nil
+                     font-lock--anchor-beg-point (point))
+               (save-excursion
+                 (safe-up-list-1)
+                 (point))))
            (if font-lock--skip
                (end-of-line)
-             (goto-char elisp--binding-form-point))
+             (goto-char font-lock--anchor-beg-point))
            (1 'lisp-local-binding-variable-name-face)))
          ;; function arguments
-         (,(concat "\\(defun\\|defun\\|lambda\\)" whitespace+ "\\(" symbol whitespace+ "\\)?(")
+         (,(concat "\\_<\\(defun\\|lambda\\)" whitespace+ "\\(" symbol whitespace+ "\\)?(")
           (,(let ((symbol (concat "\\(" symbol "\\)\\>")))
               (lambda (limit)
                 (unless font-lock--skip
@@ -1095,16 +1118,18 @@
                     (when (string-match-p "^&" (match-string 1))
                       (set-match-data (fake-match-4)))
                     t))))
-           (save-excursion
-             (if (in-comment?)
-                 (setq font-lock--skip t)
+           (let ((beg (match-beginning 0)))
+             (if (in-comment-or-string? beg)
+                 (prog1 beg
+                   (setq font-lock--skip t))
                (setq font-lock--skip nil)
-               (setq elisp--binding-form-point (point))
-               (safe-up-list-1)
-               (point)))
+               (setq font-lock--anchor-beg-point (point))
+               (save-excursion
+                 (safe-up-list-1)
+                 (point))))
            (if font-lock--skip
                (end-of-line)
-             (goto-char elisp--binding-form-point))
+             (goto-char font-lock--anchor-beg-point))
            (1 'lisp-local-binding-variable-name-face))))
        :append))))
 
@@ -1142,7 +1167,7 @@
       (1 'golang-type-definition-face t)
       (,(lambda (limit)
           (unless font-lock--skip
-            (re-search-forward "\\([_0-9A-Za-z]+\\)" limit t)))
+            (re-search-forward "^\\s-*\\([_0-9A-Za-z]+\\)" limit t)))
        (save-excursion
          (setq font-lock--skip nil
                font-lock--anchor-beg-point (match-beginning 0))
@@ -1155,14 +1180,27 @@
       (1 'golang-type-definition-face t)
       (,(lambda (limit)
           (unless font-lock--skip
-            (re-search-forward "\\([_0-9A-Za-z]+\\)" limit t)))
+            (re-search-forward "^\\s-*\\([_0-9A-Za-z]+\\)\\s-+.+$" limit t)))
        (save-excursion
          (setq font-lock--skip nil
                font-lock--anchor-beg-point (match-beginning 0))
          (safe-up-list-1)
          (point))
        (goto-char font-lock--anchor-beg-point)
-       (1 'font-lock-variable-name-face))))
+       (1 'font-lock-variable-name-face)))
+     ;; embedded field
+     ("^\\s-*type\\s-+\\([_0-9A-Za-z]+\\)\\s-+struct\\s-*{\\s-*$"
+      (1 'golang-type-definition-face t)
+      (,(lambda (limit)
+          (unless font-lock--skip
+            (re-search-forward "^\\s-*\\([_0-9A-Za-z]+\\)\\s-*$" limit t)))
+       (save-excursion
+         (setq font-lock--skip nil
+               font-lock--anchor-beg-point (match-beginning 0))
+         (safe-up-list-1)
+         (point))
+       (goto-char font-lock--anchor-beg-point)
+       (1 'font-lock-type-face))))
    :append))
 
 (use-package js

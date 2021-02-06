@@ -174,7 +174,60 @@
 
 (use-package lsp-ivy
   :ensure t
-  :after lsp-mode)
+  :after lsp-mode
+  :config
+  (lsp-defun lsp-ivy--filter-by-file
+    ((symbol-information &as &SymbolInformation :location (&Location :uri))
+     file-path)
+    (string= file-path (lsp--uri-to-path uri)))
+
+  (defun lsp-ivy--file-symbol (file-path workspaces prompt initial-input)
+    "Search against FILE with PROMPT and INITIAL-INPUT."
+    (let* ((prev-query nil)
+           (unfiltered-candidates '())
+           (filtered-candidates nil)
+           (workspace-root (lsp-workspace-root))
+           (update-candidates
+            (lambda (all-candidates filter-regexps?)
+              (let ((lsp-ivy-show-symbol-filename nil))
+                (setq filtered-candidates
+                      (->> all-candidates
+                           (--filter (lsp-ivy--filter-by-file it file-path))
+                           (--keep (lsp-ivy--transform-candidate it filter-regexps? workspace-root)))))
+              (ivy-update-candidates filtered-candidates))))
+      (ivy-read
+       prompt
+       (lambda (user-input)
+         (let* ((parts (split-string user-input))
+                (query (or (car parts) ""))
+                (filter-regexps? (mapcar #'regexp-quote (cdr parts))))
+           (when query
+             (if (string-equal prev-query query)
+                 (funcall update-candidates unfiltered-candidates filter-regexps?)
+               (with-lsp-workspaces workspaces
+                 (lsp-request-async
+                  "workspace/symbol"
+                  (lsp-make-workspace-symbol-params :query query)
+                  (lambda (result)
+                    (setq unfiltered-candidates result)
+                    (funcall update-candidates unfiltered-candidates filter-regexps?))
+                  :mode 'detached
+                  :cancel-token :workspace-symbol))))
+           (setq prev-query query))
+         (or filtered-candidates 0))
+       :dynamic-collection t
+       :require-match t
+       :initial-input initial-input
+       :action #'lsp-ivy--workspace-symbol-action
+       :caller 'lsp-ivy-workspace-symbol)))
+
+  (defun lsp-ivy-file-symbol (arg)
+    (interactive "P")
+    (when-let ((file-path (buffer-file-name)))
+      (lsp-ivy--file-symbol file-path
+                            (lsp-workspaces)
+                            "Workspace symbol: "
+                            (when arg (thing-at-point 'symbol))))))
 
 (use-package lsp-java
   :ensure t
