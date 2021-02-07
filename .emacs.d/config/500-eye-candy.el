@@ -127,7 +127,7 @@
           (ignore-errors
             (while (progn
                      (backward-up-list 1 t t)
-                     (not (looking-at-p "(\\(lambda\\|defun\\|defmacro\\)\\_>"))))
+                     (not (looking-at-p "(\\(defun\\|defmacro\\)\\_>"))))
             (let* ((end (save-excursion
                           (forward-list)
                           (point))))
@@ -139,7 +139,7 @@
           (ignore-errors
             (while (progn
                      (backward-up-list 1 t t)
-                     (not (looking-at-p "(\\([-0-9A-Za-z]+/\\)?\\(fn\\|def[a-z]*\\)\\_>"))))
+                     (not (looking-at-p "(\\([-0-9A-Za-z]+/\\)?\\(def[a-z]*\\)\\_>"))))
             (let* ((end (save-excursion
                           (forward-list)
                           (point))))
@@ -147,29 +147,36 @@
         (bounds-of-thing-at-point 'defun)))
 
   (defun focus--go-thing ()
-    (or (save-excursion                   ; lambda
-          (ignore-errors
-            (while (progn
-                     (backward-up-list 1 t t)
-                     (backward-list 1)
-                     (not (looking-back "func\\s-*"))))
-            (skip-chars-forward "^{")
-            (let* ((end (save-excursion
-                          (forward-list)
-                          (point))))
-              (beginning-of-line-text)
-              (cons (point) end))))
-        (bounds-of-thing-at-point 'defun) ; func
-        (save-excursion                   ; const, struct, interface
-          (ignore-errors
-            (while (progn
-                     (backward-up-list 1 t t)
-                     (not (looking-back "\\(const\\s-*(\\|\\(struct\\|interface\\)\\s-*{\\)"))))
-            (let* ((end (save-excursion
-                          (forward-list)
-                          (point))))
-              (beginning-of-line-text)
-              (cons (point) end))))))
+    (when-let ((bound
+                (or (bounds-of-thing-at-point 'defun) ; func
+                    (save-excursion                   ; struct, interface
+                      (ignore-errors
+                        (let ((regex "\\_<type\\s-+[0-9A-Za-z]+\\s-+\\(struct\\|interface\\)\\s-*"))
+                          (while (progn
+                                   (backward-up-list 1 t t)
+                                   (not (looking-back regex (line-beginning-position)))))
+                          (when (looking-back regex (line-beginning-position))
+                            (let ((beg (match-beginning 0))
+                                  (end (progn
+                                         (forward-list)
+                                         (point))))
+                              (cons beg end))))))
+                    (save-excursion                   ; const, import
+                      (ignore-errors
+                        (let ((regex "\\_<\\(const\\|import\\)\\s-*"))
+                          (while (progn
+                                   (backward-up-list 1 t t)
+                                   (not (looking-back regex (line-beginning-position)))))
+                          (when (looking-back regex (line-beginning-position))
+                            (let ((beg (match-beginning 0))
+                                  (end (progn
+                                         (forward-list)
+                                         (point))))
+                              (cons beg end)))))))))
+      (save-excursion
+        (goto-char (car bound))
+        (forward-comment -999)
+        (cons (point) (cdr bound)))))
 
   (defun focus--python-thing ()
     (when-let ((bound (bounds-of-thing-at-point 'defun)))
@@ -189,7 +196,7 @@
     (add-to-list 'focus-mode-to-thing '(go-mode . go)))
   (with-eval-after-load "python-mode"
     (put 'py 'bounds-of-thing-at-point #'focus--python-thing)
-    (add-to-list 'focus-mode-to-thing '(go-mode . py)))
+    (add-to-list 'focus-mode-to-thing '(python-mode . py)))
 
   (with-eval-after-load "company"
     (advice-add #'company--replacement-string :filter-args #'company--decorate-background-string)))

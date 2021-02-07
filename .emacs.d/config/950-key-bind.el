@@ -411,6 +411,7 @@
   (evil-define-key 'normal 'global
     "gr" #'eldoc-refresh
     (kbd "<tab>") #'indent-for-tab-command
+    (kbd "C-<backspace>") #'evil-backward-word-begin
     (kbd "C-d") (lambda () (interactive) (call-interactively #'up-list))
     (kbd "C-u") (lambda () (interactive) (call-interactively #'backward-up-list))
     (kbd "C-h c") #'describe-char

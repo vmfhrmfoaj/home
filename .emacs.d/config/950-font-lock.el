@@ -1155,8 +1155,13 @@
      ;; slice
      ("\\[.*?\\(:\\).*?\\]"
       (1 'shadow t))
+     ;; channel direction notion
+     ("\\_<chan\\(<-\\)"
+      (1 'shadow t))
+     ("\\(<-\\)chan\\_>"
+      (1 'shadow t))
      ;; punctuation
-     ("\\(:\\)\\s-*$"
+     ("\\(:\\)\\(\\s-+\\|\\s-*$\\)"
       (1 'shadow t))
      ("\\([;]\\)"
       (1 'shadow t))))
