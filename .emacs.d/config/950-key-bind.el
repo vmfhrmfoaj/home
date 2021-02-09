@@ -209,9 +209,7 @@
     "rr" #'counsel-evil-registers
     "rs" #'ivy-resume-sarch
 
-    ;; search/symbol
-    "se" #'evil-multiedit-match-all
-    "sE" #'evil-multiedit-match-and-next
+    ;; search
     "sf" (defalias 'counsel-rg-on-cur-dir
            (lambda (&optional dir)
              (interactive)
@@ -290,7 +288,7 @@
     (concat evil-leader/leader "n") "narrow"
     (concat evil-leader/leader "p") "project"
     (concat evil-leader/leader "r") "registers/rings/resume"
-    (concat evil-leader/leader "s") "search/symbol"
+    (concat evil-leader/leader "s") "search"
     (concat evil-leader/leader "t") "toggle"
     (concat evil-leader/leader "q") "quit"
     (concat evil-leader/leader "w") "window"
@@ -409,9 +407,11 @@
   (define-key evil-outer-text-objects-map "U" 'evil-a-sexp)
   (define-key evil-inner-text-objects-map "U" 'evil-inner-sexp)
   (evil-define-key 'normal 'global
+    "gb" #'evil-multiedit-match-and-next
+    "gB" #'evil-multiedit-match-all
     "gr" #'eldoc-refresh
     (kbd "<tab>") #'indent-for-tab-command
-    (kbd "C-<backspace>") #'evil-backward-word-begin
+    (kbd "<C-backspace>") #'evil-backward-word-begin
     (kbd "C-d") (lambda () (interactive) (call-interactively #'up-list))
     (kbd "C-u") (lambda () (interactive) (call-interactively #'backward-up-list))
     (kbd "C-h c") #'describe-char
@@ -419,6 +419,7 @@
     (kbd "C-k") #'evil-scroll-page-up
     (kbd "C-j") #'evil-scroll-page-down)
   (evil-define-key 'insert 'global
+    (kbd "<C-return>") #'evil-normal-state ; for company compatibility
     (kbd "C-d") (lambda () (interactive) (call-interactively #'up-list))
     (kbd "C-u") (lambda () (interactive) (call-interactively #'backward-up-list))
     (kbd "C-h") #'backward-delete-char

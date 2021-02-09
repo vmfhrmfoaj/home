@@ -151,6 +151,8 @@
                         "keyword.operator.logical.go",
                         // Ptyhon
                         "punctuation.separator.period.python",
+                        // Toml
+                        "punctuation.eq.toml",
                     ],
                     "settings": { "foreground": "#a9a9a9" },
                 },
@@ -248,9 +250,11 @@
                         // Rust
                         "punctuation.semi.rust",
                         // Toml
-                        "punctuation.definition.keyValuePair.toml",
+                        "punctuation.separator.array.toml",
+                        "punctuation.separator.dot",
                         // Shellscript
                         "punctuation.terminator.case-clause.shell",
+                        "punctuation.definition.case-pattern.shell",
                     ],
                     "settings": { "foreground": "#909090", }
                 },
@@ -272,6 +276,7 @@
     "editor.suggestOnTriggerCharacters": true,
     "editor.suggestSelection": "first",
     "editor.tabSize": 4,
+    "search.mode": "reuseEditor",
     "workbench.editor.enablePreview": false,
 
     "[go]": {
@@ -284,12 +289,22 @@
     // Misc.
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
+    "telemetry.enableTelemetry": false,
     "terminal.integrated.commandsToSkipShell": [
         "multiCommand.switchFirstTermianl",
         "multiCommand.switchSecondTermianl",
         "multiCommand.switchThirdTermianl",
         "-workbench.action.quickOpen",
     ],
+    "workbench.editorAssociations": [
+        {
+            "viewType": "jupyter-notebook",
+            "filenamePattern": "*.ipynb"
+        }
+    ],
+
+    // Bash IDE
+    "bashIde.highlightParsingErrors": false,
 
     // Better Comment
     "better-comments.tags": [
@@ -620,6 +635,14 @@
             "commands": [ { "command": "redo" } ]
         },
         {
+            "before": [ "#" ],
+            "commands": []
+        },
+        {
+            "before": [ "*" ],
+            "commands": []
+        },
+        {
             "before": [ "/" ],
             "commands": [ { "command": "multiCommand.vimMarkAndFind" } ]
         },
@@ -740,14 +763,12 @@
             "commands": [ { "command": "redo" } ]
         },
         {
-            // NOTE: placehold for keybindings
             "before": [ "#" ],
-            "commands": []
+            "commands": [ { "command": "editor.action.wordHighlight.prev" } ]
         },
         {
-            // NOTE: placehold for keybindings
             "before": [ "*" ],
-            "commands": []
+            "commands": [ { "command": "editor.action.wordHighlight.next" } ]
         },
         {
             "before": [ "/" ],

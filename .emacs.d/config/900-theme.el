@@ -173,6 +173,8 @@
   :defer t
   :config
   (custom-set-faces
+   '(magit-diff-added-highlight   ((t :background "#336633" :foreground "#ddffdd" :weight bold)))
+   '(magit-diff-removed-highlight ((t :background "#663333" :foreground "#ffdddd" :weight bold)))
    `(magit-diff-context
      ((t :inherit magit-diff-context-highlight :background ,(bg-color-from 'default) :weight light)))
    `(magit-diff-context-highlight ((t :weight normal)))

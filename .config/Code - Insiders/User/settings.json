@@ -1,8 +1,8 @@
 {
     // Appearance
     "editor.fontFamily": "'Cascadia Code', monospace",
-    "editor.fontSize": 14,
-    "editor.fontWeight": "600",
+    "editor.fontSize": 13,
+    "editor.fontWeight": "bold",
     "editor.fontLigatures": true,
     "editor.matchBrackets": "near", // use Bracket Pair Colorizer
     "editor.minimap.enabled": false,
@@ -18,9 +18,11 @@
     "editor.renderLineHighlight": "none",
     "editor.renderWhitespace": "selection",
     "editor.wordWrapColumn": 165,
-    "terminal.integrated.fontSize": 13,
+    "scm.diffDecorations": "gutter",
+    "terminal.integrated.fontSize": 12,
     "window.titleBarStyle": "native",
-    "window.menuBarVisibility": "toggle",
+    "window.menuBarVisibility": "hidden",
+    "window.zoomLevel": 0,
     "workbench.sideBar.location": "left",
     "workbench.colorTheme": "Visual Studio Dark",
     "workbench.iconTheme": "material-icon-theme",
@@ -63,7 +65,7 @@
                 "semicolon": "#909090",
                 "type": "#d4d4d4",
                 "typeAlias": "#d4d4d4",
-                "typeParameter": "#d4d4d4", 
+                "typeParameter": "#d4d4d4",
             },
         },
     },
@@ -85,6 +87,14 @@
                 {
                     "scope": "entity.name.section.spec",
                     "settings": { "foreground": "#c586c0" },
+                },
+                {
+                    "scope": [
+                        "keyword.codetag.notation.python"
+                    ],
+                    "settings": {
+                        "foreground": "#909090",
+                    }
                 },
                 {
                     "scope": [
@@ -275,6 +285,7 @@
     "editor.suggestOnTriggerCharacters": true,
     "editor.suggestSelection": "first",
     "editor.tabSize": 4,
+    "search.mode": "reuseEditor",
     "workbench.editor.enablePreview": false,
 
     "[go]": {
@@ -303,46 +314,6 @@
 
     // Bash IDE
     "bashIde.highlightParsingErrors": false,
-
-    // Better Comment
-    "better-comments.tags": [
-        {
-            "tag": "fixme",
-            "color": "#cc2400",
-            "strikethrough": false,
-            "underline": false,
-            "backgroundColor": "transparent",
-            "bold": false,
-            "italic": false
-        },
-        {
-            "tag": "xxx",
-            "color": "#cc2400",
-            "strikethrough": false,
-            "underline": false,
-            "backgroundColor": "transparent",
-            "bold": false,
-            "italic": false
-        },
-        {
-            "tag": "note",
-            "color": "#8cc6e4",
-            "strikethrough": false,
-            "underline": false,
-            "backgroundColor": "transparent",
-            "bold": false,
-            "italic": false
-        },
-        {
-            "tag": "todo",
-            "color": "#cc7000",
-            "strikethrough": false,
-            "underline": false,
-            "backgroundColor": "transparent",
-            "bold": false,
-            "italic": false
-        },
-    ],
 
     // Bracket Pair Colorizer
     "bracket-pair-colorizer-2.colors": [
@@ -386,6 +357,7 @@
     // Markdownlint
     "markdownlint.config": {
         "MD024": false,
+        "MD033": false,
     },
 
     // multi-command
@@ -645,8 +617,30 @@
             "commands": []
         },
         {
+            "before": [ "-" ],
+            "commands": [
+                { "command": "git.unstageSelectedRanges" },
+                { "command": "extension.vim_escape" }
+             ]
+        },
+        {
+            "before": [ "=" ],
+            "commands": [
+                { "command": "git.stageSelectedRanges" },
+                { "command": "extension.vim_escape" }
+             ]
+        },
+        {
             "before": [ "/" ],
             "commands": [ { "command": "multiCommand.vimMarkAndFind" } ]
+        },
+        {
+            "before": [ "," ],
+            "commands": [ { "command": "editor.action.smartSelect.shrink" } ]
+        },
+        {
+            "before": [ "." ],
+            "commands": [ { "command": "editor.action.smartSelect.expand" } ]
         },
         {
             "before": [ "N" ],
@@ -1013,5 +1007,4 @@
             "commands": [ { "command": "editor.action.formatDocument" } ]
         },
     ],
-    "gitlens.views.lineHistory.enabled": true,
 }

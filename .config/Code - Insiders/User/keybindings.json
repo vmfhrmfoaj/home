@@ -152,6 +152,16 @@
         "command": "workbench.action.terminal.focusFind",
         "when": "terminalFindFocused && terminalProcessSupported || terminalFocus && terminalProcessSupported"
     },
+    {
+        "key": "-",
+        "command": "git.unstageSelectedRanges",
+        "when": "editorTextFocus && isInDiffEditor && vim.mode == 'VisualLine'"
+    },
+    {
+        "key": "=",
+        "command": "git.stageSelectedRanges",
+        "when": "editorTextFocus && isInDiffEditor && vim.mode == 'VisualLine'"
+    },
 
     // Tab and Shift + Tab
     {
@@ -254,6 +264,7 @@
         "command": "multiCommand.vimCloseFindWidget",
         "when": "editorTextFocus && !findInputFocussed && findWidgetVisible && !parameterHintsVisible"
     },
+
     // H/J/K/L
     {
         "key": "ctrl+j",
@@ -401,7 +412,7 @@
     {
         "key": "ctrl+h",
         "command": "multiCommand.goParentSymbol",
-        "when": "editorTextFocus && vim.mode == 'Normal'"
+        "when": "editorTextFocus && vim.mode == 'Normal' && !isInDiffEditor"
     },
     {
         "key": "ctrl+h",
@@ -421,7 +432,7 @@
     {
         "key": "ctrl+l",
         "command": "breadcrumbs.focusAndSelect",
-        "when": "editorTextFocus && vim.mode == 'Normal'"
+        "when": "editorTextFocus && vim.mode == 'Normal' && !isInDiffEditor"
     },
     {
         "key": "ctrl+l",
@@ -489,6 +500,18 @@
         "command": "list.expand",
         "when": "listFocus && !inputFocus && explorerViewletCompressedFocus && explorerViewletCompressedLastFocus"
     },
+    // - for diff
+    {
+        "key": "ctrl+h",
+        "command": "workbench.action.compareEditor.focusSecondarySide",
+        "when": "editorTextFocus && isInDiffEditor"
+    },
+    {
+        "key": "ctrl+l",
+        "command": "workbench.action.compareEditor.focusPrimarySide",
+        "when": "editorTextFocus && isInDiffEditor"
+    },
+
 
     // N/P
     {
