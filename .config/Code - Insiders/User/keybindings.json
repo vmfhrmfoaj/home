@@ -74,6 +74,11 @@
         "command": "git.stageChange",
         "when": "editorTextFocus && dirtyDiffVisible"
     },
+    {
+        "key": "enter",
+        "command": "closeDirtyDiff",
+        "when": "editorTextFocus && dirtyDiffVisible"
+    },
     // - for side bar
     {
         "key": "=",
@@ -151,16 +156,6 @@
         "key": "ctrl+shift+f",
         "command": "workbench.action.terminal.focusFind",
         "when": "terminalFindFocused && terminalProcessSupported || terminalFocus && terminalProcessSupported"
-    },
-    {
-        "key": "-",
-        "command": "git.unstageSelectedRanges",
-        "when": "editorTextFocus && isInDiffEditor && vim.mode == 'VisualLine'"
-    },
-    {
-        "key": "=",
-        "command": "git.stageSelectedRanges",
-        "when": "editorTextFocus && isInDiffEditor && vim.mode == 'VisualLine'"
     },
 
     // Tab and Shift + Tab

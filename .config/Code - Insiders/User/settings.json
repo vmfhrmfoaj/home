@@ -1,8 +1,7 @@
 {
     // Appearance
     "editor.fontFamily": "'Cascadia Code', monospace",
-    "editor.fontSize": 13,
-    "editor.fontWeight": "bold",
+    "editor.fontSize": 14,
     "editor.fontLigatures": true,
     "editor.matchBrackets": "near", // use Bracket Pair Colorizer
     "editor.minimap.enabled": false,
@@ -19,13 +18,11 @@
     "editor.renderWhitespace": "selection",
     "editor.wordWrapColumn": 165,
     "scm.diffDecorations": "gutter",
-    "terminal.integrated.fontSize": 12,
+    "terminal.integrated.fontSize": 13,
     "window.titleBarStyle": "native",
     "window.menuBarVisibility": "hidden",
     "window.zoomLevel": 0,
-    "workbench.sideBar.location": "left",
     "workbench.colorTheme": "Visual Studio Dark",
-    "workbench.iconTheme": "material-icon-theme",
     "workbench.colorCustomizations": {
         "statusBarItem.remoteBackground": "#4ec9b0",
         "rust_analyzer.inlayHints.foreground": "#d4d4d4",
@@ -41,6 +38,9 @@
             "statusBar.noFolderBorder": "#333",
         },
     },
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.productIconTheme": "material-product-icons",
+    "workbench.sideBar.location": "left",
 
     "editor.semanticTokenColorCustomizations": {
         "rules": {
@@ -282,10 +282,11 @@
     "editor.formatOnSave": false,
     "editor.insertSpaces": true,
     "editor.lineNumbers": "relative",
+    "editor.snippetSuggestions": "top",
     "editor.suggestOnTriggerCharacters": true,
     "editor.suggestSelection": "first",
     "editor.tabSize": 4,
-    "search.mode": "reuseEditor",
+    "search.mode": "view",
     "workbench.editor.enablePreview": false,
 
     "[go]": {

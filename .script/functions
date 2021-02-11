@@ -74,7 +74,7 @@ EOF
     return 0
 }
 
-vscode_extensions=(
+vscode_common_extensions=(
     'aaron-bond.better-comments'
     'bmewburn.vscode-intelephense-client'
     'CoenraadS.bracket-pair-colorizer-2'
@@ -85,7 +85,6 @@ vscode_extensions=(
     'DotJoshJohnson.xml'
     'eamodio.gitlens'
     'EditorConfig.EditorConfig'
-    'golang.go'
     'LaurentTreguier.rpm-spec'
     'ms-azuretools.vscode-docker'
     'ms-python.vscode-pylance'
@@ -102,12 +101,16 @@ vscode_extensions=(
     'matklad.rust-analyzer'
     'msjsdiag.debugger-for-chrome'
     'PKief.material-icon-theme'
+    'pkief.material-product-icons'
     'richterger.perl'
     'ryuta46.multi-command'
     'shardulm94.trailing-spaces'
     'slevesque.vscode-hexdump'
     'tamasfe.even-better-toml'
     'vscodevim.vim')
+
+vscode_extensions=(
+    'golang.go')
 
 _install_vs_code_from_tar() {
     local tar_file=$1
@@ -163,9 +166,16 @@ EOF
     echo -n "Do you want to install extensions? (Y or N): "
     read yn
     if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
+        for ext in "${vscode_common_extensions[@]}"; do
+            ${target_dir}/bin/code --install-extension ${ext}
+        done
         for ext in "${vscode_extensions[@]}"; do
             ${target_dir}/bin/code --install-extension ${ext}
         done
+    else
+        if [ -d "${target_dir}.old/extensions" ]; then
+            cp -r "${target_dir}.old/extensions" "${target_dir}"
+        fi
     fi
     update-desktop-database "${HOME}/.local/share/applications"
 
@@ -180,6 +190,9 @@ EOF
 
     return 0
 }
+
+vscode_extensions_for_insider=(
+    'golang.go-nightly')
 
 _install_vs_code_insiders_from_tar() {
     local tar_file=$1
@@ -235,9 +248,16 @@ EOF
     echo -n "Do you want to install extensions? (Y or N): "
     read yn
     if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
-        for ext in "${vscode_extensions[@]}"; do
+        for ext in "${vscode_common_extensions[@]}"; do
             ${target_dir}/bin/code-insiders --install-extension ${ext}
         done
+        for ext in "${vscode_extensions_for_insider[@]}"; do
+            ${target_dir}/bin/code-insiders --install-extension ${ext}
+        done
+    else
+        if [ -d "${target_dir}.old/extensions" ]; then
+            cp -r "${target_dir}.old/extensions" "${target_dir}"
+        fi
     fi
     update-desktop-database "${HOME}/.local/share/applications"
 
