@@ -1150,16 +1150,16 @@
      ("\\<\\(_\\(?:[0-9A-Za-z]+\\)?\\)\\>\\s-*\\(?:,\\|:?=\\)"
       (1 'shadow t))
      ;; pointer
-     ("\\(?:^\\|[! \t]\\|\\s(\\)\\([*&]\\)[0-9A-Za-z]"
+     ("\\(?:^\\|[  \t]\\|\\s(\\|\\s)\\)\\([*&]\\)[0-9A-Za-z]"
       (1 'shadow t))
      ;; slice
      ("\\[.*?\\(:\\).*?\\]"
       (1 'shadow t))
      ;; channel direction notion
-     ("\\_<chan\\(<-\\)"
-      (1 'shadow t))
-     ("\\(<-\\)chan\\_>"
-      (1 'shadow t))
+     ("\\_<\\(chan<-\\)"
+      (1 'font-lock-keyword-face t))
+     ("\\(<-chan\\)\\_>"
+      (1 'font-lock-keyword-face t))
      ;; punctuation
      ("\\(:\\)\\(\\s-+\\|\\s-*$\\)"
       (1 'shadow t))

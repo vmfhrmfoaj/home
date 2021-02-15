@@ -37,10 +37,17 @@
               (when (company--active-p)
                 (company-cancel))))
 
-  ;; NOTE
-  ;;  sometimes all candidates can be prefixed with spaces.
   (advice-add #'company--insert-candidate :filter-args
-              (-compose #'-list (-partial #'s-chop-prefix " ") #'car)))
+              (lambda (args)
+                "Remove the whitespace"
+                (if-let ((candidate (car args)))
+                    (list (string-trim candidate))
+                  (list ""))))
+  (advice-add #'company-echo-show :around
+              (lambda (fn &rest args)
+                "To disable `company-echo' when `lsp-signature-mode' is being enabled."
+                (unless (bound-and-true-p lsp-signature-mode)
+                  (apply fn args)))))
 
 (use-package yasnippet
   :ensure t

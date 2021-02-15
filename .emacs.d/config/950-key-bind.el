@@ -348,7 +348,6 @@
     "mee" #'cider-eval-last-sexp
     "mef" #'cider-eval-defun-at-point
     "mer" #'cider-eval-last-sexp-and-replace
-    "mgg" #'cider-find-var-at-point
     "mrc" #'cider-repl-clear-buffer
     "mrq" #'cider-quit
     "mrR" #'cider-hard-restart
@@ -360,7 +359,19 @@
     (concat evil-leader/leader "mg") "goto"
     (concat evil-leader/leader "ms") "set/change"
     (concat evil-leader/leader "mr") "REPL")
-  (evil-leader--set-major-leader-for-mode 'cider-repl-mode))
+  (evil-leader--set-major-leader-for-mode 'cider-repl-mode)
+
+  (let ((fn (lambda ()
+              (make-local-variable 'evil-goto-definition-functions)
+              (add-to-list 'evil-goto-definition-functions
+                           (lambda (_string _position)
+                             (let ((buf (current-buffer))
+                                   (pos (point)))
+                               (call-interactively #'cider-find-var-at-point)
+                               (unless (and (eq buf (current-buffer))
+                                            (= pos (point)))
+                                 t)))))))
+    (add-hook 'cider-repl-mode-hook fn)))
 
 (use-package cider-stacktrace
   :defer t
@@ -579,7 +590,6 @@
         "mTT" #'lsp-treemacs-sync-mode
 
         ;; goto
-        "mgg" (if (lsp-feature? "textDocument/definition") #'lsp-find-definition #'dumb-jump-go)
         "mgr" (if (lsp-feature? "textDocument/references") #'lsp-find-references)
         "mgi" (if (lsp-feature? "textDocument/implementation") #'lsp-find-implementation)
         "mgt" (if (lsp-feature? "textDocument/typeDefinition") #'lsp-find-type-definition)
@@ -621,7 +631,21 @@
       (evil-leader--set-major-leader-for-mode major-mode)
       (add-to-list 'lsp--custom-setup-key-status major-mode)))
 
-  (add-hook 'lsp-after-open-hook #'lsp--custom-setup-key))
+  (add-hook 'lsp-after-open-hook #'lsp--custom-setup-key)
+  (let ((fn (lambda ()
+              (make-local-variable 'evil-goto-definition-functions)
+              (add-to-list 'evil-goto-definition-functions
+                           (lambda (_string _position)
+                             (let ((fn (if (lsp-feature? "textDocument/definition")
+                                           #'lsp-find-definition
+                                         #'dumb-jump-go))
+                                   (buf (current-buffer))
+                                   (pos (point)))
+                               (call-interactively fn)
+                               (unless (and (eq buf (current-buffer))
+                                            (= pos (point)))
+                                 t)))))))
+    (add-hook 'lsp-mode-hook fn)))
 
 (use-package magit-blame
   :defer t
@@ -671,7 +695,6 @@
       "mef" #'cider-eval-defun-at-point
       "men" #'cider-eval-ns-form
       "mer" #'cider-eval-last-sexp-and-replace
-      "mgg" #'cider-find-var-at-point
       "mrS" #'cider-custom-jack-in
       "mrs" #'cider-switch-to-releated-repl-buffer
       "mrq" #'cider-quit)
@@ -680,7 +703,19 @@
       (concat evil-leader/leader "mg") "goto"
       (concat evil-leader/leader "mh") "help"
       (concat evil-leader/leader "mr") "REPL")
-    (evil-leader--set-major-leader-for-mode mode)))
+    (evil-leader--set-major-leader-for-mode mode))
+
+  (let ((fn (lambda ()
+              (make-local-variable 'evil-goto-definition-functions)
+              (add-to-list 'evil-goto-definition-functions
+                           (lambda (_string _position)
+                             (let ((buf (current-buffer))
+                                   (pos (point)))
+                               (call-interactively #'cider-find-var-at-point)
+                               (unless (and (eq buf (current-buffer))
+                                            (= pos (point)))
+                                 t)))))))
+    (add-hook 'clojure-mode-hook fn)))
 
 (use-package cperl-mode
   :defer t
@@ -719,7 +754,6 @@
   (evil-leader/set-key-for-mode 'emacs-lisp-mode
     "mee" #'eval-last-sexp
     "mef" #'eval-defun
-    "mgg" #'elisp-slime-nav-find-elisp-thing-at-point
     "mrs" #'emacs-lisp-REPL-buffer)
   (which-key-declare-prefixes-for-mode 'emacs-lisp-mode
     (concat evil-leader/leader "me") "evaluation"
@@ -730,7 +764,6 @@
   ;; lisp-interaction-mode
   (evil-leader/set-key-for-mode 'lisp-interaction-mode
     "mee" #'emacs-lisp-REPL-eval-print-this-sexp
-    "mgg" #'elisp-slime-nav-find-elisp-thing-at-point
     "mrc" #'erase-buffer
     "mrs" #'emacs-lisp-REPL-switch-back
     "mrq" #'evil-delete-buffer)
@@ -738,27 +771,52 @@
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto"
     (concat evil-leader/leader "mr") "REPL")
-  (evil-leader--set-major-leader-for-mode 'lisp-interaction-mode))
+  (evil-leader--set-major-leader-for-mode 'lisp-interaction-mode)
+
+  (let ((fn (lambda ()
+              (make-local-variable 'evil-goto-definition-functions)
+              (add-to-list 'evil-goto-definition-functions
+                           (lambda (_string _position)
+                             (let ((buf (current-buffer))
+                                   (pos (point)))
+                               (call-interactively #'elisp-slime-nav-find-elisp-thing-at-point)
+                               (unless (and (eq buf (current-buffer))
+                                            (= pos (point)))
+                                 t)))))))
+    (add-hook 'emacs-lisp-mode-hook       fn)
+    (add-hook 'lisp-interaction-mode-hook fn)))
 
 (use-package elixir-mode
   :disabled t
   :defer t
   :config
-  (evil-leader/set-key-for-mode 'elixir-mode
-    "mgg" #'dumb-jump-go)
-  (which-key-declare-prefixes-for-mode 'elixir-mode
-    (concat evil-leader/leader "mg") "goto")
-  (evil-leader--set-major-leader-for-mode 'elixir-mode))
+  (let ((fn (lambda ()
+              (make-local-variable 'evil-goto-definition-functions)
+              (add-to-list 'evil-goto-definition-functions
+                           (lambda (_string _position)
+                             (let ((buf (current-buffer))
+                                   (pos (point)))
+                               (call-interactively #'dumb-jump-go)
+                               (unless (and (eq buf (current-buffer))
+                                            (= pos (point)))
+                                 t)))))))
+    (add-hook 'elixir-mode-hook fn)))
 
 (use-package elm-mode
   :disabled t
   :defer t
   :config
-  (evil-leader/set-key-for-mode 'elm-mode
-    "mgg" #'dumb-jump-go)
-  (which-key-declare-prefixes-for-mode 'elm-mode
-    (concat evil-leader/leader "mg") "goto")
-  (evil-leader--set-major-leader-for-mode 'elm-mode))
+  (let ((fn (lambda ()
+              (make-local-variable 'evil-goto-definition-functions)
+              (add-to-list 'evil-goto-definition-functions
+                           (lambda (_string _position)
+                             (let ((buf (current-buffer))
+                                   (pos (point)))
+                               (call-interactively #'dumb-jump-go)
+                               (unless (and (eq buf (current-buffer))
+                                            (= pos (point)))
+                                 t)))))))
+    (add-hook 'elm-mode-hook fn)))
 
 (use-package eshell
   :defer t

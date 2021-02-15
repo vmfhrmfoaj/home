@@ -268,7 +268,7 @@
           (cur-buf (current-buffer)))
       (apply f args)
       (when (and (eq cur-buf (current-buffer))
-                 (eq pos (point)))
+                 (= pos (point)))
         (ignore-errors (ring-remove xref--marker-ring 0))
         (message nil)
         (call-interactively #'dumb-jump-go))))
@@ -451,7 +451,7 @@
   (setq lsp-enable-imenu nil
         lsp-enable-indentation nil
         lsp-enable-links nil
-        lsp-enable-symbol-highlighting nil
+        lsp-enable-symbol-highlighting t
         lsp-enable-on-type-formatting nil
         lsp-file-watch-threshold nil
         lsp-headerline-breadcrumb-enable nil

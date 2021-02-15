@@ -165,9 +165,9 @@
   :defer t
   :config
   (custom-set-faces
-   '(lsp-face-highlight-textual ((t :background "#3f5b73" :foreground "#c5c8c6" :wegith bold)))
-   '(lsp-face-highlight-read    ((t :background "#3f5b73" :foreground "#c5c8c6" :wegith bold)))
-   '(lsp-face-highlight-write   ((t :background "#266499" :foreground "#c9ccca" :wegith bold)))))
+   '(lsp-face-highlight-textual ((t :underline t)))
+   '(lsp-face-highlight-read    ((t :underline t)))
+   '(lsp-face-highlight-write   ((t :underline t :wegith bold)))))
 
 (use-package magit
   :defer t

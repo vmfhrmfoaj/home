@@ -185,6 +185,17 @@
         (skip-chars-forward " \t\r\n")
         (cons (car bound) (point)))))
 
+  (defun focus--rpm-spec-thing ()
+    (let ((beg (progn
+                 (or (and (save-excursion (re-search-backward "^%[a-z]+$" nil t))
+                          (match-beginning 0))
+                     (point-min))))
+          (end (progn
+                 (or (and (save-excursion (re-search-forward  "^%[a-z]+$" nil t))
+                          (match-beginning 0))
+                     (point-max)))))
+      (cons beg end)))
+
   (with-eval-after-load "clojure-mode"
     (put 'clojure 'bounds-of-thing-at-point #'focus--clojure-thing)
     (add-to-list 'focus-mode-to-thing '(clojure-mode . clojure)))
@@ -197,6 +208,9 @@
   (with-eval-after-load "python-mode"
     (put 'py 'bounds-of-thing-at-point #'focus--python-thing)
     (add-to-list 'focus-mode-to-thing '(python-mode . py)))
+  (with-eval-after-load "rpm-spec-mode"
+    (put 'rpm-spec 'bounds-of-thing-at-point #'focus--rpm-spec-thing)
+    (add-to-list 'focus-mode-to-thing '(rpm-spec-mode . rpm-spec)))
 
   (with-eval-after-load "company"
     (advice-add #'company--replacement-string :filter-args #'company--decorate-background-string)))

@@ -41,7 +41,7 @@
                                 (point-at-bol))))
            (cur-line-num (line-number-at-pos))
            (proj-config (dumb-jump-get-config proj-root))
-           (config (or config ; <-- FIX HERE
+           (config (or config ; <- FIX HERE
                        (when (s-ends-with? ".dumbjump" proj-config)
                          (dumb-jump-read-config proj-root proj-config))))
            (found-symbol (or prompt (dumb-jump-get-point-symbol)))
