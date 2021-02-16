@@ -1,8 +1,9 @@
 {
     // Appearance
-    "editor.fontFamily": "'Cascadia Code', monospace",
-    "editor.fontSize": 14,
+    "editor.fontFamily": "'Fira Code', monospace",
+    "editor.fontSize": 13.5,
     "editor.fontLigatures": true,
+    "editor.fontWeight": "500",
     "editor.matchBrackets": "near", // use Bracket Pair Colorizer
     "editor.minimap.enabled": false,
     "editor.minimap.renderCharacters": false,
@@ -19,12 +20,16 @@
     "editor.wordWrapColumn": 165,
     "scm.diffDecorations": "gutter",
     "terminal.integrated.fontSize": 13,
-    "window.titleBarStyle": "native",
-    "window.menuBarVisibility": "hidden",
+    "window.titleBarStyle": "custom",
+    "window.menuBarVisibility": "visible",
+    "window.newWindowDimensions": "maximized",
     "window.zoomLevel": 0,
     "workbench.colorTheme": "Visual Studio Dark",
     "workbench.colorCustomizations": {
+        "activityBar.activeBorder": "#4ec9b0",
+        "activityBarBadge.background": "#35af96",
         "statusBarItem.remoteBackground": "#4ec9b0",
+        "titleBar.activeBackground": "#333",
         "rust_analyzer.inlayHints.foreground": "#d4d4d4",
         "[Visual Studio Dark]": {
             "editor.findMatchBackground": "#ea5c0090",
@@ -40,6 +45,7 @@
     },
     "workbench.iconTheme": "material-icon-theme",
     "workbench.productIconTheme": "material-product-icons",
+    "workbench.startupEditor": "none",
     "workbench.sideBar.location": "left",
 
     "editor.semanticTokenColorCustomizations": {
@@ -261,9 +267,13 @@
                         // Toml
                         "punctuation.separator.array.toml",
                         "punctuation.separator.dot",
+                        // YAML
+                        "punctuation.separator.key-value.mapping.yaml",
                         // Shellscript
                         "punctuation.terminator.case-clause.shell",
                         "punctuation.definition.case-pattern.shell",
+                        // Perl
+                        "punctuation.definition.variable.perl",
                     ],
                     "settings": { "foreground": "#909090", }
                 },

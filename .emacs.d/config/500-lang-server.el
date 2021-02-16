@@ -176,58 +176,37 @@
   :ensure t
   :after lsp-mode
   :config
-  (lsp-defun lsp-ivy--filter-by-file
-    ((symbol-information &as &SymbolInformation :location (&Location :uri))
-     file-path)
-    (string= file-path (lsp--uri-to-path uri)))
+  (lsp-defun lsp-ivy--format-symbol-match-for-doc-syms
+    ((sym &as &DocumentSymbol :kind :range (&Range :start (&Position :line :character))))
+    (let* ((sanitized-kind (if (< kind (length lsp-ivy-symbol-kind-to-face)) kind 0))
+           (type (elt lsp-ivy-symbol-kind-to-face sanitized-kind))
+           (typestr (if lsp-ivy-show-symbol-kind
+                        (propertize (format "[%s] " (car type)) 'face (cdr type))
+                      ""))
+           (posstr (if lsp-ivy-show-symbol-filename
+                       (propertize (format " · Line: %s" line)
+                                   'face font-lock-comment-face))))
+      (concat typestr (lsp-render-symbol sym ".") posstr)))
 
-  (defun lsp-ivy--file-symbol (file-path workspaces prompt initial-input)
-    "Search against FILE with PROMPT and INITIAL-INPUT."
-    (let* ((prev-query nil)
-           (unfiltered-candidates '())
-           (filtered-candidates nil)
-           (workspace-root (lsp-workspace-root))
-           (update-candidates
-            (lambda (all-candidates filter-regexps?)
-              (let ((lsp-ivy-show-symbol-filename nil))
-                (setq filtered-candidates
-                      (->> all-candidates
-                           (--filter (lsp-ivy--filter-by-file it file-path))
-                           (--keep (lsp-ivy--transform-candidate it filter-regexps? workspace-root)))))
-              (ivy-update-candidates filtered-candidates))))
-      (ivy-read
-       prompt
-       (lambda (user-input)
-         (let* ((parts (split-string user-input))
-                (query (or (car parts) ""))
-                (filter-regexps? (mapcar #'regexp-quote (cdr parts))))
-           (when query
-             (if (string-equal prev-query query)
-                 (funcall update-candidates unfiltered-candidates filter-regexps?)
-               (with-lsp-workspaces workspaces
-                 (lsp-request-async
-                  "workspace/symbol"
-                  (lsp-make-workspace-symbol-params :query query)
-                  (lambda (result)
-                    (setq unfiltered-candidates result)
-                    (funcall update-candidates unfiltered-candidates filter-regexps?))
-                  :mode 'detached
-                  :cancel-token :workspace-symbol))))
-           (setq prev-query query))
-         (or filtered-candidates 0))
-       :dynamic-collection t
-       :require-match t
-       :initial-input initial-input
-       :action #'lsp-ivy--workspace-symbol-action
-       :caller 'lsp-ivy-workspace-symbol)))
-
-  (defun lsp-ivy-file-symbol (arg)
-    (interactive "P")
-    (when-let ((file-path (buffer-file-name)))
-      (lsp-ivy--file-symbol file-path
-                            (lsp-workspaces)
-                            "Workspace symbol: "
-                            (when arg (thing-at-point 'symbol))))))
+  (defun lsp-ivy-file-symbol ()
+    (interactive)
+    (when (buffer-file-name)
+      (ivy-read "File symbols: "
+                (let ((root (lsp-workspace-root)))
+                  (--map (let ((txt (if (gethash "location" it)
+                                        (lsp-ivy--format-symbol-match it root)
+                                      (lsp-ivy--format-symbol-match-for-doc-syms it))))
+                           (propertize txt 'lsp-doc-sym it))
+                         (lsp--get-document-symbols)))
+                :action (lambda (it)
+                          (let ((sym-info-or-doc-sym (get-text-property 0 'lsp-doc-sym it)))
+                            (if (gethash "location" sym-info-or-doc-sym)
+                                (lsp-ivy--workspace-symbol-action sym-info-or-doc-sym)
+                              (-let (((&DocumentSymbol :range (&Range :start (&Position :line :character)))
+                                      sym-info-or-doc-sym))
+                                (goto-line (1+ line))
+                                (move-to-column character)))))
+                :caller 'lsp-ivy-file-symbol))))
 
 (use-package lsp-java
   :ensure t
@@ -428,15 +407,15 @@
         (s-replace " │ " " | " msg)
       msg))
 
-  (defvar lsp-signature-restart-enable nil)
+  (defvar lsp-signature-prevent-stop-enable nil)
 
-  (defun lsp-signature-restart ()
-    (when (and lsp-signature-restart-enable
-               (save-excursion
-                 (ignore-errors (backward-up-list))
-                 (looking-at-p "(")))
-      (ignore-errors
-        (lsp-signature-activate))))
+  (let ((begin-parent (string-to-char "(")))
+    (defun lsp-signature-prevent-stop ()
+      (and lsp-signature-prevent-stop-enable
+           (-some->> (syntax-ppss)
+             (nth 1)
+             (char-after)
+             (char-equal begin-parent)))))
 
   (defun lsp--workspace-print-without-style (workspace)
     "Visual representation WORKSPACE."
@@ -502,7 +481,7 @@
                                            (nth 1)
                                            (char-after)
                                            (char-equal begin-parent)))
-                                (setq lsp-signature-restart-enable t)
+                                (setq lsp-signature-prevent-stop-enable t)
                                 (ignore-errors (lsp-signature-activate)))
                               (when lsp-diagnostics-mode
                                 (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t)
@@ -516,7 +495,7 @@
                               (add-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report nil t)
                               (add-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report nil t))
                             (when lsp-signature-mode
-                              (setq lsp-signature-restart-enable nil)
+                              (setq lsp-signature-prevent-stop-enable nil)
                               (ignore-errors (lsp-signature-stop))))
                           (setq lsp-eldoc-enable-hover t))
                         nil t)
@@ -549,7 +528,7 @@
   (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-type-definition :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-hover :override #'lsp--custom-hover)
-  (advice-add #'lsp-signature-stop :after #'lsp-signature-restart)
+  (advice-add #'lsp-signature-stop :before-until #'lsp-signature-prevent-stop)
   (advice-add #'lsp--info :override #'ignore)
   (advice-add #'lsp--handle-signature-update :around
               (lambda (f &rest args)
@@ -557,7 +536,7 @@
                 (condition-case nil
                     (apply f args)
                   (error
-                   (setq lsp-signature-restart-enable nil)
+                   (setq lsp-signature-prevent-stop-enable nil)
                    (lsp-signature-stop))))))
 
 (use-package lsp-pyls

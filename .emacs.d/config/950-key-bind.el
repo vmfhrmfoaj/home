@@ -420,6 +420,7 @@
   (evil-define-key 'normal 'global
     "gb" #'evil-multiedit-match-and-next
     "gB" #'evil-multiedit-match-all
+    "gh" #'evil-lookup
     "gr" #'eldoc-refresh
     (kbd "<tab>") #'indent-for-tab-command
     (kbd "<C-backspace>") #'evil-backward-word-begin
@@ -598,8 +599,7 @@
                        (fboundp 'lsp-treemacs-call-hierarchy))
                   #'lsp-treemacs-call-hierarchy)
         "mga" (if (lsp-feature? "workspace/symbol") #'xref-find-apropos)
-        "mgs" (if (and (fboundp 'lsp-ivy-workspace-symbol)
-                       (lsp-feature? "workspace/symbol"))
+        "mgs" (if (lsp-feature? "textDocument/documentSymbol")
                   #'lsp-ivy-file-symbol)
         "mgS" (if (and (fboundp 'lsp-ivy-global-workspace-symbol)
                        (lsp-feature? "workspace/symbol"))
@@ -635,16 +635,28 @@
   (let ((fn (lambda ()
               (make-local-variable 'evil-goto-definition-functions)
               (add-to-list 'evil-goto-definition-functions
-                           (lambda (_string _position)
-                             (let ((fn (if (lsp-feature? "textDocument/definition")
-                                           #'lsp-find-definition
-                                         #'dumb-jump-go))
-                                   (buf (current-buffer))
-                                   (pos (point)))
-                               (call-interactively fn)
-                               (unless (and (eq buf (current-buffer))
-                                            (= pos (point)))
-                                 t)))))))
+                           (cond
+                            ;; NOTE
+                            ;;  `Perl-LanguageServer` is hanging when requrest `textDocument/definition`.
+                            ((or (derived-mode-p 'perl-mode)
+                                 (derived-mode-p 'cperl-mode))
+                             (lambda (_string _position)
+                               (let ((buf (current-buffer))
+                                     (pos (point)))
+                                 (call-interactively #'dumb-jump-go)
+                                 (unless (and (eq buf (current-buffer))
+                                              (= pos (point)))
+                                   t))))
+                            (t (lambda (_string _position)
+                                 (let ((fn (if (lsp-feature? "textDocument/definition")
+                                               #'lsp-find-definition
+                                             #'dumb-jump-go))
+                                       (buf (current-buffer))
+                                       (pos (point)))
+                                   (call-interactively fn)
+                                   (unless (and (eq buf (current-buffer))
+                                                (= pos (point)))
+                                     t)))))))))
     (add-hook 'lsp-mode-hook fn)))
 
 (use-package magit-blame

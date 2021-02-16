@@ -19,14 +19,15 @@
     "editor.renderWhitespace": "selection",
     "editor.wordWrapColumn": 165,
     "terminal.integrated.fontSize": 13,
-    "window.titleBarStyle": "native",
-    "window.menuBarVisibility": "toggle",
+    "window.titleBarStyle": "custom",
+    "window.menuBarVisibility": "visible",
+    "window.newWindowDimensions": "maximized",
     "window.zoomLevel": 0,
-    "workbench.sideBar.location": "left",
     "workbench.colorTheme": "Visual Studio Dark",
-    "workbench.iconTheme": "material-icon-theme",
     "workbench.colorCustomizations": {
+        "activityBar.activeBorder": "#22a4f1",
         "statusBarItem.remoteBackground": "#22a4f1",
+        "titleBar.activeBackground": "#333",
         "rust_analyzer.inlayHints.foreground": "#d4d4d4",
         "[Visual Studio Dark]": {
             "editor.findMatchBackground": "#ea5c0090",
@@ -40,6 +41,8 @@
             "statusBar.noFolderBorder": "#333",
         },
     },
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.sideBar.location": "left",
 
     "editor.semanticTokenColorCustomizations": {
         "rules": {

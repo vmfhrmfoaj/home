@@ -114,6 +114,16 @@
   (color-from face :background p s))
 
 
+(defun in-string? (&optional pos)
+  (let ((pos (or pos (point)))
+        (ppss (save-excursion (syntax-ppss pos))))
+    (not (not (nth 3 ppss)))))
+
+(defun in-comment? (&optional pos)
+  (let ((pos (or pos (point)))
+        (ppss (save-excursion (syntax-ppss pos))))
+    (not (not (nth 4 ppss)))))
+
 (defun in-comment-or-string? (&optional pos)
   (let ((pos (or pos (point)))
         (ppss (save-excursion (syntax-ppss pos))))

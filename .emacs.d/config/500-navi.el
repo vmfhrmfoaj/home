@@ -122,7 +122,13 @@
                        :regex "sub\\s*JJJ\\j")))
 
   (advice-add #'dumb-jump-fetch-file-results :override #'dumb-jump--custom-fetch-file-results)
-  (advice-add #'dumb-jump-fetch-results :override #'dumb-jump--custom-fetch-results))
+  (advice-add #'dumb-jump-fetch-results :override #'dumb-jump--custom-fetch-results)
+  (advice-add #'dumb-jump--format-result :override
+              (lambda (proj result)
+                "Decorate `dumb-jump' results."
+                (concat (propertize (s-replace proj "" (plist-get result :path)) 'face 'ivy-grep-info) ":"
+                        (propertize (int-to-string (plist-get result :line)) 'face 'ivy-grep-line-number)              ": "
+                        (s-trim (plist-get result :context))))))
 
 (use-package ivy-xref
   :ensure t

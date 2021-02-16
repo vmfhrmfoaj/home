@@ -134,8 +134,8 @@
           (whitespace* (concat whitespace "*")))
      `((,(concat "\\(" symbol "\\|\\(accept\\|do\\)\\s-*(\\)")
         (1 (cond
-            ((sp-point-in-string)  'font-lock-string-face)
-            ((sp-point-in-comment) 'font-lock-comment-face)
+            ((in-string?)  'font-lock-string-face)
+            ((in-comment?) 'font-lock-comment-face)
             (t nil))
            t))
        (,(concat "^" whitespace* "\\(sub\\)" whitespace+ "\\([_0-9A-Za-z]+\\)\\(?:" whitespace* "([@$%]*)\\)?")
@@ -1645,3 +1645,11 @@
          (goto-char font-lock--anchor-beg-point)
          (1 'default))))
      :append)))
+
+(use-package yaml-mode
+  :defer t
+  :config
+  (font-lock-add-keywords
+   'yaml-mode
+   '(("\\(:\\)\\(\\s-\\|\\s-*$\\)"
+      (1 'shadow)))))
