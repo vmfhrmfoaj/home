@@ -115,6 +115,16 @@ _setup_for_deno() {
     fi
 }
 
+_setup_for_graalvm() {
+    local graalvm_home="${HOME}/.graalvm"
+    if [ -d "${graalvm_home}" ]; then
+        export GRAALVM_HOME=${graalvm_home}
+        _add_to_path "${graalvm_home}/bin" 'yes'
+        # See how to install `musl`: https://www.graalvm.org/reference-manual/native-image/StaticImages
+        _add_to_path "${HOME}/Desktop/Build/musl/bin" 'yes'
+    fi
+}
+
 _setup_for_java() {
     local java_11_home="/usr/lib64/openjdk-11"
     if [ -d "${java_11_home}" ]; then
@@ -126,16 +136,6 @@ _setup_for_java() {
             export JAVA_HOME=${java_8_home}
             _add_to_path "${java_8_home}/bin"
         fi
-    fi
-}
-
-_setup_for_graalvm() {
-    local graalvm_home="${HOME}/.graalvm"
-    if [ -d "${graalvm_home}" ]; then
-        export GRAALVM_HOME=${graalvm_home}
-        _add_to_path "${graalvm_home}/bin" 'yes'
-        # See how to install `musl`: https://www.graalvm.org/reference-manual/native-image/StaticImages
-        _add_to_path "${HOME}/Desktop/Build/musl/bin" 'yes'
     fi
 }
 
@@ -155,6 +155,11 @@ _setup_for_kotlin() {
             _add_to_path "${kotlin_home}/server/bin"
         fi
     fi
+}
+
+_setup_for_locale() {
+    export LANG=en_US.UTF-8
+    export LC_ALL=en_US.UTF-8
 }
 
 _setup_for_lua() {
@@ -182,9 +187,14 @@ _setup_for_nodejs() {
     fi
 }
 
-_setup_for_locale() {
-    export LANG=en_US.UTF-8
-    export LC_ALL=en_US.UTF-8
+_setup_for_perl() {
+    _is_shim 'asdf'
+    if [ $? -ne 0 ]; then
+        perl_dir=$(asdf where perl 2>/dev/null)
+        if [ -d "${perl_dir}" ]; then
+            _add_to_path "${perl_dir}"/bin
+        fi
+    fi
 }
 
 _setup_for_python() {
@@ -427,6 +437,7 @@ _setup_for_clojure
 #_setup_for_deno
 #_setup_for_kotlin
 #_setup_for_lua
+_setup_for_perl
 
 # add user binary dirs to PATH
 _add_to_path "${HOME}/.local/bin"

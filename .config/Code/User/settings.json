@@ -25,8 +25,7 @@
     "window.zoomLevel": 0,
     "workbench.colorTheme": "Visual Studio Dark",
     "workbench.colorCustomizations": {
-        "activityBar.activeBorder": "#22a4f1",
-        "statusBarItem.remoteBackground": "#22a4f1",
+        "statusBarItem.remoteBackground": "#333",
         "titleBar.activeBackground": "#333",
         "rust_analyzer.inlayHints.foreground": "#d4d4d4",
         "[Visual Studio Dark]": {

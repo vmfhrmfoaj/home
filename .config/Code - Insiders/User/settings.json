@@ -20,15 +20,13 @@
     "editor.wordWrapColumn": 165,
     "scm.diffDecorations": "gutter",
     "terminal.integrated.fontSize": 13,
-    "window.titleBarStyle": "custom",
-    "window.menuBarVisibility": "visible",
+    "window.titleBarStyle": "native",
+    "window.menuBarVisibility": "toggle",
     "window.newWindowDimensions": "maximized",
     "window.zoomLevel": 0,
     "workbench.colorTheme": "Visual Studio Dark",
     "workbench.colorCustomizations": {
-        "activityBar.activeBorder": "#4ec9b0",
-        "activityBarBadge.background": "#35af96",
-        "statusBarItem.remoteBackground": "#4ec9b0",
+        "statusBarItem.remoteBackground": "#333",
         "titleBar.activeBackground": "#333",
         "rust_analyzer.inlayHints.foreground": "#d4d4d4",
         "[Visual Studio Dark]": {
@@ -96,11 +94,19 @@
                 },
                 {
                     "scope": [
+                        // Python
                         "keyword.codetag.notation.python"
                     ],
                     "settings": {
                         "foreground": "#909090",
                     }
+                },
+                {
+                    "scope": [
+                        // C
+                        "storage.type.built-in.primitive.c",
+                    ],
+                    "settings": { "foreground": "#4ec9b0", }
                 },
                 {
                     "scope": [
@@ -273,13 +279,11 @@
                         "punctuation.terminator.case-clause.shell",
                         "punctuation.definition.case-pattern.shell",
                         // Perl
+                        "punctuation.separator.comma.perl",
                         "punctuation.definition.variable.perl",
+                        "punctuation.terminator.statement.perl",
                     ],
                     "settings": { "foreground": "#909090", }
-                },
-                {
-                    "scope": "storage.type.built-in.primitive.c",
-                    "settings": { "foreground": "#4ec9b0", }
                 },
             ]
         },
@@ -296,7 +300,7 @@
     "editor.suggestOnTriggerCharacters": true,
     "editor.suggestSelection": "first",
     "editor.tabSize": 4,
-    "search.mode": "view",
+    "search.mode": "newEditor",
     "workbench.editor.enablePreview": false,
 
     "[go]": {
@@ -350,9 +354,6 @@
 
     // Git
     "git.allowForcePush": true,
-
-    // Git History
-    "gitHistory.showFileHistorySplit": false,
 
     // Gitlens
     "gitlens.codeLens.enabled": false,
@@ -567,7 +568,17 @@
                 "workbench.action.acceptSelectedQuickOpenItem",
             ]
         },
+        {
+            "command": "multiCommand.findInCurDir",
+            "sequence": [
+                "workbench.view.explorer",
+                "filesExplorer.findInFolder"
+            ]
+        },
     ],
+
+    // Perl
+    "perl-toolbox.lint.severity": "stern",
 
     // Python
     "python.insidersChannel": "daily",
@@ -724,17 +735,17 @@
             "before": [
                 "<leader>",
                 "s",
-                "n"
+                "f"
             ],
-            "commands": [ { "command": "search.action.openNewEditor" } ]
+            "commands": [ { "command": "multiCommand.findInCurDir" } ]
         },
         {
             "before": [
                 "<leader>",
                 "s",
-                "N"
+                "p"
             ],
-            "commands": [ { "command": "search.action.openNewEditorToSide" } ]
+            "commands": [ { "command": "workbench.action.findInFiles" } ] // search.action.openNewEditor
         },
         // NOTE: has been occupied by Vim extension
         // {
@@ -923,14 +934,6 @@
             "before": [
                 "<leader>",
                 "g",
-                "a"
-            ],
-            "commands": [ { "command": "git.viewHistory" } ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "g",
                 "b"
             ],
             "commands": [
@@ -942,17 +945,11 @@
             "before": [
                 "<leader>",
                 "g",
-                "f"
-            ],
-            "commands": [ { "command": "git.viewFileHistory" } ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "g",
                 "l"
             ],
-            "commands": [ { "command": "git.viewLineHistory" } ]
+            "commands": [
+                { "command": "git-graph.view" },
+            ],
         },
         {
             "before": [
@@ -990,17 +987,17 @@
             "before": [
                 "<leader>",
                 "s",
-                "n"
+                "f"
             ],
-            "commands": [ { "command": "search.action.openNewEditor" } ]
+            "commands": [ { "command": "multiCommand.findInCurDir" } ]
         },
         {
             "before": [
                 "<leader>",
                 "s",
-                "N"
+                "p"
             ],
-            "commands": [ { "command": "search.action.openNewEditorToSide" } ]
+            "commands": [ { "command": "workbench.action.findInFiles" } ] // search.action.openNewEditor
         },
         // NOTE: has been occupied by Vim extension
         // {

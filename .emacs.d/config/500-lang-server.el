@@ -79,6 +79,11 @@
                         (and (eq lsp-diagnostics-provider :auto)
                              (featurep 'flycheck)))
                 (cond
+                 ((or (derived-mode-p 'perl-mode)
+                      (derived-mode-p 'cperl-mode))
+                  (flycheck-select-checker 'perl)
+                  (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t)
+                  (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))
                  ((derived-mode-p 'go-mode)
                   (flycheck-select-checker 'go-golint)
                   (flycheck-add-next-checker 'rust-clippy 'lsp :append))
@@ -188,25 +193,73 @@
                                    'face font-lock-comment-face))))
       (concat typestr (lsp-render-symbol sym ".") posstr)))
 
-  (defun lsp-ivy-file-symbol ()
+  (defun lsp-ivy-workspace-symbol-for-cur-file (&optional initial-input)
+    (interactive)
+    (when-let ((buf-file (buffer-file-name)))
+      (let* ((workspaces (lsp-workspaces))
+             (prev-query nil)
+             (unfiltered-candidates '())
+             (filtered-candidates nil)
+             (workspace-root (lsp-workspace-root))
+             (update-candidates
+              (lambda (all-candidates filter-regexps?)
+                (let ((lsp-ivy-show-symbol-filename nil))
+                  (setq filtered-candidates
+                        (-some->> all-candidates
+                          (--filter (-let (((&SymbolInformation :location (&Location :uri)) it))
+                                      (string= buf-file (lsp--uri-to-path uri))))
+                          (--keep (lsp-ivy--transform-candidate it filter-regexps? workspace-root)))))
+                (ivy-update-candidates filtered-candidates))))
+        (ivy-read
+         "File symbol: "
+         (lambda (user-input)
+           (let* ((parts (split-string user-input))
+                  (query (or (car parts) ""))
+                  (filter-regexps? (mapcar #'regexp-quote (cdr parts))))
+             (if (string-equal prev-query query)
+                 (funcall update-candidates unfiltered-candidates filter-regexps?)
+               (with-lsp-workspaces workspaces
+                 (lsp-request-async
+                  "workspace/symbol"
+                  (lsp-make-workspace-symbol-params :query query)
+                  (lambda (result)
+                    (setq unfiltered-candidates result)
+                    (funcall update-candidates unfiltered-candidates filter-regexps?))
+                  :mode 'detached
+                  :cancel-token :workspace-symbol)))
+             (setq prev-query query))
+           (or filtered-candidates 0))
+         :dynamic-collection t
+         :require-match t
+         :initial-input (or initial-input
+                            (when (use-region-p)
+                              (buffer-substring-no-properties (region-beginning) (region-end))))
+         :action #'lsp-ivy--workspace-symbol-action
+         :caller 'lsp-ivy-workspace-symbol))))
+
+  (defun lsp-ivy-doc-symbol (&optional initial-input)
     (interactive)
     (when (buffer-file-name)
-      (ivy-read "File symbols: "
-                (let ((root (lsp-workspace-root)))
-                  (--map (let ((txt (if (gethash "location" it)
-                                        (lsp-ivy--format-symbol-match it root)
-                                      (lsp-ivy--format-symbol-match-for-doc-syms it))))
-                           (propertize txt 'lsp-doc-sym it))
-                         (lsp--get-document-symbols)))
-                :action (lambda (it)
-                          (let ((sym-info-or-doc-sym (get-text-property 0 'lsp-doc-sym it)))
-                            (if (gethash "location" sym-info-or-doc-sym)
-                                (lsp-ivy--workspace-symbol-action sym-info-or-doc-sym)
-                              (-let (((&DocumentSymbol :range (&Range :start (&Position :line :character)))
-                                      sym-info-or-doc-sym))
-                                (goto-line (1+ line))
-                                (move-to-column character)))))
-                :caller 'lsp-ivy-file-symbol))))
+      (ivy-read
+       "File symbol: "
+       (let ((root (lsp-workspace-root)))
+         (--map (let ((txt (if (gethash "location" it)
+                               (lsp-ivy--format-symbol-match it root)
+                             (lsp-ivy--format-symbol-match-for-doc-syms it))))
+                  (propertize txt 'lsp-doc-sym it))
+                (lsp--get-document-symbols)))
+       :action (lambda (it)
+                 (let ((sym-info-or-doc-sym (get-text-property 0 'lsp-doc-sym it)))
+                   (if (gethash "location" sym-info-or-doc-sym)
+                       (lsp-ivy--workspace-symbol-action sym-info-or-doc-sym)
+                     (-let (((&DocumentSymbol :range (&Range :start (&Position :line :character)))
+                             sym-info-or-doc-sym))
+                       (goto-line (1+ line))
+                       (move-to-column character)))))
+       :initial-input (or initial-input
+                          (when (use-region-p)
+                            (buffer-substring-no-properties (region-beginning) (region-end))))
+       :caller 'lsp-ivy-file-symbol))))
 
 (use-package lsp-java
   :ensure t
@@ -224,6 +277,7 @@
          ;; (clojurec-mode      . lsp)
          ;; (clojurescript-mode . lsp)
          (cperl-mode         . lsp)
+         (dockerfile-mode    . lsp)
          (go-mode            . lsp)
          (java-mode          . (lambda ()
                                  (when (require 'lsp-java nil t)

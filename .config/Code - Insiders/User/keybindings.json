@@ -93,7 +93,7 @@
     // - for search editor
     {
         "key": "enter",
-        "command": "search.focus.nextInputBox",
+        "command": "search.focus.previousInputBox", // trick to focus the search result
         "when": "inSearchEditor && searchInputBoxFocus && !findInputFocussed"
     },
     {
@@ -136,8 +136,17 @@
         "when": "terminalFocus"
     },
     {
+        "key": "ctrl+shift+1", // for CK87 keyboard
+        "command": "workbench.action.focusFirstEditorGroup",
+        "when": "terminalFocus"
+    },
+    {
         "key": "ctrl+9",
         "command": "-workbench.action.lastEditorInGroup"
+    },
+    {
+        "key": "alt+9",
+        "command": "workbench.action.lastEditorInGroup"
     },
     {
         "key": "ctrl+9",
@@ -156,6 +165,11 @@
         "key": "ctrl+shift+f",
         "command": "workbench.action.terminal.focusFind",
         "when": "terminalFindFocused && terminalProcessSupported || terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+f",
+        "command": "filesExplorer.findInFolder",
+        "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
     },
 
     // Tab and Shift + Tab
@@ -460,21 +474,21 @@
         "command": "list.focusDown",
         "when": "listFocus && !inputFocus"
     },
-    {
-        "key": "j",
-        "command": "list.focusDown",
-        "when": "listFocus && !inputFocus"
-    },
+    // {
+    //     "key": "j",
+    //     "command": "list.focusDown",
+    //     "when": "listFocus && !inputFocus"
+    // },
     {
         "key": "ctrl+k",
         "command": "list.focusUp",
         "when": "listFocus && !inputFocus"
     },
-    {
-        "key": "k",
-        "command": "list.focusUp",
-        "when": "listFocus && !inputFocus"
-    },
+    // {
+    //     "key": "k",
+    //     "command": "list.focusUp",
+    //     "when": "listFocus && !inputFocus"
+    // },
     {
         "key": "ctrl+l",
         "command": "list.expand",
