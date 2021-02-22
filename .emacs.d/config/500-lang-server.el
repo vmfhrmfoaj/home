@@ -78,21 +78,14 @@
               (when (or (eq lsp-diagnostics-provider :flycheck)
                         (and (eq lsp-diagnostics-provider :auto)
                              (featurep 'flycheck)))
+                ;; NOTE
+                ;;  If you add `checker'(i.e., lint), increase syntax checking time.
                 (cond
                  ((or (derived-mode-p 'perl-mode)
                       (derived-mode-p 'cperl-mode))
                   (flycheck-select-checker 'perl)
                   (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t)
-                  (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))
-                 ((derived-mode-p 'go-mode)
-                  (flycheck-select-checker 'go-golint)
-                  (flycheck-add-next-checker 'rust-clippy 'lsp :append))
-                 ((derived-mode-p 'rust-mode)
-                  (flycheck-select-checker 'rust-clippy)
-                  (flycheck-add-next-checker 'rust-clippy 'lsp :append))
-                 ((derived-mode-p 'python-mode)
-                  (flycheck-select-checker 'python-flake8)
-                  (flycheck-add-next-checker 'python-flake8 'lsp :append))))))
+                  (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))))))
 
   (advice-add #'lsp-diagnostics--flycheck-start :override #'lsp-diagnostics--custom-flycheck-start)
   (advice-add #'lsp-modeline--diagnostics-update-modeline :override #'ignore))
@@ -547,7 +540,9 @@
                           (when lsp-mode
                             (when lsp-diagnostics-mode
                               (add-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report nil t)
-                              (add-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report nil t))
+                              (add-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report nil t)
+                              (let ((lsp-idle-delay 0))
+                                (lsp-diagnostics--flycheck-report)))
                             (when lsp-signature-mode
                               (setq lsp-signature-prevent-stop-enable nil)
                               (ignore-errors (lsp-signature-stop))))

@@ -89,17 +89,34 @@
   :init
   (defvar focus--exclude-modes '(term-mode eshell-mode))
 
+  (defvar focus--focus-move-timer nil)
+
+  (defun focus-move-focus-with-timer ()
+    (when (timerp focus--focus-move-timer)
+      (cancel-timer focus--focus-move-timer))
+    (setq focus--focus-move-timer
+          (run-with-idle-timer 0.25 nil
+                               (lambda (buf)
+                                 (with-current-buffer buf
+                                   (focus-move-focus)))
+                               focus-buffer)))
+
   (defun focus--enable (&rest _)
     (unless (or (apply #'derived-mode-p focus--exclude-modes)
                 (minibufferp))
       (focus-init)
       (remove-hook 'post-command-hook 'focus-move-focus t)
+      (add-hook    'post-command-hook 'focus-move-focus-with-timer nil t)
       (focus-move-focus)
       (redisplay t)))
 
   (defun focus--disable (&rest _)
     (unless (or (apply #'derived-mode-p focus--exclude-modes)
                 (minibufferp))
+      (remove-hook 'post-command-hook 'focus-move-focus-with-timer t)
+      (when (timerp focus--focus-move-timer)
+        (cancel-timer focus--focus-move-timer)
+        (setq focus--focus-move-timer nil))
       (focus-terminate)
       (redisplay t)))
 
@@ -127,7 +144,7 @@
           (ignore-errors
             (while (progn
                      (backward-up-list 1 t t)
-                     (not (looking-at-p "(\\(defun\\|defmacro\\)\\_>"))))
+                     (not (looking-at-p "(\\(defun\\|defmacro\\|lambda\\)\\_>"))))
             (let* ((end (save-excursion
                           (forward-list)
                           (point))))
@@ -139,7 +156,7 @@
           (ignore-errors
             (while (progn
                      (backward-up-list 1 t t)
-                     (not (looking-at-p "(\\([-0-9A-Za-z]+/\\)?\\(def[a-z]*\\)\\_>"))))
+                     (not (looking-at-p "(\\([-0-9A-Za-z]+/\\)?\\(fn\\|def[a-z]*\\)\\_>"))))
             (let* ((end (save-excursion
                           (forward-list)
                           (point))))
@@ -148,7 +165,19 @@
 
   (defun focus--go-thing ()
     (when-let ((bound
-                (or (bounds-of-thing-at-point 'defun) ; func
+                (or (save-excursion                   ; lambda
+                      (ignore-errors
+                        (while (progn
+                                 (backward-up-list 1 t t)
+                                 (backward-list 1)
+                                 (not (looking-back "func\\s-*"))))
+                        (skip-chars-forward "^{")
+                        (let* ((end (save-excursion
+                                      (forward-list)
+                                      (point))))
+                          (beginning-of-line-text)
+                          (cons (point) end))))
+                    (bounds-of-thing-at-point 'defun) ; func
                     (save-excursion                   ; struct, interface
                       (ignore-errors
                         (let ((regex "\\_<type\\s-+[0-9A-Za-z]+\\s-+\\(struct\\|interface\\)\\s-*"))

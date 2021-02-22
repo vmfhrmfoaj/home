@@ -1,9 +1,9 @@
 {
     // Appearance
-    "editor.fontFamily": "'Fira Code', monospace",
-    "editor.fontSize": 13.5,
+    "editor.fontFamily": "'Cascadia Code', monospace",
+    "editor.fontSize": 14,
     "editor.fontLigatures": true,
-    "editor.fontWeight": "500",
+    "editor.fontWeight": "600",
     "editor.matchBrackets": "near", // use Bracket Pair Colorizer
     "editor.minimap.enabled": false,
     "editor.minimap.renderCharacters": false,
@@ -49,7 +49,10 @@
     "editor.semanticTokenColorCustomizations": {
         "rules": {
             "*.mutable": { "underline": true, },
-            "*.unsafe": { "italic": true, },
+            "*.unsafe": {
+                "bold": true,
+                "italic": true,
+            },
         },
         "[Visual Studio Dark]": {
             "rules": {
@@ -78,7 +81,7 @@
         "textMateRules": [
             {
                 "scope": "constant.other.placeholder.c",
-                "settings": { "fontStyle": "italic" }
+                "settings": { "foreground": "#569cd6" }
             },
         ],
         "[Visual Studio Dark]": {
@@ -148,6 +151,8 @@
                         "support.type.property-name.json.comments",
                         // Toml
                         "keyword.key.toml",
+                        // Json
+                        "support.type.property-name.json",
                     ],
                     "settings": { "foreground": "#d4d4d4", }
                 },
@@ -259,15 +264,15 @@
                         "punctuation.section.array.end.php",
                         "storage.modifier.reference.php",
                         // JSON
-                        "punctuation.definition.array.begin.json.comments",
-                        "punctuation.definition.array.end.json.comments",
-                        "punctuation.definition.dictionary.begin.json.comments",
-                        "punctuation.definition.dictionary.end.json.comments",
-                        "punctuation.separator.array.json.comments",
-                        "punctuation.separator.dictionary.pair.json.comments",
-                        "punctuation.separator.dictionary.key-value.json.comments",
-                        "punctuation.support.type.property-name.begin.json.comments",
-                        "punctuation.support.type.property-name.end.json.comments",
+                        "punctuation.definition.array.begin.json",
+                        "punctuation.definition.array.end.json",
+                        "punctuation.definition.dictionary.begin.json",
+                        "punctuation.definition.dictionary.end.json",
+                        "punctuation.separator.array.json",
+                        "punctuation.separator.dictionary.pair.json",
+                        "punctuation.separator.dictionary.key-value.json",
+                        "punctuation.support.type.property-name.begin.json",
+                        "punctuation.support.type.property-name.end.json",
                         // Rust
                         "punctuation.semi.rust",
                         // Toml
@@ -363,8 +368,6 @@
     "gitlens.statusBar.format": "${author}(${agoOrDate}): \"${message}\"",
 
     // Go
-    "go.formatTool": "goreturns",
-    "go.useLanguageServer": true,
 
     // Markdownlint
     "markdownlint.config": {

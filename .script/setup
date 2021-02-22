@@ -119,9 +119,9 @@ _setup_for_graalvm() {
     local graalvm_home="${HOME}/.graalvm"
     if [ -d "${graalvm_home}" ]; then
         export GRAALVM_HOME=${graalvm_home}
-        _add_to_path "${graalvm_home}/bin" 'yes'
-        # See how to install `musl`: https://www.graalvm.org/reference-manual/native-image/StaticImages
-        _add_to_path "${HOME}/Desktop/Build/musl/bin" 'yes'
+        export JAVA_HOME=${graalvm_home}
+        _add_to_path "${graalvm_home}/export-path"
+        _add_to_path "${HOME}/Desktop/Build/musl/bin" 'yes' # See how to install `musl`: https://www.graalvm.org/reference-manual/native-image/StaticImages
     fi
 }
 
@@ -422,7 +422,7 @@ _setup_for_android
 _setup_for_asdf
 _setup_for_exercism
 _setup_for_go
-_setup_for_java
+#_setup_for_java
 _setup_for_graalvm
 _setup_for_locale
 _setup_for_python
