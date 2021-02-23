@@ -326,7 +326,7 @@
            (if-kw   (regexp-opt '("if" "if-some" "if-let" "if-not")))
            (oop-kw  (regexp-opt '("definterface" "defprotocol" "defrecord" "deftype" "extend-protocol" "extend-type" "proxy" "reify")))
            (def-kw  (regexp-opt '("defmacro" "defn" "defn-" "defmethod" "defrecord" "deftype") t))
-           (important-kw (regexp-opt '("case" "condp" ; "cond" and "cond->", "cond->>" are highlighted specially
+           (important-kw (regexp-opt '(; "case" and "cond", "condp", "cond->", "cond->>" are highlighted specially
                                        "for" "if" "if-let" "if-not" "recur" "throw" "when"
                                        "when-let" "when-not" "while") t))
            (highlight-kw (regexp-opt '("go-loop" "with-hard-redefs" "proxy" "reify") t))
@@ -934,8 +934,8 @@
         (clojure-font-lock-regexp-groups
          (1 'font-lock-regexp-grouping-construct prepend))
 
-        ;; Highlight condtions in `cond' form.
-        (,(concat "(" core-ns? "\\(cond\\(?:->>?\\)?\\)[ \r\t\n]+")
+        ;; Highlight condtions in `case' and `cond', `condp', `cond->', `cond->>' form.
+        (,(concat "(" core-ns? "\\(\\(?:case\\|cond\\(?:p\\|->>?\\)?\\)\\)[ \r\t\n]+")
          (,(lambda (limit)
              (when (and (not font-lock--skip)
                         (< (point) limit))
@@ -970,10 +970,16 @@
                      (save-excursion
                        (safe-up-list-1)
                        (point))))
-            (when (string-match-p "->>?" (match-string 1))
+            (cond
+             ((or (string= "case" (match-string 1))
+                  (string-match-p "->>?$" (match-string 1)))
               (condition-case nil
                   (clojure-forward-sexp)
-                (error (setq font-lock--skip t)))))
+                (error (setq font-lock--skip t))))
+             ((string= "casep" (match-string 1))
+              (condition-case nil
+                  (clojure-forward-sexp 2)
+                (error (setq font-lock--skip t))))))
           (if font-lock--skip
               (end-of-line)
             (goto-char font-lock--anchor-beg-point))

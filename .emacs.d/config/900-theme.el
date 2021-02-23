@@ -14,7 +14,7 @@
 
   (custom-set-faces
    '(highlight ((t :background "#484a4e" :foreground "#d5d8d6" :weight bold)))
-   '(italic ((t :family "Fantasque Sans Mono" :height 120 :slant italic)))
+   '(italic ((t :family "Fantasque Sans Mono" :height 110 :slant italic)))
    '(line-number ((t :background "#222326" :weight extra-light)))
    '(line-number-current-line
      ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight light :inverse-video nil)))
@@ -45,7 +45,7 @@
      `(cider-deprecated-face
        ((t :inherit font-lock-warning-face :weight ,default-weight :underline (:color "darkorange"))))
      '(cider-fringe-good-face ((t :inherit success)))
-     '(clojure-cond-condtion-face ((t :underline (:color "#696a69" :style line))))
+     '(clojure-cond-condtion-face ((t :inherit italic)))
      '(clojure-define-type-face ((t :inherit font-lock-type-face)))
      '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))

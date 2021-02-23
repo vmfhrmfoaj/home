@@ -477,7 +477,7 @@
   (setq lsp-enable-imenu nil
         lsp-enable-indentation nil
         lsp-enable-links nil
-        lsp-enable-symbol-highlighting t
+        lsp-enable-symbol-highlighting nil
         lsp-enable-on-type-formatting nil
         lsp-file-watch-threshold nil
         lsp-headerline-breadcrumb-enable nil
@@ -532,7 +532,10 @@
                                 (ignore-errors (lsp-signature-activate)))
                               (when lsp-diagnostics-mode
                                 (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t)
-                                (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t)))))
+                                (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))
+                              (when lsp-enable-symbol-highlighting
+                                (remove-hook 'lsp-on-idle-hook #'lsp--document-highlight t)
+                                (lsp--remove-overlays 'lsp-highlight)))))
                         nil t)
 
               (add-hook 'evil-insert-state-exit-hook
@@ -545,8 +548,10 @@
                                 (lsp-diagnostics--flycheck-report)))
                             (when lsp-signature-mode
                               (setq lsp-signature-prevent-stop-enable nil)
-                              (ignore-errors (lsp-signature-stop))))
-                          (setq lsp-eldoc-enable-hover t))
+                              (ignore-errors (lsp-signature-stop)))
+                            (when lsp-enable-symbol-highlighting
+                              (add-hook 'lsp-on-idle-hook #'lsp--document-highlight nil t))
+                            (setq lsp-eldoc-enable-hover t)))
                         nil t)
 
               (add-hook 'evil-operator-state-entry-hook
