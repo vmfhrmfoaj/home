@@ -601,7 +601,8 @@
         "mga" (if (lsp-feature? "workspace/symbol") #'xref-find-apropos)
         "mgs" (cond
                ((and (lsp-feature? "textDocument/documentSymbol")
-                     (not (derived-mode-p 'python-mode)))
+                     (not (or (derived-mode-p 'python-mode)
+                              (derived-mode-p 'php-mode))))
                 #'lsp-ivy-doc-symbol)
                ((lsp-feature? "workspace/symbol")
                 #'lsp-ivy-workspace-symbol-for-cur-file))

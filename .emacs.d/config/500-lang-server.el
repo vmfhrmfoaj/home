@@ -15,6 +15,15 @@
   :config
   (add-to-list 'lsp-clients-clangd-args "--header-insertion=never"))
 
+(use-package lsp-completion
+  :defer t
+  :config
+  (advice-add #'lsp-completion--sort-completions :around
+              (lambda (fn completions)
+                "Filter argument type."
+                (when (seqp completions)
+                  (funcall fn completions)))))
+
 (use-package lsp-clojure
   :defer t
   :init
