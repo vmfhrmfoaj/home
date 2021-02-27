@@ -24,6 +24,16 @@ _add_to_path() {
     fi
 }
 
+_del_from_path() {
+    local path=$1
+    if [ -n "${path}" ]; then
+        PATH=${PATH//":${path}:"/":"}
+        PATH=${PATH/#"${path}:"/}
+        PATH=${PATH/%":${path}"/}
+        export PATH
+    fi
+}
+
 _setup_for_android() {
     local android_home="${HOME}/.android"
     if [ -d ${android_home} ]; then
@@ -116,8 +126,15 @@ _setup_for_deno() {
 }
 
 _setup_for_graalvm() {
-    local graalvm_home="${HOME}/.graalvm"
+    local ver=${1:-8}
+    local graalvm_home="${HOME}/.graalvm-${ver}"
     if [ -d "${graalvm_home}" ]; then
+        if [ -n "${JAVA_HOME}" ]; then
+            _del_from_path "${JAVA_HOME}/bin"
+        fi
+        if [ -n "${GRAALVM_HOME}" ]; then
+            _del_from_path "${GRAALVM_HOME}/export-path"
+        fi
         export GRAALVM_HOME=${graalvm_home}
         export JAVA_HOME=${graalvm_home}
         _add_to_path "${graalvm_home}/export-path"
@@ -126,16 +143,17 @@ _setup_for_graalvm() {
 }
 
 _setup_for_java() {
-    local java_11_home="/usr/lib64/openjdk-11"
-    if [ -d "${java_11_home}" ]; then
-        export JAVA_HOME=${java_11_home}
-        _add_to_path "${java_11_home}/bin"
-    else
-        local java_8_home="/usr/lib64/openjdk-8"
-        if [ -d "${java_8_home}" ]; then
-            export JAVA_HOME=${java_8_home}
-            _add_to_path "${java_8_home}/bin"
+    local ver=${1:-8}
+    local java_home="/usr/lib64/openjdk-${ver}"
+    if [ -d "${java_home}" ]; then
+        if [ -n "${JAVA_HOME}" ]; then
+            _del_from_path "${JAVA_HOME}/bin"
         fi
+        if [ -n "${GRAALVM_HOME}" ]; then
+            _del_from_path "${GRAALVM_HOME}/export-path"
+        fi
+        export JAVA_HOME=${java_home}
+        _add_to_path "${java_home}/bin"
     fi
 }
 
@@ -422,8 +440,8 @@ _setup_for_android
 _setup_for_asdf
 _setup_for_exercism
 _setup_for_go
-#_setup_for_java
-_setup_for_graalvm
+#_setup_for_java 8
+_setup_for_graalvm 11
 _setup_for_locale
 _setup_for_python
 _setup_for_rust

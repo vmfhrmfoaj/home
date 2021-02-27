@@ -1,4 +1,4 @@
-{:repl {:jvm-opts ["-XX:+UnlockExperimentalVMOptions", "-XX:+UseZGC" , "-Xmx8g", "-server"]},
+{:repl {:jvm-opts ["-Xmx8g", "-server"]},
  :user {:plugins [[lein-cljfmt "0.7.0"]
                   [lein-pprint "1.3.2"]
                   [my-lein-templates "1.0.1"]

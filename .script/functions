@@ -451,20 +451,28 @@ _install_graalvm_from_tar() {
         return 255
     fi
 
-    if [ -d "${target_dir}" ]; then
-        rm -rf "${target_dir}".old
-        mv "${target_dir}" "${target_dir}".old
-    fi
-    mkdir -p "${target_dir}"
-    tar -C "${target_dir}" -xf "${tar_file}" --strip-components=1 --wildcards 'graalvm-ce-java*'
+    temp_dir=$(mktemp -d)
+    tar -C "${temp_dir}" -xf "${tar_file}" --strip-components=1 --wildcards 'graalvm-ce-java*'
     if [ $? -ne 0 ]; then
-        >&2 echo "Can't unpack '${tar_file}' to '${target_dir}'"
+        >&2 echo "Can't unpack '${tar_file}'"
         return 255;
     fi
+    ver=8
+    grep -E 'JAVA_VERSION="11.[0-9]+.[0-9]+"' "${temp_dir}/release" >/dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        ver=11
+    fi
+
+    if [ -d "${target_dir}-${ver}" ]; then
+        rm -rf "${target_dir}-${ver}".old
+        mv "${target_dir}-${ver}" "${target_dir}-${ver}".old
+    fi
+    mkdir -p $(dirname "${target_dir}")
+    mv "${temp_dir}" "${target_dir}-${ver}"
 
     cur_dir=$(pwd)
-    mkdir -p "${target_dir}/export-path"
-    cd "${target_dir}/export-path"
+    mkdir -p "${target_dir}-${ver}/export-path"
+    cd "${target_dir}-${ver}/export-path"
     for file in "../bin"/j*; do
         if [ "$(basename ${file})" = js ]; then
             continue
