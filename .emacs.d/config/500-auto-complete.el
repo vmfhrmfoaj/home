@@ -37,6 +37,11 @@
               (when (company--active-p)
                 (company-cancel))))
 
+  (add-hook 'evil-local-mode-hook
+            (lambda ()
+              (when (memq 'company-emulation-alist emulation-mode-map-alists)
+                (company-ensure-emulation-alist))))
+
   (advice-add #'company--insert-candidate :filter-args
               (lambda (args)
                 "Remove the whitespace"

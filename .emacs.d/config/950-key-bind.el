@@ -344,6 +344,11 @@
   :defer t
   :config
   (define-key cider-repl-mode-map (kbd "C-l") #'cider-repl-clear-buffer)
+  (define-key cider-repl-mode-map (kbd "RET") nil)
+
+  (evil-define-key 'normal cider-repl-mode-map
+    (kbd "RET") #'cider-repl-return)
+
   (evil-leader/set-key-for-mode 'cider-repl-mode
     "mee" #'cider-eval-last-sexp
     "mef" #'cider-eval-defun-at-point
@@ -514,13 +519,12 @@
     (kbd "M-W") #'git-timemachine-kill-revision
     (kbd "q")   #'git-timemachine-quit))
 
-(use-package ivy-hydra
-  :defer t
-  :commands (ivy-minibuffer-shrink
-             ivy-minibuffer-grow))
-
 (use-package ivy
   :defer t
+  :init
+  (evil-set-initial-state 'ivy-occur-mode      'normal)
+  (evil-set-initial-state 'ivy-occur-grep-mode 'normal)
+
   :config
   (if (not evil-want-minibuffer)
       (progn
@@ -559,11 +563,17 @@
                       (let ((input ivy-text))
                         (ivy-partial)
                         (unless (string= input ivy-text)
-                          (evil-insert-state)))))))
+                          (evil-insert-state))))))
+
+  (cl-letf (((symbol-function 'display-warning) #'ignore))
+    (evil-collection-require 'ivy)
+    (evil-collection-ivy-setup)))
 
 (use-package ivy-hydra
   :ensure t
-  :defer t)
+  :defer t
+  :commands (ivy-minibuffer-shrink
+             ivy-minibuffer-grow))
 
 (use-package lsp-mode
   :defer t
@@ -601,8 +611,8 @@
         "mga" (if (lsp-feature? "workspace/symbol") #'xref-find-apropos)
         "mgs" (cond
                ((and (lsp-feature? "textDocument/documentSymbol")
-                     (not (or (derived-mode-p 'python-mode)
-                              (derived-mode-p 'php-mode))))
+                     (not (or (derived-mode-p 'php-mode)
+                              (derived-mode-p 'python-mode))))
                 #'lsp-ivy-doc-symbol)
                ((lsp-feature? "workspace/symbol")
                 #'lsp-ivy-workspace-symbol-for-cur-file))

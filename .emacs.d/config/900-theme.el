@@ -28,6 +28,15 @@
    '(whitespace-space   ((t :background unspecified :weight extra-light)))
    '(whitespace-tab     ((t :background unspecified :weight extra-light)))))
 
+(use-package auto-dim-other-buffers
+  :defer t
+  :config
+  (custom-set-faces
+   `(auto-dim-other-buffers-face
+     ((((background dark))
+       :foreground ,(color-from 'default :foreground -5)
+       :background ,(color-from 'default :background +3))))))
+
 (use-package company
   :defer t
   :config
@@ -55,6 +64,7 @@
      `(clojure-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face
                                                     :foreground "#a35151"
                                                     :weight ,default-weight)))
+     '(clojure-semi-function-name-face ((t :inherit font-lock-function-name-face :weight bold)))
      '(clojure-side-effect-face ((t :underline t)))
      '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))
      '(clojure-special-variable-definition-face

@@ -6,6 +6,22 @@
       (byte-compile-file "~/.emacs.d/config/func.el")))
   (load-file "~/.emacs.d/config/func.elc"))
 
+(use-package auto-dim-other-buffers
+  :ensure t
+  :config
+  (add-to-list 'auto-dim-other-buffers-never-dim-buffer-functions
+               (lambda (buf)
+                 "Disable dimming focused buffer while executing `evil-ex' function."
+                 (and (eq buf (or (and (minibufferp adob--last-buffer)
+                                       ;; NOTE:
+                                       ;;  When `adob--last-buffer' was set the minibuffer,
+                                       ;;   I guess latest buffer.
+                                       (car (-drop-while #'minibufferp (buffer-list))))
+                                  adob--last-buffer))
+                      (buffer-live-p evil-ex-current-buffer))))
+
+  (auto-dim-other-buffers-mode))
+
 (use-package composite
   :defer t
   :if (version<= "27.0" emacs-version)
@@ -165,6 +181,21 @@
               (cons (point) end))))
         (bounds-of-thing-at-point 'defun)))
 
+  (defun focus--cider-repl-thing ()
+    (or (when-let ((beg-mark cider-repl-input-start-mark))
+          (save-excursion
+            (goto-char beg-mark)
+            (forward-sexp)
+            (cons (marker-position beg-mark) (point))))
+        (save-excursion
+          (let ((beg (progn
+                       (beginning-of-line)
+                       (point))))
+            (cons beg
+                  (progn
+                    (forward-sexp)
+                    (point)))))))
+
   (defun focus--go-thing ()
     (when-let ((bound
                 (or (save-excursion                   ; lambda
@@ -228,8 +259,10 @@
       (cons beg end)))
 
   (with-eval-after-load "clojure-mode"
-    (put 'clojure 'bounds-of-thing-at-point #'focus--clojure-thing)
-    (add-to-list 'focus-mode-to-thing '(clojure-mode . clojure)))
+    (put 'clojure    'bounds-of-thing-at-point #'focus--clojure-thing)
+    (put 'cider-repl 'bounds-of-thing-at-point #'focus--cider-repl-thing)
+    (add-to-list 'focus-mode-to-thing '(clojure-mode    . clojure))
+    (add-to-list 'focus-mode-to-thing '(cider-repl-mode . cider-repl)))
   (with-eval-after-load "elisp-mode"
     (put 'lisp 'bounds-of-thing-at-point #'focus--lisp-thing)
     (add-to-list 'focus-mode-to-thing '(emacs-lisp-mode . lisp)))

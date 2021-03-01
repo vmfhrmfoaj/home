@@ -306,6 +306,84 @@
                    :end-column end-col)))
          (funcall callback 'finished)))
 
+  (defun clojure-skip (&rest items)
+    "TODO"
+    (let* ((l items))
+      (while l
+        (skip-chars-forward " \r\t\n")
+        (cond
+         ((eq (car l) :comment)
+          (if (not (looking-at-p ";"))
+              (setq l (cdr l))
+            (setq l (-remove-item :comment items))
+            (comment-forward (point-max))))
+         ((eq (car l) :metadata)
+          (if (not (looking-at-p "\\^"))
+              (setq l (cdr l))
+            (setq l (-remove-item :metadata items))
+            (forward-sexp 1)))
+         ((eq (car l) :ignored-form)
+          (if (not (looking-at-p "#_\\|,"))
+              (setq l (cdr l))
+            (setq l (-remove-item :ignored-form items))
+            (or (/= 0 (skip-chars-forward ","))
+                (forward-sexp (if (looking-at-p "#_\\s(") 2 1)))
+            (clojure-skip :ignored-form)))
+         ((eq (car l) :tagged-literal)
+          (if (not (looking-at-p "#[0-9A-Za-z]"))
+              (setq l (cdr l))
+            (setq l (-remove-item :tagged-literal items))
+            (forward-sexp 1)
+            (clojure-skip :tagged-literal)))
+         ((eq (car l) :destructuring-bind)
+          (if (not (looking-at-p "{\\|\\["))
+              (setq l (cdr l))
+            (setq l (-remove-item :destructuring-bind items))
+            (forward-sexp 1)
+            (when (car l)
+              (apply #'clojure-skip l))
+            (forward-sexp 1)
+            (clojure-skip :destructuring-bind)))
+         ((eq (car l) :string)
+          (if (not (looking-at-p "\""))
+              (setq l (cdr l))
+            (setq l (-remove-item :string items))
+            (forward-sexp 1)
+            (clojure-skip :string)))
+         ((eq (car l) :map)
+          (if (not (looking-at-p "{"))
+              (setq l (cdr l))
+            (setq l (-remove-item :map items))
+            (forward-sexp 1)
+            (clojure-skip :map)))
+         ((eq (car l) :vector)
+          (if (not (looking-at-p "\\["))
+              (setq l (cdr l))
+            (setq l (-remove-item :vector items))
+            (forward-sexp 1)
+            (clojure-skip :vector)))
+         (t (setq l (cdr l)))))))
+
+  (defun clojure-forward-sexp (&optional n)
+    "TODO"
+    (or n (setq n 1))
+    (while (< 0 n)
+      (clojure-skip :comment :ignored-form :tagged-literal)
+      (forward-sexp 1)
+      (setq n (1- n))))
+
+  (defun clojure--custom-not-function-form-p ()
+    "Customize `clojure--not-function-form-p' function for return type-hint."
+    (or (member (char-after) '(?\[ ?\{))
+        (save-excursion ;; Catch #?@ (:cljs ...)
+          (skip-chars-backward "\r\n[:blank:]")
+          (when (eq (char-before) ?@)
+            (forward-char -1))
+          (and (eq (char-before) ?\?)
+               (eq (char-before (1- (point))) ?\#)))
+        ;; Car of form is not a symbol.
+        (not (looking-at ".\\(?:\\^[0-9A-Za-z]+\\s-+\\)?\\(?:\\sw\\|\\s_\\)"))))
+
   (defcustom clojure-clj-spec-reqs
     '([clojure.spec.alpha :as spec])
     "TODO")
@@ -380,13 +458,13 @@
   (with-eval-after-load "flycheck"
     (unless (flycheck-valid-checker-p 'clj-cider-repl)
       (flycheck-define-generic-checker
-          'clj-cider-repl
-        "A syntax checker using the Cider REPL provided."
-        :start #'clojure--flycheck-start
-        :modes '(clojure-mode clojurescript-mode clojurec-mode)
-        :predicate (lambda ()
-                     (when (fboundp #'cider-connected-p)
-                       (cider-connected-p)))))
+       'clj-cider-repl
+       "A syntax checker using the Cider REPL provided."
+       :start #'clojure--flycheck-start
+       :modes '(clojure-mode clojurescript-mode clojurec-mode)
+       :predicate (lambda ()
+                    (when (fboundp #'cider-connected-p)
+                      (cider-connected-p)))))
     (add-to-list 'flycheck-checkers 'clj-cider-repl))
 
   (add-hook 'clojure-mode-hook
@@ -410,7 +488,8 @@
                   (flycheck-select-checker 'clj-cider-repl))))
             :append)
 
-  (advice-add #'clojure-font-lock-def-at-point :override #'clojure-font-lock-kw-at-point))
+  (advice-add #'clojure-font-lock-def-at-point :override #'clojure-font-lock-kw-at-point)
+  (advice-add #'clojure--not-function-form-p :override #'clojure--custom-not-function-form-p))
 
 (use-package edn
   :ensure t

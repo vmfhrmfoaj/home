@@ -40,6 +40,14 @@
               (when (and (derived-mode-p 'clojure-mode) (featurep 'cider))
                 (setq cider-dynamic-indentation nil))))
 
+  (advice-add #'aggressive-indent--keep-track-of-changes
+              :before-until
+              (lambda (l r &rest _)
+                "Prevent to indent changed region when inserting REPL output on `cider-repl-mode'."
+                (when (and (derived-mode-p 'cider-repl-mode)
+                           (< l (marker-position cider-repl-input-start-mark)))
+                  t)))
+
   (advice-add #'indent-region :around
               (lambda (fn &rest args)
                 "Wrap to hide 'Intending region... done' message"

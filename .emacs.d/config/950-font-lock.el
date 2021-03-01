@@ -231,75 +231,6 @@
     :safe 'integerp)
 
   :config
-  (defun clojure-skip (direction-or-item &rest items)
-    "TODO"
-    (let* ((direction (if (and (numberp direction-or-item) (> 0 direction-or-item)) (- 1) (+ 1)))
-           (items     (if (numberp direction-or-item) items (cons direction-or-item items)))
-           (l items))
-      (while l
-        (skip-chars-forward " \r\t\n")
-        (cond
-         ((eq (car l) :comment)
-          (if (not (looking-at-p ";"))
-              (setq l (cdr l))
-            (setq l (-remove-item :comment items))
-            (comment-forward (point-max))))
-         ((eq (car l) :type-hint)
-          (if (not (looking-at-p "\\^"))
-              (setq l (cdr l))
-            (setq l (-remove-item :type-hint items))
-            (forward-sexp direction)))
-         ((eq (car l) :ignored-form)
-          (if (not (looking-at-p "#_\\|,"))
-              (setq l (cdr l))
-            (setq l (-remove-item :ignored-form items))
-            (or (/= 0 (skip-chars-forward ","))
-                (forward-sexp (if (looking-at-p "#_\\s(") (* direction 2) (* direction 1))))
-            (clojure-skip :ignored-form)))
-         ((eq (car l) :tagged-literal)
-          (if (not (looking-at-p "#[0-9A-Za-z]"))
-              (setq l (cdr l))
-            (setq l (-remove-item :tagged-literal items))
-            (forward-sexp direction)
-            (clojure-skip :tagged-literal)))
-         ((eq (car l) :destructuring-bind)
-          (if (not (looking-at-p "{\\|\\["))
-              (setq l (cdr l))
-            (setq l (-remove-item :destructuring-bind items))
-            (forward-sexp direction)
-            (when (car l)
-              (apply #'clojure-skip l))
-            (forward-sexp direction)
-            (clojure-skip :destructuring-bind)))
-         ((eq (car l) :string)
-          (if (not (looking-at-p "\""))
-              (setq l (cdr l))
-            (setq l (-remove-item :string items))
-            (forward-sexp direction)
-            (clojure-skip :string)))
-         ((eq (car l) :map)
-          (if (not (looking-at-p "{"))
-              (setq l (cdr l))
-            (setq l (-remove-item :map items))
-            (forward-sexp direction)
-            (clojure-skip :map)))
-         ((eq (car l) :vector)
-          (if (not (looking-at-p "\\["))
-              (setq l (cdr l))
-            (setq l (-remove-item :vector items))
-            (forward-sexp direction)
-            (clojure-skip :vector)))
-         (t (setq l (cdr l)))))))
-
-  (defun clojure-forward-sexp (&optional n)
-    "TODO"
-    (or n (setq n 1))
-    (while (not (zerop n))
-      (if (> n 0) (clojure-skip  1 :comment :ignored-form :tagged-literal))
-      (forward-sexp (if (< 0 n) 1 -1))
-      (if (< n 0) (clojure-skip -1 :comment :ignored-form :tagged-literal))
-      (setq n (funcall (if (< 0 n) '1- '1+) n))))
-
   (setq-local clojure-cond-newline--limit nil)
   (setq-local clojure-binding-form--recursive-point nil)
   (setq-local clojure-binding-form--recursive-limit nil)
@@ -327,8 +258,9 @@
            (oop-kw  (regexp-opt '("definterface" "defprotocol" "defrecord" "deftype" "extend-protocol" "extend-type" "proxy" "reify")))
            (def-kw  (regexp-opt '("defmacro" "defn" "defn-" "defmethod" "defrecord" "deftype") t))
            (important-kw (regexp-opt '(; "case" and "cond", "condp", "cond->", "cond->>" are highlighted specially
-                                       "for" "if" "if-let" "if-not" "recur" "throw" "when"
-                                       "when-let" "when-not" "while") t))
+                                       "if" "if-let" "if-not" "when" "when-let" "when-not"
+                                       "for" "loop" "recur" "while"
+                                       "catch" "throw") t))
            (highlight-kw (regexp-opt '("go-loop" "with-hard-redefs" "proxy" "reify") t))
            (clojure--binding-kw
             '("binding" "doseq" "dotimes" "for" "let" "if-let" "if-some" "when-let" "when-some" "loop" "go-loop" "with-redefs")))
@@ -341,7 +273,7 @@
                (ignore-errors
                  (when font-lock--skip
                    (error ""))
-                 (clojure-skip :comment :ignored-form :type-hint :destructuring-bind)
+                 (clojure-skip :comment :ignored-form :metadata :destructuring-bind)
                  (let ((local-limit (save-excursion (forward-sexp) (point))))
                    (unless (and (re-search-forward meta?+ns?+symbol (min local-limit limit) t)
                                 (not (string-match-p clojure--ignore-binding-highlight-regex
@@ -375,7 +307,7 @@
                    (error ""))
                  (unless clojure-binding-form--recursive-point
                    (while (and (> limit (point))
-                               (prog1 t (clojure-skip :comment :ignored-form :type-hint))
+                               (prog1 t (clojure-skip :comment :ignored-form :metadata))
                                ;; skip normal bind?
                                (not (looking-at-p "[ \r\t\n]*\\(?:{\\|\\[\\)"))
                                (prog1 t (clojure-forward-sexp 2))))
@@ -383,7 +315,7 @@
                      (setq clojure-binding-form--recursive-point (progn (down-list) (point))
                            clojure-binding-form--recursive-limit (save-excursion (up-list) (point)))))
                  (when clojure-binding-form--recursive-point
-                   (clojure-skip :comment :ignored-form :type-hint)
+                   (clojure-skip :comment :ignored-form :metadata)
                    (if (re-search-forward meta?+ns?+symbol
                                           (min limit clojure-binding-form--recursive-limit) t)
                        (progn
@@ -446,12 +378,12 @@
                  (when font-lock--skip
                    (error ""))
                  (while (and (> limit (point))
-                             (prog1 t (clojure-skip :comment :ignored-form))
+                             (prog1 t (clojure-skip :comment :ignored-form :metadata))
                              (not (looking-at-p "[ \r\t\n]*("))
                              (prog1 t (forward-sexp))))
                  (when (looking-at-p "[ \r\t\n]*(")
                    (down-list)
-                   (clojure-skip :type-hint :ignored-form)
+                   (clojure-skip :metadata :ignored-form)
                    (let ((local-limit (save-excursion (forward-sexp) (point))))
                      (if (re-search-forward symbol (min limit local-limit) t)
                          (add-to-list 'clojure-oop-fn-form--points (match-end 0))
@@ -817,7 +749,7 @@
         ;; Special forms
         (,(concat
            "(" (regexp-opt '("def" "do" "if" "let" "let*" "var" "fn" "fn*" "loop" "loop*"
-                             "recur" "throw" "try" "catch" "finally"
+                             "recur" "try" "finally" ; "recur" and "throw", "catch" was included to important-kw
                              "set!" "new" "."
                              "monitor-enter" "monitor-exit" "quote") t)
            "\\>")
@@ -984,6 +916,10 @@
               (end-of-line)
             (goto-char font-lock--anchor-beg-point))
           (0 'clojure-cond-condtion-face append)))
+
+        ;; Highlight exception variable
+        (,(concat "(catch" whitespace+ "[0-9A-Za-z]+" whitespace+ "\\(" symbol "\\)")
+         (1 'clojure-local-binding-variable-name-face))
 
         ;; Improve docstring
         (,(concat "(defprotocol" whitespace+ symbol "\\>")
