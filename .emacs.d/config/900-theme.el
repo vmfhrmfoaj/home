@@ -197,6 +197,31 @@
    '(markdown-markup-face ((t :inherit shadow :slant normal :weight light)))
    '(markdown-header-delimiter-face ((t :inherit markdown-markup-face :weight extra-light)))))
 
+(use-package org
+  :defer t
+  :config
+  (custom-set-faces
+   '(org-agenda-date ((t :foreground "dark cyan" :height 1.1)))
+   '(org-agenda-date-weekend ((t :inherit org-agenda-date)))
+   '(org-agenda-date-today ((t :inherit org-agenda-date :foreground "turquoise")))
+   '(org-block ((t :weight normal)))
+   '(org-date ((t :underline unspecified :weight light)))
+   '(org-done ((t  :weight light :box t)))
+   '(org-drawer ((t :foreground "light sky blue" :weight extra-light)))
+   `(org-hide ((t :inherit default :background unspecified :foreground ,(bg-color-from 'default))))
+   '(org-level-1 ((t :inherit outline-1 :weight bold :height 1.1)))
+   '(org-link ((t :inherit link :underline unspecified)))
+   '(org-meta-line ((t :inherit font-lock-comment-face :weight extra-light)))
+   '(org-parenthesis-context-face ((t :inherit default :weight light)))
+   '(org-property-value ((t :weight extra-light)))
+   '(org-special-keyword ((t :weight extra-light)))
+   '(org-tag ((t :weight light)))
+   '(org-todo ((t :weight light :box t)))
+   '(org-warning ((t :inherit font-lock-warning-face :underline nil))))
+  (dolist (i (number-sequence 2 8))
+    (let ((face (intern (concat "org-level-" (number-to-string i)))))
+      (set-face-attribute face nil :weight 'bold))))
+
 (use-package php-mode
   :defer t
   :config

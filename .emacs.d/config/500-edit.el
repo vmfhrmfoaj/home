@@ -143,7 +143,23 @@ So, replaced `evil-jump-item' to this function."
 
 (use-package smartparens-config
   :ensure smartparens
-  :after smartparens)
+  :after smartparens
+  :config
+  (defun sp--org-checkbox-p (_id _action _context)
+    (save-match-data
+      (save-excursion
+        (beginning-of-line)
+        (and (re-search-forward "^\\s-*\\(?:-\\|[0-9]+\\.\\) \\[\\(?:\\]\\|$\\)" (line-end-position) t) t))))
+
+  (defun sp--org-checkbox-handler (id action context)
+    (when (and (string-equal id "[")
+               (eq action 'insert)
+               (sp--org-checkbox-p id action context))
+      (insert " ")
+      (skip-chars-forward "[^[]")
+      (insert " ")))
+
+  (sp-local-pair 'org-mode "[" "]" :post-handlers '(:add sp--org-checkbox-handler)))
 
 (use-package undo-tree
   :ensure t
