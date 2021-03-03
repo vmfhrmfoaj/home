@@ -155,18 +155,11 @@ which see."
         ;; org-agenda-tags-column org-tags-column
         org-agenda-window-setup 'current-window)
 
-  (with-eval-after-load "persp-mode"
-    (let ((f (lambda (&rest _)
-               (persp-switch-to-org))))
-      (dolist (target-fn '(org-clock-jump-to-current-clock
-                           org-search-view
-                           org-tags-view
-                           org-todo-list))
-        (advice-add target-fn :before f)))
-    (add-hook 'org-agenda-mode-hook
-              (lambda ()
-                (when (string-equal persp-org-name (persp-current-name))
-                  (persp-add-buffer-without-switch))))))
+  (add-hook 'window-size-change-functions
+            (lambda (&rest _)
+              (when (derived-mode-p 'org-agenda-mode)
+                (print 'hey)
+                (org-agenda-redo)))))
 
 (use-package org-capture
   :defer t
