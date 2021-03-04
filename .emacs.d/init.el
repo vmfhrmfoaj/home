@@ -1,7 +1,7 @@
 (setq comp-deferred-compilation t
       comp-async-report-warnings-errors nil
       custom-file "~/.emacs.d/.custom.el"
-      gc-cons-threshold (* 1024 1024 64)
+      gc-cons-threshold (* 1024 1024 128)
       inhibit-startup-screen t)
 (when (file-exists-p custom-file)
   (add-hook 'emacs-startup-hook (lambda () (load custom-file))))

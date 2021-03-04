@@ -12,7 +12,7 @@
          (main-monitor-y (nth 1 workarea))
          (main-monitor-w (nth 2 workarea))
          (main-monitor-h (nth 3 workarea))
-         (x-offset 190)
+         (x-offset 200)
          (x main-monitor-x)
          (y main-monitor-y)
          (h main-monitor-h)
@@ -36,16 +36,24 @@
                                     `(left . ,x)
                                     '(undecorated . nil))
           split-width-threshold main-monitor-w
-          sidebar-title "Sidebar")
-    (add-hook 'window-setup-hook
-              (lambda ()
-                (let ((w (- x main-monitor-x (* oc (frame-char-width)))))
-                  (setq sidebar-frame (make-frame `((name . ,sidebar-title))))
-                  (set-frame-position sidebar-frame main-monitor-x main-monitor-y)
-                  (set-frame-size     sidebar-frame w h t)
-                  (with-selected-frame sidebar-frame
-                    (org-agenda-show-list))
-                  (x-focus-frame cur))))))
+          sidebar-title "Sidebar"
+          sidebar-w (- x main-monitor-x (* oc (frame-char-width)))
+          sidebar--width-change-timer nil)
+    (add-hook
+     'window-setup-hook
+     (-partial #'make-thread
+               (lambda ()
+                 (let ((w sidebar-w))
+                   (setq sidebar-frame (make-frame `((sig    . ,sidebar-title)
+                                                     (width  . (text-pixels . ,w))
+                                                     (height . (text-pixels . ,h)))))
+                   (set-frame-position sidebar-frame main-monitor-x main-monitor-y)
+                   (sit-for 0.01)
+                   (set-frame-size sidebar-frame w h t)
+                   (x-focus-frame cur)
+                   (with-selected-frame sidebar-frame
+                     (ignore-errors
+                       (org-agenda-show-list)))))))))
 
 (use-package winum
   :ensure t
@@ -57,7 +65,10 @@
     (when (string-match-p "^\\s-*\\*Treemacs-Scoped-Buffer-" (buffer-name)) 0))
 
   (defun winum-assign-9-to-treemacs ()
-    (when (string-equal sidebar-title (frame-parameter nil 'name)) 9))
+    (when (and (string-equal sidebar-title (frame-parameter nil 'sig))
+               (not (ignore-errors
+                      (aref (winum--get-window-vector) 9))))
+      9))
 
   (add-to-list 'winum-assign-functions #'winum-assign-0-to-treemacs)
   (add-to-list 'winum-assign-functions #'winum-assign-9-to-treemacs)

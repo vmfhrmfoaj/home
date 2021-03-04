@@ -14,10 +14,7 @@
 
 (use-package projectile
   :ensure t
-  :defer t
   :diminish ""
-  :commands (projectile-project-root
-             projectile-project-buffers)
   :init
   (defun projectile-switch-to-previous-buffer ()
     (interactive)

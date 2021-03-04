@@ -25,10 +25,10 @@
                                  ("/mnt/ext/Open_Sources/" . "~/Desktop/Open_Sources/")
                                  ("/mnt/ext/Libraries/"    . "~/Desktop/Libraries/")
                                  ("/mnt/ext2/Downloads/"   . "~/Downloads/"))
-        exclude-prev-buf-regex (concat "^\\s-*\\(?:"
-                                       "\\*\\|"
-                                       "markdown-code-fontification:\\|"
-                                       "magit\\(?:-[a-z]+\\)?:"
+        exclude-prev-buf-regex (concat "^\\s-*"
+                                       "\\(?:\\*"
+                                       "\\|markdown-code-fontification:"
+                                       "\\|magit\\(?:-[a-z]+\\)?:"
                                        "\\)")
         frame-title-format (let ((tail system-name))
                              `("%e" (:eval (concat (when-let ((proj-name (and (fboundp 'projectile-project-name)
@@ -36,8 +36,9 @@
                                                      (concat "｢" proj-name "｣ - "))
                                                    ,tail))))
         include-prev-buf-regex (concat "^\\s-*\\(?:"
-                                       (regexp-opt '("*scratch*" "*emacs-lisp REPL*")) "\\|"
-                                       "\\*eshell\\s-"
+                                       (regexp-opt '("*scratch*" "*emacs-lisp REPL*"))
+                                       "\\|\\*eshell\\s-"
+                                       "\\|\\*Org"
                                        "\\)")
         initial-major-mode 'text-mode
         initial-scratch-message ""

@@ -130,6 +130,7 @@ which see."
     (org-agenda-list)
     (call-interactively #'org-agenda-redo)
     (setq-local default-directory (concat home-dir "/Desktop/Org/")
+                frame--width (frame-width)
                 projectile-project-name "Org"))
 
   :config
@@ -157,9 +158,11 @@ which see."
 
   (add-hook 'window-size-change-functions
             (lambda (&rest _)
-              (when (derived-mode-p 'org-agenda-mode)
-                (print 'hey)
-                (org-agenda-redo)))))
+              (when (and (derived-mode-p 'org-agenda-mode)
+                         (boundp 'frame--width)
+                         (not (= frame--width (frame-width))))
+                (setq-local frame--width (frame-width))
+                (org-agenda-align-tags)))))
 
 (use-package org-capture
   :defer t
@@ -185,7 +188,8 @@ which see."
                     ":Effort:   %^{Effort|1:00|3:00|6:00|1d|3d|1w|2w|3w|1m|3m|6m|9m|1y}" "\n"
                     ":END:"                                                              "\n"
                     "\n"
-                    "%?")
+                    "%?"
+                    "\n")
            :prepend t)
           ("p" "Protocol" entry
            (file+headline ,(concat org-directory "/todos/" (format-time-string "%Y") ".org")
@@ -200,7 +204,8 @@ which see."
                     "  #+begin_quote" "\n"
                     "  %i"            "\n"
                     "  #+end_quote"   "\n"
-                    "%?")
+                    "%?"
+                    "\n")
            :prepend t)
           ("L" "Protocol Link" entry
            (file+headline ,(concat org-directory "/todos/" (format-time-string "%Y") ".org")
@@ -212,7 +217,8 @@ which see."
                     "\n"
                     "%t"   "\n"
                     "- %a" "\n"
-                    "%?")
+                    "%?"
+                    "\n")
            :prepend t))))
 
 (use-package org-clock
