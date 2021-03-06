@@ -260,22 +260,26 @@
 (defvar scratch-buffer-name "*scratch*")
 (defvar scratch-buffer-temp-file "~/.emacs.d/scratch")
 
-(defun get-scratch-buffer-create ()
+(defvar scratch-major-mode 'text-mode)
+
+(defun pop-to-scratch-buffer ()
   (interactive)
   (pop-to-buffer (get-buffer-create scratch-buffer-name))
-  (unless (eq initial-major-mode major-mode)
-    (funcall initial-major-mode)
+  (unless (eq scratch-major-mode major-mode)
+    (funcall scratch-major-mode)
     (evil-local-set-key 'normal (kbd "C-l") (lambda () (interactive) (kill-region (point-min) (point-max))))
     (when (file-exists-p scratch-buffer-temp-file)
       (insert-file-contents scratch-buffer-temp-file))
     (add-hook 'kill-buffer-hook
               (lambda ()
-                (when-let ((buf (and (stringp scratch-buffer-temp-file)
-                                     (get-buffer scratch-buffer-name))))
-                  (with-current-buffer buf
-                    (write-region (point-min) (point-max) scratch-buffer-temp-file))))
-              nil
-              'local)))
+                (when-let ((buf (stringp scratch-buffer-temp-file)))
+                  (write-region (point-min) (point-max) scratch-buffer-temp-file)))
+              nil 'local)
+    (setq-local default-directory (concat home-dir "/Desktop/Org/")
+                projectile-project-name "Org"))
+  (when (= (point-min) (point-max))
+    (goto-char (point-min))
+    (insert "* ")))
 
 (defun kill-new-buffer-file-name ()
   (interactive)

@@ -1186,7 +1186,11 @@
 
   (defface org-parenthesis-context-face
     '((t (:inherit default)))
-    "Org listing face")
+    "Org parenthesis face")
+
+  (defface org-task-done
+    '((t (:inherit org-headline-done)))
+    "Org complete task face")
 
   :config
   (font-lock-add-keywords
@@ -1210,7 +1214,7 @@
                 ((string-equal x " ") ,square)
                 ((string-equal x "-") ,minus-square)
                 ((string-equal x "X") ,check-square)))
-              (put-text-property s e 'display '(raise  0.05))
+              (put-text-property s e 'display '(raise -0.1))
               (list :family "Font Awesome 5 Free"
                     :foreground (if (string-equal x "X")
                                     ,org-done-face
@@ -1218,8 +1222,10 @@
         t)
        ("^\\s-*\\(-\\) "
         1 'org-list-face)
-       ("^\\s-*\\(\\([0-9]\\.\\)\\) "
+       ("^\\s-*\\(\\([0-9][).]\\)\\) "
         1 'org-list-face)
+       ("^\\s-*\\(?:[-+]\\|[0-9]+[).]\\)\\s-+\\[\\(?:X\\)\\]\\s-+\\([^\r\n]+\\)"
+        1 'org-task-done prepend)
        ("\\((.+?)\\)"
         1 'org-parenthesis-context-face)
        ("\\(\\\\\\\\\\|:\\)\\s-*$"

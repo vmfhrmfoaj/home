@@ -113,7 +113,8 @@
                         view-mode)))
       (remove-hook 'pre-command-hook #'setup-smartparens-once)
       (smartparens-global-mode 1)
-      (show-smartparens-global-mode 1)))
+      (show-smartparens-global-mode 1)
+      (fmakunbound #'setup-smartparens-once)))
 
   (add-hook 'pre-command-hook #'setup-smartparens-once)
 

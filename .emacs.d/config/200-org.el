@@ -79,7 +79,8 @@ which see."
         org-log-into-drawer t
         org-pretty-entities t
         org-src-fontify-natively t
-        org-startup-indented t
+        org-startup-indented nil
+        org-adapt-indentation nil
         org-startup-with-inline-images t
         org-todo-keywords '((sequence "TODO(t)" "PLANNING" "NEXT(n)" "|" "DONE(d)")
                             (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)"))
@@ -127,11 +128,15 @@ which see."
 
   (defun org-agenda-show-list ()
     (interactive)
-    (org-agenda-list)
-    (call-interactively #'org-agenda-redo)
-    (setq-local default-directory (concat home-dir "/Desktop/Org/")
-                frame--width (frame-width)
-                projectile-project-name "Org"))
+    (if (and (boundp 'org-agenda-buffer)
+             (buffer-live-p org-agenda-buffer))
+        (switch-to-buffer org-agenda-buffer)
+      (org-agenda-list)
+      (call-interactively #'org-agenda-redo)
+      (setq-local default-directory (concat home-dir "/Desktop/Org/")
+                  frame--width (frame-width)
+                  projectile-project-name "Org"))
+    (org-agenda-goto-today))
 
   :config
   (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0))
@@ -142,6 +147,8 @@ which see."
         org-agenda-deadline-leaders  '("Deadline:  " "In %03d d.: " "%02d d. ago: ")
         org-agenda-skip-deadline-if-done t
         org-agenda-skip-scheduled-if-deadline-is-shown t
+        org-agenda-skip-timestamp-if-done t
+        org-agenda-skip-timestamp-if-deadline-is-shown t
         org-agenda-skip-function-global
         (lambda ()
           (and (string-match-p "(a)" org-agenda-buffer-name)
@@ -154,7 +161,12 @@ which see."
                                       (search category-keep))
         org-agenda-sticky t
         ;; org-agenda-tags-column org-tags-column
-        org-agenda-window-setup 'current-window)
+        org-agenda-window-setup 'current-window
+        org-agenda-prefix-format '((agenda . " ")
+                                   (todo   . " ")
+                                   (tags   . " ")
+                                   (search . " "))
+        org-agenda-remove-tags t)
 
   (add-hook 'window-size-change-functions
             (lambda (&rest _)

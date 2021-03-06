@@ -227,7 +227,7 @@
                 (flycheck-error-message err)) 'error err))
      flycheck-current-errors))
 
-  (setq flycheck-display-errors-delay 0.25
+  (setq flycheck-display-errors-delay 0.7
         flycheck-flake8-maximum-line-length 120)
 
   (add-hook 'flycheck-mode-hook
@@ -432,7 +432,7 @@
             (tag-node-open    . ,visit-prefer-fn)
             (tag-node-closed  . ,visit-prefer-fn)
             (tag-node         . ,visit-fn)))
-        treemacs-width 40)
+        treemacs-width 50)
 
   (treemacs-resize-icons 15)
 
@@ -452,9 +452,15 @@
                        :background treemacs--not-selected-icon-background)))))))
 
 (use-package treemacs-compatibility
-  :after (treemacs winum)
-  :config
-  (-update->> winum-ignored-buffers-regexp (--remove (string-equal " \\*Treemacs-Scoped-Buffer-" it))))
+  :defer t
+  :init
+  (defun treemacs-compatibility--undo-for-winum ()
+    (remove-hook 'winum-mode-hook #'treemacs-compatibility--undo-for-winum)
+    (-update->> winum-ignored-buffers-regexp
+                (--remove (string-equal (regexp-quote (format "%sScoped-Buffer-" treemacs--buffer-name-prefix)) it)))
+    (fmakunbound #'treemacs-compatibility--undo-for-winum))
+
+  (add-hook 'winum-mode-hook #'treemacs-compatibility--undo-for-winum))
 
 (use-package treemacs-evil
   :ensure t

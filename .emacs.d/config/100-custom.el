@@ -26,7 +26,7 @@
                                  ("/mnt/ext/Libraries/"    . "~/Desktop/Libraries/")
                                  ("/mnt/ext2/Downloads/"   . "~/Downloads/"))
         exclude-prev-buf-regex (concat "^\\s-*"
-                                       "\\(?:\\*"
+                                       "\\(\\*"
                                        "\\|markdown-code-fontification:"
                                        "\\|magit\\(?:-[a-z]+\\)?:"
                                        "\\)")
@@ -39,8 +39,9 @@
                                        (regexp-opt '("*scratch*" "*emacs-lisp REPL*"))
                                        "\\|\\*eshell\\s-"
                                        "\\|\\*Org"
+                                       "\\|\\*cider-repl"
                                        "\\)")
-        initial-major-mode 'text-mode
+        scratch-major-mode 'org-mode
         initial-scratch-message ""
         mouse-avoidance-timer (run-with-idle-timer
                                0.1 t

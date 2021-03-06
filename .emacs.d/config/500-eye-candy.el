@@ -38,12 +38,13 @@
   (add-to-list 'auto-dim-other-buffers-never-dim-buffer-functions
                (lambda (buf)
                  "Disable dimming focused buffer while executing `evil-ex' function."
-                 (and (eq buf (or (and (minibufferp adob--last-buffer)
-                                       ;; NOTE:
-                                       ;;  When `adob--last-buffer' was set the minibuffer,
-                                       ;;   I guess latest buffer.
-                                       (car (-drop-while #'minibufferp (buffer-list))))
-                                  adob--last-buffer))
+                 (and (eq buf (or
+                               ;; NOTE:
+                               ;;  When `adob--last-buffer' was set the minibuffer,
+                               ;;   I guess latest buffer.
+                               (and (minibufferp adob--last-buffer)
+                                    (car (-drop-while #'minibufferp (buffer-list))))
+                               adob--last-buffer))
                       (buffer-live-p evil-ex-current-buffer))))
 
   (setq adob--focus-change-debounce-delay 0.1)

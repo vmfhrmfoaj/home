@@ -149,7 +149,7 @@
     "bd" #'projectile-kill-buffer
     "be" #'eldoc-doc-buffer
     "bk" #'kill-buffer
-    "bs" #'get-scratch-buffer-create
+    "bs" #'pop-to-scratch-buffer
 
     ;; error
     "en" #'flycheck-next-error
@@ -258,7 +258,7 @@
     ;; window
     "w-" #'split-window-vertically
     "w=" #'balance-windows
-    "w|" #'split-window-horizontally
+    "w\\" #'split-window-horizontally
     "wh" #'windmove-left
     "wj" #'windmove-down
     "wk" #'windmove-up
@@ -881,7 +881,8 @@
   (defun eshell-setup-once-for-evil-keybinding ()
     (remove-hook 'eshell-mode-hook #'eshell-setup-once-for-evil-keybinding)
     (cl-letf (((symbol-function 'display-warning) #'ignore))
-      (evil-collection-require 'eshell)))
+      (evil-collection-require 'eshell))
+    (fmakunbound #'eshell-setup-once-for-evil-keybinding))
 
   (add-hook 'eshell-mode-hook #'eshell-setup-once-for-evil-keybinding)
 
@@ -922,7 +923,8 @@
   (defun magit-setup-once-for-evil-keybinding ()
     (remove-hook 'magit-mode-hook #'magit-setup-once-for-evil-keybinding)
     (cl-letf (((symbol-function 'display-warning) #'ignore))
-      (evil-collection-require 'magit)))
+      (evil-collection-require 'magit))
+    (fmakunbound #'magit-setup-once-for-evil-keybinding))
 
   (add-hook 'magit-mode-hook #'magit-setup-once-for-evil-keybinding)
 

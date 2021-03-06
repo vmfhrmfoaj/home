@@ -48,12 +48,14 @@
                                                      (width  . (text-pixels . ,w))
                                                      (height . (text-pixels . ,h)))))
                    (set-frame-position sidebar-frame main-monitor-x main-monitor-y)
-                   (sit-for 0.01)
+                   (sit-for 0.05)
                    (set-frame-size sidebar-frame w h t)
+                   (sit-for 0.05)
                    (x-focus-frame cur)
                    (with-selected-frame sidebar-frame
                      (ignore-errors
-                       (org-agenda-show-list)))))))))
+                       (org-agenda-show-list)
+                       (pop-to-scratch-buffer)))))))))
 
 (use-package winum
   :ensure t
@@ -62,7 +64,8 @@
         winum-auto-assign-0-to-minibuffer nil)
 
   (defun winum-assign-0-to-treemacs ()
-    (when (string-match-p "^\\s-*\\*Treemacs-Scoped-Buffer-" (buffer-name)) 0))
+    (when (string-match-p "^\\s-*\\*Treemacs-Scoped-Buffer-" (buffer-name))
+      0))
 
   (defun winum-assign-9-to-treemacs ()
     (when (and (string-equal sidebar-title (frame-parameter nil 'sig))
@@ -70,6 +73,12 @@
                       (aref (winum--get-window-vector) 9))))
       9))
 
+  (defun winum-assign-8-to-treemacs ()
+    (when (and (string-equal sidebar-title (frame-parameter nil 'sig))
+               (string-equal scratch-buffer-name (buffer-name)))
+      8))
+
   (add-to-list 'winum-assign-functions #'winum-assign-0-to-treemacs)
+  (add-to-list 'winum-assign-functions #'winum-assign-8-to-treemacs)
   (add-to-list 'winum-assign-functions #'winum-assign-9-to-treemacs)
   (winum-mode))

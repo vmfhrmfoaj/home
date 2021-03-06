@@ -83,14 +83,10 @@
                                msg)))))
     msg)
 
-  (defun magit-setup ()
-    (remove-hook 'magit-mode-hook #'magit-setup))
-
   (setq magit-bury-buffer-function #'magit-mode-quit-window
         magit-diff-refine-hunk t
         magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
 
-  (add-hook 'magit-mode-hook #'magit-setup)
   (-update->> magit-status-sections-hook
               (-replace-first 'magit-insert-unpushed-to-upstream-or-recent
                               'magit-insert-unpushed-to-upstream))

@@ -13,20 +13,19 @@
   (load-theme 'base16-tomorrow-night t)
 
   (custom-set-faces
-   '(highlight ((t :background "#484a4e" :foreground "#d5d8d6" :weight bold)))
-   '(italic ((t :family "Fantasque Sans Mono" :height 110 :slant italic)))
-   '(line-number ((t :background "#222326" :weight extra-light)))
+   '(highlight ((t :background "#484a4e" :foreground "#d5d8d6")))
+   '(line-number ((t :background "#222326" :foreground "#717371" :weight normal)))
    '(line-number-current-line
-     ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight light :inverse-video nil)))
-   '(mode-line-inactive ((t :weight light)))
-   '(mode-line ((t :weight normal)))
+     ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight normal :inverse-video nil)))
+   '(mode-line-inactive ((t :foreground "#717371" :weight normal)))
    '(region ((t :background "#760e17")))
    '(shadow ((t :weight normal)))
    '(show-paren-match ((t :background unspecified :foreground "firebrick1" :underline t)))
-   '(show-paren-mismatch ((t :background "red3" :foreground "#f0d2cd" :weight bold :underline t)))
-   '(whitespace-newline ((t :background unspecified :weight extra-light)))
-   '(whitespace-space   ((t :background unspecified :weight extra-light)))
-   '(whitespace-tab     ((t :background unspecified :weight extra-light)))))
+   '(show-paren-mismatch ((t :background "red3" :foreground "#f0d2cd" :underline t)))
+   '(org-verbatim ((t :inherit font-lock-constant-face)))
+   '(whitespace-newline ((t :background unspecified :foreground "#717371" :weight normal)))
+   '(whitespace-space   ((t :background unspecified :foreground "#717371" :weight normal)))
+   '(whitespace-tab     ((t :background unspecified :foreground "#717371" :weight normal)))))
 
 (use-package auto-dim-other-buffers
   :defer t
@@ -54,17 +53,18 @@
      `(cider-deprecated-face
        ((t :inherit font-lock-warning-face :weight ,default-weight :underline (:color "darkorange"))))
      '(cider-fringe-good-face ((t :inherit success)))
-     '(clojure-cond-condtion-face ((t :inherit italic)))
+     '(clojure-cond-condtion-face ((t :slant italic)))
      '(clojure-define-type-face ((t :inherit font-lock-type-face)))
      '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
      '(clojure-fn-parameter-unused-face ((t :inherit shadow)))
-     '(clojure-meta-face ((t :inherit shadow :weight normal)))
+     '(clojure-important-keywords-face ((t :inherit font-lock-keyword-face :slant italic)))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
+     '(clojure-meta-face ((t :inherit shadow :weight normal)))
      `(clojure-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face
                                                     :foreground "#a35151"
                                                     :weight ,default-weight)))
-     '(clojure-semi-function-name-face ((t :inherit font-lock-function-name-face :weight bold)))
+     '(clojure-semi-function-name-face ((t :inherit font-lock-function-name-face)))
      '(clojure-side-effect-face ((t :underline t)))
      '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))
      '(clojure-special-variable-definition-face
@@ -81,15 +81,15 @@
   :defer t
   :config
   (custom-set-faces
-   '(diff-refine-added   ((t :background "#22aa22" :weight bold)))
-   '(diff-refine-changed ((t :background "#aaaa22" :weight bold)))
-   '(diff-refine-removed ((t :background "#aa2222" :weight bold)))))
+   '(diff-refine-added   ((t :background "#339933")))
+   '(diff-refine-changed ((t :background "#999933")))
+   '(diff-refine-removed ((t :background "#aa3333")))))
 
 (use-package eldoc
   :defer t
   :config
   (custom-set-faces
-   '(eldoc-highlight-function-argument ((t :weight bold :underline t)))))
+   '(eldoc-highlight-function-argument ((t :underline t)))))
 
 (use-package elisp-mode
   :defer t
@@ -131,13 +131,13 @@
   :defer t
   :config
   (custom-set-faces
-   '(font-lock-comment-face ((t :weight light)))
+   '(font-lock-comment-face ((t :foreground "#717371" :weight normal)))
    '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground "#787978")))
    '(font-lock-doc-face ((t :weight normal)))
-   '(font-lock-function-name-face ((t :foreground "#85aacc" :weight bold)))
+   '(font-lock-function-name-face ((t :foreground "#85aacc")))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
-   '(font-lock-regexp-grouping-backslash ((t :weight semi-bold)))
-   '(font-lock-regexp-grouping-construct ((t :weight semi-bold)))
+   '(font-lock-regexp-grouping-backslash ((t :weight bold)))
+   '(font-lock-regexp-grouping-construct ((t :weight bold)))
    '(font-lock-string-face ((t :weight normal)))))
 
 (use-package fringe
@@ -150,8 +150,8 @@
   :defer t
   :config
   (custom-set-faces
-   '(golang-type-definition-face ((t :inherit font-lock-type-face :weight bold)))
-   '(golang-interface-method-face ((t :inherit font-lock-function-name-face :weight semi-bold)))))
+   '(golang-type-definition-face ((t :inherit font-lock-type-face)))
+   '(golang-interface-method-face ((t :inherit font-lock-function-name-face)))))
 
 (use-package hl-todo
   :defer t
@@ -160,16 +160,22 @@
     (custom-set-faces
      `(hl-todo ((t :foreground "#cc9393" :weight ,default-weight))))))
 
+(use-package highlight-parentheses
+  :defer t
+  :config
+  (custom-set-faces
+   '(highlight-parentheses-highlight ((t :underline t)))))
+
 (use-package ivy
   :defer t
   :config
   (custom-set-faces
-   '(ivy-current-match ((t :background "#5f6369" :foreground "white" :weight bold)))
+   '(ivy-current-match ((t :background "#5f6369" :foreground "white")))
    '(ivy-grep-info ((t :inherit font-lock-string-face :weight unspecified)))
-   '(ivy-minibuffer-match-face-1 ((t :background "#7d7e7f" :foreground "#535454" :weight bold)))
-   '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b" :weight bold)))
-   '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :foreground "#707099" :weight bold)))
-   '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f" :weight bold)))))
+   '(ivy-minibuffer-match-face-1 ((t :background "#7d7e7f" :foreground "#535454")))
+   '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b")))
+   '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :foreground "#707099")))
+   '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f")))))
 
 (use-package lsp-mode
   :defer t
@@ -183,19 +189,20 @@
   :defer t
   :config
   (custom-set-faces
-   '(magit-diff-added-highlight   ((t :background "#336633" :foreground "#ddffdd" :weight bold)))
-   '(magit-diff-removed-highlight ((t :background "#663333" :foreground "#ffdddd" :weight bold)))
+   '(magit-diff-added             ((t :background "#224422" :foreground "#cceecc")))
+   '(magit-diff-added-highlight   ((t :background "#336633" :foreground "#ddffdd")))
+   '(magit-diff-removed           ((t :background "#442222" :foreground "#eecccc")))
+   '(magit-diff-removed-highlight ((t :background "#663333" :foreground "#ffdddd")))
    `(magit-diff-context
-     ((t :inherit magit-diff-context-highlight :background ,(bg-color-from 'default) :weight light)))
-   `(magit-diff-context-highlight ((t :weight normal)))
-   '(magit-diff-file-heading ((t :weight bold)))))
+     ((t :inherit magit-diff-context-highlight :background ,(bg-color-from 'default) :foreground "#717371" :weight normal)))
+   `(magit-diff-context-highlight ((t :weight normal)))))
 
 (use-package markdown-mode
   :defer t
   :config
   (custom-set-faces
-   '(markdown-markup-face ((t :inherit shadow :slant normal :weight light)))
-   '(markdown-header-delimiter-face ((t :inherit markdown-markup-face :weight extra-light)))))
+   '(markdown-markup-face ((t :foreground "#717371" :slant normal :weight normal)))
+   '(markdown-header-delimiter-face ((t :inherit markdown-markup-face)))))
 
 (use-package org
   :defer t
@@ -204,23 +211,23 @@
    '(org-agenda-date ((t :foreground "dark cyan" :height 1.1)))
    '(org-agenda-date-weekend ((t :inherit org-agenda-date)))
    '(org-agenda-date-today ((t :inherit org-agenda-date :foreground "turquoise")))
+   '(org-agenda-calendar-event ((t :foreground "#717371" :weight normal)))
    '(org-block ((t :weight normal)))
-   '(org-date ((t :underline unspecified :weight light)))
-   '(org-done ((t  :weight light :box t)))
-   '(org-drawer ((t :foreground "light sky blue" :weight extra-light)))
+   '(org-date ((t :underline unspecified :weight normal)))
+   '(org-done ((t  :weight normal :box t)))
+   '(org-drawer ((t :foreground "light sky blue" :weight normal)))
+   '(org-headline-done ((t :foreground "#a6a8a6" :weight normal)))
    `(org-hide ((t :inherit default :background unspecified :foreground ,(bg-color-from 'default))))
    '(org-level-1 ((t :inherit outline-1 :weight bold :height 1.1)))
    '(org-link ((t :inherit link :underline unspecified)))
-   '(org-meta-line ((t :inherit font-lock-comment-face :weight extra-light)))
-   '(org-parenthesis-context-face ((t :inherit default :weight light)))
-   '(org-property-value ((t :weight extra-light)))
-   '(org-special-keyword ((t :weight extra-light)))
-   '(org-tag ((t :weight light)))
-   '(org-todo ((t :weight light :box t)))
-   '(org-warning ((t :inherit font-lock-warning-face :underline nil))))
-  (dolist (i (number-sequence 2 8))
-    (let ((face (intern (concat "org-level-" (number-to-string i)))))
-      (set-face-attribute face nil :weight 'bold))))
+   '(org-meta-line ((t :inherit font-lock-comment-face)))
+   '(org-parenthesis-context-face ((t :inherit default :weight normal)))
+   '(org-property-value ((t :weight normal)))
+   '(org-special-keyword ((t :weight normal)))
+   '(org-tag ((t :weight normal)))
+   '(org-task-done ((t :inherit org-headline-done :strike-through t)))
+   '(org-todo ((t :weight normal :box t)))
+   '(org-warning ((t :inherit font-lock-warning-face :underline nil)))))
 
 (use-package php-mode
   :defer t
