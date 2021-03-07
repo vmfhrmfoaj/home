@@ -9,31 +9,23 @@
 (use-package auto-dim-other-buffers
   :ensure t
   :config
-  (defvar adob--last-focus-changed-frame nil)
+  (defvar adob--last-frame nil)
 
   (defun adob--custom-focus-change-hook ()
     "Customize for performance when using two frames(i.e., main + sidebar)."
     (if (<= adob--focus-change-debounce-delay 0)
         (adob--focus-change)
       (let ((frame (selected-frame)))
-        (when (and (eq frame adob--last-focus-changed-frame)
+        (when (and (eq frame adob--last-frame)
                    (timerp adob--focus-change-timer))
           (cancel-timer adob--focus-change-timer))
         (setq adob--focus-change-timer
               (run-with-timer adob--focus-change-debounce-delay nil
                               (lambda (frame)
                                 (with-selected-frame frame
-                                  (let ((last-buf adob--last-buffer)
-                                        (last-win adob--last-window))
-                                    (unwind-protect
-                                        (progn
-                                          (setq adob--last-buffer (current-buffer)
-                                                adob--last-window (selected-window))
-                                          (adob--focus-change))
-                                      (setq adob--last-buffer last-buf
-                                            adob--last-window last-win)))))
+                                  (adob--focus-change)))
                               frame))
-        (setq adob--last-focus-changed-frame frame))))
+        (setq adob--last-frame frame))))
 
   (add-to-list 'auto-dim-other-buffers-never-dim-buffer-functions
                (lambda (buf)
@@ -50,6 +42,7 @@
   (setq adob--focus-change-debounce-delay 0.1)
 
   (advice-add #'adob--focus-change-hook :override #'adob--custom-focus-change-hook)
+  (advice-add #'adob--rescan-windows :before-until (lambda (&rest _) adob--focus-change-timer))
 
   (auto-dim-other-buffers-mode))
 
