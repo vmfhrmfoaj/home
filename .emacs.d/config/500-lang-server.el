@@ -446,17 +446,38 @@
           max-mini-window-height)
          (t 10))))
 
-  (defun lsp--custom-eldoc-message (&optional msg)
+  (defun lsp--custom-eldoc-message-for-emacs-27 (&optional msg)
     "Show MSG in eldoc."
-    (setq lsp--eldoc-saved-message msg)
-    (let ((lines (s-lines (or msg "")))
-          (max-line lsp--max-line-eldoc-msg))
-      (eldoc-message (when lines
-                       (->> (if (<= (length lines) max-line)
-                                lines
-                              (-snoc (-take (max 1 (1- max-line)) lines) (propertize "(...)" 'face 'shadow)))
-                            (-interpose "\n")
-                            (apply #'concat))))))
+    (unless isearch-mode
+      (setq lsp--eldoc-saved-message msg)
+      (let ((lines (s-lines (or msg "")))
+            (max-line lsp--max-line-eldoc-msg))
+        (eldoc-message (when lines
+                         (->> (if (<= (length lines) max-line)
+                                  lines
+                                (-snoc (-take (max 1 (1- max-line)) lines) (propertize "(...)" 'face 'shadow)))
+                              (-interpose "\n")
+                              (apply #'concat)))))))
+
+  (defun lsp--custom-eldoc-message-for-emacs-28 (&optional msg)
+    "Show MSG in eldoc."
+    (unless isearch-mode
+      (when-let ((max-chars (-> (cond
+                                 ((floatp max-mini-window-height)
+                                  (floor (* (frame-height) max-mini-window-height)))
+                                 ((numberp max-mini-window-height)
+                                  max-mini-window-height))
+                                (1-)
+                                (* (- (frame-width) 2)))))
+        (when (< max-chars (length msg))
+          (setq msg (concat (substring msg 0 max-chars) "\n" (propertize "(...)" 'face 'shadow)))))
+      (setq lsp--eldoc-saved-message msg)
+      (eldoc-message msg)))
+
+  (defalias 'lsp--custom-eldoc-message
+    (if (version<= "28.0.50" emacs-version)
+        #'lsp--custom-eldoc-message-for-emacs-28
+      #'lsp--custom-eldoc-message-for--emacs-27))
 
   (defun lsp--signature->message-filter (msg)
     (if (stringp msg)

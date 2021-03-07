@@ -1,5 +1,6 @@
-(setq comp-deferred-compilation t
-      comp-async-report-warnings-errors nil
+(setq comp-async-report-warnings-errors nil
+      comp-deferred-compilation t
+      comp-speed 3
       custom-file "~/.emacs.d/.custom.el"
       gc-cons-threshold (* 1024 1024 128)
       inhibit-startup-screen t)
@@ -14,7 +15,8 @@
       package-archive-priorities
       '(("melpa"        . 10)
         ("gnu"          .  7)
-        ("melpa-stable" .  5)))
+        ("melpa-stable" .  5))
+      package-native-compile t)
 (package-initialize)
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)

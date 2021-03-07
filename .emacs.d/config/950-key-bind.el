@@ -189,7 +189,27 @@
     "js" #'sp-split-sexp
 
     ;; narrow
-    "nf" #'narrow-to-defun
+    "nf" (defalias 'custom-narrow-to-defun
+           (lambda ()
+             (interactive)
+             (-let (((beg . end) (bounds-of-thing-at-point 'defun)))
+               (when (or (not beg) (not end))
+                 (let ((pos (point))
+                       (beg-of-defun-func (if (functionp beginning-of-defun-function)
+                                              beginning-of-defun-function
+                                            #'beginning-of-defun))
+                       (end-of-defun-func (if (functionp end-of-defun-function)
+                                              end-of-defun-function
+                                            #'end-of-defun)))
+                   (setq end (progn (funcall end-of-defun-func) (point)))
+                   (while (not (< pos end))
+                     (setq end (progn (funcall end-of-defun-func) (point))))
+                   (setq end (line-beginning-position))
+                   (setq beg (progn (funcall beg-of-defun-func) (point)))
+                   (while (not (< beg pos))
+                     (setq beg (progn (funcall beg-of-defun-func) (point))))
+                   (setq beg (line-beginning-position))))
+               (narrow-to-region beg end))))
     "np" #'narrow-to-page
     "nr" #'narrow-to-region
     "nw" #'widen

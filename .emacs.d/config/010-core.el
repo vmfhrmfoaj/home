@@ -73,6 +73,7 @@
                 evil-move-beyond-eol t
                 evil-symbol-word-search t
                 evil-want-minibuffer t)
+  (setq evil-flash-delay 1)
 
   (advice-add #'isearch-highlight :around
               (lambda (fn &rest args)
@@ -80,6 +81,35 @@
                 (ignore-errors (apply fn args))))
 
   (evil-mode))
+
+(use-package evil-search
+  :defer t
+  :config
+  (defun evil--cusotm-flash-search-pattern (string &optional all)
+    "Customize for lazy-highlight"
+    (let ((lazy-highlight-initial-delay 0)
+          (isearch-search-fun-function 'evil-isearch-function)
+          (isearch-case-fold-search case-fold-search)
+          (disable #'(lambda (&optional _arg) (evil-flash-hook t))))
+      (when evil-flash-timer
+        (cancel-timer evil-flash-timer))
+      (unless (or (null string)
+                  (string= string ""))
+        (evil-echo-area-save)
+        (evil-echo "%s" string)
+        (isearch-highlight (match-beginning 0) (match-end 0))
+        (when all
+          (setq isearch-lazy-highlight-wrapped nil
+                isearch-lazy-highlight-start (point)
+                isearch-lazy-highlight-end (point))
+          (isearch-lazy-highlight-new-loop))
+        (add-hook 'pre-command-hook #'evil-flash-hook nil t)
+        (add-hook 'evil-operator-state-exit-hook #'evil-flash-hook nil t)
+        (add-hook 'pre-command-hook #'evil-clean-isearch-overlays nil t)
+        (setq evil-flash-timer
+              (run-at-time evil-flash-delay nil disable)))))
+
+  (advice-add #'evil-flash-search-pattern :override #'evil--cusotm-flash-search-pattern))
 
 (use-package ivy
   :ensure t

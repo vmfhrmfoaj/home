@@ -37,7 +37,7 @@
                                                    ,tail))))
         include-prev-buf-regex (concat "^\\s-*\\(?:"
                                        (regexp-opt '("*scratch*" "*emacs-lisp REPL*"))
-                                       "\\|\\*eshell\\s-"
+                                       "\\|\\*eshell"
                                        "\\|\\*Org"
                                        "\\|\\*cider-repl"
                                        "\\)")

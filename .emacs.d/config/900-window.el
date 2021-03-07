@@ -6,6 +6,8 @@
       (byte-compile-file "~/.emacs.d/config/func.el")))
   (load-file "~/.emacs.d/config/func.elc"))
 
+(defvar sidebar-sig "SIDEBAR")
+
 (when window-system
   (let* ((workarea (-some->> main-monitor (assoc 'workarea) (-drop 1)))
          (main-monitor-x (nth 0 workarea))
@@ -35,27 +37,21 @@
           initial-frame-alist (list `(top  . ,y)
                                     `(left . ,x)
                                     '(undecorated . nil))
-          split-width-threshold main-monitor-w
-          sidebar-title "Sidebar"
-          sidebar-w (- x main-monitor-x (* oc (frame-char-width)))
-          sidebar--width-change-timer nil)
+          split-width-threshold main-monitor-w)
     (add-hook
      'window-setup-hook
-     (-partial #'make-thread
-               (lambda ()
-                 (let ((w sidebar-w))
-                   (setq sidebar-frame (make-frame `((sig    . ,sidebar-title)
-                                                     (width  . (text-pixels . ,w))
-                                                     (height . (text-pixels . ,h)))))
-                   (set-frame-position sidebar-frame main-monitor-x main-monitor-y)
-                   (sit-for 0.05)
-                   (set-frame-size sidebar-frame w h t)
-                   (sit-for 0.05)
-                   (x-focus-frame cur)
-                   (with-selected-frame sidebar-frame
-                     (ignore-errors
-                       (org-agenda-show-list)
-                       (pop-to-scratch-buffer)))))))))
+     (lambda ()
+       (let ((w (- x main-monitor-x (* oc (frame-char-width)))))
+         (setq sidebar-frame (make-frame `((sig    . ,sidebar-sig)
+                                           (width  . 1)
+                                           (height . 1))))
+         (set-frame-position sidebar-frame main-monitor-x main-monitor-y)
+         (set-frame-size sidebar-frame w h t)
+         (with-selected-frame sidebar-frame
+           (ignore-errors
+             (org-agenda-show-list)
+             (pop-to-scratch-buffer)))
+         (x-focus-frame cur))))))
 
 (use-package winum
   :ensure t
@@ -68,13 +64,13 @@
       0))
 
   (defun winum-assign-9-to-treemacs ()
-    (when (and (string-equal sidebar-title (frame-parameter nil 'sig))
+    (when (and (string-equal sidebar-sig (frame-parameter nil 'sig))
                (not (ignore-errors
                       (aref (winum--get-window-vector) 9))))
       9))
 
   (defun winum-assign-8-to-treemacs ()
-    (when (and (string-equal sidebar-title (frame-parameter nil 'sig))
+    (when (and (string-equal sidebar-sig (frame-parameter nil 'sig))
                (string-equal scratch-buffer-name (buffer-name)))
       8))
 

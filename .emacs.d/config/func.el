@@ -234,14 +234,16 @@
 
 (defun switch-to-previous-buffer-in (bufs)
   (unless (window-dedicated-p)
-    (let ((visible-bufs (-map #'window-buffer (window-list))))
-      (-when-let (bufs (->> bufs
+    (let ((visible-bufs (->> (frame-list)
+                             (--mapcat (with-selected-frame it (window-list)))
+                             (-map #'window-buffer))))
+      (when-let ((bufs (->> bufs
                             (--filter (buffer-live-p it))
                             (--remove (or (minibufferp it)
                                           (let ((buf-name (buffer-name it)))
                                             (and (string-match-p exclude-prev-buf-regex buf-name)
                                                  (not (string-match-p include-prev-buf-regex buf-name))))))
-                            (sort-buffer-by-visit-time)))
+                            (sort-buffer-by-visit-time))))
         (if-let ((prev-buf (->> bufs
                                 (--remove (-contains? visible-bufs it))
                                 (-first-item))))
@@ -249,7 +251,10 @@
               (switch-to-buffer prev-buf nil t)
               prev-buf)
           (let ((visible-prev-buf (-first-item bufs)))
-            (pop-to-buffer visible-prev-buf)
+            (dolist (frame (frame-list))
+              (with-selected-frame frame
+                (when (get-buffer-window visible-prev-buf)
+                  (pop-to-buffer visible-prev-buf))))
             visible-prev-buf))))))
 
 (defun switch-to-previous-buffer ()

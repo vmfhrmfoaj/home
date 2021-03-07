@@ -457,13 +457,13 @@
 
   (setq spaceline-window-numbers-unicode t)
 
-  (make-thread
-   (lambda ()
-     (let ((fmt (spaceline--my-theme)))
-       (dolist (buf (buffer-list))
-         (with-current-buffer buf
-           (setq mode-line-format fmt)))
-       (force-mode-line-update t)))))
+  (add-hook 'window-setup-hook
+            (lambda ()
+              (let ((fmt (spaceline--my-theme)))
+                (dolist (buf (buffer-list))
+                  (with-current-buffer buf
+                    (setq mode-line-format fmt)))
+                (force-mode-line-update t)))))
 
 (use-package vi-tilde-fringe
   :if (fboundp 'define-fringe-bitmap)

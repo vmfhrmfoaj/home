@@ -918,8 +918,10 @@
           (0 'clojure-cond-condtion-face append)))
 
         ;; Highlight exception variable
-        (,(concat "(catch" whitespace+ "[0-9A-Za-z]+" whitespace+ "\\(" symbol "\\)")
-         (1 'clojure-local-binding-variable-name-face))
+        (,(concat "(catch" whitespace+ "[0-9A-Za-z]+" whitespace+ "\\(" symbol "\\)#?")
+         (1 (if (s-starts-with? "_" (match-string-no-properties 1))
+                'clojure-fn-parameter-unused-face
+              'clojure-local-binding-variable-name-face)))
 
         ;; Improve docstring
         (,(concat "(defprotocol" whitespace+ symbol "\\>")
@@ -1342,10 +1344,16 @@
                         "ascii" "breakpoint" "bytearray" "bytes" "exec"))
                       "(")
                  . (1 font-lock-builtin-face))))
-    (setf (cadddr python-font-lock-keywords-level-2) regex
-          (cadddr python-font-lock-keywords-maximum-decoration) regex))
-  (setq python-font-lock-keywords-maximum-decoration
-        (butlast python-font-lock-keywords-maximum-decoration 2))
+    (if (version<= "28.0.50" emacs-version)
+        (progn
+          (setf (cadddr python-font-lock-keywords-level-2)                  regex
+                (car (cddddr python-font-lock-keywords-maximum-decoration)) regex)
+          (setq python-font-lock-keywords-maximum-decoration
+                (butlast python-font-lock-keywords-maximum-decoration 3))) ; remove assigment highlightings
+      (setf (cadddr python-font-lock-keywords-level-2)            regex
+            (cadddr python-font-lock-keywords-maximum-decoration) regex)
+      (setq python-font-lock-keywords-maximum-decoration
+            (butlast python-font-lock-keywords-maximum-decoration 2)))) ; remove assigment highlightings
 
   (font-lock-add-keywords
    'python-mode
