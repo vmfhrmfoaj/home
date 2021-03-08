@@ -8,7 +8,8 @@
 
 (use-package company
   :ensure t
-  :hook (prog-mode . company-mode-on)
+  :hook ((prog-mode . company-mode-on)
+         (eshell-mode . company-mode-on))
   :config
   (defun company-abort-and-insert-space ()
     "`company-abort' and insert a space."
@@ -16,12 +17,19 @@
     (company-abort)
     (execute-kbd-macro (kbd "SPC")))
 
-  (setq company-backends (--remove (eq 'company-dabbrev it) company-backends)
-        company-idle-delay 0.1
-        company-echo-delay 0.2
+  (setq company-backends (->> company-backends
+                              (--map (if (listp it)
+                                         (--remove (or (eq 'company-dabbrev it)
+                                                       (eq 'company-dabbrev-code it))
+                                                   it)
+                                       (unless (or (eq 'company-dabbrev it)
+                                                   (eq 'company-dabbrev-code it))
+                                         it)))
+                              (-non-nil))
+        company-idle-delay 0
+        company-echo-delay 0.1
         company-minimum-prefix-length 1
         company-selection-wrap-around t
-        company-dabbrev-code-ignore-case t
         company-etags-ignore-case t
         company-tooltip-flip-when-above t)
 

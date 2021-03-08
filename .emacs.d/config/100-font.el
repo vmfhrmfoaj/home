@@ -24,10 +24,14 @@
       (set-fontset-font "fontset-default" 'han      font))
     (cond
      ((string-equal "Cascadia Code" font-name)
-      (add-to-list 'face-font-rescale-alist '("Fira Code"       . 0.95))
       (add-to-list 'face-font-rescale-alist '("DejaVu Sans"     . 0.95))
+      (add-to-list 'face-font-rescale-alist '("Fira Code"       . 0.95))
       (add-to-list 'face-font-rescale-alist '("Liberation Mono" . 0.95))
       (add-to-list 'face-font-rescale-alist '("Noto Sans"       . 0.95)))
      ((string-equal "Fantasque Sans Mono" font-name)
-      (add-to-list 'face-font-rescale-alist '("Font Awesome 5 Free" . 0.95))))))
+      (add-to-list 'face-font-rescale-alist '("DejaVu Sans"         . 0.9))
+      (add-to-list 'face-font-rescale-alist '("Fira Code"           . 0.9))
+      (add-to-list 'face-font-rescale-alist '("Font Awesome 5 Free" . 0.95))
+      (add-to-list 'face-font-rescale-alist '("Liberation Mono"     . 0.9))
+      (add-to-list 'face-font-rescale-alist '("Noto Sans"           . 0.9))))))
 

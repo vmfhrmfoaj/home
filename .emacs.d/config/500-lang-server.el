@@ -155,6 +155,12 @@
 
 (use-package lsp-php
   :defer t
+  :init
+  (setq lsp-intelephense-clear-cache t
+        lsp-intelephense-format-enable nil
+        lsp-intelephense-multi-root nil
+        lsp-intelephense-storage-path "/tmp/intelephense")
+
   :config
   (lsp-register-client
    (make-lsp-client :new-connection (lsp-stdio-connection

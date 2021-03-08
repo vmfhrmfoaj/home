@@ -108,6 +108,7 @@
   (evil-leader/set-key
     "<SPC>" #'counsel-M-x
     "TAB" #'projectile-switch-to-previous-buffer
+    "'" #'eshell
     "!" #'shell-command
     ";" #'comment-it
     "0" #'winum-select-window-0
@@ -146,9 +147,15 @@
     "bR" #'revert-buffer
     "ba" #'counsel-switch-buffer
     "bb" #'counsel-projectile-switch-to-buffer
-    "bd" #'projectile-kill-buffer
+    "bd" (defalias 'kill-buffer-and-delete-window
+           (lambda ()
+             (interactive)
+             (projectile-kill-buffer)
+             (when (< 1 (length (window-list)))
+               (delete-window))))
     "be" #'eldoc-doc-buffer
-    "bk" #'kill-buffer
+    "bK" #'kill-buffer
+    "bk" #'projectile-kill-buffer
     "bs" #'pop-to-scratch-buffer
 
     ;; error
@@ -216,6 +223,7 @@
 
     ;; project
     "p TAB" #'projectile-switch-latest-open-project
+    "p'" #'projectile-run-eshell
     "p!" #'projectile-run-shell-command-in-root
     "pA" #'projectile-add-known-project
     "pD" #'projectile-remove-known-project
@@ -230,7 +238,6 @@
              (let ((proj-root (projectile-project-root)))
                (with-current-buffer buf
                  (setq projectile-project-root proj-root)))))
-    "pe" #'projectile-run-eshell
     "pd" #'projectile-find-dir
     "pf" #'counsel-projectile-find-file
     "pk" #'projectile-kill-buffers
@@ -285,6 +292,15 @@
     "wl" #'windmove-right
     "wd" #'delete-window
     "wm" #'delete-other-windows
+    "wo" (defalias 'move-to-main-frame
+           (lambda ()
+             (interactive)
+             (when (string-equal sidebar-sig (frame-parameter nil 'sig))
+               (let ((buf (current-buffer)))
+                 (switch-to-previous-buffer)
+                 (with-selected-frame main-frame
+                   (switch-to-buffer buf))
+                 (x-focus-frame main-frame)))))
 
     ;; text / xwidget
     "x0" (defalias 'text-scale-reset (lambda () (interactive) (text-scale-set 0)))
@@ -452,7 +468,13 @@
   :ensure evil-collection
   :defer t
   :config
-  (evil-collection-eshell-setup))
+  (evil-collection-eshell-setup)
+  (evil-collection-eshell-setup-keys)
+  (evil-collection-define-key 'normal 'eshell-mode-map "I"
+    (lambda ()
+      (interactive)
+      (eshell-bol)
+      (evil-insert-state))))
 
 (use-package evil
   :defer t
@@ -582,6 +604,10 @@
         (define-key ivy-minibuffer-map (kbd "C-u") #'ivy-parent-dir))
     (evil-define-key 'insert ivy-minibuffer-map
       (kbd "<tab>") #'ivy-partial
+      (kbd "<C-return>") (defalias 'ivy--open-it-other-window-and-exit
+                           (lambda ()
+                             (interactive)
+                             (ivy-exit-with-action #'ivy--switch-buffer-other-window-action)))
       (kbd "C-,") #'ivy-minibuffer-shrink
       (kbd "C-.") #'ivy-minibuffer-grow
       (kbd "C-f") (lambda ()
@@ -594,6 +620,10 @@
       (kbd "C-u") #'ivy-parent-dir)
     (evil-define-key 'normal ivy-minibuffer-map
       (kbd "RET") #'ivy-done
+      (kbd "<C-return>") (defalias 'ivy--open-it-other-window-and-exit
+                           (lambda ()
+                             (interactive)
+                             (ivy-exit-with-action #'ivy--switch-buffer-other-window-action)))
       "j" #'ivy-next-line
       "k" #'ivy-previous-line
       (kbd "C-,") #'ivy-minibuffer-shrink
@@ -907,7 +937,8 @@
   (add-hook 'eshell-mode-hook #'eshell-setup-once-for-evil-keybinding)
 
   :config
-  (evil-define-key 'insert eshell-mode-map (kbd "C-l") #'eshell/clear))
+  (evil-define-key 'insert eshell-mode-map (kbd "C-l") #'eshell/clear)
+  (evil-define-key 'insert eshell-mode-map (kbd "<tab>") #'company-complete-common))
 
 (use-package help-mode
   :defer t

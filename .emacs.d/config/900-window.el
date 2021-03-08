@@ -21,8 +21,7 @@
          (wc 120)
          (oc   5) ; fringe + line-number
          (w (+ (* wc (frame-char-width))
-               (* oc (frame-char-width))))
-         (cur (selected-frame)))
+               (* oc (frame-char-width)))))
     (setq org-tags-column (- wc))
     (if (<= main-monitor-w w)
         (setq x main-monitor-x)
@@ -34,24 +33,26 @@
     (add-to-list 'default-frame-alist `(width  . (text-pixels . ,w)))
     (add-to-list 'default-frame-alist `(height . (text-pixels . ,h)))
     (setq frame-resize-pixelwise t
-          initial-frame-alist (list `(top  . ,y)
-                                    `(left . ,x)
-                                    '(undecorated . nil))
-          split-width-threshold main-monitor-w)
+          initial-frame-alist `((top  . ,y)
+                                (left . ,x)
+                                (undecorated . nil))
+          split-width-threshold main-monitor-w
+          main-frame (selected-frame))
     (add-hook
      'window-setup-hook
      (lambda ()
        (let ((w (- x main-monitor-x (* oc (frame-char-width)))))
-         (setq sidebar-frame (make-frame `((sig    . ,sidebar-sig)
-                                           (width  . 1)
-                                           (height . 1))))
+         (setq sidebar-frame (make-frame `((sig . ,sidebar-sig)
+                                           (width  . ,w)
+                                           (height . ,h)
+                                           (undecorated . nil))))
          (set-frame-position sidebar-frame main-monitor-x main-monitor-y)
          (set-frame-size sidebar-frame w h t)
          (with-selected-frame sidebar-frame
            (ignore-errors
              (org-agenda-show-list)
              (pop-to-scratch-buffer)))
-         (x-focus-frame cur))))))
+         (x-focus-frame main-frame))))))
 
 (use-package winum
   :ensure t
@@ -71,7 +72,10 @@
 
   (defun winum-assign-8-to-treemacs ()
     (when (and (string-equal sidebar-sig (frame-parameter nil 'sig))
-               (string-equal scratch-buffer-name (buffer-name)))
+               (ignore-errors
+                 (let ((vec (winum--get-window-vector)))
+                   (and (aref vec 9)
+                        (not (aref vec 8))))))
       8))
 
   (add-to-list 'winum-assign-functions #'winum-assign-0-to-treemacs)

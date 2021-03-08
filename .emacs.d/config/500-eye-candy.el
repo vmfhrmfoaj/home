@@ -165,20 +165,40 @@
       (focus-terminate)
       (redisplay t)))
 
+  (defvar company--pseudo-tooltip-bg-lines nil)
+  (defvar company--pseudo-tooltip-start-line nil)
+  (defvar focus--beg-line nil)
+  (defvar focus--end-line nil)
   (defun company--decorate-background-string (args)
-    (-let (((lines old column nl align-top) args))
-      (let ((tooltip-beg-line (-some-> company-pseudo-tooltip-overlay (overlay-start) (line-number-at-pos)))
-            (old-len (length old)))
-        (if (null align-top)
-            (let ((focus-end-line (-some-> focus-post-overlay (overlay-start) (line-number-at-pos)))
-                  (tooltip-height (length lines)))
-              (dotimes (i (- (+ tooltip-beg-line old-len) 1 focus-end-line))
-                (let ((idx (- old-len i 1)))
-                  (setf (nth idx old) (propertize (nth idx old) 'face 'focus-unfocused)))))
-          (let ((focus-beg-line (-some-> focus-pre-overlay (overlay-end) (line-number-at-pos))))
-            (dotimes (i (min old-len (- focus-beg-line tooltip-beg-line)))
-              (setf (nth i old) (propertize (nth i old) 'face 'focus-unfocused))))))
-      (list lines old column nl align-top)))
+    (if (and (overlayp focus-pre-overlay)
+             (overlayp focus-post-overlay))
+        (-let (((lines old column nl align-top) args))
+          (let ((tooltip-beg-line (if company--pseudo-tooltip-start-line
+                                      company--pseudo-tooltip-start-line
+                                    (setq company--pseudo-tooltip-start-line
+                                          (-some-> company-pseudo-tooltip-overlay (overlay-start) (line-number-at-pos)))))
+                (old-len (length old)))
+            (unless company--pseudo-tooltip-bg-lines
+              (setq company--pseudo-tooltip-bg-lines
+                    (--map (propertize it 'face 'focus-unfocused) old)))
+            (if (null align-top)
+                (let* ((focus-end-line (if focus--end-line
+                                           focus--end-line
+                                         (setq focus--end-line
+                                               (-some-> focus-post-overlay (overlay-start) (line-number-at-pos)))))
+                       (tooltip-height (length lines))
+                       (num-out-of-scope-lines (- (+ tooltip-beg-line old-len) 1 focus-end-line)))
+                  (setq old (-concat (-drop-last num-out-of-scope-lines old)
+                                     (-take-last num-out-of-scope-lines company--pseudo-tooltip-bg-lines))))
+              (let* ((focus-beg-line (if focus--beg-line
+                                         focus--beg-line
+                                       (setq focus--beg-line
+                                             (-some-> focus-pre-overlay (overlay-end) (line-number-at-pos)))))
+                     (num-out-of-scope-lines (min old-len (- focus-beg-line tooltip-beg-line))))
+                (setq old (-concat (-take num-out-of-scope-lines company--pseudo-tooltip-bg-lines)
+                                   (-drop num-out-of-scope-lines old))))))
+          (list lines old column nl align-top))
+      args))
 
   (add-hook 'evil-insert-state-entry-hook #'focus--enable)
   (add-hook 'evil-insert-state-exit-hook  #'focus--disable)
@@ -321,6 +341,20 @@
     (add-to-list 'focus-mode-to-thing '(org-mode . org)))
 
   (with-eval-after-load "company"
+    (advice-add #'company-pseudo-tooltip-show :before
+                (lambda (&rest _)
+                  "Reset variables for `company--decorate-background-string' function"
+                  (setq company--pseudo-tooltip-bg-lines nil
+                        company--pseudo-tooltip-start-line nil
+                        focus--beg-line nil
+                        focus--end-line nil)))
+    (advice-add #'company-pseudo-tooltip-hide :after
+                (lambda (&rest _)
+                  "Reset variables for `company--decorate-background-string' function"
+                  (setq company--pseudo-tooltip-bg-lines nil
+                        company--pseudo-tooltip-start-line nil
+                        focus--beg-line nil
+                        focus--end-line nil)))
     (advice-add #'company--replacement-string :filter-args #'company--decorate-background-string)))
 
 (use-package highlight-parentheses

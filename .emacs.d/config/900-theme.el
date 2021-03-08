@@ -125,7 +125,7 @@
 (use-package focus
   :defer t
   :config
-  (custom-set-faces `(focus-unfocused ((t :foreground "#606060")))))
+  (custom-set-faces `(focus-unfocused ((t :foreground "#606060" :weight normal)))))
 
 (use-package font-lock
   :defer t

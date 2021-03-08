@@ -17,6 +17,10 @@
 (use-package eshell
   :defer t
   :config
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (setq-local completion-ignore-case t)))
+
   (add-hook 'eshell-post-command-hook
             (lambda ()
               (let ((evil-move-cursor-back nil))
