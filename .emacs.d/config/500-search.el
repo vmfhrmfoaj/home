@@ -16,7 +16,10 @@
       (-concat (-drop-last 1 counsel-rg-base-command) '("--no-ignore" "%s")))
      ((stringp counsel-rg-base-command)
       (replace-in-string "%s" "--no-ignore %s" counsel-rg-base-command))
-     (t '("rg" "-M" "240" "--with-filename" "--no-heading" "--line-number" "--color" "never" "--no-ignore" "%s")))))
+     (t '("rg" "-M" "240" "--with-filename" "--no-heading" "--line-number" "--color" "never" "--no-ignore" "%s"))))
+
+  :config
+  (add-to-list 'ivy-height-alist '(counsel-rg . 30)))
 
 (use-package ivy
   :ensure t
@@ -126,6 +129,8 @@
               (funcall advancer 1)
               (cl-incf line-number))
             (nreverse candidates))))))
+
+  (add-to-list 'ivy-height-alist '(swiper . 30))
 
   (advice-add #'swiper--candidates :override #'swiper--custom-candidates))
 

@@ -13,7 +13,9 @@
   (load-theme 'base16-tomorrow-night t)
 
   (custom-set-faces
+   '(fixed-pitch ((t :inherit default)))
    '(highlight ((t :background "#484a4e" :foreground "#d5d8d6")))
+   '(italic ((t :slant italic)))
    '(line-number ((t :background "#222326" :foreground "#717371" :weight normal)))
    '(line-number-current-line
      ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight normal :inverse-video nil)))
@@ -25,7 +27,8 @@
    '(org-verbatim ((t :inherit font-lock-constant-face)))
    '(whitespace-newline ((t :background unspecified :foreground "#717371" :weight normal)))
    '(whitespace-space   ((t :background unspecified :foreground "#717371" :weight normal)))
-   '(whitespace-tab     ((t :background unspecified :foreground "#717371" :weight normal)))))
+   '(whitespace-tab     ((t :background unspecified :foreground "#717371" :weight normal)))
+   '(vertical-border ((t :foreground "#222326")))))
 
 (use-package auto-dim-other-buffers
   :defer t
@@ -33,8 +36,8 @@
   (custom-set-faces
    `(auto-dim-other-buffers-face
      ((((background dark))
-       :foreground ,(color-from 'default :foreground -5)
-       :background ,(color-from 'default :background +3))))))
+       :foreground ,(color-from 'default :foreground -10)
+       :background ,(color-from 'default :background 4))))))
 
 (use-package company
   :defer t
@@ -99,6 +102,12 @@
      `(lisp-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face
                                                  :foreground "#a35151"
                                                  :weight ,default-weight))))))
+
+(use-package eshell
+  :defer t
+  :config
+  (custom-set-faces
+   '(eshell-prompt ((t :inherit shadow)))))
 
 (use-package evil-goggles
   :defer t
@@ -214,11 +223,10 @@
    '(org-agenda-calendar-event ((t :weight normal)))
    '(org-block ((t :weight normal)))
    '(org-date ((t :underline unspecified :weight normal)))
-   '(org-done ((t  :weight normal :underline t)))
+   '(org-done ((t  :weight normal :inverse-video t)))
    '(org-drawer ((t :foreground "light sky blue" :weight normal)))
    '(org-headline-done ((t :foreground "#a6a8a6" :weight normal)))
    `(org-hide ((t :inherit default :background unspecified :foreground ,(bg-color-from 'default))))
-   '(org-level-1 ((t :inherit outline-1 :weight bold :height 1.1)))
    '(org-link ((t :inherit link :underline unspecified)))
    '(org-meta-line ((t :inherit font-lock-comment-face)))
    '(org-parenthesis-context-face ((t :inherit default :weight normal)))
@@ -226,7 +234,7 @@
    '(org-special-keyword ((t :weight normal)))
    '(org-tag ((t :weight normal)))
    '(org-task-done ((t :inherit org-headline-done :strike-through t)))
-   '(org-todo ((t :weight normal :underline t)))
+   '(org-todo ((t :weight normal :inverse-video t)))
    '(org-warning ((t :inherit font-lock-warning-face :underline nil)))))
 
 (use-package php-mode
@@ -235,6 +243,12 @@
   (custom-set-faces
    '(php-passive-assign-variable-face ((t :inherit font-lock-variable-name-face)))
    `(php-variable-name ((t :inherit font-lock-variable-name-face)))))
+
+(use-package powerline
+  :defer t
+  :config
+  (custom-set-faces
+   '(powerline-inactive2 ((t :background "#282a2e")))))
 
 (use-package rpm-spec-mode
   :defer t

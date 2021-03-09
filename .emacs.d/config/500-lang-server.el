@@ -20,7 +20,7 @@
   :config
   (advice-add #'lsp-completion--sort-completions :around
               (lambda (fn completions)
-                "Filter argument type."
+                "To avoid errors."
                 (when (seqp completions)
                   (funcall fn completions)))))
 
@@ -112,44 +112,45 @@
             (let* ((separator (concat " " (lsp-headerline--arrow-icon) " "))
                    (max-len (- spaceline-symbol-segment--max-symbol-length (length (concat "..." separator)))))
               (->> symbols-hierarchy
-                   (reverse)
-                   (-reduce-from
-                    (-lambda ((&alist 'count count 'len len 'output output)
-                              (symbol &as &DocumentSymbol :name :kind))
-                      (if (<= max-len len)
-                          `((count  . ,(1+ count))
-                            (len    . ,len)
-                            (output . ,output))
-                        (let* ((icon (when-let ((disp (-some->> kind
-                                                        (lsp-treemacs-symbol-icon)
-                                                        (get-text-property 0 'display))))
-                                       (if (stringp disp)
-                                           (replace-regexp-in-string "\s\\|\t" "" disp)
-                                         (propertize " " 'display
-                                                     (cl-list* 'image
-                                                               (plist-put
-                                                                (cl-copy-list
-                                                                 (cl-rest disp))
-                                                                :background (bg-color-from 'powerline-active1)))))))
-                               (symbol-name (concat icon "​​​" name)) ; zero width space * 3
-                               (symbol-name (lsp-headerline--symbol-with-action symbol symbol-name))
-                               (new-output (concat symbol-name (when output separator) output))
-                               (new-len (length new-output)))
-                          (if (<= max-len new-len)
-                              `((count  . ,(1+ count))
-                                (len    . ,(if (< 0 count)
-                                               max-len
-                                             new-len))
-                                (output . ,(if (< 0 count)
-                                               (concat "..." separator output)
-                                             new-output)))
-                            `((count  . ,(1+ count))
-                              (len    . ,new-len)
-                              (output . ,new-output))))))
-                    '((count  . 0)
-                      (len    . 0)
-                      (output . nil)))
-                   (alist-get 'output)))
+                (reverse)
+                (-reduce-from
+                 (-lambda ((&alist 'count count 'len len 'output output)
+                           (symbol &as &DocumentSymbol :name :kind))
+                   (if (<= max-len len)
+                       `((count  . ,(1+ count))
+                         (len    . ,len)
+                         (output . ,output))
+                     (let* ((icon (when-let ((disp (-some->> kind
+                                                     (lsp-treemacs-symbol-icon)
+                                                     (get-text-property 0 'display))))
+                                    (if (stringp disp)
+                                        (replace-regexp-in-string "\s\\|\t" "" disp)
+                                      (propertize " " 'display
+                                                  (cl-list* 'image
+                                                            (plist-put
+                                                             (cl-copy-list
+                                                              (cl-rest disp))
+                                                             :background (bg-color-from 'powerline-active1)))))))
+                            (symbol-name (concat icon "​​​" name)) ; zero width space * 3
+                            (symbol-name (lsp-headerline--symbol-with-action symbol symbol-name))
+                            (new-output (concat symbol-name (when output separator) output))
+                            (new-len (length new-output)))
+                       (if (<= max-len new-len)
+                           `((count  . ,(1+ count))
+                             (len    . ,(if (< 0 count)
+                                            max-len
+                                          new-len))
+                             (output . ,(if (< 0 count)
+                                            (concat "..." separator output)
+                                          new-output)))
+                         `((count  . ,(1+ count))
+                           (len    . ,new-len)
+                           (output . ,new-output)))))
+                   )
+                 '((count  . 0)
+                   (len    . 0)
+                   (output . nil)))
+                (alist-get 'output)))
           "")
       "")))
 
@@ -281,9 +282,9 @@
   :ensure t
   :hook ((c-mode             . lsp)
          (c++-mode           . lsp)
-         ;; (clojure-mode       . lsp)
-         ;; (clojurec-mode      . lsp)
-         ;; (clojurescript-mode . lsp)
+         (clojure-mode       . lsp)
+         (clojurec-mode      . lsp)
+         (clojurescript-mode . lsp)
          (cperl-mode         . lsp)
          (dockerfile-mode    . lsp)
          (go-mode            . lsp)
@@ -358,92 +359,6 @@
     "^[^ :]+?:[ \t]+\\([^\r\n]+\\)"
     "TODO")
 
-  (defun lsp--adapter-render-on-hover-content (args)
-    "TODO"
-    (let ((contents (car args)))
-      (cond
-       ((and (derived-mode-p 'rust-mode)
-             (hash-table-p contents))
-        (when (string= "markdown" (or (gethash "kind" contents) ""))
-          (let ((md (gethash "value" contents)))
-            (when (and (string-match lsp--custom-render--regex-for-rust md)
-                       (= (match-beginning 0) 0))
-              (let ((val (match-string 1 md)))
-                (when (string-match lsp--custom-render--regex-for-rust md (match-end 0))
-                  (setq val (concat val "\n" (match-string 1 md))))
-                (puthash "language" "rust" contents)
-                (remhash "kind" contents)
-                (puthash "value" val contents))))))
-       ((and (derived-mode-p 'sh-mode)
-             (hash-table-p contents))
-        (puthash "language" "shellscript" contents)
-        (when (string= "markdown" (or (gethash "kind" contents) ""))
-          (let ((md (gethash "value" contents)))
-            (when (or (string-match lsp--custom-render--regex-1-for-shell md)
-                      (string-match lsp--custom-render--regex-2-for-shell md))
-              (remhash "kind" contents)
-              (puthash "value"
-                       (->> md
-                            (match-string 1)
-                            (s-lines)
-                            (-map #'s-trim)
-                            (-interpose "\n")
-                            (apply #'concat))
-                       contents)))))
-       ((and (derived-mode-p 'php-mode)
-             (hash-table-p contents))
-        (puthash "language" "php" contents)
-        (when (string= "markdown" (or (gethash "kind" contents) ""))
-          (let ((md (gethash "value" contents)))
-            (when (or (string-match lsp--custom-render--regex-1-for-php md)
-                      (string-match lsp--custom-render--regex-2-for-php md))
-              (remhash "kind" contents)
-              (puthash "value"
-                       (->> md
-                            (match-string 1)
-                            (s-lines)
-                            (-map #'s-trim)
-                            (apply #'concat)
-                            (s-replace "," ", "))
-                       contents))))))
-      (if (not (listp contents))
-          (apply #'list contents (cdr args))
-        (apply #'list (-interpose "\n" (append contents nil)) (cdr args)))))
-
-  (defun lsp--custom-hover ()
-    "Customize `lsp-hover' for Rust lang."
-    (if (and lsp--hover-saved-bounds
-             (lsp--point-in-bounds-p lsp--hover-saved-bounds))
-        (lsp--eldoc-message lsp--eldoc-saved-message)
-      (setq lsp--eldoc-saved-message nil
-            lsp--hover-saved-bounds nil)
-      (if (looking-at "[[:space:]\n]")
-          (lsp--eldoc-message nil)
-        (when (and lsp-eldoc-enable-hover (lsp--capability :hoverProvider))
-          (let ((buf (current-buffer))
-                (cur (point)))
-            (lsp-request-async
-             "textDocument/hover"
-             (lsp--text-document-position-params)
-             (-lambda ((hover &as &Hover? :range? :contents))
-               (if (null hover)
-                   (lsp--eldoc-message nil)
-                 (when range?
-                   (setq lsp--hover-saved-bounds (lsp--range-to-region range?))
-                   (when (derived-mode-p 'rust-mode)
-                     (with-current-buffer buf
-                       (when (string-match-p "[{(<=>.?;)}]"
-                                             (buffer-substring-no-properties (car lsp--hover-saved-bounds)
-                                                                             (cdr lsp--hover-saved-bounds)))
-                         (setq lsp--hover-saved-bounds (cons cur cur))))))
-                 (lsp--eldoc-message (and contents
-                                          (lsp--render-on-hover-content
-                                           contents
-                                           lsp-eldoc-render-all)))))
-             :error-handler #'ignore
-             :mode 'tick
-             :cancel-token :eldoc-hover))))))
-
   (defvar lsp--max-line-eldoc-msg
     (1- (cond
          ((floatp max-mini-window-height)
@@ -462,8 +377,8 @@
                          (->> (if (<= (length lines) max-line)
                                   lines
                                 (-snoc (-take (max 1 (1- max-line)) lines) (propertize "(...)" 'face 'shadow)))
-                              (-interpose "\n")
-                              (apply #'concat)))))))
+                           (-interpose "\n")
+                           (apply #'concat)))))))
 
   (defun lsp--custom-eldoc-message-for-emacs-28 (&optional msg)
     "Show MSG in eldoc."
@@ -473,8 +388,8 @@
                                   (floor (* (frame-height) max-mini-window-height)))
                                  ((numberp max-mini-window-height)
                                   max-mini-window-height))
-                                (1-)
-                                (* (- (frame-width) 2)))))
+                              (1-)
+                              (* (- (frame-width) 2)))))
         (when (< max-chars (length msg))
           (setq msg (concat (substring msg 0 max-chars) "\n" (propertize "(...)" 'face 'shadow)))))
       (setq lsp--eldoc-saved-message msg)
@@ -609,7 +524,6 @@
 
   (advice-add #'lsp :before-until (lambda (&rest _) "Turn `lsp-mode' off" (bound-and-true-p git-timemachine-mode)))
   (advice-add #'lsp--eldoc-message :override 'lsp--custom-eldoc-message)
-  (advice-add #'lsp--render-on-hover-content :filter-args #'lsp--adapter-render-on-hover-content)
   (advice-add #'lsp--signature->message :filter-return #'lsp--signature->message-filter)
   (advice-add #'lsp--workspace-print :override #'lsp--workspace-print-without-style)
   (advice-add #'lsp-describe-thing-at-point :after #'lps--focus-and-update-lsp-help-buffer)
@@ -617,7 +531,6 @@
   (advice-add #'lsp-find-declaration     :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-implementation  :around #'lsp--wrap-find-xxx)
   (advice-add #'lsp-find-type-definition :around #'lsp--wrap-find-xxx)
-  (advice-add #'lsp-hover :override #'lsp--custom-hover)
   (advice-add #'lsp-signature-stop :before-until #'lsp-signature-prevent-stop)
   (advice-add #'lsp--info :override #'ignore)
   (advice-add #'lsp--handle-signature-update :around

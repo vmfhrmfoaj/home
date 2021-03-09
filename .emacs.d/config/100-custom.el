@@ -38,7 +38,7 @@
         include-prev-buf-regex (concat "^\\s-*\\(?:"
                                        (regexp-opt '("*scratch*" "*emacs-lisp REPL*"))
                                        "\\|\\*eshell"
-                                       "\\|\\*Org"
+                                       "\\|\\*Org Agenda"
                                        "\\|\\*cider-repl"
                                        "\\)")
         scratch-major-mode 'org-mode
@@ -143,11 +143,3 @@
               (when (and (interactive-p)
                          (eq this-command 'narrow-to-region))
                 (deactivate-mark))))
-
-(advice-add #'eshell :after
-            (lambda (&rest _)
-              "If single window, create a window and then open eshell buffer on the window."
-              (when (= 1 (length (window-list)))
-                (let ((cur-buf (current-buffer)))
-                  (previous-buffer)
-                  (pop-to-buffer cur-buf)))))

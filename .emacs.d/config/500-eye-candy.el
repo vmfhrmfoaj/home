@@ -9,24 +9,6 @@
 (use-package auto-dim-other-buffers
   :ensure t
   :config
-  (defvar adob--last-frame nil)
-
-  (defun adob--custom-focus-change-hook ()
-    "Customize for performance when using two frames(i.e., main + sidebar)."
-    (if (<= adob--focus-change-debounce-delay 0)
-        (adob--focus-change)
-      (let ((frame (selected-frame)))
-        (when (and (eq frame adob--last-frame)
-                   (timerp adob--focus-change-timer))
-          (cancel-timer adob--focus-change-timer))
-        (setq adob--focus-change-timer
-              (run-with-timer adob--focus-change-debounce-delay nil
-                              (lambda (frame)
-                                (with-selected-frame frame
-                                  (adob--focus-change)))
-                              frame))
-        (setq adob--last-frame frame))))
-
   (add-to-list 'auto-dim-other-buffers-never-dim-buffer-functions
                (lambda (buf)
                  "Disable dimming focused buffer while executing `evil-ex' function."
@@ -35,16 +17,22 @@
                                ;;  When `adob--last-buffer' was set the minibuffer,
                                ;;   I guess latest buffer.
                                (and (minibufferp adob--last-buffer)
-                                    (car (-drop-while #'minibufferp (buffer-list))))
+                                    (->> (buffer-list)
+                                      (-drop-while #'minibufferp)
+                                      (sort-buffer-by-visit-time)
+                                      (car)))
                                adob--last-buffer))
                       (buffer-live-p evil-ex-current-buffer))))
 
-  (setq adob--focus-change-debounce-delay 0.1)
+  (with-eval-after-load "ivy-posframe"
+    (add-to-list 'auto-dim-other-buffers-never-dim-buffer-functions
+                 (lambda (buf)
+                   "Disalbe dimming `ivy-posframe-buffer'."
+                   (string-equal ivy-posframe-buffer (buffer-name buf)))))
 
-  (advice-add #'adob--focus-change-hook :override #'adob--custom-focus-change-hook)
-  (advice-add #'adob--rescan-windows :before-until (lambda (&rest _) adob--focus-change-timer))
+  (setq auto-dim-other-buffers-dim-on-focus-out nil)
 
-  (auto-dim-other-buffers-mode))
+  (auto-dim-other-buffers-mode 1))
 
 (use-package composite
   :defer t
@@ -98,9 +86,11 @@
   (with-eval-after-load "evil-org"                (diminish 'evil-org-mode               ""))
   (with-eval-after-load "flycheck"                (diminish 'flycheck-mode               ""))
   (with-eval-after-load "git-gutter"              (diminish 'git-gutter-mode             ""))
+  (with-eval-after-load "golden-ratio"            (diminish 'golden-ratio-mode           ""))
   (with-eval-after-load "highlight-parentheses"   (diminish 'highlight-parentheses-mode  ""))
   (with-eval-after-load "linum-relative"          (diminish 'linum-relative-mode         ""))
   (with-eval-after-load "ivy"                     (diminish 'ivy-mode                    ""))
+  (with-eval-after-load "ivy-posframe"            (diminish 'ivy-posframe-mode           ""))
   (with-eval-after-load "magit-blame"             (diminish 'magit-blame-mode            ""))
   (with-eval-after-load "magit-svn"               (diminish 'magit-svn-mode              ""))
   (with-eval-after-load "org-indent"              (diminish 'org-indent-mode             ""))
@@ -170,33 +160,20 @@
   (defvar focus--beg-line nil)
   (defvar focus--end-line nil)
   (defun company--decorate-background-string (args)
-    (if (and (overlayp focus-pre-overlay)
-             (overlayp focus-post-overlay))
-        (-let (((lines old column nl align-top) args))
-          (let ((tooltip-beg-line (if company--pseudo-tooltip-start-line
-                                      company--pseudo-tooltip-start-line
-                                    (setq company--pseudo-tooltip-start-line
-                                          (-some-> company-pseudo-tooltip-overlay (overlay-start) (line-number-at-pos)))))
+    (if (and focus-pre-overlay
+             focus-post-overlay)
+        (-let* (((lines old column nl align-top) args)
                 (old-len (length old)))
-            (unless company--pseudo-tooltip-bg-lines
-              (setq company--pseudo-tooltip-bg-lines
-                    (--map (propertize it 'face 'focus-unfocused) old)))
-            (if (null align-top)
-                (let* ((focus-end-line (if focus--end-line
-                                           focus--end-line
-                                         (setq focus--end-line
-                                               (-some-> focus-post-overlay (overlay-start) (line-number-at-pos)))))
-                       (tooltip-height (length lines))
-                       (num-out-of-scope-lines (- (+ tooltip-beg-line old-len) 1 focus-end-line)))
-                  (setq old (-concat (-drop-last num-out-of-scope-lines old)
-                                     (-take-last num-out-of-scope-lines company--pseudo-tooltip-bg-lines))))
-              (let* ((focus-beg-line (if focus--beg-line
-                                         focus--beg-line
-                                       (setq focus--beg-line
-                                             (-some-> focus-pre-overlay (overlay-end) (line-number-at-pos)))))
-                     (num-out-of-scope-lines (min old-len (- focus-beg-line tooltip-beg-line))))
-                (setq old (-concat (-take num-out-of-scope-lines company--pseudo-tooltip-bg-lines)
-                                   (-drop num-out-of-scope-lines old))))))
+          (unless company--pseudo-tooltip-bg-lines
+            (setq company--pseudo-tooltip-bg-lines
+                  (--map (propertize it 'face 'focus-unfocused) old)))
+          (if (null align-top)
+              (let* ((num-out-of-scope-lines (- (+ company--pseudo-tooltip-start-line old-len) 1 focus--end-line)))
+                (setq old (-concat (-drop-last num-out-of-scope-lines old)
+                                   (-take-last num-out-of-scope-lines company--pseudo-tooltip-bg-lines))))
+            (let* ((num-out-of-scope-lines (min old-len (- focus--beg-line company--pseudo-tooltip-start-line))))
+              (setq old (-concat (-take num-out-of-scope-lines company--pseudo-tooltip-bg-lines)
+                                 (-drop num-out-of-scope-lines old)))))
           (list lines old column nl align-top))
       args))
 
@@ -343,18 +320,11 @@
   (with-eval-after-load "company"
     (advice-add #'company-pseudo-tooltip-show :before
                 (lambda (&rest _)
-                  "Reset variables for `company--decorate-background-string' function"
+                  "Init variables for `company--decorate-background-string' function"
                   (setq company--pseudo-tooltip-bg-lines nil
-                        company--pseudo-tooltip-start-line nil
-                        focus--beg-line nil
-                        focus--end-line nil)))
-    (advice-add #'company-pseudo-tooltip-hide :after
-                (lambda (&rest _)
-                  "Reset variables for `company--decorate-background-string' function"
-                  (setq company--pseudo-tooltip-bg-lines nil
-                        company--pseudo-tooltip-start-line nil
-                        focus--beg-line nil
-                        focus--end-line nil)))
+                        company--pseudo-tooltip-start-line (1+ (line-number-at-pos company-point))
+                        focus--beg-line (-some-> focus-pre-overlay  (overlay-end)   (line-number-at-pos))
+                        focus--end-line (-some-> focus-post-overlay (overlay-start) (line-number-at-pos)))))
     (advice-add #'company--replacement-string :filter-args #'company--decorate-background-string)))
 
 (use-package highlight-parentheses
@@ -396,6 +366,16 @@
 
   (advice-add #'hl-todo--get-face :filter-return #'list)
   (advice-add #'hl-todo--setup :after #'hl-todo--setup-custom))
+
+(use-package ivy-posframe
+  :ensure t
+  :config
+  (setq ivy-posframe-display-functions-alist
+        '((counsel-company . ivy-posframe-display-at-point)
+          (complete-symbol . ivy-posframe-display-at-point)
+          (t               . ivy-posframe-display)))
+
+  (ivy-posframe-mode 1))
 
 (use-package powerline
   :ensure t)
@@ -447,11 +427,11 @@
                                            (cl-list* 'image
                                                      (let ((h (frame-char-height)))
                                                        (-> disp
-                                                           (cl-rest)
-                                                           (cl-copy-list)
-                                                           (plist-put :background (bg-color-from 'powerline-active1))
-                                                           (plist-put :height h)
-                                                           (plist-put :width h)))))))
+                                                         (cl-rest)
+                                                         (cl-copy-list)
+                                                         (plist-put :background (bg-color-from 'powerline-active1))
+                                                         (plist-put :height h)
+                                                         (plist-put :width h)))))))
                      (puthash major-mode icon spaceline-symbol-segment--major-icon-cache)
                      icon)))
                spaceline-symbol-segment--major-icon-cache)))
@@ -493,6 +473,7 @@
                 (force-mode-line-update t)))))
 
 (use-package vi-tilde-fringe
+  :disabled t
   :if (fboundp 'define-fringe-bitmap)
   :ensure t
   :config

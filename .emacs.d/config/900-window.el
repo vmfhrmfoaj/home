@@ -6,29 +6,16 @@
       (byte-compile-file "~/.emacs.d/config/func.el")))
   (load-file "~/.emacs.d/config/func.elc"))
 
-(defvar sidebar-sig "SIDEBAR")
-
 (when window-system
   (let* ((workarea (-some->> main-monitor (assoc 'workarea) (-drop 1)))
          (main-monitor-x (nth 0 workarea))
          (main-monitor-y (nth 1 workarea))
          (main-monitor-w (nth 2 workarea))
          (main-monitor-h (nth 3 workarea))
-         (x-offset 200)
          (x main-monitor-x)
          (y main-monitor-y)
-         (h main-monitor-h)
-         (wc 120)
-         (oc   5) ; fringe + line-number
-         (w (+ (* wc (frame-char-width))
-               (* oc (frame-char-width)))))
-    (setq org-tags-column (- wc))
-    (if (<= main-monitor-w w)
-        (setq x main-monitor-x)
-      (setq x (+ (- (+ main-monitor-x
-                       (floor (/ main-monitor-w 2)) )
-                    (floor (/ w 2)))
-                 x-offset)))
+         (w main-monitor-w)
+         (h main-monitor-h))
     (setq w (- main-monitor-w (- x main-monitor-x)))
     (add-to-list 'default-frame-alist `(width  . (text-pixels . ,w)))
     (add-to-list 'default-frame-alist `(height . (text-pixels . ,h)))
@@ -36,23 +23,40 @@
           initial-frame-alist `((top  . ,y)
                                 (left . ,x)
                                 (undecorated . nil))
-          split-width-threshold main-monitor-w
-          main-frame (selected-frame))
-    (add-hook
-     'window-setup-hook
-     (lambda ()
-       (let ((w (- x main-monitor-x (* oc (frame-char-width)))))
-         (setq sidebar-frame (make-frame `((sig . ,sidebar-sig)
-                                           (width  . ,w)
-                                           (height . ,h)
-                                           (undecorated . nil))))
-         (set-frame-position sidebar-frame main-monitor-x main-monitor-y)
-         (set-frame-size sidebar-frame w h t)
-         (with-selected-frame sidebar-frame
-           (ignore-errors
-             (org-agenda-show-list)
-             (pop-to-scratch-buffer)))
-         (x-focus-frame main-frame))))))
+          split-width-threshold main-monitor-w)
+    (toggle-frame-maximized)))
+
+(add-hook 'window-setup-hook
+          (lambda ()
+            (let ((buf (current-buffer)))
+              (org-agenda-show-list)
+              (split-window-horizontally)
+              (other-window 1)
+              (switch-to-buffer buf))))
+
+(let ((f (lambda (fn buffer &rest args)
+           (let ((cur-mode major-mode)
+                 (new-mode (with-current-buffer buffer major-mode)))
+             (if (and (window-dedicated-p)
+                      (provided-mode-derived-p cur-mode 'org-mode 'org-agenda-mode)
+                      (provided-mode-derived-p new-mode 'org-mode 'org-agenda-mode))
+                 (let ((win (selected-window)))
+                   (unwind-protect
+                       (progn
+                         (set-window-dedicated-p win nil)
+                         (switch-to-buffer buffer))
+                     (set-window-dedicated-p win t)))
+               (apply fn buffer args))))))
+  (advice-add #'pop-to-buffer-same-window :around f)
+  (advice-add #'switch-to-buffer :around f))
+
+(use-package golden-ratio
+  :ensure t
+  :config
+  (with-eval-after-load "winum"
+    (advice-add #'winum--switch-to-window :after (lambda (&rest _) (golden-ratio))))
+
+  (golden-ratio-mode 1))
 
 (use-package winum
   :ensure t
@@ -64,21 +68,5 @@
     (when (string-match-p "^\\s-*\\*Treemacs-Scoped-Buffer-" (buffer-name))
       0))
 
-  (defun winum-assign-9-to-treemacs ()
-    (when (and (string-equal sidebar-sig (frame-parameter nil 'sig))
-               (not (ignore-errors
-                      (aref (winum--get-window-vector) 9))))
-      9))
-
-  (defun winum-assign-8-to-treemacs ()
-    (when (and (string-equal sidebar-sig (frame-parameter nil 'sig))
-               (ignore-errors
-                 (let ((vec (winum--get-window-vector)))
-                   (and (aref vec 9)
-                        (not (aref vec 8))))))
-      8))
-
   (add-to-list 'winum-assign-functions #'winum-assign-0-to-treemacs)
-  (add-to-list 'winum-assign-functions #'winum-assign-8-to-treemacs)
-  (add-to-list 'winum-assign-functions #'winum-assign-9-to-treemacs)
   (winum-mode))

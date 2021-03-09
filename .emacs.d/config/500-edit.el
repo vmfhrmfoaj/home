@@ -171,13 +171,9 @@ So, replaced `evil-jump-item' to this function."
     (let ((len (length (undo-tree-make-node nil nil))))
       (and (vectorp n) (= (length n) len))))
 
-  (let ((x 15))
-    (setq evil-undo-system 'undo-tree
-          undo-tree-auto-save-history t
-          undo-tree-history-directory-alist backup-directory-alist
-          undo-tree-limit        (/  80000000 x)
-          undo-tree-strong-limit (/ 120000000 x)
-          undo-tree-outer-limit  (/ 360000000 x)))
+  (setq evil-undo-system 'undo-tree
+        undo-tree-auto-save-history t
+        undo-tree-history-directory-alist backup-directory-alist)
 
   (with-eval-after-load "evil"
     (evil-set-undo-system 'undo-tree))

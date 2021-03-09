@@ -6,7 +6,11 @@
       (byte-compile-file "~/.emacs.d/config/func.el")))
   (load-file "~/.emacs.d/config/func.elc"))
 
-(use-package "dockerfile-mode"
+(use-package dockerfile-mode
   :ensure t
   :defer t
   :mode "\\.Dockerfile\\'")
+
+(use-package docker-tramp
+  :ensure t
+  :defer t)

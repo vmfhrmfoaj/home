@@ -240,7 +240,7 @@
                 (flycheck-error-message err)) 'error err))
      flycheck-current-errors))
 
-  (setq flycheck-display-errors-delay 0.7
+  (setq flycheck-display-errors-delay 0.1
         flycheck-flake8-maximum-line-length 120)
 
   (add-hook 'flycheck-mode-hook
@@ -308,9 +308,7 @@
       (setq window (selected-window)))
     (let ((frame (window-frame window)))
       (unless (cadr (mouse-pixel-position))
-        (set-mouse-position frame
-                            (- (frame-width)  3)
-                            (- (frame-height) 4)))
+        (set-mouse-position frame (- (frame-width) 3) 1))
       (run-with-timer
        0.01 nil (lambda ()
                   (ignore-errors
@@ -447,7 +445,7 @@
             (tag-node         . ,visit-fn)))
         treemacs-width 50)
 
-  (treemacs-resize-icons 15)
+  (treemacs-resize-icons 13)
 
   (advice-add #'treemacs--read-string :override #'read-string)
   (advice-add #'treemacs--setup-icon-background-colors :after
@@ -544,7 +542,7 @@
 (use-package which-func
   :defer t
   :init
-  (setq which-func-modes '(clojure-mode clojurec-mode clojurescript-mode emacs-lisp-mode lisp-interaction-mode))
+  (setq which-func-modes '(emacs-lisp-mode lisp-interaction-mode))
 
   (defun which-func-setup-once ()
     (remove-hook 'clojure-mode-hook          #'which-func-setup-once)

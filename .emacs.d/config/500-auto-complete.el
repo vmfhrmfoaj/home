@@ -18,19 +18,19 @@
     (execute-kbd-macro (kbd "SPC")))
 
   (setq company-backends (->> company-backends
-                              (--map (if (listp it)
-                                         (--remove (or (eq 'company-dabbrev it)
-                                                       (eq 'company-dabbrev-code it))
-                                                   it)
-                                       (unless (or (eq 'company-dabbrev it)
-                                                   (eq 'company-dabbrev-code it))
-                                         it)))
-                              (-non-nil))
-        company-idle-delay 0
-        company-echo-delay 0.1
+                           (--map (if (listp it)
+                                      (--remove (or (eq 'company-dabbrev it)) it)
+                                    (unless (eq 'company-dabbrev it)
+                                      it)))
+                           (-non-nil))
+        company-dabbrev-code-ignore-case t
+        company-dabbrev-code-other-buffers nil
+        company-dabbrev-code-time-limit 0.05
+        company-etags-ignore-case t
+        company-idle-delay 0.05
+        company-echo-delay 0.2
         company-minimum-prefix-length 1
         company-selection-wrap-around t
-        company-etags-ignore-case t
         company-tooltip-flip-when-above t)
 
   (add-hook 'company-after-completion-hook

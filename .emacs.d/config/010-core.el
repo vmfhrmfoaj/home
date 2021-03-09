@@ -137,7 +137,7 @@
      object))
 
   (setq enable-recursive-minibuffers t
-        ivy-height 15)
+        ivy-height 20)
 
   (advice-add #'colir--blend-background :override #'colir--custom-blend-background)
   (advice-add #'ivy--highlight-default :before

@@ -115,10 +115,10 @@
 
   (add-hook 'cider-mode-hook
             (lambda ()
-              (setq-local evil-lookup-func #'cider-doc-at-point)
-              (setq-local font-lock-fontify-region-function #'font-lock-default-fontify-region)
-              (cider-company-enable-fuzzy-completion)
-              (eldoc-mode 1)))
+              (setq-local evil-lookup-func #'cider-doc-at-point
+                          font-lock-fontify-region-function #'font-lock-default-fontify-region)
+              (remove-hook 'completion-at-point-functions #'cider-complete-at-point t)
+              (remove-hook 'eldoc-documentation-functions #'cider-eldoc t)))
 
   (advice-add #'cider-restart :around
               (lambda (fn &rest args)
@@ -232,7 +232,6 @@
   (add-hook 'cider-repl-mode-hook
             (lambda ()
               (setq-local evil-lookup-func #'cider-doc-at-point)
-              (cider-company-enable-fuzzy-completion)
               (eldoc-mode 1)
               (company-mode 1)
               (let ((f (lambda ()

@@ -79,7 +79,7 @@ which see."
         org-log-into-drawer t
         org-pretty-entities t
         org-src-fontify-natively t
-        org-startup-indented nil
+        org-startup-indented t
         org-adapt-indentation nil
         org-startup-with-inline-images t
         org-todo-keywords '((sequence "TODO(t)" "PLANNING" "NEXT(n)" "|" "DONE(d)")
@@ -89,7 +89,8 @@ which see."
                                  ("NEXT"      . org-next)
                                  ("DONE"      . org-done)
                                  ("CANCELLED" . org-cancelled))
-        org-use-sub-superscripts nil)
+        org-use-sub-superscripts nil
+        org-tags-column -120)
 
   ;; NOTE
   ;;  To prevnt multi-line `org-emphasis'.
@@ -113,13 +114,14 @@ which see."
   (advice-add #'org-todo :around
               (lambda (of &optional arg)
                 "If reopen the completed _TODO_, show a popup for logging."
-                (let* ((is-done? (member (org-get-todo-state) org-done-keywords))
-                       (org-todo-log-states (if is-done?
-                                                (append '(("TODO" note time)
-                                                          ("NEXT" note time))
-                                                        org-todo-log-states)
-                                              org-todo-log-states)))
-                  (funcall of arg)))))
+                (cl-letf (((symbol-function 'delete-other-windows) #'ignore))
+                  (let* ((is-done? (member (org-get-todo-state) org-done-keywords))
+                         (org-todo-log-states (if is-done?
+                                                  (append '(("TODO" note time)
+                                                            ("NEXT" note time))
+                                                          org-todo-log-states)
+                                                org-todo-log-states)))
+                    (funcall of arg))))))
 
 (use-package org-agenda
   :defer t
@@ -135,7 +137,8 @@ which see."
       (call-interactively #'org-agenda-redo)
       (setq-local default-directory (concat home-dir "/Desktop/Org/")
                   frame--width (frame-width)
-                  projectile-project-name "Org"))
+                  projectile-project-name "Org")
+      (set-window-dedicated-p (selected-window) t))
     (org-agenda-goto-today))
 
   :config
@@ -146,6 +149,7 @@ which see."
         org-agenda-scheduled-leaders '("Scheduled: " "Sched.%03dx: ")
         org-agenda-deadline-leaders  '("Deadline:  " "In %03d d.: " "%02d d. ago: ")
         org-agenda-skip-deadline-if-done t
+        org-agenda-skip-scheduled-if-done t
         org-agenda-skip-scheduled-if-deadline-is-shown t
         org-agenda-skip-timestamp-if-done t
         org-agenda-skip-timestamp-if-deadline-is-shown t
@@ -231,7 +235,13 @@ which see."
                     "- %a" "\n"
                     "%?"
                     "\n")
-           :prepend t))))
+           :prepend t)))
+
+  (advice-add #'org-capture-place-template :around
+              (lambda (fn &rest args)
+                "To prevent delete windows"
+                (cl-letf (((symbol-function 'delete-other-windows) #'ignore))
+                  (apply fn args)))))
 
 (use-package org-clock
   :defer t

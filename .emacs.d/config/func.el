@@ -30,9 +30,11 @@
 (defvar null-fn (-const nil))
 
 (defmacro -update-> (&rest thread)
+  (declare (indent 1))
   `(setq ,(-first-item thread) (->  ,@thread)))
 
 (defmacro -update->> (&rest thread)
+  (declare (indent 1))
   `(setq ,(-first-item thread) (->> ,@thread)))
 
 

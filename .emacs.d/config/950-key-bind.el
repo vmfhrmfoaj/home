@@ -95,11 +95,11 @@
   (defun evil-leader--set-local-key (&rest bindings)
     (let* ((prefix (concat evil-leader/leader "m"))
            (bindings (->> bindings
-                          (-partition 2)
-                          (--map (cons (concat evil-leader/leader (car it)) (cdr it)))
-                          (--mapcat (if (not (s-starts-with? prefix (car it)))
-                                        (list it)
-                                      (list it (cons (s-replace prefix evil-leader--major-leader (car it)) (cdr it))))))))
+                       (-partition 2)
+                       (--map (cons (concat evil-leader/leader (car it)) (cdr it)))
+                       (--mapcat (if (not (s-starts-with? prefix (car it)))
+                                     (list it)
+                                   (list it (cons (s-replace prefix evil-leader--major-leader (car it)) (cdr it))))))))
       (dolist (binding bindings)
         (evil-local-set-key 'normal (car binding) (cadr binding)))))
 
@@ -151,11 +151,12 @@
            (lambda ()
              (interactive)
              (projectile-kill-buffer)
-             (when (< 1 (length (window-list)))
+             (when (or (window-in-direction 'up)
+                       (window-in-direction 'down))
                (delete-window))))
     "be" #'eldoc-doc-buffer
-    "bK" #'kill-buffer
     "bk" #'projectile-kill-buffer
+    "bK" #'kill-buffer
     "bs" #'pop-to-scratch-buffer
 
     ;; error
@@ -232,9 +233,9 @@
     "pa" (lambda ()
            (interactive)
            (when-let ((buf (->> (buffer-list)
-                                (-map #'buffer-name)
-                                (completing-read "Add a buffer to the current project:")
-                                (get-buffer))))
+                             (-map #'buffer-name)
+                             (completing-read "Add a buffer to the current project:")
+                             (get-buffer))))
              (let ((proj-root (projectile-project-root)))
                (with-current-buffer buf
                  (setq projectile-project-root proj-root)))))
@@ -291,16 +292,18 @@
     "wk" #'windmove-up
     "wl" #'windmove-right
     "wd" #'delete-window
-    "wm" #'delete-other-windows
+    "wm" (defalias 'delete-up-or-down-windows
+           (lambda ()
+             (interactive)
+             (-some-> 'up   (window-in-direction) (delete-window))
+             (-some-> 'down (window-in-direction) (delete-window))))
+    "wM" #'delete-other-windows
     "wo" (defalias 'move-to-main-frame
            (lambda ()
              (interactive)
-             (when (string-equal sidebar-sig (frame-parameter nil 'sig))
-               (let ((buf (current-buffer)))
-                 (switch-to-previous-buffer)
-                 (with-selected-frame main-frame
-                   (switch-to-buffer buf))
-                 (x-focus-frame main-frame)))))
+             (let ((buf (current-buffer)))
+               (switch-to-previous-buffer)
+               (pop-to-buffer buf))))
 
     ;; text / xwidget
     "x0" (defalias 'text-scale-reset (lambda () (interactive) (text-scale-set 0)))
@@ -689,7 +692,8 @@
         "mga" (if (lsp-feature? "workspace/symbol") #'xref-find-apropos)
         "mgs" (cond
                ((and (lsp-feature? "textDocument/documentSymbol")
-                     (not (or (derived-mode-p 'php-mode)
+                     (not (or (derived-mode-p 'clojure-mode)
+                              (derived-mode-p 'php-mode)
                               (derived-mode-p 'python-mode))))
                 #'lsp-ivy-doc-symbol)
                ((lsp-feature? "workspace/symbol")
@@ -805,22 +809,8 @@
       "mrq" #'cider-quit)
     (which-key-declare-prefixes-for-mode mode
       (concat evil-leader/leader "me") "evaluation"
-      (concat evil-leader/leader "mg") "goto"
-      (concat evil-leader/leader "mh") "help"
       (concat evil-leader/leader "mr") "REPL")
-    (evil-leader--set-major-leader-for-mode mode))
-
-  (let ((fn (lambda ()
-              (make-local-variable 'evil-goto-definition-functions)
-              (add-to-list 'evil-goto-definition-functions
-                           (lambda (_string _position)
-                             (let ((buf (current-buffer))
-                                   (pos (point)))
-                               (call-interactively #'cider-find-var-at-point)
-                               (unless (and (eq buf (current-buffer))
-                                            (= pos (point)))
-                                 t)))))))
-    (add-hook 'clojure-mode-hook fn)))
+    (evil-leader--set-major-leader-for-mode mode)))
 
 (use-package cperl-mode
   :defer t
