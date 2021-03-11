@@ -53,8 +53,23 @@
 (use-package golden-ratio
   :ensure t
   :config
+  (defun golden-ratio--custom-resize-window (dimensions &optional window)
+    (with-selected-window (or window (selected-window))
+      (let* ((m (window-margins))
+             (nrow  (floor (- (car  dimensions) (+ (window-height) (or (car m) 0)))))
+             (ncol  (floor (- (cadr dimensions) (+ (window-width)  (or (cdr m) 0))))))
+        (when (window-resizable-p (selected-window) nrow)
+          (enlarge-window nrow))
+        (when (window-resizable-p (selected-window) ncol t)
+          (enlarge-window ncol t)))))
+
+  (with-eval-after-load "which-key"
+    (add-to-list 'golden-ratio-exclude-buffer-names which-key-buffer-name))
+
   (with-eval-after-load "winum"
     (advice-add #'winum--switch-to-window :after (lambda (&rest _) (golden-ratio))))
+
+  (advice-add #'golden-ratio--resize-window :override #'golden-ratio--custom-resize-window)
 
   (golden-ratio-mode 1))
 

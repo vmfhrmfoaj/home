@@ -15,6 +15,7 @@
     (->> raw-prompt
       (fish-completion--list-completions-with-desc)
       (s-split "\n")
+      (--remove (s-blank-p it))
       (--map (-let [(c desc) (split-string it "\t")]
                (if desc
                    (propertize c :fish-help-message (concat "  " desc))

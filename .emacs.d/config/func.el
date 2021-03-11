@@ -371,3 +371,11 @@
         (call-interactively #'lsp-format-region)
       (call-interactively #'lsp-format-buffer)))
    (t (message (concat "Don't know how to format a file on '" (symbol-name major-mode) "'")))))
+
+
+(defun kill-buffer-and-delete-window ()
+  (interactive)
+  (projectile-kill-buffer)
+  (when (or (window-in-direction 'up)
+            (window-in-direction 'down))
+    (delete-window)))

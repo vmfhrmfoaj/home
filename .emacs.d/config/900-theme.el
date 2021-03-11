@@ -14,6 +14,7 @@
 
   (custom-set-faces
    '(fixed-pitch ((t :inherit default)))
+   '(fringe ((t :foreground "#656665")))
    '(highlight ((t :background "#484a4e" :foreground "#d5d8d6")))
    '(italic ((t :slant italic)))
    '(line-number ((t :background "#222326" :foreground "#717371" :weight normal)))

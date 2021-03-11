@@ -140,6 +140,8 @@
               (interactive)
               (org-search-view t)))
     "aot" #'org-todo-list
+    ;; - docker
+    "ad" #'docker
     ;; - undo-tree
     "au" #'undo-tree-visualize
 
@@ -147,13 +149,7 @@
     "bR" #'revert-buffer
     "ba" #'counsel-switch-buffer
     "bb" #'counsel-projectile-switch-to-buffer
-    "bd" (defalias 'kill-buffer-and-delete-window
-           (lambda ()
-             (interactive)
-             (projectile-kill-buffer)
-             (when (or (window-in-direction 'up)
-                       (window-in-direction 'down))
-               (delete-window))))
+    "bd" #'kill-buffer-and-delete-window
     "be" #'eldoc-doc-buffer
     "bk" #'projectile-kill-buffer
     "bK" #'kill-buffer
@@ -358,7 +354,7 @@
   :defer t
   :config
   (evil-define-key 'normal alchemist-help-minor-mode-map
-    (kbd "q") #'evil-delete-buffer))
+    (kbd "q") #'kill-buffer-and-delete-window))
 
 (use-package company
   :defer t
@@ -419,7 +415,7 @@
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto"
     (concat evil-leader/leader "ms") "set/change"
-    (concat evil-leader/leader "mr") "REPL")
+    (concat evil-leader/leader "mr") "repl")
   (evil-leader--set-major-leader-for-mode 'cider-repl-mode)
 
   (let ((fn (lambda ()
@@ -438,7 +434,7 @@
   :defer t
   :config
   (evil-define-key 'normal cider-stacktrace-mode-map
-    (kbd "q") #'evil-delete-buffer))
+    (kbd "q") #'kill-buffer-and-delete-window))
 
 (use-package doc-view
   :defer t
@@ -455,17 +451,15 @@
     "j" #'doc-view-next-line-or-next-page
     (kbd "M-n") #'doc-view-next-page
     "G" #'doc-view-last-page
-    "q" #'evil-delete-buffer))
+    "q" #'kill-buffer-and-delete-window))
 
-(use-package evil-collection-magit
+(use-package evil-collection-docker
   :ensure evil-collection
   :defer t
   :config
-  (evil-collection-magit-setup)
-  (evil-collection-define-key 'normal 'magit-mode-map "M-p" #'magit-section-backward)
-  (evil-collection-define-key 'normal 'magit-mode-map "M-n" #'magit-section-forward)
-  (evil-collection-define-key 'normal 'magit-mode-map "M-P" #'magit-section-backward-sibling)
-  (evil-collection-define-key 'normal 'magit-mode-map "M-N" #'magit-section-forward-sibling))
+  (evil-collection-docker-setup)
+  (dolist (map evil-collection-docker-maps)
+    (evil-collection-define-key 'normal map "q" #'kill-buffer-and-delete-window)))
 
 (use-package evil-collection-eshell
   :ensure evil-collection
@@ -478,6 +472,16 @@
       (interactive)
       (eshell-bol)
       (evil-insert-state))))
+
+(use-package evil-collection-magit
+  :ensure evil-collection
+  :defer t
+  :config
+  (evil-collection-magit-setup)
+  (evil-collection-define-key 'normal 'magit-mode-map "M-p" #'magit-section-backward)
+  (evil-collection-define-key 'normal 'magit-mode-map "M-n" #'magit-section-forward)
+  (evil-collection-define-key 'normal 'magit-mode-map "M-P" #'magit-section-backward-sibling)
+  (evil-collection-define-key 'normal 'magit-mode-map "M-N" #'magit-section-forward-sibling))
 
 (use-package evil
   :defer t
@@ -808,8 +812,7 @@
       "mrs" #'cider-switch-to-releated-repl-buffer
       "mrq" #'cider-quit)
     (which-key-declare-prefixes-for-mode mode
-      (concat evil-leader/leader "me") "evaluation"
-      (concat evil-leader/leader "mr") "REPL")
+      (concat evil-leader/leader "me") "evaluation")
     (evil-leader--set-major-leader-for-mode mode)))
 
 (use-package cperl-mode
@@ -829,6 +832,24 @@
       (find-alternate-file up)))
 
   (evil-define-key 'normal dired-mode-map (kbd "C-u") #'dired-alternate-up-directory))
+
+(use-package docker
+  :defer t
+  :init
+  (let ((hooks '(docker-container-mode-hook
+                 docker-image-mode-hook
+                 docker-machine-mode-hook
+                 docker-network-mode-hook
+                 docker-volume-mode-hook)))
+    (defun docker-setup-once-for-evil-keybinding ()
+      (dolist (hook hooks)
+        (remove-hook hook #'docker-setup-once-for-evil-keybinding))
+      (cl-letf (((symbol-function 'display-warning) #'ignore))
+        (evil-collection-require 'docker))
+      (fmakunbound #'docker-setup-once-for-evil-keybinding))
+
+    (dolist (hook hooks)
+      (add-hook hook #'docker-setup-once-for-evil-keybinding))))
 
 (use-package ediff
   :defer t
@@ -853,7 +874,7 @@
   (which-key-declare-prefixes-for-mode 'emacs-lisp-mode
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto"
-    (concat evil-leader/leader "mr") "REPL")
+    (concat evil-leader/leader "mr") "repl")
   (evil-leader--set-major-leader-for-mode 'emacs-lisp-mode)
 
   ;; lisp-interaction-mode
@@ -865,7 +886,7 @@
   (which-key-declare-prefixes-for-mode 'lisp-interaction-mode
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto"
-    (concat evil-leader/leader "mr") "REPL")
+    (concat evil-leader/leader "mr") "repl")
   (evil-leader--set-major-leader-for-mode 'lisp-interaction-mode)
 
   (let ((fn (lambda ()
@@ -962,12 +983,14 @@
   (evil-set-initial-state 'magit-status-mode 'normal)
 
   (defun magit-setup-once-for-evil-keybinding ()
-    (remove-hook 'magit-mode-hook #'magit-setup-once-for-evil-keybinding)
+    (remove-hook 'magit-blame-mode-hook #'magit-setup-once-for-evil-keybinding)
+    (remove-hook 'magit-mode-hook       #'magit-setup-once-for-evil-keybinding)
     (cl-letf (((symbol-function 'display-warning) #'ignore))
       (evil-collection-require 'magit))
     (fmakunbound #'magit-setup-once-for-evil-keybinding))
 
-  (add-hook 'magit-mode-hook #'magit-setup-once-for-evil-keybinding)
+  (add-hook 'magit-blame-mode-hook #'magit-setup-once-for-evil-keybinding)
+  (add-hook 'magit-mode-hook       #'magit-setup-once-for-evil-keybinding)
 
   :config
   (define-key transient-base-map (kbd "C-g")      #'transient-quit-all)
@@ -1029,7 +1052,7 @@
     (kbd "U") #'package-menu-mark-upgrades
     (kbd "d") #'package-menu-mark-delete
     (kbd "i") #'package-menu-mark-install
-    (kbd "q") #'kill-this-buffer
+    (kbd "q") #'kill-buffer-and-delete-window
     (kbd "x") #'package-menu-execute))
 
 (use-package php-mode
@@ -1041,7 +1064,7 @@
   ;; NOTE:
   ;;  already defined at `lsp-mode'
   ;; (which-key-declare-prefixes-for-mode 'python-mode
-  ;;   (concat evil-leader/leader "mr") "REPL")
+  ;;   (concat evil-leader/leader "mr") "repl")
   (define-key php-mode-map [tab] nil))
 
 (use-package profiler
@@ -1065,7 +1088,7 @@
   ;; NOTE:
   ;;  already defined at `lsp-mode'
   ;; (which-key-declare-prefixes-for-mode 'python-mode
-  ;;   (concat evil-leader/leader "mr") "REPL")
+  ;;   (concat evil-leader/leader "mr") "repl")
   )
 
 (use-package view
@@ -1086,35 +1109,3 @@
               (evil-local-set-key 'normal (kbd "M-n") #'vlf-next-batch)
               (evil-local-set-key 'normal (kbd "gg") #'vlf-custom-beginning-of-file)
               (evil-local-set-key 'normal (kbd "G")  #'vlf-custom-end-of-file))))
-
-(use-package ztree-view
-  :defer t
-  :config
-  (defun ztree-back-node (&optional node)
-    (interactive)
-    (let ((line (line-number-at-pos)))
-      (-when-let (node (or node (ztree-find-node-in-line line)))
-        (if (funcall ztree-node-is-expandable-fun node)
-            (when (ztree-is-expanded-node node)
-              (ztree-do-toggle-expand-state node nil))
-          (setq line (ztree-get-parent-for-line line))
-          (ztree-do-toggle-expand-state (ztree-find-node-in-line line) nil))
-        (ztree-refresh-buffer line))))
-
-  (defun ztree-enter-node (&optional node)
-    (interactive)
-    (let ((line (line-number-at-pos)))
-      (-when-let (node (or node (ztree-find-node-in-line line)))
-        (if (funcall ztree-node-is-expandable-fun node)
-            (progn
-              (ztree-do-toggle-expand-state node t)
-              (ztree-refresh-buffer line))
-          (when ztree-node-action-fun
-            (funcall ztree-node-action-fun node t))))))
-
-  (add-hook 'ztreediff-mode-hook
-            (lambda ()
-              (evil-local-set-key 'normal (kbd "RET") #'ztree-perform-action)
-              (evil-local-set-key 'normal (kbd "l") #'ztree-enter-node)
-              (evil-local-set-key 'normal (kbd "h") #'ztree-back-node)
-              (evil-local-set-key 'normal (kbd "q") #'kill-this-buffer))))
