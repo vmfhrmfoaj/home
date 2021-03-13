@@ -8,7 +8,7 @@
 
 (when window-system
   (prefer-coding-system 'utf-8)
-  (setq-default line-spacing 1)
+  (setq-default line-spacing 0)
   (let* ((font-size 10.5)
          (font-name "Fantasque Sans Mono")
          (font (font-spec :family font-name :size font-size :weight 'bold)))
@@ -34,5 +34,7 @@
       (add-to-list 'face-font-rescale-alist '("Fira Code"           . 0.8))
       (add-to-list 'face-font-rescale-alist '("Font Awesome 5 Free" . 0.9))
       (add-to-list 'face-font-rescale-alist '("Liberation Mono"     . 0.8))
-      (add-to-list 'face-font-rescale-alist '("Noto Sans"           . 0.8))))))
+      (add-to-list 'face-font-rescale-alist '("Noto Emoji"          . 0.8))
+      (add-to-list 'face-font-rescale-alist '("Noto Color Emoji"    . 0.9))
+      (add-to-list 'face-font-rescale-alist '("Noto Sans"           . 0.9))))))
 

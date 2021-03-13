@@ -31,6 +31,7 @@
             (let ((buf (current-buffer)))
               (org-agenda-show-list)
               (split-window-horizontally)
+              (set-window-dedicated-p (selected-window) t)
               (other-window 1)
               (switch-to-buffer buf))))
 
@@ -40,12 +41,13 @@
              (if (and (window-dedicated-p)
                       (provided-mode-derived-p cur-mode 'org-mode 'org-agenda-mode)
                       (provided-mode-derived-p new-mode 'org-mode 'org-agenda-mode))
-                 (let ((win (selected-window)))
+                 (let* ((win (selected-window))
+                        (dedicated-p (window-dedicated-p win)))
                    (unwind-protect
                        (progn
                          (set-window-dedicated-p win nil)
-                         (switch-to-buffer buffer))
-                     (set-window-dedicated-p win t)))
+                         (apply fn buffer args))
+                     (set-window-dedicated-p win dedicated-p)))
                (apply fn buffer args))))))
   (advice-add #'pop-to-buffer-same-window :around f)
   (advice-add #'switch-to-buffer :around f))
@@ -62,6 +64,8 @@
           (enlarge-window nrow))
         (when (window-resizable-p (selected-window) ncol t)
           (enlarge-window ncol t)))))
+
+  (setq golden-ratio-adjust-factor 1.0)
 
   (with-eval-after-load "which-key"
     (add-to-list 'golden-ratio-exclude-buffer-names which-key-buffer-name))

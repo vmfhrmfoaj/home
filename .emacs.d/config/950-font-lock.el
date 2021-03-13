@@ -866,6 +866,51 @@
         (clojure-font-lock-regexp-groups
          (1 'font-lock-regexp-grouping-construct prepend))
 
+        ;; Metadata
+        (,(concat "\\(?:" whitespace "\\|[([{]\\)\\^[:A-Za-z{]")
+         (,(lambda (limit)
+             (unless font-lock--skip
+               (let ((start (progn
+                              (backward-char 1)
+                              (point-marker))))
+                 (goto-char limit)
+                 (set-match-data (list start (point-marker)))
+                 t)))
+          (let ((beg (match-beginning 0)))
+            (if (in-comment-or-string? beg)
+                (prog1 beg
+                  (setq font-lock--skip t))
+              (setq font-lock--anchor-beg-point (point)
+                    font-lock--skip nil)
+              (backward-char 1)
+              (save-excursion
+                (clojure-forward-sexp)
+                (point))))
+          (if font-lock--skip
+              (end-of-line)
+            (goto-char font-lock--anchor-beg-point))
+          (0 'clojure-meta-face t)))
+
+        ;; side-effect
+        (,(concat symbol "?\\(!+\\)\\>")
+         (1 (unless (-intersection '(font-lock-comment-face
+                                     font-lock-doc-face
+                                     font-lock-doc-string-face
+                                     font-lock-string-face)
+                                   (-list (get-text-property (match-beginning 1) 'face)))
+              'clojure-side-effect-face)
+            append))
+
+        ;; Interop type name
+        (,(concat "\\(" symbol "\\(\\." symbol "\\)+\\)")
+         (1 'font-lock-type-face nil))
+        (,(concat "\\<\\(\\([A-Z]" symbol "\\)\\)\\>")
+         (1 'font-lock-type-face nil))
+
+        ;; Custom keywords
+        (,(concat "(" namespace? highlight-kw "\\_>")
+         (1 'font-lock-keyword-face))
+
         ;; Highlight condtions in `case' and `cond', `condp', `cond->', `cond->>' form.
         (,(concat "(" core-ns? "\\(\\(?:case\\|cond\\(?:p\\|->>?\\)?\\)\\)[ \r\t\n]+")
          (,(lambda (limit)
@@ -949,52 +994,7 @@
          (if font-lock--skip
              (end-of-line)
            (goto-char font-lock--anchor-beg-point))
-         (0 'font-lock-doc-face t))
-
-        ;; Metadata
-        (,(concat "\\(?:" whitespace "\\|[([{]\\)\\^[:A-Za-z{]")
-         (,(lambda (limit)
-             (unless font-lock--skip
-               (let ((start (progn
-                              (backward-char 1)
-                              (point-marker))))
-                 (goto-char limit)
-                 (set-match-data (list start (point-marker)))
-                 t)))
-          (let ((beg (match-beginning 0)))
-            (if (in-comment-or-string? beg)
-                (prog1 beg
-                  (setq font-lock--skip t))
-              (setq font-lock--anchor-beg-point (point)
-                    font-lock--skip nil)
-              (backward-char 1)
-              (save-excursion
-                (clojure-forward-sexp)
-                (point))))
-          (if font-lock--skip
-              (end-of-line)
-            (goto-char font-lock--anchor-beg-point))
-          (0 'clojure-meta-face t)))
-
-        ;; side-effect
-        (,(concat symbol "?\\(!+\\)\\>")
-         (1 (unless (-intersection '(font-lock-comment-face
-                                     font-lock-doc-face
-                                     font-lock-doc-string-face
-                                     font-lock-string-face)
-                                   (-list (get-text-property (match-beginning 1) 'face)))
-              'clojure-side-effect-face)
-            append))
-
-        ;; Interop type name
-        (,(concat "\\(" symbol "\\(\\." symbol "\\)+\\)")
-         (1 'font-lock-type-face nil))
-        (,(concat "\\<\\(\\([A-Z]" symbol "\\)\\)\\>")
-         (1 'font-lock-type-face nil))
-
-        ;; Custom keywords
-        (,(concat "(" namespace? highlight-kw "\\_>")
-         (1 'font-lock-keyword-face))))
+         (0 'font-lock-doc-face t))))
     "Default expressions to highlight in Clojure mode."))
 
 (use-package elisp-mode

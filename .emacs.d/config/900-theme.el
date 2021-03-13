@@ -69,7 +69,7 @@
                                                     :foreground "#a35151"
                                                     :weight ,default-weight)))
      '(clojure-semi-function-name-face ((t :inherit font-lock-function-name-face)))
-     '(clojure-side-effect-face ((t :underline t)))
+     '(clojure-side-effect-face ((t :underline t :slant italic)))
      '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))
      '(clojure-special-variable-definition-face
        ((t :inherit (font-lock-constant-face clojure-variable-definition-face))))
@@ -176,6 +176,12 @@
   (custom-set-faces
    '(highlight-parentheses-highlight ((t :underline t)))))
 
+(use-package highlight-numbers
+  :defer t
+  :config
+  (custom-set-faces
+   '(highlight-numbers-number ((t :inherit font-lock-constant-face :weight normal)))))
+
 (use-package ivy
   :defer t
   :config
@@ -193,7 +199,7 @@
   (custom-set-faces
    '(lsp-face-highlight-textual ((t :underline t)))
    '(lsp-face-highlight-read    ((t :underline t)))
-   '(lsp-face-highlight-write   ((t :underline t :wegith bold)))))
+   '(lsp-face-highlight-write   ((t :underline t)))))
 
 (use-package magit
   :defer t
@@ -223,6 +229,8 @@
    '(org-agenda-date-today ((t :inherit org-agenda-date :foreground "turquoise")))
    '(org-agenda-calendar-event ((t :weight normal)))
    '(org-block ((t :weight normal)))
+   '(org-checkbox-statistics-done ((t :foreground "#b5bd68" :weight normal)))
+   '(org-checkbox-statistics-todo ((t :foreground "#cc6666" :weight normal)))
    '(org-date ((t :underline unspecified :weight normal)))
    '(org-done ((t  :weight normal :inverse-video t)))
    '(org-drawer ((t :foreground "light sky blue" :weight normal)))
@@ -287,15 +295,15 @@
   :defer t
   :config
   (custom-set-faces
-   '(swiper-line-face ((t :background "#5f6369" :foreground "white" :weight bold :extend t)))
-   '(swiper-match-face-1 ((t :background "#7d7e7f" :weight bold)))
-   '(swiper-match-face-2 ((t :background "#e99ce8" :weight bold)))
-   '(swiper-match-face-3 ((t :background "#bbbbff" :weight bold)))
-   '(swiper-match-face-4 ((t :background "#ffbbff" :weight bold)))
-   '(swiper-background-match-face-1 ((t :background "#7d7e7f" :foreground "#535454" :weight bold)))
-   '(swiper-background-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b" :weight bold)))
-   '(swiper-background-match-face-3 ((t :background "#bbbbff" :foreground "#707099" :weight bold)))
-   '(swiper-background-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f" :weight bold))))
+   '(swiper-line-face ((t :background "#5f6369" :foreground "white" :extend t)))
+   '(swiper-match-face-1 ((t :background "#7d7e7f")))
+   '(swiper-match-face-2 ((t :background "#e99ce8")))
+   '(swiper-match-face-3 ((t :background "#bbbbff")))
+   '(swiper-match-face-4 ((t :background "#ffbbff")))
+   '(swiper-background-match-face-1 ((t :background "#7d7e7f" :foreground "#535454")))
+   '(swiper-background-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b")))
+   '(swiper-background-match-face-3 ((t :background "#bbbbff" :foreground "#707099")))
+   '(swiper-background-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f"))))
   ;; copy from `swiper--recompute-background-faces'
   (let ((faces '(swiper-match-face-1
                  swiper-match-face-2
@@ -329,5 +337,6 @@
 (use-package yascroll
   :defer t
   :config
-  (custom-set-faces
-   '(yascroll:thumb-fringe ((t :background "#969896")))))
+  (let ((fringe-fg (color-from 'fringe :foreground)))
+    (custom-set-faces
+     `(yascroll:thumb-fringe ((t :background ,fringe-fg :foreground ,fringe-fg))))))

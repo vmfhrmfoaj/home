@@ -456,15 +456,34 @@
    '(("gopls.completeUnimported" t t)
      ("gopls.staticcheck" t t)))
 
+  (add-hook 'cider-mode-hook
+            (lambda ()
+              (remove-function (local 'eldoc-documentation-function) #'lsp-eldoc-function)
+              (setq-local completion-at-point-functions '(cider-complete-at-point)
+                          evil-lookup-func #'cider-doc-at-point)))
+  (add-hook 'cider-disconnected-hook
+            (lambda ()
+              (dolist (buf (cider-util--clojure-buffers))
+                (with-current-buffer buf
+                  (add-function :before-until (local 'eldoc-documentation-function) #'lsp-eldoc-function)
+                  (setq-local completion-at-point-functions '(lsp-completion-at-point)
+                              evil-lookup-func #'lsp-describe-thing-at-point)))))
+
   (add-hook 'lsp-mode-hook
             (lambda ()
               (setq-local show-error-list-fn #'lsp-treemacs-errors-list)
               (setq-local evil-lookup-func #'lsp-describe-thing-at-point)
+
               (cond
                ((derived-mode-p 'go-mode)
                 (setq-local lsp-eldoc-render-all t)
                 (add-hook 'before-save-hook #'lsp-format-buffer t t)
-                (add-hook 'before-save-hook #'lsp-organize-imports t t)))
+                (add-hook 'before-save-hook #'lsp-organize-imports t t))
+               ((and (bound-and-true-p cider-mode)
+                     (cider-connected-p))
+                (remove-function (local 'eldoc-documentation-function) #'lsp-eldoc-function)
+                (setq-local completion-at-point-functions '(cider-complete-at-point)
+                            evil-lookup-func #'cider-doc-at-point)))
 
               (add-hook 'evil-insert-state-entry-hook
                         ;; NOTE
@@ -473,7 +492,8 @@
                           (lambda ()
                             (when lsp-mode
                               (setq lsp-eldoc-enable-hover nil)
-                              (when (and (lsp-feature? "textDocument/signatureHelp")
+                              (when (and (not (derived-mode-p 'clojure-mode))
+                                         (lsp-feature? "textDocument/signatureHelp")
                                          (null lsp-signature-mode)
                                          (-some->> (syntax-ppss)
                                            (nth 1)

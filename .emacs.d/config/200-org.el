@@ -132,13 +132,34 @@ which see."
     (interactive)
     (if (and (boundp 'org-agenda-buffer)
              (buffer-live-p org-agenda-buffer))
-        (switch-to-buffer org-agenda-buffer)
+        (when-let ((win (-some->> (window-list)
+                          (--filter (with-current-buffer (window-buffer it)
+                                      (derived-mode-p 'org-mode 'org-agenda-mode)))
+                          (-first-item))))
+          (unwind-protect
+              (progn
+                (set-window-dedicated-p win nil)
+                (set-window-buffer win org-agenda-buffer)
+                (select-window win))
+            (set-window-dedicated-p win t)))
+      (when-let ((win (-some->> (window-list)
+                        (--filter (with-current-buffer (window-buffer it)
+                                    (derived-mode-p 'org-mode 'org-agenda-mode)))
+                        (-first-item))))
+        (let ((buf (get-buffer-create (if (boundp 'org-agenda-buffer-name)
+                                          org-agenda-buffer-name
+                                        "*Org Agenda*"))))
+          (unwind-protect
+              (progn
+                (set-window-dedicated-p win nil)
+                (set-window-buffer win buf)
+                (select-window win))
+            (set-window-dedicated-p win t))))
       (org-agenda-list)
       (call-interactively #'org-agenda-redo)
       (setq-local default-directory (concat home-dir "/Desktop/Org/")
                   frame--width (frame-width)
-                  projectile-project-name "Org")
-      (set-window-dedicated-p (selected-window) t))
+                  projectile-project-name "Org"))
     (org-agenda-goto-today))
 
   :config
@@ -170,15 +191,7 @@ which see."
                                    (todo   . " ")
                                    (tags   . " ")
                                    (search . " "))
-        org-agenda-remove-tags t)
-
-  (add-hook 'window-size-change-functions
-            (lambda (&rest _)
-              (when (and (derived-mode-p 'org-agenda-mode)
-                         (boundp 'frame--width)
-                         (not (= frame--width (frame-width))))
-                (setq-local frame--width (frame-width))
-                (org-agenda-align-tags)))))
+        org-agenda-remove-tags t))
 
 (use-package org-capture
   :defer t

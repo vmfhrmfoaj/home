@@ -14,19 +14,33 @@
 
   (defun cider-custom-jack-in ()
     (interactive)
-    (let ((type (completing-read "Select CIDER jack-in type: "
-                                 '(Clojure Both ClojureScript)
-                                 nil nil nil 'cider--select-jack-in-history
-                                 (car cider--select-jack-in-history))))
-      (cond
-       ((string= "Clojure" type)
-        (call-interactively #'cider-jack-in-clj))
-       ((string= "Both" type)
-        (call-interactively #'cider-jack-in-clj&cljs))
-       ((string= "ClojureScript" type)
-        (call-interactively #'cider-jack-in-cljs)))))
+    (let* ((type (completing-read "Select CIDER jack-in type: "
+                                  '(Clojure Both ClojureScript)
+                                  nil nil nil 'cider--select-jack-in-history
+                                  (car cider--select-jack-in-history)))
+           (jack-in-fn (cond
+                        ((string= "Clojure" type)
+                         #'cider-jack-in-clj)
+                        ((string= "Both" type)
+                         #'cider-jack-in-clj&cljs)
+                        ((string= "ClojureScript" type)
+                         #'cider-jack-in-cljs)))
+           (cur-ns (clojure-find-ns))
+           (cider-connected-hook-orig (and (boundp 'cider-connected-hook)
+                                           cider-connected-hook)))
+      (when (eq jack-in-fn 'cider-jack-in-clj)
+        (add-hook 'cider-connected-hook
+                  (lambda ()
+                    (cider-repl-set-ns cur-ns)
+                    (setq cider-connected-hook cider-connected-hook-orig))))
+      (call-interactively jack-in-fn)))
 
   (defalias 'cider-switch-to-releated-repl-buffer 'cider-custom-jack-in)
+
+  (add-hook 'cider-mode-hook
+            (lambda ()
+              (setq-local evil-lookup-func #'cider-doc-at-point
+                          font-lock-fontify-region-function #'font-lock-default-fontify-region)))
 
   :config
   (defun cider--repl-buf (&optional ignore-repl-type)
@@ -34,14 +48,14 @@
       (let* ((repl-type (cider-connection-type-for-buffer))
              (root (clojure-project-root-path))
              (repl-buf (->> (cider-repls (unless ignore-repl-type repl-type))
-                            ;; NOTE
-                            ;;  `cider-jack-in-clj&cljs' create two buffer and one of them will be changed CLJS REPL.
-                            ;;  but until browser connecte to REPL, it is CLJ REPL.  so, I recognize CLJS REPL heuristically,
-                            ;;  a length of a buffer name of CLJS REPL is always longer than a buffer name of CLJ REPL.
-                            (--sort (string-lessp (buffer-name it) (buffer-name other)))
-                            (--first
-                             (with-current-buffer it
-                               (string-equal root (clojure-project-root-path)))))))
+                         ;; NOTE
+                         ;;  `cider-jack-in-clj&cljs' create two buffer and one of them will be changed CLJS REPL.
+                         ;;  but until browser connecte to REPL, it is CLJ REPL.  so, I recognize CLJS REPL heuristically,
+                         ;;  a length of a buffer name of CLJS REPL is always longer than a buffer name of CLJ REPL.
+                         (--sort (string-lessp (buffer-name it) (buffer-name other)))
+                         (--first
+                          (with-current-buffer it
+                            (string-equal root (clojure-project-root-path)))))))
         repl-buf)))
 
   (defun cider--set-repl-ns-to-current-ns (&optional repl)
@@ -113,13 +127,6 @@
            ""   "(require 'dev.repl) "
            ""   "(dev.repl/start)))"))
 
-  (add-hook 'cider-mode-hook
-            (lambda ()
-              (setq-local evil-lookup-func #'cider-doc-at-point
-                          font-lock-fontify-region-function #'font-lock-default-fontify-region)
-              (remove-hook 'completion-at-point-functions #'cider-complete-at-point t)
-              (remove-hook 'eldoc-documentation-functions #'cider-eldoc t)))
-
   (advice-add #'cider-restart :around
               (lambda (fn &rest args)
                 "Wrap `cider-restart' to keep current namespace of REPL."
@@ -188,11 +195,7 @@
     (cider-doc-lookup (cider-symbol-at-point)))
 
   (setq cider-dynamic-indentation nil
-        cider-font-lock-dynamically '(deprecated))
-
-  (add-hook 'cider-connected-hook
-            (lambda ()
-              (setq-local evil-lookup-func #'cider-doc-at-point))))
+        cider-font-lock-dynamically '(deprecated)))
 
 (use-package cider-repl
   :defer t
@@ -208,13 +211,13 @@
       (let* ((file (if (null clojure--compilation-error-ns)
                        (nth 0 info)
                      (concat (->> clojure--compilation-error-ns
-                                  (string-replace "-" "_")
-                                  (string-replace "." "/"))
+                               (string-replace "-" "_")
+                               (string-replace "." "/"))
                              "." (file-name-extension (nth 0 info)))))
              (root (->> (or nrepl-project-dir
                             (clojure-project-root-path))
-                        (file-truename)
-                        (s-chop-suffix "/")))
+                     (file-truename)
+                     (s-chop-suffix "/")))
              (buf (or (get-file-buffer (concat root "/src/"  file))
                       (get-file-buffer (concat root "/test/" file))
                       (-some->> (cider-sync-request:classpath)

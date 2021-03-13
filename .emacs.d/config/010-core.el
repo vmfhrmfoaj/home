@@ -75,6 +75,8 @@
                 evil-want-minibuffer t)
   (setq evil-flash-delay 1)
 
+  (remove-hook 'evil-goto-definition-functions 'evil-goto-definition-xref)
+
   (advice-add #'isearch-highlight :around
               (lambda (fn &rest args)
                 "wrap with `ignore-errors'."

@@ -226,15 +226,7 @@
     "pD" #'projectile-remove-known-project
     "pI" #'projectile-invalidate-cache
     "pS" #'projectile-switch-project
-    "pa" (lambda ()
-           (interactive)
-           (when-let ((buf (->> (buffer-list)
-                             (-map #'buffer-name)
-                             (completing-read "Add a buffer to the current project:")
-                             (get-buffer))))
-             (let ((proj-root (projectile-project-root)))
-               (with-current-buffer buf
-                 (setq projectile-project-root proj-root)))))
+    "pa" #'projectile-add-buffer-to-project
     "pd" #'projectile-find-dir
     "pf" #'counsel-projectile-find-file
     "pk" #'projectile-kill-buffers
@@ -392,6 +384,23 @@
             (lambda ()
               (evil-local-set-key 'insert (kbd "<tab>") #'company-indent-or-complete-common))))
 
+(use-package cider-mode
+  :disabled t
+  :defer t
+  :init
+  (add-hook 'cider-mode-hook
+            (lambda ()
+              (make-local-variable 'evil-goto-definition-functions)
+              (add-to-list 'evil-goto-definition-functions
+                           (lambda (_string pos)
+                             (when (cider-connected-p)
+                               (let ((buf (current-buffer)))
+                                 (ignore-errors
+                                   (call-interactively #'cider-find-var-at-point))
+                                 (unless (and (eq buf (current-buffer))
+                                              (= pos (point)))
+                                   t))))))))
+
 (use-package cider-repl
   :defer t
   :config
@@ -436,22 +445,19 @@
   (evil-define-key 'normal cider-stacktrace-mode-map
     (kbd "q") #'kill-buffer-and-delete-window))
 
-(use-package doc-view
-  :defer t
-  :config
-  (evil-set-initial-state 'doc-view-mode 'normal)
-  (evil-define-key 'normal doc-view-mode-map
-    "+" #'doc-view-enlarge
-    "=" #'doc-view-enlarge
-    "0" #'doc-view-scale-reset
-    "-" #'doc-view-shrink
-    "gg" #'doc-view-first-page
-    (kbd "M-p") #'doc-view-previous-page
-    "k" #'doc-view-previous-line-or-previous-page
-    "j" #'doc-view-next-line-or-next-page
-    (kbd "M-n") #'doc-view-next-page
-    "G" #'doc-view-last-page
-    "q" #'kill-buffer-and-delete-window))
+(use-package dumb-jump
+  :init
+  (let ((fn (lambda ()
+              (make-local-variable 'evil-goto-definition-functions)
+              (add-to-list 'evil-goto-definition-functions
+                           (lambda (_string pos)
+                             (let ((buf (current-buffer)))
+                               (ignore-errors
+                                 (call-interactively #'dumb-jump-go))
+                               (unless (and (eq buf (current-buffer))
+                                            (= pos (point)))
+                                 t)))))))
+    (add-hook 'prog-mode-hook fn)))
 
 (use-package evil-collection-docker
   :ensure evil-collection
@@ -564,7 +570,10 @@
   :ensure evil-org
   :after org-agenda
   :config
-  (evil-org-agenda-set-keys))
+  (evil-org-agenda-set-keys)
+  (define-key org-agenda-mode-map "q" nil)
+  (define-key org-agenda-mode-map "Q" nil)
+  (define-key org-agenda-mode-map "x" nil))
 
 (use-package evil-surround
   :defer t
@@ -732,33 +741,24 @@
       (evil-leader--set-major-leader-for-mode major-mode)
       (add-to-list 'lsp--custom-setup-key-status major-mode)))
 
-  (add-hook 'lsp-after-open-hook #'lsp--custom-setup-key)
-  (let ((fn (lambda ()
+  (add-hook 'lsp-after-open-hook
+            (lambda ()
+              (lsp--custom-setup-key)
               (make-local-variable 'evil-goto-definition-functions)
-              (add-to-list 'evil-goto-definition-functions
-                           (cond
-                            ;; NOTE
-                            ;;  `Perl-LanguageServer` is hanging when requrest `textDocument/definition`.
-                            ((or (derived-mode-p 'perl-mode)
-                                 (derived-mode-p 'cperl-mode))
-                             (lambda (_string _position)
-                               (let ((buf (current-buffer))
-                                     (pos (point)))
-                                 (call-interactively #'dumb-jump-go)
-                                 (unless (and (eq buf (current-buffer))
-                                              (= pos (point)))
-                                   t))))
-                            (t (lambda (_string _position)
-                                 (let ((fn (if (lsp-feature? "textDocument/definition")
-                                               #'lsp-find-definition
-                                             #'dumb-jump-go))
-                                       (buf (current-buffer))
-                                       (pos (point)))
-                                   (call-interactively fn)
+              (when-let ((fn (cond
+                              ;; NOTE
+                              ;;  `Perl-LanguageServer` is hanging when requrest `textDocument/definition`.
+                              ((derived-mode-p 'cperl-mode 'perl-mode)
+                               nil)
+                              ((lsp-feature? "textDocument/definition")
+                               (lambda (_string pos)
+                                 (let ((buf (current-buffer)))
+                                   (ignore-errors
+                                     (call-interactively #'lsp-find-definition))
                                    (unless (and (eq buf (current-buffer))
                                                 (= pos (point)))
-                                     t)))))))))
-    (add-hook 'lsp-mode-hook fn)))
+                                     t)))))))
+                (add-to-list 'evil-goto-definition-functions fn)))))
 
 (use-package magit-blame
   :defer t
@@ -850,6 +850,23 @@
 
     (dolist (hook hooks)
       (add-hook hook #'docker-setup-once-for-evil-keybinding))))
+
+(use-package doc-view
+  :defer t
+  :config
+  (evil-set-initial-state 'doc-view-mode 'normal)
+  (evil-define-key 'normal doc-view-mode-map
+    "+" #'doc-view-enlarge
+    "=" #'doc-view-enlarge
+    "0" #'doc-view-scale-reset
+    "-" #'doc-view-shrink
+    "gg" #'doc-view-first-page
+    (kbd "M-p") #'doc-view-previous-page
+    "k" #'doc-view-previous-line-or-previous-page
+    "j" #'doc-view-next-line-or-next-page
+    (kbd "M-n") #'doc-view-next-page
+    "G" #'doc-view-last-page
+    "q" #'kill-buffer-and-delete-window))
 
 (use-package ediff
   :defer t

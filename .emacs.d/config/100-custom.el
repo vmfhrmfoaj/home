@@ -38,6 +38,7 @@
         include-prev-buf-regex (concat "^\\s-*\\(?:"
                                        (regexp-opt '("*scratch*" "*emacs-lisp REPL*"))
                                        "\\|\\*eshell"
+                                       "\\|\\*\\s-*docker eshell "
                                        "\\|\\*Org Agenda"
                                        "\\|\\*cider-repl"
                                        "\\)")
@@ -143,3 +144,9 @@
               (when (and (interactive-p)
                          (eq this-command 'narrow-to-region))
                 (deactivate-mark))))
+
+(use-package gcmh
+  :ensure t
+  :config
+  (setq gcmh-high-cons-threshold (* 1024 1024 32))
+  (gcmh-mode 1))

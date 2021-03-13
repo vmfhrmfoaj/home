@@ -18,7 +18,7 @@
       (--remove (s-blank-p it))
       (--map (-let [(c desc) (split-string it "\t")]
                (if desc
-                   (propertize c :fish-help-message (concat "  " desc))
+                   (propertize c :fish-help-message (concat " (" desc ")"))
                  c)))))
 
   (defun fish-completion--get-help-message (candidate)
@@ -34,6 +34,7 @@
   (advice-add #'fish-completion--list-completions :override #'fish-completion--custom-list-completions)
   (advice-add #'pcomplete-completions-at-point :filter-return
               (lambda (rv)
+                "Add :annotation-function function"
                 (if (and (listp rv) (functionp pcomplete-annotation-function))
                     (append rv `(:annotation-function ,pcomplete-annotation-function))
                   rv)))

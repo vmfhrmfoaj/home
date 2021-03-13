@@ -29,8 +29,8 @@
             (when (plist-get res :results)
               (throw 'found (plist-put res :root proj-root))))
           (setq config (->> cur-dir
-                            (-snoc (plist-get config :exclude))
-                            (plist-put config :exclude))))
+                         (-snoc (plist-get config :exclude))
+                         (plist-put config :exclude))))
         (dumb-jump-fetch-results cur-file proj-root lang config prompt))))
 
   (defun dumb-jump--custom-fetch-results (cur-file proj-root lang config &optional prompt)
@@ -87,33 +87,33 @@
 
   (with-eval-after-load "cc-mode"
     (-update->> dumb-jump-find-rules
-                (--remove (string= "c++" (plist-get it :language)))
-                (-concat (list
-                          (list :type "function"
-                                :supports '("ag" "rg")
-                                :language "c++"
-                                :regex "(^\\s*(static\\s+)?((struct|union)\\s+)?[_:0-9A-Za-z]+(\\s*\\*)?\\s+JJJ\\s*\\\([^\\)]*(\\\)(\\s*\\{)?|,)\\s*$)")
-                          (list :type "function"
-                                :supports '("ag" "grep" "rg" "git-grep")
-                                :language "c++"
-                                :regex "(^\\s*#define\\s+JJJ\\\()")
-                          (list :type "type"
-                                :supports '("ag" "rg")
-                                :language "c++"
-                                :regex "\\btypedef\\b\\s+\\b(struct|enum|union)\\b\\s+\\w+\\s+JJJ")
-                          ;; original
-                          (list :type "type"
-                                :supports '("ag" "rg" "git-grep")
-                                :language "c++"
-                                :regex "\\b(class|struct|enum|union)\\b\\s*JJJ\\b\\s*(final\\s*)?(:((\\s*\\w+\\s*::)*\\s*\\w*\\s*<?(\\s*\\w+\\s*::)*\\w+>?\\s*,*)+)?((\\{|$))|}\\s*JJJ\\b\\s*;"
-                                :tests '("typedef struct test {" "enum test {" "} test;" "union test {" "class test final: public Parent1, private Parent2{" "class test : public std::vector<int> {")
-                                :not '("union test var;" "struct test function() {"))
-                          (list :type "variable"
-                                :supports '("ag" "rg")
-                                :language "c++"
-                                :regex "\\b(?!(class\\b|struct\\b|return\\b|else\\b|delete\\b))(\\w+|[,>])([*&]|\\s)+JJJ\\s*(\\[(\\d|\\s)*\\])*\\s*([=,(){;]|:\\s*\\d)|#define\\s+JJJ\\b"
-                                :tests '("int test=2;" "char *test;" "int x = 1, test = 2" "int test[20];" "#define test" "typedef int test;" "unsigned int test:2")
-                                :not '("return test;" "#define NOT test" "else test=2;"))))))
+      (--remove (string= "c++" (plist-get it :language)))
+      (-concat (list
+                (list :type "function"
+                      :supports '("ag" "rg")
+                      :language "c++"
+                      :regex "(^\\s*(static\\s+)?((struct|union)\\s+)?[_:0-9A-Za-z]+(\\s*\\*)?\\s+JJJ\\s*\\\([^\\)]*(\\\)(\\s*\\{)?|,)\\s*$)")
+                (list :type "function"
+                      :supports '("ag" "grep" "rg" "git-grep")
+                      :language "c++"
+                      :regex "(^\\s*#define\\s+JJJ\\\()")
+                (list :type "type"
+                      :supports '("ag" "rg")
+                      :language "c++"
+                      :regex "\\btypedef\\b\\s+\\b(struct|enum|union)\\b\\s+\\w+\\s+JJJ")
+                ;; original
+                (list :type "type"
+                      :supports '("ag" "rg" "git-grep")
+                      :language "c++"
+                      :regex "\\b(class|struct|enum|union)\\b\\s*JJJ\\b\\s*(final\\s*)?(:((\\s*\\w+\\s*::)*\\s*\\w*\\s*<?(\\s*\\w+\\s*::)*\\w+>?\\s*,*)+)?((\\{|$))|}\\s*JJJ\\b\\s*;"
+                      :tests '("typedef struct test {" "enum test {" "} test;" "union test {" "class test final: public Parent1, private Parent2{" "class test : public std::vector<int> {")
+                      :not '("union test var;" "struct test function() {"))
+                (list :type "variable"
+                      :supports '("ag" "rg")
+                      :language "c++"
+                      :regex "\\b(?!(class\\b|struct\\b|return\\b|else\\b|delete\\b))(\\w+|[,>])([*&]|\\s)+JJJ\\s*(\\[(\\d|\\s)*\\])*\\s*([=,(){;]|:\\s*\\d)|#define\\s+JJJ\\b"
+                      :tests '("int test=2;" "char *test;" "int x = 1, test = 2" "int test[20];" "#define test" "typedef int test;" "unsigned int test:2")
+                      :not '("return test;" "#define NOT test" "else test=2;"))))))
   (with-eval-after-load "cperl-mode"
     (add-to-list 'dumb-jump-find-rules
                  (list :type "function"

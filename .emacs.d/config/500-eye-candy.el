@@ -85,6 +85,7 @@
   (with-eval-after-load "evil-goggles"            (diminish 'evil-goggles-mode           ""))
   (with-eval-after-load "evil-org"                (diminish 'evil-org-mode               ""))
   (with-eval-after-load "flycheck"                (diminish 'flycheck-mode               ""))
+  (with-eval-after-load "gcmh"                    (diminish 'gcmh-mode                   ""))
   (with-eval-after-load "git-gutter"              (diminish 'git-gutter-mode             ""))
   (with-eval-after-load "golden-ratio"            (diminish 'golden-ratio-mode           ""))
   (with-eval-after-load "highlight-parentheses"   (diminish 'highlight-parentheses-mode  ""))

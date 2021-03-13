@@ -241,7 +241,8 @@
      flycheck-current-errors))
 
   (setq flycheck-display-errors-delay 0.1
-        flycheck-flake8-maximum-line-length 120)
+        flycheck-flake8-maximum-line-length 120
+        flycheck-indication-mode nil)
 
   (add-hook 'flycheck-mode-hook
             (lambda ()
@@ -277,12 +278,8 @@
   :config
   (setq flycheck-pos-tip-timeout 0)
 
-  (add-hook 'evil-normal-state-exit-hook
-            (lambda ()
-              (setq flycheck-display-errors-function (-const t))))
-  (add-hook 'evil-normal-state-entry-hook
-            (lambda ()
-              (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))))
+  (add-hook 'evil-normal-state-exit-hook  (lambda () (setq flycheck-display-errors-function (-const t))))
+  (add-hook 'evil-normal-state-entry-hook (lambda () (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))))
 
 (use-package gnuplot
   :disabled t
@@ -304,6 +301,7 @@
   :defer t
   :config
   (defun pos-tip-custom-show (string &optional tip-color pos window timeout width frame-coordinates dx dy)
+    "Customize `pos-tip-show' to fix problems"
     (unless window
       (setq window (selected-window)))
     (let ((frame (window-frame window)))
@@ -316,14 +314,103 @@
                      string tip-color pos window timeout
                      nil nil frame-coordinates dx dy))))))
 
-  (setq pos-tip-foreground-color (fg-color-from 'default))
+  (defun pos-tip-custom-show-no-propertize (string &optional tip-color pos window timeout pixel-width pixel-height frame-coordinates dx dy)
+    "Custom `pos-tip-show-no-propertize' to use `x-gtk-use-system-tooltips'"
+    (unless window
+      (setq window (selected-window)))
+    (let* ((frame (window-frame window))
+	       (winsys (pos-tip-window-system frame))
+	       (x-frame (eq winsys 'x))
+	       (w32-frame (eq winsys 'w32))
+	       (relative (or pos-tip-use-relative-coordinates
+		                 (eq frame-coordinates 'relative)
+		                 (and w32-frame
+			                  (null pos-tip-w32-saved-max-width-height))))
+	       (x-y (prog1
+		            (pos-tip-compute-pixel-position pos window
+						                            pixel-width pixel-height
+						                            frame-coordinates dx dy)
+		          (if pos-tip-use-relative-coordinates
+		              (setq relative t))))
+	       (ax (car x-y))
+	       (ay (cdr x-y))
+	       (rx (if relative ax (- ax (car pos-tip-saved-frame-coordinates))))
+	       (ry (if relative ay (- ay (cdr pos-tip-saved-frame-coordinates))))
+	       (retval (cons rx ry))
+	       (fg (pos-tip-compute-foreground-color tip-color))
+	       (bg (pos-tip-compute-background-color tip-color))
+	       (use-dxdy (or relative
+		                 (not x-frame)))
+	       (spacing (frame-parameter frame 'line-spacing))
+	       (border (ash (+ pos-tip-border-width
+			               pos-tip-internal-border-width)
+		                1))
+           (x-gtk-use-system-tooltips t)
+	       (x-max-tooltip-size
+	        (cons (+ (if x-frame 1 0)
+		             (/ (- (or pixel-width
+			                   (cond
+			                    (relative
+			                     (frame-pixel-width frame))
+			                    (w32-frame
+			                     (car pos-tip-w32-saved-max-width-height))
+			                    (t
+			                     (x-display-pixel-width frame))))
+			               border)
+		                (frame-char-width frame)))
+		          (/ (- (or pixel-height
+			                (x-display-pixel-height frame))
+		                border)
+		             (frame-char-height frame))))
+	       (mpos (with-selected-window window (mouse-pixel-position)))
+	       (mframe (car mpos))
+	       default-frame-alist)
+      (if (or relative
+	          (and use-dxdy
+		           (null (cadr mpos))))
+	      (unless (and (cadr mpos)
+		               (eq mframe frame))
+	        (let* ((edges (window-inside-pixel-edges (cadr (window-list frame))))
+		           (mx (ash (+ (pop edges) (cadr edges)) -1))
+		           (my (ash (+ (pop edges) (cadr edges)) -1)))
+	          (setq mframe frame)
+	          (set-mouse-pixel-position mframe mx my)
+	          (sit-for 0.0001)))
+        (when (and (cadr mpos)
+		           (not (eq mframe frame)))
+	      (let ((rel-coord (pos-tip-frame-relative-position frame mframe w32-frame
+							                                frame-coordinates)))
+	        (setq rx (+ rx (car rel-coord))
+		          ry (+ ry (cdr rel-coord))))))
+      (and pixel-width pixel-height
+	       (setq mpos (pos-tip-avoid-mouse rx (+ rx pixel-width
+					                             (if w32-frame 3 0))
+					                       ry (+ ry pixel-height)
+					                       mframe)))
+      (x-show-tip string mframe
+		          `((border-width . ,pos-tip-border-width)
+		            (internal-border-width . ,pos-tip-internal-border-width)
+		            ,@(and (not use-dxdy) `((left . ,ax)
+					                        (top . ,ay)))
+		            (font . ,(frame-parameter frame 'font))
+		            ,@(and spacing `((line-spacing . ,spacing)))
+		            ,@(and (stringp fg) `((foreground-color . ,fg)))
+		            ,@(and (stringp bg) `((background-color . ,bg))))
+		          (and timeout (> timeout 0) timeout)
+		          (and use-dxdy (- rx (cadr mpos)))
+		          (and use-dxdy (- ry (cddr mpos))))
+      (if (and timeout (<= timeout 0))
+	      (pos-tip-cancel-timer))
+      retval))
 
-  (advice-add #'pos-tip-show :override #'pos-tip-custom-show)
   (add-function :after after-focus-change-function
                 (lambda ()
                   (unless (frame-focus-state)
                     (ignore-errors
-                      (pos-tip-hide))))))
+                      (pos-tip-hide)))))
+
+  (advice-add #'pos-tip-show :override #'pos-tip-custom-show)
+  (advice-add #'pos-tip-show-no-propertize :override #'pos-tip-custom-show-no-propertize))
 
 (use-package saveplace
   :config

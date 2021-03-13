@@ -11,6 +11,8 @@
   :defer t
   :mode ("\\.php\\|ant\\'" . php-mode)
   :config
+  (setq php-mode-use-php7-syntax-table t)
+
   ;; NOTE
   ;;  `php-syntax-propertize-hash-line-comment' is very slow.
   ;;  I don't know why, but I don't think it is caused by customization.

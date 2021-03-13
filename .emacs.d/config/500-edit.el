@@ -17,23 +17,24 @@
          (lisp-interaction-mode . aggressive-indent-mode))
 
   :config
-  (setq aggressive-indent-region-function #'indent-region ; fix with below advice func
+  (setq aggressive-indent-sit-for-time 0.01
+        aggressive-indent-region-function #'indent-region ; fix with below advice func
         aggressive-indent-protected-commands (->> aggressive-indent-protected-commands
-                                                  (append '(evil-undo
-                                                            evil-redo
-                                                            ;; sp-backward-barf-sexp
-                                                            ;; sp-splice-sexp-killing-forward
-                                                            ;; sp-splice-sexp
-                                                            ;; sp-backward-slurp-sexp
-                                                            ;; sp-forward-barf-sexp
-                                                            sp-convolute-sexp
-                                                            ;; sp-splice-sexp-killing-backward
-                                                            ;; sp-splice-sexp-killing-around
-                                                            ;; sp-forward-slurp-sexp
-                                                            ;; sp-wrap-sexp
-                                                            undo-tree-visualize-undo
-                                                            undo-tree-visualize-redo))
-                                                  (-distinct)))
+                                               (append '(evil-undo
+                                                         evil-redo
+                                                         ;; sp-backward-barf-sexp
+                                                         ;; sp-splice-sexp-killing-forward
+                                                         ;; sp-splice-sexp
+                                                         ;; sp-backward-slurp-sexp
+                                                         ;; sp-forward-barf-sexp
+                                                         sp-convolute-sexp
+                                                         ;; sp-splice-sexp-killing-backward
+                                                         ;; sp-splice-sexp-killing-around
+                                                         ;; sp-forward-slurp-sexp
+                                                         ;; sp-wrap-sexp
+                                                         undo-tree-visualize-undo
+                                                         undo-tree-visualize-redo))
+                                               (-distinct)))
 
   (add-hook 'aggressive-indent-mode-hook
             (lambda ()
