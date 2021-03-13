@@ -100,17 +100,9 @@ fi
 EOF
             chmod +x "${HOME}/.shim/lein"
         fi
+    else
+        export LEIN_JVM_OPTS="-Xverify:none -XX:TieredStopAtLevel=4"
     fi
-
-    if [ ! -x "${HOME}/.bin/clojure-lsp" ]; then
-        mkdir -p "${HOME}/.bin"
-        cat > "${HOME}/.bin/clojure-lsp" <<\EOF
-#!/bin/bash
-exec java ${CLOJURE_LSP_JVM_OPTS} -server -jar "$(dirname $0)/.clojure-lsp.jar" $@
-EOF
-        chmod +x "${HOME}/.bin/clojure-lsp"
-    fi
-    export CLOJURE_LSP_JVM_OPTS="-XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xmx8g"
 }
 
 _setup_for_deno() {
