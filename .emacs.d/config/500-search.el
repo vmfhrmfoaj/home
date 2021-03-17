@@ -87,6 +87,7 @@
   :defer t
   :config
   (defun swiper--custom-candidates (&optional numbers-width)
+    "Customize `swiper--candidates' to highlight the line number"
     (let* ((inhibit-field-text-motion t)
            (n-lines (count-lines (point-min) (point-max))))
       (if (funcall swiper-use-visual-line-p n-lines)

@@ -620,7 +620,8 @@
         (define-key ivy-minibuffer-map (kbd "C-u") #'ivy-parent-dir))
     (evil-define-key 'insert ivy-minibuffer-map
       (kbd "<tab>") #'ivy-partial
-      (kbd "<C-return>") (defalias 'ivy--open-it-other-window-and-exit
+      (kbd "<C-return>") #'ivy-immediate-done
+      (kbd "<M-return>") (defalias 'ivy--open-it-other-window-and-exit
                            (lambda ()
                              (interactive)
                              (ivy-exit-with-action #'ivy--switch-buffer-other-window-action)))
@@ -636,7 +637,8 @@
       (kbd "C-u") #'ivy-parent-dir)
     (evil-define-key 'normal ivy-minibuffer-map
       (kbd "RET") #'ivy-done
-      (kbd "<C-return>") (defalias 'ivy--open-it-other-window-and-exit
+      (kbd "<C-return>") #'ivy-immediate-done
+      (kbd "<M-return>") (defalias 'ivy--open-it-other-window-and-exit
                            (lambda ()
                              (interactive)
                              (ivy-exit-with-action #'ivy--switch-buffer-other-window-action)))

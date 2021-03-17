@@ -306,7 +306,7 @@
       (setq window (selected-window)))
     (let ((frame (window-frame window)))
       (unless (cadr (mouse-pixel-position))
-        (set-mouse-position frame (- (frame-width) 3) 1))
+        (set-mouse-position (selected-frame) 1 (- (frame-height) 3)))
       (run-with-timer
        0.01 nil (lambda ()
                   (ignore-errors

@@ -27,7 +27,7 @@
 (use-package lsp-clojure
   :defer t
   :init
-  (setq lsp-clojure-custom-server-command '("bash" "-c" "clojure-lsp")))
+  (setq lsp-clojure-custom-server-command '("clojure-lsp")))
 
 (use-package lsp-diagnostics
   :defer t
@@ -195,12 +195,26 @@
     (let* ((sanitized-kind (if (< kind (length lsp-ivy-symbol-kind-to-face)) kind 0))
            (type (elt lsp-ivy-symbol-kind-to-face sanitized-kind))
            (typestr (if lsp-ivy-show-symbol-kind
-                        (propertize (format "[%s] " (car type)) 'face (cdr type))
+                        (propertize " " 'face (cdr type) 'display (format "[%s] " (car type)))
                       ""))
            (posstr (if lsp-ivy-show-symbol-filename
-                       (propertize (format " · Line: %s" line)
-                                   'face font-lock-comment-face))))
+                       (propertize " " 'face 'lsp-details-face 'display (format " · Line: %s" line)))))
       (concat typestr (lsp-render-symbol sym ".") posstr)))
+
+  (lsp-defun lsp-ivy--custom-format-symbol-match
+    ((sym &as &SymbolInformation :kind :location (&Location :uri))
+     project-root)
+    (let* ((sanitized-kind (if (< kind (length lsp-ivy-symbol-kind-to-face)) kind 0))
+           (type (elt lsp-ivy-symbol-kind-to-face sanitized-kind))
+           (typestr (if lsp-ivy-show-symbol-kind
+                        (propertize  'face (cdr type) 'display (format "[%s] " (car type)))
+                      ""))
+           (pathstr (if lsp-ivy-show-symbol-filename
+                        (propertize " "
+                                    'face font-lock-comment-face
+                                    'display (format " · %s" (file-relative-name (lsp--uri-to-path uri) project-root)))
+                      "")))
+      (concat typestr (lsp-render-symbol-information sym ".") pathstr)))
 
   (defun lsp-ivy-workspace-symbol-for-cur-file (&optional initial-input)
     (interactive)
@@ -268,7 +282,9 @@
        :initial-input (or initial-input
                           (when (use-region-p)
                             (buffer-substring-no-properties (region-beginning) (region-end))))
-       :caller 'lsp-ivy-file-symbol))))
+       :caller 'lsp-ivy-file-symbol)))
+
+  (advice-add #'lsp-ivy--format-symbol-match :override #'lsp-ivy--custom-format-symbol-match))
 
 (use-package lsp-java
   :ensure t
@@ -398,7 +414,7 @@
   (defalias 'lsp--custom-eldoc-message
     (if (version<= "28.0.50" emacs-version)
         #'lsp--custom-eldoc-message-for-emacs-28
-      #'lsp--custom-eldoc-message-for--emacs-27))
+      #'lsp--custom-eldoc-message-for-emacs-27))
 
   (defun lsp--signature->message-filter (msg)
     (if (stringp msg)
@@ -446,7 +462,10 @@
                                  (when flycheck--idle-trigger-timer
                                    (cancel-timer flycheck--idle-trigger-timer)
                                    (setq flycheck--idle-trigger-timer nil))
-                                 (eldoc-message msg)))
+                                 (eldoc-message (->> msg
+                                                  (s-lines)
+                                                  (-drop-while #'s-blank-str?)
+                                                  (-first-item)))))
 
   (when-let ((mode (--first (eq (car it) 'lsp-mode) minor-mode-alist)))
     (setf (nth 1 mode) '(:eval (unless lsp--buffer-workspaces
@@ -492,19 +511,21 @@
                           (lambda ()
                             (when lsp-mode
                               (setq lsp-eldoc-enable-hover nil)
-                              (when (and (not (derived-mode-p 'clojure-mode))
-                                         (lsp-feature? "textDocument/signatureHelp")
-                                         (null lsp-signature-mode)
+                              (when (and (lsp-feature? "textDocument/signatureHelp")
+                                         (not (and (bound-and-true-p cider-mode)
+                                                   (cider-connected-p)))
+                                         (and (boundp 'lsp-signature-mode)
+                                              (null lsp-signature-mode))
                                          (-some->> (syntax-ppss)
                                            (nth 1)
                                            (char-after)
                                            (char-equal begin-parent)))
                                 (setq lsp-signature-prevent-stop-enable t)
                                 (ignore-errors (lsp-signature-activate)))
-                              (when lsp-diagnostics-mode
+                              (when (bound-and-true-p lsp-diagnostics-mode)
                                 (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t)
                                 (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))
-                              (when lsp-enable-symbol-highlighting
+                              (when (bound-and-true-p lsp-enable-symbol-highlighting)
                                 (remove-hook 'lsp-on-idle-hook #'lsp--document-highlight t)
                                 (lsp--remove-overlays 'lsp-highlight)))))
                         nil t)
@@ -512,25 +533,17 @@
               (add-hook 'evil-insert-state-exit-hook
                         (lambda ()
                           (when lsp-mode
-                            (when lsp-diagnostics-mode
+                            (when (bound-and-true-p lsp-diagnostics-mode)
                               (add-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report nil t)
                               (add-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report nil t)
                               (let ((lsp-idle-delay 0))
                                 (lsp-diagnostics--flycheck-report)))
-                            (when lsp-signature-mode
+                            (when (bound-and-true-p lsp-signature-mode)
                               (setq lsp-signature-prevent-stop-enable nil)
                               (ignore-errors (lsp-signature-stop)))
-                            (when lsp-enable-symbol-highlighting
+                            (when (bound-and-true-p lsp-enable-symbol-highlighting)
                               (add-hook 'lsp-on-idle-hook #'lsp--document-highlight nil t))
                             (setq lsp-eldoc-enable-hover t)))
-                        nil t)
-
-              (add-hook 'evil-operator-state-entry-hook
-                        (lambda ()
-                          (when (and lsp-mode
-                                     lsp-ui-sideline-mode)
-                            (lsp-ui-sideline--delete-ov)
-                            (setq lsp-ui-sideline--tag nil)))
                         nil t)
 
               (let ((f (lambda ()

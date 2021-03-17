@@ -13,23 +13,20 @@
 (add-hook 'emacs-startup-hook
           (lambda ()
             (let* ((setup-file (concat home-dir "/.script/setup"))
-                   (env-vars '("CARGO_ROOT_SAVED_DIR"
-                               "CARGO_ROOT_TARGET_DIR"
-                               "EPYTHON"
+                   (env-vars '("EPYTHON"
                                "GO111MODULE"
                                "GOPATH"
                                "JAVA_HOME"
                                "JAVA_OPTS"
                                "LEIN_JVM_OPTS"
                                "PATH"))
-                   (cmd (concat (apply #'concat "bash -c 'source " setup-file " >/dev/null 2>&1; "
-                                       "for var in " (-interpose " " env-vars))
-                                "; do printenv ${var} || echo; done'")))
+                   (cmd (concat "bash -c 'source " setup-file " >/dev/null 2>&1"
+                                "; for var in " (apply #'concat (-interpose " " env-vars))
+                                "; do printenv ${var} || echo \"\"; done'")))
               (--each
                   (->> cmd
                     (shell-command-to-string)
-                    (string-trim)
-                    (s-split "\n")
+                    (s-lines)
                     (-interleave env-vars)
                     (-partition 2))
                 (let ((k (car  it))

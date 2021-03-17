@@ -36,9 +36,8 @@
   :config
   (custom-set-faces
    `(auto-dim-other-buffers-face
-     ((((background dark))
-       :foreground ,(color-from 'default :foreground -10)
-       :background ,(color-from 'default :background 4))))))
+     ((t :foreground ,(color-from 'default :foreground -15)
+         :background ,(color-from 'default :background 4))))))
 
 (use-package company
   :defer t
@@ -80,6 +79,12 @@
   :config
   (custom-set-faces
    '(cperl-nonoverridable-face ((t :inherit font-lock-constant-face)))))
+
+(use-package counsel
+  :defer t
+  :config
+  (custom-set-faces
+   '(counsel-company-annotation-face ((t :inherit shadow :height 0.9)))))
 
 (use-package diff-mode
   :defer t
@@ -197,6 +202,7 @@
   :defer t
   :config
   (custom-set-faces
+   '(lsp-details-face ((t :inherit shadow :height 0.9)))
    '(lsp-face-highlight-textual ((t :underline t)))
    '(lsp-face-highlight-read    ((t :underline t)))
    '(lsp-face-highlight-write   ((t :underline t)))))

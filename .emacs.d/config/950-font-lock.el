@@ -925,13 +925,14 @@
                               (point-marker)))
                        (end (let ((line-end (line-end-position))
                                   (sexp-end (or clojure-cond-newline--limit
-                                                (progn (forward-sexp) (point))))
+                                                (progn (clojure-forward-sexp) (point))))
                                   (m (make-marker)))
                               (if (<= sexp-end line-end)
                                   (progn
                                     (set-marker m (goto-char sexp-end))
                                     (setq clojure-cond-newline--limit nil)
                                     (clojure-forward-sexp))
+                                (clojure-forward-sexp) ; check default case
                                 (set-marker m (goto-char line-end))
                                 (setq clojure-cond-newline--limit sexp-end))
                               m)))
@@ -953,7 +954,8 @@
               (condition-case nil
                   (clojure-forward-sexp)
                 (error (setq font-lock--skip t))))
-             ((string= "casep" (match-string 1))
+             ((or (string= "casep" (match-string 1))
+                  (string= "condp" (match-string 1)))
               (condition-case nil
                   (clojure-forward-sexp 2)
                 (error (setq font-lock--skip t))))))

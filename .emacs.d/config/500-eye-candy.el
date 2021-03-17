@@ -133,8 +133,9 @@
     (setq focus--focus-move-timer
           (run-with-idle-timer 0.25 nil
                                (lambda (buf)
-                                 (with-current-buffer buf
-                                   (focus-move-focus)))
+                                 (when (buffer-live-p buf)
+                                   (with-current-buffer buf
+                                     (focus-move-focus))))
                                focus-buffer)))
 
   (defun focus--enable (&rest _)
@@ -376,7 +377,32 @@
           (complete-symbol . ivy-posframe-display-at-point)
           (t               . ivy-posframe-display)))
 
+  (with-eval-after-load "swiper"
+    (-update->> ivy-update-fns-alist
+      (--remove (-let (((caller . _rest) it))
+                  (eq 'swiper caller)))))
+
+  (with-eval-after-load "golden-ratio"
+    (add-hook 'window-setup-hook
+              (lambda ()
+                (let ((w (-second-item (golden-ratio--dimensions))))
+                  (setq ivy-posframe-width w
+                        ivy-posframe-min-width w)))))
+
   (ivy-posframe-mode 1))
+
+(use-package posframe
+  :defer t
+  :config
+  (defun posframe-mouse-avoidance (frame)
+    (-let* (((mp-frame) (mouse-position)))
+      (when (eq frame mp-frame)
+        (set-mouse-position frame (frame-width frame) 0)))
+    frame)
+
+  (setq posframe-mouse-banish nil)
+
+  (advice-add #'posframe-show :filter-return #'posframe-mouse-avoidance))
 
 (use-package powerline
   :ensure t)

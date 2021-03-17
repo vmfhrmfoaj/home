@@ -59,11 +59,16 @@
 
 (use-package counsel
   :defer t
+  :init
+  (defface counsel-company-annotation-face
+    '((t :inherit shadow))
+    "TODO")
+
   :config
   (defun counsel--company-display-transformer (s)
     (concat s (let ((annot (company-call-backend 'annotation s)))
                 (when annot
-                  (propertize " " 'face 'shadow 'display (company--clean-string annot))))))
+                  (propertize " " 'face 'counsel-company-annotation-face 'display (company--clean-string annot))))))
 
   (defun counsel--custom-company ()
     "Custom `counsel-company'"
@@ -71,23 +76,25 @@
     (company-mode 1)
     (unless company-candidates
       (company-complete))
-    (let ((len (cond ((let (l)
-                        (and company-common
-                             (string= company-common
-                                      (buffer-substring
-                                       (- (point) (setq l (length company-common)))
-                                       (point)))
-                             l)))
-                     (company-prefix
-                      (length company-prefix)))))
-      (when len
-        (setq ivy-completion-beg (- (point) len))
-        (setq ivy-completion-end (point))
-        (ivy-read "Candidate: " company-candidates
-                  :action #'ivy-completion-in-region-action
-                  :caller 'counsel-company
-                  :initial-input (concat company-prefix " ")
-                  :sort t))))
+    (if company-candidates
+        (let ((len (cond ((let (l)
+                            (and company-common
+                                 (string= company-common
+                                          (buffer-substring
+                                           (- (point) (setq l (length company-common)))
+                                           (point)))
+                                 l)))
+                         (company-prefix
+                          (length company-prefix)))))
+          (when len
+            (setq ivy-completion-beg (- (point) len))
+            (setq ivy-completion-end (point))
+            (ivy-read "Candidate: " company-candidates
+                      :action #'ivy-completion-in-region-action
+                      :caller 'counsel-company
+                      :initial-input (concat company-prefix " ")
+                      :sort t)))
+      (message "There is no candidate.")))
 
   (-update->> ivy--display-transformers-alist
     (--remove (-let (((caller . _rest) it))

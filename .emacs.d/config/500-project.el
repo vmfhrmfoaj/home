@@ -61,7 +61,7 @@
       (unless buf
         (projectile-find-file))))
 
-  (defun projectile-custom-switch-open-project (&optional arg)
+  (defun projectile-custom-switch-open-project ()
     (interactive)
     (let ((projectile-switch-project-action #'projectile-action-for-custom-switch-open-project))
       (projectile-switch-open-project)))
@@ -131,14 +131,13 @@
     "Kill all project buffers without exception"
     (interactive)
     (-when-let (proj-root (or proj-root (projectile-project-root)))
-      (let ((alive-buf-list nil))
-        (--each
-            (--filter (with-current-buffer it
-                        (when-let ((cur-proj-root (projectile-project-root)))
-                          (string-equal proj-root cur-proj-root)))
-                      (buffer-list))
-          (let ((confirm-kill-processes nil))
-            (kill-buffer it))))))
+      (--each
+          (--filter (with-current-buffer it
+                      (when-let ((cur-proj-root (projectile-project-root)))
+                        (string-equal proj-root cur-proj-root)))
+                    (buffer-list))
+        (let ((confirm-kill-processes nil))
+          (kill-buffer it)))))
 
   (defun projectile-custom-open-projects ()
     (->> (buffer-list)
@@ -217,7 +216,7 @@
   (advice-add #'projectile-project-root :override #'projectile-custom-project-root)
   (advice-add #'projectile-project-vcs  :override #'projectile-custom-project-vcs)
   (advice-add #'projectile-project-buffer-p :before-while
-              (lambda (buf root)
+              (lambda (_buf root)
                 "filter nil to avoid type error"
                 root))
   (advice-add #'projectile-project-name :filter-return

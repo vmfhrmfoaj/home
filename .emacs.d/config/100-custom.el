@@ -21,7 +21,9 @@
         comment-fill-column 100
         create-lockfiles nil
         default-input-method "korean-hangul"
-        directory-abbrev-alist '(("/mnt/ext/Build/"        . "~/Desktop/Build/")
+        directory-abbrev-alist '(("/mnt/ext/Archive/"      . "~/Desktop/Archive/")
+                                 ("/mnt/ext/Contributes/"  . "~/Desktop/Contributes/")
+                                 ("/mnt/ext/Build/"        . "~/Desktop/Build/")
                                  ("/mnt/ext/Open_Sources/" . "~/Desktop/Open_Sources/")
                                  ("/mnt/ext/Libraries/"    . "~/Desktop/Libraries/")
                                  ("/mnt/ext2/Downloads/"   . "~/Downloads/"))
@@ -148,5 +150,5 @@
 (use-package gcmh
   :ensure t
   :config
-  (setq gcmh-high-cons-threshold (* 1024 1024 32))
+  (setq gcmh-high-cons-threshold (* 1024 1024 64))
   (gcmh-mode 1))
