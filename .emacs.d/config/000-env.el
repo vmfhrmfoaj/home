@@ -4,11 +4,11 @@
   (eval-when-compile
     (unless (file-exists-p "~/.emacs.d/config/func.elc")
       (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.elc"))
+  (load-file "~/.emacs.d/config/func.el"))
 
 (defvar home-dir (getenv "HOME"))
 
-(setq HHKB? nil)
+(setq HHKB? t)
 
 (add-hook 'emacs-startup-hook
           (lambda ()

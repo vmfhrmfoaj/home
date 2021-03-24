@@ -4,7 +4,7 @@
   (eval-when-compile
     (unless (file-exists-p "~/.emacs.d/config/func.elc")
       (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.elc"))
+  (load-file "~/.emacs.d/config/func.el"))
 
 (use-package fish-completion
   :if (executable-find "fish")
@@ -54,7 +54,19 @@
   :config
   (add-hook 'eshell-mode-hook
             (lambda ()
-              (setq-local completion-ignore-case t)))
+              (setq-local completion-ignore-case t)
+              (unless (file-remote-p default-directory)
+                (apply #'eshell/addpath exec-path))
+              (add-hook 'evil-insert-state-entry-hook
+                        (lambda ()
+                          (let ((last-prompt-pos (save-excursion
+                                                   (goto-char (point-max))
+                                                   (and (re-search-backward eshell-prompt-regexp nil t)
+                                                        (not (get-text-property (match-beginning 0) 'read-only)))
+                                                   (point))))
+                            (when (< (point) last-prompt-pos)
+                              (goto-char (point-max)))))
+                        nil t)))
 
   (add-hook 'eshell-post-command-hook
             (lambda ()

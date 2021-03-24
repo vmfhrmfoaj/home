@@ -4,7 +4,7 @@
   (eval-when-compile
     (unless (file-exists-p "~/.emacs.d/config/func.elc")
       (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.elc"))
+  (load-file "~/.emacs.d/config/func.el"))
 
 (use-package cider
   :ensure t
@@ -39,6 +39,7 @@
 
   (add-hook 'cider-mode-hook
             (lambda ()
+              (remove-hook 'completion-at-point-functions #'cider-complete-at-point t)
               (setq-local evil-lookup-func #'cider-doc-at-point
                           font-lock-fontify-region-function #'font-lock-default-fontify-region)))
 
@@ -174,6 +175,8 @@
                   ,cider-clojure-warning))))
 
   (defun cider-handle-compilation-errors-for-flycheck (msg eval-buf)
+    (when (string-match-p "^:reloading (" msg)
+      (setq clojure--compilation-errors nil))
     (when-let ((info (cider-extract-error-info cider-compilation-regexp msg)))
       (add-to-list 'clojure--compilation-errors (cons eval-buf info))
       (with-current-buffer eval-buf
@@ -207,6 +210,8 @@
       (setq clojure--compilation-error-ns (match-string-no-properties 1 msg))))
 
   (defun cider-repl-catch-compilation-error (_buf msg)
+    (when (string-match-p "^:reloading (" msg)
+      (setq clojure--compilation-errors nil))
     (when-let ((info (cider-extract-error-info cider-compilation-regexp msg)))
       (let* ((file (if (null clojure--compilation-error-ns)
                        (nth 0 info)
@@ -272,42 +277,42 @@
             (forward-sexp)))
         (cons beg-kw (point)))))
 
-  (defvar clojure--compilation-errors '())
+  (defvar clojure--compilation-errors nil)
 
   (defun clojure--flycheck-start (checker callback)
     (->> clojure--compilation-errors
-         (--map (let* ((buf  (car it))
-                       (info (cdr it))
-                       (file (nth 0 info))
-                       (line (nth 1 info))
-                       (col  (nth 2 info))
-                       (face (nth 3 info))
-                       (note (nth 4 info))
-                       (msg (when (string-match "{.*}" note)
-                              (match-string 0 note)))
-                       (lv (cond
-                            ((eq face 'cider-warning-highlight-face) 'warning)
-                            ((eq face 'cider-error-highlight-face) 'error)
-                            (t 'info)))
-                       (end-col (if (null buf)
-                                    (1+ col)
-                                  (with-current-buffer buf
-                                    (save-excursion
-                                      (goto-line line)
-                                      (move-to-column col)
-                                      (forward-symbol 1)
-                                      (point))))))
-                  (flycheck-error-new
-                   :buffer (or buf (current-buffer))
-                   :checker checker
-                   :filename (file-name-nondirectory file)
-                   :message (or msg note)
-                   :level lv
-                   :id "Syntax error"
-                   :line line
-                   :column col
-                   :end-column end-col)))
-         (funcall callback 'finished)))
+      (--map (let* ((buf  (car it))
+                    (info (cdr it))
+                    (file (nth 0 info))
+                    (line (nth 1 info))
+                    (col  (nth 2 info))
+                    (face (nth 3 info))
+                    (note (nth 4 info))
+                    (msg (when (string-match "{.*}" note)
+                           (match-string 0 note)))
+                    (lv (cond
+                         ((eq face 'cider-warning-highlight-face) 'warning)
+                         ((eq face 'cider-error-highlight-face) 'error)
+                         (t 'info)))
+                    (end-col (if (null buf)
+                                 (1+ col)
+                               (with-current-buffer buf
+                                 (save-excursion
+                                   (goto-line line)
+                                   (move-to-column col)
+                                   (forward-symbol 1)
+                                   (point))))))
+               (flycheck-error-new
+                :buffer (or buf (current-buffer))
+                :checker checker
+                :filename (file-name-nondirectory file)
+                :message (or msg note)
+                :level lv
+                :id "Syntax error"
+                :line line
+                :column col
+                :end-column end-col)))
+      (funcall callback 'finished)))
 
   (defun clojure-skip (&rest items)
     "TODO"
@@ -461,13 +466,13 @@
   (with-eval-after-load "flycheck"
     (unless (flycheck-valid-checker-p 'clj-cider-repl)
       (flycheck-define-generic-checker
-       'clj-cider-repl
-       "A syntax checker using the Cider REPL provided."
-       :start #'clojure--flycheck-start
-       :modes '(clojure-mode clojurescript-mode clojurec-mode)
-       :predicate (lambda ()
-                    (when (fboundp #'cider-connected-p)
-                      (cider-connected-p)))))
+          'clj-cider-repl
+        "A syntax checker using the Cider REPL provided."
+        :start #'clojure--flycheck-start
+        :modes '(clojure-mode clojurescript-mode clojurec-mode)
+        :predicate (lambda ()
+                     (when (fboundp #'cider-connected-p)
+                       (cider-connected-p)))))
     (add-to-list 'flycheck-checkers 'clj-cider-repl))
 
   (add-hook 'clojure-mode-hook

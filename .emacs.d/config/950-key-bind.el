@@ -6,7 +6,7 @@
       (byte-compile-file "~/.emacs.d/config/func.el")))
   (require 'evil-core)
   (require 'evil-leader nil t)
-  (load-file "~/.emacs.d/config/func.elc"))
+  (load-file "~/.emacs.d/config/func.el"))
 
 
 ;; for HHKB
@@ -633,7 +633,6 @@
                     (ivy-toggle-calling))
       (kbd "C-j") #'ivy-next-line
       (kbd "C-k") #'ivy-previous-line
-      (kbd "C-o") #'hydra-ivy/body
       (kbd "C-u") #'ivy-parent-dir)
     (evil-define-key 'normal ivy-minibuffer-map
       (kbd "RET") #'ivy-done
@@ -646,7 +645,6 @@
       "k" #'ivy-previous-line
       (kbd "C-,") #'ivy-minibuffer-shrink
       (kbd "C-.") #'ivy-minibuffer-grow
-      (kbd "C-o") #'hydra-ivy/body
       (kbd "C-f") #'ivy-toggle-calling
       (kbd "C-j") #'ivy-next-line
       (kbd "C-k") #'ivy-previous-line

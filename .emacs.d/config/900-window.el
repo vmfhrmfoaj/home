@@ -4,7 +4,7 @@
   (eval-when-compile
     (unless (file-exists-p "~/.emacs.d/config/func.elc")
       (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.elc"))
+  (load-file "~/.emacs.d/config/func.el"))
 
 (when window-system
   (let* ((workarea (-some->> main-monitor (assoc 'workarea) (-drop 1)))

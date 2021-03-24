@@ -4,7 +4,7 @@
   (eval-when-compile
     (unless (file-exists-p "~/.emacs.d/config/func.elc")
       (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.elc"))
+  (load-file "~/.emacs.d/config/func.el"))
 
 (use-package auto-dim-other-buffers
   :ensure t
@@ -198,9 +198,15 @@
   (defun focus--clojure-thing ()
     (or (save-excursion
           (ignore-errors
-            (while (progn
-                     (backward-up-list 1 t t)
-                     (not (looking-at-p "(\\([-0-9A-Za-z]+/\\)?\\(fn\\|def[a-z]*\\)\\_>"))))
+            (let ((pos nil))
+              (while (progn
+                       (backward-up-list 1 t t)
+                       (not (looking-at "(\\(?:[-0-9A-Za-z]+/\\)?\\(fn\\|def[a-z]*\\|reify\\|proxy\\|testing\\)\\_>")))
+                (setq pos (point)))
+              (when (string-match-p "reify\\|proxy" (match-string-no-properties 1))
+                (if pos
+                    (goto-char pos)
+                  (throw 'error "No method"))))
             (let* ((end (save-excursion
                           (forward-list)
                           (point))))
@@ -397,7 +403,7 @@
   (defun posframe-mouse-avoidance (frame)
     (-let* (((mp-frame) (mouse-position)))
       (when (eq frame mp-frame)
-        (set-mouse-position frame (frame-width frame) 0)))
+        (set-mouse-position frame (frame-width frame) (frame-height frame))))
     frame)
 
   (setq posframe-mouse-banish nil)

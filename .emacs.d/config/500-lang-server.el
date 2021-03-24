@@ -4,7 +4,7 @@
   (eval-when-compile
     (unless (file-exists-p "~/.emacs.d/config/func.elc")
       (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.elc"))
+  (load-file "~/.emacs.d/config/func.el"))
 
 (use-package dap-mode
   :ensure t
@@ -42,62 +42,54 @@
     (remove-hook 'lsp-on-idle-hook #'lsp-diagnostics--flycheck-buffer t)
 
     (let ((errors (->> flycheck-current-errors
-                       (--filter (and      (eq (flycheck-error-buffer  it) (current-buffer))
-                                           (not (eq (flycheck-error-checker it) checker))))
-                       (-map (-juxt #'flycheck-error-line
-                                    #'flycheck-error-column)))))
+                    (--filter (and      (eq (flycheck-error-buffer  it) (current-buffer))
+                                        (not (eq (flycheck-error-checker it) checker))))
+                    (-map (-juxt #'flycheck-error-line
+                                 #'flycheck-error-column)))))
       (->> (lsp--get-buffer-diagnostics)
-           (-map (-lambda ((&Diagnostic
-                            :message
-                            :severity?
-                            :tags?
-                            :code?
-                            :range (&Range
-                                    :start (&Position
-                                            :line      start-line
-                                            :character start-character)
-                                    :end   (&Position
-                                            :line      end-line
-                                            :character end-character))))
-                   (let ((line-beg (lsp-translate-line (1+ start-line)))
-                         (line-end (lsp-translate-line (1+ end-line)))
-                         (col-beg (1+ (lsp-translate-column start-character)))
-                         (col-end (1+ (lsp-translate-column end-character))))
-                     (unless (member (list line-beg col-beg) errors)
-                       (flycheck-error-new
-                        :buffer (current-buffer)
-                        :checker checker
-                        :filename buffer-file-name
-                        :message message
-                        :level (lsp-diagnostics--flycheck-calculate-level severity? tags?)
-                        :id code?
-                        :line     line-beg
-                        :end-line line-end
-                        :column     col-beg
-                        :end-column col-end)))))
-           (-non-nil)
-           (funcall callback 'finished))))
+        (-map (-lambda ((&Diagnostic
+                         :message
+                         :severity?
+                         :tags?
+                         :code?
+                         :range (&Range
+                                 :start (&Position
+                                         :line      start-line
+                                         :character start-character)
+                                 :end   (&Position
+                                         :line      end-line
+                                         :character end-character))))
+                (let ((line-beg (lsp-translate-line (1+ start-line)))
+                      (line-end (lsp-translate-line (1+ end-line)))
+                      (col-beg (1+ (lsp-translate-column start-character)))
+                      (col-end (1+ (lsp-translate-column end-character))))
+                  (unless (member (list line-beg col-beg) errors)
+                    (flycheck-error-new
+                     :buffer (current-buffer)
+                     :checker checker
+                     :filename buffer-file-name
+                     :message message
+                     :level (lsp-diagnostics--flycheck-calculate-level severity? tags?)
+                     :id code?
+                     :line     line-beg
+                     :end-line line-end
+                     :column     col-beg
+                     :end-column col-end)))))
+        (-non-nil)
+        (funcall callback 'finished))))
 
   (setq lsp-diagnostics-provider :flycheck
         lsp-diagnostics-attributes '((unnecessary :inherit 'lsp-punctuation-face)
                                      (deprecated  :strike-through t)))
 
-  (add-hook 'lsp-diagnostics-mode-hook
-            (lambda ()
-              (when (or (eq lsp-diagnostics-provider :flycheck)
-                        (and (eq lsp-diagnostics-provider :auto)
-                             (featurep 'flycheck)))
-                ;; NOTE
-                ;;  If you add `checker'(i.e., lint), increase syntax checking time.
-                (cond
-                 ((or (derived-mode-p 'perl-mode)
-                      (derived-mode-p 'cperl-mode))
-                  (flycheck-select-checker 'perl)
-                  (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t)
-                  (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))))))
-
   (advice-add #'lsp-diagnostics--flycheck-start :override #'lsp-diagnostics--custom-flycheck-start)
-  (advice-add #'lsp-modeline--diagnostics-update-modeline :override #'ignore))
+  (advice-add #'lsp-modeline--diagnostics-update-modeline :override #'ignore)
+  (advice-add #'lsp-diagnostics--enable :before-until
+              (lambda ()
+                "Do not turn `lsp-diagnostics-mode' on in specific modes."
+                (or (derived-mode-p 'clojure-mode)
+                    (derived-mode-p 'cperl-mode)
+                    (derived-mode-p 'perl-mode)))))
 
 (use-package lsp-headerline
   :defer t
@@ -178,7 +170,8 @@
                                               (list :globalStoragePath lsp-intelephense-storage-path
                                                     :storagePath lsp-intelephense-storage-path
                                                     :licenceKey lsp-intelephense-licence-key
-                                                    :clearCache lsp-intelephense-clear-cache))
+                                                    :clearCache lsp-intelephense-clear-cache
+                                                    :isVscode nil))
                     :multi-root lsp-intelephense-multi-root
                     :completion-in-comments? t
                     :server-id 'iph
@@ -207,7 +200,7 @@
     (let* ((sanitized-kind (if (< kind (length lsp-ivy-symbol-kind-to-face)) kind 0))
            (type (elt lsp-ivy-symbol-kind-to-face sanitized-kind))
            (typestr (if lsp-ivy-show-symbol-kind
-                        (propertize  'face (cdr type) 'display (format "[%s] " (car type)))
+                        (propertize " " 'face (cdr type) 'display (format "[%s] " (car type)))
                       ""))
            (pathstr (if lsp-ivy-show-symbol-filename
                         (propertize " "
@@ -462,10 +455,11 @@
                                  (when flycheck--idle-trigger-timer
                                    (cancel-timer flycheck--idle-trigger-timer)
                                    (setq flycheck--idle-trigger-timer nil))
-                                 (eldoc-message (->> msg
-                                                  (s-lines)
-                                                  (-drop-while #'s-blank-str?)
-                                                  (-first-item)))))
+                                 (-some->> msg
+                                   (s-lines)
+                                   (-drop-while #'s-blank-str?)
+                                   (-first-item)
+                                   (eldoc-message))))
 
   (when-let ((mode (--first (eq (car it) 'lsp-mode) minor-mode-alist)))
     (setf (nth 1 mode) '(:eval (unless lsp--buffer-workspaces
@@ -477,16 +471,17 @@
 
   (add-hook 'cider-mode-hook
             (lambda ()
-              (remove-function (local 'eldoc-documentation-function) #'lsp-eldoc-function)
-              (setq-local completion-at-point-functions '(cider-complete-at-point)
-                          evil-lookup-func #'cider-doc-at-point)))
+              (dolist (buf (cider-util--clojure-buffers))
+                (when (and (bound-and-true-p lsp-mode)
+                           (cider-connected-p))
+                  (remove-function (local 'eldoc-documentation-function) #'lsp-eldoc-function)
+                  (setq-local evil-lookup-func #'cider-doc-at-point)))))
   (add-hook 'cider-disconnected-hook
             (lambda ()
               (dolist (buf (cider-util--clojure-buffers))
                 (with-current-buffer buf
                   (add-function :before-until (local 'eldoc-documentation-function) #'lsp-eldoc-function)
-                  (setq-local completion-at-point-functions '(lsp-completion-at-point)
-                              evil-lookup-func #'lsp-describe-thing-at-point)))))
+                  (setq-local evil-lookup-func #'lsp-describe-thing-at-point)))))
 
   (add-hook 'lsp-mode-hook
             (lambda ()
@@ -501,8 +496,7 @@
                ((and (bound-and-true-p cider-mode)
                      (cider-connected-p))
                 (remove-function (local 'eldoc-documentation-function) #'lsp-eldoc-function)
-                (setq-local completion-at-point-functions '(cider-complete-at-point)
-                            evil-lookup-func #'cider-doc-at-point)))
+                (setq-local evil-lookup-func #'cider-doc-at-point)))
 
               (add-hook 'evil-insert-state-entry-hook
                         ;; NOTE
@@ -523,8 +517,7 @@
                                 (setq lsp-signature-prevent-stop-enable t)
                                 (ignore-errors (lsp-signature-activate)))
                               (when (bound-and-true-p lsp-diagnostics-mode)
-                                (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t)
-                                (remove-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report t))
+                                (remove-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report t))
                               (when (bound-and-true-p lsp-enable-symbol-highlighting)
                                 (remove-hook 'lsp-on-idle-hook #'lsp--document-highlight t)
                                 (lsp--remove-overlays 'lsp-highlight)))))
@@ -535,7 +528,6 @@
                           (when lsp-mode
                             (when (bound-and-true-p lsp-diagnostics-mode)
                               (add-hook 'lsp-diagnostics-updated-hook #'lsp-diagnostics--flycheck-report nil t)
-                              (add-hook 'lsp-managed-mode-hook        #'lsp-diagnostics--flycheck-report nil t)
                               (let ((lsp-idle-delay 0))
                                 (lsp-diagnostics--flycheck-report)))
                             (when (bound-and-true-p lsp-signature-mode)

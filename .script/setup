@@ -255,75 +255,8 @@ EOF
         rm -rf "${HOME}/.zcompdump*"
     fi
 
-    # create cargo wrapper
-    if [ ! -x "${HOME}/.bin/cargo" ]; then
-        mkdir -p "${HOME}/.bin"
-        cat > "${HOME}/.bin/cargo" <<\EOF
-#!/bin/bash
-
-export PATH=$(echo "${PATH}" | sed "s@$(dirname $0):@@g")
-
-if [ -n "${CARGO_ROOT_TARGET_DIR}" ] && [ -n "${CARGO_ROOT_SAVED_DIR}" ] && [ -z "${CARGO_TARGET_DIR}" ]; then
-    root=$(cargo locate-project 2>/dev/null | jq -r '.root' | xargs -r dirname)
-    if [ -d "${root}" ] && [[ "${root}" != '/tmp/'* ]]; then
-        encoded_root=$(echo -n ${root} | sha1sum | cut -d' ' -f1)
-        root_name=$(basename ${root})
-        root_root=$(dirname "${root}")
-        if [ -f "${root_root}/Cargo.toml" ] || [ -d "${root_root}/.git" ]; then
-            name=$(basename "${root_root}")_${root_name}_${encoded_root}
-        else
-            name=${root_name}_${encoded_root}
-        fi
-        export CARGO_TARGET_DIR="${CARGO_ROOT_TARGET_DIR}/${name}"
-        case "${1}" in
-            clean)
-            rm -f target
-            rm -rf "${CARGO_ROOT_SAVED_DIR}/${name}/"
-            ;;
-
-            save)
-            mkdir -p "${CARGO_ROOT_SAVED_DIR}/${name}"
-            rsync -a --delete "${CARGO_TARGET_DIR}/" "${CARGO_ROOT_SAVED_DIR}/${name}/" || exit $?
-            rm -rf "${CARGO_TARGET_DIR}"
-            exit 0
-            ;;
-
-            *)
-            if [ ! -d "${CARGO_TARGET_DIR}" ]; then
-                if [ -d "${CARGO_ROOT_SAVED_DIR}/${name}" ]; then
-                    mkdir -p "${CARGO_TARGET_DIR}"
-                    rsync -a --delete "${CARGO_ROOT_SAVED_DIR}/${name}/" "${CARGO_TARGET_DIR}/"
-                fi
-            fi
-            if [ ! -L target ] && [ "${CARGO_TARGET_DIR}" != target ]; then
-                ln -s "${CARGO_TARGET_DIR}" target
-            fi
-            ;;
-        esac
-    fi
-fi
-
-cargo $@
-ret=$?
-if [ "$1" = 'clippy' ]; then
-    # NOTE
-    #  Emacs `flycheck` print error messages to `minibuffer` if a program(checker) return error code.
-    #  `clippy` return error code(i.e. not zero number) when can't compile. It is very annoying.
-    exit 0
-fi
-exit $ret
-EOF
-        chmod +x "${HOME}/.bin/cargo"
-    fi
     export CARGO_HOME="${HOME}/.cargo"
-    export CARGO_ROOT_TARGET_DIR=/tmp/cargo
-    export CARGO_ROOT_SAVED_DIR="${HOME}/.cargo/build"
     _add_to_path "${HOME}/.cargo/bin"
-
-    which docker >/dev/null 2>&1
-    if [ $? -eq 0 ]; then
-        alias on-rust-musl='docker run --rm -it -v "$(pwd)":/home/rust/src ekidd/rust-musl-builder:nightly-2020-11-19'
-    fi
 }
 
 _setup_for_go() {

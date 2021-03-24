@@ -4,7 +4,7 @@
   (eval-when-compile
     (unless (file-exists-p "~/.emacs.d/config/func.elc")
       (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.elc"))
+  (load-file "~/.emacs.d/config/func.el"))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -37,12 +37,10 @@
                                                                               (projectile-project-name))))
                                                      (concat "｢" proj-name "｣ - "))
                                                    ,tail))))
-        include-prev-buf-regex (concat "^\\s-*\\(?:"
-                                       (regexp-opt '("*scratch*" "*emacs-lisp REPL*"))
-                                       "\\|\\*eshell"
+        include-prev-buf-regex (concat "^\\s-*"
+                                       "\\(\\*eshell"
                                        "\\|\\*\\s-*docker eshell "
                                        "\\|\\*Org Agenda"
-                                       "\\|\\*cider-repl"
                                        "\\)")
         scratch-major-mode 'org-mode
         initial-scratch-message ""

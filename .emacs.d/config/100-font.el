@@ -4,12 +4,12 @@
   (eval-when-compile
     (unless (file-exists-p "~/.emacs.d/config/func.elc")
       (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.elc"))
+  (load-file "~/.emacs.d/config/func.el"))
 
 (when window-system
   (prefer-coding-system 'utf-8)
-  (setq-default line-spacing 0)
-  (let* ((font-size 11.5)
+  (setq-default line-spacing 1)
+  (let* ((font-size 10.5)
          (font-name "Fantasque Sans Mono")
          (font (font-spec :family font-name :size font-size :weight 'bold)))
     (set-face-font 'default font)

@@ -4,7 +4,7 @@
   (eval-when-compile
     (unless (file-exists-p "~/.emacs.d/config/func.elc")
       (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.elc"))
+  (load-file "~/.emacs.d/config/func.el"))
 
 (setq font-lock--anchor-beg-point nil
       font-lock--local-limit nil)
@@ -622,10 +622,6 @@
         (,(concat symbol "\\(#\\)\\_>")
          (1 'clojure-punctuation-face))
 
-        ;; Punctuation
-        ("\\([~#@&_,`'^]\\|\\s(\\|\\s)\\)"
-         (1 'clojure-punctuation-face))
-
         ;; Dereference, Unquote - @symbol or ~symbol
         (,(concat "\\(~\\|@\\)[*0-9A-Za-z]")
          (1 'shadow))
@@ -799,7 +795,7 @@
          (0 'font-lock-constant-face))
 
         ;; character literals - \1, \a, \newline, \u0000
-        ("\\\\\\([[:punct:]]\\|[a-z0-9]+\\>\\)"
+        ("\\\\\\([[:punct:]]\\|\\s(\\|\\s)\\|[0-9A-Za-z]\\>\\|u[0-9A-Fa-f]+\\|newline\\)"
          (0 'clojure-character-face))
 
         ;; Namespace definitions - (ns foo.bar)
@@ -996,7 +992,11 @@
          (if font-lock--skip
              (end-of-line)
            (goto-char font-lock--anchor-beg-point))
-         (0 'font-lock-doc-face t))))
+         (0 'font-lock-doc-face t))
+
+        ;; Punctuation
+        ("\\([~#@&_,`'^]\\|\\s(\\|\\s)\\)"
+         (1 'clojure-punctuation-face))))
     "Default expressions to highlight in Clojure mode."))
 
 (use-package elisp-mode

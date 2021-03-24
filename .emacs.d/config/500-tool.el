@@ -4,7 +4,7 @@
   (eval-when-compile
     (unless (file-exists-p "~/.emacs.d/config/func.elc")
       (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.elc"))
+  (load-file "~/.emacs.d/config/func.el"))
 
 (add-hook 'after-save-hook #'rsync-remote-dir)
 (add-hook 'after-revert-hook #'rsync-remote-dir)
@@ -156,7 +156,7 @@
       #'eldoc-refresh-for-emacs-27))
 
   (setq eldoc-idle-delay 0.2
-        eldoc-echo-area-use-multiline-p max-mini-window-height)
+        eldoc-echo-area-use-multiline-p 5)
 
   (add-hook 'eldoc-mode-hook
             (lambda ()

@@ -4,7 +4,7 @@
   (eval-when-compile
     (unless (file-exists-p "~/.emacs.d/config/func.elc")
       (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.elc"))
+  (load-file "~/.emacs.d/config/func.el"))
 
 (use-package aggressive-indent
   :ensure t
@@ -107,20 +107,6 @@
 (use-package smartparens
   :ensure t
   :defer t
-  :init
-  (defun setup-smartparens-once ()
-    (when (and (member this-command '(evil-insert self-insert-command))
-               (not (or buffer-read-only
-                        view-mode)))
-      (remove-hook 'pre-command-hook #'setup-smartparens-once)
-      (smartparens-global-mode 1)
-      (smartparens-mode 1)
-      (show-smartparens-global-mode 1)
-      (show-smartparens-mode 1)
-      (fmakunbound #'setup-smartparens-once)))
-
-  (add-hook 'pre-command-hook #'setup-smartparens-once)
-
   :config
   (defun sp-wrap-sexp (&optional arg)
     (interactive "P")
@@ -141,14 +127,6 @@ So, replaced `evil-jump-item' to this function."
        (t
         (sp-backward-up-sexp)))))
 
-  (setq sp-highlight-pair-overlay nil
-        sp-highlight-wrap-overlay nil
-        sp-highlight-wrap-tag-overlay nil))
-
-(use-package smartparens-config
-  :ensure smartparens
-  :after smartparens
-  :config
   (defun sp--org-checkbox-p (_id _action _context)
     (save-match-data
       (save-excursion
@@ -163,7 +141,17 @@ So, replaced `evil-jump-item' to this function."
       (skip-chars-forward "[^[]")
       (insert " ")))
 
-  (sp-local-pair 'org-mode "[" "]" :post-handlers '(:add sp--org-checkbox-handler)))
+  (sp-local-pair 'org-mode "[" "]" :post-handlers '(:add sp--org-checkbox-handler))
+
+  (setq sp-highlight-pair-overlay nil
+        sp-highlight-wrap-overlay nil
+        sp-highlight-wrap-tag-overlay nil)
+
+  (smartparens-global-mode 1)
+  (show-smartparens-global-mode 1))
+
+(use-package smartparens-config
+  :ensure smartparens)
 
 (use-package undo-tree
   :ensure t
@@ -190,8 +178,8 @@ So, replaced `evil-jump-item' to this function."
   (add-hook 'kill-emacs-hook
             (lambda ()
               (->> (buffer-list)
-                   (--filter buffer-file-name)
-                   (--map (kill-buffer it))))))
+                (--filter buffer-file-name)
+                (--map (kill-buffer it))))))
 
 (use-package whitespace
   :config

@@ -4,7 +4,7 @@
   (eval-when-compile
     (unless (file-exists-p "~/.emacs.d/config/func.elc")
       (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.elc"))
+  (load-file "~/.emacs.d/config/func.el"))
 
 (use-package company
   :ensure t
@@ -92,7 +92,7 @@
             (ivy-read "Candidate: " company-candidates
                       :action #'ivy-completion-in-region-action
                       :caller 'counsel-company
-                      :initial-input (concat company-prefix " ")
+                      :initial-input (concat (downcase (regexp-quote (or company-common company-prefix))) " ")
                       :sort t)))
       (message "There is no candidate.")))
 
