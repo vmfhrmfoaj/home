@@ -124,43 +124,29 @@ which see."
                     (funcall of arg))))))
 
 (use-package org-agenda
-  :defer t
   :init
   (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
 
-  (defun org-agenda-show-list ()
-    (interactive)
-    (if (and (boundp 'org-agenda-buffer)
-             (buffer-live-p org-agenda-buffer))
-        (when-let ((win (-some->> (window-list)
-                          (--filter (with-current-buffer (window-buffer it)
-                                      (derived-mode-p 'org-mode 'org-agenda-mode)))
-                          (-first-item))))
-          (unwind-protect
-              (progn
-                (set-window-dedicated-p win nil)
-                (set-window-buffer win org-agenda-buffer)
-                (select-window win))
-            (set-window-dedicated-p win t)))
-      (when-let ((win (-some->> (window-list)
-                        (--filter (with-current-buffer (window-buffer it)
-                                    (derived-mode-p 'org-mode 'org-agenda-mode)))
-                        (-first-item))))
-        (let ((buf (get-buffer-create (if (boundp 'org-agenda-buffer-name)
-                                          org-agenda-buffer-name
-                                        "*Org Agenda*"))))
-          (unwind-protect
-              (progn
-                (set-window-dedicated-p win nil)
-                (set-window-buffer win buf)
-                (select-window win))
-            (set-window-dedicated-p win t))))
-      (org-agenda-list)
-      (call-interactively #'org-agenda-redo)
-      (setq-local default-directory (concat home-dir "/Desktop/Org/")
-                  frame--width (frame-width)
-                  projectile-project-name "Org"))
-    (org-agenda-goto-today))
+  (defun org-agenda-show-on-dedicated-window (org-agenda-fn &optional finish-fn)
+    (if-let ((win (-some->> (window-list)
+                    (--filter (with-current-buffer (window-buffer it)
+                                (derived-mode-p 'org-mode 'org-agenda-mode)))
+                    (-first-item))))
+        (unwind-protect
+            (progn
+              (set-window-dedicated-p win nil)
+              (select-window win)
+              (funcall org-agenda-fn))
+          (set-window-dedicated-p win t))
+      (funcall org-agenda-fn))
+    (call-interactively #'org-agenda-redo)
+    (setq-local default-directory (concat home-dir "/Desktop/Org/")
+                frame--width (frame-width)
+                projectile-project-name "Org")
+    (when finish-fn
+      (funcall finish-fn))
+    (when (fboundp #'golden-ratio)
+      (golden-ratio)))
 
   :config
   (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0))

@@ -21,7 +21,7 @@
         company-dabbrev-code-other-buffers nil
         company-etags-ignore-case t
         company-idle-delay nil
-        company-echo-delay 0.2
+        company-echo-delay nil
         company-minimum-prefix-length 1
         company-selection-wrap-around t
         company-tooltip-flip-when-above t)

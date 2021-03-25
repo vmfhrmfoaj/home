@@ -125,21 +125,33 @@
 
     ;; applications
     ;; - org
-    "aoa" #'org-agenda-show-list
+    "aoa" (defalias 'org-agenda-show-list
+            (lambda ()
+              (interactive)
+              (org-agenda-show-on-dedicated-window #'org-agenda-list #'org-agenda-goto-today)))
     "aocj" #'org-clock-goto
     "aocn" #'org-capture-note
     "aoct" #'org-capture-todo
-    "aom" #'org-tags-view
-    "aoM" (defalias 'org-tags-view-todo-only
+    "aom" (defalias 'org-agenda-show-tags
             (lambda ()
               (interactive)
-              (org-tags-view t)))
-    "aos" #'org-search-view
-    "aoS" (defalias 'org-search-view-todo-only
+              (org-agenda-show-on-dedicated-window #'org-tags-view)))
+    "aoM" (defalias 'org-agenda-show-tags-todo-only
             (lambda ()
               (interactive)
-              (org-search-view t)))
-    "aot" #'org-todo-list
+              (org-agenda-show-on-dedicated-window (-partial #'org-tags-view t))))
+    "aos" (defalias 'org-agenda-show-search-result
+            (lambda ()
+              (interactive)
+              (org-agenda-show-on-dedicated-window #'org-search-view)))
+    "aoS" (defalias 'org-agenda-show-search-result-todo-only
+            (lambda ()
+              (interactive)
+              (org-agenda-show-on-dedicated-window (-partial #'org-search-view t))))
+    "aot" (defalias 'org-agenda-show-todo-list
+            (lambda ()
+              (interactive)
+              (org-agenda-show-on-dedicated-window #'org-todo-list)))
     ;; - docker
     "ad" #'docker
     ;; - undo-tree

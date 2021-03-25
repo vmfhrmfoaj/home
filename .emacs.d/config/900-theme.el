@@ -20,6 +20,7 @@
    '(line-number ((t :background "#222326" :foreground "#717371" :weight normal)))
    '(line-number-current-line
      ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight normal :inverse-video nil)))
+   '(lisp-symbol-dash-face ((t :weight normal)))
    '(mode-line-inactive ((t :foreground "#717371" :weight normal)))
    '(region ((t :background "#760e17")))
    '(shadow ((t :weight normal)))
@@ -62,7 +63,7 @@
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
      '(clojure-fn-parameter-unused-face ((t :inherit shadow)))
      '(clojure-important-keywords-face ((t :inherit font-lock-keyword-face :slant italic)))
-     '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
+     '(clojure-keyword-face ((t :inherit font-lock-builtin-face :foreground unspecified)))
      '(clojure-meta-face ((t :inherit shadow :weight normal)))
      `(clojure-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face
                                                     :foreground "#a35151"
@@ -72,6 +73,7 @@
      '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))
      '(clojure-special-variable-definition-face
        ((t :inherit (font-lock-constant-face clojure-variable-definition-face))))
+     '(clojure-symbol-dash-face ((t :weight normal)))
      '(clojure-variable-definition-face ((t :inherit font-lock-variable-name-face))))))
 
 (use-package cperl-mode
@@ -205,7 +207,8 @@
    '(lsp-details-face ((t :inherit shadow :height 0.9)))
    '(lsp-face-highlight-textual ((t :underline t)))
    '(lsp-face-highlight-read    ((t :underline t)))
-   '(lsp-face-highlight-write   ((t :underline t)))))
+   '(lsp-face-highlight-write   ((t :underline t)))
+   '(lsp-punctuation-face ((t :inherit unspecified)))))
 
 (use-package magit
   :defer t

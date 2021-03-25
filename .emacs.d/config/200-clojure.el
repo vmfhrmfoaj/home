@@ -39,7 +39,6 @@
 
   (add-hook 'cider-mode-hook
             (lambda ()
-              (remove-hook 'completion-at-point-functions #'cider-complete-at-point t)
               (setq-local evil-lookup-func #'cider-doc-at-point
                           font-lock-fontify-region-function #'font-lock-default-fontify-region)))
 

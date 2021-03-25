@@ -8,15 +8,15 @@
 
 (when window-system
   (prefer-coding-system 'utf-8)
-  (setq-default line-spacing 1)
-  (let* ((font-size 10.5)
+  (setq-default line-spacing 0)
+  (let* ((font-size 11.0)
          (font-name "Fantasque Sans Mono")
          (font (font-spec :family font-name :size font-size :weight 'bold)))
     (set-face-font 'default font)
     (set-fontset-font nil '(#xE000 . #xF8FF) font)               ; for ligature
     (set-fontset-font "fontset-default" '(#xE000 . #xF8FF) font) ; for ligature
     (set-fontset-font "fontset-default" 'unicode (font-spec :family "Noto Color Emoji" :size font-size))
-    (set-fontset-font "fontset-default" 'unicode (font-spec :family "DejaVu Sans" :size font-size) nil t)
+    (set-fontset-font "fontset-default" 'unicode (font-spec :family "DejaVu Sans"      :size font-size) nil t)
     (set-fontset-font "fontset-default" 'hangul  (font-spec :family "Noto Sans CJK KR" :size font-size))
     (set-fontset-font "fontset-default" 'kana    (font-spec :family "Noto Sans CJK JP" :size font-size))
     (let ((font (font-spec :family "Noto Sans CJK SC" :size font-size)))

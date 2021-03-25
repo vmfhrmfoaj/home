@@ -29,7 +29,7 @@
 (add-hook 'window-setup-hook
           (lambda ()
             (let ((buf (current-buffer)))
-              (org-agenda-show-list)
+              (org-agenda-list)
               (split-window-horizontally)
               (set-window-dedicated-p (selected-window) t)
               (other-window 1)
@@ -71,7 +71,10 @@
   (setq golden-ratio-adjust-factor 1.05)
 
   (with-eval-after-load "which-key"
-    (add-to-list 'golden-ratio-exclude-buffer-names which-key-buffer-name))
+    (add-to-list 'golden-ratio-inhibit-functions
+                 (lambda ()
+                   (and which-key--buffer
+                        (window-live-p (get-buffer-window which-key--buffer))))))
 
   (with-eval-after-load "winum"
     (advice-add #'winum--switch-to-window :after (lambda (&rest _) (golden-ratio))))

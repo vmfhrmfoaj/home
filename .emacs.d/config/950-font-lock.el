@@ -20,7 +20,6 @@
   (-repeat 4 (point-min-marker)))
 
 (let ((f (lambda ()
-           "TODO"
            (font-lock-add-keywords
             nil
             '(("\\([.,]\\|[|&]\\{2,2\\}\\|\\s(\\|\\s)\\)"
@@ -28,7 +27,12 @@
             :append))))
   (add-hook 'git-timemachine-mode-hook f :append)
   (add-hook 'toml-mode-hook f :append)
-  (add-hook 'prog-mode-hook f :append))
+  (add-hook 'prog-mode-hook
+            (lambda ()
+              (cond
+               ((derived-mode-p 'clojure-mode))
+               (t (funcall f))))
+            :append))
 
 
 (use-package cc-mode
@@ -214,6 +218,9 @@
     '((t (:inherit shadow)))
     "TODO")
   (defface clojure-punctuation-face
+    '((t (:inherit shadow)))
+    "TODO")
+  (defface clojure-symbol-dash-face
     '((t (:inherit shadow)))
     "TODO")
 
@@ -992,12 +999,18 @@
          (if font-lock--skip
              (end-of-line)
            (goto-char font-lock--anchor-beg-point))
-         (0 'font-lock-doc-face t))
+         (0 'font-lock-doc-face t))))
+    "Default expressions to highlight in Clojure mode.")
 
-        ;; Punctuation
-        ("\\([~#@&_,`'^]\\|\\s(\\|\\s)\\)"
-         (1 'clojure-punctuation-face))))
-    "Default expressions to highlight in Clojure mode."))
+  (dolist (mode '(clojure-mode clojurescript-mode clojurec-mode))
+    (font-lock-add-keywords
+     mode
+     `(;; Punctuation
+       ("\\([~#@&_,`'^]\\|\\s(\\|\\s)\\)"
+        (1 'clojure-punctuation-face append))
+       ("[(a-z]\\(-+>?\\)[a-z]"
+        (1 'clojure-symbol-dash-face prepend)))
+     :append)))
 
 (use-package elisp-mode
   :defer t
@@ -1005,6 +1018,10 @@
   (defface lisp-local-binding-variable-name-face
     '((t (:inherit font-lock-variable-name-face)))
     "Face used to font-lock Lisp local binding variable name.")
+
+  (defface lisp-symbol-dash-face
+    '((t (:inherit shadow)))
+    "TODO")
 
   :config
   (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
@@ -1076,7 +1093,10 @@
            (if font-lock--skip
                (end-of-line)
              (goto-char font-lock--anchor-beg-point))
-           (1 'lisp-local-binding-variable-name-face))))
+           (1 'lisp-local-binding-variable-name-face)))
+         ;; punctuation
+         ("[(a-z]\\(-+>?\\)[a-z]"
+          (1 'lisp-symbol-dash-face prepend)))
        :append))))
 
 (use-package go-mode

@@ -201,9 +201,11 @@
             (let ((pos nil))
               (while (progn
                        (backward-up-list 1 t t)
-                       (not (looking-at "(\\(?:[-0-9A-Za-z]+/\\)?\\(fn\\|def[a-z]*\\|reify\\|proxy\\|testing\\)\\_>")))
+                       (not (or (and (looking-at "(")
+                                     (char-equal ?# (char-before)))
+                                (looking-at "(\\(?:[-0-9A-Za-z]+/\\)?\\(fn\\|def[a-z]*\\|reify\\|proxy\\|testing\\)\\_>"))))
                 (setq pos (point)))
-              (when (string-match-p "reify\\|proxy" (match-string-no-properties 1))
+              (when (string-match-p "reify\\|proxy" (or (match-string-no-properties 1) ""))
                 (if pos
                     (goto-char pos)
                   (throw 'error "No method"))))
