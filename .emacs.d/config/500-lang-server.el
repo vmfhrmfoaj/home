@@ -87,7 +87,8 @@
   (advice-add #'lsp-diagnostics--enable :before-until
               (lambda ()
                 "Do not turn `lsp-diagnostics-mode' on in specific modes."
-                (or (derived-mode-p 'cperl-mode)
+                (or (derived-mode-p 'clojure-mode)
+                    (derived-mode-p 'cperl-mode)
                     (derived-mode-p 'perl-mode)))))
 
 (use-package lsp-headerline

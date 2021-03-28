@@ -148,5 +148,5 @@
 (use-package gcmh
   :ensure t
   :config
-  (setq gcmh-high-cons-threshold (* 1024 1024 64))
+  (setq gcmh-high-cons-threshold (* 1024 1024 32))
   (gcmh-mode 1))

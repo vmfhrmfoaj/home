@@ -33,7 +33,10 @@
               (split-window-horizontally)
               (set-window-dedicated-p (selected-window) t)
               (other-window 1)
-              (switch-to-buffer buf))))
+              (switch-to-buffer buf)
+              (with-eval-after-load "golden-ratio"
+                (with-selected-window (get-buffer-window org-agenda-buffer)
+                  (org-agenda-align-tags))))))
 
 (with-eval-after-load "org"
   (let ((f (lambda (fn buffer &rest args)
@@ -68,7 +71,7 @@
         (when (window-resizable-p (selected-window) ncol t)
           (enlarge-window ncol t)))))
 
-  (setq golden-ratio-adjust-factor 1.05)
+  (setq golden-ratio-adjust-factor 1.1)
 
   (with-eval-after-load "which-key"
     (add-to-list 'golden-ratio-inhibit-functions

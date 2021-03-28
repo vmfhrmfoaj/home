@@ -435,8 +435,8 @@
   (which-key-declare-prefixes-for-mode 'cider-repl-mode
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto"
-    (concat evil-leader/leader "ms") "set/change"
-    (concat evil-leader/leader "mr") "repl")
+    (concat evil-leader/leader "mr") "repl"
+    (concat evil-leader/leader "ms") "set/change")
   (evil-leader--set-major-leader-for-mode 'cider-repl-mode)
 
   (let ((fn (lambda ()
@@ -822,9 +822,13 @@
       "mer" #'cider-eval-last-sexp-and-replace
       "mrS" #'cider-custom-jack-in
       "mrs" #'cider-switch-to-releated-repl-buffer
+      "mrc" #'cider-insert-last-sexp-in-repl
       "mrq" #'cider-quit)
     (which-key-declare-prefixes-for-mode mode
-      (concat evil-leader/leader "me") "evaluation")
+      (concat evil-leader/leader "me") "evaluation"
+      ;;  already defined at `lsp-mode'
+      ;; (concat evil-leader/leader "mr") "repl"
+      )
     (evil-leader--set-major-leader-for-mode mode)))
 
 (use-package cperl-mode

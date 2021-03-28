@@ -176,8 +176,52 @@ which see."
         org-agenda-prefix-format '((agenda . " ")
                                    (todo   . " ")
                                    (tags   . " ")
-                                   (search . " "))
-        org-agenda-remove-tags t))
+                                   (search . " ")))
+
+  (add-hook 'window-size-change-functions
+            (lambda (&rest _)
+              "Align tags"
+              (when-let ((win (and org-agenda-buffer
+                                   (get-buffer-window org-agenda-buffer))))
+                (with-selected-window win
+                  (let ((w (window-width)))
+                    (when (and (boundp 'org-agenda--width)
+                               (not (= org-agenda--width w)))
+                      (org-agenda-align-tags))
+                    (setq-local org-agenda--width w))))))
+
+  (advice-add #'org-add-log-note :override
+              (lambda (&optional _purpose)
+                "Fix for the dedicated window"
+                (remove-hook 'post-command-hook 'org-add-log-note)
+                (setq org-log-note-window-configuration (current-window-configuration))
+                (move-marker org-log-note-return-to (point))
+                (pop-to-buffer-same-window (marker-buffer org-log-note-marker))
+                (goto-char org-log-note-marker)
+                (org-switch-to-buffer-other-window (get-buffer-create "*Org Note*"))
+                (erase-buffer)
+                (if (memq org-log-note-how '(time state))
+                    (org-store-log-note)
+                  (let ((org-inhibit-startup t)) (org-mode))
+                  (insert (format "# Insert note for %s.
+# Finish with C-c C-c, or cancel with C-c C-k.\n\n"
+		                          (cl-case org-log-note-purpose
+		                            (clock-out "stopped clock")
+		                            (done  "closed todo item")
+		                            (reschedule "rescheduling")
+		                            (delschedule "no longer scheduled")
+		                            (redeadline "changing deadline")
+		                            (deldeadline "removing deadline")
+		                            (refile "refiling")
+		                            (note "this entry")
+		                            (state
+		                             (format "state change from \"%s\" to \"%s\""
+			                                 (or org-log-note-previous-state "")
+			                                 (or org-log-note-state "")))
+		                            (t (error "This should not happen")))))
+                  (when org-log-note-extra (insert org-log-note-extra))
+                  (setq-local org-finish-function 'org-store-log-note)
+                  (run-hooks 'org-log-buffer-setup-hook)))))
 
 (use-package org-capture
   :defer t
