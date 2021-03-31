@@ -355,7 +355,16 @@
 (use-package highlight-numbers
   :ensure t
   :defer t
-  :hook ((prog-mode rpm-spec-mode toml-mode) . highlight-numbers-mode))
+  :hook ((prog-mode rpm-spec-mode toml-mode) . highlight-numbers-mode)
+  :config
+  (defconst highlight-numbers-generic-regexp
+    (rx (and
+         symbol-start
+         (? "-")
+         digit
+         (*? any)
+         symbol-end))
+    "Customize `highlight-numbers-generic-regexp' to highlight the negative number."))
 
 (use-package hl-line
   :disabled t
@@ -391,11 +400,12 @@
                   (eq 'swiper caller)))))
 
   (with-eval-after-load "golden-ratio"
-    (add-hook 'window-setup-hook
+    (add-hook 'window-size-change-functions
               (lambda ()
-                (let ((w (-second-item (golden-ratio--dimensions))))
-                  (setq ivy-posframe-width w
-                        ivy-posframe-min-width w)))))
+                (when (frame-size-changed-p)
+                  (let ((w (-second-item (golden-ratio--dimensions))))
+                    (setq ivy-posframe-width w
+                          ivy-posframe-min-width w))))))
 
   (ivy-posframe-mode 1))
 

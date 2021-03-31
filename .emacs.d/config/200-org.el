@@ -247,36 +247,14 @@ which see."
                     ":Effort:   %^{Effort|1:00|3:00|6:00|1d|3d|1w|2w|3w|1m|3m|6m|9m|1y}" "\n"
                     ":END:"                                                              "\n"
                     "\n"
-                    "%?"
-                    "\n")
-           :prepend t)
-          ("p" "Protocol" entry
-           (file+headline ,(concat org-directory "/todos/" (format-time-string "%Y") ".org")
-                          ,(format-time-string "%b"))
-           ,(concat "* TODO %^{Task}"                                                    "\n"
-                    ":PROPERTIES:"                                                       "\n"
-                    ":Effort:   %^{Effort|1:00|3:00|6:00|1d|3d|1w|2w|3w|1m|3m|6m|9m|1y}" "\n"
-                    ":END:"                                                              "\n"
+                    "_REQUIREMENTS_:"                                                    "\n"
+                    "- %?"                                                               "\n"
                     "\n"
-                    "%t"              "\n"
-                    "- %a"            "\n"
-                    "  #+begin_quote" "\n"
-                    "  %i"            "\n"
-                    "  #+end_quote"   "\n"
-                    "%?"
-                    "\n")
-           :prepend t)
-          ("L" "Protocol Link" entry
-           (file+headline ,(concat org-directory "/todos/" (format-time-string "%Y") ".org")
-                          ,(format-time-string "%b"))
-           ,(concat "* TODO %^{Task}"                                                    "\n"
-                    ":PROPERTIES:"                                                       "\n"
-                    ":Effort:   %^{Effort|1:00|3:00|6:00|1d|3d|1w|2w|3w|1m|3m|6m|9m|1y}" "\n"
-                    ":END:"                                                              "\n"
+                    "_CHECKLIST_:"                                                       "\n"
+                    "- [ ] ???"                                                          "\n"
                     "\n"
-                    "%t"   "\n"
-                    "- %a" "\n"
-                    "%?"
+                    "_BACKLOG_:"                                                         "\n"
+                    "- [ ] ???"                                                          "\n"
                     "\n")
            :prepend t)))
 

@@ -370,6 +370,10 @@
 
   (defvar lsp--max-line-eldoc-msg
     (1- (cond
+         ((floatp eldoc-echo-area-use-multiline-p)
+          (floor (* (frame-height) eldoc-echo-area-use-multiline-p)))
+         ((numberp eldoc-echo-area-use-multiline-p)
+          eldoc-echo-area-use-multiline-p)
          ((floatp max-mini-window-height)
           (floor (* (frame-height) max-mini-window-height)))
          ((numberp max-mini-window-height)
@@ -392,13 +396,7 @@
   (defun lsp--custom-eldoc-message-for-emacs-28 (&optional msg)
     "Show MSG in eldoc."
     (unless isearch-mode
-      (when-let ((max-chars (-> (cond
-                                 ((floatp max-mini-window-height)
-                                  (floor (* (frame-height) max-mini-window-height)))
-                                 ((numberp max-mini-window-height)
-                                  max-mini-window-height))
-                              (1-)
-                              (* (- (frame-width) 2)))))
+      (when-let ((max-chars (* lsp--max-line-eldoc-msg (frame-width))))
         (when (< max-chars (length msg))
           (setq msg (concat (substring msg 0 max-chars) "\n" (propertize "(...)" 'face 'shadow)))))
       (setq lsp--eldoc-saved-message msg)

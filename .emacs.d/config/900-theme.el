@@ -15,20 +15,20 @@
   (custom-set-faces
    '(fixed-pitch ((t :inherit default)))
    '(highlight ((t :background "#484a4e" :foreground "#d5d8d6")))
-   '(italic ((t :slant italic)))
-   '(line-number ((t :background "#222326" :foreground "#717371" :weight normal)))
+   '(italic ((t :family "Fantasque Sans Mono" :height 110 :slant italic)))
+   '(line-number ((t :background "#222326" :foreground "#717371" :weight light)))
    '(line-number-current-line
      ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight normal :inverse-video nil)))
-   '(lisp-symbol-dash-face ((t :weight normal)))
    '(mode-line-inactive ((t :foreground "#717371" :weight normal)))
    '(region ((t :background "#760e17")))
-   '(shadow ((t :weight normal)))
+   '(shadow ((t :weight light)))
    '(show-paren-match ((t :background unspecified :foreground "red" :weight bold :underline t)))
    '(show-paren-mismatch ((t :background "red3" :foreground "#f0d2cd" :weight bold :underline t)))
+   '(symbol-dash-or-underline-face ((t :weight normal)))
    '(org-verbatim ((t :inherit font-lock-constant-face)))
-   '(whitespace-newline ((t :background unspecified :foreground "#717371" :weight normal)))
-   '(whitespace-space   ((t :background unspecified :foreground "#717371" :weight normal)))
-   '(whitespace-tab     ((t :background unspecified :foreground "#717371" :weight normal)))
+   '(whitespace-newline ((t :background unspecified :foreground "#717371" :weight light)))
+   '(whitespace-space   ((t :background unspecified :foreground "#717371" :weight light)))
+   '(whitespace-tab     ((t :background unspecified :foreground "#717371" :weight light)))
    '(vertical-border ((t :foreground "#222326")))))
 
 (use-package auto-dim-other-buffers
@@ -56,23 +56,21 @@
      `(cider-deprecated-face
        ((t :inherit font-lock-warning-face :weight ,default-weight :underline (:color "darkorange"))))
      '(cider-fringe-good-face ((t :inherit success)))
-     '(clojure-cond-condtion-face ((t :slant italic)))
+     '(clojure-cond-condtion-face ((t :inherit italic)))
      '(clojure-define-type-face ((t :inherit font-lock-type-face)))
      '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
-     '(clojure-fn-parameter-unused-face ((t :inherit shadow)))
-     '(clojure-important-keywords-face ((t :inherit font-lock-keyword-face :slant italic)))
+     '(clojure-fn-parameter-unused-face ((t :inherit clojure-fn-parameter-face :weight normal)))
+     '(clojure-important-keywords-face ((t :inherit (font-lock-keyword-face italic))))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face :foreground unspecified)))
      '(clojure-meta-face ((t :inherit shadow :weight normal)))
-     `(clojure-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face
-                                                    :foreground "#a35151"
-                                                    :weight ,default-weight)))
+     `(clojure-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :foreground "#b36262" :weight ,default-weight)))
+     '(clojure-local-binding-variable-name-unsed-face ((t :inherit clojure-local-binding-variable-name-face :weight normal)))
      '(clojure-semi-function-name-face ((t :inherit font-lock-function-name-face)))
-     '(clojure-side-effect-face ((t :underline t :slant italic)))
+     '(clojure-side-effect-face ((t :inherit italic :underline t)))
      '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))
      '(clojure-special-variable-definition-face
        ((t :inherit (font-lock-constant-face clojure-variable-definition-face))))
-     '(clojure-symbol-dash-face ((t :weight normal)))
      '(clojure-variable-definition-face ((t :inherit font-lock-variable-name-face))))))
 
 (use-package cperl-mode
@@ -106,9 +104,7 @@
   :config
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
-     `(lisp-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face
-                                                 :foreground "#a35151"
-                                                 :weight ,default-weight))))))
+     `(lisp-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :foreground "#b36262" :weight ,default-weight))))))
 
 (use-package eshell
   :defer t
@@ -147,20 +143,19 @@
   :defer t
   :config
   (custom-set-faces
-   '(font-lock-comment-face ((t :foreground "#717371" :weight normal)))
-   '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground "#787978")))
+   '(font-lock-comment-face ((t :foreground "#4d4f4d" :weight light)))
+   '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground "#585958")))
    '(font-lock-doc-face ((t :weight normal)))
    '(font-lock-function-name-face ((t :foreground "#85aacc")))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
-   '(font-lock-regexp-grouping-backslash ((t :weight bold)))
-   '(font-lock-regexp-grouping-construct ((t :weight bold)))
-   '(font-lock-string-face ((t :weight normal)))))
+   '(font-lock-regexp-grouping-backslash ((t :weight normal)))
+   '(font-lock-regexp-grouping-construct ((t :weight normal)))))
 
 (use-package fringe
   :defer t
   :config
   (custom-set-faces
-   '(fringe ((t :foreground "#4c4d4c")))))
+   '(fringe ((t :foreground "#454645")))))
 
 (use-package go-mode
   :defer t
@@ -186,7 +181,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(highlight-numbers-number ((t :inherit font-lock-constant-face :weight normal)))))
+   '(highlight-numbers-number ((t :inherit font-lock-constant-face)))))
 
 (use-package ivy
   :defer t

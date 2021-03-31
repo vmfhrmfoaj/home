@@ -360,7 +360,7 @@
   (interactive)
   (cond
    ((derived-mode-p 'org-mode)
-    (call-interactively #'org-open-at-point))
+    (org-open-at-point))
    ((string= "*lsp-help*" (buffer-name))
     (-some--> (get-text-property (point) 'help-echo)
       (and (string-match-p goto-address-url-regexp it)

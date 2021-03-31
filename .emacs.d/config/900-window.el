@@ -79,8 +79,11 @@
                    (and which-key--buffer
                         (window-live-p (get-buffer-window which-key--buffer))))))
 
-  (with-eval-after-load "winum"
-    (advice-add #'winum--switch-to-window :after (lambda (&rest _) (golden-ratio))))
+  (let ((f (lambda (&rest _) "Run `golden-ratio'" (golden-ratio))))
+    (advice-add #'find-file-other-window :after f)
+
+    (with-eval-after-load "winum"
+      (advice-add #'winum--switch-to-window :after f)))
 
   (advice-add #'golden-ratio--resize-window :override #'golden-ratio--custom-resize-window)
 

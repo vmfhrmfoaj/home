@@ -325,7 +325,7 @@
             (setq l (-remove-item :comment items))
             (comment-forward (point-max))))
          ((eq (car l) :metadata)
-          (if (not (looking-at-p "\\^"))
+          (if (not (looking-at-p "#?\\^"))
               (setq l (cdr l))
             (setq l (-remove-item :metadata items))
             (forward-sexp 1)))

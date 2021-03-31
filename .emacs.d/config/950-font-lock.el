@@ -34,6 +34,10 @@
                (t (funcall f))))
             :append))
 
+(defface symbol-dash-or-underline-face
+  '((t (:inherit shadow)))
+  "TODO")
+
 
 (use-package cc-mode
   :defer t
@@ -52,7 +56,12 @@
            (1 'shadow))
           ("\\(?:\\s-\\|\\s(\\)\\(\\*+\\|&\\)[_A-Za-z()]"
            (1 'shadow)))
-        :append)))))
+        :append))
+     (font-lock-add-keywords
+      nil
+      '(("[0-9A-Za-z]\\(_\\)[0-9A-Za-z]"
+         (1 'symbol-dash-or-underline-face prepend)))
+      :append))))
 
 (use-package elixir-mode
   :disabled t
@@ -187,8 +196,8 @@
   (defface clojure-local-binding-variable-name-face
     `((t (:inherit font-lock-variable-name-face :weight ,(face-attribute 'default :weight))))
     "Face used to font-lock Clojure local binding variable name.")
-  (defface clojure-local-binding-variable-name-warning-face
-    '((t (:inherit (italic clojure-local-binding-variable-name-face))))
+  (defface clojure-local-binding-variable-name-unsed-face
+    '((t (:inherit shadow)))
     "TODO")
   (defface clojure-fn-parameter-face
     '((t (:inherit font-lock-variable-name-face)))
@@ -218,9 +227,6 @@
     '((t (:inherit shadow)))
     "TODO")
   (defface clojure-punctuation-face
-    '((t (:inherit shadow)))
-    "TODO")
-  (defface clojure-symbol-dash-face
     '((t (:inherit shadow)))
     "TODO")
 
@@ -258,7 +264,7 @@
            (symbol? (concat "\\(?:" symbol "\\)?"))
            (namespace  (concat "\\(?:" symbol "/\\)"))
            (namespace? (concat namespace "?"))
-           (meta? "\\(?:\\(?:\\^{[^^]+}\\|\\^:?\\sw+\\)[ \r\n\t]+\\)?")
+           (meta? "\\(?:\\(?:#?\\^{[^^]+}\\|\\^:?\\sw+\\)[ \r\n\t]+\\)?")
            (core-ns  (concat (regexp-opt '("clojure.core" "cljs.core" "core") nil) "/"))
            (core-ns? (concat "\\(?:" core-ns "\\)?"))
            (if-kw   (regexp-opt '("if" "if-some" "if-let" "if-not")))
@@ -301,7 +307,9 @@
           (if font-lock--skip
               (end-of-line)
             (goto-char font-lock--anchor-beg-point))
-          (1 'clojure-local-binding-variable-name-face))
+          (1 (if (s-starts-with? "_" (match-string-no-properties 1))
+                 'clojure-local-binding-variable-name-unsed-face
+               'clojure-local-binding-variable-name-face)))
 
          ;; Destructuring bindings
          (,(let ((meta?+ns?+symbol (concat meta? "\\_<" namespace? "\\(" symbol "\\)#?\\>")))
@@ -358,7 +366,9 @@
           (if font-lock--skip
               (end-of-line)
             (goto-char font-lock--anchor-beg-point))
-          (1 'clojure-local-binding-variable-name-face)))
+          (1 (if (s-starts-with? "_" (match-string-no-properties 1))
+                 'clojure-local-binding-variable-name-unsed-face
+               'clojure-local-binding-variable-name-face))))
 
         ;; OOP style function forms & letfn
         (,(concat "(" core-ns? "\\(" oop-kw whitespace+ meta? "\\|" "letfn" whitespace+ "\\[" "\\)")
@@ -965,12 +975,12 @@
           (if font-lock--skip
               (end-of-line)
             (goto-char font-lock--anchor-beg-point))
-          (0 'clojure-cond-condtion-face append)))
+          (0 'clojure-cond-condtion-face prepend)))
 
         ;; Highlight exception variable
         (,(concat "(catch" whitespace+ "[0-9A-Za-z]+" whitespace+ "\\(" symbol "\\)#?")
          (1 (if (s-starts-with? "_" (match-string-no-properties 1))
-                'clojure-fn-parameter-unused-face
+                'clojure-local-binding-variable-name-unsed-face
               'clojure-local-binding-variable-name-face)))
 
         ;; Improve docstring
@@ -1008,8 +1018,8 @@
      `(;; Punctuation
        ("\\([~#@&_,`'^]\\|\\s(\\|\\s)\\)"
         (1 'clojure-punctuation-face append))
-       ("[(a-z]\\(-+>?\\)[a-z]"
-        (1 'clojure-symbol-dash-face prepend)))
+       ("[A-Za-z]\\(-+>?\\|[$]\\)[A-Za-z]"
+        (1 'symbol-dash-or-underline-face prepend)))
      :append)))
 
 (use-package elisp-mode
@@ -1019,10 +1029,6 @@
     '((t (:inherit font-lock-variable-name-face)))
     "Face used to font-lock Lisp local binding variable name.")
 
-  (defface lisp-symbol-dash-face
-    '((t (:inherit shadow)))
-    "TODO")
-
   :config
   (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
     (let* ((symbol "[-+*/=>$&?:_0-9a-zA-Z]+")
@@ -1031,7 +1037,9 @@
            (whitespace* (concat whitespace "*")))
       (font-lock-add-keywords
        mode
-       `(("[#'`]\\|\\_<_\\_>"
+       `(("\\_<\\(\\?\\(?:\\\\\\)?[^ \t\r\n]\\)"
+          (1 'font-lock-string-face))
+         ("#?'\\|`\\|\\_<_\\_>"
           (0 'shadow))
          ("\\s(\\(\\(?:-as\\|-some\\)?->>?\\|and\\|or\\)\\_>"
           (1 'default nil))
@@ -1043,9 +1051,7 @@
           (1 'font-lock-function-name-face))))
       (font-lock-add-keywords
        mode
-       `(("\\_<\\(\\?.\\)"
-          (1 'font-lock-string-face))
-         ;; local variables
+       `(;; local variables
          (,(concat "(\\(lexical-\\|-?when-\\|-?if-\\)?let\\*?" whitespace+ "(")
           (,(let ((symbol+whitespace (concat "(\\(" symbol "\\)" whitespace+)))
               (lambda (limit)
@@ -1095,8 +1101,8 @@
              (goto-char font-lock--anchor-beg-point))
            (1 'lisp-local-binding-variable-name-face)))
          ;; punctuation
-         ("[(a-z]\\(-+>?\\)[a-z]"
-          (1 'lisp-symbol-dash-face prepend)))
+         ("[a-z]\\(-+>?\\)[a-z]"
+          (1 'symbol-dash-or-underline-face prepend)))
        :append))))
 
 (use-package go-mode
@@ -1643,12 +1649,20 @@
         (1 'shadow)))
      :append)))
 
+(use-package toml-mode
+  :defer t
+  :config
+  (font-lock-add-keywords
+   'toml-mode
+   `(("\\('[^']+'\\)"
+      (1 'font-lock-string-face)))))
+
 (use-package web-mode
   :defer t
   :config
   (let* ((pairs (->> web-mode-engines-auto-pairs
-                     (-filter (-compose #'stringp #'car))
-                     (-mapcat #'cdr)))
+                  (-filter (-compose #'stringp #'car))
+                  (-mapcat #'cdr)))
          (begin-re (->> pairs (-map #'car) (regexp-opt)))
          (end-re   (->> pairs (-map #'cdr) (regexp-opt))))
     (font-lock-add-keywords
