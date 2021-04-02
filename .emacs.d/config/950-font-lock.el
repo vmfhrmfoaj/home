@@ -22,7 +22,7 @@
 (let ((f (lambda ()
            (font-lock-add-keywords
             nil
-            '(("\\([.,]\\|[|&]\\{2,2\\}\\|\\s(\\|\\s)\\)"
+            '(("\\([,]\\|[|&]\\{2,2\\}\\|\\s(\\|\\s)\\)"
                (1 'shadow)))
             :append))))
   (add-hook 'git-timemachine-mode-hook f :append)
@@ -48,9 +48,12 @@
      (when (member major-mode '(c-mode c++-mode))
        (font-lock-add-keywords
         nil
-        `(("\\([-=]>\\|::\\|;\\)"
+        `(;; punctuation
+          ("\\([-=]>\\|::\\|[.;]\\)"
            (1 'shadow))
           ("\\(\\\\\\)$"
+           (1 'shadow))
+          ("[A-Za-z]\\(:\\)\\s-*$"
            (1 'shadow))
           ("[_A-Za-z]\\(\\*+\\|&\\)\\(?:\\s-\\|\\s(\\)"
            (1 'shadow))
@@ -59,7 +62,12 @@
         :append))
      (font-lock-add-keywords
       nil
-      '(("[0-9A-Za-z]\\(_\\)[0-9A-Za-z]"
+      '(;; punctuation
+        ("\\([.;]\\)"
+         (1 'shadow))
+        ("[A-Za-z]\\(:\\)\\s-*$"
+         (1 'shadow))
+        ("[0-9A-Za-z]\\(_\\)[0-9A-Za-z]"
          (1 'symbol-dash-or-underline-face prepend)))
       :append))))
 
@@ -172,7 +180,9 @@
        ("\\([\\&|*]\\|::\\|;\\|[-=]>\\|[$@]_\\>\\)"
         (1 'shadow))
        ("\\([*@$%]+\\)\\(?:[:_0-9a-zA-Z]\\|\\s(\\)"
-        (1 'shadow))))
+        (1 'shadow))
+       ("[0-9A-Za-z]\\(_\\)[0-9A-Za-z]"
+        (1 'symbol-dash-or-underline-face prepend))))
    :append))
 
 (use-package clojure-mode
@@ -1018,7 +1028,7 @@
      `(;; Punctuation
        ("\\([~#@&_,`'^]\\|\\s(\\|\\s)\\)"
         (1 'clojure-punctuation-face append))
-       ("[A-Za-z]\\(-+>?\\|[$]\\)[A-Za-z]"
+       ("[A-Za-z]\\(-+>?\\|[._$]\\)[A-Za-z]"
         (1 'symbol-dash-or-underline-face prepend)))
      :append)))
 
@@ -1347,7 +1357,9 @@
   (font-lock-add-keywords
    'php-mode
    '(("\\([$]\\)"
-      (1 'shadow append)))
+      (1 'shadow append))
+     ("[0-9A-Za-z]\\(_\\)[0-9A-Za-z]"
+      (1 'symbol-dash-or-underline-face prepend)))
    :append))
 
 (use-package python
@@ -1404,7 +1416,9 @@
               'shadow
             'font-lock-variable-name-face))))
      ("\\([:\\]\\)"
-      (1 'shadow)))
+      (1 'shadow))
+     ("[0-9A-Za-z]\\(_\\)[0-9A-Za-z]"
+      (1 'symbol-dash-or-underline-face prepend)))
    :append)
   (font-lock-add-keywords
    'python-mode
@@ -1648,14 +1662,6 @@
        ("\\([&|<>;]\\)"
         (1 'shadow)))
      :append)))
-
-(use-package toml-mode
-  :defer t
-  :config
-  (font-lock-add-keywords
-   'toml-mode
-   `(("\\('[^']+'\\)"
-      (1 'font-lock-string-face)))))
 
 (use-package web-mode
   :defer t

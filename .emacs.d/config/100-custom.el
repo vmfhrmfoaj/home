@@ -32,7 +32,7 @@
                                        "\\|markdown-code-fontification:"
                                        "\\|magit\\(?:-[a-z]+\\)?:"
                                        "\\)")
-        frame-title-format (let ((tail system-name))
+        frame-title-format (let ((tail (system-name)))
                              `("%e" (:eval (concat (when-let ((proj-name (and (fboundp 'projectile-project-name)
                                                                               (projectile-project-name))))
                                                      (concat "｢" proj-name "｣ - "))
@@ -67,14 +67,6 @@
 (global-subword-mode 1)
 (prefer-coding-system 'utf-8)
 (recentf-mode 1)
-
-(when (eq system-type 'darwin)
-  (setq mac-command-modifier 'meta
-        mac-option-modifier  'meta
-        mac-pass-control-to-system nil
-        mac-pass-command-to-system t)
-  (require 'ucs-normalize)
-  (set-file-name-coding-system 'utf-8-hfs))
 
 (add-hook 'help-mode-hook #'visual-line-mode)
 (add-hook 'after-init-hook
@@ -140,8 +132,8 @@
 
 (advice-add #'narrow-to-region :after
             (lambda (&rest _)
-              "unselect the region"
-              (when (and (interactive-p)
+              "Unselect the region"
+              (when (and (called-interactively-p 'interactive)
                          (eq this-command 'narrow-to-region))
                 (deactivate-mark))))
 

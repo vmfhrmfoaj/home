@@ -8,7 +8,14 @@
 
 (use-package auto-dim-other-buffers
   :ensure t
+  :init
+  (defface auto-dim-other-line-number-face
+    '((t (:inherit auto-dim-other-buffers-face)))
+    "TODO")
+
   :config
+  (setq auto-dim-other-buffers-dim-on-focus-out nil)
+
   (add-to-list 'auto-dim-other-buffers-never-dim-buffer-functions
                (lambda (buf)
                  "Disable dimming focused buffer while executing `evil-ex' function."
@@ -30,7 +37,39 @@
                    "Disalbe dimming `ivy-posframe-buffer'."
                    (string-equal ivy-posframe-buffer (buffer-name buf)))))
 
-  (setq auto-dim-other-buffers-dim-on-focus-out nil)
+  (defvar-local adob--face-mode-remapping-for-line-number nil)
+
+  (defconst adob--remap-face-for-line-number
+    (if adob--adow-mode
+        '(:filtered (:window adob--dim t) auto-dim-other-line-number-face)
+      'auto-dim-other-buffers-face))
+
+  (advice-add #'adob--kill-all-local-variables-advice :after
+              (lambda (&rest _)
+                "Customize `adob--kill-all-local-variables-advice' for `line-number'"
+                (when adob--face-mode-remapping-for-line-number
+                  (setq adob--face-mode-remapping-for-line-number
+                        (face-remap-add-relative 'line-number adob--remap-face-for-line-number)))))
+
+  (advice-add #'adob--remap-face :override
+              (lambda (buffer object)
+                "Customize `adob--remap-face' for `line-number'"
+                (let ((wants (not (adob--never-dim-p buffer))))
+                  (when (eq wants (not (buffer-local-value 'adob--face-mode-remapping-for-line-number buffer)))
+                    (setq adob--face-mode-remapping-for-line-number
+                          (if wants
+                              (face-remap-add-relative 'line-number adob--remap-face-for-line-number)
+                            (face-remap-remove-relative adob--face-mode-remapping-for-line-number)
+                            nil)))
+                  (when (eq wants (not (buffer-local-value 'adob--face-mode-remapping buffer)))
+                    (set-buffer buffer)
+                    (setq adob--face-mode-remapping
+                          (if wants
+                              (face-remap-add-relative 'default adob--remap-face)
+                            (face-remap-remove-relative adob--face-mode-remapping)
+                            nil))
+                    (force-window-update object)
+                    wants))))
 
   (auto-dim-other-buffers-mode 1))
 
@@ -293,18 +332,14 @@
       (cons beg end)))
 
   (defun focus--org-thing ()
-    (ignore-errors
-      (if focus-mode-org-thing-lock
-          (cons 0 0)
-        (save-excursion
-          (let ((beg (progn
-                       (outline-previous-heading)
-                       (point)))
-                (end   (progn
-                         (outline-next-visible-heading 1)
-                         (beginning-of-line)
-                         (point))))
-            (cons beg end))))))
+    (save-excursion
+      (let ((beg (progn
+                   (outline-previous-heading)
+                   (point)))
+            (end   (progn
+                     (outline-next-visible-heading 1)
+                     (line-beginning-position))))
+        (cons beg end))))
 
   (with-eval-after-load "clojure-mode"
     (put 'clojure    'bounds-of-thing-at-point #'focus--clojure-thing)
@@ -323,7 +358,7 @@
   (with-eval-after-load "rpm-spec-mode"
     (put 'rpm-spec 'bounds-of-thing-at-point #'focus--rpm-spec-thing)
     (add-to-list 'focus-mode-to-thing '(rpm-spec-mode . rpm-spec)))
-  (with-eval-after-load "org-mode"
+  (with-eval-after-load "org"
     (put 'org 'bounds-of-thing-at-point #'focus--org-thing)
     (add-to-list 'focus-mode-to-thing '(org-mode . org)))
 
@@ -360,9 +395,8 @@
   (defconst highlight-numbers-generic-regexp
     (rx (and
          symbol-start
-         (? "-")
-         digit
-         (*? any)
+         (? (any "-"))
+         (+ digit)
          symbol-end))
     "Customize `highlight-numbers-generic-regexp' to highlight the negative number."))
 

@@ -15,16 +15,18 @@
   (custom-set-faces
    '(fixed-pitch ((t :inherit default)))
    '(highlight ((t :background "#484a4e" :foreground "#d5d8d6")))
+   '(isearch ((t :weight bold)))
    '(italic ((t :family "Fantasque Sans Mono" :height 110 :slant italic)))
-   '(line-number ((t :background "#222326" :foreground "#717371" :weight light)))
+   '(lazy-highlight ((t :weight bold)))
+   '(line-number ((t :background "#222326" :foreground "#717371" :weight light :extend t)))
    '(line-number-current-line
-     ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight normal :inverse-video nil)))
+     ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight normal :inverse-video nil :extend t)))
    '(mode-line-inactive ((t :foreground "#717371" :weight normal)))
    '(region ((t :background "#760e17")))
    '(shadow ((t :weight light)))
    '(show-paren-match ((t :background unspecified :foreground "red" :weight bold :underline t)))
    '(show-paren-mismatch ((t :background "red3" :foreground "#f0d2cd" :weight bold :underline t)))
-   '(symbol-dash-or-underline-face ((t :weight normal)))
+   '(symbol-dash-or-underline-face ((t :weight light)))
    '(org-verbatim ((t :inherit font-lock-constant-face)))
    '(whitespace-newline ((t :background unspecified :foreground "#717371" :weight light)))
    '(whitespace-space   ((t :background unspecified :foreground "#717371" :weight light)))
@@ -36,8 +38,11 @@
   :config
   (custom-set-faces
    `(auto-dim-other-buffers-face
-     ((t :foreground ,(color-from 'default :foreground -15)
-         :background ,(color-from 'default :background 4))))))
+     ((t :background ,(color-from 'default :background 4)
+         :foreground ,(color-from 'default :foreground -15))))
+   `(auto-dim-other-line-number-face
+     ((t :background ,(color-from 'default :background 3.5)
+         :foreground ,(color-from 'line-number :foreground -5))))))
 
 (use-package company
   :defer t
@@ -137,7 +142,7 @@
 (use-package focus
   :defer t
   :config
-  (custom-set-faces `(focus-unfocused ((t :foreground "#606060" :weight normal)))))
+  (custom-set-faces `(focus-unfocused ((t :foreground "#606060")))))
 
 (use-package font-lock
   :defer t
@@ -187,7 +192,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(ivy-current-match ((t :background "#5f6369" :foreground "white")))
+   '(ivy-current-match ((t :background "#5f6369" :foreground "white" :weight bold)))
    '(ivy-grep-info ((t :inherit font-lock-string-face :weight unspecified)))
    '(ivy-minibuffer-match-face-1 ((t :background "#7d7e7f" :foreground "#535454")))
    '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b")))
@@ -298,7 +303,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(swiper-line-face ((t :background "#5f6369" :foreground "white" :extend t)))
+   '(swiper-line-face ((t :background "#5f6369" :foreground "white" :weight bold :extend t)))
    '(swiper-match-face-1 ((t :background "#7d7e7f")))
    '(swiper-match-face-2 ((t :background "#e99ce8")))
    '(swiper-match-face-3 ((t :background "#bbbbff")))

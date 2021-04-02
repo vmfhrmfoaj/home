@@ -46,7 +46,6 @@
   :mode ("\\.env\\'" . sh-mode)
   :config
   (setq sh-basic-offset 4
-        sh-indentation 4
         smie-indent-basic 4))
 
 (use-package eshell
@@ -61,10 +60,10 @@
                         (lambda ()
                           (let ((last-prompt-pos (save-excursion
                                                    (goto-char (point-max))
-                                                   (and (re-search-backward eshell-prompt-regexp nil t)
-                                                        (not (get-text-property (match-beginning 0) 'read-only)))
-                                                   (point))))
-                            (when (< (point) last-prompt-pos)
+                                                   (when (re-search-backward eshell-prompt-regexp nil t)
+                                                     (match-end 0)))))
+                            (when (and last-prompt-pos
+                                       (< (point) last-prompt-pos))
                               (goto-char (point-max)))))
                         nil t)))
 
