@@ -48,14 +48,14 @@
       (let* ((repl-type (cider-connection-type-for-buffer))
              (root (clojure-project-root-path))
              (repl-buf (->> (cider-repls (unless ignore-repl-type repl-type))
-                         ;; NOTE
-                         ;;  `cider-jack-in-clj&cljs' create two buffer and one of them will be changed CLJS REPL.
-                         ;;  but until browser connecte to REPL, it is CLJ REPL.  so, I recognize CLJS REPL heuristically,
-                         ;;  a length of a buffer name of CLJS REPL is always longer than a buffer name of CLJ REPL.
-                         (--sort (string-lessp (buffer-name it) (buffer-name other)))
-                         (--first
-                          (with-current-buffer it
-                            (string-equal root (clojure-project-root-path)))))))
+                            ;; NOTE
+                            ;;  `cider-jack-in-clj&cljs' create two buffer and one of them will be changed CLJS REPL.
+                            ;;  but until browser connecte to REPL, it is CLJ REPL.  so, I recognize CLJS REPL heuristically,
+                            ;;  a length of a buffer name of CLJS REPL is always longer than a buffer name of CLJ REPL.
+                            (--sort (string-lessp (buffer-name it) (buffer-name other)))
+                            (--first
+                             (with-current-buffer it
+                               (string-equal root (clojure-project-root-path)))))))
         repl-buf)))
 
   (defun cider--set-repl-ns-to-current-ns (&optional repl)
@@ -73,9 +73,9 @@
           (cider--set-repl-ns-to-current-ns repl)
           (cider--switch-to-repl-buffer repl nil))
       (let ((bufs (-some->> (projectile-project-buffers)
-                    (--filter (let ((buf-name (buffer-name it)))
-                                (or (s-starts-with? "*cider-repl" buf-name)
-                                    (s-starts-with? "*nrepl-server" buf-name)))))))
+                            (--filter (let ((buf-name (buffer-name it)))
+                                        (or (s-starts-with? "*cider-repl" buf-name)
+                                            (s-starts-with? "*nrepl-server" buf-name)))))))
         (cond
          ((null bufs)
           (cider-custom-jack-in))
@@ -106,12 +106,12 @@
                          '((clojure-mode . 2) (clojurescript-mode . 1))
                        '((clojurescript-mode . 2) (clojure-mode . 1)))))
       (-some->> (or (projectile-project-buffers) (buffer-list))
-        (sort-buffer-by-visit-time)
-        (--sort (let ((itv    (with-current-buffer it    (alist-get major-mode mode-vals 0)))
-                      (otherv (with-current-buffer other (alist-get major-mode mode-vals 0))))
-                  (> itv otherv)))
-        (-first-item)
-        (funcall display-fn))))
+                (sort-buffer-by-visit-time)
+                (--sort (let ((itv    (with-current-buffer it    (alist-get major-mode mode-vals 0)))
+                              (otherv (with-current-buffer other (alist-get major-mode mode-vals 0))))
+                          (> itv otherv)))
+                (-first-item)
+                (funcall display-fn))))
 
   (setq cider-mode-line-show-connection nil
         cider-mode-line '(:eval (unless (ignore-errors (cider-current-repl))
@@ -215,20 +215,20 @@
       (let* ((file (if (null clojure--compilation-error-ns)
                        (nth 0 info)
                      (concat (->> clojure--compilation-error-ns
-                               (string-replace "-" "_")
-                               (string-replace "." "/"))
+                                  (string-replace "-" "_")
+                                  (string-replace "." "/"))
                              "." (file-name-extension (nth 0 info)))))
              (root (->> (or nrepl-project-dir
                             (clojure-project-root-path))
-                     (file-truename)
-                     (s-chop-suffix "/")))
+                        (file-truename)
+                        (s-chop-suffix "/")))
              (buf (or (get-file-buffer (concat root "/src/"  file))
                       (get-file-buffer (concat root "/test/" file))
                       (-some->> (cider-sync-request:classpath)
-                        (--filter (s-starts-with? (file-truename nrepl-project-dir) it))
-                        (--map (get-file-buffer (concat it "/" file)))
-                        (-non-nil)
-                        (-first-item)))))
+                                (--filter (s-starts-with? (file-truename nrepl-project-dir) it))
+                                (--map (get-file-buffer (concat it "/" file)))
+                                (-non-nil)
+                                (-first-item)))))
         (when buf
           (add-to-list 'clojure--compilation-errors (cons buf info))
           (with-current-buffer buf
@@ -280,38 +280,38 @@
 
   (defun clojure--flycheck-start (checker callback)
     (->> clojure--compilation-errors
-      (--map (let* ((buf  (car it))
-                    (info (cdr it))
-                    (file (nth 0 info))
-                    (line (nth 1 info))
-                    (col  (nth 2 info))
-                    (face (nth 3 info))
-                    (note (nth 4 info))
-                    (msg (when (string-match "{.*}" note)
-                           (match-string 0 note)))
-                    (lv (cond
-                         ((eq face 'cider-warning-highlight-face) 'warning)
-                         ((eq face 'cider-error-highlight-face) 'error)
-                         (t 'info)))
-                    (end-col (if (null buf)
-                                 (1+ col)
-                               (with-current-buffer buf
-                                 (save-excursion
-                                   (goto-line line)
-                                   (move-to-column col)
-                                   (forward-symbol 1)
-                                   (point))))))
-               (flycheck-error-new
-                :buffer (or buf (current-buffer))
-                :checker checker
-                :filename (file-name-nondirectory file)
-                :message (or msg note)
-                :level lv
-                :id "Syntax error"
-                :line line
-                :column col
-                :end-column end-col)))
-      (funcall callback 'finished)))
+         (--map (let* ((buf  (car it))
+                       (info (cdr it))
+                       (file (nth 0 info))
+                       (line (nth 1 info))
+                       (col  (nth 2 info))
+                       (face (nth 3 info))
+                       (note (nth 4 info))
+                       (msg (when (string-match "{.*}" note)
+                              (match-string 0 note)))
+                       (lv (cond
+                            ((eq face 'cider-warning-highlight-face) 'warning)
+                            ((eq face 'cider-error-highlight-face) 'error)
+                            (t 'info)))
+                       (end-col (if (null buf)
+                                    (1+ col)
+                                  (with-current-buffer buf
+                                    (save-excursion
+                                      (goto-line line)
+                                      (move-to-column col)
+                                      (forward-symbol 1)
+                                      (point))))))
+                  (flycheck-error-new
+                   :buffer (or buf (current-buffer))
+                   :checker checker
+                   :filename (file-name-nondirectory file)
+                   :message (or msg note)
+                   :level lv
+                   :id "Syntax error"
+                   :line line
+                   :column col
+                   :end-column end-col)))
+         (funcall callback 'finished)))
 
   (defun clojure-skip (&rest items)
     "TODO"
@@ -465,13 +465,13 @@
   (with-eval-after-load "flycheck"
     (unless (flycheck-valid-checker-p 'clj-cider-repl)
       (flycheck-define-generic-checker
-          'clj-cider-repl
-        "A syntax checker using the Cider REPL provided."
-        :start #'clojure--flycheck-start
-        :modes '(clojure-mode clojurescript-mode clojurec-mode)
-        :predicate (lambda ()
-                     (when (fboundp #'cider-connected-p)
-                       (cider-connected-p)))))
+       'clj-cider-repl
+       "A syntax checker using the Cider REPL provided."
+       :start #'clojure--flycheck-start
+       :modes '(clojure-mode clojurescript-mode clojurec-mode)
+       :predicate (lambda ()
+                    (when (fboundp #'cider-connected-p)
+                      (cider-connected-p)))))
     (add-to-list 'flycheck-checkers 'clj-cider-repl))
 
   (add-hook 'clojure-mode-hook

@@ -178,8 +178,8 @@
     ;;              'variables evil-ex-tree evil-ex-expression evil-ex-range evil-ex-cmd evil-ex-bang evil-ex-argument))
     (when (eq 'evil-goto-line (car evil-ex-expression))
       (-when-let (win (-some->> (window-list)
-                        (--filter (eq evil-ex-current-buffer (window-buffer it)))
-                        (-first-item)))
+                                (--filter (eq evil-ex-current-buffer (window-buffer it)))
+                                (-first-item)))
         (with-selected-window win
           (unless evil-ex--gl-preview-point
             (setq-local evil-ex--gl-preview-point (point)))
@@ -197,8 +197,8 @@
     "TODO"
     (interactive)
     (-when-let (win (-some->> (window-list)
-                      (--filter (eq evil-ex-current-buffer (window-buffer it)))
-                      (-first-item)))
+                              (--filter (eq evil-ex-current-buffer (window-buffer it)))
+                              (-first-item)))
       (with-selected-window win
         (when evil-ex--gl-preview-point
           (goto-char evil-ex--gl-preview-point))))

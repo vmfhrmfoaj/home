@@ -2,7 +2,16 @@
 
 (require 'use-package)
 
-(use-package dash :ensure t)
+(use-package dash
+  :ensure t
+  :config
+  (put '->  'lisp-indent-function 0)
+  (put '--> 'lisp-indent-function 0)
+  (put '->> 'lisp-indent-function 0)
+  (put '-some->  'lisp-indent-function 0)
+  (put '-some--> 'lisp-indent-function 0)
+  (put '-some->> 'lisp-indent-function 0))
+
 (use-package s :ensure t)
 
 (when window-system
@@ -29,11 +38,11 @@
 (defvar null-fn (-const nil))
 
 (defmacro -update-> (&rest thread)
-  (declare (indent 1))
+  (declare (indent 0))
   `(setq ,(-first-item thread) (->  ,@thread)))
 
 (defmacro -update->> (&rest thread)
-  (declare (indent 1))
+  (declare (indent 0))
   `(setq ,(-first-item thread) (->> ,@thread)))
 
 
@@ -363,8 +372,8 @@
     (org-open-at-point))
    ((string= "*lsp-help*" (buffer-name))
     (-some--> (get-text-property (point) 'help-echo)
-      (and (string-match-p goto-address-url-regexp it)
-           (browse-url it))))
+              (and (string-match-p goto-address-url-regexp it)
+                   (browse-url it))))
    (t (message (concat "Don't know how to open a link on '" (symbol-name major-mode) "'")))))
 
 (defun format-buffer-or-region ()

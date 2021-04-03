@@ -84,5 +84,5 @@
               (lambda ()
                 (-update->> web-mode-auto-pairs
                             (--map (let ((a (car it))
-                                        (b (substring (cdr it) 0 -1)))
-                                    `(,a . ,b))))))))
+                                         (b (substring (cdr it) 0 -1)))
+                                     `(,a . ,b))))))))

@@ -54,15 +54,15 @@
               (if (and (stringp buffer-file-name)
                        (string= (file-truename buffer-file-name)
                                 (or (-some-> extra-props
-                                      (plist-get :fname)
-                                      (file-truename))
+                                             (plist-get :fname)
+                                             (file-truename))
                                     "")))
                   (let* ((data (plist-get extra-props :ivy-data))
                          (text (plist-get data :text))
                          (regex (ivy--regex text))
                          (last-item-line (-some->> (plist-get data :all-candidates)
-                                           (--last (string-match-p regex it))
-                                           (swiper--line-number)))
+                                                   (--last (string-match-p regex it))
+                                                   (swiper--line-number)))
                          (need-to-update
                           (and last-item-line
                                (not (s-blank? text))

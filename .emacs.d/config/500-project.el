@@ -22,11 +22,11 @@
         (let ((cur-proj-root (or (projectile-project-root)
                                  (concat (s-chop-suffix "/" home-dir) "/"))))
           (->> (buffer-list)
-            (--filter (with-current-buffer it
-                        (let ((proj-root (or (projectile-project-root)
-                                             (concat (s-chop-suffix "/" home-dir) "/"))))
-                          (string= cur-proj-root proj-root))))
-            (switch-to-previous-buffer-in)))
+               (--filter (with-current-buffer it
+                           (let ((proj-root (or (projectile-project-root)
+                                                (concat (s-chop-suffix "/" home-dir) "/"))))
+                             (string= cur-proj-root proj-root))))
+               (switch-to-previous-buffer-in)))
       (error (switch-to-previous-buffer-in (buffer-list)))))
 
   (defun projectile-kill-buffer (&optional buf)
@@ -40,24 +40,24 @@
     (let ((cur-proj-root (or (projectile-project-root)
                              (concat (s-chop-suffix "/" home-dir) "/"))))
       (-some->> (buffer-list)
-        (--remove (with-current-buffer it
-                    (let ((proj-root (or (projectile-project-root)
-                                         (concat (s-chop-suffix "/" home-dir) "/"))))
-                      (string= cur-proj-root proj-root))))
-        (switch-to-previous-buffer-in))))
+                (--remove (with-current-buffer it
+                            (let ((proj-root (or (projectile-project-root)
+                                                 (concat (s-chop-suffix "/" home-dir) "/"))))
+                              (string= cur-proj-root proj-root))))
+                (switch-to-previous-buffer-in))))
 
   (defun projectile-action-for-custom-switch-open-project ()
     "A `projectile' action for `projectile-custom-switch-open-project'."
     (let* ((cur-proj-root (projectile-project-root))
            (buf (-some->> (buffer-list)
-                  (--filter (with-current-buffer it
-                              ;; NOTE
-                              ;;  `projectile-switch-open-project' will overwrite `default-directory' variable.
-                              (let* ((default-directory (or (-some-> (buffer-file-name) (file-name-directory)) ""))
-                                     (proj-root (or (projectile-project-root)
-                                                    (concat (s-chop-suffix "/" home-dir) "/"))))
-                                (string= cur-proj-root proj-root))))
-                  (switch-to-previous-buffer-in))))
+                          (--filter (with-current-buffer it
+                                      ;; NOTE
+                                      ;;  `projectile-switch-open-project' will overwrite `default-directory' variable.
+                                      (let* ((default-directory (or (-some-> (buffer-file-name) (file-name-directory)) ""))
+                                             (proj-root (or (projectile-project-root)
+                                                            (concat (s-chop-suffix "/" home-dir) "/"))))
+                                        (string= cur-proj-root proj-root))))
+                          (switch-to-previous-buffer-in))))
       (unless buf
         (projectile-find-file))))
 
@@ -69,12 +69,12 @@
   :config
   (defun projectile-project-files-custom-filter (files)
     (-if-let (regex (-some->> (projectile-paths-to-ignore)
-                      (--map (->> it
-                               (s-chop-prefix (file-truename (projectile-project-root)))
-                               (concat "^")))
-                      (append (projectile-patterns-to-ignore))
-                      (-interpose "\\|")
-                      (apply #'concat)))
+                              (--map (->> it
+                                          (s-chop-prefix (file-truename (projectile-project-root)))
+                                          (concat "^")))
+                              (append (projectile-patterns-to-ignore))
+                              (-interpose "\\|")
+                              (apply #'concat)))
         (-remove (-partial #'string-match-p regex) files)
       files))
 
@@ -141,12 +141,12 @@
 
   (defun projectile-custom-open-projects ()
     (->> (buffer-list)
-      (-remove #'minibufferp)
-      (--map (with-current-buffer it
-               (when-let ((proj (projectile-project-p)))
-                 (abbreviate-file-name proj))))
-      (-distinct)
-      (-non-nil)))
+         (-remove #'minibufferp)
+         (--map (with-current-buffer it
+                  (when-let ((proj (projectile-project-p)))
+                    (abbreviate-file-name proj))))
+         (-distinct)
+         (-non-nil)))
 
   (defun projectile-custom-project-vcs (&optional project-root)
     (or project-root (setq project-root (projectile-project-root)))
@@ -187,9 +187,9 @@
     (let* ((proj-root (projectile-project-root))
            (proj-name (projectile-project-name proj-root)))
       (when-let ((buf (->> (buffer-list)
-                        (-map #'buffer-name)
-                        (completing-read "Add a buffer to the current project:")
-                        (get-buffer))))
+                           (-map #'buffer-name)
+                           (completing-read "Add a buffer to the current project:")
+                           (get-buffer))))
         (with-current-buffer buf
           (dolist (func projectile-project-root-functions)
             (let ((key (format "%s-%s" func default-directory)))
@@ -205,8 +205,8 @@
             (lambda ()
               (setq-local dumb-jump-project
                           (-> buffer-file-name
-                            (file-name-directory)
-                            (projectile-project-root)))))
+                              (file-name-directory)
+                              (projectile-project-root)))))
 
 
   (advice-add #'projectile-kill-buffers  :override #'projectile-custom-kill-buffers)

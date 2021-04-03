@@ -97,8 +97,8 @@
       (message "There is no candidate.")))
 
   (-update->> ivy--display-transformers-alist
-    (--remove (-let (((caller . _rest) it))
-                (eq 'counsel-company caller))))
+              (--remove (-let (((caller . _rest) it))
+                          (eq 'counsel-company caller))))
 
   (add-to-list 'ivy-sort-matches-functions-alist '(counsel-company . ivy--shorter-matches-first))
   (add-to-list 'ivy--display-transformers-alist '(counsel-company . counsel--company-display-transformer))

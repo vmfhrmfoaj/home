@@ -68,10 +68,10 @@
   (defun evil-leader--set-major-leader-for-mode (mode)
     ;; for `evil-leader'
     (-when-let (map (-some->> evil-leader--mode-maps
-                      (assoc mode)
-                      (-drop 1)
-                      (assoc 109) ; 109 = "m"
-                      (-drop 1)))
+                              (assoc mode)
+                              (-drop 1)
+                              (assoc 109) ; 109 = "m"
+                              (-drop 1)))
       (let ((map-name (intern (format "evil-leader-for-%s-map" mode))))
         (eval
          `(progn
@@ -95,11 +95,11 @@
   (defun evil-leader--set-local-key (&rest bindings)
     (let* ((prefix (concat evil-leader/leader "m"))
            (bindings (->> bindings
-                       (-partition 2)
-                       (--map (cons (concat evil-leader/leader (car it)) (cdr it)))
-                       (--mapcat (if (not (s-starts-with? prefix (car it)))
-                                     (list it)
-                                   (list it (cons (s-replace prefix evil-leader--major-leader (car it)) (cdr it))))))))
+                          (-partition 2)
+                          (--map (cons (concat evil-leader/leader (car it)) (cdr it)))
+                          (--mapcat (if (not (s-starts-with? prefix (car it)))
+                                        (list it)
+                                      (list it (cons (s-replace prefix evil-leader--major-leader (car it)) (cdr it))))))))
       (dolist (binding bindings)
         (evil-local-set-key 'normal (car binding) (cadr binding)))))
 
@@ -371,8 +371,8 @@
       (if (ignore-errors
             (and company-tooltip-flip-when-above
                  (-some->> 'company-replacement-args
-                   (overlay-get company-pseudo-tooltip-overlay)
-                   (nth 3))))
+                           (overlay-get company-pseudo-tooltip-overlay)
+                           (nth 3))))
           (call-interactively #'company-select-previous)
         (call-interactively #'company-select-next))))
   (define-key company-active-map (kbd "C-k")
@@ -381,8 +381,8 @@
       (if (ignore-errors
             (and company-tooltip-flip-when-above
                  (-some->> 'company-replacement-args
-                   (overlay-get company-pseudo-tooltip-overlay)
-                   (nth 3))))
+                           (overlay-get company-pseudo-tooltip-overlay)
+                           (nth 3))))
           (call-interactively #'company-select-next)
         (call-interactively #'company-select-previous))))
   (define-key company-active-map (kbd "C-h") nil)

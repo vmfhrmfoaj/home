@@ -25,10 +25,10 @@
                                 "; do printenv ${var} || echo \"\"; done'")))
               (--each
                   (->> cmd
-                    (shell-command-to-string)
-                    (s-lines)
-                    (-interleave env-vars)
-                    (-partition 2))
+                       (shell-command-to-string)
+                       (s-lines)
+                       (-interleave env-vars)
+                       (-partition 2))
                 (let ((k (car  it))
                       (v (cadr it)))
                   (setenv k v)))

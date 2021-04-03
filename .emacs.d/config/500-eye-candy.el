@@ -25,9 +25,9 @@
                                ;;   I guess latest buffer.
                                (and (minibufferp adob--last-buffer)
                                     (->> (buffer-list)
-                                      (-drop-while #'minibufferp)
-                                      (sort-buffer-by-visit-time)
-                                      (car)))
+                                         (-drop-while #'minibufferp)
+                                         (sort-buffer-by-visit-time)
+                                         (car)))
                                adob--last-buffer))
                       (buffer-live-p evil-ex-current-buffer))))
 
@@ -430,8 +430,8 @@
 
   (with-eval-after-load "swiper"
     (-update->> ivy-update-fns-alist
-      (--remove (-let (((caller . _rest) it))
-                  (eq 'swiper caller)))))
+                (--remove (-let (((caller . _rest) it))
+                            (eq 'swiper caller)))))
 
   (with-eval-after-load "golden-ratio"
     (add-hook 'window-size-change-functions
@@ -499,18 +499,18 @@
         icon
       (puthash major-mode
                (when-let ((disp (-some->> buffer-file-name
-                                  (treemacs-icon-for-file)
-                                  (get-text-property 0 'display))))
+                                          (treemacs-icon-for-file)
+                                          (get-text-property 0 'display))))
                  (when (listp disp)
                    (let ((icon (propertize "  " 'display
                                            (cl-list* 'image
                                                      (let ((h (frame-char-height)))
                                                        (-> disp
-                                                         (cl-rest)
-                                                         (cl-copy-list)
-                                                         (plist-put :background (bg-color-from 'powerline-active1))
-                                                         (plist-put :height h)
-                                                         (plist-put :width h)))))))
+                                                           (cl-rest)
+                                                           (cl-copy-list)
+                                                           (plist-put :background (bg-color-from 'powerline-active1))
+                                                           (plist-put :height h)
+                                                           (plist-put :width h)))))))
                      (puthash major-mode icon spaceline-symbol-segment--major-icon-cache)
                      icon)))
                spaceline-symbol-segment--major-icon-cache)))

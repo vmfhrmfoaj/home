@@ -79,8 +79,8 @@
                             (if-let ((win (let ((wins (window-list)))
                                             (when (<= 2 (length wins))
                                               (-some->> wins
-                                                (--filter (-> it (window-buffer) (eq buf)))
-                                                (-first-item))))))
+                                                        (--filter (-> it (window-buffer) (eq buf)))
+                                                        (-first-item))))))
                                 (select-window win)
                               (apply fn buf args)))))
             (advice-add #'pop-to-buffer :around
@@ -89,8 +89,8 @@
                             (if-let ((win (let ((wins (window-list)))
                                             (when (<= 2 (length wins))
                                               (-some->> wins
-                                                (--filter (-> it (window-buffer) (eq buf)))
-                                                (-first-item))))))
+                                                        (--filter (-> it (window-buffer) (eq buf)))
+                                                        (-first-item))))))
                                 (select-window win)
                               (apply fn buf args))))))
           :append)

@@ -129,9 +129,9 @@ which see."
 
   (defun org-agenda-show-on-dedicated-window (org-agenda-fn &optional finish-fn)
     (if-let ((win (-some->> (window-list)
-                    (--filter (with-current-buffer (window-buffer it)
-                                (derived-mode-p 'org-mode 'org-agenda-mode)))
-                    (-first-item))))
+                            (--filter (with-current-buffer (window-buffer it)
+                                        (derived-mode-p 'org-mode 'org-agenda-mode)))
+                            (-first-item))))
         (unwind-protect
             (progn
               (set-window-dedicated-p win nil)

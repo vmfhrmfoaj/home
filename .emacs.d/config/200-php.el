@@ -15,7 +15,7 @@
   ;;  `php-syntax-propertize-hash-line-comment' is very slow.
   ;;  I don't know why, but I don't think it is caused by customization.
   (-update->> php-syntax-propertize-functions
-    (--remove (eq it 'php-syntax-propertize-hash-line-comment)))
+              (--remove (eq it 'php-syntax-propertize-hash-line-comment)))
 
   (with-eval-after-load "dumb-jump"
     (add-to-list 'dumb-jump-language-file-exts

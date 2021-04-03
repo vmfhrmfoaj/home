@@ -13,13 +13,13 @@
   (defun fish-completion--custom-list-completions (raw-prompt)
     "Customize"
     (->> raw-prompt
-      (fish-completion--list-completions-with-desc)
-      (s-split "\n")
-      (--remove (s-blank-p it))
-      (--map (-let [(c desc) (split-string it "\t")]
-               (if desc
-                   (propertize c :fish-help-message (concat " (" desc ")"))
-                 c)))))
+         (fish-completion--list-completions-with-desc)
+         (s-split "\n")
+         (--remove (s-blank-p it))
+         (--map (-let [(c desc) (split-string it "\t")]
+                  (if desc
+                      (propertize c :fish-help-message (concat " (" desc ")"))
+                    c)))))
 
   (defun fish-completion--get-help-message (candidate)
     (get-pos-property 0 :fish-help-message candidate))

@@ -19,8 +19,8 @@
     (->> (or (and (fboundp 'projectile-project-buffers)
                   (projectile-project-buffers))
              (buffer-list))
-      (--filter (with-current-buffer it (derived-mode-p 'emacs-lisp-mode)))
-      (switch-to-previous-buffer-in)))
+         (--filter (with-current-buffer it (derived-mode-p 'emacs-lisp-mode)))
+         (switch-to-previous-buffer-in)))
 
   (defun emacs-lisp-REPL-eval-print-this-sexp ()
     (interactive)
@@ -40,8 +40,8 @@
   (defun emacs-lisp-evil-lookup-func ()
     (call-interactively #'elisp-slime-nav-describe-elisp-thing-at-point)
     (-when-let (buf (->> (window-list)
-                      (-map #'window-buffer)
-                      (--first (string-equal "*Help*" (buffer-name it)))))
+                         (-map #'window-buffer)
+                         (--first (string-equal "*Help*" (buffer-name it)))))
       (pop-to-buffer buf)))
 
   (add-hook 'emacs-lisp-mode-hook

@@ -42,41 +42,41 @@
     (remove-hook 'lsp-on-idle-hook #'lsp-diagnostics--flycheck-buffer t)
 
     (let ((errors (->> flycheck-current-errors
-                    (--filter (and      (eq (flycheck-error-buffer  it) (current-buffer))
-                                        (not (eq (flycheck-error-checker it) checker))))
-                    (-map (-juxt #'flycheck-error-line
-                                 #'flycheck-error-column)))))
+                       (--filter (and      (eq (flycheck-error-buffer  it) (current-buffer))
+                                           (not (eq (flycheck-error-checker it) checker))))
+                       (-map (-juxt #'flycheck-error-line
+                                    #'flycheck-error-column)))))
       (->> (lsp--get-buffer-diagnostics)
-        (-map (-lambda ((&Diagnostic
-                         :message
-                         :severity?
-                         :tags?
-                         :code?
-                         :range (&Range
-                                 :start (&Position
-                                         :line      start-line
-                                         :character start-character)
-                                 :end   (&Position
-                                         :line      end-line
-                                         :character end-character))))
-                (let ((line-beg (lsp-translate-line (1+ start-line)))
-                      (line-end (lsp-translate-line (1+ end-line)))
-                      (col-beg (1+ (lsp-translate-column start-character)))
-                      (col-end (1+ (lsp-translate-column end-character))))
-                  (unless (member (list line-beg col-beg) errors)
-                    (flycheck-error-new
-                     :buffer (current-buffer)
-                     :checker checker
-                     :filename buffer-file-name
-                     :message message
-                     :level (lsp-diagnostics--flycheck-calculate-level severity? tags?)
-                     :id code?
-                     :line     line-beg
-                     :end-line line-end
-                     :column     col-beg
-                     :end-column col-end)))))
-        (-non-nil)
-        (funcall callback 'finished))))
+           (-map (-lambda ((&Diagnostic
+                            :message
+                            :severity?
+                            :tags?
+                            :code?
+                            :range (&Range
+                                    :start (&Position
+                                            :line      start-line
+                                            :character start-character)
+                                    :end   (&Position
+                                            :line      end-line
+                                            :character end-character))))
+                   (let ((line-beg (lsp-translate-line (1+ start-line)))
+                         (line-end (lsp-translate-line (1+ end-line)))
+                         (col-beg (1+ (lsp-translate-column start-character)))
+                         (col-end (1+ (lsp-translate-column end-character))))
+                     (unless (member (list line-beg col-beg) errors)
+                       (flycheck-error-new
+                        :buffer (current-buffer)
+                        :checker checker
+                        :filename buffer-file-name
+                        :message message
+                        :level (lsp-diagnostics--flycheck-calculate-level severity? tags?)
+                        :id code?
+                        :line     line-beg
+                        :end-line line-end
+                        :column     col-beg
+                        :end-column col-end)))))
+           (-non-nil)
+           (funcall callback 'finished))))
 
   (setq lsp-diagnostics-provider :flycheck
         lsp-diagnostics-attributes '((unnecessary :inherit 'lsp-punctuation-face)
@@ -104,45 +104,45 @@
             (let* ((separator (concat " " (lsp-headerline--arrow-icon) " "))
                    (max-len (- spaceline-symbol-segment--max-symbol-length (length (concat "..." separator)))))
               (->> symbols-hierarchy
-                (reverse)
-                (-reduce-from
-                 (-lambda ((&alist 'count count 'len len 'output output)
-                           (symbol &as &DocumentSymbol :name :kind))
-                   (if (<= max-len len)
-                       `((count  . ,(1+ count))
-                         (len    . ,len)
-                         (output . ,output))
-                     (let* ((icon (when-let ((disp (-some->> kind
-                                                     (lsp-treemacs-symbol-icon)
-                                                     (get-text-property 0 'display))))
-                                    (if (stringp disp)
-                                        (replace-regexp-in-string "\s\\|\t" "" disp)
-                                      (propertize " " 'display
-                                                  (cl-list* 'image
-                                                            (plist-put
-                                                             (cl-copy-list
-                                                              (cl-rest disp))
-                                                             :background (bg-color-from 'powerline-active1)))))))
-                            (symbol-name (concat icon "​​​" name)) ; zero width space * 3
-                            (symbol-name (lsp-headerline--symbol-with-action symbol symbol-name))
-                            (new-output (concat symbol-name (when output separator) output))
-                            (new-len (length new-output)))
-                       (if (<= max-len new-len)
-                           `((count  . ,(1+ count))
-                             (len    . ,(if (< 0 count)
-                                            max-len
-                                          new-len))
-                             (output . ,(if (< 0 count)
-                                            (concat "..." separator output)
-                                          new-output)))
-                         `((count  . ,(1+ count))
-                           (len    . ,new-len)
-                           (output . ,new-output)))))
-                   )
-                 '((count  . 0)
-                   (len    . 0)
-                   (output . nil)))
-                (alist-get 'output)))
+                   (reverse)
+                   (-reduce-from
+                    (-lambda ((&alist 'count count 'len len 'output output)
+                              (symbol &as &DocumentSymbol :name :kind))
+                      (if (<= max-len len)
+                          `((count  . ,(1+ count))
+                            (len    . ,len)
+                            (output . ,output))
+                        (let* ((icon (when-let ((disp (-some->> kind
+                                                                (lsp-treemacs-symbol-icon)
+                                                                (get-text-property 0 'display))))
+                                       (if (stringp disp)
+                                           (replace-regexp-in-string "\s\\|\t" "" disp)
+                                         (propertize " " 'display
+                                                     (cl-list* 'image
+                                                               (plist-put
+                                                                (cl-copy-list
+                                                                 (cl-rest disp))
+                                                                :background (bg-color-from 'powerline-active1)))))))
+                               (symbol-name (concat icon "​​​" name)) ; zero width space * 3
+                               (symbol-name (lsp-headerline--symbol-with-action symbol symbol-name))
+                               (new-output (concat symbol-name (when output separator) output))
+                               (new-len (length new-output)))
+                          (if (<= max-len new-len)
+                              `((count  . ,(1+ count))
+                                (len    . ,(if (< 0 count)
+                                               max-len
+                                             new-len))
+                                (output . ,(if (< 0 count)
+                                               (concat "..." separator output)
+                                             new-output)))
+                            `((count  . ,(1+ count))
+                              (len    . ,new-len)
+                              (output . ,new-output)))))
+                      )
+                    '((count  . 0)
+                      (len    . 0)
+                      (output . nil)))
+                   (alist-get 'output)))
           "")
       "")))
 
@@ -184,30 +184,30 @@
   :after lsp-mode
   :config
   (lsp-defun lsp-ivy--format-symbol-match-for-doc-syms
-    ((sym &as &DocumentSymbol :kind :range (&Range :start (&Position :line :character))))
-    (let* ((sanitized-kind (if (< kind (length lsp-ivy-symbol-kind-to-face)) kind 0))
-           (type (elt lsp-ivy-symbol-kind-to-face sanitized-kind))
-           (typestr (if lsp-ivy-show-symbol-kind
-                        (propertize " " 'face (cdr type) 'display (format "[%s] " (car type)))
-                      ""))
-           (posstr (if lsp-ivy-show-symbol-filename
-                       (propertize " " 'face 'lsp-details-face 'display (format " · Line: %s" line)))))
-      (concat typestr (lsp-render-symbol sym ".") posstr)))
+             ((sym &as &DocumentSymbol :kind :range (&Range :start (&Position :line :character))))
+             (let* ((sanitized-kind (if (< kind (length lsp-ivy-symbol-kind-to-face)) kind 0))
+                    (type (elt lsp-ivy-symbol-kind-to-face sanitized-kind))
+                    (typestr (if lsp-ivy-show-symbol-kind
+                                 (propertize " " 'face (cdr type) 'display (format "[%s] " (car type)))
+                               ""))
+                    (posstr (if lsp-ivy-show-symbol-filename
+                                (propertize " " 'face 'lsp-details-face 'display (format " · Line: %s" line)))))
+               (concat typestr (lsp-render-symbol sym ".") posstr)))
 
   (lsp-defun lsp-ivy--custom-format-symbol-match
-    ((sym &as &SymbolInformation :kind :location (&Location :uri))
-     project-root)
-    (let* ((sanitized-kind (if (< kind (length lsp-ivy-symbol-kind-to-face)) kind 0))
-           (type (elt lsp-ivy-symbol-kind-to-face sanitized-kind))
-           (typestr (if lsp-ivy-show-symbol-kind
-                        (propertize " " 'face (cdr type) 'display (format "[%s] " (car type)))
-                      ""))
-           (pathstr (if lsp-ivy-show-symbol-filename
-                        (propertize " "
-                                    'face font-lock-comment-face
-                                    'display (format " · %s" (file-relative-name (lsp--uri-to-path uri) project-root)))
-                      "")))
-      (concat typestr (lsp-render-symbol-information sym ".") pathstr)))
+             ((sym &as &SymbolInformation :kind :location (&Location :uri))
+              project-root)
+             (let* ((sanitized-kind (if (< kind (length lsp-ivy-symbol-kind-to-face)) kind 0))
+                    (type (elt lsp-ivy-symbol-kind-to-face sanitized-kind))
+                    (typestr (if lsp-ivy-show-symbol-kind
+                                 (propertize " " 'face (cdr type) 'display (format "[%s] " (car type)))
+                               ""))
+                    (pathstr (if lsp-ivy-show-symbol-filename
+                                 (propertize " "
+                                             'face font-lock-comment-face
+                                             'display (format " · %s" (file-relative-name (lsp--uri-to-path uri) project-root)))
+                               "")))
+               (concat typestr (lsp-render-symbol-information sym ".") pathstr)))
 
   (defun lsp-ivy-workspace-symbol-for-cur-file (&optional initial-input)
     (interactive)
@@ -222,9 +222,9 @@
                 (let ((lsp-ivy-show-symbol-filename nil))
                   (setq filtered-candidates
                         (-some->> all-candidates
-                          (--filter (-let (((&SymbolInformation :location (&Location :uri)) it))
-                                      (string= buf-file (lsp--uri-to-path uri))))
-                          (--keep (lsp-ivy--transform-candidate it filter-regexps? workspace-root)))))
+                                  (--filter (-let (((&SymbolInformation :location (&Location :uri)) it))
+                                              (string= buf-file (lsp--uri-to-path uri))))
+                                  (--keep (lsp-ivy--transform-candidate it filter-regexps? workspace-root)))))
                 (ivy-update-candidates filtered-candidates))))
         (ivy-read
          "File symbol: "
@@ -235,14 +235,14 @@
              (if (string-equal prev-query query)
                  (funcall update-candidates unfiltered-candidates filter-regexps?)
                (with-lsp-workspaces workspaces
-                 (lsp-request-async
-                  "workspace/symbol"
-                  (lsp-make-workspace-symbol-params :query query)
-                  (lambda (result)
-                    (setq unfiltered-candidates result)
-                    (funcall update-candidates unfiltered-candidates filter-regexps?))
-                  :mode 'detached
-                  :cancel-token :workspace-symbol)))
+                                    (lsp-request-async
+                                     "workspace/symbol"
+                                     (lsp-make-workspace-symbol-params :query query)
+                                     (lambda (result)
+                                       (setq unfiltered-candidates result)
+                                       (funcall update-candidates unfiltered-candidates filter-regexps?))
+                                     :mode 'detached
+                                     :cancel-token :workspace-symbol)))
              (setq prev-query query))
            (or filtered-candidates 0))
          :dynamic-collection t
@@ -390,8 +390,8 @@
                          (->> (if (<= (length lines) max-line)
                                   lines
                                 (-snoc (-take (max 1 (1- max-line)) lines) (propertize "(...)" 'face 'shadow)))
-                           (-interpose "\n")
-                           (apply #'concat)))))))
+                              (-interpose "\n")
+                              (apply #'concat)))))))
 
   (defun lsp--custom-eldoc-message-for-emacs-28 (&optional msg)
     "Show MSG in eldoc."
@@ -418,9 +418,9 @@
     (defun lsp-signature-prevent-stop ()
       (and lsp-signature-prevent-stop-enable
            (-some->> (syntax-ppss)
-             (nth 1)
-             (char-after)
-             (char-equal begin-parent)))))
+                     (nth 1)
+                     (char-after)
+                     (char-equal begin-parent)))))
 
   (defun lsp--workspace-print-without-style (workspace)
     "Visual representation WORKSPACE."
@@ -454,10 +454,10 @@
                                    (cancel-timer flycheck--idle-trigger-timer)
                                    (setq flycheck--idle-trigger-timer nil))
                                  (-some->> msg
-                                   (s-lines)
-                                   (-drop-while #'s-blank-str?)
-                                   (-first-item)
-                                   (eldoc-message))))
+                                           (s-lines)
+                                           (-drop-while #'s-blank-str?)
+                                           (-first-item)
+                                           (eldoc-message))))
 
   (when-let ((mode (--first (eq (car it) 'lsp-mode) minor-mode-alist)))
     (setf (nth 1 mode) '(:eval (unless lsp--buffer-workspaces
@@ -512,9 +512,9 @@
                                          (and (boundp 'lsp-signature-mode)
                                               (null lsp-signature-mode))
                                          (-some->> (syntax-ppss)
-                                           (nth 1)
-                                           (char-after)
-                                           (char-equal begin-parent)))
+                                                   (nth 1)
+                                                   (char-after)
+                                                   (char-equal begin-parent)))
                                 (setq lsp-signature-prevent-stop-enable t)
                                 (ignore-errors (lsp-signature-activate)))
                               (when (bound-and-true-p lsp-diagnostics-mode)

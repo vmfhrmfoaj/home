@@ -1407,8 +1407,8 @@
          (setq font-lock--skip nil)
          (goto-char (setq font-lock--anchor-beg-point (match-beginning 1)))
          (when (-some->> (syntax-ppss)
-                 (-first-item)
-                 (< 0))
+                         (-first-item)
+                         (< 0))
            (setq font-lock--skip t))
          (match-end 1))
        (goto-char font-lock--anchor-beg-point)
@@ -1667,8 +1667,8 @@
   :defer t
   :config
   (let* ((pairs (->> web-mode-engines-auto-pairs
-                  (-filter (-compose #'stringp #'car))
-                  (-mapcat #'cdr)))
+                     (-filter (-compose #'stringp #'car))
+                     (-mapcat #'cdr)))
          (begin-re (->> pairs (-map #'car) (regexp-opt)))
          (end-re   (->> pairs (-map #'cdr) (regexp-opt))))
     (font-lock-add-keywords
