@@ -27,10 +27,9 @@
    '(show-paren-match ((t :background unspecified :foreground "red" :weight bold :underline t)))
    '(show-paren-mismatch ((t :background "red3" :foreground "#f0d2cd" :weight bold :underline t)))
    '(symbol-dash-or-underline-face ((t :weight light)))
-   '(org-verbatim ((t :inherit font-lock-constant-face)))
-   '(whitespace-newline ((t :background unspecified :foreground "#717371" :weight light)))
-   '(whitespace-space   ((t :background unspecified :foreground "#717371" :weight light)))
-   '(whitespace-tab     ((t :background unspecified :foreground "#717371" :weight light)))
+   '(whitespace-newline ((t :background unspecified :foreground "#646664" :weight light)))
+   '(whitespace-space   ((t :background unspecified :foreground "#646664" :weight light)))
+   '(whitespace-tab     ((t :background unspecified :foreground "#646664" :weight light)))
    '(vertical-border ((t :foreground "#222326")))))
 
 (use-package auto-dim-other-buffers
@@ -61,12 +60,12 @@
      `(cider-deprecated-face
        ((t :inherit font-lock-warning-face :weight ,default-weight :underline (:color "darkorange"))))
      '(cider-fringe-good-face ((t :inherit success)))
+     '(cider-repl-stdout-face ((t :inherit font-lock-string-face :weight light)))
      '(clojure-cond-condtion-face ((t :inherit italic)))
      '(clojure-define-type-face ((t :inherit font-lock-type-face)))
      '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
      '(clojure-fn-parameter-unused-face ((t :inherit clojure-fn-parameter-face :weight normal)))
-     '(clojure-important-keywords-face ((t :inherit (font-lock-keyword-face italic))))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face :foreground unspecified)))
      '(clojure-meta-face ((t :inherit shadow :weight normal)))
      `(clojure-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :foreground "#b36262" :weight ,default-weight)))
@@ -76,7 +75,8 @@
      '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))
      '(clojure-special-variable-definition-face
        ((t :inherit (font-lock-constant-face clojure-variable-definition-face))))
-     '(clojure-variable-definition-face ((t :inherit font-lock-variable-name-face))))))
+     `(clojure-variable-definition-face ((t :inherit font-lock-variable-name-face
+                                            :weight ,(face-attribute 'font-lock-function-name-face :weight)))))))
 
 (use-package cperl-mode
   :defer t
@@ -148,10 +148,10 @@
   :defer t
   :config
   (custom-set-faces
-   '(font-lock-comment-face ((t :foreground "#4d4f4d" :weight light)))
-   '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground "#585958")))
+   '(font-lock-comment-face ((t :foreground "#717371" :weight light)))
+   '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face)))
    '(font-lock-doc-face ((t :weight normal)))
-   '(font-lock-function-name-face ((t :foreground "#85aacc")))
+   '(font-lock-function-name-face ((t :foreground "#85aacc" :weight ultra-bold)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
    '(font-lock-regexp-grouping-backslash ((t :weight normal)))
    '(font-lock-regexp-grouping-construct ((t :weight normal)))))
@@ -192,12 +192,14 @@
   :defer t
   :config
   (custom-set-faces
-   '(ivy-current-match ((t :background "#5f6369" :foreground "white" :weight bold)))
+   `(ivy-current-match ((t :background ,(color-from 'default :background)
+                           :foreground "white" :weight extra-bold
+                           :underline (:color "#717371"))))
    '(ivy-grep-info ((t :inherit font-lock-string-face :weight unspecified)))
-   '(ivy-minibuffer-match-face-1 ((t :background "#7d7e7f" :foreground "#535454")))
-   '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b")))
-   '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :foreground "#707099")))
-   '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f")))))
+   '(ivy-minibuffer-match-face-1 ((t :background "#7d7e7f" :foreground "#535454" :weight normal)))
+   '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b" :weight normal)))
+   '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :foreground "#707099" :weight normal)))
+   '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f" :weight normal)))))
 
 (use-package lsp-mode
   :defer t
@@ -236,7 +238,7 @@
    '(org-agenda-date-weekend ((t :inherit org-agenda-date)))
    '(org-agenda-date-today ((t :inherit org-agenda-date :foreground "turquoise")))
    '(org-agenda-calendar-event ((t :weight normal)))
-   '(org-block ((t :weight normal)))
+   '(org-block ((t :foreground unspecified :weight normal)))
    '(org-checkbox-statistics-done ((t :foreground "#b5bd68" :weight normal)))
    '(org-checkbox-statistics-todo ((t :foreground "#cc6666" :weight normal)))
    '(org-date ((t :underline unspecified :weight normal)))

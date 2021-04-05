@@ -67,11 +67,6 @@
                               (goto-char (point-max)))))
                         nil t)))
 
-  (add-hook 'eshell-post-command-hook
-            (lambda ()
-              (let ((evil-move-cursor-back nil))
-                (evil-normal-state))))
-
   (advice-add #'eshell :around
               (lambda (fn &rest args)
                 "If single window, create a window and then open eshell buffer on the window."

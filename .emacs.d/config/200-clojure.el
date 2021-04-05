@@ -93,9 +93,8 @@
 
   (defun cider-find-var-at-point ()
     (interactive)
-    (if (cider-connected-p)
-        (cider-find-var nil (cider-symbol-at-point))
-      (dumb-jump-go)))
+    (when (cider-connected-p)
+      (cider-find-var nil (cider-symbol-at-point))))
 
   (defun cider-switch-to-clj-buf-latest-visited ()
     (interactive)

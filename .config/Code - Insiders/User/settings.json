@@ -1,9 +1,8 @@
 {
     // Appearance
-    "editor.fontFamily": "'Cascadia Code', monospace",
-    "editor.fontSize": 14,
+    "editor.fontFamily": "'Fira Code', monospace",
+    "editor.fontSize": 15,
     "editor.fontLigatures": true,
-    "editor.fontWeight": "600",
     "editor.matchBrackets": "near", // use Bracket Pair Colorizer
     "editor.minimap.enabled": false,
     "editor.minimap.renderCharacters": false,
@@ -368,6 +367,7 @@
     "gitlens.statusBar.format": "${author}(${agoOrDate}): \"${message}\"",
 
     // Go
+    "go.toolsManagement.autoUpdate": true,
 
     // Markdownlint
     "markdownlint.config": {

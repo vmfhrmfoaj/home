@@ -277,13 +277,8 @@
            (meta? "\\(?:\\(?:#?\\^{[^^]+}\\|\\^:?\\sw+\\)[ \r\n\t]+\\)?")
            (core-ns  (concat (regexp-opt '("clojure.core" "cljs.core" "core") nil) "/"))
            (core-ns? (concat "\\(?:" core-ns "\\)?"))
-           (if-kw   (regexp-opt '("if" "if-some" "if-let" "if-not")))
            (oop-kw  (regexp-opt '("definterface" "defprotocol" "defrecord" "deftype" "extend-protocol" "extend-type" "proxy" "reify")))
            (def-kw  (regexp-opt '("defmacro" "defn" "defn-" "defmethod" "defrecord" "deftype") t))
-           (important-kw (regexp-opt '(; "case" and "cond", "condp", "cond->", "cond->>" are highlighted specially
-                                       "if" "if-let" "if-not" "when" "when-let" "when-not"
-                                       "for" "loop" "recur" "while"
-                                       "catch" "throw") t))
            (highlight-kw (regexp-opt '("go-loop" "with-hard-redefs" "proxy" "reify") t))
            (clojure--binding-kw
             '("binding" "doseq" "dotimes" "for" "let" "if-let" "if-some" "when-let" "when-some" "loop" "go-loop" "with-redefs")))
@@ -636,9 +631,6 @@
         ;; Interop new - (symbol. ...)
         (,(concat "(" symbol "\\(\\.\\)" whitespace)
          (1 'clojure-interop-method-face))
-        ;; Built-in binding and flow of control forms
-        (,(concat "(" core-ns? important-kw "\\(?:)\\|" whitespace "\\)")
-         (1 'clojure-important-keywords-face))
 
         ;; Namespaced keyword - ::namespace/keyword
         (,(concat "::\\(" symbol "\\)\\(/\\)" symbol "\\>")
@@ -772,7 +764,7 @@
         ;; Special forms
         (,(concat
            "(" (regexp-opt '("def" "do" "if" "let" "let*" "var" "fn" "fn*" "loop" "loop*"
-                             "recur" "try" "finally" ; "recur" and "throw", "catch" was included to important-kw
+                             "recur" "try" "finally" "recur" "throw" "catch"
                              "set!" "new" "."
                              "monitor-enter" "monitor-exit" "quote") t)
            "\\>")
@@ -783,6 +775,7 @@
            "(" core-ns?
            (regexp-opt '("letfn" "case" "cond" "cond->" "cond->>" "condp"
                          "for" "when" "when-not" "when-let" "when-first" "when-some"
+                         "if-let" "if-not" "if-some"
                          ".." "doto"
                          "dosync" "doseq" "dotimes" "dorun" "doall"
                          "ns" "in-ns"
@@ -1049,8 +1042,6 @@
        mode
        `(("\\_<\\(\\?\\(?:\\\\\\)?[^ \t\r\n]\\)"
           (1 'font-lock-string-face))
-         ("#?'\\|`\\|\\_<_\\_>"
-          (0 'shadow))
          ("\\s(\\(\\(?:-as\\|-some\\)?->>?\\|and\\|or\\)\\_>"
           (1 'default nil))
          ("\\(?:\\s-+\\|\\s(\\)\\<\\(nil\\|t\\)\\>"
@@ -1058,7 +1049,10 @@
          ("(\\(assert\\)"
           (1 'font-lock-variable-name-face))
          (,(concat "(defun" whitespace+ "\\(" symbol "\\)")
-          (1 'font-lock-function-name-face))))
+          (1 'font-lock-function-name-face))
+         ;; punctuation
+         ("#?'\\|`\\|\\_<_\\_>\\|,@"
+          (0 'shadow))))
       (font-lock-add-keywords
        mode
        `(;; local variables
@@ -1415,7 +1409,7 @@
        (1 (if (string= "_" (match-string-no-properties 1))
               'shadow
             'font-lock-variable-name-face))))
-     ("\\([:\\]\\)"
+     ("\\([.:\\]\\)"
       (1 'shadow))
      ("[0-9A-Za-z]\\(_\\)[0-9A-Za-z]"
       (1 'symbol-dash-or-underline-face prepend)))

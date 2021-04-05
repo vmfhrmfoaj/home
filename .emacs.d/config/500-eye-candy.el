@@ -435,7 +435,7 @@
 
   (with-eval-after-load "golden-ratio"
     (add-hook 'window-size-change-functions
-              (lambda ()
+              (lambda (&rest _)
                 (when (frame-size-changed-p)
                   (let ((w (-second-item (golden-ratio--dimensions))))
                     (setq ivy-posframe-width w

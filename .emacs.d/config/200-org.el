@@ -255,7 +255,7 @@ which see."
                     "\n"
                     "_BACKLOG_:"                                                         "\n"
                     "- [ ] ???"                                                          "\n"
-                    "\n")
+                    "\n\n")
            :prepend t)))
 
   (advice-add #'org-capture-place-template :around

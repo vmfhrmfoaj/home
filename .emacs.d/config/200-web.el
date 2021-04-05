@@ -82,6 +82,7 @@
   (with-eval-after-load "smartparens"
     (add-hook 'web-mode-hook
               (lambda ()
+                (prettify-symbols-mode 1)
                 (-update->> web-mode-auto-pairs
                             (--map (let ((a (car it))
                                          (b (substring (cdr it) 0 -1)))

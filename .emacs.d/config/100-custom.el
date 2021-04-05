@@ -38,8 +38,7 @@
                                                      (concat "｢" proj-name "｣ - "))
                                                    ,tail))))
         include-prev-buf-regex (concat "^\\s-*"
-                                       "\\(\\*eshell"
-                                       "\\|\\*\\s-*docker eshell "
+                                       "\\(\\*\\s-*docker eshell "
                                        "\\|\\*Org Agenda"
                                        "\\)")
         scratch-major-mode 'org-mode
@@ -122,25 +121,9 @@
 
   (advice-add #'x-dnd-get-drop-x-y :override #'custom-x-dnd-get-drop-x-y))
 
-(add-hook 'after-save-hook #'garbage-collect 100)
-(add-function :after after-focus-change-function
-              (lambda ()
-                "Reclaim heap memory when fcousing out."
-                (unless (frame-focus-state)
-                  (garbage-collect)))
-              '((depth . 100)))
-
 (advice-add #'narrow-to-region :after
             (lambda (&rest _)
               "Unselect the region"
               (when (and (called-interactively-p 'interactive)
                          (eq this-command 'narrow-to-region))
                 (deactivate-mark))))
-
-(use-package gcmh
-  :ensure t
-  :config
-  (add-hook 'emacs-startup-hook
-            (lambda ()
-              (setq gcmh-high-cons-threshold (* 1024 1024 64))))
-  (gcmh-mode 1))

@@ -113,6 +113,25 @@
 
   (advice-add #'evil-flash-search-pattern :override #'evil--cusotm-flash-search-pattern))
 
+(use-package gcmh
+  :ensure t
+  :config
+  (setq gcmh-high-cons-threshold (* 1024 1024 1024))
+
+  (add-hook 'after-save-hook
+            (lambda ()
+              (let ((gcmh-idle-delay 1))
+                (gcmh-register-idle-gc))))
+
+  (add-function :after after-focus-change-function
+                (lambda ()
+                  "Reclaim heap memory when fcousing out."
+                  (let ((gcmh-idle-delay 0.5))
+                    (gcmh-register-idle-gc)))
+                '((depth . 100)))
+
+  (gcmh-mode 1))
+
 (use-package ivy
   :ensure t
   :defer t
@@ -138,10 +157,41 @@
        (list face prevn))
      object))
 
+  (defvar ivy--custom-add-face-cache (make-hash-table))
+
+  (defun ivy--custom-add-face (str face)
+    "Customize `ivy--add-face' for weight face"
+    (let ((len (length str)))
+      (condition-case nil
+          (let ((cache (gethash face ivy--custom-add-face-cache)))
+            (colir-blend-face-background 0 len face str)
+            (let ((foreground (if cache (alist-get :foreground cache) (face-foreground face)))
+                  (weight     (if cache (alist-get :weight cache)     (face-attribute face :weight)))
+                  (underline  (if cache (alist-get :underline cache)  (face-attribute face :underline))))
+              (unless cache
+                (puthash face `((:foreground . ,foreground)
+                                (:weight     . ,weight)
+                                (:underline  . ,underline))
+                         ivy--custom-add-face-cache))
+              (when foreground
+                (add-face-text-property
+                 0 len (list :foreground foreground) nil str))
+              (when weight
+                (add-face-text-property
+                 0 len (list :weight weight) nil str))
+              (when underline
+                (add-face-text-property
+                 0 len (list :underline underline) nil str))))
+        (error
+         (ignore-errors
+           (font-lock-append-text-property 0 len 'face face str)))))
+    str)
+
   (setq enable-recursive-minibuffers t
         ivy-height 20)
 
   (advice-add #'colir--blend-background :override #'colir--custom-blend-background)
+  (advice-add #'ivy--add-face :override #'ivy--custom-add-face)
   (advice-add #'ivy--highlight-default :before
               (lambda (_str)
                 "Update `ivy--old-re' for Ivy caller using :dynamic-collection.
@@ -149,5 +199,16 @@ See `ivy--update-minibuffer', I think not updating `ivy--old-re' is intended.
 But, In my case, it is not harm."
                 (when (ivy-state-dynamic-collection ivy-last)
                   (setq ivy--old-re ivy-regex))))
+
+  (defvar colir-blend-cache (make-hash-table :test #'equal))
+
+  (advice-add #'colir-blend :around
+              (lambda (fn c1 c2)
+                "Wrap `colir-blend' function to cache the result."
+                (if-let ((cached-val (gethash (cons c1 c2) colir-blend-cache)))
+                    cached-val
+                  (let ((val (funcall fn c1 c2)))
+                    (puthash (cons c1 c2) val colir-blend-cache)
+                    val))))
 
   (ivy-mode 1))

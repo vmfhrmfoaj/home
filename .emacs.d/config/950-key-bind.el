@@ -170,15 +170,7 @@
     ;; error
     "en" #'flycheck-next-error
     "ep" #'flycheck-previous-error
-    "el" (defalias 'counsel-flycheck-with-calling
-           (lambda ()
-             (interactive)
-             (let ((val (default-value 'ivy-calling)))
-               (unwind-protect
-                   (progn
-                     (setq-default ivy-calling t)
-                     (counsel-flycheck))
-                 (setq-default ivy-calling val)))))
+    "el" #'counsel-flycheck
     "es" #'show-error-list
 
     ;; file
@@ -630,13 +622,27 @@
         (define-key ivy-minibuffer-map (kbd "C-j") #'ivy-next-line)
         (define-key ivy-minibuffer-map (kbd "C-k") #'ivy-previous-line)
         (define-key ivy-minibuffer-map (kbd "C-u") #'ivy-parent-dir))
+
+    (defun ivy--open-it-other-window-and-exit ()
+      (interactive)
+      (let ((caller (ivy-state-caller ivy-last)))
+        (cond
+         ((memq caller
+                '(counsel-projectile-switch-to-buffer
+                  ivy-switch-buffer))
+          (ivy-exit-with-action #'ivy--switch-buffer-other-window-action))
+         ((memq caller
+                '(counsel-projectile-find-file
+                  counsel-find-file))
+          (ivy-exit-with-action (lambda (file)
+                                  (find-file-other-window (if (zerop (length file))
+                                                              ivy-text
+                                                            file))))))))
+
     (evil-define-key 'insert ivy-minibuffer-map
       (kbd "<tab>") #'ivy-partial
       (kbd "<C-return>") #'ivy-immediate-done
-      (kbd "<M-return>") (defalias 'ivy--open-it-other-window-and-exit
-                           (lambda ()
-                             (interactive)
-                             (ivy-exit-with-action #'ivy--switch-buffer-other-window-action)))
+      (kbd "<M-return>") #'ivy--open-it-other-window-and-exit
       (kbd "C-,") #'ivy-minibuffer-shrink
       (kbd "C-.") #'ivy-minibuffer-grow
       (kbd "C-f") (lambda ()
@@ -646,13 +652,11 @@
       (kbd "C-j") #'ivy-next-line
       (kbd "C-k") #'ivy-previous-line
       (kbd "C-u") #'ivy-parent-dir)
+
     (evil-define-key 'normal ivy-minibuffer-map
       (kbd "RET") #'ivy-done
       (kbd "<C-return>") #'ivy-immediate-done
-      (kbd "<M-return>") (defalias 'ivy--open-it-other-window-and-exit
-                           (lambda ()
-                             (interactive)
-                             (ivy-exit-with-action #'ivy--switch-buffer-other-window-action)))
+      (kbd "<M-return>") #'ivy--open-it-other-window-and-exit
       "j" #'ivy-next-line
       "k" #'ivy-previous-line
       (kbd "C-,") #'ivy-minibuffer-shrink
@@ -970,7 +974,11 @@
 (use-package eshell
   :defer t
   :init
-  (evil-set-initial-state 'eshell-mode 'normal)
+  (evil-set-initial-state 'eshell-mode 'insert)
+
+  (when (featurep 'projectile)
+    (evil-global-set-key 'insert (kbd "C-`") (lambda () (interactive) (evil-normal-state) (projectile-run-eshell)))
+    (evil-global-set-key 'normal (kbd "C-`") #'projectile-run-eshell))
 
   (defun eshell-setup-once-for-evil-keybinding ()
     (remove-hook 'eshell-mode-hook #'eshell-setup-once-for-evil-keybinding)
@@ -982,7 +990,12 @@
 
   :config
   (evil-define-key 'insert eshell-mode-map (kbd "C-l") #'eshell/clear)
-  (evil-define-key 'insert eshell-mode-map (kbd "<tab>") #'company-complete-common))
+  (evil-define-key 'insert eshell-mode-map (kbd "<tab>") #'company-complete-common)
+  (evil-define-key 'normal eshell-mode-map (kbd "C-`") (lambda ()
+                                                         (interactive)
+                                                         (windmove-up)
+                                                         (windmove-down)
+                                                         )))
 
 (use-package help-mode
   :defer t
