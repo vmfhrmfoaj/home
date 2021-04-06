@@ -9,4 +9,6 @@
 (use-package kotlin-mode
   :disabled t
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (eval-when-compile (require 'kotlin-mode nil t)))

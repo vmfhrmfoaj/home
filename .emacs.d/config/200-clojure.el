@@ -10,6 +10,8 @@
   :ensure t
   :defer t
   :init
+  (eval-when-compile (require 'cider nil t))
+
   (defvar cider--select-jack-in-history nil)
 
   (defun cider-custom-jack-in ()
@@ -135,6 +137,9 @@
 
 (use-package cider-client
   :defer t
+  :init
+  (eval-when-compile (require 'cider-client nil t))
+
   :config
   (advice-add #'cider-fallback-eval:classpath :override
               (lambda ()
@@ -151,6 +156,9 @@
 
 (use-package cider-eval
   :defer t
+  :init
+  (eval-when-compile (require 'cider-eval nil t))
+
   :config
   (defconst cider-clojure-1.10.1-raw-error
     `(sequence
@@ -190,6 +198,9 @@
 
 (use-package cider-mode
   :defer t
+  :init
+  (eval-when-compile (require 'cider-mode nil t))
+
   :config
   (defun cider-doc-at-point ()
     (interactive)
@@ -200,6 +211,9 @@
 
 (use-package cider-repl
   :defer t
+  :init
+  (eval-when-compile (require 'cider-repl nil t))
+
   :config
   (defvar clojure--compilation-error-ns nil)
 
@@ -256,8 +270,10 @@
 (use-package clojure-mode
   :ensure t
   :defer t
-  :config
+  :init
+  (eval-when-compile (require 'clojure-mode nil t))
 
+  :config
   (defvar clojure-font-lock-extend-regex
     (concat "(" (regexp-opt '("def" "extend" "proxy" "reify"))))
 
@@ -464,13 +480,13 @@
   (with-eval-after-load "flycheck"
     (unless (flycheck-valid-checker-p 'clj-cider-repl)
       (flycheck-define-generic-checker
-       'clj-cider-repl
-       "A syntax checker using the Cider REPL provided."
-       :start #'clojure--flycheck-start
-       :modes '(clojure-mode clojurescript-mode clojurec-mode)
-       :predicate (lambda ()
-                    (when (fboundp #'cider-connected-p)
-                      (cider-connected-p)))))
+          'clj-cider-repl
+        "A syntax checker using the Cider REPL provided."
+        :start #'clojure--flycheck-start
+        :modes '(clojure-mode clojurescript-mode clojurec-mode)
+        :predicate (lambda ()
+                     (when (fboundp #'cider-connected-p)
+                       (cider-connected-p)))))
     (add-to-list 'flycheck-checkers 'clj-cider-repl))
 
   (add-hook 'clojure-mode-hook
@@ -501,6 +517,9 @@
 (use-package edn
   :ensure t
   :defer t
+  :init
+  (eval-when-compile (require 'edn nil t))
+
   :config
   (defun edn-raw-p (raw)
     (and (consp raw)

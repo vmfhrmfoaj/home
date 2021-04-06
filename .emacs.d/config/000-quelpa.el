@@ -8,4 +8,6 @@
 
 (use-package quelpa
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (eval-when-compile (require 'quelpa nil t)))

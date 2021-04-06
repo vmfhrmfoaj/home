@@ -60,6 +60,9 @@
 
 (use-package golden-ratio
   :ensure t
+  :init
+  (eval-when-compile (require 'golden-ratio nil t))
+
   :config
   (defun golden-ratio--custom-resize-window (dimensions &optional window)
     (with-selected-window (or window (selected-window))
@@ -91,6 +94,9 @@
 
 (use-package winum
   :ensure t
+  :init
+  (eval-when-compile (require 'winum nil t))
+
   :config
   (setq winum-auto-setup-mode-line nil
         winum-auto-assign-0-to-minibuffer nil)

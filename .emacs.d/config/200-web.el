@@ -9,8 +9,10 @@
 (use-package css-mode
   :defer t
   :mode "\\.wxss\\'"
-  :config
+  :init
+  (eval-when-compile (require 'css-mode nil t))
 
+  :config
   (defun css--custom-fontify-region (start end &optional loudly)
     "Customize `css--fontify-region' to enhance compatibility with `hl-mode'"
     (let ((extended-region (font-lock-default-fontify-region start end loudly)))
@@ -50,30 +52,44 @@
 
 (use-package js
   :defer t
+  :init
+  (eval-when-compile (require 'js nil t))
+
   :config
   (setq-default js-indent-level 4))
 
 (use-package json-mode
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (eval-when-compile (require 'json-mode nil t)))
 
 (use-package typescript-mode
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (eval-when-compile (require 'typescript-mode nil t)))
 
 (use-package vue-mode
   :disabled t
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (eval-when-compile (require 'vue-mode nil t)))
 
 (use-package web-beautify
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (eval-when-compile (require 'web-beautify nil t)))
 
 (use-package web-mode
   :ensure t
   :defer t
   :mode "\\.\\(html\\|eex\\|wxml\\)\\'"
+  :init
+  (eval-when-compile (require 'web-mode nil t))
+
   :config
   (setq web-mode-markup-indent-offset 2
         web-mode-css-indent-offset 2

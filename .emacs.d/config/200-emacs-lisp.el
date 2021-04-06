@@ -7,6 +7,9 @@
   (load-file "~/.emacs.d/config/func.el"))
 
 (use-package elisp-mode
+  :init
+  (eval-when-compile (require 'elisp-mode nil t))
+
   :config
   (defun emacs-lisp-REPL-buffer ()
     (interactive)
@@ -58,4 +61,6 @@
 
 (use-package elisp-slime-nav
   :ensure t
-  :hook (emacs-lisp-mode . elisp-slime-nav-mode))
+  :hook (emacs-lisp-mode . elisp-slime-nav-mode)
+  :init
+  (eval-when-compile (require 'elisp-slime-nav nil t)))

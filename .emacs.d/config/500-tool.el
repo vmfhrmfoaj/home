@@ -22,6 +22,8 @@
   :ensure t
   :defer t
   :init
+  (eval-when-compile (require 'atomic-chrome nil t))
+
   (defun atomic-chrome-setup ()
     (unless (frame-focus-state)
       (remove-function after-focus-change-function #'atomic-chrome-setup)
@@ -47,6 +49,8 @@
          (prog-mode            . enable-display-line-numbers)
          (rpm-spec-mode        . enable-display-line-numbers))
   :init
+  (eval-when-compile (require 'display-line-numbers nil t))
+
   (defun enable-display-line-numbers ()
     "Turn on `display-line-numbers-mode'."
     (when (not (minibufferp))
@@ -59,6 +63,9 @@
 
 (use-package ediff
   :defer t
+  :init
+  (eval-when-compile (require 'ediff nil t))
+
   :config
   (defvar ediff-exclude-modes nil)
   (defvar ediff--exclude-mode-status nil)
@@ -126,6 +133,9 @@
 
 (use-package eldoc
   :defer t
+  :init
+  (eval-when-compile (require 'eldoc nil t))
+
   :config
   (defun eldoc-refresh-for-emacs-27 ()
     (interactive)
@@ -167,6 +177,9 @@
 (use-package evil-ex
   :ensure evil
   :defer t
+  :init
+  (eval-when-compile (require 'evil-ex nil t))
+
   :config
   (defvar-local evil-ex--gl-preview-point nil
     "TODO")
@@ -221,12 +234,18 @@
 (use-package expand-region
   :ensure t
   :defer t
+  :init
+  (eval-when-compile (require 'expand-region nil t))
+
   :config
   (setq expand-region-contract-fast-key "v"))
 
 (use-package flycheck
   :ensure t
   :defer t
+  :init
+  (eval-when-compile (require 'flycheck nil t))
+
   :config
   (defun counsel-flycheck--custom-errors-cands ()
     (mapcar
@@ -275,6 +294,9 @@
 (use-package flycheck-pos-tip
   :ensure t
   :hook (flycheck-mode . flycheck-pos-tip-mode)
+  :init
+  (eval-when-compile (require 'flycheck-pos-tip nil t))
+
   :config
   (setq flycheck-pos-tip-timeout 0)
 
@@ -284,21 +306,24 @@
 (use-package gnuplot
   :disabled t
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (eval-when-compile (require 'gnuplot nil t)))
 
 (use-package multi-term
   :ensure t
   :defer t
+  :init
+  (eval-when-compile (require 'multi-term nil t))
+
   :config
   (setq multi-term-program "zsh"))
 
-(use-package osx-dictionary
-  :if (eq 'darwin system-type)
-  :ensure t
-  :defer t)
-
 (use-package pos-tip
   :defer t
+  :init
+  (eval-when-compile (require 'pos-tip nil t))
+
   :config
   (defun pos-tip-custom-show (string &optional tip-color pos window timeout width frame-coordinates dx dy)
     "Customize `pos-tip-show' to fix problems"
@@ -413,12 +438,18 @@
   (advice-add #'pos-tip-show-no-propertize :override #'pos-tip-custom-show-no-propertize))
 
 (use-package saveplace
+  :init
+  (eval-when-compile (require 'saveplace nil t))
+
   :config
   (save-place-mode 1))
+
 
 (use-package server
   :defer t
   :init
+  (eval-when-compile (require 'server nil t))
+
   (defun emacs-server-setup ()
     (remove-function after-focus-change-function #'emacs-server-setup)
     (require 'server))
@@ -440,10 +471,16 @@
 
 (use-package strace-mode
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (eval-when-compile (require 'strace-mode nil t)))
+
 
 (use-package tramp
   :defer t
+  :init
+  (eval-when-compile (require 'tramp nil t))
+
   :config
   (when (file-exists-p (concat home-dir "/.ssh/sockets/"))
     (setq tramp-ssh-controlmaster-options
@@ -455,6 +492,8 @@
   :ensure t
   :defer t
   :init
+  (eval-when-compile (require 'treemacs nil t))
+
   (defface treemacs-selected-icon
     '((t :inherit hl-line))
     "TODO")
@@ -552,6 +591,8 @@
 (use-package treemacs-compatibility
   :defer t
   :init
+  (eval-when-compile (require 'treemacs-compatibility nil t))
+
   (defun treemacs-compatibility--undo-for-winum ()
     (remove-hook 'winum-mode-hook #'treemacs-compatibility--undo-for-winum)
     (-update->> winum-ignored-buffers-regexp
@@ -562,12 +603,17 @@
 
 (use-package treemacs-evil
   :ensure t
-  :after treemacs)
+  :after treemacs
+  :init
+  (eval-when-compile (require 'treemacs-evil nil t)))
+
 
 (use-package treemacs-projectile
   :ensure t
   :defer t
   :init
+  (eval-when-compile (require 'treemacs-projectile nil t))
+
   (defun treemacs-projectile-current ()
     (interactive)
     (unless (featurep 'treemacs-projectile)
@@ -613,6 +659,9 @@
 
 (use-package vlf-setup
   :ensure vlf
+  :init
+  (eval-when-compile (require 'vlf-setup nil t))
+
   :config
   (defun vlf-custom-beginning-of-file ()
     (interactive)
@@ -629,6 +678,8 @@
 (use-package which-func
   :defer t
   :init
+  (eval-when-compile (require 'which-func nil t))
+
   (setq which-func-modes '(emacs-lisp-mode lisp-interaction-mode))
 
   (defun which-func-setup-once ()
@@ -664,8 +715,13 @@
 
 (use-package xwidgete
   :ensure t
-  :after xwidget)
+  :after xwidget
+  :init
+  (eval-when-compile (require 'xwidgete nil t)))
 
 (use-package ztree
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (eval-when-compile (require 'ztree nil t)))
+

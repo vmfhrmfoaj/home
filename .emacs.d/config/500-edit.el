@@ -15,6 +15,8 @@
          (clojurescript-mode    . aggressive-indent-mode)
          (emacs-lisp-mode       . aggressive-indent-mode)
          (lisp-interaction-mode . aggressive-indent-mode))
+  :init
+  (eval-when-compile (require 'aggressive-indent nil t))
 
   :config
   (setq aggressive-indent-sit-for-time 0.01
@@ -62,11 +64,16 @@
   :ensure t
   :hook ((autoconf-mode . editorconfig-mode-apply))
   :init
+  (eval-when-compile (require 'editorconfig nil t))
+
   (editorconfig-mode 1))
 
 (use-package evil-surround
   :ensure t
   :after evil
+  :init
+  (eval-when-compile (require 'evil-surround nil t))
+
   :config
   (defun evil-surround-region-for-hkkb (args)
     "TODO"
@@ -107,6 +114,9 @@
 (use-package smartparens
   :ensure t
   :defer t
+  :init
+  (eval-when-compile (require 'smartparens nil t))
+
   :config
   (defun sp-wrap-sexp (&optional arg)
     (interactive "P")
@@ -151,11 +161,16 @@ So, replaced `evil-jump-item' to this function."
   (show-smartparens-global-mode 1))
 
 (use-package smartparens-config
-  :ensure smartparens)
+  :ensure smartparens
+  :init
+  (eval-when-compile (require 'smartparens-config nil t)))
 
 (use-package undo-tree
   :ensure t
   :config
+  :init
+  (eval-when-compile (require 'undo-tree nil t))
+
   ;; NOTE
   ;;  `goto-chr' require `undo-tree-node-p' function, but it is macro in `undo-tree'.
   (defun undo-tree-node-p (n)
@@ -182,6 +197,9 @@ So, replaced `evil-jump-item' to this function."
                    (--map (kill-buffer it))))))
 
 (use-package whitespace
+  :init
+  (eval-when-compile (require 'whitespace nil t))
+
   :config
   (setq-default whitespace-line-column 120)
 

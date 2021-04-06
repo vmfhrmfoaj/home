@@ -8,11 +8,16 @@
 
 (use-package cargo
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (eval-when-compile (require 'cargo nil t)))
 
 (use-package rust-mode
   :ensure t
   :defer t
+  :init
+  (eval-when-compile (require 'rust-mode nil t))
+
   :config
   (defvar cargo-home (or (getenv "CARGO_HOME")
                          (concat home-dir "/.cargo")))

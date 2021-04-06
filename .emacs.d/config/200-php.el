@@ -10,6 +10,9 @@
   :ensure t
   :defer t
   :mode ("\\.php\\|ant\\'" . php-mode)
+  :init
+  (eval-when-compile (require 'php-mode nil t))
+
   :config
   ;; NOTE
   ;;  `php-syntax-propertize-hash-line-comment' is very slow.
@@ -32,6 +35,9 @@
   :disabled t
   :ensure t
   :defer t
+  :init
+  (eval-when-compile (require 'psysh nil t))
+
   :config
   (defun psysh-show ()
     (interactive)

@@ -16,4 +16,5 @@
   (unless (package-installed-p 'capnp-mode)
     (quelpa '(capnp-mode :fetcher url
                          :url "https://raw.githubusercontent.com/vmfhrmfoaj/capnproto/master/highlighting/emacs/capnp-mode.el"
-                         :version original))))
+                         :version original)))
+  (eval-when-compile (require 'capnp-mode nil t)))

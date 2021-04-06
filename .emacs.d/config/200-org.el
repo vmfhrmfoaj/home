@@ -7,12 +7,17 @@
 (use-package evil-org
   :ensure t
   :after org
+  :init
+  (eval-when-compile (require 'evil-org nil t))
+
   :config
   (add-hook 'org-mode-hook #'evil-org-mode))
 
 (use-package org
   :defer t
   :init
+  (eval-when-compile (require 'org nil t))
+
   (defface org-next
     '((t (:inherit org-todo)))
     "TODO")
@@ -125,6 +130,8 @@ which see."
 
 (use-package org-agenda
   :init
+  (eval-when-compile (require 'org-agenda nil t))
+
   (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
 
   (defun org-agenda-show-on-dedicated-window (org-agenda-fn &optional finish-fn)
@@ -225,6 +232,9 @@ which see."
 
 (use-package org-capture
   :defer t
+  :init
+  (eval-when-compile (require 'org-capture nil t))
+
   :config
   (defun org-capture-todo ()
     (interactive)
@@ -267,6 +277,9 @@ which see."
 (use-package org-clock
   :defer t
   :commands (org-clock-jump-to-current-clock)
+  :init
+  (eval-when-compile (require 'org-clock nil t))
+
   :config
   (defun org-clock--resume ()
     (when (frame-focus-state)
@@ -300,6 +313,8 @@ which see."
 (use-package org-protocol
   :defer t
   :init
+  (eval-when-compile (require 'org-protocol nil t))
+
   (defun org-protocol-setup ()
     (unless (frame-focus-state)
       (remove-function after-focus-change-function #'org-protocol-setup)

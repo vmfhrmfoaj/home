@@ -9,6 +9,9 @@
 (use-package fish-completion
   :if (executable-find "fish")
   :ensure t
+  :init
+  (eval-when-compile (require 'fish-completion nil t))
+
   :config
   (defun fish-completion--custom-list-completions (raw-prompt)
     "Customize"
@@ -44,12 +47,18 @@
 (use-package sh-script
   :defer t
   :mode ("\\.env\\'" . sh-mode)
+  :init
+  (eval-when-compile (require 'sh-script nil t))
+
   :config
   (setq sh-basic-offset 4
         smie-indent-basic 4))
 
 (use-package eshell
   :defer t
+  :init
+  (eval-when-compile (require 'eshell nil t))
+
   :config
   (add-hook 'eshell-mode-hook
             (lambda ()

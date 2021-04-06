@@ -9,6 +9,9 @@
 (use-package git-timemachine
   :ensure t
   :defer t
+  :init
+  (eval-when-compile (require 'git-timemachine nil t))
+
   :config
   (defun git-timemachine--custom-blame ()
     "Call ‘magit-blame’ on current revision."
@@ -24,6 +27,8 @@
   :ensure t
   :defer t
   :init
+  (eval-when-compile (require 'git-gutter-fringe nil t))
+
   (defun git-gutter-fringe-setup ()
     (remove-hook 'find-file-hook #'git-gutter-fringe-setup)
     (require 'git-gutter-fringe)
@@ -50,12 +55,16 @@
 
 (use-package gitignore-mode
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (eval-when-compile (require 'gitignore-mode nil t)))
 
 (use-package magit
   :ensure t
   :defer t
   :init
+  (eval-when-compile (require 'magit nil t))
+
   (defface magit-commit-log-type-face
     `((t (:inherit font-lock-function-name-face :weight ,(face-attribute 'default :weight))))
     "TODO")
@@ -105,6 +114,9 @@
 (use-package magit-svn
   :ensure t
   :after magit
+  :init
+  (eval-when-compile (require 'magit-svn nil t))
+
   :config
   (add-hook 'magit-mode-hook 'magit-svn-mode)
 

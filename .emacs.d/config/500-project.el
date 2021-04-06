@@ -9,6 +9,9 @@
 (use-package counsel-projectile
   :ensure t
   :after projectile
+  :init
+  (eval-when-compile (require 'counsel-projectile nil t))
+
   :config
   (setq counsel-projectile-remove-current-buffer t))
 
@@ -16,6 +19,8 @@
   :ensure t
   :diminish ""
   :init
+  (eval-when-compile (require 'projectile nil t))
+
   (defun projectile-switch-to-previous-buffer ()
     (interactive)
     (condition-case nil

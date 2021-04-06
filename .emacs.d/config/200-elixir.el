@@ -10,6 +10,9 @@
   :disabled t
   :ensure t
   :defer t
+  :init
+  (eval-when-compile (require 'elixir-mode nil t))
+
   :config
   (add-hook 'elixir-mode-hook #'alchemist-mode)
   (add-hook 'elixir-mode-hook #'highlight-numbers-mode))
@@ -20,6 +23,9 @@
   :defer t
   :diminish ""
   :commands (alchemist-goto-definition-at-point)
+  :init
+  (eval-when-compile (require 'alchemist nil t))
+
   :config
   (setq alchemist-hooks-compile-on-save t)
   (let ((opt-src (concat home-dir "/Desktop/Open_Sources/otp"))

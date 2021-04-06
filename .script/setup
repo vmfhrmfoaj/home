@@ -101,7 +101,7 @@ EOF
             chmod +x "${HOME}/.shim/lein"
         fi
     else
-        export LEIN_JVM_OPTS="-Xverify:none -XX:TieredStopAtLevel=4"
+        export LEIN_JVM_OPTS="-Xverify:none -XX:TieredStopAtLevel=4 -XX:MaxGCPauseMillis=5 -Xmx2g -server"
     fi
 }
 

@@ -4,6 +4,9 @@
 
 (use-package dash
   :ensure t
+  :init
+  (eval-when-compile (require 'dash nil t))
+
   :config
   (put '->  'lisp-indent-function 0)
   (put '--> 'lisp-indent-function 0)
@@ -12,7 +15,10 @@
   (put '-some--> 'lisp-indent-function 0)
   (put '-some->> 'lisp-indent-function 0))
 
-(use-package s :ensure t)
+(use-package s
+  :ensure t
+  :init
+  (eval-when-compile (require 's nil t)))
 
 (when window-system
   (defvar main-monitor

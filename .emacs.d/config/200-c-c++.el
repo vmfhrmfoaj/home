@@ -8,6 +8,9 @@
 
 (use-package cc-mode
   :defer t
+  :init
+  (eval-when-compile (require 'cc-mode nil t))
+
   :config
   (setq c-default-style '((java-mode . "java")
                           (awk-mode . "awk")

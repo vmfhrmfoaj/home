@@ -8,6 +8,9 @@
 
 (use-package python
   :defer t
+  :init
+  (eval-when-compile (require 'python nil t))
+
   :config
   (advice-add #'run-python :after
               (lambda (&rest _)

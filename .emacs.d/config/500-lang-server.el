@@ -8,15 +8,24 @@
 
 (use-package dap-mode
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (eval-when-compile (require 'dap-mode nil t)))
+
 
 (use-package lsp-clangd
   :defer t
+  :init
+  (eval-when-compile (require 'lsp-clangd nil t))
+
   :config
   (add-to-list 'lsp-clients-clangd-args "--header-insertion=never"))
 
 (use-package lsp-completion
   :defer t
+  :init
+  (eval-when-compile (require 'lsp-completion nil t))
+
   :config
   (advice-add #'lsp-completion--sort-completions :around
               (lambda (fn completions)
@@ -27,11 +36,15 @@
 (use-package lsp-clojure
   :defer t
   :init
+  (eval-when-compile (require 'lsp-clojure nil t))
+
   (setq lsp-clojure-custom-server-command '("clojure-lsp")))
 
 (use-package lsp-diagnostics
   :defer t
   :init
+  (eval-when-compile (require 'lsp-diagnostics nil t))
+
   (defface lsp-punctuation-face
     '((t (:inherit shadow)))
     "TODO")
@@ -96,6 +109,8 @@
   :commands (lsp-headerline--arrow-icon
              lsp-headerline--symbol-with-action)
   :init
+  (eval-when-compile (require 'lsp-headerline nil t))
+
   (defun lsp-headerline--custom-build-symbol-string ()
     (if (lsp-feature? "textDocument/documentSymbol")
         (-if-let* ((lsp--document-symbols-request-async t)
@@ -149,6 +164,8 @@
 (use-package lsp-php
   :defer t
   :init
+  (eval-when-compile (require 'lsp-php nil t))
+
   (setq lsp-intelephense-clear-cache t
         lsp-intelephense-format-enable nil
         lsp-intelephense-multi-root nil
@@ -182,32 +199,35 @@
 (use-package lsp-ivy
   :ensure t
   :after lsp-mode
+  :init
+  (eval-when-compile (require 'lsp-ivy nil t))
+
   :config
   (lsp-defun lsp-ivy--format-symbol-match-for-doc-syms
-             ((sym &as &DocumentSymbol :kind :range (&Range :start (&Position :line :character))))
-             (let* ((sanitized-kind (if (< kind (length lsp-ivy-symbol-kind-to-face)) kind 0))
-                    (type (elt lsp-ivy-symbol-kind-to-face sanitized-kind))
-                    (typestr (if lsp-ivy-show-symbol-kind
-                                 (propertize " " 'face (cdr type) 'display (format "[%s] " (car type)))
-                               ""))
-                    (posstr (if lsp-ivy-show-symbol-filename
-                                (propertize " " 'face 'lsp-details-face 'display (format " · Line: %s" line)))))
-               (concat typestr (lsp-render-symbol sym ".") posstr)))
+    ((sym &as &DocumentSymbol :kind :range (&Range :start (&Position :line :character))))
+    (let* ((sanitized-kind (if (< kind (length lsp-ivy-symbol-kind-to-face)) kind 0))
+           (type (elt lsp-ivy-symbol-kind-to-face sanitized-kind))
+           (typestr (if lsp-ivy-show-symbol-kind
+                        (propertize " " 'face (cdr type) 'display (format "[%s] " (car type)))
+                      ""))
+           (posstr (if lsp-ivy-show-symbol-filename
+                       (propertize " " 'face 'lsp-details-face 'display (format " · Line: %s" line)))))
+      (concat typestr (lsp-render-symbol sym ".") posstr)))
 
   (lsp-defun lsp-ivy--custom-format-symbol-match
-             ((sym &as &SymbolInformation :kind :location (&Location :uri))
-              project-root)
-             (let* ((sanitized-kind (if (< kind (length lsp-ivy-symbol-kind-to-face)) kind 0))
-                    (type (elt lsp-ivy-symbol-kind-to-face sanitized-kind))
-                    (typestr (if lsp-ivy-show-symbol-kind
-                                 (propertize " " 'face (cdr type) 'display (format "[%s] " (car type)))
-                               ""))
-                    (pathstr (if lsp-ivy-show-symbol-filename
-                                 (propertize " "
-                                             'face font-lock-comment-face
-                                             'display (format " · %s" (file-relative-name (lsp--uri-to-path uri) project-root)))
-                               "")))
-               (concat typestr (lsp-render-symbol-information sym ".") pathstr)))
+    ((sym &as &SymbolInformation :kind :location (&Location :uri))
+     project-root)
+    (let* ((sanitized-kind (if (< kind (length lsp-ivy-symbol-kind-to-face)) kind 0))
+           (type (elt lsp-ivy-symbol-kind-to-face sanitized-kind))
+           (typestr (if lsp-ivy-show-symbol-kind
+                        (propertize " " 'face (cdr type) 'display (format "[%s] " (car type)))
+                      ""))
+           (pathstr (if lsp-ivy-show-symbol-filename
+                        (propertize " "
+                                    'face font-lock-comment-face
+                                    'display (format " · %s" (file-relative-name (lsp--uri-to-path uri) project-root)))
+                      "")))
+      (concat typestr (lsp-render-symbol-information sym ".") pathstr)))
 
   (defun lsp-ivy-workspace-symbol-for-cur-file (&optional initial-input)
     (interactive)
@@ -235,14 +255,14 @@
              (if (string-equal prev-query query)
                  (funcall update-candidates unfiltered-candidates filter-regexps?)
                (with-lsp-workspaces workspaces
-                                    (lsp-request-async
-                                     "workspace/symbol"
-                                     (lsp-make-workspace-symbol-params :query query)
-                                     (lambda (result)
-                                       (setq unfiltered-candidates result)
-                                       (funcall update-candidates unfiltered-candidates filter-regexps?))
-                                     :mode 'detached
-                                     :cancel-token :workspace-symbol)))
+                 (lsp-request-async
+                  "workspace/symbol"
+                  (lsp-make-workspace-symbol-params :query query)
+                  (lambda (result)
+                    (setq unfiltered-candidates result)
+                    (funcall update-candidates unfiltered-candidates filter-regexps?))
+                  :mode 'detached
+                  :cancel-token :workspace-symbol)))
              (setq prev-query query))
            (or filtered-candidates 0))
          :dynamic-collection t
@@ -281,11 +301,15 @@
 
 (use-package lsp-java
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (eval-when-compile (require 'lsp-java nil t)))
 
 (use-package lsp-python-ms
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (eval-when-compile (require 'lsp-python-ms nil t)))
 
 (use-package lsp-mode
   :ensure t
@@ -310,6 +334,8 @@
          (sh-mode            . lsp)
          (typescript-mode    . lsp))
   :init
+  (eval-when-compile (require 'lsp-mode nil t))
+
   (setq lsp-keymap-prefix nil)
 
   :config
@@ -570,17 +596,26 @@
 
 (use-package lsp-pyls
   :defer t
+  :init
+  (eval-when-compile (require 'lsp-pyls nil t))
+
   :config
   (add-to-list 'lsp-clients-python-library-directories "~/.local/lib"))
 
 (use-package lsp-rust
   :defer t
+  :init
+  (eval-when-compile (require 'lsp-rust nil t))
+
   :config
   (setq lsp-rust-clippy-preference "on"))
 
 (use-package lsp-ui
   :ensure t
   :defer t
+  :init
+  (eval-when-compile (require 'lsp-ui nil t))
+
   :config
   (setq lsp-ui-doc-enable nil
         lsp-ui-sideline-show-code-actions nil

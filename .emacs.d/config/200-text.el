@@ -7,18 +7,27 @@
   (load-file "~/.emacs.d/config/func.el"))
 
 (use-package creole-mode
+  :disabled t
   :ensure t
   :defer t
-  :mode "\\.wikicreole\\'")
+  :mode "\\.wikicreole\\'"
+  :init
+  (eval-when-compile (require 'creole-mode nil t)))
 
 (use-package doc-view
   :defer t
+  :init
+  (eval-when-compile (require 'doc-view nil t))
+
   :config
   (setq doc-view-continuous t))
 
 (use-package markdown-mode
   :ensure t
   :defer t
+  :init
+  (eval-when-compile (require 'markdown-mode nil t))
+
   :config
   (defun markdown-open-link-at-point ()
     (interactive)

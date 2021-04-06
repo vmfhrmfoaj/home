@@ -9,4 +9,6 @@
 (use-package elm-mode
   :disabled t
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (eval-when-compile (require 'elm-mode nil t)))

@@ -8,6 +8,9 @@
 
 (use-package base16-theme
   :ensure t
+  :init
+  (eval-when-compile (require 'base16-theme nil t))
+
   :config
   (setq frame-background-mode 'dark)
   (load-theme 'base16-tomorrow-night t)
@@ -34,6 +37,9 @@
 
 (use-package auto-dim-other-buffers
   :defer t
+  :init
+  (eval-when-compile (require 'auto-dim-other-buffers nil t))
+
   :config
   (custom-set-faces
    `(auto-dim-other-buffers-face
@@ -45,6 +51,9 @@
 
 (use-package company
   :defer t
+  :init
+  (eval-when-compile (require 'company nil t))
+
   :config
   (custom-set-faces
    '(company-preview ((t :inherit shadow :underline t)))
@@ -54,6 +63,9 @@
 
 (use-package clojure-mode
   :defer t
+  :init
+  (eval-when-compile (require 'clojure-mode nil t))
+
   :config
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
@@ -80,18 +92,27 @@
 
 (use-package cperl-mode
   :defer t
+  :init
+  (eval-when-compile (require 'cperl-mode nil t))
+
   :config
   (custom-set-faces
    '(cperl-nonoverridable-face ((t :inherit font-lock-constant-face)))))
 
 (use-package counsel
   :defer t
+  :init
+  (eval-when-compile (require 'counsel nil t))
+
   :config
   (custom-set-faces
    '(counsel-company-annotation-face ((t :inherit shadow :height 0.9)))))
 
 (use-package diff-mode
   :defer t
+  :init
+  (eval-when-compile (require 'diff-mode nil t))
+
   :config
   (custom-set-faces
    '(diff-refine-added   ((t :background "#339933")))
@@ -100,12 +121,18 @@
 
 (use-package eldoc
   :defer t
+  :init
+  (eval-when-compile (require 'eldoc nil t))
+
   :config
   (custom-set-faces
    '(eldoc-highlight-function-argument ((t :underline t)))))
 
 (use-package elisp-mode
   :defer t
+  :init
+  (eval-when-compile (require 'elisp-mode nil t))
+
   :config
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
@@ -113,12 +140,18 @@
 
 (use-package eshell
   :defer t
+  :init
+  (eval-when-compile (require 'eshell nil t))
+
   :config
   (custom-set-faces
    '(eshell-prompt ((t :inherit shadow)))))
 
 (use-package evil-goggles
   :defer t
+  :init
+  (eval-when-compile (require 'evil-goggles nil t))
+
   :config
   (let ((common-style
          '(:underline unspecified :slant unspecified :overline unspecified :box unspecified :inverse-video t)))
@@ -141,11 +174,17 @@
 
 (use-package focus
   :defer t
+  :init
+  (eval-when-compile (require 'focus nil t))
+
   :config
   (custom-set-faces `(focus-unfocused ((t :foreground "#606060")))))
 
 (use-package font-lock
   :defer t
+  :init
+  (eval-when-compile (require 'font-lock nil t))
+
   :config
   (custom-set-faces
    '(font-lock-comment-face ((t :foreground "#717371" :weight light)))
@@ -158,12 +197,18 @@
 
 (use-package fringe
   :defer t
+  :init
+  (eval-when-compile (require 'fringe nil t))
+
   :config
   (custom-set-faces
    '(fringe ((t :foreground "#454645")))))
 
 (use-package go-mode
   :defer t
+  :init
+  (eval-when-compile (require 'go-mode nil t))
+
   :config
   (custom-set-faces
    '(golang-type-definition-face ((t :inherit font-lock-type-face)))
@@ -171,6 +216,9 @@
 
 (use-package hl-todo
   :defer t
+  :init
+  (eval-when-compile (require 'hl-todo nil t))
+
   :config
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
@@ -178,18 +226,27 @@
 
 (use-package highlight-parentheses
   :defer t
+  :init
+  (eval-when-compile (require 'highlight-parentheses nil t))
+
   :config
   (custom-set-faces
    '(highlight-parentheses-highlight ((t :underline t)))))
 
 (use-package highlight-numbers
   :defer t
+  :init
+  (eval-when-compile (require 'highlight-numbers nil t))
+
   :config
   (custom-set-faces
    '(highlight-numbers-number ((t :inherit font-lock-constant-face)))))
 
 (use-package ivy
   :defer t
+  :init
+  (eval-when-compile (require 'ivy nil t))
+
   :config
   (custom-set-faces
    `(ivy-current-match ((t :background ,(color-from 'default :background)
@@ -203,6 +260,9 @@
 
 (use-package lsp-mode
   :defer t
+  :init
+  (eval-when-compile (require 'lsp-mode nil t))
+
   :config
   (custom-set-faces
    '(lsp-details-face ((t :inherit shadow :height 0.9)))
@@ -213,6 +273,9 @@
 
 (use-package magit
   :defer t
+  :init
+  (eval-when-compile (require 'magit nil t))
+
   :config
   (custom-set-faces
    '(magit-diff-added             ((t :background "#224422" :foreground "#cceecc")))
@@ -225,6 +288,9 @@
 
 (use-package markdown-mode
   :defer t
+  :init
+  (eval-when-compile (require 'markdown-mode nil t))
+
   :config
   (custom-set-faces
    '(markdown-markup-face ((t :foreground "#717371" :slant normal :weight normal)))
@@ -232,6 +298,9 @@
 
 (use-package org
   :defer t
+  :init
+  (eval-when-compile (require 'org nil t))
+
   :config
   (custom-set-faces
    '(org-agenda-date ((t :foreground "dark cyan" :height 1.1)))
@@ -258,6 +327,9 @@
 
 (use-package php-mode
   :defer t
+  :init
+  (eval-when-compile (require 'php-mode nil t))
+
   :config
   (custom-set-faces
    '(php-passive-assign-variable-face ((t :inherit font-lock-variable-name-face)))
@@ -265,12 +337,18 @@
 
 (use-package powerline
   :defer t
+  :init
+  (eval-when-compile (require 'powerline nil t))
+
   :config
   (custom-set-faces
    '(powerline-inactive2 ((t :background "#282a2e")))))
 
 (use-package rpm-spec-mode
   :defer t
+  :init
+  (eval-when-compile (require 'rpm-spec-mode nil t))
+
   :config
   (custom-set-faces
    '(rpm-spec-changelog-item-face ((t :weight normal)))
@@ -283,6 +361,9 @@
 
 (use-package rust-mode
   :defer t
+  :init
+  (eval-when-compile (require 'rust-mode nil t))
+
   :config
   (custom-set-faces
    '(rust-attribute-face ((t :inherit font-lock-preprocessor-face :weight normal)))
@@ -292,6 +373,9 @@
 
 (use-package sh-script
   :defer t
+  :init
+  (eval-when-compile (require 'sh-script nil t))
+
   :config
   (custom-set-faces
    `(sh-heredoc
@@ -303,6 +387,9 @@
 
 (use-package swiper
   :defer t
+  :init
+  (eval-when-compile (require 'swiper nil t))
+
   :config
   (custom-set-faces
    '(swiper-line-face ((t :background "#5f6369" :foreground "white" :weight bold :extend t)))
@@ -334,18 +421,27 @@
 
 (use-package treemacs
   :defer t
+  :init
+  (eval-when-compile (require 'treemacs nil t))
+
   :config
   (custom-set-faces
    `(treemacs-fringe-indicator-face ((t :foreground ,(face-background 'cursor))))))
 
 (use-package web-mode
   :defer t
+  :init
+  (eval-when-compile (require 'web-mode nil t))
+
   :config
   (custom-set-faces
    '(web-mode-html-attr-equal-face ((t :inherit shadow)))))
 
 (use-package yascroll
   :defer t
+  :init
+  (eval-when-compile (require 'yascroll nil t))
+
   :config
   (let ((fringe-fg (color-from 'fringe :foreground)))
     (custom-set-faces

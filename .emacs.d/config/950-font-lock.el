@@ -41,6 +41,9 @@
 
 (use-package cc-mode
   :defer t
+  :init
+  (eval-when-compile (require 'cc-mode nil t))
+
   :config
   (add-hook
    'c-mode-common-hook
@@ -74,6 +77,9 @@
 (use-package elixir-mode
   :disabled t
   :defer t
+  :init
+  (eval-when-compile (require 'elixir-mode nil t))
+
   :init
   (defface elixir-argument-name-face
     '((t (:inherit font-lock-variable-name-face)))
@@ -141,6 +147,9 @@
 
 (use-package cperl-mode
   :defer t
+  :init
+  (eval-when-compile (require 'cperl-mode nil t))
+
   :config
   (let ((kws '("and" "bless" "defined" "delete" "exists" "grep" "keys" "join" "lc" "map" "not" "or" "push" "ref" "splice" "xor")))
     (font-lock-add-keywords
@@ -188,6 +197,8 @@
 (use-package clojure-mode
   :defer t
   :init
+  (eval-when-compile (require 'clojure-mode nil t))
+
   (defface clojure-defining-spec-face
     `((t (:inherit (clojure-keyword-face))))
     "Face used to font-lock Clojure defining Spec")
@@ -1028,6 +1039,8 @@
 (use-package elisp-mode
   :defer t
   :init
+  (eval-when-compile (require 'elisp-mode nil t))
+
   (defface lisp-local-binding-variable-name-face
     '((t (:inherit font-lock-variable-name-face)))
     "Face used to font-lock Lisp local binding variable name.")
@@ -1112,6 +1125,8 @@
 (use-package go-mode
   :defer t
   :init
+  (eval-when-compile (require 'go-mode nil t))
+
   (defface golang-type-definition-face
     '((t (:inherit font-lock-type-face)))
     "TODO")
@@ -1186,6 +1201,9 @@
 
 (use-package js
   :defer t
+  :init
+  (eval-when-compile (require 'js nil t))
+
   :config
   (font-lock-add-keywords
    'js-mode
@@ -1200,6 +1218,9 @@
 
 (use-package json-mode
   :defer t
+  :init
+  (eval-when-compile (require 'json-mode nil t))
+
   :config
   (font-lock-add-keywords
    'json-mode
@@ -1213,6 +1234,9 @@
 
 (use-package org
   :defer t
+  :init
+  (eval-when-compile (require 'org nil t))
+
   :init
   (defface org-list-face
     '((t (:inherit shadow)))
@@ -1268,6 +1292,9 @@
 
 (use-package php-mode
   :defer t
+  :init
+  (eval-when-compile (require 'php-mode nil t))
+
   :config
   (defface php-passive-assign-variable-face
     '((t (:inherit font-lock-variable-name-face)))
@@ -1358,6 +1385,9 @@
 
 (use-package python
   :defer t
+  :init
+  (eval-when-compile (require 'python nil t))
+
   :config
   (let ((regex `(,(rx (or line-start whitespace (syntax open-parenthesis) "," "=")
                       (group
@@ -1424,6 +1454,8 @@
 (use-package rpm-spec-mode
   :defer t
   :init
+  (eval-when-compile (require 'rpm-spec-mode nil t))
+
   (defface rpm-spec-changelog-item-face
     '((t (:inherit default)))
     "TODO")
@@ -1452,6 +1484,8 @@
 (use-package rust-mode
   :defer t
   :init
+  (eval-when-compile (require 'rust-mode nil t))
+
   (defface rust-self-var-face
     `((t (:inherit font-lock-keyword-face :weight ,(face-attribute 'default :weight))))
     "TODO")
@@ -1629,6 +1663,9 @@
 
 (use-package sh-script
   :defer t
+  :init
+  (eval-when-compile (require 'sh-script nil t))
+
   :config
   (let* ((symbol "[@?_0-9a-zA-Z]+")
          (symbol_ (concat "\\(?:\\$" symbol "\\|\\${" symbol "}\\)"))
@@ -1659,6 +1696,9 @@
 
 (use-package web-mode
   :defer t
+  :init
+  (eval-when-compile (require 'web-mode nil t))
+
   :config
   (let* ((pairs (->> web-mode-engines-auto-pairs
                      (-filter (-compose #'stringp #'car))
@@ -1689,6 +1729,9 @@
 
 (use-package yaml-mode
   :defer t
+  :init
+  (eval-when-compile (require 'yaml-mode nil t))
+
   :config
   (font-lock-add-keywords
    'yaml-mode

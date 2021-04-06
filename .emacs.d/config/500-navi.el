@@ -9,6 +9,9 @@
 (use-package dumb-jump
   :ensure t
   :defer t
+  :init
+  (eval-when-compile (require 'dumb-jump nil t))
+
   :config
   (defvar dumb-jump-search-current-directory-first nil
     "TODO")
@@ -139,6 +142,8 @@
   :ensure t
   :defer t
   :init
+  (eval-when-compile (require 'ivy-xref nil t))
+
   (when (>= emacs-major-version 27)
     (setq xref-show-definitions-function #'ivy-xref-show-defs))
   (setq xref-show-xrefs-function #'ivy-xref-show-xrefs))
