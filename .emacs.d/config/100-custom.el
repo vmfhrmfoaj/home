@@ -12,48 +12,45 @@
               tab-width 4
               truncate-lines t)
 
-(let ((backup-dir (concat home-dir "/.emacs.d/saves/")))
-  (setq auto-revert-interval 1
-        auto-save-default nil
-        auto-save-file-name-transforms `((".*" ,backup-dir t))
-        backup-directory-alist `((".*" . ,backup-dir))
-        backup-inhibited nil
-        comment-fill-column 100
-        create-lockfiles nil
-        default-input-method "korean-hangul"
-        directory-abbrev-alist '(("/mnt/ext/Archive/"      . "~/Desktop/Archive/")
-                                 ("/mnt/ext/Contributes/"  . "~/Desktop/Contributes/")
-                                 ("/mnt/ext/Build/"        . "~/Desktop/Build/")
-                                 ("/mnt/ext/Open_Sources/" . "~/Desktop/Open_Sources/")
-                                 ("/mnt/ext/Libraries/"    . "~/Desktop/Libraries/")
-                                 ("/mnt/ext2/Downloads/"   . "~/Downloads/"))
-        exclude-prev-buf-regex (concat "^\\s-*"
-                                       "\\(\\*"
-                                       "\\|markdown-code-fontification:"
-                                       "\\|magit\\(?:-[a-z]+\\)?:"
-                                       "\\)")
-        frame-title-format (let ((tail (system-name)))
-                             `("%e" (:eval (concat (when-let ((proj-name (and (fboundp 'projectile-project-name)
-                                                                              (projectile-project-name))))
-                                                     (concat "｢" proj-name "｣ - "))
-                                                   ,tail))))
-        include-prev-buf-regex (concat "^\\s-*"
-                                       "\\(\\*\\s-*docker eshell "
-                                       "\\|\\*Org Agenda"
-                                       "\\)")
-        scratch-major-mode 'org-mode
-        initial-scratch-message ""
-        mouse-avoidance-timer (run-with-idle-timer
-                               0.1 t
-                               (lambda ()
-                                 ;; NOTE
-                                 ;;  `frame_make_pointer_invisible' will be called -
-                                 ;;   only when calling `self-insert-command'.
-                                 (when (frame-pointer-visible-p)
-                                   (with-temp-buffer (self-insert-command 0)))))
-        read-process-output-max (* 1024 1024)
-        resize-mini-windows t
-        ring-bell-function 'ignore))
+(setq auto-revert-interval 1
+      auto-save-default nil
+      backup-directory-alist `((".*" . "/tmp/"))
+      comment-fill-column 100
+      create-lockfiles nil
+      default-input-method "korean-hangul"
+      directory-abbrev-alist '(("/mnt/ext/Archive/"      . "~/Desktop/Archive/")
+                               ("/mnt/ext/Contributes/"  . "~/Desktop/Contributes/")
+                               ("/mnt/ext/Build/"        . "~/Desktop/Build/")
+                               ("/mnt/ext/Open_Sources/" . "~/Desktop/Open_Sources/")
+                               ("/mnt/ext/Libraries/"    . "~/Desktop/Libraries/")
+                               ("/mnt/ext2/Downloads/"   . "~/Downloads/"))
+      exclude-prev-buf-regex (concat "^\\s-*"
+                                     "\\(\\*"
+                                     "\\|markdown-code-fontification:"
+                                     "\\|magit\\(?:-[a-z]+\\)?:"
+                                     "\\)")
+      frame-title-format (let ((tail (system-name)))
+                           `("%e" (:eval (concat (when-let ((proj-name (and (fboundp 'projectile-project-name)
+                                                                            (projectile-project-name))))
+                                                   (concat "｢" proj-name "｣ - "))
+                                                 ,tail))))
+      include-prev-buf-regex (concat "^\\s-*"
+                                     "\\(\\*\\s-*docker eshell "
+                                     "\\|\\*Org Agenda"
+                                     "\\)")
+      scratch-major-mode 'org-mode
+      initial-scratch-message ""
+      mouse-avoidance-timer (run-with-idle-timer
+                             0.1 t
+                             (lambda ()
+                               ;; NOTE
+                               ;;  `frame_make_pointer_invisible' will be called -
+                               ;;   only when calling `self-insert-command'.
+                               (when (frame-pointer-visible-p)
+                                 (with-temp-buffer (self-insert-command 0)))))
+      read-process-output-max (* 1024 1024)
+      resize-mini-windows t
+      ring-bell-function 'ignore)
 
 (put 'dired-find-alternate-file 'disabled nil)
 (put 'narrow-to-region 'disabled nil)

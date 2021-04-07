@@ -98,22 +98,6 @@
     (when (cider-connected-p)
       (cider-find-var nil (cider-symbol-at-point))))
 
-  (defun cider-switch-to-clj-buf-latest-visited ()
-    (interactive)
-    (let ((display-fn (if cider-repl-display-in-current-window
-                          #'pop-to-buffer-same-window
-                        #'pop-to-buffer))
-          (mode-vals (if (string= "clj" cider-repl-type)
-                         '((clojure-mode . 2) (clojurescript-mode . 1))
-                       '((clojurescript-mode . 2) (clojure-mode . 1)))))
-      (-some->> (or (projectile-project-buffers) (buffer-list))
-                (sort-buffer-by-visit-time)
-                (--sort (let ((itv    (with-current-buffer it    (alist-get major-mode mode-vals 0)))
-                              (otherv (with-current-buffer other (alist-get major-mode mode-vals 0))))
-                          (> itv otherv)))
-                (-first-item)
-                (funcall display-fn))))
-
   (setq cider-mode-line-show-connection nil
         cider-mode-line '(:eval (unless (ignore-errors (cider-current-repl))
                                   (propertize " CIDER[not connected]" 'face 'error)))

@@ -62,6 +62,7 @@
 (use-package magit
   :ensure t
   :defer t
+  :commands (magit-unstaged-files)
   :init
   (eval-when-compile (require 'magit nil t))
 

@@ -440,7 +440,6 @@
     "mrq" #'cider-quit
     "mrR" #'cider-hard-restart
     "mrr" #'cider-restart
-    "mrs" #'cider-switch-to-clj-buf-latest-visited
     "msn" #'cider-repl-set-ns)
   (which-key-declare-prefixes-for-mode 'cider-repl-mode
     (concat evil-leader/leader "me") "evaluation"
@@ -1010,7 +1009,6 @@
   (evil-leader/set-key-for-mode 'lisp-interaction-mode
     "mee" #'emacs-lisp-REPL-eval-print-this-sexp
     "mrc" #'erase-buffer
-    "mrs" #'emacs-lisp-REPL-switch-back
     "mrq" #'evil-delete-buffer)
   (which-key-declare-prefixes-for-mode 'lisp-interaction-mode
     (concat evil-leader/leader "me") "evaluation"
@@ -1287,3 +1285,17 @@
               (evil-local-set-key 'normal (kbd "M-n") #'vlf-next-batch)
               (evil-local-set-key 'normal (kbd "gg") #'vlf-custom-beginning-of-file)
               (evil-local-set-key 'normal (kbd "G")  #'vlf-custom-end-of-file))))
+
+(use-package winum
+  :defer t
+  :config
+  (evil-global-set-key 'normal (kbd "M-0") #'winum-select-window-0)
+  (evil-global-set-key 'normal (kbd "M-1") #'winum-select-window-1)
+  (evil-global-set-key 'normal (kbd "M-2") #'winum-select-window-2)
+  (evil-global-set-key 'normal (kbd "M-3") #'winum-select-window-3)
+  (evil-global-set-key 'normal (kbd "M-4") #'winum-select-window-4)
+  (evil-global-set-key 'normal (kbd "M-5") #'winum-select-window-5)
+  (evil-global-set-key 'normal (kbd "M-6") #'winum-select-window-6)
+  (evil-global-set-key 'normal (kbd "M-7") #'winum-select-window-7)
+  (evil-global-set-key 'normal (kbd "M-8") #'winum-select-window-8)
+  (evil-global-set-key 'normal (kbd "M-9") #'winum-select-window-9))

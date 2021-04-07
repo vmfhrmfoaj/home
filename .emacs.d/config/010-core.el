@@ -132,8 +132,9 @@
 
   (add-hook 'after-save-hook
             (lambda ()
-              (let ((gcmh-idle-delay 1))
-                (gcmh-register-idle-gc))))
+              (let ((gcmh-idle-delay 0.5))
+                (gcmh-register-idle-gc)))
+            100)
 
   (add-function :after after-focus-change-function
                 (lambda ()

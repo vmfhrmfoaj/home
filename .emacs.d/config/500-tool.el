@@ -11,7 +11,7 @@
 (add-hook 'emacs-startup-hook
           (lambda ()
             "report the startup time."
-            (print features) ; list packages loaded at start up
+            ;; (print features) ; list packages loaded at start up
             (message "Emacs ready in %s(gc: %d times, gc-time: %.3f seconds)."
                      (emacs-init-time)
                      gcs-done

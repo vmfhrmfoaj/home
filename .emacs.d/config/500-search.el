@@ -140,7 +140,11 @@
 
   (add-to-list 'ivy-height-alist '(swiper . 30))
 
-  (advice-add #'swiper--candidates :override #'swiper--custom-candidates))
+  (advice-add #'swiper--candidates :override #'swiper--custom-candidates)
+  (advice-add #'swiper--line :filter-return
+              (lambda (line)
+                (set-text-properties 0 (length line) nil line)
+                line)))
 
 (use-package wgrep
   :ensure t

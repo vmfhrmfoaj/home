@@ -17,14 +17,6 @@
     (unless (eq 'lisp-interaction-mode major-mode)
       (lisp-interaction-mode)))
 
-  (defun emacs-lisp-REPL-switch-back ()
-    (interactive)
-    (->> (or (and (fboundp 'projectile-project-buffers)
-                  (projectile-project-buffers))
-             (buffer-list))
-         (--filter (with-current-buffer it (derived-mode-p 'emacs-lisp-mode)))
-         (switch-to-previous-buffer-in)))
-
   (defun emacs-lisp-REPL-eval-print-this-sexp ()
     (interactive)
     (while (ignore-errors (backward-up-list 1 t) t))

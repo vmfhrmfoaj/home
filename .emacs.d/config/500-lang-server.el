@@ -27,6 +27,11 @@
   (eval-when-compile (require 'lsp-completion nil t))
 
   :config
+  (advice-add #'lsp-completion--annotate :filter-return
+              (lambda (rv)
+                "Add a separator at front."
+                (concat " ·" rv)))
+
   (advice-add #'lsp-completion--sort-completions :around
               (lambda (fn completions)
                 "To avoid errors."

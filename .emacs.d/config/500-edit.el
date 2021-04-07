@@ -167,34 +167,90 @@ So, replaced `evil-jump-item' to this function."
 
 (use-package undo-tree
   :ensure t
-  :config
   :init
   (eval-when-compile (require 'undo-tree nil t))
 
+  :config
   ;; NOTE
   ;;  `goto-chr' require `undo-tree-node-p' function, but it is macro in `undo-tree'.
   (defun undo-tree-node-p (n)
     (let ((len (length (undo-tree-make-node nil nil))))
       (and (vectorp n) (= (length n) len))))
 
-  (setq evil-undo-system 'undo-tree
-        undo-tree-auto-save-history t
-        undo-tree-history-directory-alist backup-directory-alist)
+  (setq undo-tree-auto-save-history t
+        undo-tree-history-directory-alist `((".*" . ,(concat home-dir "/.emacs.d/undo-tree/"))))
 
-  (with-eval-after-load "evil"
-    (evil-set-undo-system 'undo-tree))
-
-  (global-undo-tree-mode)
-
-  ;; NOTE
-  ;;  `undo-tree-save-history-from-hook' takes more than 1 second.
-  ;;  It annoy me very much.
-  (remove-hook 'write-file-functions #'undo-tree-save-history-from-hook)
-  (add-hook 'kill-emacs-hook
+  (add-hook 'find-file-hook
             (lambda ()
-              (->> (buffer-list)
-                   (--filter buffer-file-name)
-                   (--map (kill-buffer it))))))
+              "Enable `undo-tree-mode' if a file is unstaged."
+              (when-let ((file (buffer-file-name)))
+                (let ((file-name (file-name-nondirectory file)))
+                  (if (null (magit-unstaged-files nil file-name))
+                      (delete-file (undo-tree-make-history-save-file-name (buffer-file-name)))
+                    (undo-tree-mode 1)
+                    (when (featurep 'evil)
+                      (make-local-variable 'evil-undo-system)
+                      (make-local-variable 'evil-undo-function)
+                      (make-local-variable 'evil-redo-function)
+                      (evil-set-undo-system 'undo-tree)))))))
+
+  (add-hook 'after-save-hook
+            (lambda ()
+              "Enable/disable `undo-tree-mode'."
+              (when-let ((file (buffer-file-name)))
+                (let ((file-name (file-name-nondirectory file)))
+                  (cond
+                   ((magit-unstaged-files nil file-name)
+                    (unless undo-tree-mode
+                      (undo-tree-mode 1)
+                      (when (featurep 'evil)
+                        (make-local-variable 'evil-undo-system)
+                        (make-local-variable 'evil-undo-function)
+                        (make-local-variable 'evil-redo-function)
+                        (evil-set-undo-system 'undo-tree))))
+                   ((magit-staged-files nil file-name)
+                    (when undo-tree-mode
+                      (undo-tree-mode -1)
+                      (when (featurep 'evil)
+                        (kill-local-variable 'evil-undo-system)
+                        (kill-local-variable 'evil-undo-function)
+                        (kill-local-variable 'evil-redo-function))
+                      (setq buffer-undo-list nil)
+                      (kill-local-variable 'buffer-undo-tree)
+                      (delete-file (undo-tree-make-history-save-file-name (buffer-file-name)))))))))
+            0)
+
+  (with-eval-after-load "magit"
+    (add-hook 'magit-post-refresh-hook
+              (lambda ()
+                "Enable/disable `undo-tree-mode'."
+                (let* ((unstaged-files (--map (concat (magit-rev-parse-safe "--show-toplevel") "/" it)
+                                              (magit-unstaged-files)))
+                       (all-bufs (buffer-list))
+                       (undo-tree-bufs (--filter (with-current-buffer it undo-tree-mode) all-bufs))
+                       (unstaged-bufs  (--filter (let ((file (buffer-file-name it)))
+                                                   (--some (string-equal file it) unstaged-files))
+                                                 all-bufs)))
+                  (--each undo-tree-bufs
+                    (with-current-buffer it
+                      (unless (memq (current-buffer) unstaged-bufs)
+                        (undo-tree-mode -1)
+                        (when (featurep 'evil)
+                          (kill-local-variable 'evil-undo-system)
+                          (kill-local-variable 'evil-undo-function)
+                          (kill-local-variable 'evil-redo-function))
+                        (setq buffer-undo-list nil)
+                        (kill-local-variable 'buffer-undo-tree)
+                        (delete-file (undo-tree-make-history-save-file-name (buffer-file-name))))))
+                  (--each unstaged-bufs
+                    (with-current-buffer it
+                      (unless (memq (current-buffer) undo-tree-bufs)
+                        (undo-tree-mode 1)
+                        (when (featurep 'evil)
+                          (make-local-variable 'evil-undo-system)
+                          (make-local-variable 'evil-undo-function)
+                          (make-local-variable 'evil-redo-function)
+                          (evil-set-undo-system 'undo-tree))))))))))
 
 (use-package whitespace
   :init
