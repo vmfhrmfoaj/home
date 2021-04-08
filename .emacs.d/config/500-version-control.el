@@ -30,9 +30,11 @@
   (eval-when-compile (require 'git-gutter-fringe nil t))
 
   (defun git-gutter-fringe-setup ()
-    (remove-hook 'find-file-hook #'git-gutter-fringe-setup)
-    (require 'git-gutter-fringe)
-    (global-git-gutter-mode t))
+    (let* ((file (buffer-file-name))
+           (file-name (file-name-nondirectory file)))
+      (remove-hook 'find-file-hook #'git-gutter-fringe-setup)
+      (require 'git-gutter-fringe)
+      (global-git-gutter-mode t)))
 
   (add-hook 'find-file-hook #'git-gutter-fringe-setup)
 
@@ -65,6 +67,8 @@
   :commands (magit-unstaged-files)
   :init
   (eval-when-compile (require 'magit nil t))
+
+  (setq magit-no-message '("Turning on magit-auto-revert-mode..."))
 
   (defface magit-commit-log-type-face
     `((t (:inherit font-lock-function-name-face :weight ,(face-attribute 'default :weight))))

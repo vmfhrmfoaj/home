@@ -129,6 +129,7 @@ which see."
                     (funcall of arg))))))
 
 (use-package org-agenda
+  :defer t
   :init
   (eval-when-compile (require 'org-agenda nil t))
 
@@ -309,26 +310,3 @@ which see."
         org-clock-custom-idle-time 30
         org-clock-custom-idle-timer (org-clock--start-idle-timer))
   (advice-add #'org-clock--mode-line-heading :override (-const "CLOCK-IN")))
-
-(use-package org-protocol
-  :defer t
-  :init
-  (eval-when-compile (require 'org-protocol nil t))
-
-  (defun org-protocol-setup ()
-    (unless (frame-focus-state)
-      (remove-function after-focus-change-function #'org-protocol-setup)
-      (require 'org-capture)
-      (require 'org-protocol)))
-
-  (if window-system
-      ;; NOTE
-      ;;  I don't know why `after-focus-change-function' was triggered when starting Emacs.
-      ;;  To workaround to adds the setup function to the focus event hook with 0.5 seconds after starting Emacs.
-      (add-hook 'after-init-hook
-                (lambda ()
-                  (run-at-time 0.5 nil
-                               (lambda ()
-                                 (add-function :after after-focus-change-function #'org-protocol-setup)))))
-    (require 'org-capture)
-    (require 'org-protocol)))

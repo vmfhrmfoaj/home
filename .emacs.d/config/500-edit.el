@@ -183,16 +183,16 @@ So, replaced `evil-jump-item' to this function."
   (add-hook 'find-file-hook
             (lambda ()
               "Enable `undo-tree-mode' if a file is unstaged."
-              (when-let ((file (buffer-file-name)))
-                (let ((file-name (file-name-nondirectory file)))
-                  (if (null (magit-unstaged-files nil file-name))
-                      (delete-file (undo-tree-make-history-save-file-name (buffer-file-name)))
-                    (undo-tree-mode 1)
-                    (when (featurep 'evil)
-                      (make-local-variable 'evil-undo-system)
-                      (make-local-variable 'evil-undo-function)
-                      (make-local-variable 'evil-redo-function)
-                      (evil-set-undo-system 'undo-tree)))))))
+              (let* ((file (buffer-file-name))
+                     (file-name (file-name-nondirectory file)))
+                (if (null (magit-unstaged-files nil file-name))
+                    (delete-file (undo-tree-make-history-save-file-name (buffer-file-name)))
+                  (undo-tree-mode 1)
+                  (when (featurep 'evil)
+                    (make-local-variable 'evil-undo-system)
+                    (make-local-variable 'evil-undo-function)
+                    (make-local-variable 'evil-redo-function)
+                    (evil-set-undo-system 'undo-tree))))))
 
   (add-hook 'after-save-hook
             (lambda ()

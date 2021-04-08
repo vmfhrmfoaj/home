@@ -116,16 +116,6 @@
     "'" #'projectile-run-eshell
     "!" #'shell-command
     ";" #'comment-it
-    "0" #'winum-select-window-0
-    "1" #'winum-select-window-1
-    "2" #'winum-select-window-2
-    "3" #'winum-select-window-3
-    "4" #'winum-select-window-4
-    "5" #'winum-select-window-5
-    "6" #'winum-select-window-6
-    "7" #'winum-select-window-7
-    "8" #'winum-select-window-8
-    "9" #'winum-select-window-9
     "u" #'universal-argument
 
     ;; applications
@@ -1298,4 +1288,27 @@
   (evil-global-set-key 'normal (kbd "M-6") #'winum-select-window-6)
   (evil-global-set-key 'normal (kbd "M-7") #'winum-select-window-7)
   (evil-global-set-key 'normal (kbd "M-8") #'winum-select-window-8)
-  (evil-global-set-key 'normal (kbd "M-9") #'winum-select-window-9))
+  (evil-global-set-key 'normal (kbd "M-9") #'winum-select-window-9)
+  (evil-global-set-key 'normal (kbd "M-0") #'winum-select-window-0)
+
+  (evil-global-set-key 'insert (kbd "M-0") (lambda () (interactive) (evil-normal-state) (winum-select-window-0)))
+  (evil-global-set-key 'insert (kbd "M-1") (lambda () (interactive) (evil-normal-state) (winum-select-window-1)))
+  (evil-global-set-key 'insert (kbd "M-2") (lambda () (interactive) (evil-normal-state) (winum-select-window-2)))
+  (evil-global-set-key 'insert (kbd "M-3") (lambda () (interactive) (evil-normal-state) (winum-select-window-3)))
+  (evil-global-set-key 'insert (kbd "M-4") (lambda () (interactive) (evil-normal-state) (winum-select-window-4)))
+  (evil-global-set-key 'insert (kbd "M-5") (lambda () (interactive) (evil-normal-state) (winum-select-window-5)))
+  (evil-global-set-key 'insert (kbd "M-6") (lambda () (interactive) (evil-normal-state) (winum-select-window-6)))
+  (evil-global-set-key 'insert (kbd "M-7") (lambda () (interactive) (evil-normal-state) (winum-select-window-7)))
+  (evil-global-set-key 'insert (kbd "M-8") (lambda () (interactive) (evil-normal-state) (winum-select-window-8)))
+  (evil-global-set-key 'insert (kbd "M-9") (lambda () (interactive) (evil-normal-state) (winum-select-window-9)))
+  (evil-global-set-key 'insert (kbd "M-0") (lambda () (interactive) (evil-normal-state) (winum-select-window-0)))
+
+  (global-set-key (kbd "M-1") #'winum-select-window-1)
+  (global-set-key (kbd "M-2") #'winum-select-window-2)
+  (global-set-key (kbd "M-3") #'winum-select-window-3)
+  (global-set-key (kbd "M-4") #'winum-select-window-4)
+  (global-set-key (kbd "M-5") #'winum-select-window-5)
+  (global-set-key (kbd "M-6") #'winum-select-window-6)
+  (global-set-key (kbd "M-7") #'winum-select-window-7)
+  (global-set-key (kbd "M-8") #'winum-select-window-8)
+  (global-set-key (kbd "M-9") #'winum-select-window-9))

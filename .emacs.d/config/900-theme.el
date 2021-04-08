@@ -23,7 +23,7 @@
    '(lazy-highlight ((t :weight bold)))
    '(line-number ((t :background "#222326" :foreground "#717371" :weight light :extend t)))
    '(line-number-current-line
-     ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight normal :inverse-video nil :extend t)))
+     ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight light :inverse-video nil :extend t)))
    '(mode-line-inactive ((t :foreground "#717371" :weight normal)))
    '(region ((t :background "#760e17")))
    '(shadow ((t :weight light)))
@@ -188,7 +188,7 @@
   :config
   (custom-set-faces
    '(font-lock-comment-face ((t :foreground "#717371" :weight light)))
-   '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face)))
+   '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground unspecified)))
    '(font-lock-doc-face ((t :weight normal)))
    '(font-lock-function-name-face ((t :foreground "#85aacc" :weight ultra-bold)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))

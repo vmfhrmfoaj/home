@@ -8,7 +8,7 @@
 
 (use-package counsel-projectile
   :ensure t
-  :after projectile
+  :defer t
   :init
   (eval-when-compile (require 'counsel-projectile nil t))
 
@@ -17,6 +17,7 @@
 
 (use-package projectile
   :ensure t
+  :defer t
   :diminish ""
   :init
   (eval-when-compile (require 'projectile nil t))
