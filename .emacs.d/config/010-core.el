@@ -79,7 +79,8 @@
                 evil-move-beyond-eol t
                 evil-symbol-word-search t
                 evil-want-minibuffer t)
-  (setq evil-flash-delay 1)
+  (setq evil-flash-delay 1
+        evil-undo-system 'undo-redo)
 
   (remove-hook 'evil-goto-definition-functions 'evil-goto-definition-xref)
 
@@ -139,7 +140,7 @@
   (add-function :after after-focus-change-function
                 (lambda ()
                   "Reclaim heap memory when fcousing out."
-                  (let ((gcmh-idle-delay 0.5))
+                  (let ((gcmh-idle-delay 0))
                     (gcmh-register-idle-gc)))
                 '((depth . 100)))
 

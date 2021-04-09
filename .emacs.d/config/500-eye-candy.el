@@ -450,6 +450,37 @@
   (eval-when-compile (require 'ivy-posframe nil t))
 
   :config
+  (defun ivy-posframe--custom-display (str &optional poshandler)
+    "Improve the performance."
+    (let ((buf (get-buffer ivy-posframe-buffer)))
+      (if (-some-> buf
+                   (with-current-buffer posframe--frame)
+                   (frame-visible-p))
+          (progn
+            (with-current-buffer buf
+              (posframe--insert-string str nil))
+            (with-ivy-window
+              (ivy-posframe--add-prompt 'ignore)))
+        (if (not (posframe-workable-p))
+            (ivy-display-function-fallback str)
+          (with-ivy-window
+            (apply #'posframe-show
+                   (or buf ivy-posframe-buffer)
+                   :font ivy-posframe-font
+                   :string str
+                   :position (point)
+                   :poshandler poshandler
+                   :background-color (face-attribute 'ivy-posframe :background nil t)
+                   :foreground-color (face-attribute 'ivy-posframe :foreground nil t)
+                   :internal-border-width ivy-posframe-border-width
+                   :internal-border-color (face-attribute 'ivy-posframe-border :background nil t)
+                   :override-parameters ivy-posframe-parameters
+                   :parent-frame-poshandler ivy-posframe-parent-frame-poshandler
+                   (funcall ivy-posframe-size-function))
+            (ivy-posframe--add-prompt 'ignore))))
+      (with-current-buffer buf
+        (setq-local truncate-lines ivy-truncate-lines))))
+
   (setq ivy-posframe-display-functions-alist
         '((counsel-company . ivy-posframe-display-at-point)
           (complete-symbol . ivy-posframe-display-at-point)
@@ -467,6 +498,8 @@
                   (let ((w (-second-item (golden-ratio--dimensions))))
                     (setq ivy-posframe-width w
                           ivy-posframe-min-width w))))))
+
+  (advice-add #'ivy-posframe--display :override #'ivy-posframe--custom-display)
 
   (ivy-posframe-mode 1))
 

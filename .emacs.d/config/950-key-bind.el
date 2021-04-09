@@ -1279,6 +1279,12 @@
 (use-package winum
   :defer t
   :config
+  (with-eval-after-load "magit"
+    (define-key magit-section-mode-map (kbd "M-1") nil)
+    (define-key magit-section-mode-map (kbd "M-2") nil)
+    (define-key magit-section-mode-map (kbd "M-3") nil)
+    (define-key magit-section-mode-map (kbd "M-4") nil))
+
   (evil-global-set-key 'normal (kbd "M-0") #'winum-select-window-0)
   (evil-global-set-key 'normal (kbd "M-1") #'winum-select-window-1)
   (evil-global-set-key 'normal (kbd "M-2") #'winum-select-window-2)

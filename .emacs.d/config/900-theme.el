@@ -27,8 +27,8 @@
    '(mode-line-inactive ((t :foreground "#717371" :weight normal)))
    '(region ((t :background "#760e17")))
    '(shadow ((t :weight light)))
-   '(show-paren-match ((t :background unspecified :foreground "red" :weight bold :underline t)))
-   '(show-paren-mismatch ((t :background "red3" :foreground "#f0d2cd" :weight bold :underline t)))
+   '(show-paren-match ((t :background unspecified :foreground "red" :weight extra-bold :box (:line-width (-1 . -1)))))
+   '(show-paren-mismatch ((t :background "red3" :foreground "#f0d2cd" :weight extra-bold :underline t)))
    '(symbol-dash-or-underline-face ((t :weight light)))
    '(whitespace-newline ((t :background unspecified :foreground "#646664" :weight light)))
    '(whitespace-space   ((t :background unspecified :foreground "#646664" :weight light)))
@@ -231,7 +231,7 @@
 
   :config
   (custom-set-faces
-   '(highlight-parentheses-highlight ((t :underline t)))))
+   '(highlight-parentheses-highlight ((t :weight normal :underline t)))))
 
 (use-package highlight-numbers
   :defer t
@@ -251,7 +251,7 @@
   (custom-set-faces
    `(ivy-current-match ((t :background ,(color-from 'default :background)
                            :foreground "white" :weight extra-bold
-                           :underline (:color "#717371"))))
+                           :box (:line-width (-1 . -1) :color "#717371"))))
    '(ivy-grep-info ((t :inherit font-lock-string-face :weight unspecified)))
    '(ivy-minibuffer-match-face-1 ((t :background "#7d7e7f" :foreground "#535454" :weight normal)))
    '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b" :weight normal)))

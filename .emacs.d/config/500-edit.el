@@ -208,16 +208,15 @@ So, replaced `evil-jump-item' to this function."
                         (make-local-variable 'evil-undo-function)
                         (make-local-variable 'evil-redo-function)
                         (evil-set-undo-system 'undo-tree))))
-                   ((magit-staged-files nil file-name)
-                    (when undo-tree-mode
-                      (undo-tree-mode -1)
-                      (when (featurep 'evil)
-                        (kill-local-variable 'evil-undo-system)
-                        (kill-local-variable 'evil-undo-function)
-                        (kill-local-variable 'evil-redo-function))
-                      (setq buffer-undo-list nil)
-                      (kill-local-variable 'buffer-undo-tree)
-                      (delete-file (undo-tree-make-history-save-file-name (buffer-file-name)))))))))
+                   (undo-tree-mode
+                    (undo-tree-mode -1)
+                    (when (featurep 'evil)
+                      (kill-local-variable 'evil-undo-system)
+                      (kill-local-variable 'evil-undo-function)
+                      (kill-local-variable 'evil-redo-function))
+                    (setq buffer-undo-list nil)
+                    (kill-local-variable 'buffer-undo-tree)
+                    (delete-file (undo-tree-make-history-save-file-name (buffer-file-name))))))))
             0)
 
   (with-eval-after-load "magit"
