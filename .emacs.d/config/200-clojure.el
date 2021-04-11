@@ -34,6 +34,12 @@
         (add-hook 'cider-connected-hook
                   (lambda ()
                     (cider-repl-set-ns cur-ns)
+                    (with-eval-after-load "cider-eval"
+                      (run-at-time 3 nil ; FIXME
+                                   (lambda (buf)
+                                     (with-current-buffer buf
+                                       (cider-interactive-eval ":update-cider-repl-ns-cache")))
+                                   (current-buffer)))
                     (setq cider-connected-hook cider-connected-hook-orig))))
       (call-interactively jack-in-fn)))
 
@@ -108,9 +114,13 @@
    (concat "(do "
            "" "(while (:auto-refresh-lock (ns-interns 'clojure.core))"
            ""   "(Thread/sleep 500)) "
-           "" "(locking clojure.core/auto-refresh-lock "
-           ""   "(require 'dev.repl) "
-           ""   "(dev.repl/start)))"))
+           "" "(if (find-var 'clojure.core/auto-refresh-lock)"
+           "" "  (locking clojure.core/auto-refresh-lock "
+           ""     "(require 'dev.repl) "
+           ""     "(dev.repl/start))"
+           "" "  (do"
+           ""     "(require 'dev.repl) "
+           ""     "(dev.repl/start))))"))
 
   (advice-add #'cider-restart :around
               (lambda (fn &rest args)
@@ -190,7 +200,7 @@
     (interactive)
     (cider-doc-lookup (cider-symbol-at-point)))
 
-  (setq cider-dynamic-indentation nil
+  (setq cider-dynamic-indentation t
         cider-font-lock-dynamically '(deprecated)))
 
 (use-package cider-repl
@@ -371,7 +381,6 @@
          (t (setq l (cdr l)))))))
 
   (defun clojure-forward-sexp (&optional n)
-    "TODO"
     (or n (setq n 1))
     (while (< 0 n)
       (clojure-skip :comment :ignored-form :tagged-literal)
@@ -526,4 +535,14 @@
 
 (use-package flycheck-clj-kondo
   :ensure t
-  :after (clojure-mode flycheck))
+  :after (clojure-mode flycheck)
+  :init
+  (eval-when-compile (require 'flycheck-clj-kondo nil t))
+
+  :config
+  (dolist (checker '(clj-kondo-clj clj-kondo-cljs clj-kondo-cljc))
+    (setf (flycheck-checker-get checker 'error-filter)
+          (lambda (errs)
+            ;; for `Meander'
+            (--remove (string-match-p "Unresolved symbol: \\?" (flycheck-error-message it))
+                      errs)))))

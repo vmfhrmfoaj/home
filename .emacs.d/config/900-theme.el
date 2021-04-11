@@ -13,20 +13,18 @@
 
   :config
   (setq frame-background-mode 'dark)
-  (load-theme 'base16-tomorrow-night t)
+  (load-theme 'base16-twilight t)
 
   (custom-set-faces
    '(fixed-pitch ((t :inherit default)))
    '(highlight ((t :background "#484a4e" :foreground "#d5d8d6")))
    '(isearch ((t :weight bold)))
-   '(italic ((t :family "Fantasque Sans Mono" :height 110 :slant italic)))
+   '(italic ((t :family "Fantasque Sans Mono" :height 100 :slant italic)))
    '(lazy-highlight ((t :weight bold)))
-   '(line-number ((t :background "#222326" :foreground "#717371" :weight light :extend t)))
-   '(line-number-current-line
-     ((t :inherit line-number :background "#484a4e" :foreground "#bfc2c0" :weight light :inverse-video nil :extend t)))
-   '(mode-line-inactive ((t :foreground "#717371" :weight normal)))
-   '(region ((t :background "#760e17")))
-   '(shadow ((t :weight light)))
+   `(line-number ((t :background ,(color-from 'default :background 2) :foreground "#717371" :weight light :extend t)))
+   '(line-number-current-line ((t :inherit line-number :weight normal :extend t)))
+   `(mode-line-inactive ((t :weight light)))
+   '(shadow ((t :foreground "#726c73" :weight light)))
    '(show-paren-match ((t :background unspecified :foreground "red" :weight extra-bold :box (:line-width (-1 . -1)))))
    '(show-paren-mismatch ((t :background "red3" :foreground "#f0d2cd" :weight extra-bold :underline t)))
    '(symbol-dash-or-underline-face ((t :weight light)))
@@ -76,11 +74,11 @@
      '(clojure-cond-condtion-face ((t :inherit italic)))
      '(clojure-define-type-face ((t :inherit font-lock-type-face)))
      '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
-     `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
+     `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :foreground "#b35b42" :weight ,default-weight)))
      '(clojure-fn-parameter-unused-face ((t :inherit clojure-fn-parameter-face :weight normal)))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face :foreground unspecified)))
      '(clojure-meta-face ((t :inherit shadow :weight normal)))
-     `(clojure-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :foreground "#b36262" :weight ,default-weight)))
+     `(clojure-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :foreground "#b35b42" :weight ,default-weight)))
      '(clojure-local-binding-variable-name-unsed-face ((t :inherit clojure-local-binding-variable-name-face :weight normal)))
      '(clojure-semi-function-name-face ((t :inherit font-lock-function-name-face)))
      '(clojure-side-effect-face ((t :inherit italic :underline t)))
@@ -136,7 +134,7 @@
   :config
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
-     `(lisp-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :foreground "#b36262" :weight ,default-weight))))))
+     `(lisp-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :foreground "#b35b42" :weight ,default-weight))))))
 
 (use-package eshell
   :defer t
@@ -187,13 +185,19 @@
 
   :config
   (custom-set-faces
+   '(font-lock-builtin-face ((t :foreground "#808ea6")))
    '(font-lock-comment-face ((t :foreground "#717371" :weight light)))
-   '(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face :foreground unspecified)))
    '(font-lock-doc-face ((t :weight normal)))
-   '(font-lock-function-name-face ((t :foreground "#85aacc" :weight ultra-bold)))
+   '(font-lock-function-name-face ((t :foreground "#8fa6bf" :weight ultra-bold)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
    '(font-lock-regexp-grouping-backslash ((t :weight normal)))
-   '(font-lock-regexp-grouping-construct ((t :weight normal)))))
+   '(font-lock-regexp-grouping-construct ((t :weight normal)))
+   '(font-lock-string-face ((t :foreground "#929d76")))
+   '(font-lock-type-face ((t :foreground "#ccc37d")))
+   '(font-lock-variable-name-face ((t :foreground "#bf6246"))))
+  (custom-set-faces
+   `(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face
+                                          :foreground ,(color-from 'font-lock-comment-face :foreground -10))))))
 
 (use-package fringe
   :defer t
@@ -202,7 +206,7 @@
 
   :config
   (custom-set-faces
-   '(fringe ((t :foreground "#454645")))))
+   `(fringe ((t :background ,(color-from 'default :background 4) :foreground "#454645")))))
 
 (use-package go-mode
   :defer t
@@ -303,17 +307,18 @@
 
   :config
   (custom-set-faces
-   '(org-agenda-date ((t :foreground "dark cyan" :height 1.1)))
+   '(org-agenda-date ((t :foreground "turquoise4" :height 1.1)))
    '(org-agenda-date-weekend ((t :inherit org-agenda-date)))
-   '(org-agenda-date-today ((t :inherit org-agenda-date :foreground "turquoise")))
+   '(org-agenda-date-today ((t :inherit org-agenda-date :foreground "turquoise3")))
    '(org-agenda-calendar-event ((t :weight normal)))
    '(org-block ((t :foreground unspecified :weight normal)))
-   '(org-checkbox-statistics-done ((t :foreground "#b5bd68" :weight normal)))
-   '(org-checkbox-statistics-todo ((t :foreground "#cc6666" :weight normal)))
+   '(org-checkbox-statistics-done ((t :inherit shadow :weight normal)))
+   '(org-checkbox-statistics-todo ((t :inherit shadow :weight normal)))
+   '(org-code ((t :inherit font-lock-constant-face :foreground unspecified :weight normal)))
    '(org-date ((t :underline unspecified :weight normal)))
    '(org-done ((t  :weight normal :inverse-video t)))
-   '(org-drawer ((t :foreground "light sky blue" :weight normal)))
-   '(org-headline-done ((t :foreground "#a6a8a6" :weight normal)))
+   '(org-drawer ((t :inherit font-lock-builtin-face  :weight normal)))
+   '(org-headline-done ((t :inherit shadow :weight normal)))
    `(org-hide ((t :inherit default :background unspecified :foreground ,(bg-color-from 'default))))
    '(org-link ((t :inherit link :underline unspecified)))
    '(org-meta-line ((t :inherit font-lock-comment-face)))
@@ -323,6 +328,7 @@
    '(org-tag ((t :weight normal)))
    '(org-task-done ((t :inherit org-headline-done :strike-through t)))
    '(org-todo ((t :weight normal :inverse-video t)))
+   `(org-verbatim ((t :inherit default :foreground ,(color-from 'default :foreground -10) :weight normal)))
    '(org-warning ((t :inherit font-lock-warning-face :underline nil)))))
 
 (use-package php-mode
@@ -342,7 +348,7 @@
 
   :config
   (custom-set-faces
-   '(powerline-inactive2 ((t :background "#282a2e")))))
+   `(powerline-inactive2 ((t :background ,(color-from 'default :background 4))))))
 
 (use-package rpm-spec-mode
   :defer t

@@ -87,15 +87,18 @@
     ;; 1. https://github.com/tonsky/FiraCode/wiki/Emacs-instructions#using-composition-char-table
     ;; 2. https://github.com/belluzj/fantasque-sans/issues/64
     ;; 3. https://github.com/belluzj/fantasque-sans/pull/114
-    '(( 33 . ".\\(?:==\\|[!=]\\)")              ; !=, !==
+    '(( 33 . ".\\(?:==\\|[!=]\\)")              ; !=, !==, !!
+      ( 35 . ".\\(?:_(\\|[{(?:_]\\)")           ; #{}, #(), #_, #_(), #?, #:
       ( 38 . ".\\(?:&\\)")                      ; &&
       ( 45 . ".\\(?:-?>>?\\)")                  ; ->, ->>, -->
       ( 46 . ".\\(?:\\.\\.?\\|-\\)")            ; .., ..., .-
       ( 58 . ".\\(?:=\\|::?\\)")                ; ::, :::, :=
+      ( 59 . ".\\(?:;\\)")                      ; ;;
       ( 60 . ".\\(?:=\\|\\(?:!-\\)?-\\)")       ; <=, <!--, <-
       ( 61 . ".\\(?:==?\\|>\\)")                ; ==, ===, =>
       ( 62 . ".\\(?:=\\)")                      ; >=
       (124 . ".\\(?:|\\)")                      ; ||
+      (126 . ".\\(?:@\\)")                      ; ~@
       )
     "TODO")
 
@@ -413,8 +416,9 @@
   (defconst highlight-numbers-generic-regexp
     (rx (and
          symbol-start
-         (? (any "-"))
-         (+ digit)
+         (? (or "+" "-"))
+         (+ (or digit "." "_"))
+         (? (or "e" "E") (? (or "+" "-")) (+ (or digit "_")))
          symbol-end))
     "Customize `highlight-numbers-generic-regexp' to highlight the negative number."))
 
@@ -450,36 +454,18 @@
   (eval-when-compile (require 'ivy-posframe nil t))
 
   :config
-  (defun ivy-posframe--custom-display (str &optional poshandler)
+  (defun ivy-posframe--re-display (str &optional poshandler)
     "Improve the performance."
     (let ((buf (get-buffer ivy-posframe-buffer)))
-      (if (-some-> buf
-                   (with-current-buffer posframe--frame)
-                   (frame-visible-p))
-          (progn
-            (with-current-buffer buf
-              (posframe--insert-string str nil))
-            (with-ivy-window
-              (ivy-posframe--add-prompt 'ignore)))
-        (if (not (posframe-workable-p))
-            (ivy-display-function-fallback str)
-          (with-ivy-window
-            (apply #'posframe-show
-                   (or buf ivy-posframe-buffer)
-                   :font ivy-posframe-font
-                   :string str
-                   :position (point)
-                   :poshandler poshandler
-                   :background-color (face-attribute 'ivy-posframe :background nil t)
-                   :foreground-color (face-attribute 'ivy-posframe :foreground nil t)
-                   :internal-border-width ivy-posframe-border-width
-                   :internal-border-color (face-attribute 'ivy-posframe-border :background nil t)
-                   :override-parameters ivy-posframe-parameters
-                   :parent-frame-poshandler ivy-posframe-parent-frame-poshandler
-                   (funcall ivy-posframe-size-function))
-            (ivy-posframe--add-prompt 'ignore))))
-      (with-current-buffer buf
-        (setq-local truncate-lines ivy-truncate-lines))))
+      (when (-some-> buf
+                     (with-current-buffer posframe--frame)
+                     (frame-visible-p))
+        (with-current-buffer buf
+          (posframe--insert-string str nil)
+          (setq-local truncate-lines ivy-truncate-lines))
+        (with-ivy-window
+          (ivy-posframe--add-prompt 'ignore))
+        t)))
 
   (setq ivy-posframe-display-functions-alist
         '((counsel-company . ivy-posframe-display-at-point)
@@ -499,7 +485,7 @@
                     (setq ivy-posframe-width w
                           ivy-posframe-min-width w))))))
 
-  (advice-add #'ivy-posframe--display :override #'ivy-posframe--custom-display)
+  (advice-add #'ivy-posframe--display :before-until #'ivy-posframe--re-display)
 
   (ivy-posframe-mode 1))
 

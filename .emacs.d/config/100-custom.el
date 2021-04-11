@@ -35,7 +35,10 @@
                                                    (concat "｢" proj-name "｣ - "))
                                                  ,tail))))
       include-prev-buf-regex (concat "^\\s-*"
-                                     "\\(\\*\\s-*docker eshell "
+                                     "\\(\\*eshell"
+                                     "\\|\\*cider-repl "
+                                     "\\|\\*emacs-lisp REPL\\*"
+                                     "\\|\\*\\s-*docker eshell "
                                      "\\|\\*Org Agenda"
                                      "\\)")
       scratch-major-mode 'org-mode

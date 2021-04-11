@@ -392,6 +392,17 @@
             (lambda ()
               (evil-local-set-key 'insert (kbd "<tab>") #'company-indent-or-complete-common))))
 
+(use-package cider-inspector
+  :defer t
+  :init
+  (eval-when-compile (require 'cider-inspector-mode nil t))
+
+  (evil-set-initial-state 'cider-inspector-mode 'normal)
+
+  :config
+  (evil-define-key 'normal cider-inspector-mode-map
+    (kbd "q") #'quit-window))
+
 (use-package cider-mode
   :defer t
   :init
@@ -883,14 +894,14 @@
   :config
   (dolist (mode '(clojure-mode clojurec-mode clojurescript-mode))
     (evil-leader/set-key-for-mode mode
-      "mee" #'cider-eval-last-sexp
       "meb" #'cider-eval-buffer
+      "mee" #'cider-eval-last-sexp
       "mef" #'cider-eval-defun-at-point
+      "mel" #'cider-inspect-last-result
       "men" #'cider-eval-ns-form
       "mer" #'cider-eval-last-sexp-and-replace
-      "mrS" #'cider-custom-jack-in
-      "mrs" #'cider-switch-to-releated-repl-buffer
-      "mrc" #'cider-insert-last-sexp-in-repl
+      "mr'" #'cider-switch-to-releated-repl-buffer
+      "mri" #'cider-insert-last-sexp-in-repl
       "mrq" #'cider-quit)
     (which-key-declare-prefixes-for-mode mode
       (concat evil-leader/leader "me") "evaluation"
@@ -988,7 +999,7 @@
   (evil-leader/set-key-for-mode 'emacs-lisp-mode
     "mee" #'eval-last-sexp
     "mef" #'eval-defun
-    "mrs" #'emacs-lisp-REPL-buffer)
+    "mr'" #'emacs-lisp-REPL-buffer)
   (which-key-declare-prefixes-for-mode 'emacs-lisp-mode
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto"
@@ -1210,8 +1221,8 @@
 
   :config
   (evil-leader/set-key-for-mode 'php-mode
-    "mrS" #'psysh-restart
-    "mrs" #'psysh-show)
+    "mr\"" #'psysh-restart
+    "mr'" #'psysh-show)
   ;; NOTE:
   ;;  already defined at `lsp-mode'
   ;; (which-key-declare-prefixes-for-mode 'python-mode
@@ -1244,7 +1255,7 @@
 
   :config
   (evil-leader/set-key-for-mode 'python-mode
-    "mrs" #'run-python)
+    "mr'" #'run-python)
   ;; NOTE:
   ;;  already defined at `lsp-mode'
   ;; (which-key-declare-prefixes-for-mode 'python-mode

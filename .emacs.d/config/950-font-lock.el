@@ -337,14 +337,14 @@
                  (when font-lock--skip
                    (error ""))
                  (unless clojure-binding-form--recursive-point
-                   (while (and (> limit (point))
+                   (while (and (< (point) limit)
                                (prog1 t (clojure-skip :comment :ignored-form :metadata))
                                ;; skip normal bind?
                                (not (looking-at-p "[ \r\t\n]*\\(?:{\\|\\[\\)"))
                                (prog1 t (clojure-forward-sexp 2))))
                    (when (looking-at-p "[ \r\t\n]*\\(?:{\\|\\[\\)")
                      (setq clojure-binding-form--recursive-point (progn (down-list) (point))
-                           clojure-binding-form--recursive-limit (save-excursion (up-list) (point)))))
+                           clojure-binding-form--recursive-limit (save-excursion (up-list 1 t) (point)))))
                  (when clojure-binding-form--recursive-point
                    (clojure-skip :comment :ignored-form :metadata)
                    (if (re-search-forward meta?+ns?+symbol
@@ -355,13 +355,14 @@
                                                (match-string-no-properties 1))
                            (set-match-data (fake-match-4)))
                          ;; Handle default bind map
-                         (when (save-excursion
-                                 (backward-up-list)
-                                 (and (char-equal ?{ (char-after))
-                                      (ignore-errors
-                                        (clojure-forward-sexp -1)
-                                        (looking-at-p ":or\\>"))))
-                           (clojure-forward-sexp)))
+                         (let ((parent-sexp-pos (-second-item (syntax-ppss))))
+                           (when (and (char-equal ?{ (char-after parent-sexp-pos))
+                                      (save-excursion
+                                        (goto-char parent-sexp-pos)
+                                        (ignore-errors
+                                          (clojure-forward-sexp -1)
+                                          (looking-at-p ":or\\>"))))
+                             (clojure-forward-sexp))))
                      (goto-char clojure-binding-form--recursive-limit)
                      (clojure-forward-sexp)
                      (setq clojure-binding-form--recursive-point nil

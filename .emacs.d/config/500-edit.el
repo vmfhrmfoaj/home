@@ -38,10 +38,10 @@
                                                             undo-tree-visualize-redo))
                                                   (-distinct)))
 
-  (add-hook 'aggressive-indent-mode-hook
-            (lambda ()
-              (when (and (derived-mode-p 'clojure-mode) (featurep 'cider))
-                (setq cider-dynamic-indentation nil))))
+  ;; (add-hook 'aggressive-indent-mode-hook
+  ;;           (lambda ()
+  ;;             (when (and (derived-mode-p 'clojure-mode) (featurep 'cider))
+  ;;               (setq cider-dynamic-indentation nil))))
 
   (advice-add #'aggressive-indent--keep-track-of-changes
               :before-until
