@@ -94,10 +94,9 @@
     (interactive (list (read-key)))
     args)
 
-  (when HHKB?
-    (advice-add #'evil-surround-region :filter-args #'evil-surround-region-for-hkkb)
-    (advice-add #'evil-surround-change :filter-args #'evil-surround-chnage-for-hkkb)
-    (advice-add #'evil-surround-delete :filter-args #'evil-surround-chnage-for-hkkb))
+  (advice-add #'evil-surround-region :filter-args #'evil-surround-region-for-hkkb)
+  (advice-add #'evil-surround-change :filter-args #'evil-surround-chnage-for-hkkb)
+  (advice-add #'evil-surround-delete :filter-args #'evil-surround-chnage-for-hkkb)
 
   (global-evil-surround-mode 1))
 

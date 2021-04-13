@@ -8,8 +8,6 @@
 
 (defvar home-dir (getenv "HOME"))
 
-(setq HHKB? t)
-
 (add-hook 'emacs-startup-hook
           (lambda ()
             (let* ((setup-file (concat home-dir "/.script/setup"))

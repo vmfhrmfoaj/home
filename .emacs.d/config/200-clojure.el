@@ -174,14 +174,28 @@
                   ,cider-clojure-1.9-error
                   ,cider-clojure-warning))))
 
-  (defun cider-handle-compilation-errors-for-flycheck (msg eval-buf)
+  (defun cider-handle-compilation-errors-for-flycheck (msg _eval-buf)
     (when (string-match-p "^:reloading (" msg)
       (setq clojure--compilation-errors nil))
     (when-let ((info (cider-extract-error-info cider-compilation-regexp msg)))
-      (add-to-list 'clojure--compilation-errors (cons eval-buf info))
-      (with-current-buffer eval-buf
-        (when (bound-and-true-p flycheck-mode)
-          (flycheck-buffer)))))
+      (let* ((file (nth 0 info))
+             (root (->> (or nrepl-project-dir
+                            (clojure-project-root-path))
+                        (file-truename)
+                        (s-chop-suffix "/")))
+             (buf (or (get-file-buffer (concat root "/src/"  file))
+                      (get-file-buffer (concat root "/spec/" file))
+                      (get-file-buffer (concat root "/test/" file))
+                      (-some->> (cider-sync-request:classpath)
+                                (--filter (s-starts-with? (file-truename nrepl-project-dir) it))
+                                (--map (get-file-buffer (concat it "/" file)))
+                                (-non-nil)
+                                (-first-item)))))
+        (when buf
+          (add-to-list 'clojure--compilation-errors (cons buf info))
+          (with-current-buffer buf
+            (when (bound-and-true-p flycheck-mode)
+              (flycheck-buffer)))))))
 
   (setq cider-compilation-regexp
         (list cider-clojure-compilation-regexp
@@ -230,6 +244,7 @@
                         (file-truename)
                         (s-chop-suffix "/")))
              (buf (or (get-file-buffer (concat root "/src/"  file))
+                      (get-file-buffer (concat root "/spec/" file))
                       (get-file-buffer (concat root "/test/" file))
                       (-some->> (cider-sync-request:classpath)
                                 (--filter (s-starts-with? (file-truename nrepl-project-dir) it))
@@ -477,9 +492,7 @@
         "A syntax checker using the Cider REPL provided."
         :start #'clojure--flycheck-start
         :modes '(clojure-mode clojurescript-mode clojurec-mode)
-        :predicate (lambda ()
-                     (when (fboundp #'cider-connected-p)
-                       (cider-connected-p)))))
+        :predicate (-const t)))
     (add-to-list 'flycheck-checkers 'clj-cider-repl))
 
   (add-hook 'clojure-mode-hook
@@ -534,6 +547,7 @@
   (edn-add-writer #'edn-reader-macro-p #'edn-reader-macro))
 
 (use-package flycheck-clj-kondo
+  :disabled t
   :ensure t
   :after (clojure-mode flycheck)
   :init

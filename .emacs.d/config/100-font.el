@@ -9,8 +9,8 @@
 (when window-system
   (prefer-coding-system 'utf-8)
   (setq-default line-spacing 0)
-  (let* ((font-size 9.0)
-         (font-name "Fira Code")
+  (let* ((font-size 10.5)
+         (font-name "Cascadia Code")
          (font (font-spec :family font-name :size font-size :weight 'semi-bold)))
     (set-face-font 'default font)
     (set-fontset-font nil '(#xE000 . #xF8FF) font)               ; for ligature

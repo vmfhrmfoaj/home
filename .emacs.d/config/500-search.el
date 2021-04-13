@@ -20,6 +20,15 @@
       (replace-in-string "%s" "--no-ignore %s" counsel-rg-base-command))
      (t '("rg" "-M" "240" "--with-filename" "--no-heading" "--line-number" "--color" "never" "--no-ignore" "%s"))))
 
+  (defun counsel-custom-grep (&optional dir)
+    (interactive)
+    (let ((val (default-value 'ivy-calling)))
+      (unwind-protect
+          (progn
+            (setq-default ivy-calling nil)
+            (counsel-grep))
+        (setq-default ivy-calling val))))
+
   :config
   (add-to-list 'ivy-height-alist '(counsel-rg . 30)))
 

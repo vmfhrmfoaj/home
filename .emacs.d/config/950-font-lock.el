@@ -25,14 +25,19 @@
             '(("\\([,]\\|[|&]\\{2,2\\}\\|\\s(\\|\\s)\\)"
                (1 'shadow)))
             :append))))
-  (add-hook 'git-timemachine-mode-hook f :append)
-  (add-hook 'toml-mode-hook f :append)
+  (add-hook 'git-timemachine-mode-hook f 100)
+  (add-hook 'toml-mode-hook f 100)
   (add-hook 'prog-mode-hook
             (lambda ()
               (cond
                ((derived-mode-p 'clojure-mode))
+               ((derived-mode-p 'emacs-lisp-mode))
                (t (funcall f))))
-            :append))
+            100))
+
+(defface c-style-brace-face
+  '((t (:inherit shadow)))
+  "TODO")
 
 (defface symbol-dash-or-underline-face
   '((t (:inherit shadow)))
@@ -66,11 +71,16 @@
      (font-lock-add-keywords
       nil
       '(;; punctuation
+        ("\\([{}]\\)"
+         (1 'c-style-brace-face))))
+     (font-lock-add-keywords
+      nil
+      '(;; punctuation
         ("\\([.;]\\)"
          (1 'shadow))
         ("[A-Za-z]\\(:\\)\\s-*$"
          (1 'shadow))
-        ("[0-9A-Za-z]\\(_\\)[0-9A-Za-z]"
+        ("[0-9A-Za-z]\\(_+\\)[0-9A-Za-z]"
          (1 'symbol-dash-or-underline-face prepend)))
       :append))))
 
@@ -184,13 +194,15 @@
         (1 'font-lock-variable-name-face))
        (,(concat whitespace "\\(accept\\)" whitespace* "(")
         (1 'font-lock-type-face))
+       ("\\([{}]\\)"
+        (1 'c-style-brace-face))
        ("\\(?:\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\|\\$\\|\\\\\\)"
         (1 'shadow))
        ("\\([\\&|*]\\|::\\|;\\|[-=]>\\|[$@]_\\>\\)"
         (1 'shadow))
        ("\\([*@$%]+\\)\\(?:[:_0-9a-zA-Z]\\|\\s(\\)"
         (1 'shadow))
-       ("[0-9A-Za-z]\\(_\\)[0-9A-Za-z]"
+       ("[0-9A-Za-z]\\(_+\\)[0-9A-Za-z]"
         (1 'symbol-dash-or-underline-face prepend))))
    :append))
 
@@ -651,7 +663,7 @@
 
         ;; Auto-gensym variable - variable#
         (,(concat symbol "\\(#\\)\\_>")
-         (1 'clojure-punctuation-face))
+         (1 'shadow))
 
         ;; Dereference, Unquote - @symbol or ~symbol
         (,(concat "\\(~\\|@\\)[*0-9A-Za-z]")
@@ -1031,8 +1043,10 @@
     (font-lock-add-keywords
      mode
      `(;; Punctuation
-       ("\\([~#@&_,`'^]\\|\\s(\\|\\s)\\)"
+       ("\\(#?\\s(\\|\\s)\\)"
         (1 'clojure-punctuation-face append))
+       ("\\([~#@&_,`'^]\\)"
+        (1 'shadow))
        ("[A-Za-z]\\(-+>?\\|[._$]\\)[A-Za-z]"
         (1 'symbol-dash-or-underline-face prepend)))
      :append)))
@@ -1045,6 +1059,9 @@
   (defface lisp-local-binding-variable-name-face
     '((t (:inherit font-lock-variable-name-face)))
     "Face used to font-lock Lisp local binding variable name.")
+  (defface lisp-punctuation-face
+    '((t (:inherit shadow)))
+    "TODO")
 
   :config
   (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
@@ -1063,10 +1080,7 @@
          ("(\\(assert\\)"
           (1 'font-lock-variable-name-face))
          (,(concat "(defun" whitespace+ "\\(" symbol "\\)")
-          (1 'font-lock-function-name-face))
-         ;; punctuation
-         ("#?'\\|`\\|\\_<_\\_>\\|,@"
-          (0 'shadow))))
+          (1 'font-lock-function-name-face))))
       (font-lock-add-keywords
        mode
        `(;; local variables
@@ -1119,6 +1133,10 @@
              (goto-char font-lock--anchor-beg-point))
            (1 'lisp-local-binding-variable-name-face)))
          ;; punctuation
+         ("\\s(\\|\\s)"
+          (0 'lisp-punctuation-face append))
+         ("#?'\\|`\\|\\_<_\\_>\\|,@"
+          (0 'shadow))
          ("[a-z]\\(-+>?\\)[a-z]"
           (1 'symbol-dash-or-underline-face prepend)))
        :append))))
@@ -1378,9 +1396,11 @@
   (setq php-font-lock-keywords php-font-lock-keywords-3)
   (font-lock-add-keywords
    'php-mode
-   '(("\\([$]\\)"
+   '(("\\([{}]\\)"
+      (1 'c-style-brace-face))
+     ("\\([$]\\)"
       (1 'shadow append))
-     ("[0-9A-Za-z]\\(_\\)[0-9A-Za-z]"
+     ("[0-9A-Za-z]\\(_+\\)[0-9A-Za-z]"
       (1 'symbol-dash-or-underline-face prepend)))
    :append))
 

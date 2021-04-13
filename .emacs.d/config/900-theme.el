@@ -16,17 +16,21 @@
   (load-theme 'base16-twilight t)
 
   (custom-set-faces
+   '(c-style-brace-face ((t :foreground "#5f5a60" :weight light)))
    '(fixed-pitch ((t :inherit default)))
    '(highlight ((t :background "#484a4e" :foreground "#d5d8d6")))
    '(isearch ((t :weight bold)))
-   '(italic ((t :family "Fantasque Sans Mono" :height 100 :slant italic)))
+   '(italic ((t :family "Fantasque Sans Mono" :height 110 :slant italic)))
    '(lazy-highlight ((t :weight bold)))
-   `(line-number ((t :background ,(color-from 'default :background 2) :foreground "#717371" :weight light :extend t)))
-   '(line-number-current-line ((t :inherit line-number :weight normal :extend t)))
+   `(line-number ((t :background ,(color-from 'default :background 2)
+                     :foreground ,(color-from 'default :foreground -25)
+                     :weight light
+                     :extend t)))
+   '(line-number-current-line ((t :inherit line-number :extend t)))
    `(mode-line-inactive ((t :weight light)))
    '(shadow ((t :foreground "#726c73" :weight light)))
-   '(show-paren-match ((t :background unspecified :foreground "red" :weight extra-bold :box (:line-width (-1 . -1)))))
-   '(show-paren-mismatch ((t :background "red3" :foreground "#f0d2cd" :weight extra-bold :underline t)))
+   `(show-paren-match ((t :background unspecified :foreground ,(color-from 'cursor :background) :underline t :box (:line-width (-1 . -1)))))
+   '(show-paren-mismatch ((t :background "red3" :foreground "#f0d2cd" :weight bold :underline t)))
    '(symbol-dash-or-underline-face ((t :weight light)))
    '(whitespace-newline ((t :background unspecified :foreground "#646664" :weight light)))
    '(whitespace-space   ((t :background unspecified :foreground "#646664" :weight light)))
@@ -67,8 +71,7 @@
   :config
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
-     `(cider-deprecated-face
-       ((t :inherit font-lock-warning-face :weight ,default-weight :underline (:color "darkorange"))))
+     `(cider-deprecated-face  ((t :inherit font-lock-warning-face :weight ,default-weight :underline (:color "darkorange"))))
      '(cider-fringe-good-face ((t :inherit success)))
      '(cider-repl-stdout-face ((t :inherit font-lock-string-face :weight light)))
      '(clojure-cond-condtion-face ((t :inherit italic)))
@@ -80,11 +83,11 @@
      '(clojure-meta-face ((t :inherit shadow :weight normal)))
      `(clojure-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :foreground "#b35b42" :weight ,default-weight)))
      '(clojure-local-binding-variable-name-unsed-face ((t :inherit clojure-local-binding-variable-name-face :weight normal)))
+     '(clojure-punctuation-face ((t :foreground "#5f5a60" :weight light)))
      '(clojure-semi-function-name-face ((t :inherit font-lock-function-name-face)))
-     '(clojure-side-effect-face ((t :inherit italic :underline t)))
+     '(clojure-side-effect-face ((t :inherit italic :weight bold :underline t)))
      '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))
-     '(clojure-special-variable-definition-face
-       ((t :inherit (font-lock-constant-face clojure-variable-definition-face))))
+     '(clojure-special-variable-definition-face ((t :inherit (font-lock-constant-face clojure-variable-definition-face))))
      `(clojure-variable-definition-face ((t :inherit font-lock-variable-name-face
                                             :weight ,(face-attribute 'font-lock-function-name-face :weight)))))))
 
@@ -113,9 +116,9 @@
 
   :config
   (custom-set-faces
-   '(diff-refine-added   ((t :background "#339933")))
-   '(diff-refine-changed ((t :background "#999933")))
-   '(diff-refine-removed ((t :background "#aa3333")))))
+   '(diff-refine-added   ((t :background "#339933" :weight bold)))
+   '(diff-refine-changed ((t :background "#999933" :weight bold)))
+   '(diff-refine-removed ((t :background "#aa3333" :weight bold)))))
 
 (use-package eldoc
   :defer t
@@ -134,7 +137,8 @@
   :config
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
-     `(lisp-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :foreground "#b35b42" :weight ,default-weight))))))
+     `(lisp-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :foreground "#b35b42" :weight ,default-weight)))
+     '(lisp-punctuation-face ((t :foreground "#5f5a60" :weight light))))))
 
 (use-package eshell
   :defer t
@@ -187,13 +191,13 @@
   (custom-set-faces
    '(font-lock-builtin-face ((t :foreground "#808ea6")))
    '(font-lock-comment-face ((t :foreground "#717371" :weight light)))
-   '(font-lock-doc-face ((t :weight normal)))
-   '(font-lock-function-name-face ((t :foreground "#8fa6bf" :weight ultra-bold)))
+   '(font-lock-doc-face ((t :weight light)))
+   '(font-lock-function-name-face ((t :foreground "#8fa6bf" :weight bold)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
    '(font-lock-regexp-grouping-backslash ((t :weight normal)))
    '(font-lock-regexp-grouping-construct ((t :weight normal)))
    '(font-lock-string-face ((t :foreground "#929d76")))
-   '(font-lock-type-face ((t :foreground "#ccc37d")))
+   '(font-lock-type-face ((t :foreground "#c4bb76")))
    '(font-lock-variable-name-face ((t :foreground "#bf6246"))))
   (custom-set-faces
    `(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face
@@ -234,6 +238,9 @@
   (eval-when-compile (require 'highlight-parentheses nil t))
 
   :config
+  (setq highlight-parentheses-colors
+        (-drop 1 (--iterate (dim-color it 5) (color-from 'cursor :background) 5)))
+
   (custom-set-faces
    '(highlight-parentheses-highlight ((t :weight normal :underline t)))))
 
@@ -254,13 +261,14 @@
   :config
   (custom-set-faces
    `(ivy-current-match ((t :background ,(color-from 'default :background)
-                           :foreground "white" :weight extra-bold
+                           :foreground ,(color-from 'default :foreground 20)
+                           :weight bold
                            :box (:line-width (-1 . -1) :color "#717371"))))
    '(ivy-grep-info ((t :inherit font-lock-string-face :weight unspecified)))
-   '(ivy-minibuffer-match-face-1 ((t :background "#7d7e7f" :foreground "#535454" :weight normal)))
-   '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b" :weight normal)))
-   '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :foreground "#707099" :weight normal)))
-   '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f" :weight normal)))))
+   '(ivy-minibuffer-match-face-1 ((t :background "#7d7e7f" :foreground "#535454")))
+   '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b")))
+   '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :foreground "#707099")))
+   '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f")))))
 
 (use-package lsp-mode
   :defer t
@@ -286,9 +294,10 @@
    '(magit-diff-added-highlight   ((t :background "#336633" :foreground "#ddffdd")))
    '(magit-diff-removed           ((t :background "#442222" :foreground "#eecccc")))
    '(magit-diff-removed-highlight ((t :background "#663333" :foreground "#ffdddd")))
-   `(magit-diff-context
-     ((t :inherit magit-diff-context-highlight :background ,(bg-color-from 'default) :foreground "#717371" :weight normal)))
-   `(magit-diff-context-highlight ((t :weight normal)))))
+   `(magit-diff-context ((t :inherit magit-diff-context-highlight
+                            :background ,(bg-color-from 'default)
+                            :weight light)))
+   '(magit-diff-context-highlight ((t :weight normal)))))
 
 (use-package markdown-mode
   :defer t
@@ -297,7 +306,7 @@
 
   :config
   (custom-set-faces
-   '(markdown-markup-face ((t :foreground "#717371" :slant normal :weight normal)))
+   '(markdown-markup-face ((t :foreground "#717371" :slant normal :weight light)))
    '(markdown-header-delimiter-face ((t :inherit markdown-markup-face)))))
 
 (use-package org
@@ -310,24 +319,24 @@
    '(org-agenda-date ((t :foreground "turquoise4" :height 1.1)))
    '(org-agenda-date-weekend ((t :inherit org-agenda-date)))
    '(org-agenda-date-today ((t :inherit org-agenda-date :foreground "turquoise3")))
-   '(org-agenda-calendar-event ((t :weight normal)))
+   '(org-agenda-calendar-event ((t :weight light)))
    '(org-block ((t :foreground unspecified :weight normal)))
-   '(org-checkbox-statistics-done ((t :inherit shadow :weight normal)))
-   '(org-checkbox-statistics-todo ((t :inherit shadow :weight normal)))
+   '(org-checkbox-statistics-done ((t :inherit shadow :weight light)))
+   '(org-checkbox-statistics-todo ((t :inherit shadow :weight light)))
    '(org-code ((t :inherit font-lock-constant-face :foreground unspecified :weight normal)))
-   '(org-date ((t :underline unspecified :weight normal)))
-   '(org-done ((t  :weight normal :inverse-video t)))
-   '(org-drawer ((t :inherit font-lock-builtin-face  :weight normal)))
-   '(org-headline-done ((t :inherit shadow :weight normal)))
+   '(org-date ((t :underline unspecified :weight light)))
+   '(org-done ((t  :weight light :box (:line-width (1 . -1)))))
+   '(org-drawer ((t :inherit font-lock-builtin-face  :weight light)))
+   '(org-headline-done ((t :inherit shadow)))
    `(org-hide ((t :inherit default :background unspecified :foreground ,(bg-color-from 'default))))
    '(org-link ((t :inherit link :underline unspecified)))
    '(org-meta-line ((t :inherit font-lock-comment-face)))
-   '(org-parenthesis-context-face ((t :inherit default :weight normal)))
-   '(org-property-value ((t :weight normal)))
-   '(org-special-keyword ((t :weight normal)))
-   '(org-tag ((t :weight normal)))
+   '(org-parenthesis-context-face ((t :inherit default :weight light)))
+   '(org-property-value  ((t :weight light)))
+   '(org-special-keyword ((t :weight light)))
+   '(org-tag ((t :weight light)))
    '(org-task-done ((t :inherit org-headline-done :strike-through t)))
-   '(org-todo ((t :weight normal :inverse-video t)))
+   '(org-todo ((t :weight light :box (:line-width (1 . -1)))))
    `(org-verbatim ((t :inherit default :foreground ,(color-from 'default :foreground -10) :weight normal)))
    '(org-warning ((t :inherit font-lock-warning-face :underline nil)))))
 

@@ -136,18 +136,19 @@ which see."
   (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
 
   (defun org-agenda-show-on-dedicated-window (org-agenda-fn &optional finish-fn)
-    (if-let ((win (-some->> (window-list)
-                            (--filter (with-current-buffer (window-buffer it)
-                                        (derived-mode-p 'org-mode 'org-agenda-mode)))
-                            (-first-item))))
-        (unwind-protect
-            (progn
+    (let* ((win (-some->> (window-list)
+                          (--filter (with-current-buffer (window-buffer it)
+                                      (derived-mode-p 'org-mode 'org-agenda-mode)))
+                          (-first-item)))
+           (dedicated? (window-dedicated-p win)))
+      (unwind-protect
+          (progn
+            (when win
               (set-window-dedicated-p win nil)
-              (select-window win)
-              (funcall org-agenda-fn))
-          (set-window-dedicated-p win t))
-      (funcall org-agenda-fn)
-      (set-window-dedicated-p (selected-window) t))
+              (select-window win))
+            (funcall org-agenda-fn))
+        (when win
+          (set-window-dedicated-p win dedicated?))))
     (call-interactively #'org-agenda-redo)
     (setq-local default-directory (concat home-dir "/Desktop/Org/")
                 frame--width (frame-width)
@@ -201,7 +202,7 @@ which see."
 
   (advice-add #'org-add-log-note :override
               (lambda (&optional _purpose)
-                "Fix for the dedicated window"
+                "Fix for the dedicated? window"
                 (remove-hook 'post-command-hook 'org-add-log-note)
                 (setq org-log-note-window-configuration (current-window-configuration))
                 (move-marker org-log-note-return-to (point))
@@ -234,22 +235,19 @@ which see."
 
 (use-package org-capture
   :defer t
+  :commands (org-capture)
   :init
   (eval-when-compile (require 'org-capture nil t))
 
-  :config
   (defun org-capture-todo ()
     (interactive)
-    (when (fboundp #'persp-switch-to-org)
-      (persp-switch-to-org))
     (org-capture nil "t"))
 
   (defun org-capture-note ()
     (interactive)
-    (when (fboundp #'persp-switch-to-org)
-      (persp-switch-to-org))
     (org-capture nil "n"))
 
+  :config
   (setq org-capture-templates
         `(("t" "Todo" entry
            (file+headline ,(concat org-directory "/todos/" (format-time-string "%Y") ".org")

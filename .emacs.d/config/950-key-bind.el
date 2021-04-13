@@ -9,16 +9,14 @@
   (load-file "~/.emacs.d/config/func.el"))
 
 
-;; for HHKB
-(when HHKB?
-  (global-set-key (kbd "<S-kp-multiply>") "#")
-  (global-set-key (kbd "<S-kp-divide>") "\\")
-  (global-set-key (kbd "<S-kp-subtract>") "_")
-  (global-set-key (kbd "<S-kp-add>") "=")
-  (define-key input-decode-map (kbd "<S-kp-multiply>") "#")
-  (define-key input-decode-map (kbd "<S-kp-divide>") "\\")
-  (define-key input-decode-map (kbd "<S-kp-subtract>") "_")
-  (define-key input-decode-map (kbd "<S-kp-add>") "="))
+(global-set-key (kbd "<S-kp-multiply>") "#")
+(global-set-key (kbd "<S-kp-divide>") "\\")
+(global-set-key (kbd "<S-kp-subtract>") "_")
+(global-set-key (kbd "<S-kp-add>") "=")
+(define-key input-decode-map (kbd "<S-kp-multiply>") "#")
+(define-key input-decode-map (kbd "<S-kp-divide>") "\\")
+(define-key input-decode-map (kbd "<S-kp-subtract>") "_")
+(define-key input-decode-map (kbd "<S-kp-add>") "=")
 
 ;; minibuffer
 (define-key isearch-mode-map (kbd "<escape>") #'isearch-cancel)
@@ -241,25 +239,33 @@
     "rs" #'ivy-resume-sarch
 
     ;; search
-    "sf" (defalias 'counsel-rg-on-cur-dir
-           (lambda (&optional dir)
-             (interactive)
-             (when (<= 4 (prefix-numeric-value current-prefix-arg))
-               (counsel-read-directory-name "rg in directory: "))
-             (counsel-rg nil (or dir default-directory))))
-    "sF" (defalias 'counsel-rg-on-cur-dir-wo-ignore
-           (lambda (&optional dir)
-             (interactive)
-             (when (<= 4 (prefix-numeric-value current-prefix-arg))
-               (counsel-read-directory-name "rg in directory: "))
-             (let ((counsel-rg-base-command (counsel-rg-no-ignore-command)))
-               (counsel-rg nil (or dir default-directory)))))
-    "sp" #'counsel-projectile-rg
-    "sP" (defalias 'counsel-projectile-rg-wo-ignore
-           (lambda ()
-             (interactive)
-             (let ((counsel-rg-base-command (counsel-rg-no-ignore-command)))
-               (counsel-projectile-rg))))
+    "sf" (if (executable-find "rg")
+             (defalias 'counsel-rg-on-cur-dir
+               (lambda (&optional dir)
+                 (interactive)
+                 (when (<= 4 (prefix-numeric-value current-prefix-arg))
+                   (counsel-read-directory-name "rg in directory: "))
+                 (counsel-rg nil (or dir default-directory))))
+           #'counsel-custom-grep)
+    "sF" (if (executable-find "rg")
+             (defalias 'counsel-rg-on-cur-dir-wo-ignore
+               (lambda (&optional dir)
+                 (interactive)
+                 (when (<= 4 (prefix-numeric-value current-prefix-arg))
+                   (counsel-read-directory-name "rg in directory: "))
+                 (let ((counsel-rg-base-command (counsel-rg-no-ignore-command)))
+                   (counsel-rg nil (or dir default-directory)))))
+           #'counsel-custom-grep)
+    "sp" (if (executable-find "rg")
+             #'counsel-projectile-rg
+           #'counsel-projectile-git-grep)
+    "sP" (if (executable-find "rg")
+             (defalias 'counsel-projectile-rg-wo-ignore
+               (lambda ()
+                 (interactive)
+                 (let ((counsel-rg-base-command (counsel-rg-no-ignore-command)))
+                   (counsel-projectile-rg))))
+           #'counsel-projectile-grep)
     "ss" #'swiper
 
     ;; toggle
@@ -291,6 +297,7 @@
              (let ((buf (current-buffer)))
                (switch-to-previous-buffer)
                (pop-to-buffer buf))))
+    "wp" #'pin-window
 
     ;; text / xwidget
     "x0" (defalias 'text-scale-reset (lambda () (interactive) (text-scale-set 0)))

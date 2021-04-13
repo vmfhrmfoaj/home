@@ -406,3 +406,8 @@
   (when (or (window-in-direction 'up)
             (window-in-direction 'down))
     (delete-window)))
+
+(defun pin-window (&optional win)
+  (interactive)
+  (let ((win (or win (selected-window))))
+    (set-window-dedicated-p win t)))
