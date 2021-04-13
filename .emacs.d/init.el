@@ -39,7 +39,27 @@ CURRENT-NAME, if it does not already have them:
          (and (get ,obsolete-name prop)
               (null (get ,current-name prop))
               (put ,current-name prop (get ,obsolete-name prop))))
-       (make-obsolete-variable ,obsolete-name ,current-name ,when))))
+       (make-obsolete-variable ,obsolete-name ,current-name ,when)))
+
+  (defmacro define-obsolete-function-alias ( obsolete-name current-name
+                                             &optional when docstring)
+    "Set OBSOLETE-NAME's function definition to CURRENT-NAME and mark it obsolete.
+
+\(define-obsolete-function-alias \\='old-fun \\='new-fun \"22.1\" \"old-fun's doc.\")
+
+is equivalent to the following two lines of code:
+
+\(defalias \\='old-fun \\='new-fun \"old-fun's doc.\")
+\(make-obsolete \\='old-fun \\='new-fun \"22.1\")
+
+WHEN should be a string indicating when the function was first
+made obsolete, for example a date or a release number.
+
+See the docstrings of `defalias' and `make-obsolete' for more details."
+    (declare (doc-string 4))
+    `(progn
+       (defalias ,obsolete-name ,current-name ,docstring)
+       (make-obsolete ,obsolete-name ,current-name ,when))))
 
 ;; ---
 

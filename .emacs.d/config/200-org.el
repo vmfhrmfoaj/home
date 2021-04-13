@@ -133,7 +133,9 @@ which see."
   :init
   (eval-when-compile (require 'org-agenda nil t))
 
-  (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
+  (setq org-agenda-files
+        (when (file-exists-p org-directory)
+          (directory-files-recursively org-directory "\\.org$")))
 
   (defun org-agenda-show-on-dedicated-window (org-agenda-fn &optional finish-fn)
     (let* ((win (-some->> (window-list)

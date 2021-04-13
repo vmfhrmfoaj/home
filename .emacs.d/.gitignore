@@ -24,3 +24,4 @@
 /scratch
 /undo-tree
 **/eln-*
+*.elc
