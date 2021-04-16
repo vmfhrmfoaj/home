@@ -176,22 +176,15 @@
        (list face prevn))
      object))
 
-  (defvar ivy--custom-add-face-cache (make-hash-table))
-
   (defun ivy--custom-add-face (str face)
     "Customize `ivy--add-face' for weight face"
     (let ((len (length str)))
       (condition-case nil
-          (let ((cache (gethash face ivy--custom-add-face-cache)))
+          (progn
             (colir-blend-face-background 0 len face str)
-            (let ((foreground (if cache (alist-get :foreground cache) (face-foreground face)))
-                  (weight     (if cache (alist-get :weight cache)     (face-attribute face :weight)))
-                  (underline  (if cache (alist-get :underline cache)  (face-attribute face :underline))))
-              (unless cache
-                (puthash face `((:foreground . ,foreground)
-                                (:weight     . ,weight)
-                                (:underline  . ,underline))
-                         ivy--custom-add-face-cache))
+            (let ((foreground (face-foreground face))
+                  (weight     (face-attribute face :weight))
+                  (underline  (face-attribute face :underline)))
               (when foreground
                 (add-face-text-property
                  0 len (list :foreground foreground) nil str))

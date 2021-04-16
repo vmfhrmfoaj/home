@@ -29,6 +29,14 @@
         company-selection-wrap-around t
         company-tooltip-flip-when-above t)
 
+  (add-hook 'company-mode-hook
+            (lambda ()
+              ;; NOTE
+              ;;  use `counsel-company' instead of `company-tooltip'.
+              (remove-hook 'pre-command-hook  'company-pre-command t)
+              (remove-hook 'post-command-hook 'company-post-command t)
+              (remove-hook 'yas-keymap-disable-hook 'company--active-p t)))
+
   (add-hook 'company-after-completion-hook
             (lambda (_ignored)
               (when (timerp eldoc-timer)

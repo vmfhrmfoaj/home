@@ -127,7 +127,18 @@
                 "Wrap `cider-restart' to keep current namespace of REPL."
                 (let ((cur-ns (cider-current-ns)))
                   (apply fn args)
-                  (cider-repl-set-ns cur-ns)))))
+                  (cider-repl-set-ns cur-ns))))
+
+  (defvar cider--symbol-indent-cache (make-hash-table :test #'equal))
+
+  (advice-add #'cider--get-symbol-indent :around
+              (lambda (fn sym)
+                (when (cider-connected-p)
+                  (let ((indent (gethash sym cider--symbol-indent-cache :not-found)))
+                    (when (eq :not-found indent)
+                      (setq indent (funcall fn sym))
+                      (puthash sym indent cider--symbol-indent-cache))
+                    indent)))))
 
 (use-package cider-client
   :defer t

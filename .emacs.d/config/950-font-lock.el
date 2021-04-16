@@ -84,6 +84,26 @@
          (1 'symbol-dash-or-underline-face prepend)))
       :append))))
 
+(use-package css-mode
+  :defer t
+  :init
+  (eval-when-compile (require 'css-mode nil t))
+
+  :config
+  (font-lock-add-keywords
+   'css-mode
+   '(;; punctuation
+     ("\\([{}]\\)"
+      (1 'c-style-brace-face))))
+  (font-lock-add-keywords
+   'css-mode
+   `(;; punctuation
+     ("\\([:;]\\)"
+      (1 'shadow))
+     ("[0-9A-Za-z]\\(-+\\)[0-9A-Za-z]"
+      (1 'symbol-dash-or-underline-face prepend)))
+   :append))
+
 (use-package elixir-mode
   :disabled t
   :defer t
@@ -526,7 +546,7 @@
                      (down-list)
                      (setq clojure-fn-recursive--point (point)
                            clojure-fn-recursive--limit (save-excursion
-                                                         (up-list)
+                                                         (up-list 1 t)
                                                          (1- (point))))))
                  (when clojure-fn-recursive--point
                    (if (re-search-forward meta?+ns?+symbol
@@ -537,13 +557,14 @@
                                                (match-string-no-properties 1))
                            (set-match-data (fake-match-4)))
                          ;; Handle default bind map
-                         (when (save-excursion
-                                 (backward-up-list)
-                                 (and (char-equal ?{ (char-after))
-                                      (ignore-errors
-                                        (clojure-forward-sexp -1)
-                                        (looking-at-p ":or\\>"))))
-                           (clojure-forward-sexp)))
+                         (let ((parent-sexp-pos (-second-item (syntax-ppss))))
+                           (when (and (char-equal ?{ (char-after parent-sexp-pos))
+                                      (save-excursion
+                                        (goto-char parent-sexp-pos)
+                                        (ignore-errors
+                                          (clojure-forward-sexp -1)
+                                          (looking-at-p ":or\\>"))))
+                             (clojure-forward-sexp))))
                      (set-match-data (fake-match-4))
                      (setq clojure-fn-recursive--point nil
                            clojure-fn-recursive--limit nil))
@@ -1135,7 +1156,7 @@
          ;; punctuation
          ("\\s(\\|\\s)"
           (0 'lisp-punctuation-face append))
-         ("#?'\\|`\\|\\_<_\\_>\\|,@"
+         ("#?'\\|`\\|\\_<_\\_>\\|,@?"
           (0 'shadow))
          ("[a-z]\\(-+>?\\)[a-z]"
           (1 'symbol-dash-or-underline-face prepend)))
