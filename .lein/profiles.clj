@@ -1,7 +1,7 @@
 {:dev {:test-refresh {:changes-only true
                       :timeout-in-sec 5
                       :notify-command ["notify-send" "--hint" "int:transient:1" "Test"]}}
- :repl {:auto-refresh true
+ :repl {:auto-refresh {:notify-command ["notify-send" "--hint" "int:transient:1" "Reload"]}
         :jvm-opts ["-Xverify:none" "-XX:TieredStopAtLevel=4" "-XX:MaxGCPauseMillis=5" "-Xmx2g" "-server"]
         :middleware [dev-helper.plugin/middleware]}
  :user {:jvm-opts ["-Xverify:none" "-XX:TieredStopAtLevel=4" "-XX:MaxGCPauseMillis=5" "-Xmx2g" "-server"]
