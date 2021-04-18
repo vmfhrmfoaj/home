@@ -190,6 +190,8 @@ which see."
                                    (tags   . " ")
                                    (search . " ")))
 
+  (defvar org-agenda--width 0)
+
   (add-hook 'window-size-change-functions
             (lambda (&rest _)
               "Align tags"
@@ -197,9 +199,9 @@ which see."
                                    (get-buffer-window org-agenda-buffer))))
                 (with-selected-window win
                   (let ((w (window-width)))
-                    (when (and (boundp 'org-agenda--width)
-                               (not (= org-agenda--width w)))
-                      (org-agenda-align-tags))
+                    (when (not (= org-agenda--width w))
+                      (let ((org-agenda-tags-column (1+ (- (window-text-width)))))
+                        (org-agenda-align-tags)))
                     (setq-local org-agenda--width w))))))
 
   (advice-add #'org-add-log-note :override

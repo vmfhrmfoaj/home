@@ -90,19 +90,20 @@
   (eval-when-compile (require 'css-mode nil t))
 
   :config
-  (font-lock-add-keywords
-   'css-mode
-   '(;; punctuation
-     ("\\([{}]\\)"
-      (1 'c-style-brace-face))))
-  (font-lock-add-keywords
-   'css-mode
-   `(;; punctuation
-     ("\\([:;]\\)"
-      (1 'shadow))
-     ("[0-9A-Za-z]\\(-+\\)[0-9A-Za-z]"
-      (1 'symbol-dash-or-underline-face prepend)))
-   :append))
+  (dolist (mode '(css-mode scss-mode))
+    (font-lock-add-keywords
+     mode
+     '(;; punctuation
+       ("\\([{}]\\)"
+        (1 'c-style-brace-face))))
+    (font-lock-add-keywords
+     mode
+     `(;; punctuation
+       ("\\([:;]\\)"
+        (1 'shadow))
+       ("[0-9A-Za-z]\\(-+\\)[0-9A-Za-z]"
+        (1 'symbol-dash-or-underline-face prepend)))
+     :append)))
 
 (use-package elixir-mode
   :disabled t
@@ -304,7 +305,7 @@
   (setq-local clojure-oop-fn-form--points nil)
   (setq-local clojure-oop-fn-recursive--point nil)
   (setq-local clojure-oop-fn-recursive--limit nil)
-  (setq-local clojure-fn-form--method? nil)
+  (setq-local clojure-fn-form--style nil)
   (setq-local clojure-fn-form--multi-arity? nil)
   (setq-local clojure-fn-recursive--point nil)
   (setq-local clojure-fn-recursive--limit nil)
@@ -533,12 +534,17 @@
                  (unless clojure-fn-recursive--point
                    (when clojure-fn-form--multi-arity?
                      (up-list 2))
-                   (while (progn
-                            (clojure-skip :comment :ignored-form :string :map)
-                            (when clojure-fn-form--method?
-                              (setq clojure-fn-form--method? nil)
-                              (clojure-forward-sexp)
-                              t)))
+                   (cond
+                    ((eq 'defn clojure-fn-form--style)
+                     (setq clojure-fn-form--style nil)
+                     (clojure-skip :comment :ignored-form :string :map))
+                    ((eq 'defmethod clojure-fn-form--style)
+                     (setq clojure-fn-form--style nil)
+                     (clojure-skip :comment :ignored-form)
+                     (clojure-forward-sexp)
+                     (clojure-skip :comment :ignored-form))
+                    (t
+                     (clojure-skip :comment :ignored-form)))
                    (when (looking-at "(")
                      (setq clojure-fn-form--multi-arity? t)
                      (down-list))
@@ -575,7 +581,13 @@
                   (setq font-lock--skip t))
               (setq font-lock--skip nil)
               (setq font-lock--anchor-beg-point (point))
-              (setq clojure-fn-form--method? (string-match-p "defmethod" (match-string 1)))
+              (let ((kw (match-string 1)))
+                (setq clojure-fn-form--style
+                      (cond
+                       ((string-match-p "defn\\|defmacro" kw)
+                        'defn)
+                       ((string= "defmethod" kw)
+                        'defmethod))))
               (setq clojure-fn-form--multi-arity? nil)
               (setq clojure-fn-recursive--point nil)
               (setq clojure-fn-recursive--limit nil)
@@ -731,12 +743,7 @@
                  (unless clojure-fn-recursive--point
                    (when clojure-fn-form--multi-arity?
                      (up-list 2))
-                   (while (progn
-                            (clojure-skip :comment :ignored-form :string :map)
-                            (when clojure-fn-form--method?
-                              (setq clojure-fn-form--method? nil)
-                              (clojure-forward-sexp)
-                              t)))
+                   (clojure-skip :comment :ignored-form)
                    (when (looking-at "(")
                      (setq clojure-fn-form--multi-arity? t)
                      (down-list))

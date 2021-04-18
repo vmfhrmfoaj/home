@@ -179,6 +179,9 @@ So, replaced `evil-jump-item' to this function."
   (setq undo-tree-auto-save-history t
         undo-tree-history-directory-alist `((".*" . ,(concat home-dir "/.emacs.d/undo-tree/"))))
 
+  (with-eval-after-load "evil"
+    (evil-set-undo-system 'undo-tree))
+
   (add-hook 'find-file-hook
             (lambda ()
               "Enable `undo-tree-mode' if a file is unstaged."

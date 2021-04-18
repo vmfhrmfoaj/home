@@ -28,15 +28,14 @@
     (when (<= 1920 w)
       (add-hook 'window-setup-hook
                 (lambda ()
-                  (let ((buf (current-buffer)))
-                    (org-agenda-list)
-                    (split-window-horizontally)
-                    (set-window-dedicated-p (selected-window) t)
-                    (other-window 1)
-                    (switch-to-buffer buf)
-                    (with-eval-after-load "golden-ratio"
-                      (with-selected-window (get-buffer-window org-agenda-buffer)
-                        (org-agenda-align-tags))))))
+                  (split-window-horizontally)
+                  (org-agenda-list)
+                  (set-window-dedicated-p (selected-window) t)
+                  (with-eval-after-load "golden-ratio"
+                    (with-selected-window (get-buffer-window org-agenda-buffer)
+                      (let ((org-agenda-tags-column (1+ (- (window-text-width)))))
+                        (org-agenda-align-tags))))
+                  (other-window 1)))
 
       (with-eval-after-load "org"
         (let ((f (lambda (fn buffer &rest args)
