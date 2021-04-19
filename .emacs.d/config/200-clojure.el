@@ -111,16 +111,16 @@
 
   (cider-register-cljs-repl-type
    'figwheel-custom
-   (concat "(do "
-           "" "(while (:auto-refresh-lock (ns-interns 'clojure.core))"
-           ""   "(Thread/sleep 500)) "
-           "" "(if (find-var 'clojure.core/auto-refresh-lock)"
-           "" "  (locking clojure.core/auto-refresh-lock "
-           ""     "(require 'dev.repl) "
-           ""     "(dev.repl/start))"
-           "" "  (do"
-           ""     "(require 'dev.repl) "
-           ""     "(dev.repl/start))))"))
+   (concat "(do\n"
+           "  (while (:auto-refresh-lock (ns-interns 'clojure.core))\n"
+           "    (Thread/sleep 500))\n"
+           "  (if (find-var 'clojure.core/auto-refresh-lock)\n"
+           "    (locking clojure.core/auto-refresh-lock\n"
+           "      (require 'dev.repl)\n"
+           "      (dev.repl/start))\n"
+           "    (do\n"
+           "      (require 'dev.repl)\n"
+           "      (dev.repl/start))))"))
 
   (advice-add #'cider-restart :around
               (lambda (fn &rest args)

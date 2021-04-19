@@ -185,20 +185,22 @@ So, replaced `evil-jump-item' to this function."
   (add-hook 'find-file-hook
             (lambda ()
               "Enable `undo-tree-mode' if a file is unstaged."
-              (let* ((file (buffer-file-name))
-                     (file-name (file-name-nondirectory file)))
-                (when (null (magit-unstaged-files nil file-name))
-                  (delete-file (undo-tree-make-history-save-file-name (buffer-file-name)))
-                  (setq buffer-undo-tree nil))))
+	          (when (fboundp 'magit-unstaged-files)
+                (let* ((file (buffer-file-name))
+                       (file-name (file-name-nondirectory file)))
+                  (when (null (magit-unstaged-files nil file-name))
+                    (delete-file (undo-tree-make-history-save-file-name (buffer-file-name)))
+                    (setq buffer-undo-tree nil)))))
             -100)
 
   (add-hook 'after-save-hook
             (lambda ()
               "Enable/disable `undo-tree-mode'."
-              (when-let ((file (buffer-file-name)))
-                (let ((file-name (file-name-nondirectory file)))
-                  (when (null (magit-unstaged-files nil file-name))
-                    (delete-file (undo-tree-make-history-save-file-name (buffer-file-name)))))))
+	          (when (fboundp 'magit-unstaged-files)
+                (when-let ((file (buffer-file-name)))
+                  (let ((file-name (file-name-nondirectory file)))
+                    (when (null (magit-unstaged-files nil file-name))
+                      (delete-file (undo-tree-make-history-save-file-name (buffer-file-name))))))))
             100)
 
   (with-eval-after-load "magit"
@@ -219,9 +221,10 @@ So, replaced `evil-jump-item' to this function."
 
   (advice-add #'undo-tree-save-history-from-hook :before-while
               (lambda (&rest _)
-                (when-let ((file (buffer-file-name)))
-                  (let ((file-name (file-name-nondirectory file)))
-                    (magit-unstaged-files nil file-name)))))
+	            (when (fboundp 'magit-unstaged-files)
+                  (when-let ((file (buffer-file-name)))
+                    (let ((file-name (file-name-nondirectory file)))
+                      (magit-unstaged-files nil file-name))))))
 
   (global-undo-tree-mode 1)
 
