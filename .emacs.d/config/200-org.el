@@ -151,7 +151,8 @@ which see."
             (funcall org-agenda-fn))
         (when win
           (set-window-dedicated-p win dedicated?))))
-    (call-interactively #'org-agenda-redo)
+    (let ((org-agenda-tags-column (1+ (- (window-text-width)))))
+      (call-interactively #'org-agenda-redo))
     (setq-local default-directory (concat home-dir "/Desktop/Org/")
                 frame--width (frame-width)
                 projectile-project-name "Org")

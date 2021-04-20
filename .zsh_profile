@@ -48,13 +48,13 @@ title() {
     [[ "$EMACS" == *term* ]] && return
     : ${2=$1}
     local prefix=''
-    if [ ! -z ${SCHROOT_CHROOT_NAME} ]; then
-        prefix='C'
+    if [ -n "${SCHROOT_CHROOT_NAME}" ]; then
+        prefix="C${prefix}"
     fi
     if [[ "$TERM" = "screen"* ]]; then
         prefix="S${prefix}"
     fi
-    if [ ! -z ${prefix} ]; then
+    if [ -n "${prefix}" ]; then
         prefix="(${prefix}) "
     fi
     case "$TERM" in
