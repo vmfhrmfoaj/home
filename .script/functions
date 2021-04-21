@@ -457,10 +457,9 @@ _install_graalvm_from_tar() {
         >&2 echo "Can't unpack '${tar_file}'"
         return 255;
     fi
-    ver=8
-    grep -E 'JAVA_VERSION="11.[0-9]+.[0-9]+"' "${temp_dir}/release" >/dev/null 2>&1
-    if [ $? -eq 0 ]; then
-        ver=11
+    ver=$(awk 'match($0, /JAVA_VERSION="([0-9]+).[0-9]+.[0-9]+"/, m) { print m[1]; }' "${temp_dir}/release" 2>/dev/null)
+    if [ -z "${ver}" ]; then
+        ver="8"
     fi
 
     if [ -d "${target_dir}-${ver}" ]; then
