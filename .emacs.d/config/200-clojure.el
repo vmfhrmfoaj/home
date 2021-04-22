@@ -185,9 +185,9 @@
                   ,cider-clojure-1.9-error
                   ,cider-clojure-warning))))
 
+  (defvar clojure--compilation-errors nil)
+
   (defun cider-handle-compilation-errors-for-flycheck (msg _eval-buf)
-    (when (string-match-p "^:reloading (" msg)
-      (setq clojure--compilation-errors nil))
     (when-let ((info (cider-extract-error-info cider-compilation-regexp msg)))
       (let* ((file (nth 0 info))
              (root (->> (or nrepl-project-dir
@@ -236,19 +236,24 @@
   :config
   (defvar clojure--compilation-error-ns nil)
 
-  (defun cider-repl-catch-compilation-error-ns (_buf msg)
+  (defun cider-repl-catch-compilation-error-ns (msg)
+    (when (string-match-p "^:reloading (" msg)
+      (let ((errs clojure--compilation-errors))
+        (setq clojure--compilation-errors nil
+              clojure--compilation-error-ns nil)
+        (--each errs
+          (with-current-buffer (-first-item it)
+            (flycheck-buffer)))))
     (when (string-match "^:error-while-loading \\([-_.0-9A-Za-z]+\\)" msg)
       (setq clojure--compilation-error-ns (match-string-no-properties 1 msg))))
 
-  (defun cider-repl-catch-compilation-error (_buf msg)
-    (when (string-match-p "^:reloading (" msg)
-      (setq clojure--compilation-errors nil))
+  (defun cider-repl-catch-compilation-error (msg)
     (when-let ((info (cider-extract-error-info cider-compilation-regexp msg)))
       (let* ((file (if (null clojure--compilation-error-ns)
                        (nth 0 info)
                      (concat (->> clojure--compilation-error-ns
-                                  (string-replace "-" "_")
-                                  (string-replace "." "/"))
+                                  (s-replace "-" "_")
+                                  (s-replace "." "/"))
                              "." (file-name-extension (nth 0 info)))))
              (root (->> (or nrepl-project-dir
                             (clojure-project-root-path))
@@ -280,8 +285,17 @@
                 (add-hook 'evil-insert-state-entry-hook f nil t)
                 (add-hook 'evil-insert-state-exit-hook  f nil t))))
 
-  (advice-add #'cider-repl-emit-stdout :after #'cider-repl-catch-compilation-error-ns)
-  (advice-add #'cider-repl-emit-stderr :after #'cider-repl-catch-compilation-error)
+  (advice-add #'cider-repl-emit-interactive-stdout :after #'cider-repl-catch-compilation-error-ns)
+  (advice-add #'cider-repl-emit-interactive-stderr :after #'cider-repl-catch-compilation-error)
+  (advice-add #'cider-repl-emit-stdout :after
+              (lambda (_buf msg)
+                "wrap `cider-repl-catch-compilation-error-ns'"
+                (cider-repl-catch-compilation-error-ns msg)))
+  (advice-add #'cider-repl-emit-stderr :after
+              (lambda (_buf msg)
+                "wrap `cider-repl-catch-compilation-error'"
+                (cider-repl-catch-compilation-error msg)))
+
   (advice-add #'cider-repl-return :after
               (lambda (&optional _end-of-input)
                 "Change evil state to normal."
@@ -310,8 +324,6 @@
           (dotimes (_ 4)
             (forward-sexp)))
         (cons beg-kw (point)))))
-
-  (defvar clojure--compilation-errors nil)
 
   (defun clojure--flycheck-start (checker callback)
     (->> clojure--compilation-errors
@@ -517,10 +529,6 @@
                 (add-hook 'evil-insert-state-entry-hook f nil t)
                 (add-hook 'evil-insert-state-exit-hook  f nil t))
               (when (require 'flycheck nil t)
-                (add-hook 'after-save-hook
-                          (lambda ()
-                            (setq clojure--compilation-errors nil))
-                          -100 t)
                 (flycheck-mode)
                 (if (featurep 'flycheck-clj-kondo)
                     (dolist (checker '(clj-kondo-clj clj-kondo-cljs clj-kondo-cljc clj-kondo-edn))

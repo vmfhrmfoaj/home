@@ -266,12 +266,10 @@ which see."
                     "- %?"                                                               "\n"
                     "\n"
                     "_CHECKLIST_:"                                                       "\n"
-                    "- [ ] ???"                                                          "\n"
                     "\n"
-                    "_BACKLOG_:"                                                         "\n"
-                    "- [ ] ???"                                                          "\n"
-                    "\n\n")
-           :prepend t)))
+                    "_BACKLOG_:"                                                         "\n")
+           :prepend t
+           :empty-lines-after 1)))
 
   (advice-add #'org-capture-place-template :around
               (lambda (fn &rest args)

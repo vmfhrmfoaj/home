@@ -497,40 +497,19 @@
   :ensure evil-collection
   :defer t
   :init
-  (eval-when-compile (evil-collection-require 'docker))
-
-  :config
-  (evil-collection-docker-setup)
-  (dolist (map evil-collection-docker-maps)
-    (evil-collection-define-key 'normal map "q" #'kill-buffer-and-delete-window)))
+  (eval-when-compile (evil-collection-require 'docker t)))
 
 (use-package evil-collection-eshell
   :ensure evil-collection
   :defer t
   :init
-  (eval-when-compile (evil-collection-require 'eshell))
-
-  :config
-  (evil-collection-eshell-setup)
-  (evil-collection-eshell-setup-keys)
-  (evil-collection-define-key 'normal 'eshell-mode-map "I"
-    (lambda ()
-      (interactive)
-      (eshell-bol)
-      (evil-insert-state))))
+  (eval-when-compile (evil-collection-require 'eshell t)))
 
 (use-package evil-collection-magit
   :ensure evil-collection
   :defer t
   :init
-  (eval-when-compile (evil-collection-require 'magit))
-
-  :config
-  (evil-collection-magit-setup)
-  (evil-collection-define-key 'normal 'magit-mode-map "M-p" #'magit-section-backward)
-  (evil-collection-define-key 'normal 'magit-mode-map "M-n" #'magit-section-forward)
-  (evil-collection-define-key 'normal 'magit-mode-map "M-P" #'magit-section-backward-sibling)
-  (evil-collection-define-key 'normal 'magit-mode-map "M-N" #'magit-section-forward-sibling))
+  (eval-when-compile (evil-collection-require 'magit t)))
 
 (use-package evil
   :defer t
@@ -956,6 +935,11 @@
         (remove-hook hook #'docker-setup-once-for-evil-keybinding))
       (cl-letf (((symbol-function 'display-warning) #'ignore))
         (evil-collection-require 'docker))
+
+      (evil-collection-docker-setup)
+      (dolist (map evil-collection-docker-maps)
+        (evil-collection-define-key 'normal map "q" #'kill-buffer-and-delete-window))
+
       (fmakunbound #'docker-setup-once-for-evil-keybinding))
 
     (dolist (hook hooks)
@@ -1086,13 +1070,23 @@
     (remove-hook 'eshell-mode-hook #'eshell-setup-once-for-evil-keybinding)
     (cl-letf (((symbol-function 'display-warning) #'ignore))
       (evil-collection-require 'eshell))
+
+    (evil-collection-eshell-setup)
+    (let ((f (lambda ()
+               (evil-collection-eshell-setup-keys)
+               (evil-collection-define-key 'normal 'eshell-mode-map "I"
+                 (lambda ()
+                   (interactive)
+                   (eshell-bol)
+                   (evil-insert-state)))
+               (evil-collection-define-key 'insert 'eshell-mode-map (kbd "C-l") #'eshell/clear)
+               (evil-collection-define-key 'insert 'eshell-mode-map (kbd "<tab>") #'company-complete-common))))
+      (add-hook 'eshell-mode-hook f)
+      (funcall f))
+
     (fmakunbound #'eshell-setup-once-for-evil-keybinding))
 
-  (add-hook 'eshell-mode-hook #'eshell-setup-once-for-evil-keybinding)
-
-  :config
-  (evil-define-key 'insert eshell-mode-map (kbd "C-l") #'eshell/clear)
-  (evil-define-key 'insert eshell-mode-map (kbd "<tab>") #'company-complete-common))
+  (add-hook 'eshell-mode-hook #'eshell-setup-once-for-evil-keybinding))
 
 (use-package help-mode
   :defer t
@@ -1141,6 +1135,9 @@
     (remove-hook 'magit-mode-hook       #'magit-setup-once-for-evil-keybinding)
     (cl-letf (((symbol-function 'display-warning) #'ignore))
       (evil-collection-require 'magit))
+
+    (evil-collection-magit-setup)
+
     (fmakunbound #'magit-setup-once-for-evil-keybinding))
 
   (add-hook 'magit-blame-mode-hook #'magit-setup-once-for-evil-keybinding)
