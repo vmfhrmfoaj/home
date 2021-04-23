@@ -167,7 +167,7 @@
   :config
   (defconst cider-clojure-1.10.1-raw-error
     `(sequence
-      "CompilerException Syntax error "
+      "CompilerException " (or "Syntax" "Unexpected") " error "
       (minimal-match (zero-or-more anything))
       (any "compiling" "macroexpanding" ) space
       (minimal-match (zero-or-more anything))
@@ -236,43 +236,46 @@
   :config
   (defvar clojure--compilation-error-ns nil)
 
-  (defun cider-repl-catch-compilation-error-ns (msg)
-    (when (string-match-p "^:reloading (" msg)
+  (defun cider-repl-catch-compilation-error (msg)
+    (cond
+     ((string-match-p "^:reloading (" msg)
       (let ((errs clojure--compilation-errors))
         (setq clojure--compilation-errors nil
               clojure--compilation-error-ns nil)
         (--each errs
-          (with-current-buffer (-first-item it)
-            (flycheck-buffer)))))
-    (when (string-match "^:error-while-loading \\([-_.0-9A-Za-z]+\\)" msg)
-      (setq clojure--compilation-error-ns (match-string-no-properties 1 msg))))
+          (when-let ((buf (get-buffer (-first-item it))))
+            (with-current-buffer buf
+              (when (bound-and-true-p flycheck-mode)
+                (flycheck-buffer)))))))
 
-  (defun cider-repl-catch-compilation-error (msg)
-    (when-let ((info (cider-extract-error-info cider-compilation-regexp msg)))
-      (let* ((file (if (null clojure--compilation-error-ns)
-                       (nth 0 info)
-                     (concat (->> clojure--compilation-error-ns
-                                  (s-replace "-" "_")
-                                  (s-replace "." "/"))
-                             "." (file-name-extension (nth 0 info)))))
-             (root (->> (or nrepl-project-dir
-                            (clojure-project-root-path))
-                        (file-truename)
-                        (s-chop-suffix "/")))
-             (buf (or (get-file-buffer (concat root "/src/"  file))
-                      (get-file-buffer (concat root "/spec/" file))
-                      (get-file-buffer (concat root "/test/" file))
-                      (-some->> (cider-sync-request:classpath)
-                                (--filter (s-starts-with? (file-truename nrepl-project-dir) it))
-                                (--map (get-file-buffer (concat it "/" file)))
-                                (-non-nil)
-                                (-first-item)))))
-        (when buf
-          (add-to-list 'clojure--compilation-errors (cons buf info))
-          (with-current-buffer buf
-            (when (bound-and-true-p flycheck-mode)
-              (flycheck-buffer))))))
-    (setq clojure--compilation-error-ns nil))
+     ((string-match "^:error-while-loading \\([-_.0-9A-Za-z]+\\)" msg)
+      (setq clojure--compilation-error-ns (match-string-no-properties 1 msg)))
+
+     (t
+      (when-let ((info (cider-extract-error-info cider-compilation-regexp msg)))
+        (let* ((file (if (null clojure--compilation-error-ns)
+                         (nth 0 info)
+                       (concat (->> clojure--compilation-error-ns
+                                    (s-replace "-" "_")
+                                    (s-replace "." "/"))
+                               "." (file-name-extension (nth 0 info)))))
+               (root (->> (or nrepl-project-dir
+                              (clojure-project-root-path))
+                          (file-truename)
+                          (s-chop-suffix "/")))
+               (buf (or (get-file-buffer (concat root "/src/"  file))
+                        (get-file-buffer (concat root "/spec/" file))
+                        (get-file-buffer (concat root "/test/" file))
+                        (-some->> (cider-sync-request:classpath)
+                                  (--filter (s-starts-with? (file-truename nrepl-project-dir) it))
+                                  (--map (get-file-buffer (concat it "/" file)))
+                                  (-non-nil)
+                                  (-first-item)))))
+          (when buf
+            (add-to-list 'clojure--compilation-errors (cons buf info))
+            (with-current-buffer buf
+              (when (bound-and-true-p flycheck-mode)
+                (flycheck-buffer)))))))))
 
   (add-hook 'cider-repl-mode-hook
             (lambda ()
@@ -285,12 +288,12 @@
                 (add-hook 'evil-insert-state-entry-hook f nil t)
                 (add-hook 'evil-insert-state-exit-hook  f nil t))))
 
-  (advice-add #'cider-repl-emit-interactive-stdout :after #'cider-repl-catch-compilation-error-ns)
+  (advice-add #'cider-repl-emit-interactive-stdout :after #'cider-repl-catch-compilation-error)
   (advice-add #'cider-repl-emit-interactive-stderr :after #'cider-repl-catch-compilation-error)
   (advice-add #'cider-repl-emit-stdout :after
               (lambda (_buf msg)
-                "wrap `cider-repl-catch-compilation-error-ns'"
-                (cider-repl-catch-compilation-error-ns msg)))
+                "wrap `cider-repl-catch-compilation-error'"
+                (cider-repl-catch-compilation-error msg)))
   (advice-add #'cider-repl-emit-stderr :after
               (lambda (_buf msg)
                 "wrap `cider-repl-catch-compilation-error'"

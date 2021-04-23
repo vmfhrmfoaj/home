@@ -76,7 +76,7 @@
      '(cider-repl-stdout-face ((t :inherit font-lock-string-face :weight light)))
      '(clojure-cond-condtion-face ((t :inherit italic)))
      '(clojure-define-type-face ((t :inherit font-lock-type-face)))
-     '(clojure-defining-spec-face ((t :inherit clojure-keyword-face)))
+     '(clojure-defining-spec-face ((t :inherit clojure-keyword-face :weight bold)))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :foreground "#b35b42" :weight ,default-weight)))
      '(clojure-fn-parameter-unused-face ((t :inherit clojure-fn-parameter-face :weight normal)))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face :foreground unspecified)))
