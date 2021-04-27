@@ -105,7 +105,7 @@
             (ivy-read "Candidate: " company-candidates
                       :action #'ivy-completion-in-region-action
                       :caller 'counsel-company
-                      :initial-input (concat (downcase (regexp-quote (or company-common company-prefix))) " ")
+                      :initial-input (concat (downcase (or company-common company-prefix)) " ")
                       :sort t)))
       (message "There is no candidate.")))
 

@@ -164,6 +164,8 @@
   :init
   (eval-when-compile (require 'cider-eval nil t))
 
+  (defvar clojure--compilation-errors nil)
+
   :config
   (defconst cider-clojure-1.10.1-raw-error
     `(sequence
@@ -184,8 +186,6 @@
                   ,cider-clojure-1.10-error
                   ,cider-clojure-1.9-error
                   ,cider-clojure-warning))))
-
-  (defvar clojure--compilation-errors nil)
 
   (defun cider-handle-compilation-errors-for-flycheck (msg _eval-buf)
     (when-let ((info (cider-extract-error-info cider-compilation-regexp msg)))

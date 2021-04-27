@@ -802,7 +802,7 @@
                   meta?
                   "\\(:\\)\\(" symbol "\\)/\\(" symbol "\\)\\>")
          (1 'font-lock-keyword-face)
-         (2 'clojure-defining-spec-face)
+         (2 'clojure-keyword-face)
          (3 'font-lock-type-face)
          (4 'clojure-defining-spec-face))
         (,(concat "(" namespace? "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
@@ -810,7 +810,7 @@
                   meta?
                   "\\(::?\\)\\(" symbol "\\)\\>")
          (1 'font-lock-keyword-face)
-         (2 'clojure-defining-spec-face)
+         (2 'clojure-keyword-face)
          (3 'clojure-defining-spec-face))
 
         ;; Special forms

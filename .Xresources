@@ -4,7 +4,7 @@ Xft.autohint: false
 Xft.hinting: true
 Xft.hintstyle: hintfull
 Xft.lcdfilter: lcddefault
-Emacs*Background: black
+Emacs*Background: grey15
 Emacs*fontBackend: xft
 Emacs*menuBar: off
 Emacs*toolBar: off

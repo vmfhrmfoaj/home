@@ -179,7 +179,7 @@
 
   (defvar focus--exclude-modes '(term-mode eshell-mode))
 
-  (defvar focus--focus-move-timer nil)
+  (defvar-local focus--focus-move-timer nil)
 
   (defun focus-move-focus-with-timer ()
     (when (timerp focus--focus-move-timer)
@@ -195,21 +195,40 @@
   (defun focus--enable (&rest _)
     (unless (or (apply #'derived-mode-p focus--exclude-modes)
                 (minibufferp))
-      (focus-init)
-      (remove-hook 'post-command-hook 'focus-move-focus t)
-      (add-hook    'post-command-hook 'focus-move-focus-with-timer nil t)
-      (focus-move-focus)
-      (redisplay t)))
+      (let ((cur-buf (current-buffer)))
+        (--each (->> (window-list)
+                     (--map (window-buffer it))
+                     (-distinct))
+          (when-let ((win (get-buffer-window it)))
+            (with-selected-window win
+              (with-current-buffer it
+                (focus-init)
+                (remove-hook 'post-command-hook 'focus-move-focus t)
+                (if (equal it cur-buf)
+                    (progn
+                      (add-hook 'post-command-hook 'focus-move-focus-with-timer nil t)
+                      (focus-move-focus))
+                  (focus-move-overlays (point-min) (point-min))
+                  (setq cursor-type 'hollow))
+                (redisplay t))))))))
 
   (defun focus--disable (&rest _)
     (unless (or (apply #'derived-mode-p focus--exclude-modes)
                 (minibufferp))
-      (remove-hook 'post-command-hook 'focus-move-focus-with-timer t)
-      (when (timerp focus--focus-move-timer)
-        (cancel-timer focus--focus-move-timer)
-        (setq focus--focus-move-timer nil))
-      (focus-terminate)
-      (redisplay t)))
+      (--each (->> (window-list)
+                   (--map (window-buffer it))
+                   (-distinct))
+        (when-let ((win (get-buffer-window it)))
+          (with-selected-window win
+            (with-current-buffer it
+              (remove-hook 'post-command-hook 'focus-move-focus-with-timer t)
+              (when (timerp focus--focus-move-timer)
+                (cancel-timer focus--focus-move-timer)
+                (setq focus--focus-move-timer nil))
+              (setq cursor-type 'hollow)
+              (focus-terminate)
+              (redisplay t)))))
+      (evil-refresh-cursor)))
 
   (defvar company--pseudo-tooltip-bg-lines nil)
   (defvar company--pseudo-tooltip-start-line nil)

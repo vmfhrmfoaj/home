@@ -76,7 +76,7 @@
      '(cider-repl-stdout-face ((t :inherit font-lock-string-face :weight light)))
      '(clojure-cond-condtion-face ((t :inherit italic)))
      '(clojure-define-type-face ((t :inherit font-lock-type-face)))
-     '(clojure-defining-spec-face ((t :inherit clojure-keyword-face :weight bold)))
+     '(clojure-defining-spec-face ((t :inherit font-lock-function-name-face)))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :foreground "#b35b42" :weight ,default-weight)))
      '(clojure-fn-parameter-unused-face ((t :inherit clojure-fn-parameter-face :weight normal)))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face :foreground unspecified)))
@@ -180,7 +180,7 @@
   (eval-when-compile (require 'focus nil t))
 
   :config
-  (custom-set-faces `(focus-unfocused ((t :foreground "#606060")))))
+  (custom-set-faces `(focus-unfocused ((t :foreground "#505050")))))
 
 (use-package font-lock
   :defer t
@@ -320,7 +320,7 @@
    '(org-agenda-date-weekend ((t :inherit org-agenda-date)))
    '(org-agenda-date-today ((t :inherit org-agenda-date :foreground "turquoise3")))
    '(org-agenda-calendar-event ((t :weight light)))
-   '(org-block ((t :foreground unspecified :weight normal)))
+   `(org-block ((t :foreground ,(color-from 'default :foreground -10) :weight normal)))
    '(org-checkbox-statistics-done ((t :inherit shadow :weight light)))
    '(org-checkbox-statistics-todo ((t :inherit shadow :weight light)))
    '(org-code ((t :inherit font-lock-constant-face :foreground unspecified :weight normal)))
@@ -337,7 +337,7 @@
    '(org-tag ((t :weight light)))
    '(org-task-done ((t :inherit org-headline-done :strike-through t)))
    '(org-todo ((t :weight light :box (:line-width (1 . -1)))))
-   `(org-verbatim ((t :inherit default :foreground ,(color-from 'default :foreground -10) :weight normal)))
+   '(org-verbatim ((t :inherit org-block)))
    '(org-warning ((t :inherit font-lock-warning-face :underline nil)))))
 
 (use-package php-mode

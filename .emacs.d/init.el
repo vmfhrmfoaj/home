@@ -69,10 +69,9 @@ See the docstrings of `defalias' and `make-obsolete' for more details."
       custom-file "~/.emacs.d/.custom.el"
       gc-cons-threshold (* 1024 1024 1024)
       inhibit-startup-screen t)
+
 (when (file-exists-p custom-file)
-  (add-hook 'emacs-startup-hook
-            (lambda ()
-              (load custom-file))))
+  (load custom-file))
 
 (require 'package)
 (setq package-archives
