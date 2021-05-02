@@ -195,7 +195,9 @@
   (defun focus--enable (&rest _)
     (unless (or (apply #'derived-mode-p focus--exclude-modes)
                 (minibufferp))
-      (let ((cur-buf (current-buffer)))
+      (let ((cur-buf (current-buffer))
+            (adob--adow-mode nil)
+            (golden-ratio-mode nil))
         (--each (->> (window-list)
                      (--map (window-buffer it))
                      (-distinct))
@@ -209,26 +211,28 @@
                       (add-hook 'post-command-hook 'focus-move-focus-with-timer nil t)
                       (focus-move-focus))
                   (focus-move-overlays (point-min) (point-min))
-                  (setq cursor-type 'hollow))
-                (redisplay t))))))))
+                  (setq cursor-type 'hollow))))))
+        (redisplay t))))
 
   (defun focus--disable (&rest _)
     (unless (or (apply #'derived-mode-p focus--exclude-modes)
                 (minibufferp))
-      (--each (->> (window-list)
-                   (--map (window-buffer it))
-                   (-distinct))
-        (when-let ((win (get-buffer-window it)))
-          (with-selected-window win
-            (with-current-buffer it
-              (remove-hook 'post-command-hook 'focus-move-focus-with-timer t)
-              (when (timerp focus--focus-move-timer)
-                (cancel-timer focus--focus-move-timer)
-                (setq focus--focus-move-timer nil))
-              (setq cursor-type 'hollow)
-              (focus-terminate)
-              (redisplay t)))))
-      (evil-refresh-cursor)))
+      (let ((adob--adow-mode nil)
+            (golden-ratio-mode nil))
+        (--each (->> (window-list)
+                     (--map (window-buffer it))
+                     (-distinct))
+          (when-let ((win (get-buffer-window it)))
+            (with-selected-window win
+              (with-current-buffer it
+                (remove-hook 'post-command-hook 'focus-move-focus-with-timer t)
+                (when (timerp focus--focus-move-timer)
+                  (cancel-timer focus--focus-move-timer)
+                  (setq focus--focus-move-timer nil))
+                (setq cursor-type 'hollow)
+                (focus-terminate)))))
+        (evil-refresh-cursor)
+        (redisplay t))))
 
   (defvar company--pseudo-tooltip-bg-lines nil)
   (defvar company--pseudo-tooltip-start-line nil)
@@ -498,11 +502,14 @@
 
   (with-eval-after-load "golden-ratio"
     (add-hook 'window-size-change-functions
-              (lambda (&rest _)
-                (when (frame-size-changed-p)
-                  (let ((w (-second-item (golden-ratio--dimensions))))
-                    (setq ivy-posframe-width w
-                          ivy-posframe-min-width w))))))
+              (let ((ofw 0))
+                (lambda (&rest _)
+                  (let ((fw (frame-width)))
+                    (unless (= ofw fw)
+                      (setq ofw fw)
+                      (let ((w (-second-item (golden-ratio--dimensions))))
+                        (setq ivy-posframe-width w
+                              ivy-posframe-min-width w))))))))
 
   (advice-add #'ivy-posframe--display :before-until #'ivy-posframe--re-display)
 

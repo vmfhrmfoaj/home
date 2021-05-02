@@ -303,8 +303,7 @@
         (setq-local default-directory (concat home-dir "/Desktop/Org/")
                     projectile-project-name "Org"))
       (when (= (point-min) (point-max))
-        (goto-char (point-min))
-        (insert "* ")))
+        (goto-char (point-min))))
     (switch-to-buffer buf)))
 
 (defun kill-new-buffer-file-name ()

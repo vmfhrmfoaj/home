@@ -105,4 +105,5 @@
       0))
 
   (add-to-list 'winum-assign-functions #'winum-assign-0-to-treemacs)
+
   (winum-mode))

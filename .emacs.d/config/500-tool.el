@@ -573,6 +573,10 @@
 
   (treemacs-resize-icons 13)
 
+  (with-eval-after-load "winum"
+    (-update->> winum-ignored-buffers-regexp
+                (--remove (s-starts-with? (regexp-quote treemacs--buffer-name-prefix) it))))
+
   (advice-add #'treemacs--read-string :override #'read-string)
   (advice-add #'treemacs--setup-icon-background-colors :after
               (lambda (&rest _)
