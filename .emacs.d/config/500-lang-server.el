@@ -414,6 +414,9 @@
   (defun lsp--custom-eldoc-message-for-emacs-27 (&optional msg)
     "Show MSG in eldoc."
     (unless isearch-mode
+      (cond
+       ((derived-mode-p 'c-mode 'c++-mode)
+        (setq msg (s-replace-regexp "\\s-*\\\\\\s-*" " " msg))))
       (setq lsp--eldoc-saved-message msg)
       (let ((lines (s-lines (or msg "")))
             (max-line lsp--max-line-eldoc-msg))
@@ -427,6 +430,9 @@
   (defun lsp--custom-eldoc-message-for-emacs-28 (&optional msg)
     "Show MSG in eldoc."
     (unless isearch-mode
+      (cond
+       ((derived-mode-p 'c-mode 'c++-mode)
+        (setq msg (s-replace-regexp "\\s-*\\\\\\s-*" " " msg))))
       (when-let ((max-chars (* lsp--max-line-eldoc-msg (frame-width))))
         (when (< max-chars (length msg))
           (setq msg (concat (substring msg 0 max-chars) "\n" (propertize "(...)" 'face 'shadow)))))

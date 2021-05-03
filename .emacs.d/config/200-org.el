@@ -212,10 +212,12 @@ which see."
                      (cur-date (-drop 3 (decode-time cur-time)))
                      (10am (->> cur-date (-concat '(0 0 10)) (encode-time)))
                      (7pm  (->> cur-date (-concat '(0 0 19)) (encode-time))))
-                (when (or (memq (calendar-day-of-week (calendar-current-date)) '(0 6))
-                          (time-less-p cur-time 10am)
-                          (not (time-less-p cur-time 7pm)))
-                  (setq filter (concat "-" filter)))
+                (setq filter (concat (if (or (memq (calendar-day-of-week (calendar-current-date)) '(0 6))
+                                             (time-less-p cur-time 10am)
+                                             (not (time-less-p cur-time 7pm)))
+                                         "-"
+                                       "+")
+                                     filter))
                 (add-to-list 'org-agenda-tag-filter filter))))
 
   (advice-add #'org-add-log-note :override

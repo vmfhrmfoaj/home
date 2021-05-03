@@ -318,7 +318,7 @@
            (symbol? (concat "\\(?:" symbol "\\)?"))
            (namespace  (concat "\\(?:" symbol "/\\)"))
            (namespace? (concat namespace "?"))
-           (meta? "\\(?:\\(?:#?\\^{[^^]+}\\|\\^:?\\sw+\\)[ \r\n\t]+\\)?")
+           (meta? "\\(?:\\(?:#?\\^{[^^]+?}\\|\\^:?\\sw+\\)[ \r\n\t]+\\)?")
            (core-ns  (concat (regexp-opt '("clojure.core" "cljs.core" "core") nil) "/"))
            (core-ns? (concat "\\(?:" core-ns "\\)?"))
            (oop-kw  (regexp-opt '("definterface" "defprotocol" "defrecord" "deftype" "extend-protocol" "extend-type" "proxy" "reify")))
@@ -707,13 +707,13 @@
                   whitespace* meta?
                   "\\(" symbol "?\\)")
          (1 'font-lock-keyword-face)
-         (2 'font-lock-variable-name-face nil t))
+         (2 'font-lock-function-name-face nil t))
 
         ;; Type definition
         (,(concat "(" core-ns? "\\(defstruct\\)\\>"
                   whitespace*
                   meta?
-                  "\\(" symbol "\\)?")
+                  "\\(" symbol "\\)")
          (1 'font-lock-keyword-face)
          (2 'font-lock-type-face nil t))
 
@@ -722,7 +722,7 @@
                   "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
                   whitespace*
                   meta?
-                  "\\(" symbol "\\)?")
+                  "\\(" symbol "\\)")
          (1 'font-lock-keyword-face)
          (2 'clojure-variable-definition-face nil t))
 
@@ -730,7 +730,7 @@
         (,(concat "(" core-ns? "\\(fn\\)"
                   whitespace+
                   meta?
-                  "\\(" symbol "\\)?" )
+                  "\\(" symbol "\\)" )
          (1 'font-lock-keyword-face)
          (2 'font-lock-function-name-face nil t)
 

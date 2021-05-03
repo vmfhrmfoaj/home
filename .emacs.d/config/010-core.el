@@ -129,7 +129,7 @@
   (eval-when-compile (require 'gcmh nil t))
 
   :config
-  (setq gcmh-high-cons-threshold (* 1024 1024 128))
+  (setq gcmh-high-cons-threshold (* 1024 1024 64))
 
   (add-hook 'after-save-hook
             (lambda ()
