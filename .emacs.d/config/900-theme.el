@@ -6,62 +6,33 @@
       (byte-compile-file "~/.emacs.d/config/func.el")))
   (load-file "~/.emacs.d/config/func.el"))
 
-(use-package base16-theme
+(use-package leuven-theme
   :ensure t
   :init
-  (eval-when-compile (require 'base16-theme nil t))
+  (eval-when-compile (require 'leuven-theme nil t))
 
   :config
-  (setq frame-background-mode 'dark)
-  (load-theme 'base16-twilight t)
+  (setq frame-background-mode 'light)
+  (load-theme 'leuven t)
 
   (custom-set-faces
-   '(c-style-brace-face ((t :foreground "#5f5a60" :weight light)))
-   '(fixed-pitch ((t :inherit default)))
-   '(highlight ((t :background "#484a4e" :foreground "#d5d8d6")))
-   `(isearch ((t :weight unspecified :box (:line-width (-1 . -1) :color ,(color-from 'isearch :foreground -30 -10)))))
+   `(isearch ((t :underline unspecified :box (:line-width (-1 . -1) :color ,(color-from 'isearch :background 30)))))
    '(italic ((t :family "Fantasque Sans Mono" :height 110 :slant italic)))
-   `(lazy-highlight ((t :weight unspecified :box (:line-width (-1 . -1) :color ,(color-from 'lazy-highlight :foreground -10 -10)))))
-   `(line-number ((t :background ,(color-from 'default :background 2)
-                     :foreground ,(color-from 'default :foreground -25)
-                     :weight light
-                     :extend t)))
-   '(line-number-current-line ((t :inherit line-number :extend t)))
-   `(mode-line-inactive ((t :weight light)))
-   '(shadow ((t :foreground "#726c73" :weight normal)))
+   `(lazy-highlight ((t :box (:line-width (-1 . -1) :color ,(color-from 'lazy-highlight :background -5)))))
+   `(line-number ((t :background ,(color-from 'default :background -2)
+                     :foreground ,(color-from 'default :foreground 25)
+                     :weight light)))
+   '(line-number-current-line ((t :inherit line-number)))
+   '(mode-line ((t :box (:line-width (-1 . -1) :color "#1a2f54"))))
+   '(mode-line-inactive ((t :weight light :box unspecified)))
+   '(shadow ((t :weight normal)))
    `(show-paren-match ((t :background unspecified :foreground ,(color-from 'cursor :background) :underline t :box (:line-width (-1 . -1)))))
-   '(show-paren-mismatch ((t :background "red3" :foreground "#f0d2cd" :weight bold :underline t)))
+   '(show-paren-mismatch ((t :weight bold :underline t)))
    '(symbol-dash-or-underline-face ((t :weight light)))
-   '(whitespace-newline ((t :background unspecified :foreground "#646664" :weight light)))
-   '(whitespace-space   ((t :background unspecified :foreground "#646664" :weight light)))
-   '(whitespace-tab     ((t :background unspecified :foreground "#646664" :weight light)))
-   '(vertical-border ((t :foreground "#222326")))))
-
-(use-package auto-dim-other-buffers
-  :defer t
-  :init
-  (eval-when-compile (require 'auto-dim-other-buffers nil t))
-
-  :config
-  (custom-set-faces
-   `(auto-dim-other-buffers-face
-     ((t :background ,(color-from 'default :background 4)
-         :foreground ,(color-from 'default :foreground -15))))
-   `(auto-dim-other-line-number-face
-     ((t :background ,(color-from 'default :background 3.5)
-         :foreground ,(color-from 'line-number :foreground -5))))))
-
-(use-package company
-  :defer t
-  :init
-  (eval-when-compile (require 'company nil t))
-
-  :config
-  (custom-set-faces
-   '(company-preview ((t :inherit shadow :underline t)))
-   '(company-preview-common ((t :inherit company-preview)))
-   '(company-scrollbar-bg ((t :background "#242529")))
-   '(company-scrollbar-fg ((t :background "#5a5b5a")))))
+   '(whitespace-newline ((t :weight light)))
+   '(whitespace-space   ((t :weight light)))
+   '(whitespace-tab     ((t :weight light)))
+   '(vertical-border ((t :foreground "#cccccc")))))
 
 (use-package clojure-mode
   :defer t
@@ -77,13 +48,13 @@
      '(clojure-cond-condtion-face ((t :inherit italic)))
      '(clojure-define-type-face ((t :inherit font-lock-type-face)))
      '(clojure-defining-spec-face ((t :inherit font-lock-function-name-face)))
-     `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :foreground "#b35b42" :weight ,default-weight)))
+     `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
      '(clojure-fn-parameter-unused-face ((t :inherit clojure-fn-parameter-face :weight normal)))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face :foreground unspecified)))
      '(clojure-meta-face ((t :inherit shadow :weight normal)))
-     `(clojure-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :foreground "#b35b42" :weight ,default-weight)))
+     `(clojure-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
      '(clojure-local-binding-variable-name-unsed-face ((t :inherit clojure-local-binding-variable-name-face :weight normal)))
-     '(clojure-punctuation-face ((t :foreground "#5f5a60" :weight light)))
+     '(clojure-punctuation-face ((t :inherit shadow :weight light)))
      '(clojure-semi-function-name-face ((t :inherit font-lock-function-name-face)))
      '(clojure-side-effect-face ((t :inherit italic :weight bold :underline t)))
      '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))
@@ -116,18 +87,9 @@
 
   :config
   (custom-set-faces
-   '(diff-refine-added   ((t :background "#339933" :weight bold)))
-   '(diff-refine-changed ((t :background "#999933" :weight bold)))
-   '(diff-refine-removed ((t :background "#aa3333" :weight bold)))))
-
-(use-package eldoc
-  :defer t
-  :init
-  (eval-when-compile (require 'eldoc nil t))
-
-  :config
-  (custom-set-faces
-   '(eldoc-highlight-function-argument ((t :underline t)))))
+   '(diff-refine-added   ((t :weight bold)))
+   '(diff-refine-changed ((t :weight bold)))
+   '(diff-refine-removed ((t :weight bold)))))
 
 (use-package elisp-mode
   :defer t
@@ -137,8 +99,8 @@
   :config
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
-     `(lisp-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :foreground "#b35b42" :weight ,default-weight)))
-     '(lisp-punctuation-face ((t :foreground "#5f5a60" :weight light))))))
+     `(lisp-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
+     '(lisp-punctuation-face ((t :inherit shadow :weight light))))))
 
 (use-package eshell
   :defer t
@@ -155,24 +117,16 @@
   (eval-when-compile (require 'evil-goggles nil t))
 
   :config
-  (let ((common-style
-         '(:underline unspecified :slant unspecified :overline unspecified :box unspecified :inverse-video t)))
+  (let ((common-style '(:underline unspecified :slant unspecified :overline unspecified :box unspecified :inverse-video nil)))
     (custom-set-faces
      `(evil-goggles-delete-face
-       ((((class color) (background light)) :background "#eecccc" ,@common-style)
-        (((class color) (background dark))  :inherit diff-removed ,@common-style)))
+       ((t :background "#eecccc" ,@common-style)))
      `(evil-goggles-change-face
-       ((((class color) (background light)) :background "#eecccc" ,@common-style)
-        (((class color) (background dark))  :inherit diff-removed ,@common-style)))
+       ((t :background "#eecccc" ,@common-style)))
      `(evil-goggles-paste-face
-       ((((class color) (background light)) :background "#cceecc" ,@common-style)
-        (((class color) (background dark))  :inherit diff-added   ,@common-style)))
+       ((t :background "#cceecc" ,@common-style)))
      `(evil-goggles-yank-face
-       ((((class color) (background light)) :background "#eeeecc" ,@common-style)
-        (((class color) (background dark))  :inherit diff-changed ,@common-style)))
-     '(evil-goggles-undo-redo-remove-face ((t :inherit evil-goggles-delete-face)))
-     '(evil-goggles-undo-redo-add-face    ((t :inherit evil-goggles-paste-face)))
-     '(evil-goggles-undo-redo-change-face ((t :inherit evil-goggles-change-face))))))
+       ((t :background "#eeeecc" ,@common-style))))))
 
 (use-package focus
   :defer t
@@ -180,7 +134,8 @@
   (eval-when-compile (require 'focus nil t))
 
   :config
-  (custom-set-faces `(focus-unfocused ((t :foreground "#505050")))))
+  (custom-set-faces
+   '(focus-unfocused ((t :foreground "#adadad")))))
 
 (use-package font-lock
   :defer t
@@ -189,19 +144,17 @@
 
   :config
   (custom-set-faces
-   '(font-lock-builtin-face ((t :foreground "#808ea6")))
-   '(font-lock-comment-face ((t :foreground "#717371" :weight light)))
+   '(font-lock-comment-face ((t :weight light :slant unspecified)))
    '(font-lock-doc-face ((t :weight light)))
-   '(font-lock-function-name-face ((t :foreground "#8fa6bf" :weight bold)))
+   '(font-lock-function-name-face ((t :weight bold)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
    '(font-lock-regexp-grouping-backslash ((t :weight normal)))
    '(font-lock-regexp-grouping-construct ((t :weight normal)))
-   '(font-lock-string-face ((t :foreground "#929d76")))
-   '(font-lock-type-face ((t :foreground "#c4bb76")))
-   '(font-lock-variable-name-face ((t :foreground "#bf6246"))))
+   '(font-lock-type-face ((t :weight unspecified)))
+   '(font-lock-variable-name-face ((t :weight unspecified))))
   (custom-set-faces
    `(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face
-                                          :foreground ,(color-from 'font-lock-comment-face :foreground -10))))))
+                                          :foreground ,(color-from 'font-lock-comment-face :foreground 10))))))
 
 (use-package fringe
   :defer t
@@ -210,7 +163,7 @@
 
   :config
   (custom-set-faces
-   `(fringe ((t :background ,(color-from 'default :background 4) :foreground "#454645")))))
+   `(fringe ((t :background ,(color-from 'default :background -3) :foreground "#a5ceec")))))
 
 (use-package go-mode
   :defer t
@@ -222,16 +175,6 @@
    '(golang-type-definition-face ((t :inherit font-lock-type-face)))
    '(golang-interface-method-face ((t :inherit font-lock-function-name-face)))))
 
-(use-package hl-todo
-  :defer t
-  :init
-  (eval-when-compile (require 'hl-todo nil t))
-
-  :config
-  (let ((default-weight (face-attribute 'default :weight)))
-    (custom-set-faces
-     `(hl-todo ((t :foreground "#cc9393" :weight ,default-weight))))))
-
 (use-package highlight-parentheses
   :defer t
   :init
@@ -239,19 +182,12 @@
 
   :config
   (setq highlight-parentheses-colors
-        (-drop 1 (--iterate (dim-color it 5) (color-from 'cursor :background) 5)))
+        (->> (--iterate (dim-color it 5) (color-from 'cursor :background) 5)
+             (-drop 1)
+             (reverse)))
 
   (custom-set-faces
    '(highlight-parentheses-highlight ((t :weight normal :underline t)))))
-
-(use-package highlight-numbers
-  :defer t
-  :init
-  (eval-when-compile (require 'highlight-numbers nil t))
-
-  :config
-  (custom-set-faces
-   '(highlight-numbers-number ((t :inherit font-lock-constant-face)))))
 
 (use-package ivy
   :defer t
@@ -260,15 +196,7 @@
 
   :config
   (custom-set-faces
-   `(ivy-current-match ((t :background ,(color-from 'default :background)
-                           :foreground ,(color-from 'default :foreground 20)
-                           :weight bold
-                           :box (:line-width (-1 . -1) :color "#717371"))))
-   '(ivy-grep-info ((t :inherit font-lock-string-face :weight unspecified)))
-   '(ivy-minibuffer-match-face-1 ((t :background "#7d7e7f" :foreground "#535454")))
-   '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b")))
-   '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :foreground "#707099")))
-   '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f")))))
+   '(ivy-grep-info ((t :inherit font-lock-string-face :weight unspecified)))))
 
 (use-package lsp-mode
   :defer t
@@ -281,7 +209,7 @@
    '(lsp-face-highlight-textual ((t :underline t)))
    '(lsp-face-highlight-read    ((t :underline t)))
    '(lsp-face-highlight-write   ((t :underline t)))
-   '(lsp-punctuation-face ((t :inherit unspecified)))))
+   '(lsp-modeline-code-actions-face ((t :foreground "yellow")))))
 
 (use-package magit
   :defer t
@@ -290,55 +218,25 @@
 
   :config
   (custom-set-faces
-   '(magit-diff-added             ((t :background "#224422" :foreground "#cceecc")))
-   '(magit-diff-added-highlight   ((t :background "#336633" :foreground "#ddffdd")))
-   '(magit-diff-removed           ((t :background "#442222" :foreground "#eecccc")))
-   '(magit-diff-removed-highlight ((t :background "#663333" :foreground "#ffdddd")))
-   `(magit-diff-context ((t :inherit magit-diff-context-highlight
-                            :background ,(bg-color-from 'default)
-                            :weight light)))
+   `(magit-diff-context ((t :weight light)))
    '(magit-diff-context-highlight ((t :weight normal)))))
-
-(use-package markdown-mode
-  :defer t
-  :init
-  (eval-when-compile (require 'markdown-mode nil t))
-
-  :config
-  (custom-set-faces
-   '(markdown-markup-face ((t :foreground "#717371" :slant normal :weight light)))
-   '(markdown-header-delimiter-face ((t :inherit markdown-markup-face)))))
 
 (use-package org
   :defer t
   :init
   (eval-when-compile (require 'org nil t))
 
+  (add-hook 'org-agenda-mode-hook
+            (lambda ()
+              (add-to-list 'face-remapping-alist
+                           `(org-tag (:inherit default :foreground ,(color-from 'org-tag :foreground) :weight normal)))))
+
   :config
   (custom-set-faces
-   '(org-agenda-date ((t :foreground "turquoise4" :height 1.1)))
-   '(org-agenda-date-weekend ((t :inherit org-agenda-date)))
-   '(org-agenda-date-today ((t :inherit org-agenda-date :foreground "turquoise3")))
-   '(org-agenda-calendar-event ((t :weight light)))
-   `(org-block ((t :foreground ,(color-from 'default :foreground -10) :weight normal)))
-   '(org-checkbox-statistics-done ((t :inherit shadow :weight light)))
-   '(org-checkbox-statistics-todo ((t :inherit shadow :weight light)))
-   '(org-code ((t :inherit font-lock-constant-face :foreground unspecified :weight normal)))
-   '(org-date ((t :underline unspecified :weight light)))
-   '(org-done ((t  :weight light :box (:line-width (1 . -1)))))
-   '(org-drawer ((t :inherit font-lock-builtin-face  :weight light)))
-   '(org-headline-done ((t :inherit shadow)))
-   `(org-hide ((t :inherit default :background unspecified :foreground ,(bg-color-from 'default))))
-   '(org-link ((t :inherit link :underline unspecified)))
-   '(org-meta-line ((t :inherit font-lock-comment-face)))
-   '(org-parenthesis-context-face ((t :inherit default :weight light)))
-   '(org-property-value  ((t :weight light)))
-   '(org-special-keyword ((t :weight light)))
-   '(org-tag ((t :weight light)))
-   '(org-task-done ((t :inherit org-headline-done :strike-through t)))
-   '(org-todo ((t :weight light :box (:line-width (1 . -1)))))
-   '(org-verbatim ((t :inherit org-block)))
-   '(org-warning ((t :inherit font-lock-warning-face :underline nil)))))
+   `(org-block-begin-line ((t :foreground ,(color-from 'org-block-begin-line :background -25) :underline unspecified :extend t)))
+   `(org-block-end-line ((t :foreground ,(color-from 'org-block-end-line :background -25) :overline unspecified :extend t)))
+   '(org-tag ((t :background unspecified :slant unspecified)))))
+
 
 (use-package php-mode
   :defer t
@@ -349,15 +247,6 @@
   (custom-set-faces
    '(php-passive-assign-variable-face ((t :inherit font-lock-variable-name-face)))
    `(php-variable-name ((t :inherit font-lock-variable-name-face)))))
-
-(use-package powerline
-  :defer t
-  :init
-  (eval-when-compile (require 'powerline nil t))
-
-  :config
-  (custom-set-faces
-   `(powerline-inactive2 ((t :background ,(color-from 'default :background 4))))))
 
 (use-package rpm-spec-mode
   :defer t
@@ -386,62 +275,23 @@
    `(rust-string-interpolation-face
      ((t :inherit (font-lock-regexp-grouping-construct font-lock-string-face) :slant unspecified)))))
 
-(use-package sh-script
+(use-package powerline
   :defer t
   :init
-  (eval-when-compile (require 'sh-script nil t))
+  (eval-when-compile (require 'powerline nil t))
 
   :config
   (custom-set-faces
-   `(sh-heredoc
-     ((((class color) (background light)) :background "#fff6e5" :foreground "orange2")
-      (((class color) (background dark))  :background "#201818" :foreground "tan1")))
-   `(sh-quoted-exec
-     ((((class color) (background light)) :background "#faecfa" :foreground "magenta")
-      (((class color) (background light)) :background "#191719" :foreground "magenta")))))
+   '(powerline-active1 ((t :background "#edf8fc" :foreground "#335ea8")))))
 
-(use-package swiper
+(use-package spaceline
   :defer t
   :init
-  (eval-when-compile (require 'swiper nil t))
+  (eval-when-compile (require 'spaceline nil t))
 
   :config
   (custom-set-faces
-   '(swiper-line-face ((t :background "#5f6369" :foreground "white" :weight bold :extend t)))
-   '(swiper-match-face-1 ((t :background "#7d7e7f")))
-   '(swiper-match-face-2 ((t :background "#e99ce8")))
-   '(swiper-match-face-3 ((t :background "#bbbbff")))
-   '(swiper-match-face-4 ((t :background "#ffbbff")))
-   '(swiper-background-match-face-1 ((t :background "#7d7e7f" :foreground "#535454")))
-   '(swiper-background-match-face-2 ((t :background "#e99ce8" :foreground "#8b5d8b")))
-   '(swiper-background-match-face-3 ((t :background "#bbbbff" :foreground "#707099")))
-   '(swiper-background-match-face-4 ((t :background "#ffbbff" :foreground "#7f5d7f"))))
-  ;; copy from `swiper--recompute-background-faces'
-  (let ((faces '(swiper-match-face-1
-                 swiper-match-face-2
-                 swiper-match-face-3
-                 swiper-match-face-4))
-        (colir-compose-method #'colir-compose-alpha)
-        (line-bg (face-background 'swiper-line-face)))
-    (cl-mapc (lambda (f1 f2)
-               (let ((bg (face-background f1)))
-                 (when bg
-                   (set-face-background
-                    f2
-                    (colir-blend
-                     (colir-color-parse bg)
-                     (colir-color-parse line-bg))))))
-             swiper-faces
-             faces)))
-
-(use-package treemacs
-  :defer t
-  :init
-  (eval-when-compile (require 'treemacs nil t))
-
-  :config
-  (custom-set-faces
-   `(treemacs-fringe-indicator-face ((t :foreground ,(face-background 'cursor))))))
+   `(spaceline-symbol-segment-face ((t :inherit powerline-active1 :weight normal)))))
 
 (use-package web-mode
   :defer t
@@ -451,13 +301,3 @@
   :config
   (custom-set-faces
    '(web-mode-html-attr-equal-face ((t :inherit shadow)))))
-
-(use-package yascroll
-  :defer t
-  :init
-  (eval-when-compile (require 'yascroll nil t))
-
-  :config
-  (let ((fringe-fg (color-from 'fringe :foreground)))
-    (custom-set-faces
-     `(yascroll:thumb-fringe ((t :background ,fringe-fg :foreground ,fringe-fg))))))

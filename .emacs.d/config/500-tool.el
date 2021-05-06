@@ -47,7 +47,8 @@
   :hook ((conf-mode            . enable-display-line-numbers)
          (git-timemachine-mode . enable-display-line-numbers)
          (prog-mode            . enable-display-line-numbers)
-         (rpm-spec-mode        . enable-display-line-numbers))
+         (rpm-spec-mode        . enable-display-line-numbers)
+         (nxml-mode            . enable-display-line-numbers))
   :init
   (eval-when-compile (require 'display-line-numbers nil t))
 
@@ -698,8 +699,6 @@
   (add-hook 'lisp-interaction-mode-hook #'which-func-setup-once)
 
   :config
-  (defvar which-func-icon "⊡​​​") ; zero width space * 3
-
   (defun which-func-custom-update-1 (window)
     (when (and which-func-mode
                (member major-mode which-func-modes))
@@ -708,7 +707,7 @@
 	        (let ((current (which-function)))
 	          (unless (equal current (gethash window which-func-table))
                 (setq spaceline-symbol-segment--symbol
-                      (when current (concat which-func-icon current)))
+                      (when current (concat "⊡​​​" current)))
                 (puthash window current which-func-table)
                 (force-mode-line-update)))
 	      (error

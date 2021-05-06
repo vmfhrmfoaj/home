@@ -1297,6 +1297,24 @@
     '((t (:inherit org-headline-done)))
     "Org complete task face")
 
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (font-lock-add-keywords
+               nil
+               `((,(format org-heading-keyword-regexp-format
+                           (concat
+                            "\\(?:"
+                            (mapconcat 'regexp-quote org-not-done-keywords "\\|")
+                            "\\)"))
+                  (2 'org-headline-todo prepend))
+                 (,(format org-heading-keyword-regexp-format
+                           (concat
+                            "\\(?:"
+                            (mapconcat 'regexp-quote org-done-keywords "\\|")
+                            "\\)"))
+		          (2 'org-headline-done prepend)))
+               :append)))
+
   :config
   (font-lock-add-keywords
    'org-mode

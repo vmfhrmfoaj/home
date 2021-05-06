@@ -162,7 +162,8 @@
   (eval-when-compile (require 'evil-goggles nil t))
 
   :config
-  (setq evil-goggles-duration 0.15)
+  (setq evil-goggles-duration 0.15
+        evil-goggles-pulse nil)
 
   (add-hook 'minibuffer-setup-hook
             (lambda ()
@@ -605,7 +606,7 @@
           remote-host
           buffer-modified)
          :priority 98)
-        (symbol :priority 105 :when active))
+        (symbol :when active :priority 105))
       '((purpose :priority 94)
         (selection-info :priority 95)
         input-method
@@ -617,7 +618,7 @@
         (org-clock :when active)
         (process :when active)
         (minor-modes :when active :priority 9)
-        (major-icon :fallback major-mode :priority 79)))
+        (major-mode :when active :priority 79)))
     (setq-default mode-line-format '("%e" (:eval (spaceline-ml-main)))))
 
   (setq spaceline-window-numbers-unicode t)

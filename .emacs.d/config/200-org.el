@@ -77,6 +77,8 @@ which see."
   (setq org-complete-tags-always-offer-all-agenda-tags t
         org-fontify-whole-heading-line t
         org-fontify-quote-and-verse-blocks t
+        org-fontify-todo-headline nil ; Add custom `font-lock' rules
+        org-fontify-done-headline nil
         org-hide-emphasis-markers t
         org-image-actual-width (* 100 (frame-char-width))
         org-insert-schedule-deadline t
@@ -276,12 +278,11 @@ which see."
                     ":PROPERTIES:"                                                       "\n"
                     ":Effort:   %^{Effort|1:00|3:00|6:00|1d|3d|1w|2w|3w|1m|3m|6m|9m|1y}" "\n"
                     ":END:"                                                              "\n"
-                    "\n"
-                    "_REQUIREMENTS_:"                                                    "\n"
-                    "- %?"                                                               "\n"
-                    "\n"
+                    ""                                                                   "\n"
+                    "%?"                                                                 "\n"
+                    ""                                                                   "\n"
                     "_CHECKLIST_:"                                                       "\n"
-                    "\n"
+                    ""                                                                   "\n"
                     "_BACKLOG_:"                                                         "\n")
            :prepend t
            :empty-lines-after 1)))
