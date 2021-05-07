@@ -26,7 +26,7 @@
    '(mode-line ((t :box (:line-width (-1 . -1) :color "#1a2f54"))))
    '(mode-line-inactive ((t :weight light :box unspecified)))
    '(shadow ((t :weight normal)))
-   `(show-paren-match ((t :background unspecified :foreground ,(color-from 'cursor :background) :underline t :box (:line-width (-1 . -1)))))
+   `(show-paren-match ((t :background unspecified :foreground "#0081b8" :underline t :box (:line-width (-1 . -1)))))
    '(show-paren-mismatch ((t :weight bold :underline t)))
    '(symbol-dash-or-underline-face ((t :weight light)))
    '(whitespace-newline ((t :weight light)))
@@ -209,7 +209,7 @@
    '(lsp-face-highlight-textual ((t :underline t)))
    '(lsp-face-highlight-read    ((t :underline t)))
    '(lsp-face-highlight-write   ((t :underline t)))
-   '(lsp-modeline-code-actions-face ((t :foreground "yellow")))))
+   '(lsp-modeline-code-actions-face ((t :foreground unspecified)))))
 
 (use-package magit
   :defer t
@@ -218,7 +218,7 @@
 
   :config
   (custom-set-faces
-   `(magit-diff-context ((t :weight light)))
+   '(magit-diff-context ((t :weight light)))
    '(magit-diff-context-highlight ((t :weight normal)))))
 
 (use-package org
@@ -233,9 +233,12 @@
 
   :config
   (custom-set-faces
-   `(org-block-begin-line ((t :foreground ,(color-from 'org-block-begin-line :background -25) :underline unspecified :extend t)))
-   `(org-block-end-line ((t :foreground ,(color-from 'org-block-end-line :background -25) :overline unspecified :extend t)))
-   '(org-tag ((t :background unspecified :slant unspecified)))))
+   `(org-block-begin-line ((t :foreground ,(color-from 'org-block-begin-line :background -25) :weight normal :underline unspecified :extend t)))
+   `(org-block-end-line ((t :foreground ,(color-from 'org-block-end-line :background -25) :weight normal :overline unspecified :extend t)))
+   '(org-drawer ((t :weight normal)))
+   '(org-tag ((t :background unspecified :slant unspecified)))
+   '(org-parenthesis-context-face ((t :inherit default :weight normal)))
+   '(org-special-keyword ((t :weight normal)))))
 
 
 (use-package php-mode

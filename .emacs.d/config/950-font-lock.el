@@ -1075,7 +1075,7 @@
         (1 'clojure-punctuation-face append))
        ("\\([~#@&_,`'^]\\)"
         (1 'shadow))
-       ("[A-Za-z]\\(-+>?\\|[._$]\\)[A-Za-z]"
+       ("[0-9A-Za-z]\\(-+>?\\|[._$]\\)[0-9A-Za-z]"
         (1 'symbol-dash-or-underline-face prepend)))
      :append)))
 
@@ -1165,7 +1165,7 @@
           (0 'lisp-punctuation-face append))
          ("#?'\\|`\\|\\_<_\\_>\\|,@?"
           (0 'shadow))
-         ("[a-z]\\(-+>?\\)[a-z]"
+         ("[0-9A-Za-z]\\(-+>?\\)[0-9A-Za-z]"
           (1 'symbol-dash-or-underline-face prepend)))
        :append))))
 

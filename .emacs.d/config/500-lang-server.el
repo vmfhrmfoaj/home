@@ -467,6 +467,7 @@
         lsp-file-watch-threshold nil
         lsp-headerline-breadcrumb-enable nil
         lsp-idle-delay 0.2
+        lsp-modeline-code-actions-enable nil
         lsp-restart 'ignore
         lsp-rust-server 'rust-analyzer
         lsp-signature-doc-lines 10
