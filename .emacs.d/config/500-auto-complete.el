@@ -105,7 +105,10 @@
             (ivy-read "Candidate: " company-candidates
                       :action #'ivy-completion-in-region-action
                       :caller 'counsel-company
-                      :initial-input (concat (downcase (or company-common company-prefix)) " ")
+                      :initial-input (-> (or company-common company-prefix)
+                                         (downcase)
+                                         (propertize 'read-only t 'rear-nonsticky '(read-only))
+                                         (concat " "))
                       :sort t)))
       (message "There is no candidate.")))
 
@@ -115,6 +118,14 @@
 
   (add-to-list 'ivy-sort-matches-functions-alist '(counsel-company . ivy--shorter-matches-first))
   (add-to-list 'ivy--display-transformers-alist '(counsel-company . counsel--company-display-transformer))
+
+  ;; NOTE
+  ;;  for `counsel--custom-company' function
+  (advice-add #'delete-minibuffer-contents :around
+              (lambda (fn)
+                "To ignore `read-only' property."
+                (let ((inhibit-read-only t))
+                  (funcall fn))))
 
   (advice-add #'counsel-company :override #'counsel--custom-company)
 

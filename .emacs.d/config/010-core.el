@@ -184,7 +184,8 @@
             (colir-blend-face-background 0 len face str)
             (let ((foreground (face-foreground face))
                   (weight     (face-attribute face :weight))
-                  (underline  (face-attribute face :underline)))
+                  (underline  (face-attribute face :underline))
+                  (box        (face-attribute face :box)))
               (when foreground
                 (add-face-text-property
                  0 len (list :foreground foreground) nil str))
@@ -193,7 +194,10 @@
                  0 len (list :weight weight) nil str))
               (when underline
                 (add-face-text-property
-                 0 len (list :underline underline) nil str))))
+                 0 len (list :underline underline) nil str))
+              (when box
+                (add-face-text-property
+                 0 len (list :box box) nil str))))
         (error
          (ignore-errors
            (font-lock-append-text-property 0 len 'face face str)))))

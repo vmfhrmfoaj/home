@@ -1326,7 +1326,10 @@
           (check-square (string-to-char "\xf14a"))
           (org-done-face (color-from 'org-done :foreground))
           (org-todo-face (color-from 'org-todo :foreground)))
-     `(("^\\s-*\\(?:-\\|[0-9]+\\.\\)\\s-\\(\\[\\( \\|-\\|X\\)\\]\\)\\s-"
+     `(("^\\s-*\\([-+]\\|[0-9]+[).]\\)\\s-+\\[ \\]\\s-+\\(\\.\\.\\.\\)"
+        (1 'org-list-face)
+        (2 'org-task-done prepend))
+       ("^\\s-*\\(?:-\\|[0-9]+\\.\\)\\s-\\(\\[\\( \\|-\\|X\\)\\]\\)\\s-"
         1 (progn
             (let ((x (match-string 2))
                   (s (match-beginning 1))

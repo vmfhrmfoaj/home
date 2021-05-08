@@ -111,48 +111,55 @@
 
 (use-package lsp-headerline
   :defer t
-  :commands (lsp-headerline--arrow-icon
-             lsp-headerline--symbol-with-action)
+  :commands (lsp-headerline--symbol-with-action)
   :init
   (eval-when-compile (require 'lsp-headerline nil t))
 
   (defun lsp-headerline--custom-build-symbol-string ()
-    (if (lsp-feature? "textDocument/documentSymbol")
-        (-if-let* ((lsp--document-symbols-request-async t)
-                   (symbols (lsp--get-document-symbols))
-                   (symbols-hierarchy (lsp--symbols->document-symbols-hierarchy symbols)))
-            (let* ((separator " › ")
-                   (max-len (- spaceline-symbol-segment--max-symbol-length (length (concat "..." separator)))))
-              (->> symbols-hierarchy
-                   (reverse)
-                   (-reduce-from
-                    (-lambda ((&alist 'count count 'len len 'output output)
-                              (symbol &as &DocumentSymbol :name :kind))
-                      (if (<= max-len len)
-                          `((count  . ,(1+ count))
-                            (len    . ,len)
-                            (output . ,output))
-                        (let* ((symbol-name (concat "⊡​​​" name))
-                               (symbol-name (lsp-headerline--symbol-with-action symbol symbol-name))
-                               (new-output (concat symbol-name (when output separator) output))
-                               (new-len (length new-output)))
-                          (if (<= max-len new-len)
-                              `((count  . ,(1+ count))
-                                (len    . ,(if (< 0 count)
-                                               max-len
-                                             new-len))
-                                (output . ,(if (< 0 count)
-                                               (concat "..." separator output)
-                                             new-output)))
+    (if (and (derived-mode-p 'clojure-mode)
+             (string= "project.clj" (file-name-nondirectory (buffer-file-name))))
+        ;; NOTE
+        ;;  workaround for `clojure-lsp'
+        (->> (clojure-project-root-path)
+             (directory-file-name)
+             (file-name-nondirectory)
+             (concat "⊡​​​"))
+      (if (lsp-feature? "textDocument/documentSymbol")
+          (-if-let* ((lsp--document-symbols-request-async t)
+                     (symbols (lsp--get-document-symbols))
+                     (symbols-hierarchy (lsp--symbols->document-symbols-hierarchy symbols)))
+              (let* ((separator " › ")
+                     (max-len (- spaceline-symbol-segment--max-symbol-length (length (concat "..." separator)))))
+                (->> symbols-hierarchy
+                     (reverse)
+                     (-reduce-from
+                      (-lambda ((&alist 'count count 'len len 'output output)
+                                (symbol &as &DocumentSymbol :name :kind))
+                        (if (<= max-len len)
                             `((count  . ,(1+ count))
-                              (len    . ,new-len)
-                              (output . ,new-output))))))
-                    '((count  . 0)
-                      (len    . 0)
-                      (output . nil)))
-                   (alist-get 'output)))
-          "")
-      "")))
+                              (len    . ,len)
+                              (output . ,output))
+                          (let* ((symbol-name (concat "⊡​​​" name))
+                                 (symbol-name (lsp-headerline--symbol-with-action symbol symbol-name))
+                                 (new-output (concat symbol-name (when output separator) output))
+                                 (new-len (length new-output)))
+                            (if (<= max-len new-len)
+                                `((count  . ,(1+ count))
+                                  (len    . ,(if (< 0 count)
+                                                 max-len
+                                               new-len))
+                                  (output . ,(if (< 0 count)
+                                                 (concat "..." separator output)
+                                               new-output)))
+                              `((count  . ,(1+ count))
+                                (len    . ,new-len)
+                                (output . ,new-output))))))
+                      '((count  . 0)
+                        (len    . 0)
+                        (output . nil)))
+                     (alist-get 'output)))
+            "")
+        ""))))
 
 (use-package lsp-php
   :defer t

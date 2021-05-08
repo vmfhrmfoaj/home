@@ -16,9 +16,10 @@
   (load-theme 'leuven t)
 
   (custom-set-faces
-   `(isearch ((t :underline unspecified :box (:line-width (-1 . -1) :color ,(color-from 'isearch :background 30)))))
-   '(italic ((t :family "Fantasque Sans Mono" :height 110 :slant italic)))
-   `(lazy-highlight ((t :box (:line-width (-1 . -1) :color ,(color-from 'lazy-highlight :background -5)))))
+   '(bold ((t :foreground unspecified)))
+   `(isearch ((t :background "#ffff00" :foreground "black" :underline unspecified :box (:line-width (-1 . -1) :color "#e5e500"))))
+   '(italic ((t :foreground unspecified :family "Fantasque Sans Mono" :height 110 :slant italic)))
+   `(lazy-highlight ((t :background "#eeee00" :foreground "grey10" :box (:line-width (-1 . -1) :color "#d4d400"))))
    `(line-number ((t :background ,(color-from 'default :background -2)
                      :foreground ,(color-from 'default :foreground 25)
                      :weight light)))
@@ -26,7 +27,7 @@
    '(mode-line ((t :box (:line-width (-1 . -1) :color "#1a2f54"))))
    '(mode-line-inactive ((t :weight light :box unspecified)))
    '(shadow ((t :weight normal)))
-   `(show-paren-match ((t :background unspecified :foreground "#0081b8" :underline t :box (:line-width (-1 . -1)))))
+   '(show-paren-match ((t :background unspecified :foreground "#0081b8" :underline t :box (:line-width (-1 . -1)))))
    '(show-paren-mismatch ((t :weight bold :underline t)))
    '(symbol-dash-or-underline-face ((t :weight light)))
    '(whitespace-newline ((t :weight light)))
@@ -62,14 +63,14 @@
      `(clojure-variable-definition-face ((t :inherit font-lock-variable-name-face
                                             :weight ,(face-attribute 'font-lock-function-name-face :weight)))))))
 
-(use-package cperl-mode
+(use-package company
   :defer t
   :init
-  (eval-when-compile (require 'cperl-mode nil t))
+  (eval-when-compile (require 'company nil t))
 
   :config
   (custom-set-faces
-   '(cperl-nonoverridable-face ((t :inherit font-lock-constant-face)))))
+   `(completions-common-part ((t :foreground ,(color-from 'default :foreground) :weight normal)))))
 
 (use-package counsel
   :defer t
@@ -79,6 +80,15 @@
   :config
   (custom-set-faces
    '(counsel-company-annotation-face ((t :inherit shadow :height 0.9)))))
+
+(use-package cperl-mode
+  :defer t
+  :init
+  (eval-when-compile (require 'cperl-mode nil t))
+
+  :config
+  (custom-set-faces
+   '(cperl-nonoverridable-face ((t :inherit font-lock-constant-face)))))
 
 (use-package diff-mode
   :defer t
@@ -144,12 +154,13 @@
 
   :config
   (custom-set-faces
-   '(font-lock-comment-face ((t :weight light :slant unspecified)))
-   '(font-lock-doc-face ((t :weight light)))
+   '(font-lock-comment-face ((t :family "Fantasque Sans Mono" :height 110 :weight light :slant unspecified)))
+   '(font-lock-doc-face ((t :family "Fantasque Sans Mono" :height 110 :weight light)))
    '(font-lock-function-name-face ((t :weight bold)))
+   '(font-lock-keyword-face ((t :weight unspecified)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
-   '(font-lock-regexp-grouping-backslash ((t :weight normal)))
-   '(font-lock-regexp-grouping-construct ((t :weight normal)))
+   '(font-lock-regexp-grouping-backslash ((t :weight bold)))
+   '(font-lock-regexp-grouping-construct ((t :weight bold)))
    '(font-lock-type-face ((t :weight unspecified)))
    '(font-lock-variable-name-face ((t :weight unspecified))))
   (custom-set-faces
@@ -196,6 +207,7 @@
 
   :config
   (custom-set-faces
+   '(ivy-current-match ((t :background "#f6fecd" :foreground "black" :weight bold :box (:line-width (-1 . -1) :color "#d0372d"))))
    '(ivy-grep-info ((t :inherit font-lock-string-face :weight unspecified)))))
 
 (use-package lsp-mode
@@ -218,8 +230,11 @@
 
   :config
   (custom-set-faces
+   '(magit-branch-current ((t :inherit magit-branch-local :box (:line-width (1 . -1)))))
+   '(magit-branch-remote-head ((t :inherit magit-branch-remote :box (:line-width (1 . -1)))))
    '(magit-diff-context ((t :weight light)))
-   '(magit-diff-context-highlight ((t :weight normal)))))
+   '(magit-diff-context-highlight ((t :weight normal)))
+   '(magit-section-highlight ((t :box unspecified)))))
 
 (use-package org
   :defer t
@@ -235,11 +250,13 @@
   (custom-set-faces
    `(org-block-begin-line ((t :foreground ,(color-from 'org-block-begin-line :background -25) :weight normal :underline unspecified :extend t)))
    `(org-block-end-line ((t :foreground ,(color-from 'org-block-end-line :background -25) :weight normal :overline unspecified :extend t)))
+   '(org-done ((t :box (:line-width (1 . -1)))))
    '(org-drawer ((t :weight normal)))
+   '(org-headline-done ((t :weight unspecified :height unspecified)))
    '(org-tag ((t :background unspecified :slant unspecified)))
    '(org-parenthesis-context-face ((t :inherit default :weight normal)))
-   '(org-special-keyword ((t :weight normal)))))
-
+   '(org-special-keyword ((t :weight normal)))
+   '(org-todo ((t :box (:line-width (1 . -1)))))))
 
 (use-package php-mode
   :defer t

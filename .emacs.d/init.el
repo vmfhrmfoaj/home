@@ -66,6 +66,9 @@ See the docstrings of `defalias' and `make-obsolete' for more details."
 (setq comp-async-report-warnings-errors nil
       comp-deferred-compilation t
       comp-speed 3
+      native-comp-async-report-warnings-errors nil
+      native-comp-deferred-compilation t
+      native-comp-speed 3
       custom-file "~/.emacs.d/.custom.el"
       gc-cons-threshold (* 1024 1024 1024)
       inhibit-startup-screen t)
