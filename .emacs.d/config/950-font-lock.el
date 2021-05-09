@@ -730,7 +730,7 @@
         (,(concat "(" core-ns? "\\(fn\\)"
                   whitespace+
                   meta?
-                  "\\(" symbol "\\)" )
+                  "\\(" symbol "\\)?" )
          (1 'font-lock-keyword-face)
          (2 'font-lock-function-name-face nil t)
 
@@ -1326,10 +1326,7 @@
           (check-square (string-to-char "\xf14a"))
           (org-done-face (color-from 'org-done :foreground))
           (org-todo-face (color-from 'org-todo :foreground)))
-     `(("^\\s-*\\([-+]\\|[0-9]+[).]\\)\\s-+\\[ \\]\\s-+\\(\\.\\.\\.\\)"
-        (1 'org-list-face)
-        (2 'org-task-done prepend))
-       ("^\\s-*\\(?:-\\|[0-9]+\\.\\)\\s-\\(\\[\\( \\|-\\|X\\)\\]\\)\\s-"
+     `(("^\\s-*\\(?:-\\|[0-9]+\\.\\)\\s-\\(\\[\\( \\|-\\|X\\)\\]\\)\\s-"
         1 (progn
             (let ((x (match-string 2))
                   (s (match-beginning 1))
@@ -1346,6 +1343,9 @@
                                     ,org-done-face
                                   ,org-todo-face))))
         t)
+       ("^\\s-*\\([-+]\\|[0-9]+[).]\\)\\s-+\\(\\[ \\]\\s-+\\.\\.\\.\\)"
+        (1 'org-list-face)
+        (2 'org-task-done prepend))
        ("^\\s-*\\(-\\) "
         1 'org-list-face)
        ("^\\s-*\\(\\([0-9][).]\\)\\) "
@@ -1763,6 +1763,41 @@
        ("\\([&|<>;]\\)"
         (1 'shadow)))
      :append)))
+
+(use-package tex-mode
+  :defer t
+  :init
+  (eval-when-compile (require 'tex-mode nil t))
+
+  :config
+  (font-lock-add-keywords
+   'latex-mode
+   (let ((cmds '("geometry")))
+     `(;; punctuation
+       ("\\([{}]\\)"
+        (1 'c-style-brace-face))
+       ("\\([,]\\|\\s(\\|\\s)\\)"
+        (1 'shadow))
+       ("\\["
+        ("\\([_A-Za-z]+\\)="
+         (save-excursion
+           (setq font-lock--skip nil
+                 font-lock--anchor-beg-point (match-beginning 0)
+                 font-lock--local-limit nil)
+           (safe-up-list-1)
+           (point))
+         (goto-char font-lock--anchor-beg-point)
+         (1 'font-lock-variable-name-face)))
+       (,(concat "\\\\" (regexp-opt cmds) "{")
+        ("\\([_A-Za-z]+\\)="
+         (save-excursion
+           (setq font-lock--skip nil
+                 font-lock--anchor-beg-point (match-beginning 0)
+                 font-lock--local-limit nil)
+           (safe-up-list-1)
+           (point))
+         (goto-char font-lock--anchor-beg-point)
+         (1 'font-lock-variable-name-face)))))))
 
 (use-package web-mode
   :defer t

@@ -59,7 +59,6 @@
   :init
   (eval-when-compile (require 'eshell nil t))
 
-  :config
   (add-hook 'eshell-mode-hook
             (lambda ()
               (setq-local completion-ignore-case t)
@@ -76,6 +75,7 @@
                               (goto-char (point-max)))))
                         nil t)))
 
+  :config
   (advice-add #'eshell :around
               (lambda (fn &rest args)
                 "If single window, create a window and then open eshell buffer on the window."

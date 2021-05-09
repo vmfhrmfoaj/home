@@ -303,10 +303,11 @@
     "x0" (defalias 'text-scale-reset (lambda () (interactive) (text-scale-set 0)))
     "x=" #'text-scale-increase
     "x-" #'text-scale-decrease
-    "xr" #'align-regexp
+    "xa" #'align-regexp
     "xb" #'xwidget-webkit-browse-url
+    "xf" #'format-buffer-or-region
     "xo" #'open-link-at-point
-    "xf" #'format-buffer-or-region)
+    "xr" #'font-lock-update)
   (when (eq 'darwin system-type)
     (evil-leader/set-key
       ;; apllication

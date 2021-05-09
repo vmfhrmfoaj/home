@@ -16,28 +16,8 @@
     "TODO")
 
   :config
-  (setq auto-dim-other-buffers-dim-on-focus-out nil)
-
-  (add-to-list 'auto-dim-other-buffers-never-dim-buffer-functions
-               (lambda (buf)
-                 "Disable dimming focused buffer while executing `evil-ex' function."
-                 (and (eq buf (or
-                               ;; NOTE:
-                               ;;  When `adob--last-buffer' was set the minibuffer,
-                               ;;   I guess latest buffer.
-                               (and (minibufferp adob--last-buffer)
-                                    (->> (buffer-list)
-                                         (-drop-while #'minibufferp)
-                                         (sort-buffer-by-visit-time)
-                                         (car)))
-                               adob--last-buffer))
-                      (buffer-live-p evil-ex-current-buffer))))
-
-  (with-eval-after-load "ivy-posframe"
-    (add-to-list 'auto-dim-other-buffers-never-dim-buffer-functions
-                 (lambda (buf)
-                   "Disalbe dimming `ivy-posframe-buffer'."
-                   (string-equal ivy-posframe-buffer (buffer-name buf)))))
+  (setq auto-dim-other-buffers-dim-on-focus-out nil
+        auto-dim-other-buffers-dim-on-switch-to-minibuffer nil)
 
   (defvar-local adob--face-mode-remapping-for-line-number nil)
 
@@ -432,7 +412,7 @@
 (use-package highlight-numbers
   :ensure t
   :defer t
-  :hook ((prog-mode rpm-spec-mode toml-mode) . highlight-numbers-mode)
+  :hook ((latex-mode prog-mode rpm-spec-mode toml-mode) . highlight-numbers-mode)
   :init
   (eval-when-compile (require 'highlight-numbers nil t))
 
@@ -456,7 +436,7 @@
 
 (use-package hl-todo
   :ensure t
-  :hook (prog-mode . hl-todo-mode)
+  :hook ((latex-mode prog-mode) . hl-todo-mode)
   :init
   (eval-when-compile (require 'hl-todo nil t))
 
@@ -494,7 +474,7 @@
   (setq ivy-posframe-display-functions-alist
         '((counsel-company . ivy-posframe-display-at-point)
           (complete-symbol . ivy-posframe-display-at-point)
-          (t               . ivy-posframe-display)))
+          (t               . ivy-posframe-display-at-frame-center)))
 
   (with-eval-after-load "swiper"
     (-update->> ivy-update-fns-alist

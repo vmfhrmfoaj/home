@@ -475,7 +475,7 @@
            (req-vecs (lambda (reqs)
                        (-interpose '(edn-raw . "\n")
                                    (if test-file?
-                                       (cons (vector (make-symbol (s-replace-regexp "-test$" "" ns)) :as 'target) reqs)
+                                       (cons reqs (vector (make-symbol (s-replace-regexp "-test$" "" ns)) :as 'target))
                                      reqs))))
            (clj-spec-reqs  (funcall req-vecs clojure-clj-spec-reqs))
            (clj-test-reqs  (funcall req-vecs clojure-clj-test-reqs))

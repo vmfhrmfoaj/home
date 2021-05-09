@@ -38,6 +38,18 @@
 
   (setq markdown-fontify-code-blocks-natively t))
 
-(use-package latex-mode
+(use-package tex-mode
   :defer t
-  :mode "\\.tex\\'")
+  :init
+  (add-to-list 'auto-mode-alist '("\\.tex\\'" . latex-mode))
+
+  :config
+  (with-eval-after-load "highlight-numbers"
+    (puthash 'latex-mode
+             (rx
+              (and word-start
+                   (? (* digit) ".")
+                   (+ digit)
+                   (or "pt" "mm" "cm" "in" "ex" "em" "mu" "sp")
+                   symbol-end))
+             highlight-numbers-modelist)))

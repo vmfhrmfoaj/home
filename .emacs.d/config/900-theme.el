@@ -16,6 +16,7 @@
   (load-theme 'leuven t)
 
   (custom-set-faces
+   '(c-style-brace-face ((t :inherit shadow :weight light)))
    '(bold ((t :foreground unspecified)))
    `(isearch ((t :background "#ffff00" :foreground "black" :underline unspecified :box (:line-width (-1 . -1) :color "#e5e500"))))
    '(italic ((t :foreground unspecified :family "Fantasque Sans Mono" :height 110 :slant italic)))
@@ -164,8 +165,7 @@
    '(font-lock-type-face ((t :weight unspecified)))
    '(font-lock-variable-name-face ((t :weight unspecified))))
   (custom-set-faces
-   `(font-lock-comment-delimiter-face ((t :inherit font-lock-comment-face
-                                          :foreground ,(color-from 'font-lock-comment-face :foreground 10))))))
+   `(font-lock-comment-delimiter-face ((t :foreground ,(color-from 'font-lock-comment-face :foreground 10) :weight light)))))
 
 (use-package fringe
   :defer t
@@ -256,6 +256,7 @@
    '(org-tag ((t :background unspecified :slant unspecified)))
    '(org-parenthesis-context-face ((t :inherit default :weight normal)))
    '(org-special-keyword ((t :weight normal)))
+   `(org-task-done ((t :foreground ,(color-from 'org-headline-done :foreground) :weight normal)))
    '(org-todo ((t :box (:line-width (1 . -1)))))))
 
 (use-package php-mode

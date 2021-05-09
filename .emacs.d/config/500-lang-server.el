@@ -325,7 +325,9 @@
                                  (when (require 'lsp-java nil t)
                                    (lsp))))
          (js-mode            . lsp)
-         (latex-mode         . lsp)
+         ;; FIXME
+         ;;  How to run it on docker?
+         ;; (latex-mode         . lsp)
          (php-mode           . lsp)
          (python-mode        . (lambda ()
                                  (when (require 'lsp-python-ms nil t)
