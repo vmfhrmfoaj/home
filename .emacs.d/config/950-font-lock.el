@@ -1324,38 +1324,39 @@
    (let* ((square       (string-to-char "\xf0c8"))
           (minus-square (string-to-char "\xf146"))
           (check-square (string-to-char "\xf14a"))
-          (org-done-face (color-from 'org-done :foreground))
-          (org-todo-face (color-from 'org-todo :foreground)))
-     `(("^\\s-*\\(?:-\\|[0-9]+\\.\\)\\s-\\(\\[\\( \\|-\\|X\\)\\]\\)\\s-"
-        1 (progn
-            (let ((x (match-string 2))
-                  (s (match-beginning 1))
-                  (e (match-end 1)))
-              (compose-region
-               s e
-               (cond
-                ((string-equal x " ") ,square)
-                ((string-equal x "-") ,minus-square)
-                ((string-equal x "X") ,check-square)))
-              (put-text-property s e 'display '(raise -0.1))
-              (list :family "Font Awesome 5 Free"
-                    :foreground (if (string-equal x "X")
-                                    ,org-done-face
-                                  ,org-todo-face))))
-        t)
-       ("^\\s-*\\([-+]\\|[0-9]+[).]\\)\\s-+\\(\\[ \\]\\s-+\\.\\.\\.\\)"
-        (1 'org-list-face)
-        (2 'org-task-done prepend))
+          (org-done-face (list :family "Font Awesome 5 Free" :foreground (color-from 'org-done :foreground)))
+          (org-todo-face (list :family "Font Awesome 5 Free" :foreground (color-from 'org-todo :foreground))))
+     `(("^\\s-*\\(?:[-+]\\|[0-9]+[).]\\)\\s-\\(\\[\\( \\|-\\|X\\)\\]\\)\\s-"
+        (1 (progn
+             (let ((x (match-string 2))
+                   (s (match-beginning 1))
+                   (e (match-end 1)))
+               (compose-region
+                s e
+                (cond
+                 ((string-equal x " ") ,square)
+                 ((string-equal x "-") ,minus-square)
+                 ((string-equal x "X") ,check-square)))
+               (put-text-property s e 'display '(raise -0.1))
+               (if (string-equal x "X")
+                   ',org-done-face
+                 ',org-todo-face)))
+           t))
+       ("^\\s-*\\(?:[-+]\\|[0-9]+[).]\\)\\s-+\\(\\[ \\]\\)\\s-+\\(\\.\\.\\.\\)"
+        (1 ',org-done-face prepend)
+        (2 'org-task-done))
        ("^\\s-*\\(-\\) "
-        1 'org-list-face)
+        (1 (progn
+             (compose-region (match-beginning 1) (match-end 1) "•")
+             'org-list-face)))
        ("^\\s-*\\(\\([0-9][).]\\)\\) "
-        1 'org-list-face)
+        (1 'org-list-face))
        ("^\\s-*\\(?:[-+]\\|[0-9]+[).]\\)\\s-+\\[\\(?:X\\)\\]\\s-+\\([^\r\n]+\\)"
-        1 'org-task-done prepend)
+        (1 'org-task-done prepend))
        ("\\((.+?)\\)"
-        1 'org-parenthesis-context-face)
+        (1 'org-parenthesis-context-face))
        ("\\(\\\\\\\\\\|:\\)\\s-*$"
-        1 'shadow nil)))
+        (1 'shadow))))
    :append))
 
 (use-package php-mode

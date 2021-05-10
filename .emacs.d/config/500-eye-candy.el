@@ -19,6 +19,12 @@
   (setq auto-dim-other-buffers-dim-on-focus-out nil
         auto-dim-other-buffers-dim-on-switch-to-minibuffer nil)
 
+  (with-eval-after-load "ivy-posframe"
+    (add-to-list 'auto-dim-other-buffers-never-dim-buffer-functions
+                 (lambda (buf)
+                   "Disable `auto-dim-other-buffers' while displaying the frame of `ivy-posframe'"
+                   (get-buffer-window ivy-posframe-buffer))))
+
   (defvar-local adob--face-mode-remapping-for-line-number nil)
 
   (defconst adob--remap-face-for-line-number
@@ -493,6 +499,18 @@
                               ivy-posframe-min-width w))))))))
 
   (advice-add #'ivy-posframe--display :before-until #'ivy-posframe--re-display)
+
+  ;; NOTE
+  ;;  It may drop rendoering performance.
+  (advice-add #'ivy-posframe-display-at-frame-center :after
+              (lambda (&rest _)
+                "Dim the background."
+                (let ((wnd (ivy-state-window ivy-last)))
+                  (unless (window-parameter wnd 'adob--dim)
+                    (setq adob--last-window nil
+                          adob--last-buffer nil)
+                    (set-window-parameter wnd 'adob--dim t)
+                    (force-window-update wnd)))))
 
   (ivy-posframe-mode 1))
 

@@ -19,7 +19,7 @@
    '(c-style-brace-face ((t :inherit shadow :weight light)))
    '(bold ((t :foreground unspecified)))
    `(isearch ((t :background "#ffff00" :foreground "black" :underline unspecified :box (:line-width (-1 . -1) :color "#e5e500"))))
-   '(italic ((t :foreground unspecified :family "Fantasque Sans Mono" :height 110 :slant italic)))
+   '(italic ((t :foreground unspecified :family "Fantasque Sans Mono" :slant italic)))
    `(lazy-highlight ((t :background "#eeee00" :foreground "grey10" :box (:line-width (-1 . -1) :color "#d4d400"))))
    `(line-number ((t :background ,(color-from 'default :background -2)
                      :foreground ,(color-from 'default :foreground 25)
@@ -27,7 +27,7 @@
    '(line-number-current-line ((t :inherit line-number)))
    '(mode-line ((t :box (:line-width (-1 . -1) :color "#1a2f54"))))
    '(mode-line-inactive ((t :weight light :box unspecified)))
-   '(shadow ((t :weight normal)))
+   '(shadow ((t :weight light)))
    '(show-paren-match ((t :background unspecified :foreground "#0081b8" :underline t :box (:line-width (-1 . -1)))))
    '(show-paren-mismatch ((t :weight bold :underline t)))
    '(symbol-dash-or-underline-face ((t :weight light)))
@@ -51,11 +51,11 @@
      '(clojure-define-type-face ((t :inherit font-lock-type-face)))
      '(clojure-defining-spec-face ((t :inherit font-lock-function-name-face)))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
-     '(clojure-fn-parameter-unused-face ((t :inherit clojure-fn-parameter-face :weight normal)))
+     '(clojure-fn-parameter-unused-face ((t :inherit clojure-fn-parameter-face :weight light)))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face :foreground unspecified)))
-     '(clojure-meta-face ((t :inherit shadow :weight normal)))
+     '(clojure-meta-face ((t :inherit shadow :weight light)))
      `(clojure-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
-     '(clojure-local-binding-variable-name-unsed-face ((t :inherit clojure-local-binding-variable-name-face :weight normal)))
+     '(clojure-local-binding-variable-name-unsed-face ((t :inherit clojure-local-binding-variable-name-face :weight light)))
      '(clojure-punctuation-face ((t :inherit shadow :weight light)))
      '(clojure-semi-function-name-face ((t :inherit font-lock-function-name-face)))
      '(clojure-side-effect-face ((t :inherit italic :weight bold :underline t)))
@@ -71,7 +71,7 @@
 
   :config
   (custom-set-faces
-   `(completions-common-part ((t :foreground ,(color-from 'default :foreground) :weight normal)))))
+   `(completions-common-part ((t :foreground ,(color-from 'default :foreground) :weight light)))))
 
 (use-package counsel
   :defer t
@@ -155,13 +155,13 @@
 
   :config
   (custom-set-faces
-   '(font-lock-comment-face ((t :family "Fantasque Sans Mono" :height 110 :weight light :slant unspecified)))
-   '(font-lock-doc-face ((t :family "Fantasque Sans Mono" :height 110 :weight light)))
-   '(font-lock-function-name-face ((t :weight bold)))
+   '(font-lock-comment-face ((t :family "Fantasque Sans Mono" :weight light :slant unspecified)))
+   '(font-lock-doc-face ((t :family "Fantasque Sans Mono" :weight light)))
+   '(font-lock-function-name-face ((t :weight semi-bold)))
    '(font-lock-keyword-face ((t :weight unspecified)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
-   '(font-lock-regexp-grouping-backslash ((t :weight bold)))
-   '(font-lock-regexp-grouping-construct ((t :weight bold)))
+   '(font-lock-regexp-grouping-backslash ((t :weight semi-bold)))
+   '(font-lock-regexp-grouping-construct ((t :weight semi-bold)))
    '(font-lock-type-face ((t :weight unspecified)))
    '(font-lock-variable-name-face ((t :weight unspecified))))
   (custom-set-faces
@@ -198,7 +198,7 @@
              (reverse)))
 
   (custom-set-faces
-   '(highlight-parentheses-highlight ((t :weight normal :underline t)))))
+   '(highlight-parentheses-highlight ((t :weight bold :underline t)))))
 
 (use-package ivy
   :defer t
@@ -230,10 +230,14 @@
 
   :config
   (custom-set-faces
-   '(magit-branch-current ((t :inherit magit-branch-local :box (:line-width (1 . -1)))))
+   '(magit-branch-current     ((t :inherit magit-branch-local  :box (:line-width (1 . -1)))))
    '(magit-branch-remote-head ((t :inherit magit-branch-remote :box (:line-width (1 . -1)))))
    '(magit-diff-context ((t :weight light)))
    '(magit-diff-context-highlight ((t :weight normal)))
+   '(magit-diff-added ((t :background "#cceecc" :foreground "#119911")))
+   '(magit-diff-added-highlight ((t :inherit magit-diff-added :background "#ddffdd")))
+   '(magit-diff-removed ((t :background "#eecccc" :foreground "#aa2222")))
+   '(magit-diff-removed-highlight ((t :inherit magit-diff-removed :background "#ffdddd")))
    '(magit-section-highlight ((t :box unspecified)))))
 
 (use-package org
@@ -244,19 +248,19 @@
   (add-hook 'org-agenda-mode-hook
             (lambda ()
               (add-to-list 'face-remapping-alist
-                           `(org-tag (:inherit default :foreground ,(color-from 'org-tag :foreground) :weight normal)))))
+                           `(org-tag (:inherit default :foreground ,(color-from 'org-tag :foreground) :weight light)))))
 
   :config
   (custom-set-faces
-   `(org-block-begin-line ((t :foreground ,(color-from 'org-block-begin-line :background -25) :weight normal :underline unspecified :extend t)))
-   `(org-block-end-line ((t :foreground ,(color-from 'org-block-end-line :background -25) :weight normal :overline unspecified :extend t)))
+   `(org-block-begin-line ((t :foreground ,(color-from 'org-block-begin-line :background -25) :weight light :underline unspecified :extend t)))
+   `(org-block-end-line ((t :foreground ,(color-from 'org-block-end-line :background -25) :weight light :overline unspecified :extend t)))
    '(org-done ((t :box (:line-width (1 . -1)))))
-   '(org-drawer ((t :weight normal)))
+   '(org-drawer ((t :weight light)))
    '(org-headline-done ((t :weight unspecified :height unspecified)))
    '(org-tag ((t :background unspecified :slant unspecified)))
-   '(org-parenthesis-context-face ((t :inherit default :weight normal)))
-   '(org-special-keyword ((t :weight normal)))
-   `(org-task-done ((t :foreground ,(color-from 'org-headline-done :foreground) :weight normal)))
+   '(org-parenthesis-context-face ((t :inherit default :weight light)))
+   '(org-special-keyword ((t :weight light)))
+   `(org-task-done ((t :foreground ,(color-from 'org-headline-done :foreground) :weight light)))
    '(org-todo ((t :box (:line-width (1 . -1)))))))
 
 (use-package php-mode
@@ -276,7 +280,7 @@
 
   :config
   (custom-set-faces
-   '(rpm-spec-changelog-item-face ((t :weight normal)))
+   '(rpm-spec-changelog-item-face ((t :weight light)))
    '(rpm-spec-ghost-face ((t :inherit shadow)))
    '(rpm-spec-macro-face ((t :inherit font-lock-keyword-face)))
    '(rpm-spec-package-face ((t :inherit font-lock-constant-face)))
@@ -291,8 +295,8 @@
 
   :config
   (custom-set-faces
-   '(rust-attribute-face ((t :inherit font-lock-preprocessor-face :weight normal)))
-   '(rust-lifetime-face ((t :inherit font-lock-variable-name-face :weight normal)))
+   '(rust-attribute-face ((t :inherit font-lock-preprocessor-face :weight light)))
+   '(rust-lifetime-face ((t :inherit font-lock-variable-name-face :weight light)))
    `(rust-string-interpolation-face
      ((t :inherit (font-lock-regexp-grouping-construct font-lock-string-face) :slant unspecified)))))
 
@@ -312,7 +316,8 @@
 
   :config
   (custom-set-faces
-   `(spaceline-symbol-segment-face ((t :inherit powerline-active1 :weight normal)))))
+   '(spaceline-flycheck-error ((t :foreground "#ff8c8c" :distant-foreground "#c94976")))
+   `(spaceline-symbol-segment-face ((t :inherit powerline-active1 :weight light)))))
 
 (use-package web-mode
   :defer t

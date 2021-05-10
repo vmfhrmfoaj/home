@@ -61,7 +61,8 @@
 
   (add-hook 'eshell-mode-hook
             (lambda ()
-              (setq-local completion-ignore-case t)
+              (setq-local completion-ignore-case t
+                          process-connection-type nil)
               (unless (file-remote-p default-directory)
                 (apply #'eshell/addpath exec-path))
               (add-hook 'evil-insert-state-entry-hook

@@ -110,6 +110,17 @@
     (advice-add #'evil-multiedit-next :after fn)
     (advice-add #'evil-multiedit-prev :after fn)))
 
+(use-package iedit
+  :defer t
+  :init
+  (eval-when-compile (require 'iedit nil t))
+
+  :config
+  (setq iedit-mode-line '(" Iedit[" (:eval (format "%d/%d" iedit-occurrence-index (iedit-counter))) "]"))
+  (-update->> minor-mode-alist
+              (--remove (eq 'iedit-mode (car it)))
+              (-concat `((iedit-mode ,iedit-mode-line)))))
+
 (use-package smartparens
   :ensure t
   :defer t
