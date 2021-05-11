@@ -8,7 +8,7 @@
 
 (when window-system
   (prefer-coding-system 'utf-8)
-  (setq-default line-spacing 0)
+  (setq-default line-spacing 1)
   (let* ((font-size 10.5)
          (font-name "Cascadia Code")
          (font (font-spec :family font-name :size font-size :weight 'semi-bold)))
@@ -29,9 +29,10 @@
       (add-to-list 'face-font-rescale-alist '("Fira Code"           . 0.95))
       (add-to-list 'face-font-rescale-alist '("Liberation Mono"     . 0.95)))
      ((string-equal "Fira Code" font-name)
-      (add-to-list 'face-font-rescale-alist '("DejaVu Sans"     . 0.95))
-      (add-to-list 'face-font-rescale-alist '("Liberation Mono" . 0.95))
-      (add-to-list 'face-font-rescale-alist '("Noto Sans"       . 0.95)))
+      (add-to-list 'face-font-rescale-alist '("DejaVu Sans"         . 0.95))
+      (add-to-list 'face-font-rescale-alist '("Fantasque Sans Mono" . 1.2))
+      (add-to-list 'face-font-rescale-alist '("Liberation Mono"     . 0.95))
+      (add-to-list 'face-font-rescale-alist '("Noto Sans"           . 0.95)))
      ((string-equal "Fantasque Sans Mono" font-name)
       (add-to-list 'face-font-rescale-alist '("Cascadia Code"       . 0.85))
       (add-to-list 'face-font-rescale-alist '("DejaVu Sans"         . 0.8))

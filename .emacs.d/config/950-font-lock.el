@@ -238,9 +238,6 @@
   (defface clojure-side-effect-face
     `((t (:inherit (italic font-lock-variable-name-face))))
     "Face used to font-lock Clojure side-effect indicator.")
-  (defface clojure-important-keywords-face
-    '((t (:inherit (italic font-lock-keyword-face))))
-    "Face used to font-lock Clojure important keywords.")
   (defface clojure-special-variable-name-face
     `((t (:inherit font-lock-variable-name-face :weight ,(face-attribute 'default :weight))))
     "Face used to font-lock Clojure special variable name.")

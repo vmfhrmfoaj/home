@@ -181,14 +181,13 @@
     (let ((len (length str)))
       (condition-case nil
           (progn
-            (colir-blend-face-background 0 len face str)
-            (let ((foreground (face-foreground face))
+            (let ((background (color-from face :background))
                   (weight     (face-attribute face :weight))
                   (underline  (face-attribute face :underline))
                   (box        (face-attribute face :box)))
-              (when foreground
+              (when background
                 (add-face-text-property
-                 0 len (list :foreground foreground) nil str))
+                 0 len (list :foreground background :inverse-video t) nil str))
               (when weight
                 (add-face-text-property
                  0 len (list :weight weight) nil str))

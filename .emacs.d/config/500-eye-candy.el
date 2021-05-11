@@ -16,6 +16,15 @@
     "TODO")
 
   :config
+  (defun adob--manually-dim (wnd)
+    "Dim the background without conditions."
+    (when (and (windowp wnd)
+               (not (window-parameter wnd 'adob--dim)))
+      (setq adob--last-window nil
+            adob--last-buffer nil)
+      (set-window-parameter wnd 'adob--dim t)
+      (force-window-update wnd)))
+
   (setq auto-dim-other-buffers-dim-on-focus-out nil
         auto-dim-other-buffers-dim-on-switch-to-minibuffer nil)
 
@@ -61,6 +70,18 @@
                     wants))))
 
   (auto-dim-other-buffers-mode 1))
+
+(use-package evil-ex
+  :defer t
+  :init
+  (eval-when-compile (require 'evil-ex nil t))
+
+  :config
+  (advice-add #'evil-ex-setup :after
+              (lambda ()
+                "Dim the background."
+                (when-let ((wnd (get-buffer-window evil-ex-current-buffer)))
+                  (adob--manually-dim wnd)))))
 
 (use-package composite
   :defer t
@@ -504,12 +525,13 @@
   (advice-add #'ivy-posframe-display-at-frame-center :after
               (lambda (&rest _)
                 "Dim the background."
-                (let ((wnd (ivy-state-window ivy-last)))
-                  (unless (window-parameter wnd 'adob--dim)
-                    (setq adob--last-window nil
-                          adob--last-buffer nil)
-                    (set-window-parameter wnd 'adob--dim t)
-                    (force-window-update wnd)))))
+                (when-let ((wnd (ivy-state-window ivy-last)))
+                  (when-let ((buf (ivy-state-buffer ivy-last)))
+                    (with-current-buffer buf
+                      (setq powerline-selected-window nil)
+                      (force-mode-line-update)))
+                  (when (fboundp #'adob--manually-dim)
+                    (adob--manually-dim wnd)))))
 
   (ivy-posframe-mode 1))
 

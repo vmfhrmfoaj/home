@@ -58,7 +58,7 @@
      '(clojure-local-binding-variable-name-unsed-face ((t :inherit clojure-local-binding-variable-name-face :weight normal)))
      '(clojure-punctuation-face ((t :inherit shadow :weight light)))
      '(clojure-semi-function-name-face ((t :inherit font-lock-function-name-face)))
-     '(clojure-side-effect-face ((t :inherit italic)))
+     '(clojure-side-effect-face ((t :inherit italic :weight bold)))
      '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))
      '(clojure-special-variable-definition-face ((t :inherit (font-lock-constant-face clojure-variable-definition-face))))
      `(clojure-variable-definition-face ((t :inherit font-lock-variable-name-face
@@ -160,8 +160,9 @@
    '(font-lock-function-name-face ((t :weight bold)))
    '(font-lock-keyword-face ((t :weight unspecified)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
-   '(font-lock-regexp-grouping-backslash ((t :weight bold)))
-   '(font-lock-regexp-grouping-construct ((t :weight bold)))
+   '(font-lock-preprocessor-face ((t :weight normal)))
+   '(font-lock-regexp-grouping-backslash ((t :weight normal)))
+   '(font-lock-regexp-grouping-construct ((t :weight normal)))
    '(font-lock-type-face ((t :weight unspecified)))
    '(font-lock-variable-name-face ((t :weight unspecified))))
   (custom-set-faces
@@ -207,8 +208,12 @@
 
   :config
   (custom-set-faces
-   '(ivy-current-match ((t :background "#f6fecd" :foreground "black" :weight bold :box (:line-width (-1 . -1) :color "#d0372d"))))
-   '(ivy-grep-info ((t :inherit font-lock-string-face :weight unspecified)))))
+   '(ivy-current-match ((t :background "black" :foreground "white" :weight bold)))
+   '(ivy-grep-info ((t :inherit font-lock-string-face :weight light)))
+   '(ivy-grep-line-number ((t :inherit compilation-line-number :weight light)))
+   '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :weight normal)))
+   '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :weight normal)))
+   '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :weight normal)))))
 
 (use-package lsp-mode
   :defer t
