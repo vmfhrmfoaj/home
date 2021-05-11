@@ -44,6 +44,7 @@
                 "Customize `adob--remap-face' for `line-number'"
                 (let ((wants (not (adob--never-dim-p buffer))))
                   (when (eq wants (not (buffer-local-value 'adob--face-mode-remapping-for-line-number buffer)))
+                    (set-buffer buffer)
                     (setq adob--face-mode-remapping-for-line-number
                           (if wants
                               (face-remap-add-relative 'line-number adob--remap-face-for-line-number)
@@ -500,8 +501,6 @@
 
   (advice-add #'ivy-posframe--display :before-until #'ivy-posframe--re-display)
 
-  ;; NOTE
-  ;;  It may drop rendoering performance.
   (advice-add #'ivy-posframe-display-at-frame-center :after
               (lambda (&rest _)
                 "Dim the background."
