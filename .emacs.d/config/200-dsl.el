@@ -6,6 +6,12 @@
       (byte-compile-file "~/.emacs.d/config/func.el")))
   (load-file "~/.emacs.d/config/func.el"))
 
+(use-package bison-mode
+  :ensure t
+  :defer t
+  :init
+  (eval-when-compile (require 'bison-mode nil t)))
+
 (use-package capnp-mode
   :disabled t
   :defer t

@@ -9,6 +9,7 @@
 (use-package fish-completion
   :if (executable-find "fish")
   :ensure t
+  :defer t
   :init
   (eval-when-compile (require 'fish-completion nil t))
 
@@ -40,9 +41,7 @@
                 "Add :annotation-function function"
                 (if (and (listp rv) (functionp pcomplete-annotation-function))
                     (append rv `(:annotation-function ,pcomplete-annotation-function))
-                  rv)))
-
-  (global-fish-completion-mode 1))
+                  rv))))
 
 (use-package sh-script
   :defer t
@@ -61,6 +60,7 @@
 
   (add-hook 'eshell-mode-hook
             (lambda ()
+              (fish-completion-mode 1)
               (setq-local completion-ignore-case t
                           process-connection-type nil)
               (unless (file-remote-p default-directory)

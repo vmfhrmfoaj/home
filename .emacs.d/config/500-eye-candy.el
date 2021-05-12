@@ -584,36 +584,6 @@
                    (substring spaceline-symbol-segment--symbol (- len max-len) len)))
          'face 'spaceline-symbol-segment-face))))
 
-  (require 'treemacs-icons)
-  (setq-default treemacs-icons
-                (if (treemacs--should-use-tui-icons?)
-                    (treemacs-theme->tui-icons treemacs--current-theme)
-                  (treemacs-theme->gui-icons treemacs--current-theme)))
-
-  (defvar spaceline-symbol-segment--major-icon-cache (make-hash-table))
-
-  (spaceline-define-segment major-icon
-    "Display a icon for `major-mode'"
-    (if-let ((icon (gethash major-mode spaceline-symbol-segment--major-icon-cache)))
-        icon
-      (puthash major-mode
-               (when-let ((disp (-some->> buffer-file-name
-                                          (treemacs-icon-for-file)
-                                          (get-text-property 0 'display))))
-                 (when (listp disp)
-                   (let ((icon (propertize "  " 'display
-                                           (cl-list* 'image
-                                                     (let ((h (frame-char-height)))
-                                                       (-> disp
-                                                           (cl-rest)
-                                                           (cl-copy-list)
-                                                           (plist-put :background (bg-color-from 'powerline-active1))
-                                                           (plist-put :height h)
-                                                           (plist-put :width h)))))))
-                     (puthash major-mode icon spaceline-symbol-segment--major-icon-cache)
-                     icon)))
-               spaceline-symbol-segment--major-icon-cache)))
-
   (defun spaceline--my-theme ()
     (spaceline-compile
       '((window-number
@@ -674,4 +644,5 @@
               (yascroll:show-scroll-bar))))
     (advice-add #'evil-scroll-line-to-top    :after fn)
     (advice-add #'evil-scroll-line-to-center :after fn)
-    (advice-add #'evil-scroll-line-to-bottom :after fn)))
+    (advice-add #'evil-scroll-line-to-bottom :after fn)
+    (advice-add #'recenter-top-bottom        :after fn)))

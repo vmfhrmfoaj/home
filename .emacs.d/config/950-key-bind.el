@@ -494,24 +494,6 @@
                                  t)))))))
     (add-hook 'prog-mode-hook fn)))
 
-(use-package evil-collection-docker
-  :ensure evil-collection
-  :defer t
-  :init
-  (eval-when-compile (evil-collection-require 'docker t)))
-
-(use-package evil-collection-eshell
-  :ensure evil-collection
-  :defer t
-  :init
-  (eval-when-compile (evil-collection-require 'eshell t)))
-
-(use-package evil-collection-magit
-  :ensure evil-collection
-  :defer t
-  :init
-  (eval-when-compile (evil-collection-require 'magit t)))
-
 (use-package evil
   :defer t
   :init
@@ -547,6 +529,10 @@
   (evil-define-key 'visual 'global
     (kbd "<tab>") #'indent-region
     (kbd "v") #'er/expand-region))
+
+(use-package evil-collection
+  :ensure t
+  :defer t)
 
 (use-package evil-ex
   :defer t
@@ -925,6 +911,7 @@
   :defer t
   :init
   (eval-when-compile (require 'docker nil t))
+  (eval-when-compile (evil-collection-require 'docker t))
 
   (let ((hooks '(docker-container-mode-hook
                  docker-image-mode-hook
@@ -1064,6 +1051,7 @@
   :defer t
   :init
   (eval-when-compile (require 'eshell nil t))
+  (eval-when-compile (evil-collection-require 'eshell t))
 
   (evil-set-initial-state 'eshell-mode 'insert)
 
@@ -1128,6 +1116,7 @@
   :defer t
   :init
   (eval-when-compile (require 'magit nil t))
+  (eval-when-compile (evil-collection-require 'magit t))
 
   (evil-set-initial-state 'magit-status-mode 'normal)
 

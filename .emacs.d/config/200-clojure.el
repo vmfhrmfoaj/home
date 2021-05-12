@@ -523,7 +523,6 @@
 
   (add-hook 'clojure-mode-hook
             (lambda ()
-              (prettify-symbols-mode 1)
               (when (and buffer-file-name (= (point-min) (point-max)))
                 (clojure-insert-namespace))
               (let ((f (lambda ()

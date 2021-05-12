@@ -313,7 +313,9 @@
 
 (use-package lsp-mode
   :ensure t
-  :hook ((c-mode             . lsp)
+  :hook ((c-mode . (lambda ()
+                     (when (eq 'c-mode major-mode) ; to prevent to enable `lsp' on derived mode of `c-mode'
+                       (lsp))))
          (c++-mode           . lsp)
          (clojure-mode       . lsp)
          (clojurec-mode      . lsp)
@@ -321,20 +323,23 @@
          (cperl-mode         . lsp)
          (dockerfile-mode    . lsp)
          (go-mode            . lsp)
-         (java-mode          . (lambda ()
-                                 (when (require 'lsp-java nil t)
-                                   (lsp))))
-         (js-mode            . lsp)
+         (java-mode . (lambda ()
+                        (when (require 'lsp-java nil t)
+                          (lsp))))
+         (js-mode . lsp)
          ;; FIXME
          ;;  How to run it on docker?
-         ;; (latex-mode         . lsp)
-         (php-mode           . lsp)
-         (python-mode        . (lambda ()
-                                 (when (require 'lsp-python-ms nil t)
-                                   (lsp))))
-         (rust-mode          . lsp)
-         (sh-mode            . lsp)
-         (typescript-mode    . lsp))
+         ;; (latex-mode . lsp)
+         (php-mode   . lsp)
+         (python-mode . (lambda ()
+                          (when (require 'lsp-python-ms nil t)
+                            (lsp))))
+         (rust-mode . lsp)
+         (sh-mode . (lambda ()
+                      (when (and (eq 'sh-mode major-mode) ; to prevent to enable `lsp' on derived mode of `sh-mode'
+                                 (memq sh-shell '(bash)))
+                        (lsp))))
+         (typescript-mode . lsp))
   :init
   (eval-when-compile (require 'lsp-mode nil t))
 

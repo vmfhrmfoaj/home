@@ -44,7 +44,6 @@
               (setq-local evil-lookup-func #'emacs-lisp-evil-lookup-func)
               (setq-local font-lock-multiline t)
               (eldoc-mode 1)
-              (prettify-symbols-mode 1)
               (let ((f (lambda ()
                          (when eldoc-mode
                            (run-at-time 0.01 nil #'eldoc-refresh)))))
