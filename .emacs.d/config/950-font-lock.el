@@ -280,6 +280,9 @@
   (defface clojure-punctuation-face
     '((t (:inherit shadow)))
     "TODO")
+  (defface clojure-ns-definition-face
+    '((t (:inherit font-lock-type-face)))
+    "TODO")
 
   (defcustom clojure--ignore-binding-highlight-regex
     "^\\([&_]\\)$"
@@ -869,7 +872,7 @@
 
         ;; Namespace definitions - (ns foo.bar)
         (,(concat "(\\<ns\\>" whitespace* meta? "\\(" symbol "\\)")
-         (1 'font-lock-type-face))
+         (1 'clojure-ns-definition-face))
 
         ;; keywords - {:oneword/ve/yCom|pLex.stu-ff 0}
         (,(concat "\\(::?\\)\\(" symbol "?\\)\\(/\\)\\(" symbol "\\)")

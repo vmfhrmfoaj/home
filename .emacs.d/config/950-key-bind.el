@@ -346,7 +346,13 @@
     (concat evil-leader/leader "t") "toggle"
     (concat evil-leader/leader "q") "quit"
     (concat evil-leader/leader "w") "window"
-    (concat evil-leader/leader "x") "text/xwidget"))
+    (concat evil-leader/leader "x") "text/xwidget")
+
+  (advice-add #'which-key--show-buffer-frame :before
+              (lambda (&rest _)
+                "Make sure `which-key--buffer' is alive."
+                (unless (bufferp which-key--buffer)
+                  (which-key--init-buffer)))))
 
 
 ;; Key binding for the minor mode

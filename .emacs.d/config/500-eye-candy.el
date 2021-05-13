@@ -74,14 +74,7 @@
 (use-package evil-ex
   :defer t
   :init
-  (eval-when-compile (require 'evil-ex nil t))
-
-  :config
-  (advice-add #'evil-ex-setup :after
-              (lambda ()
-                "Dim the background."
-                (when-let ((wnd (get-buffer-window evil-ex-current-buffer)))
-                  (adob--manually-dim wnd)))))
+  (eval-when-compile (require 'evil-ex nil t)))
 
 (use-package composite
   :defer t
@@ -100,7 +93,7 @@
       ( 38 . ".\\(?:&\\)")                      ; &&
       ( 45 . ".\\(?:-?>>?\\)")                  ; ->, ->>, -->
       ( 46 . ".\\(?:\\.\\.?\\|-\\)")            ; .., ..., .-
-      ( 58 . ".\\(?:=\\|::?\\)")                ; ::, :::, :=
+      ( 58 . ".\\(?:::?\\)")                    ; ::, :::
       ( 59 . ".\\(?:;\\)")                      ; ;;
       ( 60 . ".\\(?:=\\|\\(?:!-\\)?-\\)")       ; <=, <!--, <-
       ( 61 . ".\\(?:==?\\|>\\)")                ; ==, ===, =>
@@ -631,6 +624,7 @@
   (global-vi-tilde-fringe-mode))
 
 (use-package yascroll
+  :disabled t
   :ensure t
   :defer t
   :init
