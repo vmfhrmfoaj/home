@@ -1,10 +1,6 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile
-  (eval-when-compile
-    (unless (file-exists-p "~/.emacs.d/config/func.elc")
-      (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.el"))
+(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -54,7 +50,16 @@
                                  (with-temp-buffer (self-insert-command 0)))))
       read-process-output-max (* 1024 1024)
       resize-mini-windows t
-      ring-bell-function 'ignore)
+      ring-bell-function 'ignore
+      ;; NOTE
+      ;;  On the pure gtk branch (https://github.com/flatwhatson/emacs/tree/pgtk-nativecomp).
+      ;;   if the cursor on the tab, black(i.e. foreground color) rectangle will be shown.
+      ;;  It is very ugly.
+      x-stretch-cursor t)
+
+(when (eq window-system 'pgtk)
+  (pgtk-use-im-context t)
+  (global-set-key [remap toggle-input-method] #'undefined))
 
 (put 'dired-find-alternate-file 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
@@ -65,8 +70,11 @@
 (blink-cursor-mode 0)
 (global-auto-revert-mode 1)
 (global-subword-mode 1)
+(menu-bar-mode -1)
 (prefer-coding-system 'utf-8)
 (recentf-mode 1)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
 
 (add-hook 'help-mode-hook #'visual-line-mode)
 (add-hook 'after-init-hook
@@ -101,26 +109,6 @@
                                  (get-buffer scratch-buffer-name))))
               (with-current-buffer buf
                 (write-region (point-min) (point-max) scratch-buffer-temp-file)))))
-
-(when (eq system-type 'gnu/linux)
-  (defun custom-x-dnd-get-drop-x-y (frame w)
-    "if top bar is hide, `(frame-parameter frame 'top)' will return a list."
-    (let* ((frame-left (frame-parameter frame 'left))
-           (frame-left (if (listp frame-left)
-                           (eval frame-left)
-                         frame-left))
-	       (frame-top (frame-parameter frame 'top))
-           (frame-top (if (listp frame-top)
-                          (eval frame-top)
-                        frame-top)))
-      (if (windowp w)
-	      (let ((edges (window-inside-pixel-edges w)))
-	        (cons
-	         (+ frame-left (nth 0 edges))
-	         (+ frame-top (nth 1 edges))))
-        (cons frame-left frame-top))))
-
-  (advice-add #'x-dnd-get-drop-x-y :override #'custom-x-dnd-get-drop-x-y))
 
 (advice-add #'narrow-to-region :after
             (lambda (&rest _)

@@ -1,10 +1,6 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile
-  (eval-when-compile
-    (unless (file-exists-p "~/.emacs.d/config/func.elc")
-      (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.el"))
+(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
 
 (use-package dap-mode
   :ensure t
@@ -122,8 +118,7 @@
         ;;  workaround for `clojure-lsp'
         (->> (clojure-project-root-path)
              (directory-file-name)
-             (file-name-nondirectory)
-             (concat "⊡​​​"))
+             (file-name-nondirectory))
       (if (lsp-feature? "textDocument/documentSymbol")
           (-if-let* ((lsp--document-symbols-request-async t)
                      (symbols (lsp--get-document-symbols))
@@ -139,8 +134,7 @@
                             `((count  . ,(1+ count))
                               (len    . ,len)
                               (output . ,output))
-                          (let* ((symbol-name (concat "⊡​​​" name))
-                                 (symbol-name (lsp-headerline--symbol-with-action symbol symbol-name))
+                          (let* ((symbol-name (lsp-headerline--symbol-with-action symbol name))
                                  (new-output (concat symbol-name (when output separator) output))
                                  (new-len (length new-output)))
                             (if (<= max-len new-len)

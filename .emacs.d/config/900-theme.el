@@ -1,10 +1,6 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile
-  (eval-when-compile
-    (unless (file-exists-p "~/.emacs.d/config/func.elc")
-      (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.el"))
+(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
 
 (use-package leuven-theme
   :ensure t
@@ -30,9 +26,8 @@
    '(shadow ((t :weight normal)))
    '(show-paren-match ((t :background unspecified :foreground "#0081b8" :weight bold :underline t :box (:line-width (-1 . -1)))))
    '(show-paren-mismatch ((t :weight bold :underline t)))
-   '(symbol-dash-or-underline-face ((t :weight light)))
-   '(whitespace-newline ((t :weight light)))
-   '(whitespace-space   ((t :weight light)))
+   '(whitespace-newline ((t :inherit whitespace-tab)))
+   '(whitespace-space   ((t :inherit whitespace-tab)))
    '(whitespace-tab     ((t :weight light)))
    '(vertical-border ((t :foreground "#cccccc")))))
 
@@ -44,7 +39,7 @@
   :config
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
-     `(cider-deprecated-face  ((t :inherit font-lock-warning-face :weight ,default-weight :underline (:color "darkorange"))))
+     `(cider-deprecated-face  ((t :inherit font-lock-warning-face :weight ,default-weight :underline (:style wave :color "darkorange"))))
      '(cider-fringe-good-face ((t :inherit success)))
      '(cider-repl-prompt-face ((t :inherit font-lock-keyword-face :weight light)))
      '(cider-repl-stdout-face ((t :inherit (italic font-lock-string-face) :weight light))))))
@@ -132,7 +127,7 @@
 
   :config
   (custom-set-faces
-   '(eshell-prompt ((t :inherit shadow)))))
+   '(eshell-prompt ((t :inherit shadow :weight light)))))
 
 (use-package evil-goggles
   :defer t
@@ -169,7 +164,7 @@
   (custom-set-faces
    '(font-lock-comment-face ((t :family "Fantasque Sans Mono" :weight light :slant unspecified)))
    '(font-lock-doc-face ((t :inherit italic :weight light)))
-   '(font-lock-function-name-face ((t :weight bold :underline t)))
+   '(font-lock-function-name-face ((t :foreground "#1975a3" :weight bold :underline t)))
    '(font-lock-keyword-face ((t :weight unspecified)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
    '(font-lock-preprocessor-face ((t :weight normal)))
@@ -348,6 +343,17 @@
 (use-package which-key
   :defer t
   :init
+  (eval-when-compile (require 'which-key nil t))
+
   :config
   (custom-set-faces
    '(which-key-command-description-face ((t :inherit font-lock-function-name-face :underline nil)))))
+
+(use-package yasnippet
+  :defer t
+  :init
+  (eval-when-compile (require 'yasnippet nil t))
+
+  :config
+  (custom-set-faces
+   '(yas-field-highlight-face ((t :box (:line-width (-1 . -1) :color "#838383"))))))

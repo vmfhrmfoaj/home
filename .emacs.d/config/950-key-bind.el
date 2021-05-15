@@ -1,12 +1,9 @@
 ;; -*- lexical-binding: t; -*-
 
 (eval-and-compile
-  (eval-when-compile
-    (unless (file-exists-p "~/.emacs.d/config/func.elc")
-      (byte-compile-file "~/.emacs.d/config/func.el")))
+  (load-file "~/.emacs.d/config/func.el")
   (require 'evil-core)
-  (require 'evil-leader nil t)
-  (load-file "~/.emacs.d/config/func.el"))
+  (require 'evil-leader nil t))
 
 
 (global-set-key (kbd "<S-kp-multiply>") "#")
@@ -161,10 +158,11 @@
     "bs" #'pop-to-scratch-buffer
 
     ;; error
+    "ea" #'show-error-list
+    "el" #'counsel-flycheck
     "en" #'flycheck-next-error
     "ep" #'flycheck-previous-error
-    "el" #'counsel-flycheck
-    "es" #'show-error-list
+    "es" #'flycheck-display-error-at-point
 
     ;; file
     "fb" #'counsel-bookmark

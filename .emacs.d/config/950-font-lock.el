@@ -1,10 +1,6 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile
-  (eval-when-compile
-    (unless (file-exists-p "~/.emacs.d/config/func.elc")
-      (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.el"))
+(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
 
 (setq font-lock--anchor-beg-point nil
       font-lock--local-limit nil)
@@ -36,10 +32,6 @@
             100))
 
 (defface c-style-brace-face
-  '((t (:inherit shadow)))
-  "TODO")
-
-(defface symbol-dash-or-underline-face
   '((t (:inherit shadow)))
   "TODO")
 
@@ -79,9 +71,7 @@
         ("\\([.;]\\)"
          (1 'shadow))
         ("[A-Za-z]\\(:\\)\\s-*$"
-         (1 'shadow))
-        ("[0-9A-Za-z]\\(_+\\)[0-9A-Za-z]"
-         (1 'symbol-dash-or-underline-face prepend)))
+         (1 'shadow)))
       :append))))
 
 (use-package css-mode
@@ -100,9 +90,7 @@
      mode
      `(;; punctuation
        ("\\([:;]\\)"
-        (1 'shadow))
-       ("[0-9A-Za-z]\\(-+\\)[0-9A-Za-z]"
-        (1 'symbol-dash-or-underline-face prepend)))
+        (1 'shadow)))
      :append)))
 
 (use-package elixir-mode
@@ -222,9 +210,7 @@
        ("\\([\\&|*]\\|::\\|;\\|[-=]>\\|[$@]_\\>\\)"
         (1 'shadow))
        ("\\([*@$%]+\\)\\(?:[:_0-9a-zA-Z]\\|\\s(\\)"
-        (1 'shadow))
-       ("[0-9A-Za-z]\\(_+\\)[0-9A-Za-z]"
-        (1 'symbol-dash-or-underline-face prepend))))
+        (1 'shadow))))
    :append))
 
 (use-package clojure-mode
@@ -1072,11 +1058,9 @@
      mode
      `(;; Punctuation
        ("\\(#?\\s(\\|\\s)\\)"
-        (1 'clojure-punctuation-face append))
+        (1 'clojure-punctuation-face prepend))
        ("\\([~#@&_,`'^]\\)"
-        (1 'shadow))
-       ("[0-9A-Za-z]\\(-+>?\\|[._$]\\)[0-9A-Za-z]"
-        (1 'symbol-dash-or-underline-face prepend)))
+        (1 'shadow)))
      :append)))
 
 (use-package elisp-mode
@@ -1162,11 +1146,9 @@
            (1 'lisp-local-binding-variable-name-face)))
          ;; punctuation
          ("\\s(\\|\\s)"
-          (0 'lisp-punctuation-face append))
+          (0 'lisp-punctuation-face prepend))
          ("#?'\\|`\\|\\_<_\\_>\\|,@?"
-          (0 'shadow))
-         ("[0-9A-Za-z]\\(-+>?\\)[0-9A-Za-z]"
-          (1 'symbol-dash-or-underline-face prepend)))
+          (0 'shadow)))
        :append))))
 
 (use-package go-mode
@@ -1449,9 +1431,7 @@
    '(("\\([{}]\\)"
       (1 'c-style-brace-face))
      ("\\([$]\\)"
-      (1 'shadow append))
-     ("[0-9A-Za-z]\\(_+\\)[0-9A-Za-z]"
-      (1 'symbol-dash-or-underline-face prepend)))
+      (1 'shadow append)))
    :append))
 
 (use-package python
@@ -1511,9 +1491,7 @@
               'shadow
             'font-lock-variable-name-face))))
      ("\\([.:\\]\\)"
-      (1 'shadow))
-     ("[0-9A-Za-z]\\(_\\)[0-9A-Za-z]"
-      (1 'symbol-dash-or-underline-face prepend)))
+      (1 'shadow)))
    :append)
   (font-lock-add-keywords
    'python-mode

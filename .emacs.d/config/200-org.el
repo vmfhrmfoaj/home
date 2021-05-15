@@ -1,8 +1,4 @@
-(eval-and-compile
-  (eval-when-compile
-    (unless (file-exists-p "~/.emacs.d/config/func.elc")
-      (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.el"))
+(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
 
 (use-package evil-org
   :ensure t

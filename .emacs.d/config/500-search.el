@@ -1,10 +1,6 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile
-  (eval-when-compile
-    (unless (file-exists-p "~/.emacs.d/config/func.elc")
-      (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.el"))
+(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
 
 (use-package counsel
   :ensure t
@@ -56,8 +52,10 @@
 
   (defun ivy-resume-non-search ()
     (interactive)
-    (when ivy-last-no-search-session
-      (ivy-resume ivy-last-no-search-session)))
+    (if (and ivy-last-no-search-session
+             (not (eq 'counsel-company ivy-last-no-search-session)))
+        (ivy-resume ivy-last-no-search-session)
+      (message "There is no thing to resume")))
 
   (defun ivy-resume-sarch ()
     (interactive)

@@ -1,12 +1,15 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile
-  (eval-when-compile
-    (unless (file-exists-p "~/.emacs.d/config/func.elc")
-      (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.el"))
+(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
 
 (when window-system
+  (defvar main-monitor
+    (let ((get-resolution (lambda (it) (->> it (nth 1) (-take-last 2) (apply #'*)))))
+      (-some->> (display-monitor-attributes-list)
+                (--max-by (> (funcall get-resolution it)
+                             (funcall get-resolution other)))))
+    "See `display-monitor-attributes-list'")
+
   (let* ((workarea (-some->> main-monitor (assoc 'workarea) (-drop 1)))
          (main-monitor-x (nth 0 workarea))
          (main-monitor-y (nth 1 workarea))

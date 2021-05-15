@@ -20,27 +20,6 @@
   :init
   (eval-when-compile (require 's nil t)))
 
-(when window-system
-  (defvar main-monitor
-    (let ((get-resolution (lambda (it) (->> it (nth 1) (-take-last 2) (apply #'*)))))
-      (-some->> (x-display-monitor-attributes-list)
-                (--max-by (> (funcall get-resolution it)
-                             (funcall get-resolution other)))))
-    "See `display-monitor-attributes-list'")
-
-  (defvar main-monitor-resolution
-    (-some->> main-monitor
-              (assoc 'geometry)
-              (-drop 1)
-              (-take-last 2))
-    "See `display-monitor-attributes-list'")
-
-  (defvar main-monitor-mm-size
-    (-some->> main-monitor
-              (assoc 'mm-size)
-              (-drop 1))
-    "See `display-monitor-attributes-list'"))
-
 (defvar null-fn (-const nil))
 
 (defmacro -update-> (&rest thread)

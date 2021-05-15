@@ -56,4 +56,8 @@
   :ensure t
   :config
   (let ((file-name-handler-alist nil))
+    (unless (file-exists-p "~/.emacs.d/config/func.elc")
+      (byte-compile-file "~/.emacs.d/config/func.el")
+      (if (fboundp #'native-compile) (native-compile "~/.emacs.d/config/func.el")))
+    (load-file "~/.emacs.d/config/func.el")
     (init-loader-load "~/.emacs.d/config")))

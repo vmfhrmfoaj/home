@@ -1,17 +1,13 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile
-  (eval-when-compile
-    (unless (file-exists-p "~/.emacs.d/config/func.elc")
-      (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.el"))
+(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
 
 (when window-system
   (prefer-coding-system 'utf-8)
   (setq-default line-spacing 1)
-  (let* ((font-size 11.0)
-         (font-name "Fantasque Sans Mono")
-         (font (font-spec :family font-name :size font-size :weight 'bold)))
+  (let* ((font-size 9.0)
+         (font-name "Fira Code")
+         (font (font-spec :family font-name :size font-size :weight 'semi-bold)))
     (set-face-font 'default font)
     (set-fontset-font nil '(#xE000 . #xF8FF) font)               ; for ligature
     (set-fontset-font "fontset-default" '(#xE000 . #xF8FF) font) ; for ligature
@@ -30,7 +26,7 @@
       (add-to-list 'face-font-rescale-alist '("Liberation Mono"     . 0.95)))
      ((string-equal "Fira Code" font-name)
       (add-to-list 'face-font-rescale-alist '("DejaVu Sans"         . 0.95))
-      (add-to-list 'face-font-rescale-alist '("Fantasque Sans Mono" . 1.2))
+      (add-to-list 'face-font-rescale-alist '("Fantasque Sans Mono" . 1.15))
       (add-to-list 'face-font-rescale-alist '("Liberation Mono"     . 0.95))
       (add-to-list 'face-font-rescale-alist '("Noto Sans"           . 0.95)))
      ((string-equal "Fantasque Sans Mono" font-name)

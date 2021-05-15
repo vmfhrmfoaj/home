@@ -1,10 +1,6 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile
-  (eval-when-compile
-    (unless (file-exists-p "~/.emacs.d/config/func.elc")
-      (byte-compile-file "~/.emacs.d/config/func.el")))
-  (load-file "~/.emacs.d/config/func.el"))
+(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
 
 (use-package cider
   :ensure t
@@ -234,31 +230,20 @@
   (eval-when-compile (require 'cider-repl nil t))
 
   :config
-  (defvar clojure--compilation-error-ns nil)
-
   (defun cider-repl-catch-compilation-error (msg)
     (cond
      ((string-match-p "^:reloading (" msg)
       (let ((errs clojure--compilation-errors))
-        (setq clojure--compilation-errors nil
-              clojure--compilation-error-ns nil)
+        (setq clojure--compilation-errors nil)
         (--each errs
           (when-let ((buf (get-buffer (-first-item it))))
             (with-current-buffer buf
               (when (bound-and-true-p flycheck-mode)
                 (flycheck-buffer)))))))
 
-     ((string-match "^:error-while-loading \\([-_.0-9A-Za-z]+\\)" msg)
-      (setq clojure--compilation-error-ns (match-string-no-properties 1 msg)))
-
      (t
       (when-let ((info (cider-extract-error-info cider-compilation-regexp msg)))
-        (let* ((file (if (null clojure--compilation-error-ns)
-                         (nth 0 info)
-                       (concat (->> clojure--compilation-error-ns
-                                    (s-replace "-" "_")
-                                    (s-replace "." "/"))
-                               "." (file-name-extension (nth 0 info)))))
+        (let* ((file (nth 0 info))
                (root (->> (or nrepl-project-dir
                               (clojure-project-root-path))
                           (file-truename)
