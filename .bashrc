@@ -19,7 +19,7 @@ fi
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
-[ -f "${HOME}"/.script/setup ] && source "${HOME}"/.script/setup
 [ -f "${HOME}"/.bash_untracked_profile ] && source "${HOME}"/.bash_untracked_profile
+[ -f "${HOME}"/.script/setup ] && source "${HOME}"/.script/setup
 
 true # exit 0

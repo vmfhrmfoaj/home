@@ -112,8 +112,8 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+[ -r "${HOME}"/.zsh_untracked_profile ] && source "${HOME}"/.zsh_untracked_profile
 [ -r "${HOME}"/.script/setup ] && source "${HOME}"/.script/setup
 [ -r "${HOME}"/.zsh_profile ] && source "${HOME}"/.zsh_profile
-[ -r "${HOME}"/.zsh_untracked_profile ] && source "${HOME}"/.zsh_untracked_profile
 
 true # exit 0
