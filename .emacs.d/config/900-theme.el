@@ -13,6 +13,9 @@
 
   (custom-set-faces
    '(c-style-brace-face ((t :inherit shadow :weight light)))
+   '(c-style-operator-face ((t :inherit default :weight normal)))
+   '(c-style-punctuation-1-face ((t :inherit shadow)))
+   '(c-style-punctuation-2-face ((t :inherit shadow :weight light)))
    '(bold ((t :foreground unspecified)))
    `(isearch ((t :background "#ffff00" :foreground "black" :underline unspecified :box (:line-width (-1 . -1) :color "#e5e500"))))
    '(italic ((t :foreground unspecified :family "Fantasque Sans Mono" :slant italic)))
@@ -28,7 +31,7 @@
    '(show-paren-mismatch ((t :weight bold :underline t)))
    '(whitespace-newline ((t :inherit whitespace-tab)))
    '(whitespace-space   ((t :inherit whitespace-tab)))
-   '(whitespace-tab     ((t :weight light)))
+   '(whitespace-tab     ((t :foreground "#cccccc" :weight light)))
    '(vertical-border ((t :foreground "#cccccc")))))
 
 (use-package cider-mode

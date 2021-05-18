@@ -15,11 +15,27 @@
   "TODO"
   (-repeat 4 (point-min-marker)))
 
+(defface c-style-operator-face
+  '((t (:inherit default)))
+  "TODO")
+
+(defface c-style-punctuation-1-face
+  '((t (:inherit shadow)))
+  "TODO")
+
+(defface c-style-punctuation-2-face
+  '((t (:inherit shadow)))
+  "TODO")
+
 (let ((f (lambda ()
            (font-lock-add-keywords
             nil
-            '(("\\([,]\\|[|&]\\{2,2\\}\\|\\s(\\|\\s)\\)"
-               (1 'shadow)))
+            '(("\\(?:^\\|\\s-\\)\\([-+*/%|^]\\|<<?\\|>>?\\|[=<>!]?=\\|[!=]==\\)\\(?:\\s-\\|$\\)"
+               (1 'c-style-operator-face))
+              ("\\([|&]\\{2,2\\}\\|\\s(\\|\\s)\\)"
+               (1 'c-style-punctuation-1-face))
+              ("\\([,;]\\)"
+               (1 'c-style-punctuation-2-face)))
             :append))))
   (add-hook 'git-timemachine-mode-hook f 100)
   (add-hook 'toml-mode-hook f 100)
@@ -49,7 +65,7 @@
        (font-lock-add-keywords
         nil
         `(;; punctuation
-          ("\\([-=]>\\|::\\|[.;]\\)"
+          ("\\([-=]>\\|::\\|[.]\\)"
            (1 'shadow))
           ("\\(\\\\\\)$"
            (1 'shadow))
@@ -1547,7 +1563,10 @@
     `((t (:inherit font-lock-variable-name-face)))
     "TODO")
 
-  (defface rust-punctuation-face
+  (defface rust-punctuation-1-face
+    '((t (:inherit shadow)))
+    "TODO")
+  (defface rust-punctuation-2-face
     '((t (:inherit shadow)))
     "TODO")
 
@@ -1556,7 +1575,7 @@
         (append
          `(
            ;; punctuation
-           ("\\(\\_<_[0-9A-Za-z]*\\_>\\)" 1 'rust-punctuation-face)
+           ("\\(\\_<_[_0-9A-Za-z]*\\_>\\)" 1 'rust-punctuation-1-face)
 
            ;; Keywords proper
            (,(regexp-opt rust-keywords 'symbols) . font-lock-keyword-face)
@@ -1600,7 +1619,7 @@
 
            ;; Syntax extension invocations like `foo!`, highlight including the !
            (,(concat (rust-re-grab (concat rust-re-ident "!")) "[({[:space:][]")
-            1 font-lock-preprocessor-face)
+            1 font-lock-builtin-face)
 
            ;; Field names like `foo:`, highlight excluding the :
            (,(concat (rust-re-grab rust-re-ident) "[[:space:]]*:[^:]")
@@ -1623,7 +1642,7 @@
 
            ;; Lifetimes like `'foo`
            (,(concat "\\(&?'\\)" (rust-re-grab rust-re-ident) "[^']")
-            (1 'rust-punctuation-face)
+            (1 'rust-punctuation-1-face)
             (2 'rust-lifetimes-face))
 
            ;; Question mark operator
@@ -1643,9 +1662,9 @@
              (0 font-lock-constant-face t)))
 
            ;; Lambda binding
-           ("\\(|\\)\\([^\r\n|]+\\)\\(|\\)"
-            (1 'rust-punctuation-face)
-            (3 'rust-punctuation-face)
+           ("\\(|\\)\\([^ \t\r\n|][^\r\n|]*?[^ \t\r\n|]?\\)\\(|\\)"
+            (1 'rust-punctuation-2-face)
+            (3 'rust-punctuation-2-face)
             ("\\_<\\([a-z][_0-9a-z]*\\)\\_>\\(?:\\s-*:\\s-*\\(?:[&*]+\\s-*\\)?[_0-9A-Za-z]+\\)?\\(?:\\s-*,\\)?"
              (progn
                (goto-char (setq font-lock--anchor-beg-point (match-beginning 2)))
@@ -1693,10 +1712,13 @@
              (goto-char font-lock--anchor-beg-point)
              (1 'font-lock-variable-name-face)))
 
+           ;; operation
+           ("\\(!\\)\\_<[_0-9A-Za-z]" 1  font-lock-warning-face)
+
            ;; punctuation
-           ("\\([-=]>\\|::?\\|;\\)" 1 'rust-punctuation-face)
-           ("\\(&\\|&?\\*+\\)\\(?:\\s(\\|[_0-9A-Za-z]\\)" 1 'rust-punctuation-face)
-           )
+           ("\\([-=]>\\|::?\\|\\.\\.?\\)" 1 'c-style-punctuation-1-face)
+           ("\\(\\$\\|&\\|&?\\*+\\)\\(?:\\s(\\|[_0-9A-Za-z]\\)" 1 'c-style-punctuation-1-face)
+           ("\\([{}]\\)" 1 'c-style-brace-face))
 
          ;; Ensure we highlight `Foo` in `struct Foo` as a type.
          (mapcar #'(lambda (x)

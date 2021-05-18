@@ -7,7 +7,10 @@
 (add-hook 'emacs-startup-hook
           (lambda ()
             (let* ((setup-file (concat home-dir "/.script/setup"))
-                   (env-vars '("EPYTHON"
+                   (env-vars '("CARGO_HOME"
+                               "CARGO_ROOT_TARGET_DIR"
+                               "CARGO_ROOT_SAVED_DIR"
+                               "EPYTHON"
                                "GO111MODULE"
                                "GOPATH"
                                "JAVA_HOME"
