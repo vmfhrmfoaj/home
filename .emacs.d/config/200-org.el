@@ -1,6 +1,7 @@
 (eval-and-compile (load-file "~/.emacs.d/config/func.el"))
 
 (use-package evil-org
+  :disabled t
   :ensure t
   :after org
   :init
@@ -10,6 +11,7 @@
   (add-hook 'org-mode-hook #'evil-org-mode))
 
 (use-package org
+  :disabled t
   :defer t
   :init
   (eval-when-compile (require 'org nil t))
@@ -127,6 +129,7 @@ which see."
                     (funcall of arg))))))
 
 (use-package org-agenda
+  :disabled t
   :defer t
   :init
   (eval-when-compile (require 'org-agenda nil t))
@@ -252,6 +255,7 @@ which see."
                   (run-hooks 'org-log-buffer-setup-hook)))))
 
 (use-package org-capture
+  :disabled t
   :defer t
   :commands (org-capture)
   :init
@@ -290,6 +294,7 @@ which see."
                   (apply fn args)))))
 
 (use-package org-clock
+  :disabled t
   :defer t
   :commands (org-clock-jump-to-current-clock)
   :init

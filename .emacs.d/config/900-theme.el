@@ -34,6 +34,16 @@
    '(whitespace-tab     ((t :foreground "#cccccc" :weight light)))
    '(vertical-border ((t :foreground "#cccccc")))))
 
+(use-package auto-dim-other-buffers
+  :defer t
+  :init
+  (eval-when-compile (require 'auto-dim-other-buffers nil t))
+
+  :config
+  (custom-set-faces
+   '(auto-dim-other-buffers-face ((t :foreground "#474747")))
+   '(auto-dim-other-line-number-face ((t :inherit line-number :foreground "#c6c6c6")))))
+
 (use-package cider-mode
   :defer t
   :init

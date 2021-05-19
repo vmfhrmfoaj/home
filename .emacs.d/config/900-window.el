@@ -18,47 +18,23 @@
          (x main-monitor-x)
          (y main-monitor-y)
          (w main-monitor-w)
-         (h main-monitor-h))
+         (h main-monitor-h)
+         (wc 120)
+         (oc   6) ; fringe + line-number
+         (w (+ (* wc (frame-char-width))
+               (* oc (frame-char-width)))))
+    (if (<= main-monitor-w w)
+        (setq x main-monitor-x)
+      (setq x (+ (- (+ main-monitor-x (floor (/ main-monitor-w 2)) )
+                    (floor (/ w 2))))))
+    (setq w (- main-monitor-w (- x main-monitor-x)))
     (add-to-list 'default-frame-alist `(width  . (text-pixels . ,w)))
     (add-to-list 'default-frame-alist `(height . (text-pixels . ,h)))
     (setq frame-resize-pixelwise t
-          initial-frame-alist `((top  . ,y)
-                                (left . ,x)
-                                (undecorated . nil))
-          split-width-threshold main-monitor-w)
-    (toggle-frame-maximized)
-
-    (when (<= 1920 w)
-      (add-hook 'window-setup-hook
-                (lambda ()
-                  (split-window-horizontally)
-                  (org-agenda-list)
-                  (set-window-dedicated-p (selected-window) t)
-                  (with-eval-after-load "golden-ratio"
-                    (with-selected-window (get-buffer-window org-agenda-buffer)
-                      (let ((org-agenda-tags-column (1+ (- (window-text-width)))))
-                        (org-agenda-align-tags))))
-                  (other-window 1)))
-
-      (with-eval-after-load "org"
-        (let ((f (lambda (fn buffer &rest args)
-                   "For org-mode dedicated window"
-                   (if (and (get-buffer buffer)
-                            (window-dedicated-p)
-                            (let ((cur-mode major-mode)
-                                  (new-mode (with-current-buffer buffer major-mode)))
-                              (and (provided-mode-derived-p cur-mode 'org-mode 'org-agenda-mode)
-                                   (provided-mode-derived-p new-mode 'org-mode 'org-agenda-mode))))
-                       (let* ((win (selected-window))
-                              (dedicated-p (window-dedicated-p win)))
-                         (unwind-protect
-                             (progn
-                               (set-window-dedicated-p win nil)
-                               (apply fn buffer args))
-                           (set-window-dedicated-p win dedicated-p)))
-                     (apply fn buffer args)))))
-          (advice-add #'pop-to-buffer-same-window :around f)
-          (advice-add #'switch-to-buffer :around f))))))
+          initial-frame-alist (list `(top  . ,y)
+                                    `(left . ,x)
+                                    '(undecorated . nil))
+          split-width-threshold main-monitor-w)))
 
 (use-package golden-ratio
   :ensure t

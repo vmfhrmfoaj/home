@@ -38,7 +38,6 @@
                                      "\\|\\*SQL: "
                                      "\\|\\*Org Agenda"
                                      "\\)")
-      scratch-major-mode 'org-mode
       initial-scratch-message ""
       mouse-avoidance-timer (run-with-idle-timer
                              0.1 t
@@ -51,10 +50,6 @@
       read-process-output-max (* 1024 1024)
       resize-mini-windows t
       ring-bell-function 'ignore
-      ;; NOTE
-      ;;  On the pure gtk branch (https://github.com/flatwhatson/emacs/tree/pgtk-nativecomp).
-      ;;   if the cursor on the tab, black(i.e. foreground color) rectangle will be shown.
-      ;;  It is very ugly.
       x-stretch-cursor t)
 
 (when (eq window-system 'pgtk)

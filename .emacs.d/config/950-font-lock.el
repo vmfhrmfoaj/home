@@ -1163,7 +1163,7 @@
          ;; punctuation
          ("\\s(\\|\\s)"
           (0 'lisp-punctuation-face prepend))
-         ("#?'\\|`\\|\\_<_\\_>\\|,@?"
+         ("#?'\\|`\\|\\_<_\\_>\\|,@?\\|\\."
           (0 'shadow)))
        :append))))
 
@@ -1278,6 +1278,7 @@
    :append))
 
 (use-package org
+  :disabled t
   :defer t
   :init
   (eval-when-compile (require 'org nil t))
