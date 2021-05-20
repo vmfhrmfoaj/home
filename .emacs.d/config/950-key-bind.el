@@ -115,33 +115,34 @@
 
     ;; applications
     ;; - org
-    ;;"aoa" (defalias 'org-agenda-show-list
-    ;;        (lambda ()
-    ;;          (interactive)
-    ;;          (org-agenda-show-on-dedicated-window #'org-agenda-list #'org-agenda-goto-today)))
-    ;;"aocj" #'org-clock-goto
-    ;;"aocn" #'org-capture-note
-    ;;"aoct" #'org-capture-todo
-    ;;"aom" (defalias 'org-agenda-show-tags
-    ;;        (lambda ()
-    ;;          (interactive)
-    ;;          (org-agenda-show-on-dedicated-window #'org-tags-view)))
-    ;;"aoM" (defalias 'org-agenda-show-tags-todo-only
-    ;;        (lambda ()
-    ;;          (interactive)
-    ;;          (org-agenda-show-on-dedicated-window (-partial #'org-tags-view t))))
-    ;;"aos" (defalias 'org-agenda-show-search-result
-    ;;        (lambda ()
-    ;;          (interactive)
-    ;;          (org-agenda-show-on-dedicated-window #'org-search-view)))
-    ;;"aoS" (defalias 'org-agenda-show-search-result-todo-only
-    ;;        (lambda ()
-    ;;          (interactive)
-    ;;          (org-agenda-show-on-dedicated-window (-partial #'org-search-view t))))
-    ;;"aot" (defalias 'org-agenda-show-todo-list
-    ;;        (lambda ()
-    ;;          (interactive)
-    ;;          (org-agenda-show-on-dedicated-window #'org-todo-list)))
+    "aoa" (defalias 'org-agenda-show-list
+            (lambda ()
+              (interactive)
+              (org-agenda-list)
+              (org-agenda-goto-today)))
+    "aocj" #'org-clock-goto
+    "aocn" #'org-capture-note
+    "aoct" #'org-capture-todo
+    "aom" (defalias 'org-agenda-show-tags
+            (lambda ()
+              (interactive)
+              (org-tags-view)))
+    "aoM" (defalias 'org-agenda-show-tags-todo-only
+            (lambda ()
+              (interactive)
+              (org-tags-view t)))
+    "aos" (defalias 'org-agenda-show-search-result
+            (lambda ()
+              (interactive)
+              (org-search-view)))
+    "aoS" (defalias 'org-agenda-show-search-result-todo-only
+            (lambda ()
+              (interactive)
+              (org-search-view t)))
+    "aot" (defalias 'org-agenda-show-todo-list
+            (lambda ()
+              (interactive)
+              (org-todo-list)))
     ;; - docker
     "ad" #'docker
     ;; - undo-tree
@@ -295,7 +296,6 @@
              (let ((buf (current-buffer)))
                (switch-to-previous-buffer)
                (pop-to-buffer buf))))
-    "wp" #'pin-window
 
     ;; text / xwidget
     "x0" (defalias 'text-scale-reset (lambda () (interactive) (text-scale-set 0)))
@@ -584,7 +584,6 @@
     (define-key evil-multiedit-state-map [S-iso-lefttab] fn)))
 
 (use-package evil-org
-  :disabled t
   :defer t
   :init
   (eval-when-compile (require 'evil-org nil t))
@@ -593,17 +592,13 @@
   (evil-org-set-key-theme))
 
 (use-package evil-org-agenda
-  :disabled t
   :ensure evil-org
   :after org-agenda
   :init
   (eval-when-compile (require 'evil-org-agenda nil t))
 
   :config
-  (evil-org-agenda-set-keys)
-  (define-key org-agenda-mode-map "q" nil)
-  (define-key org-agenda-mode-map "Q" nil)
-  (define-key org-agenda-mode-map "x" nil))
+  (evil-org-agenda-set-keys))
 
 (use-package evil-surround
   :defer t
@@ -1170,7 +1165,6 @@
     (kbd "M-DEL") #'term-send-backward-kill-word))
 
 (use-package org
-  :disabled t
   :defer t
   :init
   (eval-when-compile (require 'org nil t))

@@ -491,7 +491,7 @@
   (setq ivy-posframe-display-functions-alist
         '((counsel-company . ivy-posframe-display-at-point)
           (complete-symbol . ivy-posframe-display-at-point)
-          (t               . ivy-posframe-display-at-window-bottom-left)))
+          (t               . ivy-posframe-display-at-frame-bottom-left)))
 
   (with-eval-after-load "swiper"
     (-update->> ivy-update-fns-alist
@@ -510,34 +510,11 @@
                                  (let ((height (+ ivy-height 1)))
                                    (min height (or ivy-posframe-height height))))
                  :min-width (or ivy-posframe-min-width
-                                (let ((frame-params (frame-parameters)))
-                                  (- (window-width)
-                                     (ceiling (/ (+ (alist-get 'left-fringe  frame-params 0)
-                                                    (alist-get 'right-fringe frame-params 0))
-                                                 (frame-char-width)))
-                                     (or display-line-numbers-width -2)))))))
+                                (/ (frame-native-width) (frame-char-width))))))
 
-  (advice-add #'ivy-posframe-display-at-window-bottom-left :override
+  (advice-add #'ivy-posframe-display-at-frame-bottom-left :after
               (lambda (str)
                 "Customize for `auto-dim-other-buffers-mode', `fringe-mode' and `line-number-mode'"
-                (ivy-posframe--display
-                 str
-                 (lambda (info)
-                   (let* ((window-left (plist-get info :parent-window-left))
-                          (window-top (plist-get info :parent-window-top))
-                          (window-height (plist-get info :parent-window-height))
-                          (posframe-height (plist-get info :posframe-height))
-                          (mode-line-height (plist-get info :mode-line-height)))
-                     (cons (+ window-left
-                              (alist-get 'left-fringe (frame-parameters) 0)
-                              (if-let ((buf (ivy-state-buffer ivy-last)))
-                                  (with-current-buffer buf
-                                    (* (frame-char-width) (if display-line-numbers-width
-                                                              (+ 2 display-line-numbers-width)
-                                                            0)))
-                                0))
-                           (+ window-top window-height
-                              (- 0 mode-line-height posframe-height))))))
                 (when-let ((wnd (ivy-state-window ivy-last)))
                   (when-let ((buf (ivy-state-buffer ivy-last)))
                     (with-current-buffer buf
@@ -545,44 +522,6 @@
                       (force-mode-line-update)))
                   (when (fboundp #'adob--manually-dim)
                     (adob--manually-dim wnd)))))
-
-  (advice-add #'ivy-posframe-display-at-point :override
-              (lambda (str)
-                "To fix X position."
-                (ivy-posframe--display
-                 str
-                 (lambda (info &optional font-height upward centering)
-                   (let* ((y-pixel-offset (plist-get info :y-pixel-offset))
-                          (posframe-height (plist-get info :posframe-height))
-                          (window (plist-get info :parent-window))
-                          (window-left (plist-get info :parent-window-left))
-                          (ymax (plist-get info :parent-frame-height))
-                          (position-info (plist-get info :position-info))
-                          (header-line-height (plist-get info :header-line-height))
-                          (tab-line-height (plist-get info :tab-line-height))
-                          (y-top (+ (cadr (window-pixel-edges window))
-                                    tab-line-height
-                                    header-line-height
-                                    (- (or (cdr (posn-x-y position-info)) 0)
-                                       ;; Fix the conflict with flycheck
-                                       ;; http://lists.gnu.org/archive/html/emacs-devel/2018-01/msg00537.html
-                                       (or (cdr (posn-object-x-y position-info)) 0))
-                                    y-pixel-offset))
-                          (font-height (or font-height (plist-get info :font-height)))
-                          (y-bottom (+ y-top font-height)))
-                     (cons (+ window-left
-                              (alist-get 'left-fringe (frame-parameters) 0)
-                              (if-let ((buf (ivy-state-buffer ivy-last)))
-                                  (with-current-buffer buf
-                                    (* (frame-char-width) (if display-line-numbers-width
-                                                              (+ 2 display-line-numbers-width)
-                                                            0)))
-                                0))
-                           (max 0 (if (if upward
-                                          (> (- y-bottom (or posframe-height 0)) 0)
-                                        (> (+ y-bottom (or posframe-height 0)) ymax))
-                                      (- y-top (or posframe-height 0))
-                                    y-bottom))))))))
 
   (ivy-posframe-mode 1))
 

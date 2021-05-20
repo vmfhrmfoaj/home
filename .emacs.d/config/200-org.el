@@ -1,7 +1,6 @@
 (eval-and-compile (load-file "~/.emacs.d/config/func.el"))
 
 (use-package evil-org
-  :disabled t
   :ensure t
   :after org
   :init
@@ -11,7 +10,6 @@
   (add-hook 'org-mode-hook #'evil-org-mode))
 
 (use-package org
-  :disabled t
   :defer t
   :init
   (eval-when-compile (require 'org nil t))
@@ -67,11 +65,6 @@ which see."
 	       (completion completion)))
         (_ nil))))
 
-  (defun org-dic-at-point ()
-    (interactive)
-    (when (fboundp #'osx-dictionary-search-pointer)
-      (osx-dictionary-search-pointer)))
-
   (setq org-complete-tags-always-offer-all-agenda-tags t
         org-fontify-whole-heading-line t
         org-fontify-quote-and-verse-blocks t
@@ -107,7 +100,6 @@ which see."
   (add-hook 'org-todo-get-default-hook #'org-insert-schedule-&-deadline)
   (add-hook 'org-mode-hook
             (lambda ()
-              (setq-local evil-lookup-func #'org-dic-at-point)
               ;; NOTE
               ;;  disable `show-smartparens-mode' due to it is conflicted with `org-indent-mode'.
               ;;  `show-paren-mode' is also conflicted with it.
@@ -115,7 +107,6 @@ which see."
             100)
 
   (advice-add #'org-tags-completion-function :override #'org-tags-completion-function-for-case-insensitive)
-  (advice-add #'org-clock-goto :before (lambda (&optional select) (persp-switch-to-org)))
   (advice-add #'org-todo :around
               (lambda (of &optional arg)
                 "If reopen the completed _TODO_, show a popup for logging."
@@ -129,7 +120,6 @@ which see."
                     (funcall of arg))))))
 
 (use-package org-agenda
-  :disabled t
   :defer t
   :init
   (eval-when-compile (require 'org-agenda nil t))
@@ -137,30 +127,6 @@ which see."
   (setq org-agenda-files
         (when (file-exists-p org-directory)
           (directory-files-recursively org-directory "\\.org$")))
-
-  (defun org-agenda-show-on-dedicated-window (org-agenda-fn &optional finish-fn)
-    (let* ((win (-some->> (window-list)
-                          (--filter (with-current-buffer (window-buffer it)
-                                      (derived-mode-p 'org-mode 'org-agenda-mode)))
-                          (-first-item)))
-           (dedicated? (window-dedicated-p win)))
-      (unwind-protect
-          (progn
-            (when win
-              (set-window-dedicated-p win nil)
-              (select-window win))
-            (funcall org-agenda-fn))
-        (when win
-          (set-window-dedicated-p win dedicated?))))
-    (let ((org-agenda-tags-column (1+ (- (window-text-width)))))
-      (call-interactively #'org-agenda-redo))
-    (setq-local default-directory (concat home-dir "/Desktop/Org/")
-                frame--width (frame-width)
-                projectile-project-name "Org")
-    (when finish-fn
-      (funcall finish-fn))
-    (when (fboundp #'golden-ratio)
-      (golden-ratio)))
 
   :config
   (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0))
@@ -192,22 +158,10 @@ which see."
                                    (tags   . " ")
                                    (search . " ")))
 
-  (defvar org-agenda--width 0)
-
-  (add-hook 'window-size-change-functions
-            (lambda (&rest _)
-              "Align tags"
-              (when-let ((win (and org-agenda-buffer
-                                   (get-buffer-window org-agenda-buffer))))
-                (with-selected-window win
-                  (let ((w (window-width)))
-                    (when (not (= org-agenda--width w))
-                      (let ((org-agenda-tags-column (1+ (- (window-text-width)))))
-                        (org-agenda-align-tags)))
-                    (setq-local org-agenda--width w))))))
-
   (add-hook 'org-agenda-mode-hook
             (lambda ()
+              (setq-local default-directory (concat home-dir "/Desktop/Org/")
+                          projectile-project-name "Org")
               (let* ((filter "Work")
                      (cur-time (current-time))
                      (cur-date (-drop 3 (decode-time cur-time)))
@@ -219,43 +173,9 @@ which see."
                                          "-"
                                        "+")
                                      filter))
-                (add-to-list 'org-agenda-tag-filter filter))))
-
-  (advice-add #'org-add-log-note :override
-              (lambda (&optional _purpose)
-                "Fix for the dedicated? window"
-                (remove-hook 'post-command-hook 'org-add-log-note)
-                (setq org-log-note-window-configuration (current-window-configuration))
-                (move-marker org-log-note-return-to (point))
-                (pop-to-buffer-same-window (marker-buffer org-log-note-marker))
-                (goto-char org-log-note-marker)
-                (org-switch-to-buffer-other-window (get-buffer-create "*Org Note*"))
-                (erase-buffer)
-                (if (memq org-log-note-how '(time state))
-                    (org-store-log-note)
-                  (let ((org-inhibit-startup t)) (org-mode))
-                  (insert (format "# Insert note for %s.
-# Finish with C-c C-c, or cancel with C-c C-k.\n\n"
-		                          (cl-case org-log-note-purpose
-		                            (clock-out "stopped clock")
-		                            (done  "closed todo item")
-		                            (reschedule "rescheduling")
-		                            (delschedule "no longer scheduled")
-		                            (redeadline "changing deadline")
-		                            (deldeadline "removing deadline")
-		                            (refile "refiling")
-		                            (note "this entry")
-		                            (state
-		                             (format "state change from \"%s\" to \"%s\""
-			                                 (or org-log-note-previous-state "")
-			                                 (or org-log-note-state "")))
-		                            (t (error "This should not happen")))))
-                  (when org-log-note-extra (insert org-log-note-extra))
-                  (setq-local org-finish-function 'org-store-log-note)
-                  (run-hooks 'org-log-buffer-setup-hook)))))
+                (add-to-list 'org-agenda-tag-filter filter)))))
 
 (use-package org-capture
-  :disabled t
   :defer t
   :commands (org-capture)
   :init
@@ -294,7 +214,6 @@ which see."
                   (apply fn args)))))
 
 (use-package org-clock
-  :disabled t
   :defer t
   :commands (org-clock-jump-to-current-clock)
   :init

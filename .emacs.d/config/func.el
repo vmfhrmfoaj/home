@@ -372,20 +372,9 @@
 
 (defun kill-buffer-and-delete-window ()
   (interactive)
-  (let* ((win (selected-window))
-         (dedicated-p (window-dedicated-p win)))
-    (unwind-protect
-        (progn
-          (set-window-dedicated-p win nil)
-          (if (fboundp 'projectile-kill-buffer)
-              (projectile-kill-buffer)
-            (kill-buffer)))
-      (set-window-dedicated-p win dedicated-p)))
+  (if (fboundp 'projectile-kill-buffer)
+      (projectile-kill-buffer)
+    (kill-buffer))
   (when (or (window-in-direction 'up)
             (window-in-direction 'down))
     (delete-window)))
-
-(defun pin-window (&optional win)
-  (interactive)
-  (let ((win (or win (selected-window))))
-    (set-window-dedicated-p win t)))

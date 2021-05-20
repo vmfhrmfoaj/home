@@ -30,7 +30,7 @@
 (let ((f (lambda ()
            (font-lock-add-keywords
             nil
-            '(("\\(?:^\\|\\s-\\)\\([-+*/%|^]\\|<<?\\|>>?\\|[=<>!]?=\\|[!=]==\\)\\(?:\\s-\\|$\\)"
+            '(("\\(?:^\\|\\s-\\)\\([-+*/%&|^]\\|<<?\\|>>?\\|[-+*/%&|!=<>^]?=\\|[!=]==\\)\\(?:\\s-\\|$\\)"
                (1 'c-style-operator-face))
               ("\\([|&]\\{2,2\\}\\|\\s(\\|\\s)\\)"
                (1 'c-style-punctuation-1-face))
@@ -1073,9 +1073,9 @@
     (font-lock-add-keywords
      mode
      `(;; Punctuation
-       ("\\(#?\\s(\\|\\s)\\)"
+       ("\\(#?\\s(\\|\\s)\\|[,]\\)"
         (1 'clojure-punctuation-face prepend))
-       ("\\([~#@&_,`'^]\\)"
+       ("\\([~#@&_`'^]\\)"
         (1 'shadow)))
      :append)))
 
@@ -1278,7 +1278,6 @@
    :append))
 
 (use-package org
-  :disabled t
   :defer t
   :init
   (eval-when-compile (require 'org nil t))

@@ -38,6 +38,7 @@
                                      "\\|\\*SQL: "
                                      "\\|\\*Org Agenda"
                                      "\\)")
+      scratch-major-mode 'org-mode
       initial-scratch-message ""
       mouse-avoidance-timer (run-with-idle-timer
                              0.1 t

@@ -55,7 +55,7 @@
      `(cider-deprecated-face  ((t :inherit font-lock-warning-face :weight ,default-weight :underline (:style wave :color "darkorange"))))
      '(cider-fringe-good-face ((t :inherit success)))
      '(cider-repl-prompt-face ((t :inherit font-lock-keyword-face :weight light)))
-     '(cider-repl-stdout-face ((t :inherit (italic font-lock-string-face) :weight light))))))
+     '(cider-repl-stdout-face ((t :inherit font-lock-string-face :weight light))))))
 
 (use-package clojure-mode
   :defer t
@@ -65,24 +65,24 @@
   :config
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
-     '(clojure-cond-condtion-face ((t :inherit italic)))
-     '(clojure-define-type-face ((t :inherit font-lock-type-face)))
+     '(clojure-cond-condtion-face ((t :underline (:color "#adadad"))))
+     '(clojure-define-type-face ((t :inherit font-lock-type-face :background "#efeaf5")))
      '(clojure-defining-spec-face ((t :inherit font-lock-function-name-face)))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
      '(clojure-fn-parameter-unused-face ((t :inherit clojure-fn-parameter-face :weight normal)))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face :foreground unspecified)))
      '(clojure-meta-face ((t :inherit shadow :weight normal)))
-     '(clojure-ns-definition-face ((t :inherit font-lock-type-face :underline t)))
+     '(clojure-ns-definition-face ((t :inherit font-lock-type-face :background "#efeaf5")))
      `(clojure-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
      '(clojure-local-binding-variable-name-unsed-face ((t :inherit clojure-local-binding-variable-name-face :weight normal)))
      '(clojure-punctuation-face ((t :inherit shadow :weight light)))
      '(clojure-semi-function-name-face ((t :inherit font-lock-function-name-face)))
-     '(clojure-side-effect-face ((t :inherit italic :weight bold)))
+     '(clojure-side-effect-face ((t :weight bold :underline t)))
      '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))
      '(clojure-special-variable-definition-face ((t :inherit (font-lock-constant-face clojure-variable-definition-face))))
      `(clojure-variable-definition-face ((t :inherit font-lock-variable-name-face
-                                            :weight ,(face-attribute 'font-lock-function-name-face :weight)
-                                            :underline t))))))
+                                            :background "#f8eaf6"
+                                            :weight ,(face-attribute 'font-lock-function-name-face :weight)))))))
 
 (use-package company
   :defer t
@@ -175,9 +175,9 @@
 
   :config
   (custom-set-faces
-   '(font-lock-comment-face ((t :family "Fantasque Sans Mono" :weight light :slant unspecified)))
+   '(font-lock-comment-face ((t :inherit italic :weight light)))
    '(font-lock-doc-face ((t :inherit italic :weight light)))
-   '(font-lock-function-name-face ((t :foreground "#1975a3" :weight bold :underline t)))
+   '(font-lock-function-name-face ((t :background "#e8f1f5" :foreground "#1975a3" :weight bold)))
    '(font-lock-keyword-face ((t :weight unspecified)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
    '(font-lock-preprocessor-face ((t :weight normal)))
@@ -257,7 +257,7 @@
   (custom-set-faces
    '(magit-branch-current     ((t :inherit magit-branch-local  :box (:line-width (1 . -1)))))
    '(magit-branch-remote-head ((t :inherit magit-branch-remote :box (:line-width (1 . -1)))))
-   `(magit-diff-context ((t :foreground ,(color-from 'default :foreground 15) :weight light)))
+   `(magit-diff-context ((t :foreground ,(color-from 'default :foreground 15) :weight normal)))
    '(magit-diff-context-highlight ((t :weight normal)))
    '(magit-diff-added ((t :background "#cceecc" :foreground "#119911")))
    '(magit-diff-added-highlight ((t :inherit magit-diff-added :background "#ddffdd")))
@@ -360,7 +360,7 @@
 
   :config
   (custom-set-faces
-   '(which-key-command-description-face ((t :inherit font-lock-function-name-face :underline nil)))))
+   `(which-key-command-description-face ((t :foreground ,(color-from 'font-lock-function-name-face :foreground))))))
 
 (use-package yasnippet
   :defer t
