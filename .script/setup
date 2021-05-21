@@ -321,10 +321,10 @@ EOF
     export CARGO_ROOT_SAVED_DIR="${HOME}/.cargo/build"
     _add_to_path "${HOME}/.cargo/bin"
 
-    if [ ! -f '.oh-my-zsh/custom/plugins/cargo/_cargo' ] || [ ! -f '.oh-my-zsh/custom/plugins/cargo/_cargo' ]; then
+    if [ ! -f "${HOME}/.oh-my-zsh/custom/plugins/cargo/_cargo" ] || [ ! -f "${HOME}/.oh-my-zsh/custom/plugins/cargo/_cargo" ]; then
         mkdir -p .oh-my-zsh/custom/plugins/{cargo,rustup}
-        rustup completions zsh cargo  > '.oh-my-zsh/custom/plugins/cargo/_cargo'
-        rustup completions zsh rustup > '.oh-my-zsh/custom/plugins/rustup/_rustup'
+        rustup completions zsh cargo  > "${HOME}/.oh-my-zsh/custom/plugins/cargo/_cargo"
+        rustup completions zsh rustup > "${HOME}/.oh-my-zsh/custom/plugins/rustup/_rustup"
     fi
 
     _add_to_path "$(rustc --print sysroot)/bin"
