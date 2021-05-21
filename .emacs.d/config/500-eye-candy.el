@@ -239,7 +239,7 @@
   (defun company--decorate-background-string (args)
     (if (and focus-pre-overlay
              focus-post-overlay)
-        (-let* (((lines old column nl align-top) args)
+        (-let* (((lines column-offset old column nl align-top) args)
                 (old-len (length old)))
           (unless company--pseudo-tooltip-bg-lines
             (setq company--pseudo-tooltip-bg-lines
@@ -251,7 +251,7 @@
             (let* ((num-out-of-scope-lines (min old-len (- focus--beg-line company--pseudo-tooltip-start-line))))
               (setq old (-concat (-take num-out-of-scope-lines company--pseudo-tooltip-bg-lines)
                                  (-drop num-out-of-scope-lines old)))))
-          (list lines old column nl align-top))
+          (list lines column-offset old column nl align-top))
       args))
 
   (add-hook 'evil-insert-state-entry-hook #'focus--enable)
@@ -468,78 +468,6 @@
 
   (advice-add #'hl-todo--get-face :filter-return #'list)
   (advice-add #'hl-todo--setup :after #'hl-todo--setup-custom))
-
-(use-package ivy-posframe
-  :ensure t
-  :init
-  (eval-when-compile (require 'ivy-posframe nil t))
-
-  :config
-  (defun ivy-posframe--re-display (str &optional poshandler)
-    "Improve the performance."
-    (let ((buf (get-buffer ivy-posframe-buffer)))
-      (when (-some-> buf
-                     (with-current-buffer posframe--frame)
-                     (frame-visible-p))
-        (with-current-buffer buf
-          (posframe--insert-string str nil)
-          (setq-local truncate-lines ivy-truncate-lines))
-        (with-ivy-window
-          (ivy-posframe--add-prompt 'ignore))
-        t)))
-
-  (setq ivy-posframe-display-functions-alist
-        '((counsel-company . ivy-posframe-display-at-point)
-          (complete-symbol . ivy-posframe-display-at-point)
-          (t               . ivy-posframe-display-at-frame-bottom-left)))
-
-  (with-eval-after-load "swiper"
-    (-update->> ivy-update-fns-alist
-                (--remove (-let (((caller . _rest) it))
-                            (eq 'swiper caller)))))
-
-  (advice-add #'ivy-posframe--display :before-until #'ivy-posframe--re-display)
-
-  (advice-add #'ivy-posframe-get-size :override
-              (lambda ()
-                "To change the default minimum width of the `posframe' frame."
-                (list
-                 :height ivy-posframe-height
-                 :width ivy-posframe-width
-                 :min-height (or ivy-posframe-min-height
-                                 (let ((height (+ ivy-height 1)))
-                                   (min height (or ivy-posframe-height height))))
-                 :min-width (or ivy-posframe-min-width
-                                (/ (frame-native-width) (frame-char-width))))))
-
-  (advice-add #'ivy-posframe-display-at-frame-bottom-left :after
-              (lambda (str)
-                "Customize for `auto-dim-other-buffers-mode', `fringe-mode' and `line-number-mode'"
-                (when-let ((wnd (ivy-state-window ivy-last)))
-                  (when-let ((buf (ivy-state-buffer ivy-last)))
-                    (with-current-buffer buf
-                      (setq powerline-selected-window nil)
-                      (force-mode-line-update)))
-                  (when (fboundp #'adob--manually-dim)
-                    (adob--manually-dim wnd)))))
-
-  (ivy-posframe-mode 1))
-
-(use-package posframe
-  :defer t
-  :init
-  (eval-when-compile (require 'posframe nil t))
-
-  :config
-  (defun posframe-mouse-avoidance (frame)
-    (-let* (((mp-frame) (mouse-position)))
-      (when (eq frame mp-frame)
-        (set-mouse-position frame (frame-width frame) (frame-height frame))))
-    frame)
-
-  (setq posframe-mouse-banish nil)
-
-  (advice-add #'posframe-show :filter-return #'posframe-mouse-avoidance))
 
 (use-package powerline
   :ensure t

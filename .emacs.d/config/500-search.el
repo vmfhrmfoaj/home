@@ -26,7 +26,7 @@
         (setq-default ivy-calling val))))
 
   :config
-  (add-to-list 'ivy-height-alist '(counsel-rg . 30)))
+  (add-to-list 'ivy-height-alist '(counsel-rg . 25)))
 
 (use-package ivy
   :ensure t
@@ -145,7 +145,7 @@
               (cl-incf line-number))
             (nreverse candidates))))))
 
-  (add-to-list 'ivy-height-alist '(swiper . 30))
+  (add-to-list 'ivy-height-alist '(swiper . 25))
 
   (advice-add #'swiper--candidates :override #'swiper--custom-candidates)
   (advice-add #'swiper--line :override

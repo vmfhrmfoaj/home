@@ -19,6 +19,7 @@
                                ("/mnt/ext/Build/"        . "~/Desktop/Build/")
                                ("/mnt/ext/Open_Sources/" . "~/Desktop/Open_Sources/")
                                ("/mnt/ext/Libraries/"    . "~/Desktop/Libraries/")
+                               ("/mnt/ext/Works/"        . "~/Desktop/Works/")
                                ("/mnt/ext2/Downloads/"   . "~/Downloads/"))
       exclude-prev-buf-regex (concat "^\\s-*"
                                      "\\(\\*"

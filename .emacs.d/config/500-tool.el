@@ -572,6 +572,8 @@
   (add-hook 'lisp-interaction-mode-hook #'which-func-setup-once)
 
   :config
+  (defvar which-func-icon "⊡​​​") ; zero width space * 3
+
   (defun which-func-custom-update-1 (window)
     (when (and which-func-mode
                (member major-mode which-func-modes))
@@ -580,7 +582,7 @@
 	        (let ((current (which-function)))
 	          (unless (equal current (gethash window which-func-table))
                 (setq spaceline-symbol-segment--symbol
-                      (when current current))
+                      (when current (concat which-func-icon current)))
                 (puthash window current which-func-table)
                 (force-mode-line-update)))
 	      (error

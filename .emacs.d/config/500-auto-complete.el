@@ -18,20 +18,13 @@
 
   (setq company-dabbrev-code-ignore-case t
         company-dabbrev-code-other-buffers nil
-        company-etags-ignore-case t
-        company-idle-delay nil
         company-echo-delay nil
+        company-etags-ignore-case t
+        company-format-margin-function nil
+        company-idle-delay nil
         company-minimum-prefix-length 1
         company-selection-wrap-around t
         company-tooltip-flip-when-above t)
-
-  (add-hook 'company-mode-hook
-            (lambda ()
-              ;; NOTE
-              ;;  use `counsel-company' instead of `company-tooltip'.
-              (remove-hook 'pre-command-hook  'company-pre-command t)
-              (remove-hook 'post-command-hook 'company-post-command t)
-              (remove-hook 'yas-keymap-disable-hook 'company--active-p t)))
 
   (add-hook 'company-after-completion-hook
             (lambda (_ignored)
@@ -123,26 +116,7 @@
                 (let ((inhibit-read-only t))
                   (funcall fn))))
 
-  (advice-add #'counsel-company :override #'counsel--custom-company)
-
-  (with-eval-after-load "company"
-    (advice-add #'company-indent-or-complete-common :override
-                (lambda (arg)
-                  "Customize `company-indent-or-complete-common' use `counsel-company' instead of `company' overlay."
-                  (interactive "P")
-                  (cond
-                   ((use-region-p)
-                    (indent-region (region-beginning) (region-end)))
-                   ((memq indent-line-function
-                          '(indent-relative indent-relative-maybe))
-                    (counsel-company))
-                   ((let ((old-point (point))
-                          (old-tick (buffer-chars-modified-tick))
-                          (tab-always-indent t))
-                      (indent-for-tab-command arg)
-                      (when (and (eq old-point (point))
-                                 (eq old-tick (buffer-chars-modified-tick)))
-                        (counsel-company)))))))))
+  (advice-add #'counsel-company :override #'counsel--custom-company))
 
 (use-package yasnippet
   :ensure t
