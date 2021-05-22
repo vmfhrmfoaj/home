@@ -10,6 +10,17 @@ _is_shim() {
     fi
 }
 
+_is_cmd() {
+    local cmd=$1
+    if [ -n "${ZSH_VERSION}" ]; then
+        builtin whence -p "$1" >/dev/null 2>&1
+    elif [ -n "${BASH}" ]; then
+        builtin type -P "$1" >/dev/null 2>&1
+    else
+        which "$1" >/dev/null 2>&1
+    fi
+}
+
 _add_to_path() {
     local new_path=$1
     local is_append=${2:-'no'}
@@ -24,13 +35,10 @@ _add_to_path() {
     fi
 }
 
-_del_from_path() {
-    local path=$1
-    if [ -n "${path}" ]; then
-        PATH=${PATH//":${path}:"/":"}
-        PATH=${PATH/#"${path}:"/}
-        PATH=${PATH/%":${path}"/}
-        export PATH
+_remove_from_path() {
+    local new_path=$1
+    if [ -n "${new_path}" ]; then
+        export PATH=$(echo "${PATH}" | awk -v PATH="${new_path}" -v RS=: -v ORS=: '$0 ~ PATH {next} {print}' | sed -E 's/^:|:$//')
     fi
 }
 
@@ -103,6 +111,18 @@ EOF
     else
         export LEIN_JVM_OPTS=""
     fi
+
+    _is_cmd clojure
+    if [ $? -ne 0 ]; then
+        local clj_cli_ver="1.10.3.849"
+        local clj_cli_installer="/tmp/clj-cli-installer"
+        wget -O "${clj_cli_installer}" "https://download.clojure.org/install/linux-install-${clj_cli_ver}.sh"
+        if [ $? -eq 0 ]; then
+            chmod +x "${clj_cli_installer}"
+            "${clj_cli_installer}" --prefix "${HOME}/.local"
+        fi
+        rm -f "${clj_cli_installer}"
+    fi
 }
 
 _setup_for_deno() {
@@ -122,10 +142,10 @@ _setup_for_graalvm() {
     local graalvm_home="${HOME}/.graalvm-${ver}"
     if [ -d "${graalvm_home}" ]; then
         if [ -n "${JAVA_HOME}" ]; then
-            _del_from_path "${JAVA_HOME}/bin"
+            _remove_from_path "${JAVA_HOME}/bin"
         fi
         if [ -n "${GRAALVM_HOME}" ]; then
-            _del_from_path "${GRAALVM_HOME}/export-path"
+            _remove_from_path "${GRAALVM_HOME}/export-path"
         fi
         export GRAALVM_HOME=${graalvm_home}
         export JAVA_HOME=${graalvm_home}
@@ -139,10 +159,10 @@ _setup_for_java() {
     local java_home="/usr/lib64/openjdk-${ver}"
     if [ -d "${java_home}" ]; then
         if [ -n "${JAVA_HOME}" ]; then
-            _del_from_path "${JAVA_HOME}/bin"
+            _remove_from_path "${JAVA_HOME}/bin"
         fi
         if [ -n "${GRAALVM_HOME}" ]; then
-            _del_from_path "${GRAALVM_HOME}/export-path"
+            _remove_from_path "${GRAALVM_HOME}/export-path"
         fi
         export JAVA_HOME=${java_home}
         _add_to_path "${java_home}/bin"
@@ -186,7 +206,7 @@ _setup_for_lua() {
 }
 
 _setup_for_nodejs() {
-    which npm >/dev/null 2>&1
+    _is_cmd npm
     if [ $? -eq 0 ]; then
         local npm_prefix="${HOME}/.npm-global"
         if [ ! -d "${npm_prefix}" ]; then
@@ -243,7 +263,7 @@ if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
 fi
 EOF
             chmod +x "${HOME}/.shim/rustup"
-            which cargo >/dev/null 2>&1
+            _is_cmd cargo
             if [ $? -ne 0 ] ; then
                 cp "${HOME}/.shim/rustup" "${HOME}/.shim/cargo"
             fi
@@ -397,31 +417,23 @@ _setup_for_wsl() {
     if [ -z "${LIBGL_ALWAYS_INDIRECT}" ]; then
         export LIBGL_ALWAYS_INDIRECT=1
     fi
-    which xrdb > /dev/null 2>&1
+    _is_cmd xrdb
     if [ $? -eq 0 ]; then
         xrdb -merge "${HOME}/.Xresources"
     fi
 }
 
-_setup_for_xorg() {
-    which numlockx > /dev/null 2>&1
-    if [ $? -eq 0 ]; then
-        numlockx on
-    fi
-}
-
-
 # alias
-which exa >/dev/null 2>&1
+_is_cmd exa
 if [ $? -eq 0 ]; then
     alias ls=exa
     alias ll='exa -l'
 fi
-which fd >/dev/null 2>&1
+_is_cmd fd
 if [ $? -eq 0 ]; then
     alias fd="$(which fd) --hidden --no-ignore --no-ignore-vcs"
 fi
-which rg >/dev/null 2>&1
+_is_cmd rg
 if [ $? -eq 0 ]; then
     alias rg="$(which rg) --hidden --no-ignore --no-ignore-vcs"
 fi
@@ -430,6 +442,8 @@ fi
 # add dirs to PATH
 _add_to_path '/sbin'
 _add_to_path '/usr/sbin'
+_add_to_path "${HOME}/.local/bin"
+_add_to_path "${HOME}/.bin"
 
 # basic setup
 _setup_for_android
@@ -442,7 +456,6 @@ _setup_for_locale
 _setup_for_python
 _setup_for_rust
 _setup_for_nodejs
-_setup_for_xorg
 
 # depend on `java`
 _setup_for_clojure
@@ -453,7 +466,9 @@ _setup_for_clojure
 #_setup_for_lua
 _setup_for_perl
 
-# add user binary dirs to PATH
+# add user binary dirs to the front of PATH
+_remove_from_path "${HOME}/.local/bin"
+_remove_from_path "${HOME}/.bin"
 _add_to_path "${HOME}/.local/bin"
 _add_to_path "${HOME}/.bin"
 

@@ -478,9 +478,15 @@ _install_graalvm_from_tar() {
         fi
         ln -s "${file}" .
     done
-    for file in "../bin"/{keytool,serialver}; do
+    for file in ../bin/{keytool,serialver}; do
         ln -s "${file}" .
     done
+    ../bin/gu install native-image
+    if [ -f ../bin/native-image ]; then
+        ln -s $(readlink ../bin/native-image) native-image
+    else
+        echo "Unable to install GraalVM's native-image for now, please run '${GRAALVM_HOME}/gu install native-image' later."
+    fi
     cd "${cur_dir}"
 }
 
