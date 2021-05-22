@@ -1,34 +1,21 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package auto-dim-other-buffers
   :ensure t
   :init
-  (eval-when-compile (require 'auto-dim-other-buffers nil t))
-
   (defface auto-dim-other-line-number-face
     '((t (:inherit auto-dim-other-buffers-face)))
     "TODO")
 
   :config
-  (defun adob--manually-dim (wnd)
-    "Dim the background without conditions."
-    (when (and (windowp wnd)
-               (not (window-parameter wnd 'adob--dim)))
-      (setq adob--last-window nil
-            adob--last-buffer nil)
-      (set-window-parameter wnd 'adob--dim t)
-      (force-window-update wnd)))
-
   (setq auto-dim-other-buffers-dim-on-focus-out nil
         auto-dim-other-buffers-dim-on-switch-to-minibuffer nil)
-
-  (with-eval-after-load "ivy-posframe"
-    (add-to-list 'auto-dim-other-buffers-never-dim-buffer-functions
-                 (lambda (buf)
-                   "Disable `auto-dim-other-buffers' while displaying the frame of `ivy-posframe'"
-                   (get-buffer-window ivy-posframe-buffer))))
 
   (defvar-local adob--face-mode-remapping-for-line-number nil)
 
@@ -67,17 +54,10 @@
 
   (auto-dim-other-buffers-mode 1))
 
-(use-package evil-ex
-  :defer t
-  :init
-  (eval-when-compile (require 'evil-ex nil t)))
-
 (use-package composite
   :defer t
   :if (version<= "27.0" emacs-version)
   :init
-  (eval-when-compile (require 'composite nil t))
-
   (defvar composition-ligature-table (make-char-table nil))
 
   (defvar ligature-regex
@@ -116,9 +96,6 @@
 
 (use-package diminish
   :ensure t
-  :init
-  (eval-when-compile (require 'diminish nil t))
-
   :config
   (with-eval-after-load "aggressive-indent"       (diminish 'aggressive-indent-mode      ""))
   (with-eval-after-load "auto-dim-other-buffers"  (diminish 'auto-dim-other-buffers-mode ""))
@@ -137,7 +114,6 @@
   (with-eval-after-load "highlight-parentheses"   (diminish 'highlight-parentheses-mode  ""))
   (with-eval-after-load "linum-relative"          (diminish 'linum-relative-mode         ""))
   (with-eval-after-load "ivy"                     (diminish 'ivy-mode                    ""))
-  (with-eval-after-load "ivy-posframe"            (diminish 'ivy-posframe-mode           ""))
   (with-eval-after-load "magit-blame"             (diminish 'magit-blame-mode            ""))
   (with-eval-after-load "magit-svn"               (diminish 'magit-svn-mode              ""))
   (with-eval-after-load "org-indent"              (diminish 'org-indent-mode             ""))
@@ -155,9 +131,6 @@
 (use-package evil-goggles
   :ensure t
   :after evil
-  :init
-  (eval-when-compile (require 'evil-goggles nil t))
-
   :config
   (setq evil-goggles-duration 0.15
         evil-goggles-pulse nil)
@@ -173,8 +146,6 @@
   :defer t
   :commands (focus-init focus-terminate)
   :init
-  (eval-when-compile (require 'focus nil t))
-
   (defvar focus--exclude-modes '(term-mode eshell-mode))
 
   (defvar-local focus--focus-move-timer nil)
@@ -412,9 +383,6 @@
   :ensure t
   :defer t
   :hook (prog-mode . highlight-parentheses-mode)
-  :init
-  (eval-when-compile (require 'highlight-parentheses nil t))
-
   :config
   (with-eval-after-load "company"
     (add-hook 'company-completion-started-hook
@@ -430,9 +398,6 @@
   :ensure t
   :defer t
   :hook ((latex-mode prog-mode rpm-spec-mode toml-mode) . highlight-numbers-mode)
-  :init
-  (eval-when-compile (require 'highlight-numbers nil t))
-
   :config
   (defconst highlight-numbers-generic-regexp
     (rx (and
@@ -445,18 +410,12 @@
 
 (use-package hl-line
   :disabled t
-  :init
-  (eval-when-compile (require 'hl-line nil t))
-
   :config
   (global-hl-line-mode))
 
 (use-package hl-todo
   :ensure t
   :hook ((latex-mode prog-mode) . hl-todo-mode)
-  :init
-  (eval-when-compile (require 'hl-todo nil t))
-
   :config
   (defun hl-todo--setup-custom ()
     "TODO"
@@ -470,15 +429,11 @@
   (advice-add #'hl-todo--setup :after #'hl-todo--setup-custom))
 
 (use-package powerline
-  :ensure t
-  :init
-  (eval-when-compile (require 'powerline nil t)))
+  :ensure t)
 
 (use-package spaceline-config
   :ensure spaceline
   :init
-  (eval-when-compile (require 'spaceline-config nil t))
-
   (defface spaceline-symbol-segment-face
     '((t (:inherit shadow)))
     "TODO")
@@ -542,9 +497,6 @@
   :disabled t
   :if (fboundp 'define-fringe-bitmap)
   :ensure t
-  :init
-  (eval-when-compile (require 'vi-tilde-fringe nil t))
-
   :config
   (global-vi-tilde-fringe-mode))
 
@@ -553,8 +505,6 @@
   :ensure t
   :defer t
   :init
-  (eval-when-compile (require 'yascroll nil t))
-
   ;; NOTE
   ;;  `yascroll:show-scroll-bar' is very slow.
   ;;  I will manually trigger this function.

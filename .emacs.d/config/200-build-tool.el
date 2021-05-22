@@ -1,15 +1,15 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package cmake-ide
   :ensure t
-  :hook (cmake-mode . cmake-ide-setup)
-  :init
-  (eval-when-compile (require 'cmake-ide nil t)))
+  :hook (cmake-mode . cmake-ide-setup))
 
 (use-package cmake-mode
   :ensure t
-  :defer t
-  :init
-  (eval-when-compile (require 'cmake-mode nil t)))
+  :defer t)

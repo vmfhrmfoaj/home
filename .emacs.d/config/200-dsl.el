@@ -1,12 +1,14 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package bison-mode
   :ensure t
-  :defer t
-  :init
-  (eval-when-compile (require 'bison-mode nil t)))
+  :defer t)
 
 (use-package capnp-mode
   :disabled t
@@ -18,5 +20,4 @@
   (unless (package-installed-p 'capnp-mode)
     (quelpa '(capnp-mode :fetcher url
                          :url "https://raw.githubusercontent.com/vmfhrmfoaj/capnproto/master/highlighting/emacs/capnp-mode.el"
-                         :version original)))
-  (eval-when-compile (require 'capnp-mode nil t)))
+                         :version original))))

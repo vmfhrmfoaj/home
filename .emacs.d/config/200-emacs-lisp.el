@@ -1,11 +1,12 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package elisp-mode
-  :init
-  (eval-when-compile (require 'elisp-mode nil t))
-
   :config
   (defun emacs-lisp-REPL-buffer ()
     (interactive)
@@ -48,6 +49,4 @@
 
 (use-package elisp-slime-nav
   :ensure t
-  :hook (emacs-lisp-mode . elisp-slime-nav-mode)
-  :init
-  (eval-when-compile (require 'elisp-slime-nav nil t)))
+  :hook (emacs-lisp-mode . elisp-slime-nav-mode))

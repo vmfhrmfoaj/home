@@ -1,13 +1,14 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package css-mode
   :defer t
   :mode "\\.wxss\\'"
-  :init
-  (eval-when-compile (require 'css-mode nil t))
-
   :config
   (defun css--custom-fontify-region (start end &optional loudly)
     "Customize `css--fontify-region' to enhance compatibility with `hl-mode'"
@@ -48,44 +49,30 @@
 
 (use-package js
   :defer t
-  :init
-  (eval-when-compile (require 'js nil t))
-
   :config
   (setq-default js-indent-level 4))
 
 (use-package json-mode
   :ensure t
-  :defer t
-  :init
-  (eval-when-compile (require 'json-mode nil t)))
+  :defer t)
 
 (use-package typescript-mode
   :ensure t
-  :defer t
-  :init
-  (eval-when-compile (require 'typescript-mode nil t)))
+  :defer t)
 
 (use-package vue-mode
   :disabled t
   :ensure t
-  :defer t
-  :init
-  (eval-when-compile (require 'vue-mode nil t)))
+  :defer t)
 
 (use-package web-beautify
   :ensure t
-  :defer t
-  :init
-  (eval-when-compile (require 'web-beautify nil t)))
+  :defer t)
 
 (use-package web-mode
   :ensure t
   :defer t
   :mode "\\.\\(html\\|eex\\|wxml\\)\\'"
-  :init
-  (eval-when-compile (require 'web-mode nil t))
-
   :config
   (setq web-mode-markup-indent-offset 2
         web-mode-css-indent-offset 2

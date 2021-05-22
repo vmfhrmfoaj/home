@@ -1,12 +1,13 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package go-mode
   :ensure t
   :defer t
-  :init
-  (eval-when-compile (require 'go-mode nil t))
-
   :config
   (setq go-fontify-function-calls nil))

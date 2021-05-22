@@ -1,12 +1,10 @@
 ;; -*- lexical-binding: t; -*-
 
-(require 'use-package)
+(eval-when-compile
+  (require 'use-package))
 
 (use-package dash
   :ensure t
-  :init
-  (eval-when-compile (require 'dash nil t))
-
   :config
   (put '->  'lisp-indent-function 0)
   (put '--> 'lisp-indent-function 0)
@@ -16,9 +14,7 @@
   (put '-some->> 'lisp-indent-function 0))
 
 (use-package s
-  :ensure t
-  :init
-  (eval-when-compile (require 's nil t)))
+  :ensure t)
 
 (defvar null-fn (-const nil))
 
@@ -378,3 +374,5 @@
   (when (or (window-in-direction 'up)
             (window-in-direction 'down))
     (delete-window)))
+
+(provide 'func)

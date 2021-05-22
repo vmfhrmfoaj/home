@@ -1,6 +1,10 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package aggressive-indent
   :ensure t
@@ -11,9 +15,6 @@
          (clojurescript-mode    . aggressive-indent-mode)
          (emacs-lisp-mode       . aggressive-indent-mode)
          (lisp-interaction-mode . aggressive-indent-mode))
-  :init
-  (eval-when-compile (require 'aggressive-indent nil t))
-
   :config
   (setq aggressive-indent-sit-for-time 0.01
         aggressive-indent-region-function #'indent-region ; fix with below advice func
@@ -60,16 +61,11 @@
   :ensure t
   :hook ((autoconf-mode . editorconfig-mode-apply))
   :init
-  (eval-when-compile (require 'editorconfig nil t))
-
   (editorconfig-mode 1))
 
 (use-package evil-surround
   :ensure t
   :after evil
-  :init
-  (eval-when-compile (require 'evil-surround nil t))
-
   :config
   (defun evil-surround-region-for-hkkb (args)
     "TODO"
@@ -108,9 +104,6 @@
 
 (use-package iedit
   :defer t
-  :init
-  (eval-when-compile (require 'iedit nil t))
-
   :config
   (setq iedit-mode-line '(" Iedit[" (:eval (format "%d/%d" iedit-occurrence-index (iedit-counter))) "]"))
   (-update->> minor-mode-alist
@@ -120,9 +113,6 @@
 (use-package smartparens
   :ensure t
   :defer t
-  :init
-  (eval-when-compile (require 'smartparens nil t))
-
   :config
   (defun sp-wrap-sexp (&optional arg)
     (interactive "P")
@@ -167,15 +157,10 @@ So, replaced `evil-jump-item' to this function."
   (show-smartparens-global-mode 1))
 
 (use-package smartparens-config
-  :ensure smartparens
-  :init
-  (eval-when-compile (require 'smartparens-config nil t)))
+  :ensure smartparens)
 
 (use-package undo-tree
   :ensure t
-  :init
-  (eval-when-compile (require 'undo-tree nil t))
-
   :config
   ;; NOTE
   ;;  `goto-chr' require `undo-tree-node-p' function, but it is macro in `undo-tree'.
@@ -246,12 +231,11 @@ So, replaced `evil-jump-item' to this function."
                    (--map (kill-buffer it))))))
 
 (use-package whitespace
+  :defer t
   :init
-  (eval-when-compile (require 'whitespace nil t))
-
-  :config
-  (setq-default whitespace-line-column 120)
-
   (add-hook 'prog-mode-hook
             (lambda ()
-              (setq-local show-trailing-whitespace t))))
+              (setq-local show-trailing-whitespace t)))
+
+  :config
+  (setq-default whitespace-line-column 120))

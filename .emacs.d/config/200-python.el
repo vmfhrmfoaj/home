@@ -1,12 +1,13 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package python
   :defer t
-  :init
-  (eval-when-compile (require 'python nil t))
-
   :config
   (advice-add #'run-python :after
               (lambda (&rest _)

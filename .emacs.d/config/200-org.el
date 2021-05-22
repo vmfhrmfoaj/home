@@ -1,19 +1,20 @@
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+;; -*- lexical-binding: t; -*-
+
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package evil-org
   :ensure t
   :after org
-  :init
-  (eval-when-compile (require 'evil-org nil t))
-
   :config
   (add-hook 'org-mode-hook #'evil-org-mode))
 
 (use-package org
   :defer t
   :init
-  (eval-when-compile (require 'org nil t))
-
   (defface org-next
     '((t (:inherit org-todo)))
     "TODO")
@@ -122,8 +123,6 @@ which see."
 (use-package org-agenda
   :defer t
   :init
-  (eval-when-compile (require 'org-agenda nil t))
-
   (setq org-agenda-files
         (when (file-exists-p org-directory)
           (directory-files-recursively org-directory "\\.org$")))
@@ -179,8 +178,6 @@ which see."
   :defer t
   :commands (org-capture)
   :init
-  (eval-when-compile (require 'org-capture nil t))
-
   (defun org-capture-todo ()
     (interactive)
     (org-capture nil "t"))
@@ -216,9 +213,6 @@ which see."
 (use-package org-clock
   :defer t
   :commands (org-clock-jump-to-current-clock)
-  :init
-  (eval-when-compile (require 'org-clock nil t))
-
   :config
   (defun org-clock--resume ()
     (when (frame-focus-state)

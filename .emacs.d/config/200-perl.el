@@ -1,13 +1,15 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package cperl-mode
   :defer t
   :mode "\\.\\(p[lm]x?\\|P[LM]X?\\)\\'"
   :init
-  (eval-when-compile (require 'cperl-mode nil t))
-
   (setq auto-mode-alist (rassq-delete-all 'perl-mode auto-mode-alist))
   (setq interpreter-mode-alist (rassq-delete-all 'perl-mode interpreter-mode-alist))
   (add-to-list 'interpreter-mode-alist '("perl"  . cperl-mode))

@@ -1,13 +1,15 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package counsel
   :ensure t
   :defer t
   :init
-  (eval-when-compile (require 'counsel nil t))
-
   (defun counsel-rg-no-ignore-command ()
     (cond
      ((listp counsel-rg-base-command)
@@ -31,9 +33,6 @@
 (use-package ivy
   :ensure t
   :defer t
-  :init
-  (eval-when-compile (require 'ivy nil t))
-
   :config
   (defvar ivy-last-no-search-session nil)
   (defvar ivy-last-search-session    nil)
@@ -96,9 +95,6 @@
 (use-package swiper
   :ensure t
   :defer t
-  :init
-  (eval-when-compile (require 'swiper nil t))
-
   :config
   (defun swiper--custom-candidates (&optional numbers-width)
     "Customize `swiper--candidates' to highlight the line number"
@@ -171,7 +167,5 @@
 
 (use-package wgrep
   :ensure t
-  :defer t
-  :init
-  (eval-when-compile (require 'wgrep nil t)))
+  :defer t)
 

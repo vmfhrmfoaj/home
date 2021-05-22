@@ -1,13 +1,14 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package counsel
   :ensure t
   :defer t
-  :init
-  (eval-when-compile (require 'counsel nil t))
-
   :config
   (setf (alist-get 'counsel-yank-pop       ivy-height-alist) 15)
   (setf (alist-get 'counsel-evil-registers ivy-height-alist) 15)
@@ -45,9 +46,6 @@
 
 (use-package evil
   :ensure t
-  :init
-  (eval-when-compile (require 'evil nil t))
-
   :config
   (evil-define-text-object evil-inner-sexp (count &optional beg end type)
     "Select a sp-sexp."
@@ -89,9 +87,6 @@
 
 (use-package evil-search
   :defer t
-  :init
-  (eval-when-compile (require 'evil-search nil t))
-
   :config
   (defun evil--cusotm-flash-search-pattern (string &optional all)
     "Customize for lazy-highlight"
@@ -121,9 +116,6 @@
 
 (use-package gcmh
   :ensure t
-  :init
-  (eval-when-compile (require 'gcmh nil t))
-
   :config
   (setq gcmh-high-cons-threshold (* 1024 1024 128))
 
@@ -146,8 +138,6 @@
   :ensure t
   :defer t
   :init
-  (eval-when-compile (require 'ivy nil t))
-
   (defvar ivy-search-callers '(swiper counsel-rg counsel-projectile-rg lsp-ivy-workspace-symbol))
 
   :config

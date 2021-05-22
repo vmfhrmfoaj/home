@@ -1,14 +1,15 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package fish-completion
   :if (executable-find "fish")
   :ensure t
   :defer t
-  :init
-  (eval-when-compile (require 'fish-completion nil t))
-
   :config
   (defun fish-completion--custom-list-completions (raw-prompt)
     "Customize"
@@ -42,9 +43,6 @@
 (use-package sh-script
   :defer t
   :mode ("\\.env\\'" . sh-mode)
-  :init
-  (eval-when-compile (require 'sh-script nil t))
-
   :config
   (setq sh-basic-offset 4
         smie-indent-basic 4))
@@ -52,8 +50,6 @@
 (use-package eshell
   :defer t
   :init
-  (eval-when-compile (require 'eshell nil t))
-
   (add-hook 'eshell-mode-hook
             (lambda ()
               (fish-completion-mode 1)

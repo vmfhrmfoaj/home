@@ -1,11 +1,13 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile
-  (load-file "~/.emacs.d/config/func.el")
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func)
   (require 'evil-core)
-  (require 'evil-leader nil t))
+  (require 'evil-leader))
 
-
 (global-set-key (kbd "<S-kp-multiply>") "#")
 (global-set-key (kbd "<S-kp-divide>") "\\")
 (global-set-key (kbd "<S-kp-subtract>") "_")
@@ -45,15 +47,11 @@
 
 (use-package bind-map
   :ensure t
-  :after evil-leader
-  :init
-  (eval-when-compile (require 'bind-map nil t)))
+  :after evil-leader)
 
 (use-package evil-leader
   :ensure t
   :init
-  (eval-when-compile (require 'evil-leader nil t))
-
   (defvar evil-leader--major-leader ","
     "TODO")
 
@@ -320,9 +318,6 @@
 
 (use-package which-key
   :ensure t
-  :init
-  (eval-when-compile (require 'which-key nil t))
-
   :config
   (which-key-mode)
   (which-key-declare-prefixes
@@ -358,18 +353,12 @@
 (use-package alchemist-help
   :disabled t
   :defer t
-  :init
-  (eval-when-compile (require 'alchemist-help nil t))
-
   :config
   (evil-define-key 'normal alchemist-help-minor-mode-map
     (kbd "q") #'kill-buffer-and-delete-window))
 
 (use-package company
   :defer t
-  :init
-  (eval-when-compile (require 'company nil t))
-
   :config
   (define-key company-active-map (kbd "<tab>")     #'company-complete-common-or-cycle)
   (define-key company-active-map (kbd "<backtab>") #'company-select-previous)
@@ -407,8 +396,6 @@
 (use-package cider-inspector
   :defer t
   :init
-  (eval-when-compile (require 'cider-inspector-mode nil t))
-
   (evil-set-initial-state 'cider-inspector-mode 'normal)
 
   :config
@@ -418,8 +405,6 @@
 (use-package cider-mode
   :defer t
   :init
-  (eval-when-compile (require 'cider-mode nil t))
-
   (add-hook 'cider-mode-hook
             (lambda ()
               (make-local-variable 'evil-goto-definition-functions)
@@ -435,9 +420,6 @@
 
 (use-package cider-repl
   :defer t
-  :init
-  (eval-when-compile (require 'cider-repl nil t))
-
   :config
   (define-key cider-repl-mode-map (kbd "C-l") #'cider-repl-clear-buffer)
   (define-key cider-repl-mode-map (kbd "RET") nil)
@@ -475,17 +457,12 @@
 
 (use-package cider-stacktrace
   :defer t
-  :init
-  (eval-when-compile (require 'cider-stacktrace nil t))
-
   :config
   (evil-define-key 'normal cider-stacktrace-mode-map
     (kbd "q") #'kill-buffer-and-delete-window))
 
 (use-package dumb-jump
   :init
-  (eval-when-compile (require 'dumb-jump nil t))
-
   (let ((fn (lambda ()
               (make-local-variable 'evil-goto-definition-functions)
               (add-to-list 'evil-goto-definition-functions
@@ -500,9 +477,6 @@
 
 (use-package evil
   :defer t
-  :init
-  (eval-when-compile (require 'evil nil t))
-
   :config
   (define-key evil-outer-text-objects-map "U" 'evil-a-sexp)
   (define-key evil-inner-text-objects-map "U" 'evil-inner-sexp)
@@ -540,9 +514,6 @@
 
 (use-package evil-ex
   :defer t
-  :init
-  (eval-when-compile (require 'evil-ex nil t))
-
   :config
   (define-key evil-ex-completion-map [remap abort-recursive-edit] #'abort-recursive-edit-for-evil-ex)
   (define-key evil-ex-completion-map (kbd "M-p") #'previous-history-element)
@@ -559,9 +530,6 @@
 
 (use-package evil-multiedit
   :defer t
-  :init
-  (eval-when-compile (require 'evil-multiedit nil t))
-
   :config
   (bind-keys
    :map evil-multiedit-state-map
@@ -585,26 +553,17 @@
 
 (use-package evil-org
   :defer t
-  :init
-  (eval-when-compile (require 'evil-org nil t))
-
   :config
   (evil-org-set-key-theme))
 
 (use-package evil-org-agenda
   :ensure evil-org
   :after org-agenda
-  :init
-  (eval-when-compile (require 'evil-org-agenda nil t))
-
   :config
   (evil-org-agenda-set-keys))
 
 (use-package evil-surround
   :defer t
-  :init
-  (eval-when-compile (require 'evil-surround nil t))
-
   :config
   (evil-define-key 'visual evil-surround-mode-map
     "S" #'evil-substitute
@@ -613,9 +572,6 @@
 (use-package flycheck
   :ensure t
   :defer t
-  :init
-  (eval-when-compile (require 'flycheck nil t))
-
   :config
   (evil-define-key 'normal flycheck-error-list-mode-map
     (kbd "RET") #'flycheck-error-list-goto-error
@@ -625,9 +581,6 @@
 
 (use-package git-timemachine
   :defer t
-  :init
-  (eval-when-compile (require 'git-timemachine nil t))
-
   :config
   (evil-define-minor-mode-key 'normal 'git-timemachine-mode
     (kbd "i")   #'evil-normal-state
@@ -642,8 +595,6 @@
 (use-package ivy
   :defer t
   :init
-  (eval-when-compile (require 'ivy nil t))
-
   (evil-set-initial-state 'ivy-occur-mode      'normal)
   (evil-set-initial-state 'ivy-occur-grep-mode 'normal)
 
@@ -715,15 +666,10 @@
   :ensure t
   :defer t
   :commands (ivy-minibuffer-shrink
-             ivy-minibuffer-grow)
-  :init
-  (eval-when-compile (require 'ivy-hydra nil t)))
+             ivy-minibuffer-grow))
 
 (use-package lsp-mode
   :defer t
-  :init
-  (eval-when-compile (require 'lsp-mode nil t))
-
   :config
   (defvar lsp--custom-setup-key-status '())
 
@@ -815,9 +761,6 @@
 
 (use-package magit-blame
   :defer t
-  :init
-  (eval-when-compile (require 'magit-blame nil t))
-
   :config
   (--each '("p" "P" "n" "N" "b" "r" "f" "B")
     (when-let ((f (lookup-key magit-blame-read-only-mode-map (kbd it))))
@@ -826,9 +769,6 @@
 
 (use-package smartparens
   :defer t
-  :init
-  (eval-when-compile (require 'smartparens nil t))
-
   :config
   (evil-leader/set-key
     ;; S-expression
@@ -849,9 +789,6 @@
 
 (use-package treemacs-evil
   :defer t
-  :init
-  (eval-when-compile (require 'treemacs-evil nil t))
-
   :config
   (evil-define-key 'treemacs treemacs-mode-map (kbd "h") #'treemacs-close-node)
   (evil-define-key 'treemacs treemacs-mode-map (kbd "l") #'treemacs-open-node)
@@ -862,9 +799,6 @@
 
 (use-package clojure-mode
   :defer t
-  :init
-  (eval-when-compile (require 'clojure-mode nil t))
-
   :config
   (dolist (mode '(clojure-mode clojurec-mode clojurescript-mode))
     (evil-leader/set-key-for-mode mode
@@ -886,9 +820,6 @@
 
 (use-package cperl-mode
   :defer t
-  :init
-  (eval-when-compile (require 'cperl-mode nil t))
-
   :config
   (define-key cperl-mode-map (kbd "{") nil) ; disable `cperl-electric-lbrace'
   (evil-define-key 'normal cperl-mode-map
@@ -897,8 +828,6 @@
 (use-package dired
   :config
   :init
-  (eval-when-compile (require 'dired nil t))
-
   (defun dired-alternate-up-directory ()
     "TODO"
     (interactive)
@@ -911,9 +840,6 @@
 (use-package docker
   :defer t
   :init
-  (eval-when-compile (require 'docker nil t))
-  (eval-when-compile (evil-collection-require 'docker t))
-
   (let ((hooks '(docker-container-mode-hook
                  docker-image-mode-hook
                  docker-machine-mode-hook
@@ -936,9 +862,6 @@
 
 (use-package doc-view
   :defer t
-  :init
-  (eval-when-compile (require 'doc-view nil t))
-
   :config
   (evil-set-initial-state 'doc-view-mode 'normal)
   (evil-define-key 'normal doc-view-mode-map
@@ -956,9 +879,6 @@
 
 (use-package ediff
   :defer t
-  :init
-  (eval-when-compile (require 'ediff nil t))
-
   :config
   (advice-add #'ediff-setup-keymap :after
               (lambda ()
@@ -971,9 +891,6 @@
 
 (use-package elisp-mode
   :defer t
-  :init
-  (eval-when-compile (require 'elisp-mode nil t))
-
   :config
   ;; emacs-lisp-mode
   (evil-leader/set-key-for-mode 'emacs-lisp-mode
@@ -1013,9 +930,6 @@
 (use-package elixir-mode
   :disabled t
   :defer t
-  :init
-  (eval-when-compile (require 'elixir-mode nil t))
-
   :config
   (let ((fn (lambda ()
               (make-local-variable 'evil-goto-definition-functions)
@@ -1032,9 +946,6 @@
 (use-package elm-mode
   :disabled t
   :defer t
-  :init
-  (eval-when-compile (require 'elm-mode nil t))
-
   :config
   (let ((fn (lambda ()
               (make-local-variable 'evil-goto-definition-functions)
@@ -1051,9 +962,6 @@
 (use-package eshell
   :defer t
   :init
-  (eval-when-compile (require 'eshell nil t))
-  (eval-when-compile (evil-collection-require 'eshell t))
-
   (evil-set-initial-state 'eshell-mode 'insert)
 
   (defun eshell-setup-once-for-evil-keybinding ()
@@ -1080,9 +988,6 @@
 
 (use-package help-mode
   :defer t
-  :init
-  (eval-when-compile (require 'help-mode nil t))
-
   :config
   (evil-set-initial-state 'help-mode 'normal)
   (evil-define-key 'normal help-mode-map
@@ -1093,18 +998,12 @@
 
 (use-package js
   :defer t
-  :init
-  (eval-when-compile (require 'js nil t))
-
   :config
   (evil-leader/set-key-for-mode 'js-mode
     "m=!" #'web-beautify-js))
 
 (use-package markdown-mode
   :defer t
-  :init
-  (eval-when-compile (require 'markdown-mode nil t))
-
   :config
   (evil-leader/set-key-for-mode 'markdown-mode
     "msp" #'markdown-preview
@@ -1116,9 +1015,6 @@
 (use-package magit
   :defer t
   :init
-  (eval-when-compile (require 'magit nil t))
-  (eval-when-compile (evil-collection-require 'magit t))
-
   (evil-set-initial-state 'magit-status-mode 'normal)
 
   (defun magit-setup-once-for-evil-keybinding ()
@@ -1142,17 +1038,11 @@
 
 (use-package magit-svn
   :after (magit evil-collection-magit)
-  :init
-  (eval-when-compile (require 'magit-svn nil t))
-
   :config
   (evil-collection-define-key 'normal 'magit-mode-map (kbd "~") #'magit-svn))
 
 (use-package multi-term
   :defer t
-  :init
-  (eval-when-compile (require 'multi-term nil t))
-
   :config
   (evil-define-key 'normal term-raw-map
     (kbd "b") #'term-send-ctrl-left
@@ -1166,9 +1056,6 @@
 
 (use-package org
   :defer t
-  :init
-  (eval-when-compile (require 'org nil t))
-
   :config
   (evil-leader/set-key-for-mode 'org-mode
     "m:" #'counsel-org-tag
@@ -1197,9 +1084,6 @@
 
 (use-package package
   :defer t
-  :init
-  (eval-when-compile (require 'package nil t))
-
   :config
   (evil-set-initial-state 'package-menu-mode 'normal)
   (evil-define-key 'normal package-menu-mode-map
@@ -1211,9 +1095,6 @@
 
 (use-package php-mode
   :defer t
-  :init
-  (eval-when-compile (require 'php-mode nil t))
-
   :config
   (evil-leader/set-key-for-mode 'php-mode
     "mr\"" #'psysh-restart
@@ -1226,18 +1107,13 @@
 
 (use-package profiler
   :defer t
-  :init
-  (eval-when-compile (require 'profiler nil t))
-
   :config
   (evil-define-key 'normal profiler-report-mode-map
     (kbd "<tab>") #'profiler-report-expand-entry))
 
 (use-package psysh
+  :disabled t
   :defer t
-  :init
-  (eval-when-compile (require 'psysh nil t))
-
   :config
   (evil-define-key 'normal 'psysh-mode-map
     (kbd "M-p") #'comint-previous-input
@@ -1245,9 +1121,6 @@
 
 (use-package python
   :defer t
-  :init
-  (eval-when-compile (require 'python nil t))
-
   :config
   (evil-leader/set-key-for-mode 'python-mode
     "mr'" #'run-python)
@@ -1259,9 +1132,6 @@
 
 (use-package view
   :defer t
-  :init
-  (eval-when-compile (require 'view nil t))
-
   :config
   (evil-set-initial-state 'view-mode 'normal)
   (add-hook 'view-mode-hook
@@ -1271,9 +1141,6 @@
 
 (use-package vlf
   :defer t
-  :init
-  (eval-when-compile (require 'vlf nil t))
-
   :config
   (add-hook 'vlf-mode-hook
             (lambda ()

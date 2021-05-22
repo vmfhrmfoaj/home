@@ -1,27 +1,22 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package dap-mode
   :ensure t
-  :defer t
-  :init
-  (eval-when-compile (require 'dap-mode nil t)))
-
+  :defer t)
 
 (use-package lsp-clangd
   :defer t
-  :init
-  (eval-when-compile (require 'lsp-clangd nil t))
-
   :config
   (add-to-list 'lsp-clients-clangd-args "--header-insertion=never"))
 
 (use-package lsp-completion
   :defer t
-  :init
-  (eval-when-compile (require 'lsp-completion nil t))
-
   :config
   (advice-add #'lsp-completion--annotate :filter-return
               (lambda (rv)
@@ -37,15 +32,11 @@
 (use-package lsp-clojure
   :defer t
   :init
-  (eval-when-compile (require 'lsp-clojure nil t))
-
   (setq lsp-clojure-custom-server-command '("clojure-lsp")))
 
 (use-package lsp-diagnostics
   :defer t
   :init
-  (eval-when-compile (require 'lsp-diagnostics nil t))
-
   (defface lsp-punctuation-face
     '((t (:inherit shadow)))
     "TODO")
@@ -108,10 +99,7 @@
 (use-package lsp-headerline
   :defer t
   :commands (lsp-headerline--symbol-with-action)
-
   :init
-  (eval-when-compile (require 'lsp-headerline nil t))
-
   (defun lsp-headerline--custom-build-symbol-string ()
     (if (and (derived-mode-p 'clojure-mode)
              (string= "project.clj" (file-name-nondirectory (buffer-file-name))))
@@ -159,8 +147,6 @@
 (use-package lsp-php
   :defer t
   :init
-  (eval-when-compile (require 'lsp-php nil t))
-
   (setq lsp-intelephense-clear-cache t
         lsp-intelephense-format-enable nil
         lsp-intelephense-multi-root nil
@@ -194,9 +180,6 @@
 (use-package lsp-ivy
   :ensure t
   :after lsp-mode
-  :init
-  (eval-when-compile (require 'lsp-ivy nil t))
-
   :config
   (lsp-defun lsp-ivy--format-symbol-match-for-doc-syms
     ((sym &as &DocumentSymbol :kind :range (&Range :start (&Position :line :character))))
@@ -296,15 +279,11 @@
 
 (use-package lsp-java
   :ensure t
-  :defer t
-  :init
-  (eval-when-compile (require 'lsp-java nil t)))
+  :defer t)
 
 (use-package lsp-python-ms
   :ensure t
-  :defer t
-  :init
-  (eval-when-compile (require 'lsp-python-ms nil t)))
+  :defer t)
 
 (use-package lsp-mode
   :ensure t
@@ -336,8 +315,6 @@
                         (lsp))))
          (typescript-mode . lsp))
   :init
-  (eval-when-compile (require 'lsp-mode nil t))
-
   (setq lsp-keymap-prefix nil)
 
   :config
@@ -607,26 +584,17 @@
 
 (use-package lsp-pyls
   :defer t
-  :init
-  (eval-when-compile (require 'lsp-pyls nil t))
-
   :config
   (add-to-list 'lsp-clients-python-library-directories "~/.local/lib"))
 
 (use-package lsp-rust
   :defer t
-  :init
-  (eval-when-compile (require 'lsp-rust nil t))
-
   :config
   (setq lsp-rust-clippy-preference "on"))
 
 (use-package lsp-ui
   :ensure t
   :defer t
-  :init
-  (eval-when-compile (require 'lsp-ui nil t))
-
   :config
   (setq lsp-ui-doc-enable nil
         lsp-ui-sideline-show-code-actions nil

@@ -1,12 +1,13 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package cc-mode
   :defer t
-  :init
-  (eval-when-compile (require 'cc-mode nil t))
-
   :config
   (setq c-default-style '((java-mode . "java")
                           (awk-mode . "awk")

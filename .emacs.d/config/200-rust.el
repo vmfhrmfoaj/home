@@ -1,19 +1,18 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package cargo
   :ensure t
-  :defer t
-  :init
-  (eval-when-compile (require 'cargo nil t)))
+  :defer t)
 
 (use-package rust-mode
   :ensure t
   :defer t
-  :init
-  (eval-when-compile (require 'rust-mode nil t))
-
   :config
   (defvar cargo-home (or (getenv "CARGO_HOME")
                          (concat home-dir "/.cargo")))

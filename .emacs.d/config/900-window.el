@@ -1,6 +1,10 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (when window-system
   (defvar main-monitor
@@ -39,9 +43,6 @@
 
 (use-package golden-ratio
   :ensure t
-  :init
-  (eval-when-compile (require 'golden-ratio nil t))
-
   :config
   (defun golden-ratio--custom-resize-window (dimensions &optional window)
     (with-selected-window (or window (selected-window))
@@ -73,9 +74,6 @@
 
 (use-package winum
   :ensure t
-  :init
-  (eval-when-compile (require 'winum nil t))
-
   :config
   (setq winum-auto-setup-mode-line nil
         winum-auto-assign-0-to-minibuffer nil)

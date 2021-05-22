@@ -1,14 +1,15 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package rpm-spec-mode
   :ensure t
   :defer t
   :mode "\\.rpm\\'"
-  :init
-  (eval-when-compile (require 'rpm-spec-mode nil t))
-
   :config
   (when (require 'highlight-numbers nil t)
     (puthash 'rpm-spec-mode "\\<[0-9]+\\>" highlight-numbers-modelist))
@@ -20,9 +21,6 @@
 (use-package toml-mode
   :ensure t
   :defer t
-  :init
-  (eval-when-compile (require 'toml-mode nil t))
-
   :config
   (defconst toml-syntax-propertize-function
     (syntax-propertize-rules
@@ -68,8 +66,6 @@
 
 (use-package yaml-mode
   :ensure t
-  :defer t
-  :init
-  (eval-when-compile (require 'yaml-mode nil t)))
+  :defer t)
 
 (add-to-list 'auto-mode-alist '("\\.service\\'" . conf-mode)) ; for systemd service file

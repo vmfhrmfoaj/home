@@ -1,13 +1,14 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package git-timemachine
   :ensure t
   :defer t
-  :init
-  (eval-when-compile (require 'git-timemachine nil t))
-
   :config
   (defun git-timemachine--custom-blame ()
     "Call ‘magit-blame’ on current revision."
@@ -23,8 +24,6 @@
   :ensure t
   :defer t
   :init
-  (eval-when-compile (require 'git-gutter-fringe nil t))
-
   (defun git-gutter-fringe-setup ()
     (let* ((file (buffer-file-name))
            (file-name (file-name-nondirectory file)))
@@ -53,17 +52,13 @@
 
 (use-package gitignore-mode
   :ensure t
-  :defer t
-  :init
-  (eval-when-compile (require 'gitignore-mode nil t)))
+  :defer t)
 
 (use-package magit
   :ensure t
   :defer t
   :commands (magit-unstaged-files)
   :init
-  (eval-when-compile (require 'magit nil t))
-
   (setq magit-no-message '("Turning on magit-auto-revert-mode..."))
 
   (defface magit-commit-log-type-face
@@ -115,9 +110,6 @@
 (use-package magit-svn
   :ensure t
   :after magit
-  :init
-  (eval-when-compile (require 'magit-svn nil t))
-
   :config
   (add-hook 'magit-mode-hook 'magit-svn-mode)
 

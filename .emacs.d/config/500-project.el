@@ -1,13 +1,14 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package counsel-projectile
   :ensure t
   :defer t
-  :init
-  (eval-when-compile (require 'counsel-projectile nil t))
-
   :config
   (setq counsel-projectile-remove-current-buffer t))
 
@@ -16,8 +17,6 @@
   :defer t
   :diminish ""
   :init
-  (eval-when-compile (require 'projectile nil t))
-
   (defun projectile-switch-to-previous-buffer ()
     (interactive)
     (condition-case nil

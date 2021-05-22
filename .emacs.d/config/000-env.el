@@ -1,6 +1,9 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (defvar home-dir (getenv "HOME"))
 

@@ -1,14 +1,15 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package php-mode
   :ensure t
   :defer t
   :mode ("\\.php\\|ant\\'" . php-mode)
-  :init
-  (eval-when-compile (require 'php-mode nil t))
-
   :config
   (with-eval-after-load "dumb-jump"
     (add-to-list 'dumb-jump-language-file-exts
@@ -25,9 +26,6 @@
   :disabled t
   :ensure t
   :defer t
-  :init
-  (eval-when-compile (require 'psysh nil t))
-
   :config
   (defun psysh-show ()
     (interactive)

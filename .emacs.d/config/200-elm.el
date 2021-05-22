@@ -1,10 +1,12 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package elm-mode
   :disabled t
   :ensure t
-  :defer t
-  :init
-  (eval-when-compile (require 'elm-mode nil t)))
+  :defer t)

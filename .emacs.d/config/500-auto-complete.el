@@ -1,14 +1,15 @@
 ;; -*- lexical-binding: t; -*-
 
-(eval-and-compile (load-file "~/.emacs.d/config/func.el"))
+(eval-when-compile
+  (require 'use-package)
+  (require 'dash)
+  (require 's)
+  (require 'func))
 
 (use-package company
   :ensure t
   :hook ((prog-mode . company-mode-on)
          (eshell-mode . company-mode-on))
-  :init
-  (eval-when-compile (require 'company nil t))
-
   :config
   (defun company-abort-and-insert-space ()
     "`company-abort' and insert a space."
@@ -60,8 +61,6 @@
 (use-package counsel
   :defer t
   :init
-  (eval-when-compile (require 'counsel nil t))
-
   (defface counsel-company-annotation-face
     '((t :inherit shadow))
     "TODO")
@@ -121,9 +120,6 @@
 (use-package yasnippet
   :ensure t
   :hook (prog-mode . yas-minor-mode-on)
-  :init
-  (eval-when-compile (require 'yasnippet nil t))
-
   :config
   (with-eval-after-load "lsp-mode"
     (add-hook 'yas-before-expand-snippet-hook
