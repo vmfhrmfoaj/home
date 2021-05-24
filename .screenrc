@@ -1,4 +1,4 @@
-escape ^Pp
+escape ^Xx
 term screen-256color # Old systems such as CentOS do not understand 'screen.xterm-256color'.
 shell /bin/zsh       # Force initialization of ZSH. I don't know why ZSH was not initialized properly.
 defscrollback 10000
