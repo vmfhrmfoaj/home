@@ -2,7 +2,7 @@
 
 _is_shim() {
     local name=$1
-    which "${name}" | grep -q -E "^${HOME}/\.shim/"
+    which "${name}" 2>/dev/null | grep -q -E "^${HOME}/\.shim/"
     if [ $? -eq 0 ]; then
         return 0
     else
