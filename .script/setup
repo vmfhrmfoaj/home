@@ -78,13 +78,6 @@ EOF
     [ -r "${asdf_home}/completions/asdf.bash" ] && source "${asdf_home}/completions/asdf.bash"
 }
 
-_setup_for_exercism() {
-    if [ ! -f "${ZSH}/custom/plugins/exercism/_exercism" ]; then
-        mkdir -p "${ZSH}/custom/plugins/exercism"
-        wget -O "${ZSH}/custom/plugins/exercism/_exercism" "https://raw.githubusercontent.com/exercism/cli/master/shell/exercism_completion.zsh"
-    fi
-}
-
 _setup_for_clojure() {
     if [ ! -d "${HOME}/.lein" ]; then
         local lein_path="${HOME}/.bin/lein"
@@ -269,85 +262,27 @@ EOF
             fi
         fi
     fi
-    if [ ! -r  "${HOME}/.oh-my-zsh/custom/plugins/rustup/_rustup" ]; then
-        mkdir -p "${HOME}/.oh-my-zsh/custom/plugins/rustup"
-        rustup completions zsh > "${HOME}/.oh-my-zsh/custom/plugins/rustup/_rustup"
-        rm -rf "${HOME}/.zcompdump*"
-    fi
 
-    # create cargo wrapper
-    if [ ! -x "${HOME}/.bin/cargo" ]; then
-        mkdir -p "${HOME}/.bin"
-        cat > "${HOME}/.bin/cargo" <<\EOF
-#!/bin/bash
+    _is_cmd rustc
+    if [ $? -eq 0 ]; then
+        _is_shim rustc
+        if [ $? -ne 0 ]; then
+            if [ ! -r  "${HOME}/.oh-my-zsh/custom/plugins/rustup/_rustup" ]; then
+                mkdir -p "${HOME}/.oh-my-zsh/custom/plugins/rustup"
+                rustup completions zsh > "${HOME}/.oh-my-zsh/custom/plugins/rustup/_rustup"
+                rm -rf "${HOME}/.zcompdump*"
+            fi
 
-export PATH=$(echo "${PATH}" | sed "s@$(dirname $0):@@g")
+            if [ ! -f "${HOME}/.oh-my-zsh/custom/plugins/cargo/_cargo" ] || [ ! -f "${HOME}/.oh-my-zsh/custom/plugins/cargo/_cargo" ]; then
+                mkdir -p .oh-my-zsh/custom/plugins/{cargo,rustup}
+                rustup completions zsh cargo  > "${HOME}/.oh-my-zsh/custom/plugins/cargo/_cargo"
+                rustup completions zsh rustup > "${HOME}/.oh-my-zsh/custom/plugins/rustup/_rustup"
+            fi
 
-if [ -n "${CARGO_ROOT_TARGET_DIR}" ] && [ -n "${CARGO_ROOT_SAVED_DIR}" ] && [ -z "${CARGO_TARGET_DIR}" ]; then
-    root=$(cargo locate-project 2>/dev/null | jq -r '.root' | xargs -r dirname)
-    if [ -d "${root}" ] && [[ "${root}" != '/tmp/'* ]]; then
-        encoded_root=$(echo -n ${root} | sha1sum | cut -d' ' -f1)
-        root_name=$(basename ${root})
-        root_root=$(dirname "${root}")
-        if [ -f "${root_root}/Cargo.toml" ] || [ -d "${root_root}/.git" ]; then
-            name=$(basename "${root_root}")_${root_name}_${encoded_root}
-        else
-            name=${root_name}_${encoded_root}
+            _add_to_path "${HOME}/.cargo/bin"
+            _add_to_path "$(rustc --print sysroot)/bin"
         fi
-        export CARGO_TARGET_DIR="${CARGO_ROOT_TARGET_DIR}/${name}"
-        case "${1}" in
-            clean)
-            rm -rf target
-            rm -rf "${CARGO_ROOT_SAVED_DIR}/${name}/"
-            ;;
-
-            save)
-            mkdir -p "${CARGO_ROOT_SAVED_DIR}/${name}"
-            rsync -a --delete "${CARGO_TARGET_DIR}/" "${CARGO_ROOT_SAVED_DIR}/${name}/" || exit $?
-            rm -rf "${CARGO_TARGET_DIR}"
-            exit 0
-            ;;
-
-            *)
-            if [ ! -d "${CARGO_TARGET_DIR}" ]; then
-                if [ -d "${CARGO_ROOT_SAVED_DIR}/${name}" ]; then
-                    mkdir -p "${CARGO_TARGET_DIR}"
-                    rsync -a --delete "${CARGO_ROOT_SAVED_DIR}/${name}/" "${CARGO_TARGET_DIR}/"
-                fi
-            fi
-            if [ ! -L target ] && [ "${CARGO_TARGET_DIR}" != target ]; then
-                ln -s "${CARGO_TARGET_DIR}" target
-            fi
-            ;;
-        esac
     fi
-fi
-
-cargo $@
-ret=$?
-if [ "$1" = 'clippy' ]; then
-    # NOTE
-    #  Emacs `flycheck` print error messages to `minibuffer` if a program(checker) return error code.
-    #  `clippy` return error code(i.e. not zero number) when can't compile. It is very annoying.
-    exit 0
-fi
-exit $ret
-EOF
-        chmod +x "${HOME}/.bin/cargo"
-    fi
-
-    export CARGO_HOME="${HOME}/.cargo"
-    export CARGO_ROOT_TARGET_DIR=/tmp/cargo
-    export CARGO_ROOT_SAVED_DIR="${HOME}/.cargo/build"
-    _add_to_path "${HOME}/.cargo/bin"
-
-    if [ ! -f "${HOME}/.oh-my-zsh/custom/plugins/cargo/_cargo" ] || [ ! -f "${HOME}/.oh-my-zsh/custom/plugins/cargo/_cargo" ]; then
-        mkdir -p .oh-my-zsh/custom/plugins/{cargo,rustup}
-        rustup completions zsh cargo  > "${HOME}/.oh-my-zsh/custom/plugins/cargo/_cargo"
-        rustup completions zsh rustup > "${HOME}/.oh-my-zsh/custom/plugins/rustup/_rustup"
-    fi
-
-    _add_to_path "$(rustc --print sysroot)/bin"
 }
 
 _setup_for_go() {
@@ -448,7 +383,6 @@ _add_to_path "${HOME}/.bin"
 # basic setup
 _setup_for_android
 _setup_for_asdf
-_setup_for_exercism
 _setup_for_go
 #_setup_for_java ${USE_JAVA_VERSION:-8}
 _setup_for_graalvm ${USE_JAVA_VERSION:-16}
