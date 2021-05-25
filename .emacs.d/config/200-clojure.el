@@ -104,7 +104,7 @@
 
   (setq cider-mode-line-show-connection nil
         cider-mode-line '(:eval (unless (ignore-errors (cider-current-repl))
-                                  (propertize " CIDER[not connected]" 'face 'error)))
+                                  (propertize " CIDER[not connected]" 'face 'warning)))
         cider-use-fringe-indicators nil)
 
   (cider-register-cljs-repl-type
@@ -448,7 +448,7 @@
            (req-vecs (lambda (reqs)
                        (-interpose '(edn-raw . "\n")
                                    (if test-file?
-                                       (cons reqs (vector (make-symbol (s-replace-regexp "-test$" "" ns)) :as 'target))
+                                       (append reqs (list (vector (make-symbol (s-replace-regexp "-test$" "" ns)) :as 'target)))
                                      reqs))))
            (clj-spec-reqs  (funcall req-vecs clojure-clj-spec-reqs))
            (clj-test-reqs  (funcall req-vecs clojure-clj-test-reqs))

@@ -113,9 +113,10 @@
         (setq swiper-use-visual-line nil))
       (unless (zerop n-lines)
         (setq swiper--width (or numbers-width
+                                (if (boundp 'display-line-numbers-width) (1+ display-line-numbers-width))
                                 (1+ (floor (log n-lines 10)))))
         (setq swiper--format-spec
-              (format "%%-%dd " swiper--width))
+              (format "%%%dd " swiper--width))
         (let ((line-number 1)
               (advancer (if swiper-use-visual-line
                             (lambda (arg) (line-move arg t))

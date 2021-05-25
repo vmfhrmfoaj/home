@@ -80,8 +80,10 @@
   :defer t
   :config
   (custom-set-faces
+   '(company-tooltip ((t :background "#eeeeee")))
+   '(company-tooltip-annotation-selection ((t :foreground "#cccccc" :weight normal)))
    '(company-tooltip-common ((t :background "#e99ce8" :foreground "black" :weight unspecified)))
-   '(company-tooltip-common-selection ((t :foreground "#e99ce8")))
+   '(company-tooltip-common-selection ((t :foreground "#e99ce8" :weight bold)))
    '(company-tooltip-selection ((t :foreground "white" :background "black" :weight bold)))
    `(completions-common-part ((t :foreground ,(color-from 'default :foreground) :weight normal)))))
 
@@ -132,6 +134,14 @@
        ((t :background "#cceecc" ,@common-style)))
      `(evil-goggles-yank-face
        ((t :background "#eeeecc" ,@common-style))))))
+
+(use-package flycheck
+  :defer t
+  :config
+  (custom-set-faces
+   '(flycheck-error   ((t :weight unspecified)))
+   '(flycheck-warning ((t :weight unspecified)))
+   '(flycheck-info    ((t :weight unspecified)))))
 
 (use-package focus
   :defer t
@@ -231,7 +241,7 @@
    '(org-drawer ((t :weight normal)))
    '(org-headline-done ((t :weight unspecified :height unspecified)))
    '(org-tag ((t :background unspecified :slant unspecified)))
-   '(org-parenthesis-context-face ((t :inherit default :weight normal)))
+   '(org-punctuation-face ((t :inherit default :weight normal)))
    '(org-special-keyword ((t :weight normal)))
    `(org-task-done ((t :foreground ,(color-from 'org-headline-done :foreground) :weight normal)))
    '(org-todo ((t :box (:line-width (1 . -1)))))))
@@ -286,10 +296,10 @@
    '(swiper-match-face-2 ((t :foreground "#e99ce8")))
    '(swiper-match-face-3 ((t :foreground "#bbbbff")))
    '(swiper-match-face-4 ((t :foreground "#ffbbff")))
-   '(swiper-background-match-face-1 ((t :background "#d3d3d3" :foreground "black")))
-   '(swiper-background-match-face-2 ((t :background "#e99ce8" :foreground "black")))
-   '(swiper-background-match-face-3 ((t :background "#bbbbff" :foreground "black")))
-   '(swiper-background-match-face-4 ((t :background "#ffbbff" :foreground "black")))))
+   '(swiper-background-match-face-1 ((t :background "#d3d3d3" :foreground "black" :weight normal)))
+   '(swiper-background-match-face-2 ((t :background "#e99ce8" :foreground "black" :weight normal)))
+   '(swiper-background-match-face-3 ((t :background "#bbbbff" :foreground "black" :weight normal)))
+   '(swiper-background-match-face-4 ((t :background "#ffbbff" :foreground "black" :weight normal)))))
 
 (use-package web-mode
   :defer t

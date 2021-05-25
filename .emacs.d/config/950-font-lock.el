@@ -1263,7 +1263,7 @@
     '((t (:inherit shadow)))
     "Org listing face")
 
-  (defface org-parenthesis-context-face
+  (defface org-punctuation-face
     '((t (:inherit default)))
     "Org parenthesis face")
 
@@ -1327,10 +1327,14 @@
         (1 'org-list-face))
        ("^\\s-*\\(?:[-+]\\|[0-9]+[).]\\)\\s-+\\[\\(?:X\\)\\]\\s-+\\([^\r\n]+\\)"
         (1 'org-task-done prepend))
-       ("\\((.+?)\\)"
-        (1 'org-parenthesis-context-face))
        ("\\(\\\\\\\\\\|:\\)\\s-*$"
-        (1 'shadow))))
+        (1 'shadow))
+       ("\\((.+?)\\)"
+        (1 'org-punctuation-face))
+       ("[^ \t\r\n]\\([.,?:]\\)\\(?:\\s-\\|$\\)"
+        (1 'org-punctuation-face))
+       ("[A-Za-z]\\([']\\)[A-Za-z]"
+        (1 'org-punctuation-face))))
    :append))
 
 (use-package php-mode
@@ -1401,19 +1405,19 @@
         ("function.+:\\s-*\\(\\?\\)\\(?:\\sw\\|\\s_\\|\\\\\\)+"
          (1 'font-lock-type-face))
         (")\\s-*:\\s-*\\(\\?\\)\\(?:\\sw\\|\\s_\\|\\\\\\)+\\s-*\\(?:\{\\|;\\)"
-         (1 'font-lock-type-face))
-        ("\\?\\(\\(:?\\sw\\|\\s_\\)+\\)\\s-+\\$"
-         (1 'font-lock-type-face))
-        ("function.+:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)"
-         (1 'font-lock-type-face))
-        (")\\s-*:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*\\(?:\{\\|;\\)"
-         (1 'font-lock-type-face))
-        ("\\(?:^\\|\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\)"
-         (1 'shadow))
-        ("\\(;\\|:$\\)"
-         (1 'shadow))
-        ("\\(&\\)\\$"
-         (1 'shadow)))))
+                                                                  (1 'font-lock-type-face))
+       ("\\?\\(\\(:?\\sw\\|\\s_\\)+\\)\\s-+\\$"
+        (1 'font-lock-type-face))
+       ("function.+:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)"
+        (1 'font-lock-type-face))
+       (")\\s-*:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*\\(?:\{\\|;\\)"
+        (1 'font-lock-type-face))
+       ("\\(?:^\\|\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\)"
+        (1 'shadow))
+       ("\\(;\\|:$\\)"
+        (1 'shadow))
+       ("\\(&\\)\\$"
+        (1 'shadow)))))
   (setq php-font-lock-keywords php-font-lock-keywords-3)
   (font-lock-add-keywords
    'php-mode
