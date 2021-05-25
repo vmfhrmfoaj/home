@@ -107,14 +107,37 @@ EOF
 
     _is_cmd clojure
     if [ $? -ne 0 ]; then
-        local clj_cli_ver="1.10.3.849"
-        local clj_cli_installer="/tmp/clj-cli-installer"
-        wget -O "${clj_cli_installer}" "https://download.clojure.org/install/linux-install-${clj_cli_ver}.sh"
-        if [ $? -eq 0 ]; then
-            chmod +x "${clj_cli_installer}"
-            "${clj_cli_installer}" --prefix "${HOME}/.local"
+        echo -n "Do you want to install 'clojure(Clojure CLI tool)'? (Y or N): "
+        read yn
+        if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
+            local clj_cli_ver="1.10.3.849"
+            local clj_cli_installer="/tmp/clj-cli-installer"
+            wget -O "${clj_cli_installer}" "https://download.clojure.org/install/linux-install-${clj_cli_ver}.sh"
+            if [ $? -eq 0 ]; then
+                chmod +x "${clj_cli_installer}"
+                "${clj_cli_installer}" --prefix "${HOME}/.local"
+            fi
+            rm -f "${clj_cli_installer}"
+        else
+            mkdir -p "${HOME}/.shim"
+            cat > "${HOME}/.shim/clojure" <<EOF
+#!/bin/bash
+echo -n "Do you want to install 'clojure(Clojure CLI tool)'? (Y or N): "
+read yn
+if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
+    local clj_cli_ver="1.10.3.849"
+    local clj_cli_installer="/tmp/clj-cli-installer"
+    wget -O "\${clj_cli_installer}" "https://download.clojure.org/install/linux-install-\${clj_cli_ver}.sh"
+    if [ $? -eq 0 ]; then
+        chmod +x "\${clj_cli_installer}"
+        "\${clj_cli_installer}" --prefix "\${HOME}/.local"
+    fi
+    rm -f "\${clj_cli_installer}"
+fi
+EOF
+            chmod +x "${HOME}/.shim/clojure"
+            cp "${HOME}/.shim/clojure" "${HOME}/.shim/clj"
         fi
-        rm -f "${clj_cli_installer}"
     fi
 }
 
