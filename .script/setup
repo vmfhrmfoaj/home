@@ -105,8 +105,8 @@ EOF
         export LEIN_JVM_OPTS=""
     fi
 
-    _is_cmd clojure
-    if [ $? -ne 0 ]; then
+    _is_cmd clojure; rc=$?
+    if [ $? -ne 0 ] && [ ! -f "${HOME}/.shim/clojure" ]; then
         echo -n "Do you want to install 'clojure(Clojure CLI tool)'? (Y or N): "
         read yn
         if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
