@@ -4,7 +4,15 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'aggressive-indent nil t)
+  (require 'editorconfig nil t)
+  (require 'evil-surround nil t)
+  (require 'iedit nil t)
+  (require 'smartparens nil t)
+  (require 'smartparens-config nil t)
+  (require 'undo-tree nil t)
+  (require 'whitespace nil t))
 
 (use-package aggressive-indent
   :ensure t

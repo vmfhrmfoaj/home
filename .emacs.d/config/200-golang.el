@@ -4,7 +4,8 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'go-mode nil t))
 
 (use-package go-mode
   :ensure t

@@ -4,7 +4,21 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'auto-dim-other-buffers nil t)
+  (require 'evil-ex nil t)
+  (require 'composite nil t)
+  (require 'diminish nil t)
+  (require 'evil-goggles nil t)
+  (require 'focus nil t)
+  (require 'highlight-parentheses nil t)
+  (require 'highlight-numbers nil t)
+  (require 'hl-line nil t)
+  (require 'hl-todo nil t)
+  (require 'powerline nil t)
+  (require 'spaceline-config nil t)
+  (require 'vi-tilde-fringe nil t)
+  (require 'yascroll nil t))
 
 (use-package auto-dim-other-buffers
   :ensure t

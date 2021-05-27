@@ -4,7 +4,9 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'alchemist nil t)
+  (require 'elixir-mode nil t))
 
 (use-package alchemist
   :disabled t

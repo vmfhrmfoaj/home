@@ -4,7 +4,12 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'evil-org nil t)
+  (require 'org nil t)
+  (require 'org-agenda nil t)
+  (require 'org-capture nil t)
+  (require 'org-clock nil t))
 
 (use-package evil-org
   :ensure t
@@ -123,7 +128,8 @@ which see."
 (use-package org-agenda
   :defer t
   :init
-  (setq org-agenda-files
+  (setq calendar-holidays nil
+        org-agenda-files
         (when (file-exists-p org-directory)
           (directory-files-recursively org-directory "\\.org$")))
 
@@ -166,7 +172,10 @@ which see."
                      (cur-date (-drop 3 (decode-time cur-time)))
                      (10am (->> cur-date (-concat '(0 0 10)) (encode-time)))
                      (7pm  (->> cur-date (-concat '(0 0 19)) (encode-time))))
-                (setq filter (concat (if (or (memq (calendar-day-of-week (calendar-current-date)) '(0 6))
+                (setq filter (concat (if (or (when (require 'diary-lib nil t)
+                                               (-let (((d m y) cur-date))
+                                                 (not (null (diary-list-entries (list m d y) 1 t)))))
+                                             (memq (calendar-day-of-week (calendar-current-date)) '(0 6))
                                              (time-less-p cur-time 10am)
                                              (not (time-less-p cur-time 7pm)))
                                          "-"

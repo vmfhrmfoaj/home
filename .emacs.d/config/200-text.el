@@ -4,7 +4,10 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'creole-mode nil t)
+  (require 'doc-view nil t)
+  (require 'markdown-mode nil t))
 
 (use-package creole-mode
   :disabled t

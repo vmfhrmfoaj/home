@@ -4,7 +4,9 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'cmake-ide nil t)
+  (require 'cmake-mode nil t))
 
 (use-package cmake-ide
   :ensure t

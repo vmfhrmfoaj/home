@@ -4,7 +4,10 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'fish-completion nil t)
+  (require 'sh-script nil t)
+  (require 'eshell nil t))
 
 (use-package fish-completion
   :if (executable-find "fish")

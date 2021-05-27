@@ -4,7 +4,9 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'golden-ratio nil t)
+  (require 'winum nil t))
 
 (when window-system
   (defvar main-monitor
@@ -66,7 +68,10 @@
     (advice-add #'find-file-other-window :after f)
 
     (with-eval-after-load "winum"
-      (advice-add #'winum--switch-to-window :after f)))
+      (advice-add #'winum--switch-to-window :after f))
+
+    (with-eval-after-load "evil"
+      (advice-add #'evil-goto-definition :after f)))
 
   (advice-add #'golden-ratio--resize-window :override #'golden-ratio--custom-resize-window)
 

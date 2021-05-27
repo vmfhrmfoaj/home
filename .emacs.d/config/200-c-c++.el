@@ -4,7 +4,8 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'cc-mode nil t))
 
 (use-package cc-mode
   :defer t

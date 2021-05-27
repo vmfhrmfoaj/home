@@ -4,7 +4,8 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'cperl-mode nil t))
 
 (use-package cperl-mode
   :defer t

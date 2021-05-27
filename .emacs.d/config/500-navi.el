@@ -4,7 +4,9 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'dumb-jump nil t)
+  (require 'ivy-xref nil t))
 
 (use-package dumb-jump
   :ensure t

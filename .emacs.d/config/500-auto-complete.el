@@ -4,7 +4,9 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'company nil t)
+  (require 'counsel nil t))
 
 (use-package company
   :ensure t

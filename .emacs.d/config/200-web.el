@@ -4,7 +4,14 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'css-mode nil t)
+  (require 'js nil t)
+  (require 'json-mode nil t)
+  (require 'typescript-mode nil t)
+  (require 'vue-mode nil t)
+  (require 'web-beautify nil t)
+  (require 'web-mode nil t))
 
 (use-package css-mode
   :defer t

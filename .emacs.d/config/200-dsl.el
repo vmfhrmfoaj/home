@@ -4,7 +4,9 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'bison-mode nil t)
+  (require 'capnp-mode nil t))
 
 (use-package bison-mode
   :ensure t

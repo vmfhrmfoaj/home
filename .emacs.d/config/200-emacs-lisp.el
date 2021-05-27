@@ -4,7 +4,9 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'elisp-mode nil t)
+  (require 'elisp-slime-nav nil t))
 
 (use-package elisp-mode
   :config

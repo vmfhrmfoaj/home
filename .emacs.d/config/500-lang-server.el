@@ -4,7 +4,21 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'dap-mode nil t)
+  (require 'lsp-clangd nil t)
+  (require 'lsp-completion nil t)
+  (require 'lsp-clojure nil t)
+  (require 'lsp-clojure nil t)
+  (require 'lsp-diagnostics nil t)
+  (require 'lsp-php nil t)
+  (require 'lsp-ivy nil t)
+  (require 'lsp-java nil t)
+  (require 'lsp-python-ms nil t)
+  (require 'lsp-mode nil t)
+  (require 'lsp-pyls nil t)
+  (require 'lsp-rust nil t)
+  (require 'lsp-ui nil t))
 
 (use-package dap-mode
   :ensure t
@@ -95,54 +109,6 @@
                 (or (derived-mode-p 'clojure-mode)
                     (derived-mode-p 'cperl-mode)
                     (derived-mode-p 'perl-mode)))))
-
-(use-package lsp-headerline
-  :defer t
-  :commands (lsp-headerline--symbol-with-action)
-  :init
-  (defun lsp-headerline--custom-build-symbol-string ()
-    (if (and (derived-mode-p 'clojure-mode)
-             (string= "project.clj" (file-name-nondirectory (buffer-file-name))))
-        ;; NOTE
-        ;;  workaround for `clojure-lsp'
-        (->> (clojure-project-root-path)
-             (directory-file-name)
-             (file-name-nondirectory))
-      (if (lsp-feature? "textDocument/documentSymbol")
-          (-if-let* ((lsp--document-symbols-request-async t)
-                     (symbols (lsp--get-document-symbols))
-                     (symbols-hierarchy (lsp--symbols->document-symbols-hierarchy symbols)))
-              (let* ((separator " › ")
-                     (max-len (- spaceline-symbol-segment--max-symbol-length (length (concat "..." separator)))))
-                (->> symbols-hierarchy
-                     (reverse)
-                     (-reduce-from
-                      (-lambda ((&alist 'count count 'len len 'output output)
-                                (symbol &as &DocumentSymbol :name :kind))
-                        (if (<= max-len len)
-                            `((count  . ,(1+ count))
-                              (len    . ,len)
-                              (output . ,output))
-                          (let* ((symbol-name (lsp-headerline--symbol-with-action symbol name))
-                                 (new-output (concat symbol-name (when output separator) output))
-                                 (new-len (length new-output)))
-                            (if (<= max-len new-len)
-                                `((count  . ,(1+ count))
-                                  (len    . ,(if (< 0 count)
-                                                 max-len
-                                               new-len))
-                                  (output . ,(if (< 0 count)
-                                                 (concat "..." separator output)
-                                               new-output)))
-                              `((count  . ,(1+ count))
-                                (len    . ,new-len)
-                                (output . ,new-output))))))
-                      '((count  . 0)
-                        (len    . 0)
-                        (output . nil)))
-                     (alist-get 'output)))
-            "")
-        ""))))
 
 (use-package lsp-php
   :defer t
@@ -445,6 +411,49 @@
           (format "%s:%s" server-id pid)
         (format "%s:%s status:%s" server-id pid status))))
 
+  (defun lsp--custom-build-symbol-string ()
+    (if (and (derived-mode-p 'clojure-mode)
+             (string= "project.clj" (file-name-nondirectory (buffer-file-name))))
+        ;; NOTE
+        ;;  workaround for `clojure-lsp'
+        (->> (clojure-project-root-path)
+             (directory-file-name)
+             (file-name-nondirectory))
+      (if (lsp-feature? "textDocument/documentSymbol")
+          (-if-let* ((lsp--document-symbols-request-async t)
+                     (symbols (lsp--get-document-symbols))
+                     (symbols-hierarchy (lsp--symbols->document-symbols-hierarchy symbols)))
+              (let* ((separator " › ")
+                     (max-len (- spaceline-symbol-segment--max-symbol-length (length (concat "..." separator)))))
+                (->> symbols-hierarchy
+                     (reverse)
+                     (-reduce-from
+                      (-lambda ((&alist 'count count 'len len 'output output)
+                                (symbol &as &DocumentSymbol :name :kind))
+                        (if (<= max-len len)
+                            `((count  . ,(1+ count))
+                              (len    . ,len)
+                              (output . ,output))
+                          (let* ((new-output (concat name (when output separator) output))
+                                 (new-len (length new-output)))
+                            (if (<= max-len new-len)
+                                `((count  . ,(1+ count))
+                                  (len    . ,(if (< 0 count)
+                                                 max-len
+                                               new-len))
+                                  (output . ,(if (< 0 count)
+                                                 (concat "..." separator output)
+                                               new-output)))
+                              `((count  . ,(1+ count))
+                                (len    . ,new-len)
+                                (output . ,new-output))))))
+                      '((count  . 0)
+                        (len    . 0)
+                        (output . nil)))
+                     (alist-get 'output)))
+            "")
+        "")))
+
   (setq lsp-enable-imenu nil
         lsp-enable-indentation nil
         lsp-enable-links nil
@@ -556,7 +565,7 @@
               (let ((f (lambda ()
                          (let ((old spaceline-symbol-segment--symbol))
                            (setq spaceline-symbol-segment--symbol
-                                 (lsp-headerline--custom-build-symbol-string))
+                                 (lsp--custom-build-symbol-string))
                            (unless (string-equal old spaceline-symbol-segment--symbol)
                              (force-mode-line-update))))))
                 (add-hook 'lsp-on-idle-hook     f nil t)

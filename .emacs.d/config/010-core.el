@@ -4,7 +4,12 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'counsel nil t)
+  (require 'evil nil t)
+  (require 'evil-search nil t)
+  (require 'gcmh nil t)
+  (require 'ivy nil t))
 
 (use-package counsel
   :ensure t

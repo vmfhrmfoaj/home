@@ -4,7 +4,12 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'git-timemachine nil t)
+  (require 'git-gutter-fringe nil t)
+  (require 'gitignore-mode nil t)
+  (require 'magit nil t)
+  (require 'magit-svn nil t))
 
 (use-package git-timemachine
   :ensure t

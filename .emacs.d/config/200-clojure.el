@@ -4,7 +4,15 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'cider nil t)
+  (require 'cider-client nil t)
+  (require 'cider-eval nil t)
+  (require 'cider-mode nil t)
+  (require 'cider-repl nil t)
+  (require 'clojure-mode nil t)
+  (require 'edn nil t)
+  (require 'flycheck-clj-kondo nil t))
 
 (use-package cider
   :ensure t
@@ -487,11 +495,11 @@
   (with-eval-after-load "flycheck"
     (unless (flycheck-valid-checker-p 'clj-cider-repl)
       (flycheck-define-generic-checker
-       'clj-cider-repl
-       "A syntax checker using the Cider REPL provided."
-       :start #'clojure--flycheck-start
-       :modes '(clojure-mode clojurescript-mode clojurec-mode)
-       :predicate (-const t)))
+          'clj-cider-repl
+        "A syntax checker using the Cider REPL provided."
+        :start #'clojure--flycheck-start
+        :modes '(clojure-mode clojurescript-mode clojurec-mode)
+        :predicate (-const t)))
     (add-to-list 'flycheck-checkers 'clj-cider-repl))
 
   (add-hook 'clojure-mode-hook

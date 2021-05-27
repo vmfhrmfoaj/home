@@ -4,7 +4,10 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'rpm-spec-mode nil t)
+  (require 'toml-mode nil t)
+  (require 'yaml-mode nil t))
 
 (use-package rpm-spec-mode
   :ensure t

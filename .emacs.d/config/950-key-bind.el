@@ -5,8 +5,8 @@
   (require 'dash)
   (require 's)
   (require 'func)
-  (require 'evil-core)
-  (require 'evil-leader))
+  (require 'evil-core nil t)
+  (require 'evil-leader nil t))
 
 (global-set-key (kbd "<S-kp-multiply>") "#")
 (global-set-key (kbd "<S-kp-divide>") "\\")

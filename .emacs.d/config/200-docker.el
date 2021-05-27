@@ -4,7 +4,10 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'docker nil t)
+  (require 'docker-tramp nil t)
+  (require 'dockerfile-mode nil t))
 
 (use-package docker
   :ensure t

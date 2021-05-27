@@ -4,7 +4,9 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'php-mode nil t)
+  (require 'psysh nil t))
 
 (use-package php-mode
   :ensure t

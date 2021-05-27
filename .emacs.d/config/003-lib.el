@@ -4,7 +4,11 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'async nil t)
+  (require 'queue nil t)
+  (require 'spinner nil t)
+  (require 'undo-tree nil t))
 
 (use-package async
   :ensure t

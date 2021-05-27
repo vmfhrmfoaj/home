@@ -4,7 +4,9 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'counsel-projectile nil t)
+  (require 'projectile nil t))
 
 (use-package counsel-projectile
   :ensure t

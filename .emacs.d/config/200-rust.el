@@ -4,7 +4,9 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'cargo nil t)
+  (require 'rust-mode nil t))
 
 (use-package cargo
   :ensure t

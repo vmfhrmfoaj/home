@@ -4,7 +4,11 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'counsel nil t)
+  (require 'ivy nil t)
+  (require 'swiper nil t)
+  (require 'wgrep nil t))
 
 (use-package counsel
   :ensure t
@@ -113,7 +117,9 @@
         (setq swiper-use-visual-line nil))
       (unless (zerop n-lines)
         (setq swiper--width (or numbers-width
-                                (if (boundp 'display-line-numbers-width) (1+ display-line-numbers-width))
+                                (if (and (boundp 'display-line-numbers-width)
+                                         display-line-numbers-width)
+                                    (1+ display-line-numbers-width))
                                 (1+ (floor (log n-lines 10)))))
         (setq swiper--format-spec
               (format "%%%dd " swiper--width))

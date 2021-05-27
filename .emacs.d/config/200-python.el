@@ -4,7 +4,8 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'python nil t))
 
 (use-package python
   :defer t

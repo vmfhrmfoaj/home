@@ -4,7 +4,8 @@
   (require 'use-package)
   (require 'dash)
   (require 's)
-  (require 'func))
+  (require 'func)
+  (require 'elm-mode nil t))
 
 (use-package elm-mode
   :disabled t
