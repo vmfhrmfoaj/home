@@ -32,5 +32,5 @@
                 (let ((k (car  it))
                       (v (cadr it)))
                   (setenv k v)))
-              (setenv "XDG_CONFIG_HOME" (getenv "HOME"))
+              (setenv "XDG_CONFIG_HOME" (concat (getenv "HOME") "/.config"))
               (setq-default exec-path (split-string (getenv "PATH") ":")))))
