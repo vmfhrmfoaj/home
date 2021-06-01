@@ -21,7 +21,7 @@
          (main-monitor-y (nth 1 workarea))
          (main-monitor-w (nth 2 workarea))
          (main-monitor-h (nth 3 workarea))
-         (ratio 0.5)
+         (ratio 1.0)
          (wc 120)
          (oc   6) ; fringe + line-number
          (x main-monitor-x)

@@ -9,7 +9,6 @@
   (require 'lsp-clangd nil t)
   (require 'lsp-completion nil t)
   (require 'lsp-clojure nil t)
-  (require 'lsp-clojure nil t)
   (require 'lsp-diagnostics nil t)
   (require 'lsp-php nil t)
   (require 'lsp-ivy nil t)

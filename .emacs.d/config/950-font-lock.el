@@ -30,6 +30,10 @@
   '((t (:inherit shadow)))
   "TODO")
 
+(defface symbol-dash-or-underline-face
+  '((t (:inherit shadow)))
+  "TODO")
+
 (let ((f (lambda ()
            (font-lock-add-keywords
             nil
@@ -69,7 +73,7 @@
            (1 'shadow))
           ("\\(\\\\\\)$"
            (1 'shadow))
-          ("[A-Za-z]\\(:\\)\\s-*$"
+          ("[0-9A-Za-z]\\(:\\)\\s-*$"
            (1 'shadow))
           ("[_A-Za-z]\\(\\*+\\|&\\)\\(?:,\\|\\s-\\|\\s(\\)"
            (1 'shadow))
@@ -87,7 +91,9 @@
         ("\\([.;]\\)"
          (1 'shadow))
         ("[A-Za-z]\\(:\\)\\s-*$"
-         (1 'shadow)))
+         (1 'shadow))
+        ("[0-9A-Za-z]\\(_+\\)[0-9A-Za-z]"
+         (1 'symbol-dash-or-underline-face prepend)))
       :append))))
 
 (use-package css-mode
@@ -103,7 +109,9 @@
      mode
      `(;; punctuation
        ("\\([:;]\\)"
-        (1 'shadow)))
+        (1 'shadow))
+       ("[0-9A-Za-z]\\(-+\\)[0-9A-Za-z]"
+        (1 'symbol-dash-or-underline-face prepend)))
      :append)))
 
 (use-package elixir-mode
@@ -217,7 +225,9 @@
        ("\\([\\&|*]\\|::\\|;\\|[-=]>\\|[$@]_\\>\\)"
         (1 'shadow))
        ("\\([*@$%]+\\)\\(?:[:_0-9a-zA-Z]\\|\\s(\\)"
-        (1 'shadow))))
+        (1 'shadow))
+       ("[0-9A-Za-z]\\(_+\\)[0-9A-Za-z]"
+        (1 'symbol-dash-or-underline-face prepend))))
    :append))
 
 (use-package clojure-mode
@@ -229,6 +239,9 @@
   (defface clojure-side-effect-face
     `((t (:inherit (italic font-lock-variable-name-face))))
     "Face used to font-lock Clojure side-effect indicator.")
+  (defface clojure-important-keywords-face
+    '((t (:inherit (italic font-lock-keyword-face))))
+    "Face used to font-lock Clojure important keywords.")
   (defface clojure-special-variable-name-face
     `((t (:inherit font-lock-variable-name-face :weight ,(face-attribute 'default :weight))))
     "Face used to font-lock Clojure special variable name.")
@@ -270,7 +283,7 @@
     "TODO")
   (defface clojure-punctuation-face
     '((t (:inherit shadow)))
-    "TODO")
+    "Face for bracket, square bracket and parenthesis.")
   (defface clojure-ns-definition-face
     '((t (:inherit font-lock-type-face)))
     "TODO")
@@ -314,10 +327,14 @@
            (core-ns? (concat "\\(?:" core-ns "\\)?"))
            (oop-kw  (regexp-opt '("definterface" "defprotocol" "defrecord" "deftype" "extend-protocol" "extend-type" "proxy" "reify")))
            (def-kw  (regexp-opt '("defmacro" "defn" "defn-" "defmethod" "defrecord" "deftype") t))
+           (important-kw (regexp-opt '("case" "cond" "condp" "cond->" "cond->>"
+                                       "if" "if-let" "if-not" "when" "when-let" "when-not"
+                                       "for" "loop" "recur" "while"
+                                       "catch" "throw")
+                                     t))
            (highlight-kw (regexp-opt '("go-loop" "with-hard-redefs" "proxy" "reify") t))
            (clojure--binding-kw
             '("binding" "doseq" "dotimes" "for" "let" "if-let" "if-some" "when-let" "when-some" "loop" "go-loop" "with-redefs")))
-
       `(;; Binding forms
         (,(concat "(" namespace? (regexp-opt clojure--binding-kw) "[ \r\t\n]+\\[")
          ;; Normal bindings
@@ -679,6 +696,10 @@
         ;; Interop new - (symbol. ...)
         (,(concat "(" symbol "\\(\\.\\)" whitespace)
          (1 'clojure-interop-method-face))
+
+        ;; Built-in binding and flow of control forms
+        (,(concat "(" core-ns? important-kw "\\(?:)\\|" whitespace "\\)")
+         (1 'clojure-important-keywords-face))
 
         ;; Namespaced keyword - ::namespace/keyword
         (,(concat "::\\(" symbol "\\)\\(/\\)" symbol "\\>")
@@ -1063,9 +1084,11 @@
      mode
      `(;; Punctuation
        ("\\(#?\\s(\\|\\s)\\|[,]\\)"
-        (1 'clojure-punctuation-face prepend))
+        (1 'clojure-punctuation-face append))
        ("\\([~#@&_`'^]\\)"
-        (1 'shadow)))
+        (1 'shadow))
+       ("[0-9A-Za-z]\\(-+>?\\|[._$]\\)[0-9A-Za-z]"
+        (1 'symbol-dash-or-underline-face prepend)))
      :append)))
 
 (use-package elisp-mode
@@ -1076,7 +1099,10 @@
     "Face used to font-lock Lisp local binding variable name.")
   (defface lisp-punctuation-face
     '((t (:inherit shadow)))
-    "TODO")
+    "Face for bracket, square bracket and parenthesis.")
+  (defface lisp-use-package-face
+    '((t (:inherit font-lock-constant-face)))
+    "Face for `use-package'.")
 
   :config
   (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
@@ -1095,7 +1121,9 @@
          ("(\\(assert\\)"
           (1 'font-lock-variable-name-face))
          (,(concat "(defun" whitespace+ "\\(" symbol "\\)")
-          (1 'font-lock-function-name-face))))
+          (1 'font-lock-function-name-face))
+         ("(use-package\\s-+\\([-0-9A-Za-z]+\\)"
+          (1 'lisp-use-package-face))))
       (font-lock-add-keywords
        mode
        `(;; local variables
@@ -1149,9 +1177,11 @@
            (1 'lisp-local-binding-variable-name-face)))
          ;; punctuation
          ("\\s(\\|\\s)"
-          (0 'lisp-punctuation-face prepend))
+          (0 'lisp-punctuation-face append))
          ("#?'\\|`\\|\\_<_\\_>\\|,@?\\|\\."
-          (0 'shadow)))
+          (0 'shadow))
+         ("[0-9A-Za-z]\\(-+>?\\)[0-9A-Za-z]"
+          (1 'symbol-dash-or-underline-face prepend)))
        :append))))
 
 (use-package go-mode
@@ -1405,26 +1435,28 @@
         ("function.+:\\s-*\\(\\?\\)\\(?:\\sw\\|\\s_\\|\\\\\\)+"
          (1 'font-lock-type-face))
         (")\\s-*:\\s-*\\(\\?\\)\\(?:\\sw\\|\\s_\\|\\\\\\)+\\s-*\\(?:\{\\|;\\)"
-                                                                  (1 'font-lock-type-face))
-       ("\\?\\(\\(:?\\sw\\|\\s_\\)+\\)\\s-+\\$"
-        (1 'font-lock-type-face))
-       ("function.+:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)"
-        (1 'font-lock-type-face))
-       (")\\s-*:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*\\(?:\{\\|;\\)"
-        (1 'font-lock-type-face))
-       ("\\(?:^\\|\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\)"
-        (1 'shadow))
-       ("\\(;\\|:$\\)"
-        (1 'shadow))
-       ("\\(&\\)\\$"
-        (1 'shadow)))))
+         (1 'font-lock-type-face))
+        ("\\?\\(\\(:?\\sw\\|\\s_\\)+\\)\\s-+\\$"
+         (1 'font-lock-type-face))
+        ("function.+:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)"
+         (1 'font-lock-type-face))
+        (")\\s-*:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*\\(?:\{\\|;\\)"
+         (1 'font-lock-type-face))
+        ("\\(?:^\\|\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\)"
+         (1 'shadow))
+        ("\\(;\\|:$\\)"
+         (1 'shadow))
+        ("\\(&\\)\\$"
+         (1 'shadow)))))
   (setq php-font-lock-keywords php-font-lock-keywords-3)
   (font-lock-add-keywords
    'php-mode
    '(("\\([{}]\\)"
       (1 'c-style-brace-face))
      ("\\([$]\\)"
-      (1 'shadow append)))
+      (1 'shadow append))
+     ("[0-9A-Za-z]\\(_+\\)[0-9A-Za-z]"
+      (1 'symbol-dash-or-underline-face prepend)))
    :append))
 
 (use-package python
@@ -1488,7 +1520,9 @@
    `(("\\(\\*\\*?\\)[_A-Za-z]"
       (1 'shadow))
      ("[A-Za-z]\\(=\\)\\(?:[\"'0-9A-Za-z]\\|\\s(\\)"
-      (1 'shadow)))))
+      (1 'shadow))
+     ("[0-9A-Za-z]\\(_\\)[0-9A-Za-z]"
+      (1 'symbol-dash-or-underline-face prepend)))))
 
 (use-package rpm-spec-mode
   :defer t

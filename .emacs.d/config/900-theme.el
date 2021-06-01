@@ -24,12 +24,13 @@
    `(line-number ((t :background ,(color-from 'default :background -2)
                      :foreground ,(color-from 'default :foreground 25)
                      :weight light)))
-   '(line-number-current-line ((t :inherit line-number)))
+   '(line-number-current-line ((t :inherit line-number :weight normal)))
    '(mode-line ((t :box (:line-width (-1 . -1) :color "#1a2f54"))))
    '(mode-line-inactive ((t :weight light :box unspecified)))
    '(shadow ((t :weight normal)))
    '(show-paren-match ((t :background unspecified :foreground "#0081b8" :weight bold :underline t :box (:line-width (-1 . -1)))))
    '(show-paren-mismatch ((t :weight bold :underline t)))
+   '(symbol-dash-or-underline-face ((t :weight normal)))
    '(whitespace-newline ((t :inherit whitespace-tab)))
    '(whitespace-space   ((t :inherit whitespace-tab)))
    '(whitespace-tab     ((t :foreground "#cccccc" :weight light)))
@@ -62,7 +63,8 @@
      '(clojure-defining-spec-face ((t :inherit font-lock-function-name-face)))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
      '(clojure-fn-parameter-unused-face ((t :inherit clojure-fn-parameter-face :weight normal)))
-     '(clojure-keyword-face ((t :inherit font-lock-builtin-face :foreground unspecified)))
+     '(clojure-important-keywords-face ((t :inherit font-lock-keyword-face :weight unspecified :underline (:color "#4c9ae9"))))
+     '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
      '(clojure-meta-face ((t :inherit shadow :weight normal)))
      '(clojure-ns-definition-face ((t :inherit font-lock-type-face :background "#efeaf5")))
      `(clojure-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
@@ -113,7 +115,8 @@
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
      `(lisp-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
-     '(lisp-punctuation-face ((t :inherit shadow :weight light))))))
+     '(lisp-punctuation-face ((t :inherit shadow :weight light)))
+     '(lisp-use-package-face ((t :inherit font-lock-constant-face :background "#faebea"))))))
 
 (use-package eshell
   :defer t
