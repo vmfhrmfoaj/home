@@ -478,7 +478,7 @@ _install_graalvm_from_tar() {
         fi
         ln -s "${file}" .
     done
-    for file in ../bin/{keytool,serialver}; do
+    for file in ../bin/{gu,keytool,serialver}; do
         ln -s "${file}" .
     done
     ../bin/gu install native-image

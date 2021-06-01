@@ -171,7 +171,7 @@ _setup_for_graalvm() {
 }
 
 _setup_for_java() {
-    local ver=${1:-8}
+    local ver=${1:-11}
     local java_home="/usr/lib64/openjdk-${ver}"
     if [ -d "${java_home}" ]; then
         if [ -n "${JAVA_HOME}" ]; then
@@ -407,7 +407,7 @@ _add_to_path "${HOME}/.bin"
 _setup_for_android
 _setup_for_asdf
 _setup_for_go
-#_setup_for_java ${USE_JAVA_VERSION:-8}
+#_setup_for_java ${USE_JAVA_VERSION:-11}
 _setup_for_graalvm ${USE_JAVA_VERSION:-16}
 _setup_for_locale
 _setup_for_python
