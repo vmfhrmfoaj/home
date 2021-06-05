@@ -2,3 +2,4 @@ alias ls /usr/bin/exa --color=always $*
 alias ll /usr/bin/exa --color=always --long $*
 alias fd /usr/bin/fd --hidden --no-ignore --no-ignore-vcs $*
 alias rg /usr/bin/rg --hidden --no-ignore --no-ignore-vcs $*
+alias curl /usr/bin/curl --verbose --silent --write-out '\n' $*

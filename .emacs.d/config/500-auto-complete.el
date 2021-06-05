@@ -117,7 +117,26 @@
                 (let ((inhibit-read-only t))
                   (funcall fn))))
 
-  (advice-add #'counsel-company :override #'counsel--custom-company))
+  (advice-add #'counsel-company :override #'counsel--custom-company)
+
+  (with-eval-after-load "company"
+    (advice-add #'company-indent-or-complete-common :override
+                (lambda (arg)
+                  "Customize `company-indent-or-complete-common' use `counsel-company' instead of `company' overlay."
+                  (interactive "P")
+                  (cond
+                   ((use-region-p)
+                    (indent-region (region-beginning) (region-end)))
+                   ((memq indent-line-function
+                          '(indent-relative indent-relative-maybe))
+                    (counsel-company))
+                   ((let ((old-point (point))
+                          (old-tick (buffer-chars-modified-tick))
+                          (tab-always-indent t))
+                      (indent-for-tab-command arg)
+                      (when (and (eq old-point (point))
+                                 (eq old-tick (buffer-chars-modified-tick)))
+                        (counsel-company)))))))))
 
 (use-package yasnippet
   :ensure t

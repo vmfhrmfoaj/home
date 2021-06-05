@@ -63,6 +63,9 @@
 
 (put 'dired-find-alternate-file 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
+(put 'sql-postgres-login-params 'safe-local-variable (-const t))
+(put 'sql-connection-alist      'safe-local-variable (-const t))
+
 
 (when-let ((input-method (--first (string= "korean-hangul" (car it)) input-method-alist)))
   (setf (nth 3 input-method) "Korean"))

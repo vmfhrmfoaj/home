@@ -694,8 +694,9 @@
          (1 'clojure-interop-method-face))
 
         ;; Interop new - (symbol. ...)
-        (,(concat "(" symbol "\\(\\.\\)" whitespace)
-         (1 'clojure-interop-method-face))
+        (,(concat "(\\(" symbol "\\)\\(\\.\\)\\(" whitespace "\\|)\\)")
+         (1 'default)
+         (2 'clojure-interop-method-face))
 
         ;; Built-in binding and flow of control forms
         (,(concat "(" core-ns? important-kw "\\(?:)\\|" whitespace "\\)")

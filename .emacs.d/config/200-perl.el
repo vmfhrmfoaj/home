@@ -58,6 +58,7 @@
   (modify-syntax-entry ?: "." cperl-mode-syntax-table)
   (setq cperl-break-one-line-blocks-when-indent nil
         cperl-fix-hanging-brace-when-indent nil
+        cperl-indent-level 4
         cperl-indent-parens-as-block t
         cperl-indent-region-fix-constructs nil
         cperl-indent-wrt-brace nil

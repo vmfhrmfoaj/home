@@ -216,15 +216,15 @@
     "p TAB" #'projectile-switch-latest-open-project
     "p'" #'projectile-run-eshell
     "p!" #'projectile-run-shell-command-in-root
-    "pA" #'projectile-add-known-project
-    "pD" #'projectile-remove-known-project
     "pI" #'projectile-invalidate-cache
-    "pS" #'projectile-switch-project
     "pa" #'projectile-add-buffer-to-project
-    "pd" #'projectile-find-dir
+    "pA" #'projectile-add-known-project
+    "pd" #'projectile-remove-known-project
     "pf" #'counsel-projectile-find-file
+    "pF" #'projectile-find-dir
     "pk" #'projectile-kill-buffers
-    "ps" #'projectile-custom-switch-open-project
+    "pp" #'projectile-custom-switch-open-project
+    "pP" #'projectile-switch-project
     "pt" #'treemacs-projectile-current
 
     ;; register/rings/resume
@@ -862,8 +862,10 @@
 
 (use-package doc-view
   :defer t
-  :config
+  :init
   (evil-set-initial-state 'doc-view-mode 'normal)
+
+  :config
   (evil-define-key 'normal doc-view-mode-map
     "+" #'doc-view-enlarge
     "=" #'doc-view-enlarge
@@ -988,8 +990,10 @@
 
 (use-package help-mode
   :defer t
-  :config
+  :init
   (evil-set-initial-state 'help-mode 'normal)
+
+  :config
   (evil-define-key 'normal help-mode-map
     (kbd "<backtab>") #'backward-button
     (kbd "<tab>") #'forward-button
@@ -1041,6 +1045,17 @@
   :config
   (evil-collection-define-key 'normal 'magit-mode-map (kbd "~") #'magit-svn))
 
+(use-package man
+  :defer t
+  :init
+  (evil-set-initial-state 'Man-mode 'normal)
+
+  :config
+  (evil-define-key 'normal Man-mode-map
+    (kbd "<backtab>") #'backward-button
+    (kbd "<tab>") #'forward-button
+    (kbd "q") #'quit-window))
+
 (use-package multi-term
   :defer t
   :config
@@ -1084,8 +1099,10 @@
 
 (use-package package
   :defer t
-  :config
+  :init
   (evil-set-initial-state 'package-menu-mode 'normal)
+
+  :config
   (evil-define-key 'normal package-menu-mode-map
     (kbd "U") #'package-menu-mark-upgrades
     (kbd "d") #'package-menu-mark-delete
@@ -1132,8 +1149,10 @@
 
 (use-package view
   :defer t
-  :config
+  :init
   (evil-set-initial-state 'view-mode 'normal)
+
+  :config
   (add-hook 'view-mode-hook
             (lambda ()
               (ignore-errors

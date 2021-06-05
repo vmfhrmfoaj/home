@@ -21,8 +21,8 @@
    `(isearch ((t :background "#ffff00" :foreground "black" :underline unspecified :box (:line-width (-1 . -1) :color "#e5e500"))))
    '(italic ((t :foreground unspecified :family "Fantasque Sans Mono" :slant italic)))
    `(lazy-highlight ((t :background "#eeee00" :foreground "grey10" :box (:line-width (-1 . -1) :color "#d4d400"))))
-   `(line-number ((t :background ,(color-from 'default :background -2)
-                     :foreground ,(color-from 'default :foreground 25)
+   `(line-number ((t :background "#f8f9fc"
+                     :foreground "#bcbdbf"
                      :weight light)))
    '(line-number-current-line ((t :inherit line-number :weight normal)))
    '(mode-line ((t :box (:line-width (-1 . -1) :color "#1a2f54"))))
@@ -64,6 +64,7 @@
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
      '(clojure-fn-parameter-unused-face ((t :inherit clojure-fn-parameter-face :weight normal)))
      '(clojure-important-keywords-face ((t :inherit font-lock-keyword-face :weight unspecified :underline (:color "#4c9ae9"))))
+     '(clojure-interop-method-face ((t :inherit font-lock-keyword-face :weight bold)))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
      '(clojure-meta-face ((t :inherit shadow :weight normal)))
      '(clojure-ns-definition-face ((t :inherit font-lock-type-face :background "#efeaf5")))
@@ -173,7 +174,15 @@
   :defer t
   :config
   (custom-set-faces
-   `(fringe ((t :background ,(color-from 'default :background -3) :foreground "#a5ceec")))))
+   `(fringe ((t :background "#e7e8eb" :foreground "#a5ceec")))))
+
+(use-package git-gutter-fringe
+  :defer t
+  :config
+  (custom-set-faces
+   '(git-gutter:modified ((t :foreground "magenta" :weight bold)))
+   '(git-gutter:added    ((t :foreground "green"   :weight bold)))
+   '(git-gutter:deleted  ((t :foreground "red"     :weight bold)))))
 
 (use-package go-mode
   :defer t
@@ -243,9 +252,10 @@
    '(org-done ((t :box (:line-width (1 . -1)))))
    '(org-drawer ((t :weight normal)))
    '(org-headline-done ((t :weight unspecified :height unspecified)))
-   '(org-tag ((t :background unspecified :slant unspecified)))
+   '(org-link ((t :weight unspecified)))
    '(org-punctuation-face ((t :inherit default :weight normal)))
    '(org-special-keyword ((t :weight normal)))
+   '(org-tag ((t :background unspecified :slant unspecified)))
    `(org-task-done ((t :foreground ,(color-from 'org-headline-done :foreground) :weight normal)))
    '(org-todo ((t :box (:line-width (1 . -1)))))))
 

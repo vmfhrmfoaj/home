@@ -38,9 +38,8 @@
     (add-to-list 'default-frame-alist `(width  . (text-pixels . ,w)))
     (add-to-list 'default-frame-alist `(height . (text-pixels . ,h)))
     (setq frame-resize-pixelwise t
-          initial-frame-alist (list `(top  . ,y)
-                                    `(left . ,x)
-                                    '(undecorated . nil))
+          initial-frame-alist `((top  . ,y)
+                                (left . ,x))
           split-width-threshold main-monitor-w)))
 
 (use-package golden-ratio
