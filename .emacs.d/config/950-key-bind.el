@@ -148,8 +148,8 @@
 
     ;; buffer
     "bR" #'revert-buffer
-    "ba" #'counsel-switch-buffer
     "bb" #'counsel-projectile-switch-to-buffer
+    "bB" #'counsel-switch-buffer
     "bd" #'kill-buffer-and-delete-window
     "be" #'eldoc-doc-buffer
     "bk" #'projectile-kill-buffer

@@ -211,7 +211,9 @@
    '(ivy-grep-line-number ((t :inherit compilation-line-number :weight light)))
    '(ivy-minibuffer-match-face-2 ((t :background "#e99ce8" :weight normal)))
    '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :weight normal)))
-   '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :weight normal)))))
+   '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :weight normal)))
+   '(ivy-modified-buffer ((t :inherit highlight)))
+   '(ivy-modified-outside-buffer ((t :inherit ivy-modified-buffer)))))
 
 (use-package lsp-mode
   :defer t
@@ -292,6 +294,12 @@
   :config
   (custom-set-faces
    '(powerline-active1 ((t :background "#edf8fc" :foreground "#335ea8")))))
+
+(use-package sh-script
+  :defer t
+  :config
+  (custom-set-faces
+   '(sh-heredoc ((t :background "#f6f6f6" :foreground unspecified)))))
 
 (use-package spaceline
   :defer t

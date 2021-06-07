@@ -217,4 +217,19 @@ But, In my case, it is not harm."
                     (puthash (cons c1 c2) val colir-blend-cache)
                     val))))
 
+  (advice-add #'ivy-switch-buffer-transformer :before-until
+              (lambda (str)
+                "To customize for `ivy-modified-buffer' face."
+                (when-let ((buf (get-buffer str)))
+                  (if (and (buffer-modified-p buf)
+                           (buffer-file-name buf))
+                      (ivy-append-face str 'ivy-modified-buffer)
+                    ;; NOTE
+                    ;;  I don't want to check whether the default behavior is changed or not on every update of `ivy'.
+                    ;;  How to reuse a default behavior of `ivy-switch-buffer-transformer' function?
+                    (let* ((mode (buffer-local-value 'major-mode buf))
+                           (face (cdr (assq mode ivy-switch-buffer-faces-alist))))
+                      (ivy-append-face str face))))))
+
+
   (ivy-mode 1))
