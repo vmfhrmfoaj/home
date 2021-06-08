@@ -173,12 +173,16 @@
       (condition-case nil
           (progn
             (let ((background (color-from face :background))
+                  (foreground (color-from face :foreground))
                   (weight     (face-attribute face :weight))
                   (underline  (face-attribute face :underline))
                   (box        (face-attribute face :box)))
               (when background
                 (add-face-text-property
-                 0 len (list :foreground background :inverse-video t) nil str))
+                 0 len (list :background background) nil str))
+              (when foreground
+                (add-face-text-property
+                 0 len (list :foreground foreground) nil str))
               (when weight
                 (add-face-text-property
                  0 len (list :weight weight) nil str))

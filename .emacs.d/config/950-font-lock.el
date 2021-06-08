@@ -1348,7 +1348,7 @@
                  ',org-todo-face)))
            t))
        ("^\\s-*\\(?:[-+]\\|[0-9]+[).]\\)\\s-+\\(\\[ \\]\\)\\s-+\\(\\.\\.\\.\\)"
-        (1 ',org-done-face prepend)
+        (1 ',org-todo-face prepend)
         (2 'org-task-done))
        ("^\\s-*\\(-\\) "
         (1 (progn
