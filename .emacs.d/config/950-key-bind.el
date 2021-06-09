@@ -116,7 +116,7 @@
     "aoa" (defalias 'org-agenda-show-list
             (lambda ()
               (interactive)
-              (if (not org-agenda-buffer)
+              (if (not (bound-and-true-p org-agenda-buffer))
                   (org-agenda-list)
                 (switch-to-buffer org-agenda-buffer)
                 (org-agenda-redo))
