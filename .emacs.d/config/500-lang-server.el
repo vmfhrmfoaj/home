@@ -118,29 +118,9 @@
         lsp-intelephense-storage-path "/tmp/intelephense")
 
   :config
-  (lsp-register-client
-   (make-lsp-client :new-connection (lsp-stdio-connection
-                                     (lambda ()
-                                       `(,(or (executable-find
-                                               (cl-first lsp-intelephense-server-command))
-                                              (lsp-package-path 'intelephense))
-                                         ,@(cl-rest lsp-intelephense-server-command))))
-                    :major-modes '(php-mode)
-                    :priority -1
-                    :notification-handlers (ht ("indexingStarted" #'ignore)
-                                               ("indexingEnded" #'ignore))
-                    :initialization-options (lambda ()
-                                              (list :globalStoragePath lsp-intelephense-storage-path
-                                                    :storagePath lsp-intelephense-storage-path
-                                                    :licenceKey lsp-intelephense-licence-key
-                                                    :clearCache lsp-intelephense-clear-cache
-                                                    :isVscode nil))
-                    :multi-root lsp-intelephense-multi-root
-                    :completion-in-comments? t
-                    :server-id 'iph
-                    :download-server-fn (lambda (_client callback error-callback _update?)
-                                          (lsp-package-ensure 'intelephense
-                                                              callback error-callback)))))
+  (let* ((old-init-opts (funcall (lsp--client-initialization-options (gethash 'iph lsp-clients))))
+         (new-init-opts (append old-init-opts `(:globalStoragePath ,lsp-intelephense-storage-path))))
+    (setf (lsp--client-initialization-options (gethash 'iph lsp-clients)) (-const new-init-opts))))
 
 (use-package lsp-ivy
   :ensure t
@@ -588,7 +568,10 @@
                     (apply f args)
                   (error
                    (setq lsp-signature-prevent-stop-enable nil)
-                   (lsp-signature-stop))))))
+                   (lsp-signature-stop)))))
+  ;; NOTE
+  ;;  Sometimes, `lsp-workspaces' return list of nil. (e.g., '(nil))
+  (advice-add #'lsp-workspaces :filter-return #'-non-nil))
 
 (use-package lsp-pyls
   :defer t

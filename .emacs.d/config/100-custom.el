@@ -83,27 +83,17 @@
 (add-hook 'after-init-hook
           (lambda ()
             (add-hook 'buffer-list-update-hook #'update-buf-visit-time)
-            (advice-add #'switch-to-buffer :around
-                        (lambda (fn buf &rest args)
-                          "to prevent duplicated buffer."
-                          (let ((buf (get-buffer buf)))
-                            (if-let ((win (let ((wins (window-list)))
-                                            (when (<= 2 (length wins))
-                                              (-some->> wins
-                                                        (--filter (-> it (window-buffer) (eq buf)))
-                                                        (-first-item))))))
-                                (select-window win)
-                              (apply fn buf args)))))
-            (advice-add #'pop-to-buffer :around
-                        (lambda (fn buf &rest args)
-                          (let ((buf (get-buffer buf)))
-                            (if-let ((win (let ((wins (window-list)))
-                                            (when (<= 2 (length wins))
-                                              (-some->> wins
-                                                        (--filter (-> it (window-buffer) (eq buf)))
-                                                        (-first-item))))))
-                                (select-window win)
-                              (apply fn buf args))))))
+            (let ((f (lambda (fn buf-or-name &rest args)
+                       "to prevent duplicated buffer."
+                       (let ((buf (get-buffer buf-or-name)))
+                         (if-let ((win (and buf
+                                            (let ((wins (window-list)))
+                                              (when (<= 2 (length wins))
+                                                (--first (-> it (window-buffer) (eq buf)) wins))))))
+                             (select-window win)
+                           (apply fn buf-or-name args))))))
+              (advice-add #'switch-to-buffer :around f)
+              (advice-add #'pop-to-buffer    :around f)))
           :append)
 
 (add-hook 'kill-emacs-hook

@@ -43,7 +43,8 @@
          (git-timemachine-mode . enable-display-line-numbers)
          (prog-mode            . enable-display-line-numbers)
          (rpm-spec-mode        . enable-display-line-numbers)
-         (nxml-mode            . enable-display-line-numbers))
+         (nxml-mode            . enable-display-line-numbers)
+         (yaml-mode            . enable-display-line-numbers))
   :init
   (defun enable-display-line-numbers ()
     "Turn on `display-line-numbers-mode'."

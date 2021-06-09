@@ -116,7 +116,10 @@
     "aoa" (defalias 'org-agenda-show-list
             (lambda ()
               (interactive)
-              (org-agenda-list)
+              (if (not org-agenda-buffer)
+                  (org-agenda-list)
+                (switch-to-buffer org-agenda-buffer)
+                (org-agenda-redo))
               (org-agenda-goto-today)))
     "aocj" #'org-clock-goto
     "aocn" #'org-capture-note

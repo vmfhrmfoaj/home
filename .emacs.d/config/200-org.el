@@ -72,6 +72,7 @@ which see."
         (_ nil))))
 
   (setq org-complete-tags-always-offer-all-agenda-tags t
+        org-ellipsis "↴"
         org-fontify-whole-heading-line t
         org-fontify-quote-and-verse-blocks t
         org-fontify-todo-headline nil ; Add custom `font-lock' rules
