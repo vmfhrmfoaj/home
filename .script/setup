@@ -364,6 +364,10 @@ _setup_for_ssh() {
             #  see, https://bugzilla.redhat.com/show_bug.cgi?id=1645855
             export XDG_CURRENT_DESKTOP=GNOME
         fi
+        _is_cmd 'dbus-update-activation-environment'
+        if [ $? -eq 0 ]; then
+            dbus-update-activation-environment --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY
+        fi
     fi
 }
 
