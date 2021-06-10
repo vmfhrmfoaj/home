@@ -105,7 +105,7 @@ EOF
         export LEIN_JVM_OPTS=""
     fi
 
-    _is_cmd clojure
+    _is_cmd 'clojure'
     if [ $? -ne 0 ] && [ ! -f "${HOME}/.shim/clojure" ]; then
         echo -n "Do you want to install 'clojure(Clojure CLI tool)'? (Y or N): "
         read yn
@@ -222,7 +222,7 @@ _setup_for_lua() {
 }
 
 _setup_for_nodejs() {
-    _is_cmd npm
+    _is_cmd 'npm'
     if [ $? -eq 0 ]; then
         local npm_prefix="${HOME}/.npm-global"
         if [ ! -d "${npm_prefix}" ]; then
@@ -279,14 +279,14 @@ if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
 fi
 EOF
             chmod +x "${HOME}/.shim/rustup"
-            _is_cmd cargo
+            _is_cmd 'cargo'
             if [ $? -ne 0 ] ; then
                 cp "${HOME}/.shim/rustup" "${HOME}/.shim/cargo"
             fi
         fi
     fi
 
-    _is_cmd rustc
+    _is_cmd 'rustc'
     if [ $? -eq 0 ]; then
         _is_shim rustc
         if [ $? -ne 0 ]; then
@@ -379,23 +379,23 @@ _setup_for_wsl() {
     if [ -z "${LIBGL_ALWAYS_INDIRECT}" ]; then
         export LIBGL_ALWAYS_INDIRECT=1
     fi
-    _is_cmd xrdb
+    _is_cmd 'xrdb'
     if [ $? -eq 0 ]; then
         xrdb -merge "${HOME}/.Xresources"
     fi
 }
 
 # alias
-_is_cmd exa
+_is_cmd 'exa'
 if [ $? -eq 0 ]; then
     alias ls=exa
     alias ll='exa -l'
 fi
-_is_cmd fd
+_is_cmd 'fd'
 if [ $? -eq 0 ]; then
     alias fd="$(which fd) --hidden --no-ignore --no-ignore-vcs"
 fi
-_is_cmd rg
+_is_cmd 'rg'
 if [ $? -eq 0 ]; then
     alias rg="$(which rg) --hidden --no-ignore --no-ignore-vcs"
 fi
