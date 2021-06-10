@@ -135,13 +135,34 @@ which see."
           (directory-files-recursively org-directory "\\.org$")))
 
   :config
+  (defun org-agenda-set-default-filters (&rest _)
+    (setq-local default-directory (concat home-dir "/Desktop/Org/")
+                projectile-project-name "Org")
+    (let ((-compare-fn (lambda (it that)
+                         (and (= (length it) (length that))
+                              (eq t (compare-strings it 1 nil that 1 nil t)))))
+          (filter nil)
+          (cur-date (-drop 3 (decode-time))))
+      (setq filter (concat (when (or (when (require 'diary-lib nil t)
+                                       (-let (((d m y) cur-date))
+                                         (not (null (diary-list-entries (list m d y) 1 t)))))
+                                     (memq (calendar-day-of-week (calendar-current-date)) '(0 6)))
+                             "-Work")))
+      (setq org-agenda-tag-filter
+            (->> org-agenda-tag-filter
+                 (append (-list filter))
+                 (-remove #'s-blank-str?)
+                 (-distinct)))))
+
   (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0))
                                     (0.5 . '(:inherit org-upcoming-deadline :height 1.0))
                                     (0.0 . '(:height 1.0)))
         org-agenda-clockreport-parameter-plist '(:link t :fileskip0 t :stepskip0 t :maxlevel 5 :tcolumns 1 :narrow 70!)
         org-agenda-scheduled-leaders '("Scheduled: " "Sched.%03dx: ")
         org-agenda-deadline-leaders  '("Deadline:  " "In %03d d.: " "%02d d. ago: ")
+        org-agenda-skip-additional-timestamps-same-entry t
         org-agenda-skip-deadline-if-done t
+        org-agenda-skip-deadline-prewarning-if-scheduled t
         org-agenda-skip-scheduled-if-done t
         org-agenda-skip-scheduled-if-deadline-is-shown t
         org-agenda-skip-timestamp-if-done t
@@ -164,25 +185,9 @@ which see."
                                    (tags   . " ")
                                    (search . " ")))
 
-  (add-hook 'org-agenda-mode-hook
-            (lambda ()
-              (setq-local default-directory (concat home-dir "/Desktop/Org/")
-                          projectile-project-name "Org")
-              (let* ((filter "Work")
-                     (cur-time (current-time))
-                     (cur-date (-drop 3 (decode-time cur-time)))
-                     (10am (->> cur-date (-concat '(0 0 10)) (encode-time)))
-                     (7pm  (->> cur-date (-concat '(0 0 19)) (encode-time))))
-                (setq filter (concat (if (or (when (require 'diary-lib nil t)
-                                               (-let (((d m y) cur-date))
-                                                 (not (null (diary-list-entries (list m d y) 1 t)))))
-                                             (memq (calendar-day-of-week (calendar-current-date)) '(0 6))
-                                             (time-less-p cur-time 10am)
-                                             (not (time-less-p cur-time 7pm)))
-                                         "-"
-                                       "+")
-                                     filter))
-                (add-to-list 'org-agenda-tag-filter filter)))))
+  (add-hook 'org-agenda-mode-hook #'org-agenda-set-default-filters)
+
+  (advice-add #'org-agenda-redo :before #'org-agenda-set-default-filters))
 
 (use-package org-capture
   :defer t
@@ -252,3 +257,24 @@ which see."
         org-clock-custom-idle-time 30
         org-clock-custom-idle-timer (org-clock--start-idle-timer))
   (advice-add #'org-clock--mode-line-heading :override (-const "CLOCK-IN")))
+
+(use-package org-super-agenda
+  :ensure t
+  :after org-agenda
+  :config
+  (setq org-super-agenda-groups
+        '((:name "High priority"
+                 :priority "A"
+                 :priority "B")
+          (:name "Works"
+                 :tag "Work")
+          (:name "Projects"
+                 :tag "Project")
+          (:name "Self-development"
+                 :tag "Study"
+                 :tag "Training")))
+
+  (setq org-super-agenda-header-map nil
+        org-super-agenda-header-separator "")
+
+  (org-super-agenda-mode 1))

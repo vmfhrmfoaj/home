@@ -116,7 +116,9 @@
     "aoa" (defalias 'org-agenda-show-list
             (lambda ()
               (interactive)
-              (if (not (bound-and-true-p org-agenda-buffer))
+              (if (not (and (boundp 'org-agenda-buffer)
+                            (buffer-live-p org-agenda-buffer)
+                            (string-match-p "(a)" (buffer-name org-agenda-buffer))))
                   (org-agenda-list)
                 (switch-to-buffer org-agenda-buffer)
                 (org-agenda-redo))
@@ -613,17 +615,13 @@
       (interactive)
       (let ((caller (ivy-state-caller ivy-last)))
         (cond
-         ((memq caller
-                '(counsel-projectile-switch-to-buffer
-                  ivy-switch-buffer))
+         ((memq caller '(counsel-projectile-switch-to-buffer
+                         ivy-switch-buffer))
           (ivy-exit-with-action #'ivy--switch-buffer-other-window-action))
-         ((memq caller
-                '(counsel-projectile-find-file
-                  counsel-find-file))
-          (ivy-exit-with-action (lambda (file)
-                                  (find-file-other-window (if (zerop (length file))
-                                                              ivy-text
-                                                            file))))))))
+         ((eq caller 'counsel-find-file)
+          (ivy-exit-with-action #'find-file-other-window))
+         ((eq caller 'counsel-projectile-find-file)
+          (ivy-exit-with-action (-compose #'find-file-other-window #'projectile-expand-root))))))
 
     (evil-define-key 'insert ivy-minibuffer-map
       (kbd "<tab>") #'ivy-partial

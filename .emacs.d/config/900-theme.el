@@ -14,21 +14,24 @@
   (load-theme 'spacemacs-dark t)
 
   (custom-set-faces
+   '(bold ((t :foreground unspecified)))
    '(c-style-brace-face ((t :inherit shadow :weight light)))
    '(c-style-operator-face ((t :weight normal)))
    '(c-style-punctuation-1-face ((t :inherit shadow)))
    '(c-style-punctuation-2-face ((t :inherit shadow :weight light)))
-   '(bold ((t :foreground unspecified)))
+   '(default ((t :background "#242528")))
+   '(fringe  ((t :background "#2f343f")))
    `(isearch ((t :underline unspecified)))
    '(italic ((t :foreground unspecified :family "Fantasque Sans Mono" :slant italic)))
-   `(line-number ((t :weight light)))
    '(line-number-current-line ((t :background unspecified)))
    '(shadow ((t :weight normal)))
    '(show-paren-match ((t :weight bold)))
    '(symbol-dash-or-underline-face ((t :weight normal)))
    '(whitespace-newline ((t :inherit whitespace-tab :foreground unspecified)))
    '(whitespace-space   ((t :inherit whitespace-tab :foreground unspecified)))
-   '(whitespace-tab     ((t :weight light)))))
+   '(whitespace-tab     ((t :weight light))))
+  (custom-set-faces
+   `(line-number ((t :background ,(color-from 'fringe :background (* 5 (if (eq frame-background-mode 'dark) -1 1))) :weight light)))))
 
 (use-package auto-dim-other-buffers
   :defer t
@@ -38,8 +41,8 @@
      ((t :background ,(color-from 'default :background (*  2 (if (eq frame-background-mode 'dark) -1 1)))
          :foreground ,(color-from 'default :foreground (* 10 (if (eq frame-background-mode 'dark) -1 1))))))
    `(auto-dim-other-line-number-face
-     ((t :background ,(color-from 'line-number :background (*  2 (if (eq frame-background-mode 'dark) -1 1)))
-         :foreground ,(color-from 'line-number :foreground (* 10 (if (eq frame-background-mode 'dark) -1 1))))))))
+     ((t :background ,(color-from 'line-number :background (* 2 (if (eq frame-background-mode 'dark) -1 1)))
+         :foreground ,(color-from 'line-number :foreground (* 5 (if (eq frame-background-mode 'dark) -1 1))))))))
 
 (use-package cider-mode
   :defer t
@@ -57,7 +60,7 @@
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
      `(clojure-cond-condtion-face ((t :underline (:color ,(color-from 'default :background (* 15 (if (eq frame-background-mode 'dark) 1 -1)))))))
-     '(clojure-define-type-face ((t :inherit font-lock-type-face :background "#332127")))
+     '(clojure-define-type-face ((t :inherit font-lock-type-face :background "#3d1824")))
      '(clojure-defining-spec-face ((t :inherit font-lock-keyword-face :background "#1c354d")))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
      '(clojure-fn-parameter-unused-face ((t :inherit clojure-fn-parameter-face :weight normal)))
@@ -66,8 +69,9 @@
            :underline (:color ,(color-from 'font-lock-keyword-face :foreground (* 10 (if (eq frame-background-mode 'dark) -1 1)))))))
      '(clojure-interop-method-face ((t :inherit font-lock-keyword-face :weight bold)))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
+     '(clojure-ns-prefix-face ((t :inherit font-lock-type-face :weight normal)))
      '(clojure-meta-face ((t :inherit shadow :weight normal)))
-     '(clojure-ns-definition-face ((t :inherit font-lock-type-face :background "#332127")))
+     '(clojure-ns-definition-face ((t :inherit font-lock-type-face :background "#3d1824")))
      `(clojure-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :foreground "#6981c5" :weight ,default-weight)))
      '(clojure-local-binding-variable-name-unsed-face ((t :inherit clojure-local-binding-variable-name-face :weight normal)))
      '(clojure-punctuation-face ((t :inherit shadow :weight light)))
@@ -124,7 +128,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(font-lock-comment-face ((t :inherit italic :weight light)))
+   '(font-lock-comment-face ((t :inherit italic :background unspecified :weight light)))
    '(font-lock-doc-face ((t :inherit italic :weight light)))
    '(font-lock-function-name-face ((t :background "#412645" :weight bold)))
    '(font-lock-keyword-face ((t :weight unspecified)))
@@ -137,12 +141,6 @@
   (custom-set-faces
    `(font-lock-comment-delimiter-face
      ((t :foreground ,(color-from 'font-lock-comment-face :foreground (* 10 (if (eq frame-background-mode 'dark) -1 1))) :weight light)))))
-
-(use-package fringe
-  :defer t
-  :config
-  (custom-set-faces
-   `(fringe ((t :background "#2f343f")))))
 
 (use-package go-mode
   :defer t
@@ -196,6 +194,10 @@
 
   :config
   (custom-set-faces
+   '(org-agenda-calendar-event ((t :inherit unspecified)))
+   '(org-agenda-date ((t :height 1.3)))
+   '(org-agenda-date-today ((t :background "#1c354d" :height 1.3)))
+   '(org-agenda-date-weekend ((t :height 1.3)))
    '(org-block-begin-line ((t :weight normal)))
    '(org-block-end-line   ((t :weight normal)))
    '(org-done ((t :box (:line-width (1 . -1)))))
@@ -203,7 +205,9 @@
    '(org-ellipsis ((t :inherit shadow :foreground unspecified)))
    '(org-link ((t :weight unspecified)))
    '(org-punctuation-face ((t :inherit default :weight normal)))
+   '(org-scheduled-previously ((t :inherit (shadow italic) :foreground unspecified :weight normal :slant unspecified)))
    '(org-special-keyword ((t :weight normal)))
+   '(org-super-agenda-header ((t :foreground "#2d9574" :weight normal :height 1.3)))
    '(org-tag ((t :background unspecified :slant unspecified)))
    `(org-task-done ((t :inherit shadow)))
    '(org-todo ((t :box (:line-width (1 . -1)))))))

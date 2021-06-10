@@ -287,6 +287,9 @@
   (defface clojure-ns-definition-face
     '((t (:inherit font-lock-type-face)))
     "TODO")
+  (defface clojure-ns-prefix-face
+    '((t (:inher font-lock-type-face)))
+    "Face for the namespace in the symbol.")
 
   (defcustom clojure--ignore-binding-highlight-regex
     "^\\([&_]\\)$"
@@ -704,7 +707,7 @@
 
         ;; Namespaced keyword - ::namespace/keyword
         (,(concat "::\\(" symbol "\\)\\(/\\)" symbol "\\>")
-         (1 'font-lock-type-face)
+         (1 'clojure-ns-prefix-face)
          (2 'shadow))
 
         ;; Auto-gensym variable - variable#
@@ -890,7 +893,7 @@
         ;; keywords - {:oneword/ve/yCom|pLex.stu-ff 0}
         (,(concat "\\(::?\\)\\(" symbol "?\\)\\(/\\)\\(" symbol "\\)")
          (1 'clojure-keyword-face)
-         (2 'font-lock-type-face)
+         (2 'clojure-ns-prefix-face)
          (3 'shadow)
          (4 'clojure-keyword-face))
         (,(concat "\\(::?" symbol "\\)")
@@ -899,7 +902,7 @@
         ;; clojure symbols not matched by the previous regexps; influences CIDER's
         ;; dynamic syntax highlighting (CDSH). See https://git.io/vxEEA:
         (,(concat "\\(" symbol "?\\)\\(/\\)\\(" symbol "\\)")
-         (1 'font-lock-type-face)
+         (1 'clojure-ns-prefix-face)
          ;; 2nd and 3th matching groups can be font-locked to `nil' or `default'.
          ;; CDSH seems to kick in only for functions and variables referenced w/o
          ;; writing their namespaces.
