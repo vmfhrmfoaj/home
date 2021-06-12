@@ -224,6 +224,20 @@
   :config
   (setq expand-region-contract-fast-key "v"))
 
+(use-package gitlab-ci-mode
+  :ensure t
+  :defer t
+  :init
+  (add-hook 'gitlab-ci-mode-hook
+            (lambda ()
+              (flycheck-mode 1))))
+
+(use-package gitlab-ci-mode-flycheck
+  :ensure t
+  :after flycheck
+  :config
+  (gitlab-ci-mode-flycheck-enable))
+
 (use-package flycheck
   :ensure t
   :defer t

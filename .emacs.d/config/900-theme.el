@@ -66,7 +66,7 @@
      '(clojure-fn-parameter-unused-face ((t :inherit clojure-fn-parameter-face :weight normal)))
      `(clojure-important-keywords-face
        ((t :inherit font-lock-keyword-face :weight unspecified
-           :underline (:color ,(color-from 'font-lock-keyword-face :foreground (* 10 (if (eq frame-background-mode 'dark) -1 1)))))))
+           :background ,(color-from 'default :background (* 3 (if (eq frame-background-mode 'dark) 1 -1))))))
      '(clojure-interop-method-face ((t :inherit font-lock-keyword-face :weight bold)))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
      '(clojure-ns-prefix-face ((t :inherit font-lock-type-face :weight normal)))
