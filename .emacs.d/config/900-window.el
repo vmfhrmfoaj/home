@@ -16,6 +16,9 @@
                              (funcall get-resolution other)))))
     "See `display-monitor-attributes-list'")
 
+  (defcustom title-bar-height-in-pixel 0
+    "You set it in `custom-file', rather than here.")
+
   (let* ((workarea (-some->> main-monitor (assoc 'workarea) (-drop 1)))
          (main-monitor-x (nth 0 workarea))
          (main-monitor-y (nth 1 workarea))
@@ -28,7 +31,7 @@
          (y main-monitor-y)
          (w (+ (* wc (frame-char-width))
                (* oc (frame-char-width))))
-         (h main-monitor-h))
+         (h (- main-monitor-h title-bar-height-in-pixel)))
     (setq org-tags-column (- wc))
     (if (<= main-monitor-w w)
         (setq x main-monitor-x)

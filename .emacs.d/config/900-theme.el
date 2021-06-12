@@ -122,7 +122,7 @@
   :defer t
   :config
   (custom-set-faces
-   `(focus-unfocused ((t :foreground ,(color-from 'default :foreground (* 25 (if (eq frame-background-mode 'dark) -1 1))))))))
+   `(focus-unfocused ((t :foreground ,(color-from 'default :foreground (* 25 (if (eq frame-background-mode 'dark) -1 1))) :weight light)))))
 
 (use-package font-lock
   :defer t
@@ -195,12 +195,13 @@
   :config
   (custom-set-faces
    '(org-agenda-calendar-event ((t :inherit unspecified)))
-   '(org-agenda-date ((t :height 1.3)))
+   '(org-agenda-date ((t :weight normal :height 1.3)))
    '(org-agenda-date-today ((t :background "#1c354d" :height 1.3)))
-   '(org-agenda-date-weekend ((t :height 1.3)))
+   '(org-agenda-date-weekend ((t :weight normal :height 1.3)))
    '(org-block-begin-line ((t :weight normal)))
    '(org-block-end-line   ((t :weight normal)))
-   '(org-done ((t :box (:line-width (1 . -1)))))
+   '(org-done ((t :inherit shadow :foreground unspecified :box (:line-width (1 . -1)))))
+   '(org-headline-done ((t :inherit shadow)))
    '(org-drawer ((t :weight normal)))
    '(org-ellipsis ((t :inherit shadow :foreground unspecified)))
    '(org-link ((t :weight unspecified)))

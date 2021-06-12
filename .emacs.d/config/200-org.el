@@ -160,25 +160,22 @@ which see."
         org-agenda-clockreport-parameter-plist '(:link t :fileskip0 t :stepskip0 t :maxlevel 5 :tcolumns 1 :narrow 70!)
         org-agenda-scheduled-leaders '("Scheduled: " "Sched.%03dx: ")
         org-agenda-deadline-leaders  '("Deadline:  " "In %03d d.: " "%02d d. ago: ")
-        org-agenda-skip-additional-timestamps-same-entry t
+        org-agenda-remove-tags t
         org-agenda-skip-deadline-if-done t
-        org-agenda-skip-deadline-prewarning-if-scheduled t
         org-agenda-skip-scheduled-if-done t
         org-agenda-skip-scheduled-if-deadline-is-shown t
-        org-agenda-skip-timestamp-if-done t
         org-agenda-skip-timestamp-if-deadline-is-shown t
         org-agenda-skip-function-global
         (lambda ()
           (and (string-match-p "(a)" org-agenda-buffer-name)
                (org-agenda-skip-subtree-if 'todo '("HOLD" "WAITING"))
-               (org-agenda-skip-subtree-if 'scheduled)
+               (org-agenda-skip-subtree-if 'notscheduled)
                (org-agenda-skip-subtree-if 'notdeadline)))
         org-agenda-sorting-strategy '((agenda habit-down time-up priority-down category-keep)
                                       (todo   todo-state-down priority-down category-keep)
                                       (tags   priority-down category-keep)
                                       (search category-keep))
         org-agenda-sticky t
-        ;; org-agenda-tags-column org-tags-column
         org-agenda-window-setup 'current-window
         org-agenda-prefix-format '((agenda . " ")
                                    (todo   . " ")
@@ -265,14 +262,18 @@ which see."
   (setq org-super-agenda-groups
         '((:name "High priority"
                  :priority "A"
-                 :priority "B")
+                 :priority "B"
+                 :order 1)
           (:name "Works"
-                 :tag "Work")
+                 :tag "Work"
+                 :order 2)
           (:name "Projects"
-                 :tag "Project")
+                 :tag "Project"
+                 :order 3)
           (:name "Self-development"
                  :tag "Study"
-                 :tag "Training")))
+                 :tag "Training"
+                 :order 4)))
 
   (setq org-super-agenda-header-map nil
         org-super-agenda-header-separator "")

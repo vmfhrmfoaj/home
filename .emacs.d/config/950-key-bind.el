@@ -641,11 +641,15 @@
       (kbd "RET") #'ivy-done
       (kbd "<C-return>") #'ivy-immediate-done
       (kbd "<M-return>") #'ivy--open-it-other-window-and-exit
+      "G" #'ivy-end-of-buffer
+      "gg" #'ivy-beginning-of-buffer
+      "gf" #'ivy-toggle-calling
       "j" #'ivy-next-line
       "k" #'ivy-previous-line
       (kbd "C-,") #'ivy-minibuffer-shrink
       (kbd "C-.") #'ivy-minibuffer-grow
-      (kbd "C-f") #'ivy-toggle-calling
+      (kbd "C-b") #''ivy-scroll-up-command
+      (kbd "C-f") #''ivy-scroll-down-command
       (kbd "C-j") #'ivy-next-line
       (kbd "C-k") #'ivy-previous-line
       (kbd "C-u") (lambda ()
