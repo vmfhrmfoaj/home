@@ -28,8 +28,23 @@
     "TODO")
 
   :config
+  (defun adob--manually-dim (wnd)
+    "Dim the background without conditions."
+    (when (and (windowp wnd)
+               (not (window-parameter wnd 'adob--dim)))
+      (setq adob--last-window nil
+            adob--last-buffer nil)
+      (set-window-parameter wnd 'adob--dim t)
+      (force-window-update wnd)))
+
   (setq auto-dim-other-buffers-dim-on-focus-out nil
         auto-dim-other-buffers-dim-on-switch-to-minibuffer nil)
+
+  (with-eval-after-load "ivy-posframe"
+    (add-to-list 'auto-dim-other-buffers-never-dim-buffer-functions
+                 (lambda (buf)
+                   "Disable `auto-dim-other-buffers' while displaying the frame of `ivy-posframe'"
+                   (get-buffer-window ivy-posframe-buffer))))
 
   (defvar-local adob--face-mode-remapping-for-line-number nil)
 
@@ -441,6 +456,93 @@
 
   (advice-add #'hl-todo--get-face :filter-return #'list)
   (advice-add #'hl-todo--setup :after #'hl-todo--setup-custom))
+
+(use-package ivy-posframe
+  :ensure t
+  :init
+  (eval-when-compile (require 'ivy-posframe nil t))
+
+  :config
+  (defun ivy-posframe--re-display (str &optional poshandler)
+    "Improve the performance."
+    (let ((buf (get-buffer ivy-posframe-buffer)))
+      (when (-some-> buf
+                     (with-current-buffer posframe--frame)
+                     (frame-visible-p))
+        (with-current-buffer buf
+          (posframe--insert-string str nil)
+          (setq-local truncate-lines ivy-truncate-lines))
+        (with-ivy-window
+          (ivy-posframe--add-prompt 'ignore))
+        t)))
+
+  (setq ivy-posframe-display-functions-alist
+        '((counsel-company . ivy-posframe-display-at-point)
+          (complete-symbol . ivy-posframe-display-at-point)
+          (t               . ivy-posframe-display-at-frame-center)))
+
+  (with-eval-after-load "swiper"
+    (-update->> ivy-update-fns-alist
+                (--remove (-let (((caller . _rest) it))
+                            (eq 'swiper caller)))))
+
+  (with-eval-after-load "golden-ratio"
+    (add-hook 'window-size-change-functions
+              (let ((ofw 0))
+                (lambda (&rest _)
+                  (let ((fw (frame-width)))
+                    (unless (= ofw fw)
+                      (setq ofw fw)
+                      (let ((w (-second-item (golden-ratio--dimensions))))
+                        (setq ivy-posframe-width w
+                              ivy-posframe-min-width w))))))))
+
+  (advice-add #'ivy-posframe--display :before-until #'ivy-posframe--re-display)
+
+  (advice-add #'ivy-posframe-display-at-point :around
+              (lambda (fn &rest args)
+                "Wrap `ivy-posframe-display-at-point' to adjust the width."
+                (let* ((buf (ivy-state-buffer ivy-last))
+                       (frame-params (frame-parameters))
+                       (w (- ivy-posframe-width
+                             (ceiling (/ (+ (alist-get 'left-fringe  frame-params 0)
+                                            (alist-get 'right-fringe frame-params 0))
+                                         (frame-char-width)))
+                             (or (and buf (with-current-buffer buf
+                                            display-line-numbers-width))
+                                 -2))))
+                  (let* ((ivy-posframe-width w)
+                         (ivy-posframe-min-width w))
+                    (apply fn args)))))
+
+  (advice-add #'ivy-posframe-display-at-frame-center :after
+              (lambda (str)
+                "Customize for `auto-dim-other-buffers-mode', `fringe-mode' and `line-number-mode'"
+                (when-let ((wnd (ivy-state-window ivy-last)))
+                  (when-let ((buf (ivy-state-buffer ivy-last)))
+                    (with-current-buffer buf
+                      (setq powerline-selected-window nil)
+                      (force-mode-line-update)))
+                  (when (fboundp #'adob--manually-dim)
+                    (adob--manually-dim wnd)))))
+
+  (ivy-posframe-mode 1))
+
+(use-package posframe
+  :defer t
+  :init
+  (eval-when-compile (require 'posframe nil t))
+
+  :config
+  (defun posframe-mouse-avoidance (frame)
+    (-let* (((mp-frame) (mouse-position)))
+      (when (eq frame mp-frame)
+        (set-mouse-position frame (frame-width frame) (frame-height frame))))
+    frame)
+
+  (setq posframe-mouse-banish nil)
+
+  (advice-add #'posframe-show :filter-return #'posframe-mouse-avoidance))
 
 (use-package powerline
   :ensure t)

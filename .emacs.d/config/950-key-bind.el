@@ -116,36 +116,37 @@
     "aoa" (defalias 'org-agenda-show-list
             (lambda ()
               (interactive)
-              (if (not (and (boundp 'org-agenda-buffer)
-                            (buffer-live-p org-agenda-buffer)
-                            (string-match-p "(a)" (buffer-name org-agenda-buffer))))
-                  (org-agenda-list)
-                (switch-to-buffer org-agenda-buffer)
-                (org-agenda-redo))
-              (org-agenda-goto-today)))
+              (let ((fn (if (not (and (boundp 'org-agenda-buffer)
+                                      (buffer-live-p org-agenda-buffer)
+                                      (string-match-p "(a)" (buffer-name org-agenda-buffer))))
+                            #'org-agenda-list
+                          (lambda ()
+                            (switch-to-buffer org-agenda-buffer)
+                            (org-agenda-redo)))))
+                (org-agenda-show-on-dedicated-window fn #'org-agenda-goto-today))))
     "aocj" #'org-clock-goto
     "aocn" #'org-capture-note
     "aoct" #'org-capture-todo
     "aom" (defalias 'org-agenda-show-tags
             (lambda ()
               (interactive)
-              (org-tags-view)))
+              (org-agenda-show-on-dedicated-window #'org-tags-view)))
     "aoM" (defalias 'org-agenda-show-tags-todo-only
             (lambda ()
               (interactive)
-              (org-tags-view t)))
+              (org-agenda-show-on-dedicated-window (-partial #'org-tags-view t))))
     "aos" (defalias 'org-agenda-show-search-result
             (lambda ()
               (interactive)
-              (org-search-view)))
+              (org-agenda-show-on-dedicated-window #'org-search-view)))
     "aoS" (defalias 'org-agenda-show-search-result-todo-only
             (lambda ()
               (interactive)
-              (org-search-view t)))
+              (org-agenda-show-on-dedicated-window (-partial #'org-search-view t))))
     "aot" (defalias 'org-agenda-show-todo-list
             (lambda ()
               (interactive)
-              (org-todo-list)))
+              (org-agenda-show-on-dedicated-window #'org-todo-list)))
     ;; - docker
     "ad" #'docker
     ;; - undo-tree

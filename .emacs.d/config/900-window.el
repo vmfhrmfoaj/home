@@ -9,41 +9,48 @@
   (require 'winum nil t))
 
 (when window-system
-  (defvar main-monitor
-    (let ((get-resolution (lambda (it) (->> it (nth 1) (-take-last 2) (apply #'*)))))
-      (-some->> (display-monitor-attributes-list)
-                (--max-by (> (funcall get-resolution it)
-                             (funcall get-resolution other)))))
-    "See `display-monitor-attributes-list'")
+  (setq split-width-threshold 999)
 
-  (defcustom title-bar-height-in-pixel 0
-    "You set it in `custom-file', rather than here.")
+  (toggle-frame-maximized)
 
-  (let* ((workarea (-some->> main-monitor (assoc 'workarea) (-drop 1)))
-         (main-monitor-x (nth 0 workarea))
-         (main-monitor-y (nth 1 workarea))
-         (main-monitor-w (nth 2 workarea))
-         (main-monitor-h (nth 3 workarea))
-         (ratio 0.5)
-         (wc 120)
-         (oc   6) ; fringe + line-number
-         (x main-monitor-x)
-         (y main-monitor-y)
-         (w (+ (* wc (frame-char-width))
-               (* oc (frame-char-width))))
-         (h (- main-monitor-h title-bar-height-in-pixel)))
-    (setq org-tags-column (- wc))
-    (if (<= main-monitor-w w)
-        (setq x main-monitor-x)
-      (setq x (+ (- (+ main-monitor-x (floor (/ main-monitor-w 2)) )
-                    (floor (/ w (+ 2 ratio)))))))
-    (setq w (- main-monitor-w (- x main-monitor-x)))
-    (add-to-list 'default-frame-alist `(width  . (text-pixels . ,w)))
-    (add-to-list 'default-frame-alist `(height . (text-pixels . ,h)))
-    (setq frame-resize-pixelwise t
-          initial-frame-alist `((top  . ,y)
-                                (left . ,x))
-          split-width-threshold main-monitor-w)))
+  (let ((get-resolution (lambda (it) (->> it (nth 1) (-take-last 2) (apply #'*)))))
+    (when (<= 1920 (or (-some->> (display-monitor-attributes-list)
+                                 (--max-by (> (funcall get-resolution it)
+                                              (funcall get-resolution other)))
+                                 (assoc 'workarea)
+                                 (-drop 1)
+                                 (nth 2))
+                       0))
+      (add-hook 'window-setup-hook
+                (lambda ()
+                  (split-window-horizontally)
+                  (org-agenda-list)
+                  (set-window-dedicated-p (selected-window) t)
+                  (with-eval-after-load "golden-ratio"
+                    (with-selected-window (get-buffer-window org-agenda-buffer)
+                      (let ((org-agenda-tags-column (1+ (- (window-text-width)))))
+                        (org-agenda-align-tags))))
+                  (other-window 1)))
+
+      (with-eval-after-load "org"
+        (let ((f (lambda (fn buffer &rest args)
+                   "For org-mode dedicated window"
+                   (if (and (get-buffer buffer)
+                            (window-dedicated-p)
+                            (let ((cur-mode major-mode)
+                                  (new-mode (with-current-buffer buffer major-mode)))
+                              (and (provided-mode-derived-p cur-mode 'org-mode 'org-agenda-mode)
+                                   (provided-mode-derived-p new-mode 'org-mode 'org-agenda-mode))))
+                       (let* ((win (selected-window))
+                              (dedicated-p (window-dedicated-p win)))
+                         (unwind-protect
+                             (progn
+                               (set-window-dedicated-p win nil)
+                               (apply fn buffer args))
+                           (set-window-dedicated-p win dedicated-p)))
+                     (apply fn buffer args)))))
+          (advice-add #'pop-to-buffer-same-window :around f)
+          (advice-add #'switch-to-buffer :around f))))))
 
 (use-package golden-ratio
   :ensure t
