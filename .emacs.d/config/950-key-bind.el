@@ -487,6 +487,7 @@
   (define-key evil-outer-text-objects-map "U" 'evil-a-sexp)
   (define-key evil-inner-text-objects-map "U" 'evil-inner-sexp)
   (evil-define-key 'normal 'global
+    "g-" #'evil-last-non-blank
     "gb" #'evil-multiedit-match-and-next
     "gB" #'evil-multiedit-match-all
     "gh" #'evil-lookup

@@ -11,4 +11,4 @@ else
 endif
 
 syntax on
-
+noremap g- g_
