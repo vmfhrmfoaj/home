@@ -146,7 +146,7 @@
   :ensure t
   :after evil
   :config
-  (setq evil-goggles-duration 0.15
+  (setq evil-goggles-duration 0.05
         evil-goggles-pulse nil)
 
   (add-hook 'minibuffer-setup-hook

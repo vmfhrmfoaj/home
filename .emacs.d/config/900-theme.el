@@ -211,7 +211,10 @@
    '(org-super-agenda-header ((t :foreground "#2d9574" :weight normal :height 1.3)))
    '(org-tag ((t :background unspecified :slant unspecified)))
    `(org-task-done ((t :inherit shadow)))
-   '(org-todo ((t :box (:line-width (1 . -1)))))))
+   '(org-todo ((t :box (:line-width (1 . -1)))))
+   `(org-upcoming-distant-deadline
+     ((t :inherit org-upcoming-deadline
+         :foreground ,(color-from 'org-upcoming-deadline :foreground (* 10 (if (eq frame-background-mode 'dark) -1 1))))))))
 
 (use-package php-mode
   :defer t

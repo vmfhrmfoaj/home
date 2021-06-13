@@ -18,6 +18,7 @@
   (add-hook 'org-mode-hook #'evil-org-mode))
 
 (use-package org
+  :ensure t
   :defer t
   :init
   (defface org-next
@@ -127,6 +128,7 @@ which see."
                     (funcall of arg))))))
 
 (use-package org-agenda
+  :ensure org
   :defer t
   :init
   (setq calendar-holidays nil
@@ -154,13 +156,12 @@ which see."
                  (-remove #'s-blank-str?)
                  (-distinct)))))
 
-  (setq org-agenda-deadline-faces '((1.0 . '(:inherit org-warning :height 1.0))
-                                    (0.5 . '(:inherit org-upcoming-deadline :height 1.0))
-                                    (0.0 . '(:height 1.0)))
+  (setq org-agenda-deadline-faces '((1.0 . org-upcoming-distant-deadline)
+                                    (0.5 . org-upcoming-deadline)
+                                    (0.0 . org-warning))
         org-agenda-clockreport-parameter-plist '(:link t :fileskip0 t :stepskip0 t :maxlevel 5 :tcolumns 1 :narrow 70!)
         org-agenda-scheduled-leaders '("Scheduled: " "Sched.%03dx: ")
         org-agenda-deadline-leaders  '("Deadline:  " "In %03d d.: " "%02d d. ago: ")
-        org-agenda-remove-tags t
         org-agenda-skip-deadline-if-done t
         org-agenda-skip-scheduled-if-done t
         org-agenda-skip-scheduled-if-deadline-is-shown t
@@ -187,6 +188,7 @@ which see."
   (advice-add #'org-agenda-redo :before #'org-agenda-set-default-filters))
 
 (use-package org-capture
+  :ensure org
   :defer t
   :commands (org-capture)
   :init
@@ -223,6 +225,7 @@ which see."
                   (apply fn args)))))
 
 (use-package org-clock
+  :ensure org
   :defer t
   :commands (org-clock-jump-to-current-clock)
   :config
