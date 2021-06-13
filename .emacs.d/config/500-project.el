@@ -18,6 +18,7 @@
   :ensure t
   :defer t
   :diminish ""
+  :commands (projectile-project-root)
   :init
   (defun projectile-switch-to-previous-buffer ()
     (interactive)
@@ -49,24 +50,24 @@
                               (string= cur-proj-root proj-root))))
                 (switch-to-previous-buffer-in))))
 
-  (defun projectile-action-for-custom-switch-open-project ()
+  (defun projectile-action-for-custom-switch-opened-project (&optional ff-variant)
     "A `projectile' action for `projectile-custom-switch-open-project'."
     (let* ((cur-proj-root (projectile-project-root))
-           (buf (-some->> (buffer-list)
-                          (--filter (with-current-buffer it
-                                      ;; NOTE
-                                      ;;  `projectile-switch-open-project' will overwrite `default-directory' variable.
-                                      (let* ((default-directory (or (-some-> (buffer-file-name) (file-name-directory)) ""))
-                                             (proj-root (or (projectile-project-root)
-                                                            (concat (s-chop-suffix "/" home-dir) "/"))))
-                                        (string= cur-proj-root proj-root))))
-                          (switch-to-previous-buffer-in))))
-      (unless buf
-        (projectile-find-file))))
+           (bufs (-some->> (buffer-list)
+                           (--filter (with-current-buffer it
+                                       ;; NOTE
+                                       ;;  `projectile-switch-open-project' will overwrite `default-directory' variable.
+                                       (let* ((default-directory (or (-some-> (buffer-file-name) (file-name-directory)) ""))
+                                              (proj-root (or (projectile-project-root)
+                                                             (concat (s-chop-suffix "/" home-dir) "/"))))
+                                         (string= cur-proj-root proj-root)))))))
+      (if bufs
+          (switch-to-previous-buffer-in bufs ff-variant)
+        (projectile--find-file nil ff-variant))))
 
   (defun projectile-custom-switch-open-project ()
     (interactive)
-    (let ((projectile-switch-project-action #'projectile-action-for-custom-switch-open-project))
+    (let ((projectile-switch-project-action #'projectile-action-for-custom-switch-opened-project))
       (projectile-switch-open-project)))
 
   :config

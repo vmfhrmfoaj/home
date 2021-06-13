@@ -136,30 +136,6 @@ which see."
         (when (file-exists-p org-directory)
           (directory-files-recursively org-directory "\\.org$")))
 
-  (defun org-agenda-show-on-dedicated-window (org-agenda-fn &optional finish-fn)
-    (let* ((win (-some->> (window-list)
-                          (--filter (with-current-buffer (window-buffer it)
-                                      (derived-mode-p 'org-mode 'org-agenda-mode)))
-                          (-first-item)))
-           (dedicated? (window-dedicated-p win)))
-      (unwind-protect
-          (progn
-            (when win
-              (set-window-dedicated-p win nil)
-              (select-window win))
-            (funcall org-agenda-fn))
-        (when win
-          (set-window-dedicated-p win dedicated?))))
-    (let ((org-agenda-tags-column (1+ (- (window-text-width)))))
-      (call-interactively #'org-agenda-redo))
-    (setq-local default-directory (concat home-dir "/Desktop/Org/")
-                frame--width (frame-width)
-                projectile-project-name "Org")
-    (when finish-fn
-      (funcall finish-fn))
-    (when (fboundp #'golden-ratio)
-      (golden-ratio)))
-
   :config
   (defun org-agenda-set-default-filters (&rest _)
     (setq-local default-directory (concat home-dir "/Desktop/Org/")

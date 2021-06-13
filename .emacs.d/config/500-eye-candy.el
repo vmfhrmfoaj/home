@@ -103,7 +103,7 @@
       ( 60 . ".\\(?:=\\|\\(?:!-\\)?-\\)")       ; <=, <!--, <-
       ( 61 . ".\\(?:==?\\|>\\)")                ; ==, ===, =>
       ( 62 . ".\\(?:=\\)")                      ; >=
-      (124 . ".\\(?:|\\)")                      ; ||
+      (124 . ".\\(?:|\\)")                      ; || ; NOTE On "Cascadia Code" font, the bold of '||' height is different to the normal height.
       (126 . ".\\(?:@\\)")                      ; ~@
       )
     "TODO")
@@ -143,6 +143,7 @@
   (with-eval-after-load "highlight-parentheses"   (diminish 'highlight-parentheses-mode  ""))
   (with-eval-after-load "linum-relative"          (diminish 'linum-relative-mode         ""))
   (with-eval-after-load "ivy"                     (diminish 'ivy-mode                    ""))
+  (with-eval-after-load "ivy-posframe"            (diminish 'ivy-posframe-mode           ""))
   (with-eval-after-load "magit-blame"             (diminish 'magit-blame-mode            ""))
   (with-eval-after-load "magit-svn"               (diminish 'magit-svn-mode              ""))
   (with-eval-after-load "org-indent"              (diminish 'org-indent-mode             ""))
@@ -161,7 +162,7 @@
   :ensure t
   :after evil
   :config
-  (setq evil-goggles-duration 0.05
+  (setq evil-goggles-duration 0.07
         evil-goggles-pulse nil)
 
   (add-hook 'minibuffer-setup-hook
@@ -476,6 +477,46 @@
           (ivy-posframe--add-prompt 'ignore))
         t)))
 
+  (defun posframe-poshandler-point-bottom (info &optional font-height upward)
+    (let* ((y-pixel-offset (plist-get info :y-pixel-offset))
+           (posframe-width (plist-get info :posframe-width))
+           (posframe-height (plist-get info :posframe-height))
+           (window (plist-get info :parent-window))
+           (xmax (plist-get info :parent-frame-width))
+           (ymax (plist-get info :parent-frame-height))
+           (position-info
+            (or
+             ;; :position-info has been removed, this line
+             ;; is used for compatible.
+             (plist-get info :position-info)
+             (plist-get info :position)))
+           (position-info
+            (if (integerp position-info)
+                (posn-at-point position-info window)
+              position-info))
+           (header-line-height (plist-get info :header-line-height))
+           (tab-line-height (plist-get info :tab-line-height))
+           (x (car (window-inside-pixel-edges window)))
+           (y-top (+ (cadr (window-pixel-edges window))
+                     tab-line-height
+                     header-line-height
+                     (- (or (cdr (posn-x-y position-info)) 0)
+                        ;; Fix the conflict with flycheck
+                        ;; http://lists.gnu.org/archive/html/emacs-devel/2018-01/msg00537.html
+                        (or (cdr (posn-object-x-y position-info)) 0))
+                     y-pixel-offset))
+           (font-height (or font-height (plist-get info :font-height)))
+           (y-bottom (+ y-top font-height)))
+      (cons (max 0 (min x (- xmax (or posframe-width 0))))
+            (max 0 (if (if upward
+                           (> (- y-bottom (or posframe-height 0)) 0)
+                         (> (+ y-bottom (or posframe-height 0)) ymax))
+                       (- y-top (or posframe-height 0))
+                     y-bottom)))))
+
+  (defun ivy-posframe-custom-display-at-point (str)
+    (ivy-posframe--display str #'posframe-poshandler-point-bottom))
+
   (setq ivy-posframe-display-functions-alist
         '((counsel-company . ivy-posframe-display-at-point)
           (complete-symbol . ivy-posframe-display-at-point)
@@ -498,22 +539,11 @@
                               ivy-posframe-min-width w))))))))
 
   (advice-add #'ivy-posframe--display :before-until #'ivy-posframe--re-display)
-
-  (advice-add #'ivy-posframe-display-at-point :around
-              (lambda (fn &rest args)
-                "Wrap `ivy-posframe-display-at-point' to adjust the width."
-                (let* ((buf (ivy-state-buffer ivy-last))
-                       (frame-params (frame-parameters))
-                       (w (- ivy-posframe-width
-                             (ceiling (/ (+ (alist-get 'left-fringe  frame-params 0)
-                                            (alist-get 'right-fringe frame-params 0))
-                                         (frame-char-width)))
-                             (or (and buf (with-current-buffer buf
-                                            display-line-numbers-width))
-                                 -2))))
-                  (let* ((ivy-posframe-width w)
-                         (ivy-posframe-min-width w))
-                    (apply fn args)))))
+  (advice-add #'ivy-posframe-display-at-point :override #'ivy-posframe-custom-display-at-point)
+  (advice-add #'ivy-keyboard-quit :before
+              (lambda ()
+                "Kill `ivy-posframe-buffer'."
+                (posframe-delete ivy-posframe-buffer)))
 
   (advice-add #'ivy-posframe-display-at-frame-center :after
               (lambda (str)

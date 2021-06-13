@@ -146,6 +146,10 @@
   (defvar ivy-search-callers '(swiper counsel-rg counsel-projectile-rg lsp-ivy-workspace-symbol))
 
   :config
+  (defun ivy-keyboard-quit ()
+    (interactive)
+    (minibuffer-keyboard-quit))
+
   (defun ivy-parent-dir ()
     (interactive)
     (when ivy--directory

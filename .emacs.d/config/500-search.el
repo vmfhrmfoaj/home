@@ -19,10 +19,10 @@
      ((listp counsel-rg-base-command)
       (-concat (-drop-last 1 counsel-rg-base-command) '("--no-ignore" "%s")))
      ((stringp counsel-rg-base-command)
-      (replace-in-string "%s" "--no-ignore %s" counsel-rg-base-command))
+      (s-replace "%s" "--no-ignore %s" counsel-rg-base-command))
      (t '("rg" "-M" "240" "--with-filename" "--no-heading" "--line-number" "--color" "never" "--no-ignore" "%s"))))
 
-  (defun counsel-custom-grep (&optional dir)
+  (defun counsel-custom-grep (&optional _dir)
     (interactive)
     (let ((val (default-value 'ivy-calling)))
       (unwind-protect
@@ -42,7 +42,7 @@
   (defvar ivy-last-search-session    nil)
   (defvar ivy-old-search-session     nil)
 
-  (defun ivy--set-ivy-session (alist-sym key val)
+  (defun ivy--set-ivy-session (alist-sym key _val)
     (if (and (eq alist-sym 'ivy--sessions)
              (member key ivy-search-callers))
         (progn
@@ -99,6 +99,11 @@
 (use-package swiper
   :ensure t
   :defer t
+  :init
+  (defface ivy-swiper-line-number
+    '((t :inherit line-number))
+    "Face for the line number on `sipwer'.")
+
   :config
   (defun swiper--custom-candidates (&optional numbers-width)
     "Customize `swiper--candidates' to highlight the line number"
@@ -136,7 +141,7 @@
                 (let ((str (swiper--line)))
                   (setq str (ivy-cleanup-string str))
                   (let ((line-number-str
-                         (propertize (format swiper--format-spec line-number) 'face 'line-number)))
+                         (propertize (format swiper--format-spec line-number) 'face 'ivy-swiper-line-number)))
                     (if swiper-include-line-number-in-search
                         (setq str (concat line-number-str str))
                       (put-text-property

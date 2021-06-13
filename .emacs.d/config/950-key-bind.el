@@ -116,37 +116,36 @@
     "aoa" (defalias 'org-agenda-show-list
             (lambda ()
               (interactive)
-              (let ((fn (if (not (and (boundp 'org-agenda-buffer)
-                                      (buffer-live-p org-agenda-buffer)
-                                      (string-match-p "(a)" (buffer-name org-agenda-buffer))))
-                            #'org-agenda-list
-                          (lambda ()
-                            (switch-to-buffer org-agenda-buffer)
-                            (org-agenda-redo)))))
-                (org-agenda-show-on-dedicated-window fn #'org-agenda-goto-today))))
+              (if (not (and (boundp 'org-agenda-buffer)
+                            (buffer-live-p org-agenda-buffer)
+                            (string-match-p "(a)" (buffer-name org-agenda-buffer))))
+                  (org-agenda-list)
+                (switch-to-buffer org-agenda-buffer)
+                (org-agenda-redo))
+              (org-agenda-goto-today)))
     "aocj" #'org-clock-goto
     "aocn" #'org-capture-note
     "aoct" #'org-capture-todo
     "aom" (defalias 'org-agenda-show-tags
             (lambda ()
               (interactive)
-              (org-agenda-show-on-dedicated-window #'org-tags-view)))
+              (org-tags-view)))
     "aoM" (defalias 'org-agenda-show-tags-todo-only
             (lambda ()
               (interactive)
-              (org-agenda-show-on-dedicated-window (-partial #'org-tags-view t))))
+              (org-tags-view t)))
     "aos" (defalias 'org-agenda-show-search-result
             (lambda ()
               (interactive)
-              (org-agenda-show-on-dedicated-window #'org-search-view)))
+              (org-search-view)))
     "aoS" (defalias 'org-agenda-show-search-result-todo-only
             (lambda ()
               (interactive)
-              (org-agenda-show-on-dedicated-window (-partial #'org-search-view t))))
+              (org-search-view t)))
     "aot" (defalias 'org-agenda-show-todo-list
             (lambda ()
               (interactive)
-              (org-agenda-show-on-dedicated-window #'org-todo-list)))
+              (org-todo-list)))
     ;; - docker
     "ad" #'docker
     ;; - undo-tree
@@ -284,9 +283,13 @@
     "w=" #'balance-windows
     "w\\" #'split-window-horizontally
     "wh" #'windmove-left
+    "wH" 'windmove-swap-states-left
     "wj" #'windmove-down
+    "wJ" #'windmove-swap-states-down
     "wk" #'windmove-up
+    "wK" #'windmove-swap-states-up
     "wl" #'windmove-right
+    "wL" #'windmove-swap-states-right
     "wd" #'delete-window
     "wm" (defalias 'delete-up-or-down-windows
            (lambda ()
@@ -623,7 +626,18 @@
          ((eq caller 'counsel-find-file)
           (ivy-exit-with-action #'find-file-other-window))
          ((eq caller 'counsel-projectile-find-file)
-          (ivy-exit-with-action (-compose #'find-file-other-window #'projectile-expand-root))))))
+          (ivy-exit-with-action (-compose #'find-file-other-window #'projectile-expand-root)))
+         ((eq caller 'projectile-completing-read)
+          (ivy-exit-with-action (lambda (it)
+                                  (if (s-ends-with? "/" it)
+                                      (let ((projectile-switch-project-action
+                                             (-partial #'projectile-action-for-custom-switch-opened-project
+                                                       (lambda (buf-or-filename)
+                                                         (if (bufferp buf-or-filename)
+                                                             (switch-to-buffer-other-window buf-or-filename)
+                                                           (find-file-other-window buf-or-filename))))))
+                                        (projectile-switch-project-by-name it))
+                                    (find-file-other-window (projectile-expand-root it)))))))))
 
     (evil-define-key 'insert ivy-minibuffer-map
       (kbd "<tab>") #'ivy-partial
@@ -635,6 +649,7 @@
                     (interactive)
                     (evil-normal-state)
                     (ivy-toggle-calling))
+      (kbd "C-g") #'ivy-keyboard-quit
       (kbd "C-j") #'ivy-next-line
       (kbd "C-k") #'ivy-previous-line
       (kbd "C-u") #'ivy-parent-dir)
@@ -652,6 +667,7 @@
       (kbd "C-.") #'ivy-minibuffer-grow
       (kbd "C-b") #''ivy-scroll-up-command
       (kbd "C-f") #''ivy-scroll-down-command
+      (kbd "C-g") #'ivy-keyboard-quit
       (kbd "C-j") #'ivy-next-line
       (kbd "C-k") #'ivy-previous-line
       (kbd "C-u") (lambda ()

@@ -42,7 +42,6 @@
                                      "\\|\\*SQL: "
                                      "\\|\\*Org Agenda"
                                      "\\)")
-      scratch-major-mode 'org-mode
       initial-scratch-message ""
       mouse-avoidance-timer (run-with-idle-timer
                              0.1 t
@@ -55,6 +54,8 @@
       read-process-output-max (* 1024 1024)
       resize-mini-windows t
       ring-bell-function 'ignore
+      scratch-major-mode 'org-mode
+      split-width-threshold 999
       x-stretch-cursor t)
 
 (when (eq window-system 'pgtk)
@@ -79,7 +80,6 @@
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 
-(add-hook 'help-mode-hook #'visual-line-mode)
 (add-hook 'after-init-hook
           (lambda ()
             (add-hook 'buffer-list-update-hook #'update-buf-visit-time)

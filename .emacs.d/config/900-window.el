@@ -9,48 +9,7 @@
   (require 'winum nil t))
 
 (when window-system
-  (setq split-width-threshold 999)
-
-  (toggle-frame-maximized)
-
-  (let ((get-resolution (lambda (it) (->> it (nth 1) (-take-last 2) (apply #'*)))))
-    (when (<= 1920 (or (-some->> (display-monitor-attributes-list)
-                                 (--max-by (> (funcall get-resolution it)
-                                              (funcall get-resolution other)))
-                                 (assoc 'workarea)
-                                 (-drop 1)
-                                 (nth 2))
-                       0))
-      (add-hook 'window-setup-hook
-                (lambda ()
-                  (split-window-horizontally)
-                  (org-agenda-list)
-                  (set-window-dedicated-p (selected-window) t)
-                  (with-eval-after-load "golden-ratio"
-                    (with-selected-window (get-buffer-window org-agenda-buffer)
-                      (let ((org-agenda-tags-column (1+ (- (window-text-width)))))
-                        (org-agenda-align-tags))))
-                  (other-window 1)))
-
-      (with-eval-after-load "org"
-        (let ((f (lambda (fn buffer &rest args)
-                   "For org-mode dedicated window"
-                   (if (and (get-buffer buffer)
-                            (window-dedicated-p)
-                            (let ((cur-mode major-mode)
-                                  (new-mode (with-current-buffer buffer major-mode)))
-                              (and (provided-mode-derived-p cur-mode 'org-mode 'org-agenda-mode)
-                                   (provided-mode-derived-p new-mode 'org-mode 'org-agenda-mode))))
-                       (let* ((win (selected-window))
-                              (dedicated-p (window-dedicated-p win)))
-                         (unwind-protect
-                             (progn
-                               (set-window-dedicated-p win nil)
-                               (apply fn buffer args))
-                           (set-window-dedicated-p win dedicated-p)))
-                     (apply fn buffer args)))))
-          (advice-add #'pop-to-buffer-same-window :around f)
-          (advice-add #'switch-to-buffer :around f))))))
+  (toggle-frame-maximized))
 
 (use-package golden-ratio
   :ensure t
@@ -80,7 +39,10 @@
       (advice-add #'winum--switch-to-window :after f))
 
     (with-eval-after-load "evil"
-      (advice-add #'evil-goto-definition :after f)))
+      (advice-add #'evil-goto-definition :after f))
+
+    (with-eval-after-load "compile"
+      (advice-add #'compile-goto-error :after f)))
 
   (advice-add #'golden-ratio--resize-window :override #'golden-ratio--custom-resize-window)
 

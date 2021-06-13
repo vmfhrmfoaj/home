@@ -167,9 +167,15 @@
    '(ivy-current-match ((t :weight bold)))
    '(ivy-grep-info ((t :inherit font-lock-string-face :weight light)))
    '(ivy-grep-line-number ((t :inherit compilation-line-number :weight light)))
-   '(ivy-modified-buffer ((t :inherit highlight)))
+   '(ivy-modified-buffer ((t :foreground "#dc752f")))
    '(ivy-modified-outside-buffer ((t :inherit ivy-modified-buffer)))
    '(ivy-virtual ((t :inherit default)))))
+
+(use-package ivy-posframe
+  :defer t
+  :config
+  (custom-set-faces
+   `(ivy-swiper-line-number  ((t :inherit line-number :background ,(color-from 'ivy-posframe :background 5))))))
 
 (use-package lsp-mode
   :defer t
