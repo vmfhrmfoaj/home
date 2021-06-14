@@ -75,6 +75,15 @@ ZSH_THEME="robbyrussell"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+
+if [ ! -e "${ZSH_CUSTOM:-${HOME}/.oh-my-zsh/custom}/plugins/zsh-bash-completions-fallback" ]; then
+    local cur_dir=`pwd`
+    git clone https://github.com/3v1n0/zsh-bash-completions-fallback.git "${ZSH_CUSTOM:-${HOME}/.oh-my-zsh/custom}/plugins/zsh-bash-completions-fallback"
+    cd "${ZSH_CUSTOM:-${HOME}/.oh-my-zsh/custom}/plugins/zsh-bash-completions-fallback"
+    git reset --hard 274d42b54e6153b72ee1a159b4721afef7fe93ca
+    cd "$cur_dir"
+fi
+
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
