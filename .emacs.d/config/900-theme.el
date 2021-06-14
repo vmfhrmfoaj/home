@@ -14,7 +14,7 @@
   (load-theme 'spacemacs-dark t)
 
   (custom-set-faces
-   '(bold ((t :foreground unspecified)))
+   '(bold ((t :foreground unspecified :weight bold)))
    '(c-style-brace-face ((t :inherit shadow :weight light)))
    '(c-style-operator-face ((t :weight normal)))
    '(c-style-punctuation-1-face ((t :inherit shadow)))
@@ -23,6 +23,7 @@
    '(fringe  ((t :background "#2f343f" :foreground "#585c65")))
    `(isearch ((t :underline unspecified)))
    '(italic ((t :foreground unspecified :family "Fantasque Sans Mono" :slant italic)))
+   '(lazy-highlight ((t :weight bold)))
    '(line-number-current-line ((t :background unspecified)))
    '(shadow ((t :weight normal)))
    '(show-paren-match ((t :weight bold)))
@@ -175,6 +176,7 @@
   :defer t
   :config
   (custom-set-faces
+   `(ivy-posframe-cursor ((t :inherit cursor :foreground ,(color-from 'default :background))))
    `(ivy-swiper-line-number  ((t :inherit line-number :background ,(color-from 'ivy-posframe :background 5))))))
 
 (use-package lsp-mode
@@ -262,6 +264,12 @@
   :config
   (custom-set-faces
    `(spaceline-symbol-segment-face ((t :inherit powerline-active1 :weight normal)))))
+
+(use-package treemacs
+  :defer t
+  :config
+  (custom-set-faces
+   '(treemacs-git-ignored-face ((t :inherit shadow :foreground unspecified)))))
 
 (use-package web-mode
   :defer t

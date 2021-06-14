@@ -104,7 +104,11 @@
   (evil-leader--set-major-leader ",")
   (evil-leader/set-key
     "<SPC>" #'counsel-M-x
-    "TAB" #'projectile-switch-to-previous-buffer
+    "<tab>" #'projectile-switch-to-previous-buffer
+    "<backtab>" (defalias 'projectile-switch-to-previous-buffer-on-other-window
+                  (lambda ()
+                    (interactive)
+                    (projectile-switch-to-previous-buffer #'switch-to-buffer-other-window)))
     "`" #'eshell
     "'" #'projectile-run-eshell
     "!" #'shell-command
@@ -218,7 +222,11 @@
     "nw" #'widen
 
     ;; project
-    "p TAB" #'projectile-switch-latest-open-project
+    "p <tab>" #'projectile-switch-latest-open-project
+    "p <backtab>" (defalias 'projectile-switch-latest-open-projec-to-other-window
+                    (lambda ()
+                      (interactive)
+                      (projectile-switch-latest-open-project #'switch-to-buffer-other-window)))
     "p'" #'projectile-run-eshell
     "p!" #'projectile-run-shell-command-in-root
     "pI" #'projectile-invalidate-cache
@@ -282,14 +290,10 @@
     "w-" #'split-window-vertically
     "w=" #'balance-windows
     "w\\" #'split-window-horizontally
-    "wh" #'windmove-left
-    "wH" 'windmove-swap-states-left
-    "wj" #'windmove-down
-    "wJ" #'windmove-swap-states-down
-    "wk" #'windmove-up
-    "wK" #'windmove-swap-states-up
-    "wl" #'windmove-right
-    "wL" #'windmove-swap-states-right
+    "wh" 'windmove-swap-states-left
+    "wj" #'windmove-swap-states-down
+    "wk" #'windmove-swap-states-up
+    "wl" #'windmove-swap-states-right
     "wd" #'delete-window
     "wm" (defalias 'delete-up-or-down-windows
            (lambda ()
@@ -297,12 +301,6 @@
              (-some-> 'up   (window-in-direction) (delete-window))
              (-some-> 'down (window-in-direction) (delete-window))))
     "wM" #'delete-other-windows
-    "wo" (defalias 'move-to-main-frame
-           (lambda ()
-             (interactive)
-             (let ((buf (current-buffer)))
-               (switch-to-previous-buffer)
-               (pop-to-buffer buf))))
 
     ;; text / xwidget
     "x0" (defalias 'text-scale-reset (lambda () (interactive) (text-scale-set 0)))
@@ -313,6 +311,7 @@
     "xf" #'format-buffer-or-region
     "xo" #'open-link-at-point
     "xr" #'font-lock-update)
+
   (when (eq 'darwin system-type)
     (evil-leader/set-key
       ;; apllication
@@ -570,7 +569,10 @@
   :ensure evil-org
   :after org-agenda
   :config
-  (evil-org-agenda-set-keys))
+  (evil-org-agenda-set-keys)
+
+  (evil-define-key 'motion org-agenda-mode-map
+    (kbd "<M-return>") #'org-agenda-switch-to-other-window))
 
 (use-package evil-surround
   :defer t
@@ -645,10 +647,6 @@
       (kbd "<M-return>") #'ivy--open-it-other-window-and-exit
       (kbd "C-,") #'ivy-minibuffer-shrink
       (kbd "C-.") #'ivy-minibuffer-grow
-      (kbd "C-f") (lambda ()
-                    (interactive)
-                    (evil-normal-state)
-                    (ivy-toggle-calling))
       (kbd "C-g") #'ivy-keyboard-quit
       (kbd "C-j") #'ivy-next-line
       (kbd "C-k") #'ivy-previous-line

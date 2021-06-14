@@ -40,11 +40,10 @@
   (setq auto-dim-other-buffers-dim-on-focus-out nil
         auto-dim-other-buffers-dim-on-switch-to-minibuffer nil)
 
-  (with-eval-after-load "ivy-posframe"
-    (add-to-list 'auto-dim-other-buffers-never-dim-buffer-functions
-                 (lambda (buf)
-                   "Disable `auto-dim-other-buffers' while displaying the frame of `ivy-posframe'"
-                   (get-buffer-window ivy-posframe-buffer))))
+  (add-to-list 'auto-dim-other-buffers-never-dim-buffer-functions
+               (lambda (_buf)
+                 "Disable `auto-dim-other-buffers' on the minibuffer"
+                 (minibuffer-window-active-p (window-list (selected-frame) t))))
 
   (defvar-local adob--face-mode-remapping-for-line-number nil)
 
@@ -162,7 +161,7 @@
   :ensure t
   :after evil
   :config
-  (setq evil-goggles-duration 0.07
+  (setq evil-goggles-duration 0.08
         evil-goggles-pulse nil)
 
   (add-hook 'minibuffer-setup-hook
@@ -517,6 +516,28 @@
   (defun ivy-posframe-custom-display-at-point (str)
     (ivy-posframe--display str #'posframe-poshandler-point-bottom))
 
+  (defun ivy-posframe--custom-add-prompt (fn &rest args)
+    "Override to mimic Evil style cursor."
+    (apply fn args)
+    (when (and (display-graphic-p)
+               (not ivy-posframe--ignore-prompt))
+      (with-current-buffer (window-buffer (active-minibuffer-window))
+        (let ((point (point))
+              (prompt (buffer-string))
+              (state evil-state))
+          (remove-text-properties 0 (length prompt) '(read-only nil) prompt)
+          (with-current-buffer ivy-posframe-buffer
+            (goto-char (point-min))
+            (delete-region (point) (line-beginning-position 2))
+            (insert prompt "  \n")
+            (add-text-properties
+             point (1+ point)
+             (if (eq 'insert state)
+                 ;; NOTE
+                 ;;  See, https://stackoverflow.com/a/23813217
+                 `(display ,(compose-chars (char-after point) '(base-right  . base-right)  ?▏))
+               '(face ivy-posframe-cursor))))))))
+
   (setq ivy-posframe-display-functions-alist
         '((counsel-company . ivy-posframe-display-at-point)
           (complete-symbol . ivy-posframe-display-at-point)
@@ -540,6 +561,7 @@
 
   (advice-add #'ivy-posframe--display :before-until #'ivy-posframe--re-display)
   (advice-add #'ivy-posframe-display-at-point :override #'ivy-posframe-custom-display-at-point)
+  (advice-add #'ivy-posframe--add-prompt :override #'ivy-posframe--custom-add-prompt)
   (advice-add #'ivy-keyboard-quit :before
               (lambda ()
                 "Kill `ivy-posframe-buffer'."

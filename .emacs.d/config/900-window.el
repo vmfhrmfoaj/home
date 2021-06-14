@@ -24,27 +24,23 @@
         (when (window-resizable-p (selected-window) ncol t)
           (enlarge-window ncol t)))))
 
-  (setq golden-ratio-adjust-factor 1.1)
-
   (with-eval-after-load "which-key"
     (add-to-list 'golden-ratio-inhibit-functions
                  (lambda ()
                    (and which-key--buffer
-                        (window-live-p (get-buffer-window which-key--buffer))))))
+                        (window-live-p (get-buffer-window which-key--buffer))
+                        t))))
 
-  (let ((f (lambda (&rest _) "Run `golden-ratio'" (golden-ratio))))
-    (advice-add #'find-file-other-window :after f)
-
-    (with-eval-after-load "winum"
-      (advice-add #'winum--switch-to-window :after f))
-
-    (with-eval-after-load "evil"
-      (advice-add #'evil-goto-definition :after f))
-
-    (with-eval-after-load "compile"
-      (advice-add #'compile-goto-error :after f)))
+  (with-eval-after-load "treemacs"
+    (add-to-list 'golden-ratio-inhibit-functions
+                 (lambda ()
+                   (and (treemacs-get-local-window) t))))
 
   (advice-add #'golden-ratio--resize-window :override #'golden-ratio--custom-resize-window)
+  (advice-add #'select-window :after
+              (lambda (&rest _) "Run `golden-ratio'."
+                (unless (-some #'minibuffer-window-active-p (window-list (selected-frame) t))
+                  (golden-ratio))))
 
   (golden-ratio-mode 1))
 
@@ -54,10 +50,12 @@
   (setq winum-auto-setup-mode-line nil
         winum-auto-assign-0-to-minibuffer nil)
 
-  (defun winum-assign-0-to-treemacs ()
-    (when (string-match-p "^\\s-*\\*Treemacs-Scoped-Buffer-" (buffer-name))
-      0))
+  (defun winum-assign-9-to-treemacs ()
+    (when (and (string-match-p "^\\s-*\\*Treemacs-Scoped-Buffer-" (buffer-name))
+               (not (ignore-errors
+                      (aref (winum--get-window-vector) 9))))
+      9))
 
-  (add-to-list 'winum-assign-functions #'winum-assign-0-to-treemacs)
+  (add-to-list 'winum-assign-functions #'winum-assign-9-to-treemacs)
 
   (winum-mode))

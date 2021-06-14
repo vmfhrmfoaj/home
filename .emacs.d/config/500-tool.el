@@ -423,7 +423,9 @@
             (tag-node-open    . ,visit-prefer-fn)
             (tag-node-closed  . ,visit-prefer-fn)
             (tag-node         . ,visit-fn)))
-        treemacs-width 50)
+        treemacs-default-visit-action #'treemacs-visit-node-in-most-recently-used-window
+        treemacs-position 'right
+        treemacs-width 70)
 
   (treemacs-resize-icons 13)
 

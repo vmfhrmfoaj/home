@@ -20,18 +20,18 @@
   :diminish ""
   :commands (projectile-project-root)
   :init
-  (defun projectile-switch-to-previous-buffer ()
+  (defun projectile-switch-to-previous-buffer (&optional switch-fn)
     (interactive)
     (condition-case nil
-        (let ((cur-proj-root (or (projectile-project-root)
-                                 (concat (s-chop-suffix "/" home-dir) "/"))))
-          (->> (buffer-list)
-               (--filter (with-current-buffer it
-                           (let ((proj-root (or (projectile-project-root)
-                                                (concat (s-chop-suffix "/" home-dir) "/"))))
-                             (string= cur-proj-root proj-root))))
-               (switch-to-previous-buffer-in)))
-      (error (switch-to-previous-buffer-in (buffer-list)))))
+        (let* ((cur-proj-root (or (projectile-project-root)
+                                  (concat (s-chop-suffix "/" home-dir) "/")))
+               (bufs (->> (buffer-list)
+                          (--filter (with-current-buffer it
+                                      (let ((proj-root (or (projectile-project-root)
+                                                           (concat (s-chop-suffix "/" home-dir) "/"))))
+                                        (string= cur-proj-root proj-root)))))))
+          (switch-to-previous-buffer-in bufs switch-fn))
+      (error (switch-to-previous-buffer-in (buffer-list) switch-fn))))
 
   (defun projectile-kill-buffer (&optional buf)
     (interactive)
@@ -39,18 +39,18 @@
       (projectile-switch-to-previous-buffer)
       (kill-buffer buf)))
 
-  (defun projectile-switch-latest-open-project ()
+  (defun projectile-switch-latest-open-project (&optional switch-fn)
     (interactive)
-    (let ((cur-proj-root (or (projectile-project-root)
-                             (concat (s-chop-suffix "/" home-dir) "/"))))
-      (-some->> (buffer-list)
-                (--remove (with-current-buffer it
-                            (let ((proj-root (or (projectile-project-root)
-                                                 (concat (s-chop-suffix "/" home-dir) "/"))))
-                              (string= cur-proj-root proj-root))))
-                (switch-to-previous-buffer-in))))
+    (let* ((cur-proj-root (or (projectile-project-root)
+                              (concat (s-chop-suffix "/" home-dir) "/")))
+           (bufs (-some->> (buffer-list)
+                           (--remove (with-current-buffer it
+                                       (let ((proj-root (or (projectile-project-root)
+                                                            (concat (s-chop-suffix "/" home-dir) "/"))))
+                                         (string= cur-proj-root proj-root)))))))
+      (switch-to-previous-buffer-in bufs switch-fn)))
 
-  (defun projectile-action-for-custom-switch-opened-project (&optional ff-variant)
+  (defun projectile-action-for-custom-switch-opened-project (&optional switch-fn)
     "A `projectile' action for `projectile-custom-switch-open-project'."
     (let* ((cur-proj-root (projectile-project-root))
            (bufs (-some->> (buffer-list)
@@ -62,8 +62,8 @@
                                                              (concat (s-chop-suffix "/" home-dir) "/"))))
                                          (string= cur-proj-root proj-root)))))))
       (if bufs
-          (switch-to-previous-buffer-in bufs ff-variant)
-        (projectile--find-file nil ff-variant))))
+          (switch-to-previous-buffer-in bufs switch-fn)
+        (projectile--find-file nil switch-fn))))
 
   (defun projectile-custom-switch-open-project ()
     (interactive)
