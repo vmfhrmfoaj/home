@@ -174,9 +174,9 @@ which see."
 	      (org-show-context 'agenda)
 	      (run-hooks 'org-agenda-after-show-hook)))))
 
-  (setq org-agenda-deadline-faces '((1.0 . org-upcoming-distant-deadline)
+  (setq org-agenda-deadline-faces '((1.0 . org-warning)
                                     (0.5 . org-upcoming-deadline)
-                                    (0.0 . org-warning))
+                                    (0.0 . org-upcoming-distant-deadline))
         org-agenda-clockreport-parameter-plist '(:link t :fileskip0 t :stepskip0 t :maxlevel 5 :tcolumns 1 :narrow 70!)
         org-agenda-scheduled-leaders '("Scheduled: " "Sched.%03dx: ")
         org-agenda-deadline-leaders  '("Deadline:  " "In %03d d.: " "%02d d. ago: ")

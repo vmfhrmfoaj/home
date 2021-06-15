@@ -84,7 +84,7 @@
 
   (defun projectile-custom-project-name (project-root)
     (if (string= home-dir (s-chop-suffix "/" project-root))
-        "home"
+        "Home"
       (file-name-nondirectory (directory-file-name project-root))))
 
   (defun projectile-kill-new-buffer-file-name ()
