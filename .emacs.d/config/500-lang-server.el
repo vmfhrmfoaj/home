@@ -277,7 +277,7 @@
   (defun lps--focus-and-update-lsp-help-buffer (&rest _)
     "Force on '*lsp-help*' buffer"
     (-when-let (buf (get-buffer "*lsp-help*"))
-      (pop-to-buffer buf)
+      (pop-to-buffer-same-window buf)
       (let ((buffer-read-only nil)
             (beg (next-single-property-change (point-min) 'help-echo)))
         (while (and beg (< beg (point-max)))

@@ -12,7 +12,7 @@
   :config
   (defun emacs-lisp-REPL-buffer ()
     (interactive)
-    (pop-to-buffer (get-buffer-create "*emacs-lisp REPL*"))
+    (pop-to-buffer-same-window (get-buffer-create "*emacs-lisp REPL*"))
     (unless (eq 'lisp-interaction-mode major-mode)
       (lisp-interaction-mode)))
 
@@ -36,7 +36,7 @@
     (-when-let (buf (->> (window-list)
                          (-map #'window-buffer)
                          (--first (string-equal "*Help*" (buffer-name it)))))
-      (pop-to-buffer buf)))
+      (pop-to-buffer-same-window buf)))
 
   (add-hook 'emacs-lisp-mode-hook
             (lambda ()

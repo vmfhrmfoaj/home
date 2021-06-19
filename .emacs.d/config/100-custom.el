@@ -55,7 +55,6 @@
       resize-mini-windows t
       ring-bell-function 'ignore
       scratch-major-mode 'org-mode
-      split-width-threshold 999
       x-stretch-cursor t)
 
 (when (eq window-system 'pgtk)

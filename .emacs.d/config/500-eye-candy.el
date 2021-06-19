@@ -40,10 +40,10 @@
   (setq auto-dim-other-buffers-dim-on-focus-out nil
         auto-dim-other-buffers-dim-on-switch-to-minibuffer nil)
 
-  (add-to-list 'auto-dim-other-buffers-never-dim-buffer-functions
-               (lambda (_buf)
-                 "Disable `auto-dim-other-buffers' on the minibuffer"
-                 (minibuffer-window-active-p (window-list (selected-frame) t))))
+  ;; (add-to-list 'auto-dim-other-buffers-never-dim-buffer-functions
+  ;;              (lambda (_buf)
+  ;;                "Disable `auto-dim-other-buffers' on the minibuffer"
+  ;;                (minibuffer-window-active-p (window-list (selected-frame) t))))
 
   (defvar-local adob--face-mode-remapping-for-line-number nil)
 
@@ -547,17 +547,6 @@
     (-update->> ivy-update-fns-alist
                 (--remove (-let (((caller . _rest) it))
                             (eq 'swiper caller)))))
-
-  (with-eval-after-load "golden-ratio"
-    (add-hook 'window-size-change-functions
-              (let ((ofw 0))
-                (lambda (&rest _)
-                  (let ((fw (frame-width)))
-                    (unless (= ofw fw)
-                      (setq ofw fw)
-                      (let ((w (-second-item (golden-ratio--dimensions))))
-                        (setq ivy-posframe-width w
-                              ivy-posframe-min-width w))))))))
 
   (advice-add #'ivy-posframe--display :before-until #'ivy-posframe--re-display)
   (advice-add #'ivy-posframe-display-at-point :override #'ivy-posframe-custom-display-at-point)

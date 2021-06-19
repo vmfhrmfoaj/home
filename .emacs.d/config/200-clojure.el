@@ -83,9 +83,7 @@
   (defun cider-switch-to-releated-repl-buffer ()
     (interactive)
     (if-let ((repl (cider--repl-buf)))
-        (progn
-          (cider--set-repl-ns-to-current-ns repl)
-          (cider--switch-to-repl-buffer repl nil))
+        (cider--switch-to-repl-buffer repl t)
       (let ((bufs (-some->> (projectile-project-buffers)
                             (--filter (let ((buf-name (buffer-name it)))
                                         (or (s-starts-with? "*cider-repl" buf-name)
@@ -221,7 +219,8 @@
   :config
   (defun cider-doc-at-point ()
     (interactive)
-    (cider-doc-lookup (cider-symbol-at-point)))
+    (let ((pop-up-windows nil))
+      (cider-doc-lookup (cider-symbol-at-point))))
 
   (setq cider-dynamic-indentation t
         cider-font-lock-dynamically '(deprecated)))
@@ -261,9 +260,13 @@
               (when (bound-and-true-p flycheck-mode)
                 (flycheck-buffer)))))))))
 
+  (setq cider-repl-display-in-current-window t
+        cider-repl-pop-to-buffer-on-connect 'display-only)
+
   (add-hook 'cider-repl-mode-hook
             (lambda ()
-              (setq-local evil-lookup-func #'cider-doc-at-point)
+              (setq-local evil-lookup-func #'cider-doc-at-point
+                          pop-up-windows nil)
               (eldoc-mode 1)
               (company-mode 1)
               (let ((f (lambda ()

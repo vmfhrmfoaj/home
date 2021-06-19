@@ -8,6 +8,8 @@
   (require 'golden-ratio nil t)
   (require 'winum nil t))
 
+(setq display-buffer-alist '((".*" display-buffer-same-window)))
+
 (when window-system
   (toggle-frame-maximized))
 
@@ -35,6 +37,18 @@
     (add-to-list 'golden-ratio-inhibit-functions
                  (lambda ()
                    (and (treemacs-get-local-window) t))))
+
+  (add-hook 'window-size-change-functions
+            (let ((ofw 0))
+              (lambda (&rest _)
+                (let ((fw (frame-width)))
+                  (unless (= ofw fw)
+                    (setq ofw fw)
+                    (let ((w (-second-item (golden-ratio--dimensions))))
+                      (setq split-width-threshold (1+ w))
+                      (when (featurep 'ivy-posframe)
+                        (setq ivy-posframe-width w
+                              ivy-posframe-min-width w))))))))
 
   (advice-add #'golden-ratio--resize-window :override #'golden-ratio--custom-resize-window)
   (advice-add #'select-window :after

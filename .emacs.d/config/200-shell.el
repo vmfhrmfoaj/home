@@ -69,11 +69,4 @@
                             (when (and last-prompt-pos
                                        (< (point) last-prompt-pos))
                               (goto-char (point-max)))))
-                        nil t)))
-
-  :config
-  (advice-add #'eshell :around
-              (lambda (fn &rest args)
-                "If single window, create a window and then open eshell buffer on the window."
-                (cl-letf (((symbol-function 'pop-to-buffer-same-window) #'pop-to-buffer))
-                  (apply fn args)))))
+                        nil t))))

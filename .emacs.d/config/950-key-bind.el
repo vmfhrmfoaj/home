@@ -110,10 +110,43 @@
                     (interactive)
                     (projectile-switch-to-previous-buffer #'switch-to-buffer-other-window)))
     "`" #'eshell
+    "~" (defalias 'eshell-other-window
+          (lambda ()
+            (interactive)
+            (let ((display-buffer-alist `((".*" ,(if (length< (window-list) 2)
+                                                     #'display-buffer-pop-up-window
+                                                   #'display-buffer-use-some-window))))
+                  (display-buffer-fallback-action
+                   '((display-buffer-in-previous-window
+                      display-buffer-reuse-window))))
+              (eshell))))
     "'" #'projectile-run-eshell
+    "\"" (defalias 'projectile-run-eshell-on-other-window
+           (lambda ()
+             (interactive)
+             (let ((display-buffer-alist `((".*" ,(if (length< (window-list) 2)
+                                                      #'display-buffer-pop-up-window
+                                                    #'display-buffer-use-some-window))))
+                   (display-buffer-fallback-action
+                    '((display-buffer-in-previous-window
+                       display-buffer-reuse-window))))
+               (projectile-run-eshell))))
     "!" #'shell-command
     ";" #'comment-it
     "u" #'universal-argument
+
+    ;; NOTE
+    ;;  I don't know why "<SPC> 0~9" key is easy than "<Meta> + 0~9" key on HHKB.
+    "0" #'winum-select-window-0
+    "1" #'winum-select-window-1
+    "2" #'winum-select-window-2
+    "3" #'winum-select-window-3
+    "4" #'winum-select-window-4
+    "5" #'winum-select-window-5
+    "6" #'winum-select-window-6
+    "7" #'winum-select-window-7
+    "8" #'winum-select-window-8
+    "9" #'winum-select-window-9
 
     ;; applications
     ;; - org
@@ -227,7 +260,6 @@
                     (lambda ()
                       (interactive)
                       (projectile-switch-latest-open-project #'switch-to-buffer-other-window)))
-    "p'" #'projectile-run-eshell
     "p!" #'projectile-run-shell-command-in-root
     "pI" #'projectile-invalidate-cache
     "pa" #'projectile-add-buffer-to-project
@@ -610,6 +642,29 @@
   (evil-set-initial-state 'ivy-occur-mode      'normal)
   (evil-set-initial-state 'ivy-occur-grep-mode 'normal)
 
+  (defun ivy--open-it-other-window-and-exit ()
+    (interactive)
+    (let ((caller (ivy-state-caller ivy-last)))
+      (cond
+       ((memq caller '(counsel-projectile-switch-to-buffer
+                       ivy-switch-buffer))
+        (ivy-exit-with-action #'ivy--switch-buffer-other-window-action))
+       ((eq caller 'counsel-find-file)
+        (ivy-exit-with-action #'find-file-other-window))
+       ((eq caller 'counsel-projectile-find-file)
+        (ivy-exit-with-action (-compose #'find-file-other-window #'projectile-expand-root)))
+       ((eq caller 'projectile-completing-read)
+        (ivy-exit-with-action (lambda (it)
+                                (if (s-ends-with? "/" it)
+                                    (let ((projectile-switch-project-action
+                                           (-partial #'projectile-action-for-custom-switch-opened-project
+                                                     (lambda (buf-or-filename)
+                                                       (if (bufferp buf-or-filename)
+                                                           (switch-to-buffer-other-window buf-or-filename)
+                                                         (find-file-other-window buf-or-filename))))))
+                                      (projectile-switch-project-by-name it))
+                                  (find-file-other-window (projectile-expand-root it)))))))))
+
   :config
   (if (not evil-want-minibuffer)
       (progn
@@ -617,29 +672,6 @@
         (define-key ivy-minibuffer-map (kbd "C-j") #'ivy-next-line)
         (define-key ivy-minibuffer-map (kbd "C-k") #'ivy-previous-line)
         (define-key ivy-minibuffer-map (kbd "C-u") #'ivy-parent-dir))
-
-    (defun ivy--open-it-other-window-and-exit ()
-      (interactive)
-      (let ((caller (ivy-state-caller ivy-last)))
-        (cond
-         ((memq caller '(counsel-projectile-switch-to-buffer
-                         ivy-switch-buffer))
-          (ivy-exit-with-action #'ivy--switch-buffer-other-window-action))
-         ((eq caller 'counsel-find-file)
-          (ivy-exit-with-action #'find-file-other-window))
-         ((eq caller 'counsel-projectile-find-file)
-          (ivy-exit-with-action (-compose #'find-file-other-window #'projectile-expand-root)))
-         ((eq caller 'projectile-completing-read)
-          (ivy-exit-with-action (lambda (it)
-                                  (if (s-ends-with? "/" it)
-                                      (let ((projectile-switch-project-action
-                                             (-partial #'projectile-action-for-custom-switch-opened-project
-                                                       (lambda (buf-or-filename)
-                                                         (if (bufferp buf-or-filename)
-                                                             (switch-to-buffer-other-window buf-or-filename)
-                                                           (find-file-other-window buf-or-filename))))))
-                                        (projectile-switch-project-by-name it))
-                                    (find-file-other-window (projectile-expand-root it)))))))))
 
     (evil-define-key 'insert ivy-minibuffer-map
       (kbd "<tab>") #'ivy-partial
@@ -821,6 +853,18 @@
 (use-package clojure-mode
   :defer t
   :config
+  (defun cider-switch-to-releated-repl-buffer-other-window ()
+    (interactive)
+    (let ((display-buffer-alist `((".*" ,(if (length< (window-list) 2)
+                                             #'display-buffer-pop-up-window
+                                           #'display-buffer-use-some-window))))
+          (display-buffer-fallback-action
+           '((display-buffer-in-previous-window
+              display-buffer-reuse-window)))
+          (cider-repl-display-in-current-window nil)
+          (same-window-buffer-names nil))
+      (cider-switch-to-releated-repl-buffer)))
+
   (dolist (mode '(clojure-mode clojurec-mode clojurescript-mode))
     (evil-leader/set-key-for-mode mode
       "meb" #'cider-eval-buffer
@@ -830,6 +874,7 @@
       "men" #'cider-eval-ns-form
       "mer" #'cider-eval-last-sexp-and-replace
       "mr'" #'cider-switch-to-releated-repl-buffer
+      "mr\"" #'cider-switch-to-releated-repl-buffer-other-window
       "mri" #'cider-insert-last-sexp-in-repl
       "mrq" #'cider-quit)
     (which-key-declare-prefixes-for-mode mode
@@ -919,7 +964,17 @@
   (evil-leader/set-key-for-mode 'emacs-lisp-mode
     "mee" #'eval-last-sexp
     "mef" #'eval-defun
-    "mr'" #'emacs-lisp-REPL-buffer)
+    "mr'" #'emacs-lisp-REPL-buffer
+    "mr\"" (defalias 'emacs-lisp-REPL-buffer-other-window
+             (lambda ()
+               (interactive)
+               (let ((display-buffer-alist `((".*" ,(if (length< (window-list) 2)
+                                                        #'display-buffer-pop-up-window
+                                                      #'display-buffer-use-some-window))))
+                     (display-buffer-fallback-action
+                      '((display-buffer-in-previous-window
+                         display-buffer-reuse-window))))
+                 (emacs-lisp-REPL-buffer)))))
   (which-key-declare-prefixes-for-mode 'emacs-lisp-mode
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto"
