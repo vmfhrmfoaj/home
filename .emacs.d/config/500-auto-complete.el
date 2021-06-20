@@ -10,7 +10,7 @@
 
 (use-package company
   :ensure t
-  :hook ((prog-mode . company-mode-on)
+  :hook ((prog-mode   . company-mode-on)
          (eshell-mode . company-mode-on))
   :config
   (defun company-abort-and-insert-space ()
@@ -18,6 +18,15 @@
     (interactive)
     (company-abort)
     (execute-kbd-macro (kbd "SPC")))
+
+  ;; copy from spaceamcs
+  (defun company-backend-with-yas (backends)
+    (if (and (listp backends) (memq 'company-yasnippet backends))
+	    backends
+	  (append (if (consp backends)
+		          backends
+		        (list backends))
+		      '(:with company-yasnippet))))
 
   (setq company-dabbrev-code-ignore-case t
         company-dabbrev-code-other-buffers nil
@@ -27,7 +36,8 @@
         company-idle-delay nil
         company-minimum-prefix-length 1
         company-selection-wrap-around t
-        company-tooltip-flip-when-above t)
+        company-tooltip-flip-when-above t
+        company-backends (mapcar #'company-backend-with-yas company-backends))
 
   (add-hook 'company-after-completion-hook
             (lambda (_ignored)
@@ -61,7 +71,7 @@
                     (apply fn args))))))
 
 (use-package counsel
-  :defer t
+  :after company
   :init
   (defface counsel-company-annotation-face
     '((t :inherit shadow))
@@ -80,7 +90,8 @@
     (unless company-candidates
       (company-complete))
     (if company-candidates
-        (let ((len (cond ((let (l)
+        (let ((prefix company-prefix)
+              (len (cond ((let (l)
                             (and company-common
                                  (string= company-common
                                           (buffer-substring
@@ -93,7 +104,11 @@
             (setq ivy-completion-beg (- (point) len))
             (setq ivy-completion-end (point))
             (ivy-read "Candidate: " company-candidates
-                      :action #'ivy-completion-in-region-action
+                      :action (lambda (str)
+                                (ivy-completion-in-region-action str)
+                                (setq company-prefix prefix
+                                      company-backend (get-text-property 0 'company-backend str))
+                                (company-cancel str))
                       :caller 'counsel-company
                       :initial-input (-> (or company-common company-prefix)
                                          (downcase)
@@ -118,29 +133,28 @@
                   (funcall fn))))
 
   (advice-add #'counsel-company :override #'counsel--custom-company)
-
-  (with-eval-after-load "company"
-    (advice-add #'company-indent-or-complete-common :override
-                (lambda (arg)
-                  "Customize `company-indent-or-complete-common' use `counsel-company' instead of `company' overlay."
-                  (interactive "P")
-                  (cond
-                   ((use-region-p)
-                    (indent-region (region-beginning) (region-end)))
-                   ((memq indent-line-function
-                          '(indent-relative indent-relative-maybe))
-                    (counsel-company))
-                   ((let ((old-point (point))
-                          (old-tick (buffer-chars-modified-tick))
-                          (tab-always-indent t))
-                      (indent-for-tab-command arg)
-                      (when (and (eq old-point (point))
-                                 (eq old-tick (buffer-chars-modified-tick)))
-                        (counsel-company)))))))))
+  (advice-add #'company-indent-or-complete-common :override
+              (lambda (arg)
+                "Customize `company-indent-or-complete-common' use `counsel-company' instead of `company' overlay."
+                (interactive "P")
+                (cond
+                 ((use-region-p)
+                  (indent-region (region-beginning) (region-end)))
+                 ((memq indent-line-function
+                        '(indent-relative indent-relative-maybe))
+                  (counsel--custom-company))
+                 ((let ((old-point (point))
+                        (old-tick (buffer-chars-modified-tick))
+                        (tab-always-indent t))
+                    (indent-for-tab-command arg)
+                    (when (and (eq old-point (point))
+                               (eq old-tick (buffer-chars-modified-tick)))
+                      (counsel--custom-company))))))))
 
 (use-package yasnippet
   :ensure t
-  :hook (prog-mode . yas-minor-mode-on)
+  :hook ((eshell-mode . yas-minor-mode-on)
+         (prog-mode   . yas-minor-mode-on))
   :config
   (with-eval-after-load "lsp-mode"
     (add-hook 'yas-before-expand-snippet-hook
@@ -151,4 +165,10 @@
                            (null lsp-signature-mode))
                   (ignore-errors
                     (setq lsp-signature-restart-enable t)
-                    (lsp-signature-activate)))))))
+                    (lsp-signature-activate))))))
+
+  (yas-load-directory "~/.emacs.d/snippets/" t))
+
+(use-package yasnippet-snippets
+  :ensure t
+  :defer t)

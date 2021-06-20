@@ -51,6 +51,7 @@
   :config
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
+     '(cider-reader-conditional-face ((t :inherit shadow)))
      `(cider-deprecated-face  ((t :inherit font-lock-warning-face :weight ,default-weight :underline (:style wave :color "darkorange"))))
      '(cider-fringe-good-face ((t :inherit success)))
      '(cider-repl-prompt-face ((t :inherit font-lock-keyword-face :weight light)))
@@ -118,6 +119,8 @@
   :defer t
   :config
   (custom-set-faces
+   '(epe-symbol-face ((t :inherit shadow)))
+   '(epe-git-face ((t :inherit font-lock-constant-face :weight normal)))
    '(eshell-prompt ((t :inherit shadow :weight light)))))
 
 (use-package focus

@@ -433,7 +433,8 @@
             "")
         "")))
 
-  (setq lsp-enable-imenu nil
+  (setq lsp-completion-provider :none
+        lsp-enable-imenu nil
         lsp-enable-indentation nil
         lsp-enable-links nil
         lsp-enable-symbol-highlighting nil

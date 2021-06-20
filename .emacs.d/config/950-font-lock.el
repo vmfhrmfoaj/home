@@ -1019,7 +1019,7 @@
     (font-lock-add-keywords
      mode
      `(;; Punctuation
-       ("\\(#?\\s(\\|\\s)\\|[,]\\)"
+       ("\\(\\(?:[~#@`'^]\\|#_\\|#\\?@?\\)?\\s(\\|\\s)\\|[,]\\)"
         (1 'clojure-punctuation-face append))
        ("\\([~#@&_`'^]\\)"
         (1 'shadow))

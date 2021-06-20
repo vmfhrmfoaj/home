@@ -1040,8 +1040,6 @@
 (use-package eshell
   :defer t
   :init
-  (evil-set-initial-state 'eshell-mode 'insert)
-
   (defun eshell-setup-once-for-evil-keybinding ()
     (remove-hook 'eshell-mode-hook #'eshell-setup-once-for-evil-keybinding)
     (cl-letf (((symbol-function 'display-warning) #'ignore))
@@ -1061,6 +1059,10 @@
       (funcall f))
 
     (fmakunbound #'eshell-setup-once-for-evil-keybinding))
+
+  (evil-set-initial-state 'eshell-mode 'insert)
+  (evil-define-key 'insert eshell-mode-map
+    (kbd "C-r") #'ivy-eshell-history)
 
   (add-hook 'eshell-mode-hook #'eshell-setup-once-for-evil-keybinding))
 
@@ -1286,3 +1288,11 @@
   (global-set-key (kbd "M-7") #'winum-select-window-7)
   (global-set-key (kbd "M-8") #'winum-select-window-8)
   (global-set-key (kbd "M-9") #'winum-select-window-9))
+
+(use-package yasnippet
+  :defer t
+  :config
+  (define-key yas-keymap [(tab)] nil)
+  (define-key yas-keymap (kbd "TAB") nil)
+  (define-key yas-keymap (kbd "C-k") #'yas-prev-field)
+  (define-key yas-keymap (kbd "C-j") #'yas-next-field))

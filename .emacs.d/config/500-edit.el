@@ -221,10 +221,14 @@ So, replaced `evil-jump-item' to this function."
 
   (advice-add #'undo-tree-save-history-from-hook :before-while
               (lambda (&rest _)
-	            (when (fboundp 'magit-unstaged-files)
+                "Avoid to save undo history for staged files."
+	            (when (and (fboundp 'magit-unstaged-files)
+                           ;; TODO
+                           ;;  check git repository
+                           )
                   (when-let ((file (buffer-file-name)))
                     (let ((file-name (file-name-nondirectory file)))
-                      (magit-unstaged-files nil file-name))))))
+                      (and (magit-unstaged-files nil file-name) t))))))
 
   (global-undo-tree-mode 1)
 
@@ -232,11 +236,13 @@ So, replaced `evil-jump-item' to this function."
   ;;  `undo-tree-save-history-from-hook' takes more than 1 second.
   ;;  It annoy me very much.
   (remove-hook 'write-file-functions #'undo-tree-save-history-from-hook)
-  (add-hook 'kill-emacs-hook ; trigger `undo-tree-save-history-from-hook'
-            (lambda ()
-              (->> (buffer-list)
-                   (--filter buffer-file-name)
-                   (--map (kill-buffer it))))))
+  (advice-add #'save-buffers-kill-emacs :before
+              (lambda (&rest _)
+                "trigger `undo-tree-save-history-from-hook'"
+                (->> (buffer-list)
+                     (--filter buffer-file-name)
+                     (--map (with-current-buffer it
+                              (undo-tree-save-history-from-hook)))))))
 
 (use-package whitespace
   :defer t

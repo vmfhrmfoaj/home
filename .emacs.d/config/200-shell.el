@@ -69,4 +69,26 @@
                             (when (and last-prompt-pos
                                        (< (point) last-prompt-pos))
                               (goto-char (point-max)))))
-                        nil t))))
+                        nil t)))
+
+  :config
+  (defun ivy-eshell-history ()
+    (interactive)
+    (let* ((-compare-fn #'string-equal)
+           (history (-some->> eshell-history-ring
+                              (ring-elements)
+                              (--map (s-trim (substring-no-properties it)))
+                              (-non-nil)
+                              (-distinct))))
+      (ivy-read "Command history:"
+                history
+                :action (lambda (str)
+                          (end-of-buffer)
+                          (eshell-kill-input)
+                          (insert str))))))
+
+(use-package eshell-prompt-extras
+  :ensure t
+  :after esh-opt
+  :config
+  (setq eshell-prompt-function 'epe-theme-lambda))
