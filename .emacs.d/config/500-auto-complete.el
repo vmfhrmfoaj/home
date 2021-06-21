@@ -168,7 +168,3 @@
                     (lsp-signature-activate))))))
 
   (yas-load-directory "~/.emacs.d/snippets/" t))
-
-(use-package yasnippet-snippets
-  :ensure t
-  :defer t)
