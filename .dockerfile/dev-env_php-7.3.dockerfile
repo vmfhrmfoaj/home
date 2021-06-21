@@ -1,4 +1,4 @@
-FROM php:7.3-cli
+FROM php:7.3-fpm
 
 ENV USER_ID=1000
 ENV GROUP_ID=1000
