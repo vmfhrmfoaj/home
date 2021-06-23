@@ -1173,7 +1173,10 @@
   (evil-leader--set-major-leader-for-mode 'org-mode)
   (evil-define-key 'normal evil-org-mode-map
     (kbd "RET") #'org-open-at-point
-    (kbd "M-,") #'org-mark-ring-goto))
+    (kbd "M-,") #'org-mark-ring-goto)
+  (with-eval-after-load "yasnippet"
+    (evil-define-key 'normal org-mode-map
+      (kbd "<tab>") #'yas-maybe-expand)))
 
 (use-package package
   :defer t

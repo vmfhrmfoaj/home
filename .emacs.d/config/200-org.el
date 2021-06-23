@@ -111,7 +111,8 @@ which see."
               ;; NOTE
               ;;  disable `show-smartparens-mode' due to it is conflicted with `org-indent-mode'.
               ;;  `show-paren-mode' is also conflicted with it.
-              (turn-off-show-smartparens-mode))
+              (turn-off-show-smartparens-mode)
+              (yas-minor-mode-on))
             100)
 
   (advice-add #'org-tags-completion-function :override #'org-tags-completion-function-for-case-insensitive)

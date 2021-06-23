@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: Org code block
+# key: <code
+# --
+
+#+begin_code ${1:LANG}
+$0
+#+end_code

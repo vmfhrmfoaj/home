@@ -666,13 +666,20 @@
          (2 'font-lock-type-face nil t))
 
         ;; Top-level variable definition
+        (,(concat "(" namespace? "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
+                  whitespace+
+                  meta?
+                  "\\(" symbol "\\)/\\(" symbol "\\)\\>")
+         (1 'font-lock-keyword-face)
+         (2 'clojure-ns-prefix-face)
+         (3 'clojure-variable-definition-face))
         (,(concat "(" namespace?
                   "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
                   whitespace*
                   meta?
                   "\\(" symbol "\\)")
          (1 'font-lock-keyword-face)
-         (2 'clojure-variable-definition-face nil t))
+         (2 'clojure-variable-definition-face))
 
         ;; (fn name? args ...)
         (,(concat "(" core-ns? "\\(fn\\)"
