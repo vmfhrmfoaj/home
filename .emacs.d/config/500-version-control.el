@@ -53,7 +53,20 @@
            (fr-vec (apply #'fringe-helper-convert bitmap)))
       (define-fringe-bitmap 'git-gutter-fr:added    fr-vec nil nil nil)
       (define-fringe-bitmap 'git-gutter-fr:deleted  fr-vec nil nil nil)
-      (define-fringe-bitmap 'git-gutter-fr:modified fr-vec nil nil nil))))
+      (define-fringe-bitmap 'git-gutter-fr:modified fr-vec nil nil nil)))
+
+  (defvar git-gutter:post-command-timer nil)
+
+  (advice-add #'git-gutter:post-command-hook :around
+              (lambda (fn &rest args)
+                "To avoid frequently run in the short time."
+                (when git-gutter:post-command-timer
+                  (cancel-timer git-gutter:post-command-timer))
+                (setq git-gutter:post-command-timer
+                      (run-at-time 0.25 nil
+                                   (lambda ()
+                                     (setq git-gutter:post-command-timer nil)
+                                     (apply fn args)))))))
 
 (use-package gitignore-mode
   :ensure t

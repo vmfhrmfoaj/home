@@ -39,6 +39,11 @@
         company-tooltip-flip-when-above t
         company-backends (mapcar #'company-backend-with-yas company-backends))
 
+  (add-hook 'company-mode-hook
+            (lambda ()
+              (remove-hook 'pre-command-hook 'company-pre-command t)
+              (remove-hook 'post-command-hook 'company-post-command t)))
+
   (add-hook 'company-after-completion-hook
             (lambda (_ignored)
               (when (timerp eldoc-timer)

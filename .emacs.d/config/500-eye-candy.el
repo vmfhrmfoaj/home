@@ -421,7 +421,20 @@
     (add-hook 'company-after-completion-hook
               (lambda (&rest _)
                 (when (derived-mode-p 'prog-mode)
-                  (highlight-parentheses-mode  1))))))
+                  (highlight-parentheses-mode  1)))))
+
+  (defvar highlight-parentheses--timer nil)
+
+  (advice-add #'highlight-parentheses--initiate-highlight :around
+              (lambda (fn &rest args)
+                "To avoid frequently run in the short time."
+                (when highlight-parentheses--timer
+                  (cancel-timer highlight-parentheses--timer))
+                (setq highlight-parentheses--timer
+                      (run-at-time 0.15 nil
+                                   (lambda ()
+                                     (setq highlight-parentheses--timer nil)
+                                     (apply fn args)))))))
 
 (use-package highlight-numbers
   :ensure t
