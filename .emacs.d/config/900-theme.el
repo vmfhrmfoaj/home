@@ -63,7 +63,7 @@
   :config
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
-     `(clojure-cond-condtion-face ((t :underline (:color ,(color-from 'default :background (* 20 (if (eq frame-background-mode 'dark) 1 -1)))))))
+     `(clojure-cond-condtion-face ((t :slant italic)))
      '(clojure-define-type-face ((t :inherit font-lock-type-face :background "#3d1824")))
      '(clojure-defining-spec-face ((t :inherit font-lock-keyword-face :background "#1c354d")))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
@@ -134,8 +134,8 @@
   :defer t
   :config
   (custom-set-faces
-   '(font-lock-comment-face ((t :background unspecified :weight light)))
-   '(font-lock-doc-face ((t :weight light)))
+   '(font-lock-comment-face ((t :background unspecified :weight light :slant italic)))
+   '(font-lock-doc-face ((t :weight light :slant italic)))
    '(font-lock-function-name-face ((t :background "#412645" :weight bold)))
    '(font-lock-keyword-face ((t :weight unspecified)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
