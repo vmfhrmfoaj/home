@@ -415,11 +415,11 @@ _add_to_path "${HOME}/.bin"
 #_setup_for_android
 _setup_for_asdf
 _setup_for_graalvm ${USE_JAVA_VERSION:-11}
-#_setup_for_go
+_setup_for_go
 #_setup_for_java ${USE_JAVA_VERSION:-11}
 _setup_for_locale
 #_setup_for_python
-#_setup_for_rust
+_setup_for_rust
 _setup_for_nodejs
 
 # depend on `java`
