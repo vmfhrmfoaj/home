@@ -50,7 +50,7 @@
 
   (advice-add #'aggressive-indent--keep-track-of-changes
               :before-until
-              (lambda (l r &rest _)
+              (lambda (l _r &rest _)
                 "Prevent to indent changed region when inserting REPL output on `cider-repl-mode'."
                 (when (and (derived-mode-p 'cider-repl-mode)
                            (< l (marker-position cider-repl-input-start-mark)))
@@ -122,7 +122,7 @@
   :ensure t
   :defer t
   :config
-  (defun sp-wrap-sexp (&optional arg)
+  (defun sp-wrap-sexp (&optional _)
     (interactive "P")
     (sp-wrap-with-pair "("))
 
@@ -130,7 +130,7 @@
     "Sometimes `evil-jump-item' does not jump to the correct position.
 So, replaced `evil-jump-item' to this function."
     (interactive)
-    (-let (((beg end beg-len end-len) sp-show-pair-previous-match-positions)
+    (-let (((beg end _beg-len end-len) sp-show-pair-previous-match-positions)
            (pos (point)))
       (cond
        ((eq pos beg)

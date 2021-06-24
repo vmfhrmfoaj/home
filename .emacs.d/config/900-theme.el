@@ -20,6 +20,7 @@
    '(c-style-punctuation-1-face ((t :inherit shadow)))
    '(c-style-punctuation-2-face ((t :inherit shadow :weight light)))
    '(default ((t :background "#242528")))
+   '(fixed-pitch ((t :family "Fira Code")))
    '(fringe  ((t :background "#2f343f" :foreground "#585c65")))
    `(isearch ((t :underline unspecified)))
    '(italic ((t :foreground unspecified :family "Fantasque Sans Mono" :slant italic)))
@@ -210,6 +211,7 @@
    '(org-agenda-date ((t :weight normal :height 1.3)))
    '(org-agenda-date-today ((t :background "#1c354d" :height 1.3)))
    '(org-agenda-date-weekend ((t :weight normal :height 1.3)))
+   '(org-block ((t :inherit fixed-pitch)))
    '(org-block-begin-line ((t :weight normal)))
    '(org-block-end-line   ((t :weight normal)))
    '(org-done ((t :inherit shadow :foreground unspecified :box (:line-width (1 . -1)))))
@@ -278,7 +280,8 @@
   :defer t
   :config
   (custom-set-faces
-   '(web-mode-html-attr-equal-face ((t :inherit shadow)))))
+   '(web-mode-html-attr-equal-face ((t :inherit shadow)))
+   '(web-mode-html-tag-bracket-face ((t :inherit shadow)))))
 
 (use-package which-key
   :defer t

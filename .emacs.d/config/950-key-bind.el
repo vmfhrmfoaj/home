@@ -604,7 +604,16 @@
   (evil-org-agenda-set-keys)
 
   (evil-define-key 'motion org-agenda-mode-map
-    (kbd "<M-return>") #'org-agenda-switch-to-other-window))
+    (kbd "<M-return>") (lambda ()
+                         (interactive)
+                         (let ((display-buffer-alist `((".*" ,(if (length< (window-list) 2)
+                                                                  #'display-buffer-pop-up-window
+                                                                #'display-buffer-use-some-window))))
+                               (display-buffer-fallback-action
+                                '((display-buffer-in-previous-window
+                                   display-buffer-reuse-window)))
+                               (same-window-buffer-names nil))
+                           (org-agenda-switch-to)))))
 
 (use-package evil-surround
   :defer t

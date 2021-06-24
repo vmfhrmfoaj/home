@@ -1380,7 +1380,7 @@
         (1 'shadow))
        ("\\((.+?)\\)"
         (1 'org-punctuation-face))
-       ("[^ \t\r\n]\\([.,?:]\\)\\(?:\\s-\\|$\\)"
+       ("[^ \t\r\n]\\([.,:]\\)\\(?:\\s-\\|$\\)"
         (1 'org-punctuation-face))
        ("[A-Za-z]\\([']\\)[A-Za-z]"
         (1 'org-punctuation-face))))
