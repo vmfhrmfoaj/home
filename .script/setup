@@ -68,7 +68,8 @@ read yn
 if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
     rm -rf ${asdf_home}
     git clone 'https://github.com/asdf-vm/asdf.git' "${asdf_home}" --branch v0.7.4
-    rm -rf \$0
+    rm -rf "\$(dirname \$0)"/asdf
+    exit 0
 fi
 EOF
             chmod +x "${HOME}/.shim/asdf"
@@ -96,7 +97,8 @@ read yn
 if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
     wget -O ${lein_path} 'https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein'
     chmod +x ${lein_path}
-    rm -rf \$0
+    rm -rf "\$(dirname \$0)"/lein
+    exit 0
 fi
 EOF
             chmod +x "${HOME}/.shim/lein"
@@ -125,14 +127,16 @@ EOF
 echo -n "Do you want to install 'clojure(Clojure CLI tool)'? (Y or N): "
 read yn
 if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
-    local clj_cli_ver="1.10.3.849"
-    local clj_cli_installer="/tmp/clj-cli-installer"
+    clj_cli_ver="1.10.3.849"
+    clj_cli_installer="/tmp/clj-cli-installer"
     wget -O "\${clj_cli_installer}" "https://download.clojure.org/install/linux-install-\${clj_cli_ver}.sh"
     if [ $? -eq 0 ]; then
         chmod +x "\${clj_cli_installer}"
         "\${clj_cli_installer}" --prefix "\${HOME}/.local"
     fi
     rm -f "\${clj_cli_installer}"
+    rm -rf "\$(dirname \$0)"/{clj,clojure}
+    exit 0
 fi
 EOF
             chmod +x "${HOME}/.shim/clojure"
@@ -274,8 +278,8 @@ if [ -n "\$(echo \${yn} | grep -E -i '^y(es)?\$')" ]; then
     curl 'https://sh.rustup.rs' -sSf | RUSTUP_INIT_SKIP_PATH_CHECK=yes sh -s -- --no-modify-path --default-toolchain nightly
     "\${HOME}/.cargo/bin/rustup" component add clippy rustfmt rust-src
     rm -rf \$0
-    rm -rf "\$(dirname \$0)/cargo"
-    rm -rf "\$(dirname \$0)/rustup"
+    rm -rf "\$(dirname \$0)"/{cargo,rustup}
+    exit 0
 fi
 EOF
             chmod +x "${HOME}/.shim/rustup"
