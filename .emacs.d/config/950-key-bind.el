@@ -611,8 +611,7 @@
                                                                 #'display-buffer-use-some-window))))
                                (display-buffer-fallback-action
                                 '((display-buffer-in-previous-window
-                                   display-buffer-reuse-window)))
-                               (same-window-buffer-names nil))
+                                   display-buffer-reuse-window))))
                            (org-agenda-switch-to)))))
 
 (use-package evil-surround

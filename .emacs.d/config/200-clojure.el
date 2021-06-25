@@ -545,7 +545,6 @@
   (edn-add-writer #'edn-reader-macro-p #'edn-reader-macro))
 
 (use-package flycheck-clj-kondo
-  :disabled t
   :ensure t
   :after (clojure-mode flycheck)
   :config

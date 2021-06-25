@@ -53,7 +53,7 @@
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
      '(cider-reader-conditional-face ((t :inherit shadow)))
-     `(cider-deprecated-face  ((t :inherit font-lock-warning-face :weight ,default-weight :underline (:style wave :color "darkorange"))))
+     `(cider-deprecated-face  ((t :underline (:style line :color "darkorange"))))
      '(cider-fringe-good-face ((t :inherit success)))
      '(cider-repl-prompt-face ((t :inherit font-lock-keyword-face :weight light)))
      '(cider-repl-stdout-face ((t :inherit font-lock-string-face :weight light))))))
