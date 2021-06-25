@@ -14,7 +14,7 @@
                               ["releases"  {:url "https://localhost:4430/repository/clojars-releases/"  :sign-releases false}]]
         :plugins [[lein-cljfmt "0.7.0"]
                   [lein-pprint "1.3.2"]
-                  [vmfhrmfoaj/my-lein-templates "1.0.2"]
+                  [vmfhrmfoaj/my-lein-templates "1.0.3-SNAPSHOT"]
                   [vmfhrmfoaj/my-lein-utils  "1.0.5"]]
         :repl-options {:init (do
                                (set! *print-level* 8)
