@@ -6,35 +6,35 @@
   (require 's)
   (require 'func))
 
-(use-package spacemacs-dark
-  :ensure spacemacs-theme
-  :defer t
-  :init
-  (setq frame-background-mode 'dark)
-  (load-theme 'spacemacs-dark t)
+(use-package spacemacs-theme
+  :ensure t
+  :defer t)
 
-  (custom-set-faces
-   '(bold ((t :foreground unspecified :weight bold)))
-   '(c-style-brace-face ((t :inherit shadow :weight light)))
-   '(c-style-operator-face ((t :weight normal)))
-   '(c-style-punctuation-1-face ((t :inherit shadow)))
-   '(c-style-punctuation-2-face ((t :inherit shadow :weight light)))
-   '(default ((t :background "#242528")))
-   '(fixed-pitch ((t :family "Fira Code")))
-   '(fringe  ((t :background "#2f343f" :foreground "#585c65")))
-   `(isearch ((t :underline unspecified)))
-   '(italic ((t :foreground unspecified :family "Fantasque Sans Mono" :slant italic)))
-   '(lazy-highlight ((t :weight bold)))
-   '(line-number-current-line ((t :background unspecified)))
-   '(shadow ((t :weight normal)))
-   '(show-paren-match ((t :weight bold)))
-   '(symbol-dash-or-underline-face ((t :weight normal)))
-   '(vertical-border ((t :foreground "#2f343f")))
-   '(whitespace-newline ((t :inherit whitespace-tab :foreground unspecified)))
-   '(whitespace-space   ((t :inherit whitespace-tab :foreground unspecified)))
-   '(whitespace-tab ((t :weight light))))
-  (custom-set-faces
-   `(line-number ((t :background ,(color-from 'fringe :background (* 5 (if (eq frame-background-mode 'dark) -1 1))) :weight light)))))
+(setq frame-background-mode 'dark)
+(load-theme 'spacemacs-dark t)
+
+(custom-set-faces
+ '(bold ((t :foreground unspecified :weight bold)))
+ '(c-style-brace-face ((t :inherit shadow :weight light)))
+ '(c-style-operator-face ((t :weight normal)))
+ '(c-style-punctuation-1-face ((t :inherit shadow)))
+ '(c-style-punctuation-2-face ((t :inherit shadow :weight light)))
+ '(default ((t :background "#242528")))
+ '(fixed-pitch ((t :family "Fira Code")))
+ '(fringe  ((t :background "#2f343f" :foreground "#585c65")))
+ `(isearch ((t :underline unspecified)))
+ '(italic ((t :foreground unspecified :family "Fantasque Sans Mono" :slant italic)))
+ '(lazy-highlight ((t :weight bold)))
+ '(line-number-current-line ((t :background unspecified)))
+ '(shadow ((t :weight normal)))
+ '(show-paren-match ((t :weight bold)))
+ '(symbol-dash-or-underline-face ((t :weight normal)))
+ '(vertical-border ((t :foreground "#2f343f")))
+ '(whitespace-newline ((t :inherit whitespace-tab :foreground unspecified)))
+ '(whitespace-space   ((t :inherit whitespace-tab :foreground unspecified)))
+ '(whitespace-tab ((t :weight light))))
+(custom-set-faces
+ `(line-number ((t :background ,(color-from 'fringe :background (* 5 (if (eq frame-background-mode 'dark) -1 1))) :weight light))))
 
 (use-package auto-dim-other-buffers
   :defer t
@@ -50,13 +50,12 @@
 (use-package cider-mode
   :defer t
   :config
-  (let ((default-weight (face-attribute 'default :weight)))
-    (custom-set-faces
-     '(cider-reader-conditional-face ((t :inherit shadow)))
-     `(cider-deprecated-face  ((t :underline (:style line :color "darkorange"))))
-     '(cider-fringe-good-face ((t :inherit success)))
-     '(cider-repl-prompt-face ((t :inherit font-lock-keyword-face :weight light)))
-     '(cider-repl-stdout-face ((t :inherit font-lock-string-face :weight light))))))
+  (custom-set-faces
+   '(cider-reader-conditional-face ((t :inherit shadow)))
+   `(cider-deprecated-face  ((t :underline (:style line :color "darkorange"))))
+   '(cider-fringe-good-face ((t :inherit success)))
+   '(cider-repl-prompt-face ((t :inherit font-lock-keyword-face :weight light)))
+   '(cider-repl-stdout-face ((t :inherit font-lock-string-face :weight light)))))
 
 (use-package clojure-mode
   :defer t

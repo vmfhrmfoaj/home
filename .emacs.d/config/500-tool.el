@@ -155,7 +155,7 @@
         #'eldoc-refresh-for-emacs-28
       #'eldoc-refresh-for-emacs-27))
 
-  (setq eldoc-idle-delay 0.2
+  (setq eldoc-idle-delay 0.35
         eldoc-echo-area-use-multiline-p 5)
 
   (add-hook 'eldoc-mode-hook

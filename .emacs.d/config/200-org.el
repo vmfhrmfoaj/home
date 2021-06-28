@@ -203,7 +203,8 @@ which see."
     (org-capture nil "n"))
 
   :config
-  (setq org-capture-templates
+  (setq org-capture-bookmark nil
+        org-capture-templates
         `(("t" "Todo" entry
            (file+headline ,(concat org-directory "/todos/" (format-time-string "%Y") ".org")
                           ,(format-time-string "%b"))

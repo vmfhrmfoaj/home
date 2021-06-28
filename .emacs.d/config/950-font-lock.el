@@ -637,11 +637,6 @@
         (,(concat "(" core-ns? important-kw "\\(?:)\\|" whitespace "\\)")
          (1 'clojure-important-keywords-face))
 
-        ;; Namespaced keyword - ::namespace/keyword
-        (,(concat "::\\(" symbol "\\)\\(/\\)" symbol "\\>")
-         (1 'clojure-ns-prefix-face)
-         (2 'shadow))
-
         ;; Auto-gensym variable - variable#
         (,(concat symbol "\\(#\\)\\_>")
          (1 'shadow))
@@ -655,7 +650,7 @@
                   whitespace* meta?
                   "\\(" symbol "?\\)")
          (1 'font-lock-keyword-face)
-         (2 'font-lock-function-name-face nil t))
+         (2 'font-lock-function-name-face))
 
         ;; Type definition
         (,(concat "(" core-ns? "\\(defstruct\\)\\>"
@@ -663,7 +658,7 @@
                   meta?
                   "\\(" symbol "\\)")
          (1 'font-lock-keyword-face)
-         (2 'font-lock-type-face nil t))
+         (2 'font-lock-type-face))
 
         ;; Top-level variable definition
         (,(concat "(" namespace? "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
@@ -687,7 +682,7 @@
                   meta?
                   "\\(" symbol "\\)?" )
          (1 'font-lock-keyword-face)
-         (2 'font-lock-function-name-face nil t)
+         (2 'font-lock-function-name-face)
 
          ;; fn parameters highlight
          (,(let ((meta?+ns?+symbol (concat meta? "\\_<" namespace? "\\(" symbol "\\)#?\\>")))

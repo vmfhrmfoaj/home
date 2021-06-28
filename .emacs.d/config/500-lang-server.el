@@ -441,7 +441,7 @@
         lsp-enable-on-type-formatting nil
         lsp-file-watch-threshold nil
         lsp-headerline-breadcrumb-enable nil
-        lsp-idle-delay 0.2
+        lsp-idle-delay 0.35
         lsp-modeline-code-actions-enable nil
         lsp-restart 'ignore
         lsp-rust-server 'rust-analyzer

@@ -239,10 +239,9 @@ So, replaced `evil-jump-item' to this function."
   (advice-add #'save-buffers-kill-emacs :before
               (lambda (&rest _)
                 "trigger `undo-tree-save-history-from-hook'"
-                (->> (buffer-list)
-                     (--filter buffer-file-name)
-                     (--map (with-current-buffer it
-                              (undo-tree-save-history-from-hook)))))))
+                (--each (buffer-list)
+                  (with-current-buffer it
+                    (undo-tree-save-history-from-hook))))))
 
 (use-package whitespace
   :defer t
