@@ -92,18 +92,14 @@
     ;; 1. https://github.com/tonsky/FiraCode/wiki/Emacs-instructions#using-composition-char-table
     ;; 2. https://github.com/belluzj/fantasque-sans/issues/64
     ;; 3. https://github.com/belluzj/fantasque-sans/pull/114
-    '(( 33 . ".\\(?:==\\|[!=]\\)")              ; !=, !==, !!
-      ( 35 . ".\\(?:_(\\|[{(?_]\\)")            ; #{}, #(), #_, #_(), #?
+    '(( 33 . ".\\(?:==?\\)")                    ; !=, !==
       ( 38 . ".\\(?:&\\)")                      ; &&
       ( 45 . ".\\(?:-?>>?\\)")                  ; ->, ->>, -->
-      ( 46 . ".\\(?:\\.\\.?\\|-\\)")            ; .., ..., .-
-      ( 58 . ".\\(?:::?\\)")                    ; ::, :::
-      ( 59 . ".\\(?:;\\)")                      ; ;;
+      ( 58 . ".\\(?::\\)")                      ; ::
       ( 60 . ".\\(?:=\\|\\(?:!-\\)?-\\)")       ; <=, <!--, <-
       ( 61 . ".\\(?:==?\\|>\\)")                ; ==, ===, =>
       ( 62 . ".\\(?:=\\)")                      ; >=
       (124 . ".\\(?:|\\)")                      ; || ; NOTE On "Cascadia Code" font, the bold of '||' height is different to the normal height.
-      (126 . ".\\(?:@\\)")                      ; ~@
       )
     "TODO")
 
