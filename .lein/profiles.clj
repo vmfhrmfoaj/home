@@ -15,7 +15,7 @@
         :plugins [[lein-cljfmt "0.7.0"]
                   [lein-pprint "1.3.2"]
                   [vmfhrmfoaj/my-lein-templates "1.0.3-SNAPSHOT"]
-                  [vmfhrmfoaj/my-lein-utils  "1.0.5"]]
+                  [vmfhrmfoaj/my-lein-utils  "1.0.6-SNAPSHOT"]]
         :repl-options {:init (do
                                (set! *print-level* 8)
                                (set! *print-length* 30))}}}
