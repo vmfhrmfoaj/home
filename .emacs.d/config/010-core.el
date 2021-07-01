@@ -122,7 +122,7 @@
 (use-package gcmh
   :ensure t
   :config
-  (setq gcmh-high-cons-threshold (* 1024 1024 128))
+  (setq gcmh-high-cons-threshold (* 1024 1024 2048))
 
   (add-hook 'after-save-hook
             (lambda ()

@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: CURL POST with key value pairs
+# key: curl-post-form
+# --
+
+curl -X POST -H 'Content-Type: application/x-www-form-urlencoded' --data-urlencode '$1' http://localhost:3000/$2

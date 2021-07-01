@@ -853,7 +853,8 @@
   :config
   (evil-define-key 'treemacs treemacs-mode-map (kbd "h") #'treemacs-close-node)
   (evil-define-key 'treemacs treemacs-mode-map (kbd "l") #'treemacs-open-node)
-  (evil-define-key 'treemacs treemacs-mode-map (kbd "q") #'treemacs-kill-buffer))
+  (evil-define-key 'treemacs treemacs-mode-map (kbd "q") #'treemacs-kill-buffer)
+  (evil-define-key 'treemacs treemacs-mode-map (kbd "?") #'evil-search-backward))
 
 
 ;; Key binding for the major mode

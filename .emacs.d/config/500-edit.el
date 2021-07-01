@@ -24,7 +24,7 @@
          (emacs-lisp-mode       . aggressive-indent-mode)
          (lisp-interaction-mode . aggressive-indent-mode))
   :config
-  (setq aggressive-indent-sit-for-time 0.01
+  (setq aggressive-indent-sit-for-time 0.15
         aggressive-indent-region-function #'indent-region ; fix with below advice func
         aggressive-indent-protected-commands (->> aggressive-indent-protected-commands
                                                   (append '(evil-undo

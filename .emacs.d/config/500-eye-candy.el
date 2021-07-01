@@ -40,11 +40,6 @@
   (setq auto-dim-other-buffers-dim-on-focus-out nil
         auto-dim-other-buffers-dim-on-switch-to-minibuffer nil)
 
-  ;; (add-to-list 'auto-dim-other-buffers-never-dim-buffer-functions
-  ;;              (lambda (_buf)
-  ;;                "Disable `auto-dim-other-buffers' on the minibuffer"
-  ;;                (minibuffer-window-active-p (window-list (selected-frame) t))))
-
   (defvar-local adob--face-mode-remapping-for-line-number nil)
 
   (defconst adob--remap-face-for-line-number
@@ -80,6 +75,11 @@
                     (force-window-update object)
                     wants))))
 
+  (advice-add #'adob--rescan-windows :before-until
+              (lambda ()
+                "Prevent to dim buffers if minibuffer is focused."
+                (minibuffer-window-active-p (minibuffer-window))))
+
   (auto-dim-other-buffers-mode 1))
 
 (use-package composite
@@ -94,12 +94,12 @@
     ;; 3. https://github.com/belluzj/fantasque-sans/pull/114
     '(( 33 . ".\\(?:==?\\)")                    ; !=, !==
       ( 38 . ".\\(?:&\\)")                      ; &&
-      ( 45 . ".\\(?:-?>>?\\)")                  ; ->, ->>, -->
+      ( 45 . ".\\(?:>>?\\)")                    ; ->, ->>
       ( 58 . ".\\(?::\\)")                      ; ::
-      ( 60 . ".\\(?:=\\|\\(?:!-\\)?-\\)")       ; <=, <!--, <-
-      ( 61 . ".\\(?:==?\\|>\\)")                ; ==, ===, =>
+      ( 60 . ".\\(?:=\\)")                      ; <=
+      ( 61 . ".\\(?:==?\\)")                    ; ==, ===
       ( 62 . ".\\(?:=\\)")                      ; >=
-      (124 . ".\\(?:|\\)")                      ; || ; NOTE On "Cascadia Code" font, the bold of '||' height is different to the normal height.
+      (124 . ".\\(?:|\\)")                      ; ||
       )
     "TODO")
 

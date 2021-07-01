@@ -37,7 +37,11 @@
 (let ((f (lambda ()
            (font-lock-add-keywords
             nil
-            '(("\\(?:^\\|\\s-\\)\\([-+*/%&|^]\\|<<?\\|>>?\\|[-+*/%&|!=<>^]?=\\|[!=]==\\)\\(?:\\s-\\|$\\)"
+            '(("\\(?:^\\|\\s-\\)\\([-+*/%&|^]\\|<<?\\|>>?\\|[-+*/%&|!=<>^:]?=\\|[!=]==\\)\\(?:\\s-\\|$\\)"
+               (1 'c-style-operator-face))
+              ("[A-Za-z]\\([-+]\\{2,2\\}\\)\\(?:;\\|\\s-\\|$\\)"
+               (1 'c-style-operator-face))
+              ("\\(?:^\\|\\s-\\)\\([-+]\\{2,2\\}\\)[A-Za-z]"
                (1 'c-style-operator-face))
               ("\\([|&]\\{2,2\\}\\|\\s(\\|\\s)\\)"
                (1 'c-style-punctuation-1-face))
@@ -650,7 +654,7 @@
                   whitespace* meta?
                   "\\(" symbol "?\\)")
          (1 'font-lock-keyword-face)
-         (2 'font-lock-function-name-face))
+         (2 'font-lock-function-name-face nil t))
 
         ;; Type definition
         (,(concat "(" core-ns? "\\(defstruct\\)\\>"
@@ -658,7 +662,7 @@
                   meta?
                   "\\(" symbol "\\)")
          (1 'font-lock-keyword-face)
-         (2 'font-lock-type-face))
+         (2 'font-lock-type-face nil t))
 
         ;; Top-level variable definition
         (,(concat "(" namespace? "\\(def[^" clojure--sym-forbidden-rest-chars "]*\\)\\>"
@@ -682,7 +686,7 @@
                   meta?
                   "\\(" symbol "\\)?" )
          (1 'font-lock-keyword-face)
-         (2 'font-lock-function-name-face)
+         (2 'font-lock-function-name-face nil t)
 
          ;; fn parameters highlight
          (,(let ((meta?+ns?+symbol (concat meta? "\\_<" namespace? "\\(" symbol "\\)#?\\>")))

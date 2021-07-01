@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: CURL post
-# key: curl-post
-# --
-
-curl -X POST -H 'Content-Type: application/json' -d '{$1}' http://$2

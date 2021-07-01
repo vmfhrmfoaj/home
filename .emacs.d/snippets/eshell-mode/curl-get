@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: CURL get
+# key: curl-get
+# --
+
+curl http://localhost:3000/$1

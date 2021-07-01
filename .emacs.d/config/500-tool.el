@@ -52,9 +52,10 @@
       (setq display-line-numbers-width
             (max 4 (length (number-to-string (count-lines (point-min) (point-max))))))
       (display-line-numbers-mode)
-      (setq display-line-numbers 'visual)))
+      (setq display-line-numbers 'relative)))
 
-  (setq-default display-line-numbers-width-start nil))
+  (setq-default display-line-numbers-grow-only t
+                display-line-numbers-width-start nil))
 
 (use-package ediff
   :defer t

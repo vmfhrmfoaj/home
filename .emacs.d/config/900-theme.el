@@ -213,6 +213,7 @@
    '(org-block ((t :inherit fixed-pitch)))
    '(org-block-begin-line ((t :weight normal)))
    '(org-block-end-line   ((t :weight normal)))
+   '(org-code ((t :foreground "#24c7d8")))
    '(org-done ((t :inherit shadow :foreground unspecified :box (:line-width (1 . -1)))))
    '(org-headline-done ((t :inherit shadow)))
    '(org-drawer ((t :weight normal)))
