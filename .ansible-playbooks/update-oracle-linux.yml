@@ -1,0 +1,9 @@
+---
+- hosts: vm_oracle_linux
+  tasks:
+    - name: Upgrade all packages
+      become: true
+      become_method: sudo
+      yum:
+        name: '*'
+        state: latest
