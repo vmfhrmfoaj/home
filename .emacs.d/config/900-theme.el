@@ -20,7 +20,7 @@
  '(c-style-punctuation-1-face ((t :inherit shadow)))
  '(c-style-punctuation-2-face ((t :inherit shadow :weight light)))
  '(default ((t :background "#242528")))
- '(fixed-pitch ((t :family "Fira Code")))
+ '(fixed-pitch ((t :family "Fantasque Sans Mono")))
  '(fringe  ((t :background "#2f343f" :foreground "#585c65")))
  `(isearch ((t :underline unspecified)))
  '(italic ((t :foreground unspecified :family "Fantasque Sans Mono" :slant italic)))
@@ -62,7 +62,7 @@
   :config
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
-     `(clojure-cond-condtion-face ((t :slant italic)))
+     `(clojure-cond-condtion-face ((t :underline (:color ,(color-from 'default :background (* 15 (if (eq frame-background-mode 'dark) 1 -1)))))))
      '(clojure-define-type-face ((t :inherit font-lock-type-face :background "#3d1824")))
      '(clojure-defining-spec-face ((t :inherit font-lock-keyword-face :background "#1c354d")))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
@@ -133,8 +133,8 @@
   :defer t
   :config
   (custom-set-faces
-   '(font-lock-comment-face ((t :background unspecified :weight light :slant italic)))
-   '(font-lock-doc-face ((t :weight light :slant italic)))
+   '(font-lock-comment-face ((t :inherit italic :background unspecified :weight light :slant unspecified)))
+   '(font-lock-doc-face ((t :inherit italic :weight light)))
    '(font-lock-function-name-face ((t :background "#412645" :weight bold)))
    '(font-lock-keyword-face ((t :weight unspecified)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
