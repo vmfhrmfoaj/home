@@ -407,6 +407,15 @@ _is_cmd 'tree'
 if [ $? -eq 0 ]; then
     alias tree="$(which tree) -C"
 fi
+_is_cmd 'rsync'
+if [ $? -eq 0 ]; then
+    alias rsync="$(which rsync) -v --info=progress2"
+fi
+_is_cmd 'docker'
+if [ $? -eq 0 ]; then
+    alias php="docker run --rm --interactive --tty --volume "$PWD":/workspace --network host vmfhrmfoaj/dev-env_php:8.0 php"
+    alias composer="docker run --rm --interactive --tty --volume "$PWD":/workspace --network host vmfhrmfoaj/dev-env_php:8.0 composer"
+fi
 
 
 # add dirs to PATH
