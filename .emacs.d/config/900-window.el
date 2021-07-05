@@ -26,6 +26,8 @@
         (when (window-resizable-p (selected-window) ncol t)
           (enlarge-window ncol t)))))
 
+  (setq golden-ratio-adjust-factor 1.1)
+
   (with-eval-after-load "which-key"
     (add-to-list 'golden-ratio-inhibit-functions
                  (lambda ()

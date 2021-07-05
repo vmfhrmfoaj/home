@@ -30,10 +30,6 @@
   '((t (:inherit shadow)))
   "TODO")
 
-(defface symbol-dash-or-underline-face
-  '((t (:inherit shadow)))
-  "TODO")
-
 (let ((f (lambda ()
            (font-lock-add-keywords
             nil
@@ -95,9 +91,7 @@
         ("\\([.;]\\)"
          (1 'shadow))
         ("[A-Za-z]\\(:\\)\\s-*$"
-         (1 'shadow))
-        ("[0-9A-Za-z]\\(_+\\)[0-9A-Za-z]"
-         (1 'symbol-dash-or-underline-face prepend)))
+         (1 'shadow)))
       :append))))
 
 (use-package css-mode
@@ -113,9 +107,7 @@
      mode
      `(;; punctuation
        ("\\([:;]\\)"
-        (1 'shadow))
-       ("[0-9A-Za-z]\\(-+\\)[0-9A-Za-z]"
-        (1 'symbol-dash-or-underline-face prepend)))
+        (1 'shadow)))
      :append)))
 
 (use-package cperl-mode
@@ -161,9 +153,7 @@
        ("\\([\\&|*]\\|::\\|;\\|[-=]>\\|[$@]_\\>\\)"
         (1 'shadow))
        ("\\([*@$%]+\\)\\(?:[:_0-9a-zA-Z]\\|\\s(\\)"
-        (1 'shadow))
-       ("[0-9A-Za-z]\\(_+\\)[0-9A-Za-z]"
-        (1 'symbol-dash-or-underline-face prepend))))
+        (1 'shadow))))
    :append))
 
 (use-package clojure-mode
@@ -1028,9 +1018,7 @@
        ("\\(\\(?:[~#@`'^]\\|#_\\|#\\?@?\\)?\\s(\\|\\s)\\|[,]\\)"
         (1 'clojure-punctuation-face append))
        ("\\([~#@&_`'^]\\)"
-        (1 'shadow))
-       ("[0-9A-Za-z]\\(-+>?\\|[._$]\\)[0-9A-Za-z]"
-        (1 'symbol-dash-or-underline-face prepend)))
+        (1 'shadow)))
      :append)))
 
 (use-package elisp-mode
@@ -1121,9 +1109,7 @@
          ("\\s(\\|\\s)"
           (0 'lisp-punctuation-face append))
          ("#?'\\|`\\|\\_<_\\_>\\|,@?\\|\\."
-          (0 'shadow))
-         ("[0-9A-Za-z]\\(-+>?\\)[0-9A-Za-z]"
-          (1 'symbol-dash-or-underline-face prepend)))
+          (0 'shadow)))
        :append))))
 
 (use-package elixir-mode
@@ -1472,9 +1458,7 @@
    '(("\\([{}]\\)"
       (1 'c-style-brace-face))
      ("\\([$]\\)"
-      (1 'shadow append))
-     ("[0-9A-Za-z]\\(_+\\)[0-9A-Za-z]"
-      (1 'symbol-dash-or-underline-face prepend)))
+      (1 'shadow append)))
    :append))
 
 (use-package python
@@ -1538,9 +1522,7 @@
    `(("\\(\\*\\*?\\)[_A-Za-z]"
       (1 'shadow))
      ("[A-Za-z]\\(=\\)\\(?:[\"'0-9A-Za-z]\\|\\s(\\)"
-      (1 'shadow))
-     ("[0-9A-Za-z]\\(_\\)[0-9A-Za-z]"
-      (1 'symbol-dash-or-underline-face prepend)))))
+      (1 'shadow)))))
 
 (use-package rpm-spec-mode
   :defer t

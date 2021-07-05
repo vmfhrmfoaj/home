@@ -16,7 +16,7 @@
 (custom-set-faces
  '(bold ((t :foreground unspecified :weight bold)))
  '(c-style-brace-face ((t :inherit shadow :weight light)))
- '(c-style-operator-face ((t :weight normal)))
+ '(c-style-operator-face ((t :weight light)))
  '(c-style-punctuation-1-face ((t :inherit shadow)))
  '(c-style-punctuation-2-face ((t :inherit shadow :weight light)))
  '(default ((t :background "#242528")))
@@ -24,11 +24,10 @@
  '(fringe  ((t :background "#2f343f" :foreground "#585c65")))
  `(isearch ((t :underline unspecified)))
  '(italic ((t :foreground unspecified :family "Fantasque Sans Mono" :slant italic)))
- '(lazy-highlight ((t :weight bold)))
+ '(lazy-highlight ((t :weight semi-bold)))
  '(line-number-current-line ((t :background unspecified)))
- '(shadow ((t :weight normal)))
+ '(shadow ((t :weight light)))
  '(show-paren-match ((t :weight bold)))
- '(symbol-dash-or-underline-face ((t :weight normal)))
  '(vertical-border ((t :foreground "#2f343f")))
  '(whitespace-newline ((t :inherit whitespace-tab :foreground unspecified)))
  '(whitespace-space   ((t :inherit whitespace-tab :foreground unspecified)))
@@ -62,24 +61,24 @@
   :config
   (let ((default-weight (face-attribute 'default :weight)))
     (custom-set-faces
-     `(clojure-cond-condtion-face ((t :underline (:color ,(color-from 'default :background (* 15 (if (eq frame-background-mode 'dark) 1 -1)))))))
-     '(clojure-define-type-face ((t :inherit font-lock-type-face :background "#3d1824")))
-     '(clojure-defining-spec-face ((t :inherit font-lock-keyword-face :background "#1c354d")))
+     `(clojure-cond-condtion-face ((t :inherit italic)))
+     '(clojure-define-type-face ((t :inherit font-lock-type-face :background "#3d1824" :weight bold)))
+     '(clojure-defining-spec-face ((t :inherit font-lock-keyword-face :background "#1c354d" :weight bold)))
      `(clojure-fn-parameter-face ((t :inherit font-lock-variable-name-face :weight ,default-weight)))
-     '(clojure-fn-parameter-unused-face ((t :inherit clojure-fn-parameter-face :weight normal)))
+     '(clojure-fn-parameter-unused-face ((t :inherit clojure-fn-parameter-face :weight light)))
      `(clojure-important-keywords-face
        ((t :inherit font-lock-keyword-face :weight unspecified
-           :background ,(color-from 'default :background (* 3 (if (eq frame-background-mode 'dark) 1 -1))))))
+           :background ,(color-from 'default :background (* 5 (if (eq frame-background-mode 'dark) 1 -1))))))
      '(clojure-interop-method-face ((t :inherit font-lock-keyword-face :weight bold)))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
-     '(clojure-ns-prefix-face ((t :inherit font-lock-type-face :weight normal)))
-     '(clojure-meta-face ((t :inherit shadow :weight normal)))
+     '(clojure-ns-prefix-face ((t :inherit font-lock-type-face :weight light)))
+     '(clojure-meta-face ((t :inherit shadow :weight light)))
      '(clojure-ns-definition-face ((t :inherit font-lock-type-face :background "#3d1824")))
      `(clojure-local-binding-variable-name-face ((t :inherit font-lock-variable-name-face :foreground "#6981c5" :weight ,default-weight)))
-     '(clojure-local-binding-variable-name-unsed-face ((t :inherit clojure-local-binding-variable-name-face :weight normal)))
+     '(clojure-local-binding-variable-name-unsed-face ((t :inherit clojure-local-binding-variable-name-face :weight light)))
      '(clojure-punctuation-face ((t :inherit shadow :weight light)))
      '(clojure-semi-function-name-face ((t :inherit font-lock-function-name-face)))
-     '(clojure-side-effect-face ((t :weight bold :underline t)))
+     '(clojure-side-effect-face ((t :weight semi-bold :underline t)))
      '(clojure-special-variable-name-face ((t :inherit font-lock-constant-face)))
      '(clojure-special-variable-definition-face ((t :inherit (font-lock-constant-face clojure-variable-definition-face))))
      `(clojure-variable-definition-face ((t :inherit font-lock-variable-name-face
@@ -120,7 +119,7 @@
   :config
   (custom-set-faces
    '(epe-symbol-face ((t :inherit shadow)))
-   '(epe-git-face ((t :inherit font-lock-constant-face :weight normal)))
+   '(epe-git-face ((t :inherit font-lock-constant-face :weight light)))
    '(eshell-prompt ((t :inherit shadow :weight light)))))
 
 (use-package focus
@@ -136,12 +135,12 @@
    '(font-lock-comment-face ((t :inherit italic :background unspecified :weight light :slant unspecified)))
    '(font-lock-doc-face ((t :inherit italic :weight light)))
    '(font-lock-function-name-face ((t :background "#412645" :weight bold)))
-   '(font-lock-keyword-face ((t :weight unspecified)))
+   '(font-lock-keyword-face ((t :weight semi-bold)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
-   '(font-lock-preprocessor-face ((t :weight normal)))
-   '(font-lock-regexp-grouping-backslash ((t :weight normal)))
-   '(font-lock-regexp-grouping-construct ((t :weight normal)))
-   '(font-lock-type-face ((t :weight unspecified)))
+   '(font-lock-preprocessor-face ((t :weight light)))
+   '(font-lock-regexp-grouping-backslash ((t :weight light)))
+   '(font-lock-regexp-grouping-construct ((t :weight light)))
+   '(font-lock-type-face ((t :inherit unspecified :weight unspecified)))
    '(font-lock-variable-name-face ((t :weight unspecified))))
   (custom-set-faces
    `(font-lock-comment-delimiter-face
@@ -162,12 +161,17 @@
              (-drop 2)))
 
   (custom-set-faces
-   '(highlight-parentheses-highlight ((t :weight bold :underline t)))))
+   '(highlight-parentheses-highlight ((t :weight semi-bold :underline t)))))
 
 (use-package ivy
   :defer t
   :config
   (custom-set-faces
+   ;; NOTE
+   ;;  If the font size is larger than 10.0, the heigh of '▏' character is longer than other character.
+   ;;  characters in `posframe' is moving when switching to `evil' normal mode.
+   ;;  See, `ivy-posframe--custom-add-prompt' in 500-eye-candy.el.
+   `(minibuffer-prompt ((t :overline ,(color-from 'default :background))))
    '(ivy-current-match ((t :weight bold)))
    '(ivy-grep-info ((t :inherit font-lock-string-face :weight light)))
    '(ivy-grep-line-number ((t :inherit compilation-line-number :weight light)))
@@ -202,27 +206,27 @@
   (add-hook 'org-agenda-mode-hook
             (lambda ()
               (add-to-list 'face-remapping-alist
-                           `(org-tag (:inherit default :foreground ,(color-from 'org-tag :foreground) :weight normal)))))
+                           `(org-tag (:inherit default :foreground ,(color-from 'org-tag :foreground) :weight light)))))
 
   :config
   (custom-set-faces
    '(org-agenda-calendar-event ((t :inherit unspecified)))
-   '(org-agenda-date ((t :weight normal :height 1.3)))
+   '(org-agenda-date ((t :weight light :height 1.3)))
    '(org-agenda-date-today ((t :background "#1c354d" :height 1.3)))
-   '(org-agenda-date-weekend ((t :weight normal :height 1.3)))
+   '(org-agenda-date-weekend ((t :weight light :height 1.3)))
    '(org-block ((t :inherit fixed-pitch)))
-   '(org-block-begin-line ((t :weight normal)))
-   '(org-block-end-line   ((t :weight normal)))
+   '(org-block-begin-line ((t :weight light)))
+   '(org-block-end-line   ((t :weight light)))
    '(org-code ((t :foreground "#24c7d8")))
    '(org-done ((t :inherit shadow :foreground unspecified :box (:line-width (1 . -1)))))
    '(org-headline-done ((t :inherit shadow)))
-   '(org-drawer ((t :weight normal)))
+   '(org-drawer ((t :weight light)))
    '(org-ellipsis ((t :inherit shadow :foreground unspecified)))
    '(org-link ((t :weight unspecified)))
-   '(org-punctuation-face ((t :inherit default :weight normal)))
-   '(org-scheduled-previously ((t :inherit (shadow italic) :foreground unspecified :weight normal :slant unspecified)))
-   '(org-special-keyword ((t :weight normal)))
-   '(org-super-agenda-header ((t :foreground "#2d9574" :weight normal :height 1.3)))
+   '(org-punctuation-face ((t :inherit default :weight light)))
+   '(org-scheduled-previously ((t :inherit (shadow italic) :foreground unspecified :weight light :slant unspecified)))
+   '(org-special-keyword ((t :weight light)))
+   '(org-super-agenda-header ((t :foreground "#2d9574" :weight light :height 1.3)))
    '(org-tag ((t :background unspecified :slant unspecified)))
    `(org-task-done ((t :inherit shadow)))
    '(org-todo ((t :box (:line-width (1 . -1)))))
@@ -241,7 +245,7 @@
   :defer t
   :config
   (custom-set-faces
-   '(rpm-spec-changelog-item-face ((t :weight normal)))
+   '(rpm-spec-changelog-item-face ((t :weight light)))
    '(rpm-spec-ghost-face ((t :inherit shadow)))
    '(rpm-spec-macro-face ((t :inherit font-lock-keyword-face)))
    '(rpm-spec-package-face ((t :inherit font-lock-constant-face)))
@@ -253,8 +257,8 @@
   :defer t
   :config
   (custom-set-faces
-   '(rust-attribute-face ((t :inherit font-lock-preprocessor-face :weight normal)))
-   '(rust-lifetime-face ((t :inherit font-lock-variable-name-face :weight normal)))
+   '(rust-attribute-face ((t :inherit font-lock-preprocessor-face :weight light)))
+   '(rust-lifetime-face ((t :inherit font-lock-variable-name-face :weight light)))
    `(rust-string-interpolation-face
      ((t :inherit (font-lock-regexp-grouping-construct font-lock-string-face) :slant unspecified)))))
 
@@ -268,7 +272,7 @@
   :defer t
   :config
   (custom-set-faces
-   `(spaceline-symbol-segment-face ((t :inherit powerline-active1 :weight normal)))))
+   `(spaceline-symbol-segment-face ((t :inherit powerline-active1 :weight light)))))
 
 (use-package treemacs
   :defer t
