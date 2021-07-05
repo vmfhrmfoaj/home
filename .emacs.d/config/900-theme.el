@@ -68,7 +68,7 @@
      '(clojure-fn-parameter-unused-face ((t :inherit clojure-fn-parameter-face :weight light)))
      `(clojure-important-keywords-face
        ((t :inherit font-lock-keyword-face :weight unspecified
-           :background ,(color-from 'default :background (* 5 (if (eq frame-background-mode 'dark) 1 -1))))))
+           :background ,(color-from 'default :background (* 4 (if (eq frame-background-mode 'dark) 1 -1))))))
      '(clojure-interop-method-face ((t :inherit font-lock-keyword-face :weight bold)))
      '(clojure-keyword-face ((t :inherit font-lock-builtin-face)))
      '(clojure-ns-prefix-face ((t :inherit font-lock-type-face :weight light)))
@@ -167,11 +167,6 @@
   :defer t
   :config
   (custom-set-faces
-   ;; NOTE
-   ;;  If the font size is larger than 10.0, the heigh of '▏' character is longer than other character.
-   ;;  characters in `posframe' is moving when switching to `evil' normal mode.
-   ;;  See, `ivy-posframe--custom-add-prompt' in 500-eye-candy.el.
-   `(minibuffer-prompt ((t :overline ,(color-from 'default :background))))
    '(ivy-current-match ((t :weight bold)))
    '(ivy-grep-info ((t :inherit font-lock-string-face :weight light)))
    '(ivy-grep-line-number ((t :inherit compilation-line-number :weight light)))
@@ -184,7 +179,18 @@
   :config
   (custom-set-faces
    `(ivy-posframe-cursor ((t :inherit cursor :foreground ,(color-from 'default :background))))
-   `(ivy-swiper-line-number  ((t :inherit line-number :background ,(color-from 'ivy-posframe :background 5))))))
+   `(ivy-swiper-line-number  ((t :inherit line-number :background ,(color-from 'ivy-posframe :background 5)))))
+
+  (advice-add #'ivy-posframe--add-prompt :after
+              ;; NOTE
+              ;;  If the font size is larger than 10.0, the heigh of '▏' character is longer than other character.
+              ;;  characters in `posframe' is moving when switching to `evil' normal mode.
+              ;;  See, `ivy-posframe--custom-add-prompt' in 500-eye-candy.el.
+              (let ((mapping `((minibuffer-prompt (:inherit bold :foreground ,(color-from 'minibuffer-prompt :foreground) :overline ,(color-from 'default :background))))))
+                (lambda (&rest _)
+                  "To overwrite `minibuffer-prompt' face."
+                  (with-current-buffer ivy-posframe-buffer
+                    (setq-local face-remapping-alist mapping))))))
 
 (use-package lsp-mode
   :defer t
