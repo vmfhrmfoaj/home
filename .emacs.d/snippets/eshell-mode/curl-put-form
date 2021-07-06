@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: CURL PUT with key value pairs
+# key: curl-put-form
+# --
+
+curl -X PUT -H 'Content-Type: application/x-www-form-urlencoded' --data-urlencode '$1' http://localhost:3000/$2

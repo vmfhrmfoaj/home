@@ -22,7 +22,7 @@
  '(default ((t :background "#242528")))
  '(fixed-pitch ((t :family "Fantasque Sans Mono")))
  '(fringe  ((t :background "#2f343f" :foreground "#585c65")))
- `(isearch ((t :underline unspecified)))
+ `(isearch ((t :underline unspecified :weight bold)))
  '(italic ((t :foreground unspecified :family "Fantasque Sans Mono" :slant italic)))
  '(lazy-highlight ((t :weight semi-bold)))
  '(line-number-current-line ((t :background unspecified)))

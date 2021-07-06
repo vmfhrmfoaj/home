@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: CURL DELETE
+# key: curl-delete
+# --
+
+curl -X DELETE http://localhost:3000/$1

@@ -112,10 +112,7 @@
 (use-package lsp-php
   :defer t
   :init
-  (setq lsp-intelephense-clear-cache t
-        lsp-intelephense-format-enable nil
-        lsp-intelephense-multi-root nil
-        lsp-intelephense-storage-path "/tmp/intelephense")
+  (setq lsp-intelephense-format-enable nil)
 
   :config
   (let* ((old-init-opts (funcall (lsp--client-initialization-options (gethash 'iph lsp-clients))))
