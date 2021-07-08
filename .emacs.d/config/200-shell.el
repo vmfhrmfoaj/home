@@ -56,6 +56,8 @@
   (add-hook 'eshell-mode-hook
             (lambda ()
               (fish-completion-mode 1)
+              (smartparens-mode 1)
+              (show-smartparens-mode 1)
               (setq-local completion-ignore-case t
                           process-connection-type nil)
               (unless (file-remote-p default-directory)

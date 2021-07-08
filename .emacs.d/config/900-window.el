@@ -40,6 +40,14 @@
                  (lambda ()
                    (and (treemacs-get-local-window) t))))
 
+  (with-eval-after-load "ediff"
+    (add-hook 'ediff-before-setup-hook
+              (lambda ()
+                (golden-ratio-mode 0)))
+    (add-hook 'ediff-cleanup-hook
+              (lambda ()
+                (golden-ratio-mode 1))))
+
   (add-hook 'window-size-change-functions
             (let ((ofw 0))
               (lambda (&rest _)
