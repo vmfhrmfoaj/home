@@ -411,11 +411,6 @@ _is_cmd 'rsync'
 if [ $? -eq 0 ]; then
     alias rsync="$(which rsync) -v --info=progress2"
 fi
-_is_cmd 'docker'
-if [ $? -eq 0 ]; then
-    alias php='docker run --rm --interactive --tty --volume "$PWD":/workspace --network host vmfhrmfoaj/dev-env_php:8.0 php'
-    alias composer='docker run --rm --interactive --tty --volume "$PWD":/workspace --network host vmfhrmfoaj/dev-env_php:8.0 composer'
-fi
 
 
 # add dirs to PATH
@@ -427,7 +422,7 @@ _add_to_path "${HOME}/.bin"
 # basic setup
 #_setup_for_android
 _setup_for_asdf
-_setup_for_graalvm ${USE_JAVA_VERSION:-11}
+_setup_for_graalvm ${USE_JAVA_VERSION:-16}
 _setup_for_go
 #_setup_for_java ${USE_JAVA_VERSION:-11}
 _setup_for_locale
