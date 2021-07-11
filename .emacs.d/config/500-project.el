@@ -12,37 +12,7 @@
   :ensure t
   :defer t
   :config
-  (setq counsel-projectile-remove-current-buffer t)
-
-  (with-eval-after-load "ivy"
-    (add-to-list 'ivy-sort-functions-alist
-                 (cons 'counsel-projectile-find-file
-                       (lambda (x y)
-                         (let* ((x (if (consp x) (car x) x))
-                                (y (if (consp y) (car y) y))
-                                (x-len (length x))
-                                (y-len (length y)))
-                           (if (= x-len y-len)
-                               (string< x y)
-                             (< x-len y-len))))))
-    (add-to-list 'ivy-sort-functions-alist
-                 (cons 'counsel-projectile-switch-to-buffer
-                       (lambda (x y)
-                         (let* ((x (if (consp x) (car x) x))
-                                (y (if (consp y) (car y) y))
-                                (x-len (length x))
-                                (y-len (length y)))
-                           (cond
-                            ((and (s-starts-with? "*" x)
-                                  (s-starts-with? "*" y))
-                             (if (= x-len y-len)
-                                 (string< x y)
-                               (< x-len y-len)))
-                            ((s-starts-with? "*" x) nil)
-                            ((s-starts-with? "*" y) t)
-                            ((= x-len y-len)
-                             (string< x y))
-                            (t (< x-len y-len)))))))))
+  (setq counsel-projectile-remove-current-buffer t))
 
 (use-package projectile
   :ensure t

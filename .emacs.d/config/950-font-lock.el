@@ -41,7 +41,7 @@
                (1 'c-style-operator-face))
               ("\\([|&]\\{2,2\\}\\|\\s(\\|\\s)\\)"
                (1 'c-style-punctuation-1-face))
-              ("\\([,;]\\)"
+              ("\\([,;]\\|:\\(?:\\s-\\|\\s-*$\\)\\)"
                (1 'c-style-punctuation-2-face)))
             :append))))
   (add-hook 'git-timemachine-mode-hook f 100)
@@ -107,7 +107,7 @@
      mode
      `(;; punctuation
        ("\\([:;]\\)"
-        (1 'shadow)))
+        (1 'c-style-punctuation-2-face)))
      :append)))
 
 (use-package cperl-mode
@@ -1216,12 +1216,7 @@
      ("\\_<\\(chan<-\\)"
       (1 'font-lock-keyword-face t))
      ("\\(<-chan\\)\\_>"
-      (1 'font-lock-keyword-face t))
-     ;; punctuation
-     ("\\(:\\)\\(\\s-+\\|\\s-*$\\)"
-      (1 'shadow t))
-     ("\\([;]\\)"
-      (1 'shadow t))))
+      (1 'font-lock-keyword-face t))))
   (font-lock-add-keywords
    'go-mode
    `(;; interface
@@ -1449,8 +1444,6 @@
         (")\\s-*:\\s-*\\??\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*\\(?:\{\\|;\\)"
          (1 'font-lock-type-face))
         ("\\(?:^\\|\\>\\|\\_>\\|\\s\"\\|\\s)\\)\\s-*\\(::+\\|[-=]>\\|/\\)\\s-*\\(?:\\<\\|\\_<\\|\\s\"\\|\\s(\\)"
-         (1 'shadow))
-        ("\\(;\\|:$\\)"
          (1 'shadow))
         ("\\(&\\)\\$"
          (1 'shadow)))))
