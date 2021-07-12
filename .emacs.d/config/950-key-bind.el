@@ -360,7 +360,7 @@
   :ensure t
   :config
   (which-key-mode)
-  (which-key-declare-prefixes
+  (which-key-add-key-based-replacements
     (concat evil-leader/leader "a") "applications"
     (concat evil-leader/leader "ao") "org"
     (concat evil-leader/leader "aoc") "capture/clock"
@@ -476,7 +476,7 @@
     "mrR" #'cider-hard-restart
     "mrr" #'cider-restart
     "msn" #'cider-repl-set-ns)
-  (which-key-declare-prefixes-for-mode 'cider-repl-mode
+  (which-key-add-major-mode-key-based-replacements 'cider-repl-mode
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto"
     (concat evil-leader/leader "mr") "repl"
@@ -789,7 +789,7 @@
         ;; actions
         "maa" (if (lsp-feature? "textDocument/codeAction") #'lsp-execute-code-action)
         "mah" (if (lsp-feature? "textDocument/documentHighlight") #'lsp-document-highlight))
-      (which-key-declare-prefixes-for-mode major-mode
+      (which-key-add-major-mode-key-based-replacements major-mode
         (concat evil-leader/leader "ms")  "sessions"
         (concat evil-leader/leader "mF")  "folders"
         (concat evil-leader/leader "m=")  "formatting"
@@ -886,7 +886,7 @@
       "mr\"" #'cider-switch-to-releated-repl-buffer-other-window
       "mri" #'cider-insert-last-sexp-in-repl
       "mrq" #'cider-quit)
-    (which-key-declare-prefixes-for-mode mode
+    (which-key-add-major-mode-key-based-replacements mode
       (concat evil-leader/leader "me") "evaluation"
       ;;  already defined at `lsp-mode'
       ;; (concat evil-leader/leader "mr") "repl"
@@ -984,7 +984,7 @@
                       '((display-buffer-in-previous-window
                          display-buffer-reuse-window))))
                  (emacs-lisp-REPL-buffer)))))
-  (which-key-declare-prefixes-for-mode 'emacs-lisp-mode
+  (which-key-add-major-mode-key-based-replacements 'emacs-lisp-mode
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto"
     (concat evil-leader/leader "mr") "repl")
@@ -995,7 +995,7 @@
     "mee" #'emacs-lisp-REPL-eval-print-this-sexp
     "mrc" #'erase-buffer
     "mrq" #'evil-delete-buffer)
-  (which-key-declare-prefixes-for-mode 'lisp-interaction-mode
+  (which-key-add-major-mode-key-based-replacements 'lisp-interaction-mode
     (concat evil-leader/leader "me") "evaluation"
     (concat evil-leader/leader "mg") "goto"
     (concat evil-leader/leader "mr") "repl")
@@ -1099,7 +1099,7 @@
   (evil-leader/set-key-for-mode 'markdown-mode
     "msp" #'markdown-preview
     "mso" #'markdown-open-link-at-point)
-  (which-key-declare-prefixes-for-mode 'markdown-mode
+  (which-key-add-major-mode-key-based-replacements 'markdown-mode
     (concat evil-leader/leader "ms") "Show")
   (evil-leader--set-major-leader-for-mode 'markdown-mode))
 
@@ -1173,7 +1173,7 @@
     "mtd" #'org-deadline
     "mti" #'org-time-stamp
     "mts" #'org-schedule)
-  (which-key-declare-prefixes-for-mode 'org-mode
+  (which-key-add-major-mode-key-based-replacements 'org-mode
     (concat evil-leader/leader "mT") "todo"
     (concat evil-leader/leader "mc") "clock"
     (concat evil-leader/leader "mg") "goto"
@@ -1208,7 +1208,7 @@
     "mr'" #'psysh-show)
   ;; NOTE:
   ;;  already defined at `lsp-mode'
-  ;; (which-key-declare-prefixes-for-mode 'python-mode
+  ;; (which-key-add-major-mode-key-based-replacements 'python-mode
   ;;   (concat evil-leader/leader "mr") "repl")
   (define-key php-mode-map [tab] nil))
 
@@ -1233,7 +1233,7 @@
     "mr'" #'run-python)
   ;; NOTE:
   ;;  already defined at `lsp-mode'
-  ;; (which-key-declare-prefixes-for-mode 'python-mode
+  ;; (which-key-add-major-mode-key-based-replacements 'python-mode
   ;;   (concat evil-leader/leader "mr") "repl")
   )
 
