@@ -1,7 +1,9 @@
 {
     // Appearance
-    "editor.fontFamily": "'Fira Code', monospace",
-    "editor.fontSize": 15,
+    "editor.fontFamily": "'Cascadia Code', monospace",
+    "editor.fontSize": 13,
+    "editor.lineHeight": 19,
+    "editor.fontWeight": "700",
     "editor.fontLigatures": true,
     "editor.matchBrackets": "near", // use Bracket Pair Colorizer
     "editor.minimap.enabled": false,
@@ -27,18 +29,18 @@
     "workbench.colorCustomizations": {
         "statusBarItem.remoteBackground": "#333",
         "titleBar.activeBackground": "#333",
-        "rust_analyzer.inlayHints.foreground": "#d4d4d4",
         "[Visual Studio Dark]": {
             "editor.findMatchBackground": "#ea5c0090",
             "editorCursor.foreground": "#ffffff85",
             "editorCursor.background": "#333",
             "editorRuler.foreground": "#5a5a5a20",
-            "rust_analyzer.inlayHints.foreground": "#878787",
             "statusBar.foreground": "#ccc",
             "statusBar.background": "#333",
             "statusBar.noFolderBackground": "#333",
-            "statusBar.noFolderBorder": "#333",
+            "statusBar.noFolderBorder": "#333"
         },
+        "editor.lineHighlightBackground": "#1073cf2d",
+        "editor.lineHighlightBorder": "#9fced11f"
     },
     "workbench.iconTheme": "material-icon-theme",
     "workbench.productIconTheme": "material-product-icons",
@@ -289,6 +291,10 @@
                     ],
                     "settings": { "foreground": "#909090", }
                 },
+                {
+                    "scope": "storage.type.built-in.primitive.c",
+                    "settings": { "foreground": "#4ec9b0", }
+                },
             ]
         },
     },
@@ -324,12 +330,9 @@
         "multiCommand.switchThirdTermianl",
         "-workbench.action.quickOpen",
     ],
-    "workbench.editorAssociations": [
-        {
-            "viewType": "jupyter-notebook",
-            "filenamePattern": "*.ipynb"
-        }
-    ],
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter-notebook"
+    },
 
     // Bash IDE
     "bashIde.highlightParsingErrors": false,
@@ -553,21 +556,21 @@
         {
             "command": "multiCommand.switchFirstTermianl",
             "sequence": [
-                { "command": "workbench.action.quickOpen", "args": "term 1.:" },
+                { "command": "workbench.action.quickOpen", "args": "term 1:" },
                 "workbench.action.acceptSelectedQuickOpenItem",
             ]
         },
         {
             "command": "multiCommand.switchSecondTermianl",
             "sequence": [
-                { "command": "workbench.action.quickOpen", "args": "term 2.:" },
+                { "command": "workbench.action.quickOpen", "args": "term 2.1:" },
                 "workbench.action.acceptSelectedQuickOpenItem",
             ]
         },
         {
             "command": "multiCommand.switchThirdTermianl",
             "sequence": [
-                { "command": "workbench.action.quickOpen", "args": "term 3.:" },
+                { "command": "workbench.action.quickOpen", "args": "term 3.1:" },
                 "workbench.action.acceptSelectedQuickOpenItem",
             ]
         },
@@ -594,7 +597,6 @@
 
     // Rust Analyzer
     "rust-analyzer.checkOnSave.command": "clippy",
-    "rust-analyzer.serverPath": "~/.cargo/bin/rust-analyzer",
 
     // Vim
     "workbench.list.keyboardNavigation": "simple", // see, https://github.com/Microsoft/vscode/issues/66995#issuecomment-457123611
@@ -950,9 +952,7 @@
                 "g",
                 "l"
             ],
-            "commands": [
-                { "command": "git-graph.view" },
-            ],
+            "commands": [ { "command": "git-graph.view" }, ],
         },
         {
             "before": [

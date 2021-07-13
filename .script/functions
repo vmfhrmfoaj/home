@@ -104,6 +104,7 @@ vscode_common_extensions=(
     'msjsdiag.debugger-for-chrome'
     'PKief.material-icon-theme'
     'pkief.material-product-icons'
+    'rangav.vscode-thunder-client'
     'richterger.perl'
     'ryuta46.multi-command'
     'shardulm94.trailing-spaces'

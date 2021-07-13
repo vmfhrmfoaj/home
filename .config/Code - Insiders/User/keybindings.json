@@ -136,6 +136,11 @@
         "when": "terminalFocus"
     },
     {
+        "key": "ctrl+'",
+        "command": "workbench.action.terminal.toggleTerminal",
+        "when": "terminal.active"
+    },
+    {
         "key": "ctrl+shift+1", // for CK87 keyboard
         "command": "workbench.action.focusFirstEditorGroup",
         "when": "terminalFocus"
@@ -170,6 +175,11 @@
         "key": "ctrl+f",
         "command": "filesExplorer.findInFolder",
         "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
+    },
+    {
+        "key": "ctrl+shift+t",
+        "command": "workbench.action.terminal.new",
+        "when": "terminalFocus"
     },
 
     // Tab and Shift + Tab
