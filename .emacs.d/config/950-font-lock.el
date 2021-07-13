@@ -30,6 +30,10 @@
   '((t (:inherit shadow)))
   "TODO")
 
+(defface symbol-dash-or-underline-face
+  '((t (:inherit shadow)))
+  "TODO")
+
 (let ((f (lambda ()
            (font-lock-add-keywords
             nil
@@ -91,7 +95,9 @@
         ("\\([.;]\\)"
          (1 'shadow))
         ("[A-Za-z]\\(:\\)\\s-*$"
-         (1 'shadow)))
+         (1 'shadow))
+        ("[0-9A-Za-z]\\(_+\\)[0-9A-Za-z]"
+         (1 'symbol-dash-or-underline-face prepend)))
       :append))))
 
 (use-package css-mode
@@ -107,7 +113,9 @@
      mode
      `(;; punctuation
        ("\\([:;]\\)"
-        (1 'c-style-punctuation-2-face)))
+        (1 'c-style-punctuation-2-face))
+       ("[0-9A-Za-z]\\(-+\\)[0-9A-Za-z]"
+        (1 'symbol-dash-or-underline-face prepend)))
      :append)))
 
 (use-package cperl-mode
@@ -153,7 +161,9 @@
        ("\\([\\&|*]\\|::\\|;\\|[-=]>\\|[$@]_\\>\\)"
         (1 'shadow))
        ("\\([*@$%]+\\)\\(?:[:_0-9a-zA-Z]\\|\\s(\\)"
-        (1 'shadow))))
+        (1 'shadow))
+       ("[0-9A-Za-z]\\(_+\\)[0-9A-Za-z]"
+        (1 'symbol-dash-or-underline-face prepend))))
    :append))
 
 (use-package clojure-mode
@@ -1020,7 +1030,9 @@
        ("\\([~#@&`'^]\\)"
         (1 'shadow))
        ("\\_<\\(_\\)\\_>"
-        (1 'shadow)))
+        (1 'shadow))
+       ("[0-9A-Za-z]\\(-+>?\\|[._$]\\)[0-9A-Za-z]"
+        (1 'symbol-dash-or-underline-face prepend)))
      :append)))
 
 (use-package elisp-mode
@@ -1111,7 +1123,9 @@
          ("\\s(\\|\\s)"
           (0 'lisp-punctuation-face append))
          ("#?'\\|`\\|\\_<_\\_>\\|,@?\\|\\."
-          (0 'shadow)))
+          (0 'shadow))
+         ("[0-9A-Za-z]\\(-+>?\\)[0-9A-Za-z]"
+          (1 'symbol-dash-or-underline-face prepend)))
        :append))))
 
 (use-package elixir-mode
@@ -1453,7 +1467,9 @@
    '(("\\([{}]\\)"
       (1 'c-style-brace-face))
      ("\\([$]\\)"
-      (1 'shadow append)))
+      (1 'shadow append))
+     ("[0-9A-Za-z]\\(_+\\)[0-9A-Za-z]"
+      (1 'symbol-dash-or-underline-face prepend)))
    :append))
 
 (use-package python
@@ -1517,7 +1533,9 @@
    `(("\\(\\*\\*?\\)[_A-Za-z]"
       (1 'shadow))
      ("[A-Za-z]\\(=\\)\\(?:[\"'0-9A-Za-z]\\|\\s(\\)"
-      (1 'shadow)))))
+      (1 'shadow))
+     ("[0-9A-Za-z]\\(_\\)[0-9A-Za-z]"
+      (1 'symbol-dash-or-underline-face prepend)))))
 
 (use-package rpm-spec-mode
   :defer t
@@ -1567,6 +1585,13 @@
     "TODO")
   (defface rust-punctuation-2-face
     '((t (:inherit shadow)))
+    "TODO")
+
+  (defface rust-module-name-prefix
+    '((t (:inherit font-lock-constant-face)))
+    "TODO")
+  (defface rust-type-name-prefix
+    '((t (:inherit font-lock-type-face)))
     "TODO")
 
   :config
@@ -1624,9 +1649,6 @@
            (,(concat (rust-re-grab rust-re-ident) "[[:space:]]*:[^:]")
             1 font-lock-variable-name-face)
 
-           ;; CamelCase Means Type Or Constructor
-           (,rust-re-type-or-constructor 1 font-lock-type-face)
-
            ;; Type-inferred binding
            (,(concat "\\_<\\(?:let\\s-+ref\\|let\\|ref\\|for\\)\\s-+\\(?:mut\\s-+\\)?"
                      (rust-re-grab rust-re-ident)
@@ -1634,10 +1656,13 @@
             1 font-lock-variable-name-face)
 
            ;; Type names like `Foo::`, highlight excluding the ::
-           (,(rust-path-font-lock-matcher rust-re-uc-ident) 1 font-lock-type-face)
+           (,(rust-path-font-lock-matcher rust-re-uc-ident) 1 'rust-type-name-prefix)
 
            ;; Module names like `foo::`, highlight excluding the ::
-           (,(rust-path-font-lock-matcher rust-re-lc-ident) 1 font-lock-constant-face)
+           (,(rust-path-font-lock-matcher rust-re-lc-ident) 1 'rust-module-name-prefix)
+
+           ;; CamelCase Means Type Or Constructor
+           (,rust-re-type-or-constructor 1 font-lock-type-face)
 
            ;; Lifetimes like `'foo`
            (,(concat "\\(&?'\\)" (rust-re-grab rust-re-ident) "[^']")
@@ -1717,7 +1742,8 @@
            ;; punctuation
            ("\\([-=]>\\|::?\\|\\.\\.?\\)" 1 'c-style-punctuation-1-face)
            ("\\(\\$\\|&\\|&?\\*+\\)\\(?:\\s(\\|[_0-9A-Za-z]\\)" 1 'c-style-punctuation-1-face)
-           ("\\([{}]\\)" 1 'c-style-brace-face))
+           ("\\([{}]\\)" 1 'c-style-brace-face)
+           ("[0-9A-Za-z]\\(_+\\)[0-9A-Za-z]" 1 'symbol-dash-or-underline-face prepend))
 
          ;; Ensure we highlight `Foo` in `struct Foo` as a type.
          (mapcar #'(lambda (x)

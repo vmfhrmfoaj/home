@@ -23,6 +23,7 @@
  '(line-number-current-line ((t :background unspecified)))
  '(shadow ((t :weight normal)))
  '(show-paren-match ((t :weight bold)))
+ '(symbol-dash-or-underline-face ((t :weight light)))
  '(vertical-border ((t :foreground "#2f343f")))
  '(whitespace-newline ((t :inherit whitespace-tab :foreground unspecified)))
  '(whitespace-space   ((t :inherit whitespace-tab :foreground unspecified))))
@@ -31,7 +32,7 @@
    ((t :inherit shadow
        :foreground ,(color-from 'shadow :foreground (* 3 (if (eq frame-background-mode 'dark) -1 1)))
        :weight light)))
- `(c-style-operator-face ((t :foreground ,(color-from 'default :foreground (* 10 (if (eq frame-background-mode 'dark) -1 1))))))
+ `(c-style-operator-face ((t :weight normal)))
  '(c-style-punctuation-1-face ((t :inherit shadow)))
  `(c-style-punctuation-2-face
    ((t :inherit shadow
@@ -57,12 +58,8 @@
    '(cider-reader-conditional-face ((t :inherit shadow)))
    `(cider-deprecated-face  ((t :underline (:style line :color "darkorange"))))
    '(cider-fringe-good-face ((t :inherit success)))
-   `(cider-repl-prompt-face
-     ((t :inherit font-lock-keyword-face
-         :foreground ,(color-from 'font-lock-keyword-face :foreground (* 5 (if (eq frame-background-mode 'dark) -1 1))))))
-   `(cider-repl-stdout-face
-     ((t :inherit font-lock-string-face
-         :foreground ,(color-from 'font-lock-string-face  :foreground (* 5 (if (eq frame-background-mode 'dark) -1 1))))))))
+   `(cider-repl-prompt-face ((t :inherit font-lock-keyword-face :weight bold)))
+   `(cider-repl-stdout-face ((t :inherit font-lock-string-face  :weight normal)))))
 
 (use-package clojure-mode
   :defer t
@@ -141,13 +138,10 @@
   :defer t
   :config
   (custom-set-faces
-   '(epe-symbol-face ((t :inherit shadow)))
-   `(epe-git-face
-     ((t :inherit font-lock-constant-face
-         :foreground ,(color-from 'font-lock-constant-face :foreground (* 5 (if (eq frame-background-mode 'dark) -1 1))))))
-   `(eshell-prompt
-     ((t :inherit shadow
-         :foreground ,(color-from 'shadow :foreground (* 3 (if (eq frame-background-mode 'dark) -1 1))))))))
+   '(epe-dir-face ((t :inherit eshell-ls-directory :weight bold)))
+   '(epe-git-face ((t :inherit font-lock-constant-face :weight bold)))
+   '(epe-symbol-face ((t :inherit shadow :weight bold)))
+   '(eshell-prompt ((t :inherit shadow :weight bold)))))
 
 (use-package focus
   :defer t
@@ -309,14 +303,22 @@
   :defer t
   :config
   (custom-set-faces
-   `(rust-attribute-face
-     ((t :inherit font-lock-preprocessor-face
-         :foreground ,(color-from 'font-lock-preprocessor-face  :foreground (* 5 (if (eq frame-background-mode 'dark) -1 1))))))
-   `(rust-lifetime-face
-     ((t :inherit font-lock-variable-name-face
-         :foreground ,(color-from 'font-lock-variable-name-face :foreground (* 5 (if (eq frame-background-mode 'dark) -1 1))))))
-   `(rust-string-interpolation-face
-     ((t :inherit (font-lock-regexp-grouping-construct font-lock-string-face) :slant unspecified)))))
+   `(rust-attribute-face ((t :inherit font-lock-preprocessor-face :weight normal)))
+   `(rust-lifetime-face ((t :inherit font-lock-variable-name-face :weight normal)))
+   `(rust-string-interpolation-face ((t :inherit (font-lock-regexp-grouping-construct font-lock-string-face) :slant unspecified)))
+   '(rust-punctuation-1-face ((t :inherit c-style-punctuation-1-face)))
+   '(rust-punctuation-2-face ((t :inherit c-style-punctuation-2-face)))
+   `(rust-module-name-prefix
+     ((t :inherit font-lock-constant-face
+         :foreground ,(color-from font-lock-constant-face :foreground
+                                  (* 10 (if (eq frame-background-mode 'dark) -1 1))
+                                  -10))))
+   `(rust-type-name-prefix
+     ((t :inherit font-lock-type-face
+         :foreground ,(color-from font-lock-type-face :foreground
+                                  (* 15 (if (eq frame-background-mode 'dark) -1 1))
+                                  -15))))
+   ))
 
 (use-package smartparens
   :defer t

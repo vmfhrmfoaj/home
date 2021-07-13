@@ -7,7 +7,7 @@
 
 (when window-system
   (prefer-coding-system 'utf-8)
-  (setq-default line-spacing 0)
+  (setq-default line-spacing 1)
   (let* ((font-size 10.5)
          (font-name "Cascadia Code")
          (font (font-spec :family font-name :size font-size :weight 'semi-bold)))
