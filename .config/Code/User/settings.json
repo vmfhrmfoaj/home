@@ -1,9 +1,7 @@
 {
     // Appearance
     "editor.fontFamily": "'Cascadia Code', monospace",
-    "editor.fontSize": 13,
-    "editor.lineHeight": 19,
-    "editor.fontWeight": "700",
+    "editor.fontSize": 14,
     "editor.fontLigatures": true,
     "editor.matchBrackets": "near", // use Bracket Pair Colorizer
     "editor.minimap.enabled": false,

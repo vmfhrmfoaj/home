@@ -145,7 +145,7 @@ _install_vs_code_from_tar() {
 #!/bin/bash
 DIR=$(dirname $0)
 [ -r "${HOME}/.script/setup" ] && source "${HOME}/.script/setup"
-switches='--use-gl=desktop --ignore-gpu-blacklist --enable-zero-copy'
+switches='--use-gl=desktop --ignore-gpu-blacklist --enable-zero-copy --enable-gpu-rasterization --enable-oop-rasterization'
 exec "${DIR}/code" $@ ${switches}
 EOF
     chmod +x "${target_dir}/bin/code-wrapper"
@@ -180,15 +180,6 @@ EOF
         fi
     fi
     update-desktop-database "${HOME}/.local/share/applications"
-
-    echo -n "Do you want to customize? (Y or N): "
-    read yn
-    if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
-        for lib in "${target_dir}/"*.so; do
-            mv "${lib}" "${lib}.disabled"
-        done
-        sed -i -e '0,/^$/s@^$@export LD_LIBRARY_PATH=/usr/lib64/chromium\n@' "${target_dir}/bin/code"
-    fi
 
     return 0
 }
@@ -226,7 +217,7 @@ _install_vs_code_insiders_from_tar() {
 #!/bin/bash
 DIR=$(dirname $0)
 source ~/.script/setup
-switches='--use-gl=desktop --ignore-gpu-blacklist --enable-zero-copy'
+switches='--use-gl=desktop --ignore-gpu-blacklist --enable-zero-copy --enable-gpu-rasterization --enable-oop-rasterization'
 exec "${DIR}/code-insiders" $@ ${switches}
 EOF
     chmod +x "${target_dir}/bin/code-insiders-wrapper"
@@ -261,15 +252,6 @@ EOF
         fi
     fi
     update-desktop-database "${HOME}/.local/share/applications"
-
-    echo -n "Do you want to customize? (Y or N): "
-    read yn
-    if [ -n "$(echo ${yn} | grep -E -i '^y(es)?$')" ]; then
-        for lib in "${target_dir}/"*.so; do
-            mv "${lib}" "${lib}.disabled"
-        done
-        sed -i -e '0,/^$/s@^$@export LD_LIBRARY_PATH=/usr/lib64/chromium\n@' "${target_dir}/bin/code-insiders"
-    fi
 
     return 0
 }

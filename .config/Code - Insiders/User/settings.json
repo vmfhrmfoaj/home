@@ -1,9 +1,7 @@
 {
     // Appearance
     "editor.fontFamily": "'Cascadia Code', monospace",
-    "editor.fontSize": 13,
-    "editor.lineHeight": 19,
-    "editor.fontWeight": "700",
+    "editor.fontSize": 14,
     "editor.fontLigatures": true,
     "editor.matchBrackets": "near", // use Bracket Pair Colorizer
     "editor.minimap.enabled": false,
@@ -27,20 +25,21 @@
     "window.zoomLevel": 0,
     "workbench.colorTheme": "Visual Studio Dark",
     "workbench.colorCustomizations": {
-        "statusBarItem.remoteBackground": "#333",
-        "titleBar.activeBackground": "#333",
         "[Visual Studio Dark]": {
             "editor.findMatchBackground": "#ea5c0090",
             "editorCursor.foreground": "#ffffff85",
             "editorCursor.background": "#333",
+            "editor.lineHighlightBackground": "#1073cf2d",
+            "editor.lineHighlightBorder": "#9fced11f",
             "editorRuler.foreground": "#5a5a5a20",
             "statusBar.foreground": "#ccc",
             "statusBar.background": "#333",
             "statusBar.noFolderBackground": "#333",
-            "statusBar.noFolderBorder": "#333"
+            "statusBar.noFolderBorder": "#333",
+            "statusBarItem.remoteBackground": "#333",
+            "tab.activeBackground": "#42414d",
+            "titleBar.activeBackground": "#333",
         },
-        "editor.lineHighlightBackground": "#1073cf2d",
-        "editor.lineHighlightBorder": "#9fced11f"
     },
     "workbench.iconTheme": "material-icon-theme",
     "workbench.productIconTheme": "material-product-icons",
@@ -279,6 +278,7 @@
                         // Toml
                         "punctuation.separator.array.toml",
                         "punctuation.separator.dot",
+                        "punctuation.definition.table.inline.toml",
                         // YAML
                         "punctuation.separator.key-value.mapping.yaml",
                         // Shellscript
@@ -350,6 +350,46 @@
     // "bracket-pair-colorizer-2.excludedLanguages": [
     //     "shellscript",
     // ],
+
+    // Better Comment
+    "better-comments.tags": [
+        {
+            "tag": "fixme",
+            "color": "#cc2400",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "xxx",
+            "color": "#cc2400",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "note",
+            "color": "#8cc6e4",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "todo",
+            "color": "#cc7000",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+    ],
 
     // C/C++
     "C_Cpp.enhancedColorization": "Enabled",
@@ -453,7 +493,7 @@
         },
         {
             "command": "multiCommand.vimCloseFindWidget",
-            "interval": 0.01,
+            "interval": 0.05,
             "sequence": [
                 "closeFindWidget",
                 "cancelSelection",
@@ -465,7 +505,7 @@
         },
         {
             "command": "multiCommand.vimCloseFindWidgetAndGoBack",
-            "interval": 0.01,
+            "interval": 0.05,
             "sequence": [
                 "closeFindWidget",
                 "cancelSelection",
@@ -597,6 +637,7 @@
 
     // Rust Analyzer
     "rust-analyzer.checkOnSave.command": "clippy",
+    "rust-analyzer.updates.channel": "nightly",
 
     // Vim
     "workbench.list.keyboardNavigation": "simple", // see, https://github.com/Microsoft/vscode/issues/66995#issuecomment-457123611
