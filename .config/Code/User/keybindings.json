@@ -74,6 +74,11 @@
         "command": "git.stageChange",
         "when": "editorTextFocus && dirtyDiffVisible"
     },
+    {
+        "key": "enter",
+        "command": "closeDirtyDiff",
+        "when": "editorTextFocus && dirtyDiffVisible"
+    },
     // - for side bar
     {
         "key": "=",
@@ -88,7 +93,7 @@
     // - for search editor
     {
         "key": "enter",
-        "command": "search.focus.nextInputBox",
+        "command": "search.focus.previousInputBox", // trick to focus the search result
         "when": "inSearchEditor && searchInputBoxFocus && !findInputFocussed"
     },
     {
@@ -131,8 +136,22 @@
         "when": "terminalFocus"
     },
     {
+        "key": "ctrl+'",
+        "command": "workbench.action.terminal.toggleTerminal",
+        "when": "terminal.active"
+    },
+    {
+        "key": "ctrl+shift+1", // for CK87 keyboard
+        "command": "workbench.action.focusFirstEditorGroup",
+        "when": "terminalFocus"
+    },
+    {
         "key": "ctrl+9",
         "command": "-workbench.action.lastEditorInGroup"
+    },
+    {
+        "key": "alt+9",
+        "command": "workbench.action.lastEditorInGroup"
     },
     {
         "key": "ctrl+9",
@@ -151,6 +170,16 @@
         "key": "ctrl+shift+f",
         "command": "workbench.action.terminal.focusFind",
         "when": "terminalFindFocused && terminalProcessSupported || terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+f",
+        "command": "filesExplorer.findInFolder",
+        "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
+    },
+    {
+        "key": "ctrl+shift+t",
+        "command": "workbench.action.terminal.new",
+        "when": "terminalFocus"
     },
 
     // Tab and Shift + Tab
@@ -402,7 +431,7 @@
     {
         "key": "ctrl+h",
         "command": "multiCommand.goParentSymbol",
-        "when": "editorTextFocus && vim.mode == 'Normal'"
+        "when": "editorTextFocus && vim.mode == 'Normal' && !isInDiffEditor"
     },
     {
         "key": "ctrl+h",
@@ -422,7 +451,7 @@
     {
         "key": "ctrl+l",
         "command": "breadcrumbs.focusAndSelect",
-        "when": "editorTextFocus && vim.mode == 'Normal'"
+        "when": "editorTextFocus && vim.mode == 'Normal' && !isInDiffEditor"
     },
     {
         "key": "ctrl+l",
@@ -455,21 +484,21 @@
         "command": "list.focusDown",
         "when": "listFocus && !inputFocus"
     },
-    {
-        "key": "j",
-        "command": "list.focusDown",
-        "when": "listFocus && !inputFocus"
-    },
+    // {
+    //     "key": "j",
+    //     "command": "list.focusDown",
+    //     "when": "listFocus && !inputFocus"
+    // },
     {
         "key": "ctrl+k",
         "command": "list.focusUp",
         "when": "listFocus && !inputFocus"
     },
-    {
-        "key": "k",
-        "command": "list.focusUp",
-        "when": "listFocus && !inputFocus"
-    },
+    // {
+    //     "key": "k",
+    //     "command": "list.focusUp",
+    //     "when": "listFocus && !inputFocus"
+    // },
     {
         "key": "ctrl+l",
         "command": "list.expand",
@@ -489,6 +518,17 @@
         "key": "l",
         "command": "list.expand",
         "when": "listFocus && !inputFocus && explorerViewletCompressedFocus && explorerViewletCompressedLastFocus"
+    },
+    // - for diff
+    {
+        "key": "ctrl+h",
+        "command": "workbench.action.compareEditor.focusSecondarySide",
+        "when": "editorTextFocus && isInDiffEditor"
+    },
+    {
+        "key": "ctrl+l",
+        "command": "workbench.action.compareEditor.focusPrimarySide",
+        "when": "editorTextFocus && isInDiffEditor"
     },
 
     // N/P

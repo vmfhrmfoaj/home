@@ -27,20 +27,21 @@
     "window.zoomLevel": 0,
     "workbench.colorTheme": "Visual Studio Dark",
     "workbench.colorCustomizations": {
-        "statusBarItem.remoteBackground": "#333",
-        "titleBar.activeBackground": "#333",
         "[Visual Studio Dark]": {
             "editor.findMatchBackground": "#ea5c0090",
             "editorCursor.foreground": "#ffffff85",
             "editorCursor.background": "#333",
+            "editor.lineHighlightBackground": "#1073cf2d",
+            "editor.lineHighlightBorder": "#9fced11f",
             "editorRuler.foreground": "#5a5a5a20",
             "statusBar.foreground": "#ccc",
             "statusBar.background": "#333",
             "statusBar.noFolderBackground": "#333",
             "statusBar.noFolderBorder": "#333",
+            "statusBarItem.remoteBackground": "#333",
+            "tab.activeBackground": "#42414d",
+            "titleBar.activeBackground": "#333",
         },
-        "editor.lineHighlightBackground": "#1073cf2d",
-        "editor.lineHighlightBorder": "#9fced11f"
     },
     "workbench.iconTheme": "material-icon-theme",
     "workbench.productIconTheme": "material-product-icons",
@@ -279,6 +280,7 @@
                         // Toml
                         "punctuation.separator.array.toml",
                         "punctuation.separator.dot",
+                        "punctuation.definition.table.inline.toml",
                         // YAML
                         "punctuation.separator.key-value.mapping.yaml",
                         // Shellscript
@@ -493,7 +495,7 @@
         },
         {
             "command": "multiCommand.vimCloseFindWidget",
-            "interval": 0.01,
+            "interval": 0.05,
             "sequence": [
                 "closeFindWidget",
                 "cancelSelection",
@@ -505,7 +507,7 @@
         },
         {
             "command": "multiCommand.vimCloseFindWidgetAndGoBack",
-            "interval": 0.01,
+            "interval": 0.05,
             "sequence": [
                 "closeFindWidget",
                 "cancelSelection",
