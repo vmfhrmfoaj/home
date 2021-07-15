@@ -90,6 +90,10 @@
         "command": "explorer.newFolder",
         "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
     },
+    {
+        "key": "ctrl+shift+'",
+        "command": "openInTerminal",
+    },
     // - for search editor
     {
         "key": "enter",

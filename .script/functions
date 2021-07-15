@@ -141,12 +141,14 @@ _install_vs_code_from_tar() {
         >&2 echo "Can't create a symbolic link at '${sym_file}'"
         return 255;
     fi
-    cat > "${target_dir}/bin/code-wrapper" <<\EOF
+    cat > ${target_dir}/bin/code-insiders-wrapper <<EOF
 #!/bin/bash
-DIR=$(dirname $0)
-[ -r "${HOME}/.script/setup" ] && source "${HOME}/.script/setup"
+DIR=\$(dirname \$0)
+[ -r "\${HOME}/.script/setup" ] && source "\${HOME}/.script/setup"
+export LIBVA_DRIVER_NAME=${LIBVA_DRIVER_NAME}
+export LIBVA_DRIVERS_PATH=${LIBVA_DRIVERS_PATH}
 switches='--use-gl=desktop --ignore-gpu-blacklist --enable-zero-copy --enable-gpu-rasterization --enable-oop-rasterization'
-exec "${DIR}/code" $@ ${switches}
+exec "\${DIR}/code" \$@ $\{switches}
 EOF
     chmod +x "${target_dir}/bin/code-wrapper"
     cat > "${HOME}/.local/share/applications/visual-studio-code.desktop" <<EOF
@@ -213,12 +215,14 @@ _install_vs_code_insiders_from_tar() {
         >&2 echo "Can't create a symbolic link at '${sym_file}'"
         return 255;
     fi
-    cat > ${target_dir}/bin/code-insiders-wrapper <<\EOF
+    cat > ${target_dir}/bin/code-insiders-wrapper <<EOF
 #!/bin/bash
-DIR=$(dirname $0)
-source ~/.script/setup
+DIR=\$(dirname \$0)
+[ -r "\${HOME}/.script/setup" ] && source "\${HOME}/.script/setup"
+export LIBVA_DRIVER_NAME=${LIBVA_DRIVER_NAME}
+export LIBVA_DRIVERS_PATH=${LIBVA_DRIVERS_PATH}
 switches='--use-gl=desktop --ignore-gpu-blacklist --enable-zero-copy --enable-gpu-rasterization --enable-oop-rasterization'
-exec "${DIR}/code-insiders" $@ ${switches}
+exec "\${DIR}/code-insiders" \$@ $\{switches}
 EOF
     chmod +x "${target_dir}/bin/code-insiders-wrapper"
     cat > "${HOME}/.local/share/applications/visual-studio-code-insiders.desktop" <<EOF

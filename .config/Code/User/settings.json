@@ -19,6 +19,8 @@
     "editor.wordWrapColumn": 165,
     "scm.diffDecorations": "gutter",
     "terminal.integrated.fontSize": 13,
+    "terminal.integrated.fontWeightBold": "600",
+    "terminal.integrated.lineHeight": 1.1,
     "window.titleBarStyle": "native",
     "window.menuBarVisibility": "toggle",
     "window.newWindowDimensions": "maximized",
@@ -295,6 +297,10 @@
                     "scope": "storage.type.built-in.primitive.c",
                     "settings": { "foreground": "#4ec9b0", }
                 },
+                {
+                    "scope": "string.interpolated.dollar.shell",
+                    "settings": { "foreground": "#d16969", }
+                },
             ]
         },
     },
@@ -311,6 +317,7 @@
     "editor.suggestSelection": "first",
     "editor.tabSize": 4,
     "search.mode": "newEditor",
+    "window.restoreWindows": "none",
     "workbench.editor.enablePreview": false,
 
     "[go]": {
