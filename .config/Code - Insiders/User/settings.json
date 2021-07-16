@@ -640,6 +640,13 @@
                 "filesExplorer.findInFolder"
             ]
         },
+        {
+            "command": "multiCommand.closeParameterHintsAndEscape",
+            "sequence": [
+                "closeParameterHints",
+                "extension.vim_escape"
+            ]
+        },
     ],
 
     // Perl

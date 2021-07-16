@@ -79,6 +79,16 @@
         "command": "closeDirtyDiff",
         "when": "editorTextFocus && dirtyDiffVisible"
     },
+    {
+        "key": "ctrl+alt+space",
+        "command": "editor.action.triggerParameterHints",
+        "when": "editorHasSignatureHelpProvider && editorTextFocus"
+    },
+    {
+        "key": "ctrl+alt+\\",
+        "command": "editor.action.jumpToBracket",
+        "when": "editorTextFocus"
+    },
     // - for side bar
     {
         "key": "=",
@@ -264,7 +274,20 @@
     {
         "key": "escape",
         "command": "multiCommand.vimCancelSuggestionAndEscape",
-        "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.mode == 'Insert'"
+        "when": "acceptSuggestionOnEnter && suggestWidgetVisible && suggestionMakesTextEdit && textInputFocus && vim.mode == 'Insert' && !parameterHintsVisible"
+    },
+    {
+        // NOTE:
+        //  The default key binding for `escape` key does not works.
+        //  I guess VIM extension eat all escape key events.
+        "key": "escape",
+        "command": "closeParameterHints",
+        "when": "editorFocus && vim.mode == 'Normal' && parameterHintsVisible"
+    },
+    {
+        "key": "escape",
+        "command": "multiCommand.closeParameterHintsAndEscape",
+        "when": "editorFocus && vim.mode == 'Insert' && parameterHintsVisible"
     },
     // - for find
     {
@@ -280,7 +303,7 @@
     {
         "key": "escape",
         "command": "multiCommand.vimCloseFindWidgetAndGoBack",
-        "when": "editorFocus && findInputFocussed && !parameterHintsVisible"
+        "when": "editorFocus && findInputFocussed && !parameterHintsVisible && !parameterHintsVisible"
     },
     {
         "key": "escape",
@@ -534,7 +557,6 @@
         "command": "workbench.action.compareEditor.focusPrimarySide",
         "when": "editorTextFocus && isInDiffEditor"
     },
-
 
     // N/P
     {
