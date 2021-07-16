@@ -18,7 +18,7 @@
  '(default ((t :background "#242528")))
  '(fringe  ((t :background "#2f343f" :foreground "#585c65")))
  `(isearch ((t :underline unspecified :weight bold)))
- '(italic ((t :foreground unspecified :family "Fantasque Sans Mono" :slant italic)))
+ '(italic ((t :foreground unspecified :slant italic)))
  '(lazy-highlight ((t :weight bold)))
  '(line-number-current-line ((t :background unspecified)))
  '(shadow ((t :weight normal)))
@@ -46,9 +46,11 @@
   (custom-set-faces
    `(auto-dim-other-buffers-face
      ((t :background ,(color-from 'default :background (*  2 (if (eq frame-background-mode 'dark) -1 1)))
+         :foreground ,(color-from 'default :foreground (* 10 (if (eq frame-background-mode 'dark) -1 1)))
          :weight light)))
    `(auto-dim-other-line-number-face
      ((t :background ,(color-from 'line-number :background (* 2 (if (eq frame-background-mode 'dark) -1 1)))
+         :foreground ,(color-from 'line-number :foreground (* 5 (if (eq frame-background-mode 'dark) -1 1)))
          :weight light)))))
 
 (use-package cider-mode
@@ -156,7 +158,7 @@
   (custom-set-faces
    '(font-lock-comment-face ((t :inherit italic :background unspecified :weight light :slant unspecified)))
    '(font-lock-doc-face ((t :inherit italic :weight light)))
-   '(font-lock-function-name-face ((t :inherit unspecified :background "#412645" :weight semi-bold)))
+   '(font-lock-function-name-face ((t :inherit unspecified :background "#412645" :weight bold)))
    '(font-lock-keyword-face ((t :inherit unspecified :weight unspecified :slant unspecified)))
    '(font-lock-negation-char-face ((t :inherit font-lock-warning-face :foreground unspecified)))
    '(font-lock-regexp-grouping-backslash ((t :weight normal)))
@@ -317,8 +319,7 @@
      ((t :inherit font-lock-type-face
          :foreground ,(color-from font-lock-type-face :foreground
                                   (* 15 (if (eq frame-background-mode 'dark) -1 1))
-                                  -15))))
-   ))
+                                  -15))))))
 
 (use-package smartparens
   :defer t

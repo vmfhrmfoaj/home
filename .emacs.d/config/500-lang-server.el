@@ -315,18 +315,6 @@
     "^[^ :]+?:[ \t]+\\([^\r\n]+\\)"
     "TODO")
 
-  (defvar lsp--max-line-eldoc-msg
-    (1- (cond
-         ((floatp eldoc-echo-area-use-multiline-p)
-          (floor (* (frame-height) eldoc-echo-area-use-multiline-p)))
-         ((numberp eldoc-echo-area-use-multiline-p)
-          eldoc-echo-area-use-multiline-p)
-         ((floatp max-mini-window-height)
-          (floor (* (frame-height) max-mini-window-height)))
-         ((numberp max-mini-window-height)
-          max-mini-window-height)
-         (t 10))))
-
   (defun lsp--custom-eldoc-message-for-emacs-27 (&optional msg)
     "Show MSG in eldoc."
     (unless isearch-mode
@@ -335,14 +323,7 @@
         (when msg
           (setq msg (s-replace-regexp "\\s-*\\\\\\s-*" " " msg)))))
       (setq lsp--eldoc-saved-message msg)
-      (let ((lines (s-lines (or msg "")))
-            (max-line lsp--max-line-eldoc-msg))
-        (eldoc-message (when lines
-                         (->> (if (<= (length lines) max-line)
-                                  lines
-                                (-snoc (-take (max 1 (1- max-line)) lines) (propertize "(...)" 'face 'shadow)))
-                              (-interpose "\n")
-                              (apply #'concat)))))))
+      (eldoc-message (-first-item (s-lines (or msg ""))))))
 
   (defun lsp--custom-eldoc-message-for-emacs-28 (&optional msg)
     "Show MSG in eldoc."
@@ -351,11 +332,8 @@
        ((derived-mode-p 'c-mode 'c++-mode)
         (when msg
           (setq msg (s-replace-regexp "\\s-*\\\\\\s-*" " " msg)))))
-      (when-let ((max-chars (* lsp--max-line-eldoc-msg (frame-width))))
-        (when (< max-chars (length msg))
-          (setq msg (concat (substring msg 0 max-chars) "\n" (propertize "(...)" 'face 'shadow)))))
       (setq lsp--eldoc-saved-message msg)
-      (eldoc-message msg)))
+      (eldoc-message (-first-item (s-lines (or msg ""))))))
 
   (defalias 'lsp--custom-eldoc-message
     (if (version<= "28.0.50" emacs-version)
