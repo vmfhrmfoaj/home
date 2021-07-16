@@ -5,8 +5,8 @@ ENV GROUP_ID=1000
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 RUN apt -y update && \
-    apt -y install bash-completion sudo vim zip libzip-dev libicu-dev && \
-    docker-php-ext-install intl zip mysqli pdo pdo_mysql
+    apt -y install bash-completion sudo vim zip libzip-dev libicu-dev libgmp3-dev && \
+    docker-php-ext-install gmp intl zip mysqli pdo pdo_mysql
 # You can install extension on container by using following command:
 #  PHP_INI_DIR=/usr/local/etc/php docker-php-ext-install ...
 
