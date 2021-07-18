@@ -94,6 +94,18 @@
             },
             "textMateRules": [
                 {
+                    "scope": [
+                        "entity.name.function.go",
+                        "entity.name.function.shell",
+                        // "meta.function.c",
+                        // "meta.function.definition.rust",
+                        "meta.function.php",
+                     ],
+                    "settings": {
+                        "fontStyle": "bold"
+                    }
+                },
+                {
                     "scope": "entity.name.section.spec",
                     "settings": { "foreground": "#c586c0" },
                 },
@@ -400,8 +412,6 @@
     ],
 
     // C/C++
-    "C_Cpp.enhancedColorization": "Enabled",
-    "C_Cpp.intelliSenseEngine": "Default",
     "C_Cpp.updateChannel": "Insiders",
 
     // CMake

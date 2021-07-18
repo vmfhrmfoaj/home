@@ -155,9 +155,23 @@
         "when": "terminal.active"
     },
     {
+        // NOTE
+        //  VS Code didn't handle right control key event.
+        //  So, you need to add/update Udev hwdb file to change right control to left control.
         "key": "ctrl+shift+1", // for CK87 keyboard
         "command": "workbench.action.focusFirstEditorGroup",
-        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+shift+2", // for CK87 keyboard
+        "command": "workbench.action.focusSecondEditorGroup",
+    },
+    {
+        "key": "ctrl+shift+3", // for CK87 keyboard
+        "command": "workbench.action.focusThirdEditorGroup",
+    },
+    {
+        "key": "ctrl+shift+4", // for CK87 keyboard
+        "command": "workbench.action.focusFourthEditorGroup",
     },
     {
         "key": "ctrl+9",
